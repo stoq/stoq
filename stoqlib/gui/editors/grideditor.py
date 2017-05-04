@@ -25,7 +25,7 @@
 
 import collections
 
-import gtk
+from gi.repository import Gtk
 from kiwi.ui.objectlist import Column
 from kiwi.ui.forms import TextField, BoolField
 
@@ -146,7 +146,7 @@ class GridOptionEditor(BaseEditor):
                           attribute=self._attribute)
 
     def setup_proxies(self):
-        self.option_order_spin.set_adjustment(gtk.Adjustment(lower=0,
+        self.option_order_spin.set_adjustment(Gtk.Adjustment(lower=0,
                                                              upper=100,
                                                              step_incr=1,
                                                              page_incr=5))

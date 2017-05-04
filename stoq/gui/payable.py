@@ -29,8 +29,7 @@ stoq/gui/payable/payable.py:
 
 import datetime
 
-import pango
-import gtk
+from gi.repository import Gtk, Gdk, Pango
 from kiwi.currency import currency
 from kiwi.python import all
 from kiwi.ui.objectlist import Column
@@ -81,7 +80,7 @@ class PayableApp(BaseAccountWindow):
 
         actions = [
             # File
-            ('AddPayment', gtk.STOCK_ADD, _('Account payable...'),
+            ('AddPayment', Gtk.STOCK_ADD, _('Account payable...'),
              group.get('add_payable'),
              _('Create a new account payable')),
             ('PaymentFlowHistory', None, _('Payment _flow history...'),
@@ -90,22 +89,22 @@ class PayableApp(BaseAccountWindow):
 
             # Payment
             ('PaymentMenu', None, _('Payment')),
-            ('Details', gtk.STOCK_INFO, _('Details...'),
+            ('Details', Gtk.STOCK_INFO, _('Details...'),
              group.get('payment_details'),
              _('Show details for the selected payment')),
-            ('Pay', gtk.STOCK_APPLY, _('Pay...'),
+            ('Pay', Gtk.STOCK_APPLY, _('Pay...'),
              group.get('payment_pay'),
              _('Pay the order associated with the selected payment')),
-            ('Edit', gtk.STOCK_EDIT, _('Edit installments...'),
+            ('Edit', Gtk.STOCK_EDIT, _('Edit installments...'),
              group.get('payment_edit'),
              _('Edit the selected payment installments')),
-            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel...'),
+            ('CancelPayment', Gtk.STOCK_REMOVE, _('Cancel...'),
              group.get('payment_cancel'),
              _('Cancel the selected payment')),
-            ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...'),
+            ('SetNotPaid', Gtk.STOCK_UNDO, _('Set as not paid...'),
              group.get('payment_set_not_paid'),
              _('Mark the selected payment as not paid')),
-            ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...'),
+            ('ChangeDueDate', Gtk.STOCK_REFRESH, _('Change due date...'),
              group.get('payment_change_due_date'),
              _('Change the due date of the selected payment')),
             ('Comments', None, _('Comments...'),
@@ -166,16 +165,16 @@ class PayableApp(BaseAccountWindow):
     def get_columns(self):
         return [IdentifierColumn('identifier', title=_('Payment #')),
                 SearchColumn('description', title=_('Description'),
-                             data_type=str, ellipsize=pango.ELLIPSIZE_END,
+                             data_type=str, ellipsize=Pango.EllipsizeMode.END,
                              expand=True, pack_end=True),
                 Column('color', title=_('Description'), width=20,
-                       data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf,
+                       data_type=Gdk.Pixbuf, format_func=render_pixbuf,
                        column='description'),
                 Column('comments_number', title=_(u'Comments'),
                        visible=False),
                 SearchColumn('supplier_name', title=_('Supplier'),
                              data_type=str, width=140,
-                             ellipsize=pango.ELLIPSIZE_END),
+                             ellipsize=Pango.EllipsizeMode.END),
                 SearchColumn('due_date', title=_('Due date'),
                              data_type=datetime.date, width=100,
                              sorted=True),

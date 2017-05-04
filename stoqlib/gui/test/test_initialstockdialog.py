@@ -23,7 +23,7 @@
 ##
 
 import mock
-import gtk
+from gi.repository import Gtk
 
 from kiwi import ValueUnset
 from stoqlib.api import api
@@ -54,7 +54,7 @@ class TestInitialStockDialog(GUITest):
             self.click(dialog.main_dialog.cancel_button)
 
         msg = 'If you cancel this dialog all changes will be lost. Are you sure?'
-        yesno.assert_called_once_with(msg, gtk.RESPONSE_NO, 'Cancel',
+        yesno.assert_called_once_with(msg, Gtk.ResponseType.NO, 'Cancel',
                                       "Don't cancel")
 
     def test_save(self):

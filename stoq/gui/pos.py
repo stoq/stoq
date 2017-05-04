@@ -26,8 +26,7 @@
 from decimal import Decimal
 import logging
 
-import pango
-import gtk
+from gi.repository import Gtk, Pango
 from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import converter, ValidationError
@@ -248,7 +247,7 @@ class PosApp(ShellApp):
 
     def create_ui(self):
         self.sale_items.set_columns(self.get_columns())
-        self.sale_items.set_selection_mode(gtk.SELECTION_BROWSE)
+        self.sale_items.set_selection_mode(Gtk.SelectionMode.BROWSE)
         # Setting up the widget groups
         self.main_vbox.set_focus_chain([self.pos_vbox])
 
@@ -327,7 +326,7 @@ class PosApp(ShellApp):
         if not can_change_application:
             if yesno(_('You must finish the current sale before you change to '
                        'another application.'),
-                     gtk.RESPONSE_NO, _("Cancel sale"), _("Finish sale")):
+                     Gtk.ResponseType.NO, _("Cancel sale"), _("Finish sale")):
                 self._cancel_order(show_confirmation=False)
                 return True
 
@@ -338,25 +337,25 @@ class PosApp(ShellApp):
         if not can_close_application:
             if yesno(_('You must finish or cancel the current sale before you '
                        'can close the POS application.'),
-                     gtk.RESPONSE_NO, _("Cancel sale"), _("Finish sale")):
+                     Gtk.ResponseType.NO, _("Cancel sale"), _("Finish sale")):
                 self._cancel_order(show_confirmation=False)
                 return True
         return can_close_application
 
     def get_columns(self):
         return [Column('code', title=_('Reference'),
-                       data_type=str, width=130, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, width=130, justify=Gtk.Justification.RIGHT),
                 Column('full_description',
                        title=_('Description'), data_type=str, expand=True,
-                       searchable=True, ellipsize=pango.ELLIPSIZE_END),
+                       searchable=True, ellipsize=Pango.EllipsizeMode.END),
                 Column('location', title=_('Location'), data_type=str,
                        visible=False),
                 Column('price', title=_('Price'), data_type=currency,
-                       width=110, justify=gtk.JUSTIFY_RIGHT),
+                       width=110, justify=Gtk.Justification.RIGHT),
                 Column('quantity_unit', title=_('Quantity'), data_type=unicode,
-                       width=110, justify=gtk.JUSTIFY_RIGHT),
+                       width=110, justify=Gtk.Justification.RIGHT),
                 Column('total', title=_('Total'), data_type=currency,
-                       justify=gtk.JUSTIFY_RIGHT, width=100)]
+                       justify=Gtk.Justification.RIGHT, width=100)]
 
     def set_open_inventory(self):
         self.set_sensitive(self._inventory_widgets, False)
@@ -428,8 +427,8 @@ class PosApp(ShellApp):
         self._image_slave = SellableImageViewer(size=(175, 175),
                                                 use_thumbnail=True)
         self.attach_slave('image_holder', self._image_slave)
-        self.details_lbl.set_ellipsize(pango.ELLIPSIZE_END)
-        self.extra_details_lbl.set_ellipsize(pango.ELLIPSIZE_END)
+        self.details_lbl.set_ellipsize(Pango.EllipsizeMode.END)
+        self.extra_details_lbl.set_ellipsize(Pango.EllipsizeMode.END)
 
         self.details_box.set_visible(False)
         self.DetailsViewer.set_active(
@@ -438,11 +437,11 @@ class PosApp(ShellApp):
     def _create_context_menu(self):
         menu = ContextMenu()
 
-        item = ContextMenuItem(gtk.STOCK_ADD)
+        item = ContextMenuItem(Gtk.STOCK_ADD)
         item.connect('activate', self._on_context_add__activate)
         menu.append(item)
 
-        item = ContextMenuItem(gtk.STOCK_REMOVE)
+        item = ContextMenuItem(Gtk.STOCK_REMOVE)
         item.connect('activate', self._on_context_remove__activate)
         item.connect('can-disable', self._on_context_remove__can_disable)
         menu.append(item)
@@ -655,7 +654,7 @@ class PosApp(ShellApp):
             self._till_open = True
 
         self.till_status_label.set_use_markup(True)
-        self.till_status_label.set_justify(gtk.JUSTIFY_CENTER)
+        self.till_status_label.set_justify(Gtk.Justification.CENTER)
         self.till_status_label.set_markup(text)
 
         self.set_sensitive([self.TillOpen], closed)
@@ -954,7 +953,7 @@ class PosApp(ShellApp):
         """
         if len(self.sale_items) and show_confirmation:
             if yesno(_("This will cancel the current order. Are you sure?"),
-                     gtk.RESPONSE_NO, _("Don't cancel"), _(u"Cancel order")):
+                     Gtk.ResponseType.NO, _("Don't cancel"), _(u"Cancel order")):
                 return False
 
         log.info("Cancelling coupon")
@@ -1240,7 +1239,7 @@ class PosApp(ShellApp):
             # The user pressed enter with an empty string. Maybe start checkout
             checkout = True
             if (self._confirm_sales_on_till and not
-                    yesno(_('Save the order?'), gtk.RESPONSE_NO, _('Save'),
+                    yesno(_('Save the order?'), Gtk.ResponseType.NO, _('Save'),
                           _("Don't save"))):
                 checkout = False
             if len(self.sale_items) >= 1 and checkout:
@@ -1264,14 +1263,14 @@ class PosApp(ShellApp):
         if not trade:
             return
 
-        button = gtk.Button(_("Cancel trade"))
+        button = Gtk.Button(_("Cancel trade"))
         button.connect('clicked', self._on_remove_trade_button__clicked)
         value = converter.as_string(currency, self._trade.returned_total)
         msg = _("There is a trade with value %s in progress...\n"
                 "When checking out, it will be used as part of "
                 "the payment.") % (value, )
         self._trade_infobar = self.window.add_info_bar(
-            gtk.MESSAGE_INFO, msg, action_widget=button)
+            Gtk.MessageType.INFO, msg, action_widget=button)
 
     #
     # Coupon related
@@ -1285,7 +1284,7 @@ class PosApp(ShellApp):
                 if not yesno(
                         _("It is not possible to start a new sale if the "
                           "fiscal coupon cannot be opened."),
-                        gtk.RESPONSE_YES, _("Try again"), _("Cancel sale")):
+                        Gtk.ResponseType.YES, _("Try again"), _("Cancel sale")):
                     return None
 
         self.set_sensitive([self.PaymentReceive], False)
@@ -1322,7 +1321,7 @@ class PosApp(ShellApp):
         if self._sale_started:
             if not yesno(_('You must finish or cancel the current sale before '
                            'you can close the till.'),
-                         gtk.RESPONSE_NO, _("Cancel sale"), _("Finish sale")):
+                         Gtk.ResponseType.NO, _("Cancel sale"), _("Finish sale")):
                 return
             self._cancel_order(show_confirmation=False)
         self._printer.close_till()
@@ -1436,7 +1435,7 @@ class PosApp(ShellApp):
         if self._trade:
             if yesno(_("There is already a trade in progress... Do you "
                        "want to cancel it and start a new one?"),
-                     gtk.RESPONSE_NO, _("Cancel trade"), _("Finish trade")):
+                     Gtk.ResponseType.NO, _("Cancel trade"), _("Finish trade")):
                 self._clear_trade(remove=True)
             else:
                 return
@@ -1477,7 +1476,7 @@ class PosApp(ShellApp):
 
     def _on_remove_trade_button__clicked(self, button):
         if yesno(_("Do you really want to cancel the trade in progress?"),
-                 gtk.RESPONSE_NO, _("Cancel trade"), _("Don't cancel")):
+                 Gtk.ResponseType.NO, _("Cancel trade"), _("Don't cancel")):
             self._clear_trade(remove=True)
 
     def on_till_status_label__activate_link(self, button, link):

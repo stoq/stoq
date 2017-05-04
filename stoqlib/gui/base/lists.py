@@ -23,7 +23,7 @@
 ##
 """ List management for common dialogs.  """
 
-import gtk
+from gi.repository import Gtk
 from kiwi.enums import ListType
 from kiwi.ui.objectlist import ObjectList, ObjectTree
 from kiwi.ui.listdialog import ListSlave
@@ -55,7 +55,7 @@ class ModelListSlave(ListSlave):
         :param store: a store connection
         """
         if orientation is None:
-            orientation = gtk.ORIENTATION_VERTICAL
+            orientation = Gtk.Orientation.VERTICAL
         if self.columns is None:
             fmt = "%s needs to set it's columns attribute"
             raise TypeError(fmt % (self.__class__.__name__, ))
@@ -217,7 +217,7 @@ class ModelListDialog(BasicDialog):
 
         BasicDialog.__init__(self, title=self.title, size=self.size)
 
-        self.vbox = gtk.VBox()
+        self.vbox = Gtk.VBox()
         self.vbox.pack_start(self.list_slave.listcontainer, True, True, 0)
         self.add(self.vbox)
         self.vbox.show()
@@ -291,7 +291,7 @@ class AdditionListSlave(SearchSlave):
 
     def _setup_klist(self, klist_objects):
         self.klist.set_columns(self.columns)
-        self.klist.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.klist.set_selection_mode(Gtk.SelectionMode.MULTIPLE)
         if self.tree:
             (self.klist.append(obj.parent_item, obj) for obj in klist_objects)
         else:
@@ -370,7 +370,7 @@ class AdditionListSlave(SearchSlave):
             _("Keep it"),
             _("Keep them"),
             qty)
-        if not yesno(msg, gtk.RESPONSE_NO, delete_label, keep_label):
+        if not yesno(msg, Gtk.ResponseType.NO, delete_label, keep_label):
             return
         self.emit('before-delete-items', objs)
         if qty == len(self.klist):
@@ -429,12 +429,12 @@ class AdditionListSlave(SearchSlave):
         :param stock: stock label of the button, can be ``None`` if label
             is passed
         :param returns: the button added
-        :rtype: gtk.Button
+        :rtype: Gtk.Button
         """
         if label is None and stock is None:
             raise TypeError("You need to provide a label or a stock argument")
 
-        button = gtk.Button(label=label, stock=stock)
+        button = Gtk.Button(label=label, stock=stock)
         button.set_property('can_focus', True)
         self.button_box.pack_end(button, False, False, 0)
         button.show()
@@ -461,7 +461,7 @@ class AdditionListSlave(SearchSlave):
     def get_selection(self):
         # XXX: add get_selected_rows and raise exceptions if not in the
         #      right mode
-        if self.klist.get_selection_mode() == gtk.SELECTION_MULTIPLE:
+        if self.klist.get_selection_mode() == Gtk.SelectionMode.MULTIPLE:
             return self.klist.get_selected_rows()
         selection = self.klist.get_selected()
         if not selection:
@@ -525,9 +525,9 @@ class SimpleListDialog(BasicDialog):
             self.cancel_button.hide()
 
         if multiple:
-            selection_mode = gtk.SELECTION_MULTIPLE
+            selection_mode = Gtk.SelectionMode.MULTIPLE
         else:
-            selection_mode = gtk.SELECTION_BROWSE
+            selection_mode = Gtk.SelectionMode.BROWSE
         self.setup_slave(columns, objects, selection_mode)
 
     def setup_slave(self, columns, objects, selection_mode):
@@ -538,7 +538,7 @@ class SimpleListDialog(BasicDialog):
 
     def get_selection(self):
         mode = self._klist.get_selection_mode()
-        if mode == gtk.SELECTION_MULTIPLE:
+        if mode == Gtk.SelectionMode.MULTIPLE:
             return self._klist.get_selected_rows()
         selection = self._klist.get_selected()
         if not selection:

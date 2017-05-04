@@ -26,7 +26,7 @@ import datetime
 import decimal
 
 import mock
-import gtk
+from gi.repository import Gtk
 
 from stoqlib.api import api
 from stoqlib.domain.sale import Sale
@@ -105,7 +105,7 @@ class TestSaleQuoteWizard(GUITest):
 
             self.assertEqual(wizard.model.payments.count(), 0)
             yesno.assert_called_once_with(_('Would you like to print the quote '
-                                            'details now?'), gtk.RESPONSE_YES,
+                                            'details now?'), Gtk.ResponseType.YES,
                                           _("Print quote details"), _("Don't print"))
 
     @mock.patch('stoqlib.gui.wizards.salequotewizard.run_dialog')
@@ -134,7 +134,7 @@ class TestSaleQuoteWizard(GUITest):
         self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         self.assertTrue(issubclass(args[0], SimpleListDialog))
-        self.assertTrue(isinstance(args[1], gtk.Dialog))
+        self.assertTrue(isinstance(args[1], Gtk.Dialog))
         self.assertTrue(isinstance(args[2], list))
         self.assertTrue(isinstance(args[3], list))
         self.assertEquals(kwargs['title'], 'Missing products')
@@ -179,7 +179,7 @@ class TestSaleQuoteWizard(GUITest):
             yesno.return_value = True
             self.click(item_step.slave.delete_button)
             yesno.assert_called_once_with(
-                'Delete this item?', gtk.RESPONSE_NO, 'Delete item', 'Keep it')
+                'Delete this item?', Gtk.ResponseType.NO, 'Delete item', 'Keep it')
 
         # As we remove the package, remove its children as well
         self.assertEquals(len(klist), 0)

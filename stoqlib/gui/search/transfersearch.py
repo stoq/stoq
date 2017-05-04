@@ -27,7 +27,7 @@
 import datetime
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.ui.objectlist import Column
 from storm.expr import And, Or, Not
 
@@ -53,7 +53,7 @@ class TransferOrderSearch(SearchDialog):
     size = (750, 500)
     search_spec = TransferOrderView
     report_class = TransferOrderReport
-    selection_mode = gtk.SELECTION_MULTIPLE
+    selection_mode = Gtk.SelectionMode.MULTIPLE
 
     def __init__(self, store):
         SearchDialog.__init__(self, store)

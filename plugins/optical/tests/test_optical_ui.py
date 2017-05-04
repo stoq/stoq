@@ -23,7 +23,7 @@
 ##
 
 import contextlib
-import gtk
+from gi.repository import Gtk
 import mock
 
 from stoqlib.database.runtime import StoqlibStore
@@ -142,7 +142,7 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         # FIXME: baseditor should probably add an api for getting a list
         #        of buttons
         print_button = editor.main_dialog.action_area.get_children()[0]
-        assert print_button.get_label() == gtk.STOCK_PRINT
+        assert print_button.get_label() == Gtk.STOCK_PRINT
         with mock.patch('plugins.optical.opticalui.print_report') as print_report_:
             self.click(print_button)
             print_report_.assert_called_once_with(

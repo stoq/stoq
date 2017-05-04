@@ -24,9 +24,7 @@
 
 
 import collections
-import glib
-import gobject
-import gtk
+from gi.repository import Gtk, GObject, Glib, Gdk
 
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
@@ -46,7 +44,7 @@ from stoq.lib.status import ResourceStatus, ResourceStatusManager
 # FIXME: Improve those strings
 _status_mapper = {
     None: (
-        gtk.STOCK_REFRESH,
+        Gtk.STOCK_REFRESH,
         _("Checking status...")),
     ResourceStatus.STATUS_NA: (
         STOQ_STATUS_NA,
@@ -95,46 +93,46 @@ class StatusDialog(BasicDialog):
         for child in self.vbox.get_children():
             self.vbox.remove(child)
 
-        self._refresh_btn = gtk.Button(stock=gtk.STOCK_REFRESH)
+        self._refresh_btn = Gtk.Button(stock=Gtk.STOCK_REFRESH)
         action_area = self.toplevel.get_action_area()
         action_area.pack_start(self._refresh_btn, True, True, 6)
         action_area.set_child_secondary(self._refresh_btn, True)
         self._refresh_btn.connect('clicked', self._on_refresh_btn__clicked)
         self._refresh_btn.show()
 
-        sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_AUTOMATIC,
-                      gtk.POLICY_AUTOMATIC)
+        sw = Gtk.ScrolledWindow()
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC,
+                      Gtk.PolicyType.AUTOMATIC)
         self.vbox.add(sw)
 
-        viewport = gtk.Viewport()
-        viewport.set_shadow_type(gtk.SHADOW_NONE)
+        viewport = Gtk.Viewport()
+        viewport.set_shadow_type(Gtk.ShadowType.NONE)
         sw.add(viewport)
 
-        alignment = gtk.Alignment(0.0, 0.0, 1.0, 1.0)
+        alignment = Gtk.Alignment(0.0, 0.0, 1.0, 1.0)
         alignment.set_padding(6, 6, 6, 6)
         viewport.add(alignment)
 
-        vbox = gtk.VBox(spacing=12)
+        vbox = Gtk.VBox(spacing=12)
         alignment.add(vbox)
 
         resources = self._manager.resources.items()
         for i, (name, resource) in enumerate(resources):
-            hbox = gtk.HBox(spacing=6)
+            hbox = Gtk.HBox(spacing=6)
 
-            img = gtk.Image()
+            img = Gtk.Image()
             hbox.pack_start(img, False, True, 0)
-            lbl = gtk.Label()
+            lbl = Gtk.Label()
             hbox.pack_start(lbl, False, True, 0)
 
-            buttonbox = gtk.HButtonBox()
+            buttonbox = Gtk.HButtonBox()
             hbox.pack_end(buttonbox, False, True, 0)
 
             self._widgets[name] = (img, lbl, buttonbox)
             vbox.pack_start(hbox, False, True, 6)
 
             if i < len(resources) - 1:
-                separator = gtk.HSeparator()
+                separator = Gtk.HSeparator()
                 vbox.pack_start(separator, False, True, 0)
 
         self.vbox.show_all()
@@ -148,7 +146,7 @@ class StatusDialog(BasicDialog):
             img, lbl, buttonbox = self._widgets[name]
 
             status_stock, _ignored = _status_mapper[resource.status]
-            img.set_from_stock(status_stock, gtk.ICON_SIZE_LARGE_TOOLBAR)
+            img.set_from_stock(status_stock, Gtk.IconSize.LARGE_TOOLBAR)
             if resource.reason and resource.reason_long:
                 text = "<b>%s</b>: %s\n<i>%s</i>" % (
                     api.escape(resource.label),
@@ -164,7 +162,7 @@ class StatusDialog(BasicDialog):
             for child in buttonbox.get_children():
                 buttonbox.remove(child)
             for action in resource.get_actions():
-                btn = gtk.Button(action.label)
+                btn = Gtk.Button(action.label)
 
                 if running_action is not None:
                     btn.set_sensitive(False)
@@ -177,8 +175,8 @@ class StatusDialog(BasicDialog):
                 # If the action is the running action, add a spinner together
                 # with the label to indicate that it is running
                 if action == running_action:
-                    spinner = gtk.Spinner()
-                    hbox = gtk.HBox(spacing=6)
+                    spinner = Gtk.Spinner()
+                    hbox = Gtk.HBox(spacing=6)
                     child = btn.get_child()
                     btn.remove(child)
                     hbox.add(child)
@@ -208,8 +206,8 @@ class StatusDialog(BasicDialog):
                 'cancel', lambda d: terminate_thread(thread))
 
             while thread.is_alive():
-                if gtk.events_pending():
-                    gtk.main_iteration(False)
+                if Gtk.events_pending():
+                    Gtk.main_iteration(False)
 
             progress_dialog.stop()
 
@@ -235,7 +233,7 @@ class StatusDialog(BasicDialog):
         self._manager.refresh_and_notify()
 
 
-class StatusButton(gtk.Button):
+class StatusButton(Gtk.Button):
 
     __gtype_name__ = 'StatusButton'
     _BLINK_RATE = 500
@@ -246,14 +244,14 @@ class StatusButton(gtk.Button):
 
         self._blink_id = None
         self._imgs = collections.deque()
-        self._image = gtk.Image()
+        self._image = Gtk.Image()
         self.set_image(self._image)
 
         self._manager = ResourceStatusManager.get_instance()
         self._manager.connect('status-changed',
                               self._on_manager__status_changed)
 
-        self.set_relief(gtk.RELIEF_NONE)
+        self.set_relief(Gtk.ReliefStyle.NONE)
         self._update_status(None)
         self._manager.refresh_and_notify(force=True)
 
@@ -269,7 +267,7 @@ class StatusButton(gtk.Button):
 
     def _update_status(self, status):
         if self._blink_id is not None:
-            glib.source_remove(self._blink_id)
+            Glib.source_remove(self._blink_id)
             self._blink_id = None
 
         status_stock, text = _status_mapper[status]
@@ -283,7 +281,7 @@ class StatusButton(gtk.Button):
 
         self.set_tooltip_text(tooltip)
 
-        pixbuf = self.render_icon(status_stock, gtk.ICON_SIZE_MENU)
+        pixbuf = self.render_icon(status_stock, Gtk.IconSize.MENU)
         self._image.set_from_pixbuf(pixbuf)
 
         if status not in [None,
@@ -298,12 +296,12 @@ class StatusButton(gtk.Button):
             # the ilusion that the icon is "blinking"
             # TODO: Make the blink transition by adding more pixbufs
             # that transitions in tranparency
-            empty = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB,
-                                   True, 8, width, height)
+            empty = Gdk.Pixbuf(Gdk.COLORSPACE_RGB,
+                               True, 8, width, height)
             empty.fill(0x00000000)
             self._imgs.append(empty)
 
-            self._blink_id = glib.timeout_add(self._BLINK_RATE,
+            self._blink_id = Glib.timeout_add(self._BLINK_RATE,
                                               self._blink_icon)
 
     #
@@ -314,14 +312,14 @@ class StatusButton(gtk.Button):
         self._update_status(status)
 
 
-gobject.type_register(StatusButton)
+GObject.type_register(StatusButton)
 
 
-class ShellStatusbar(gtk.Statusbar):
+class ShellStatusbar(Gtk.Statusbar):
     __gtype_name__ = 'ShellStatusbar'
 
     def __init__(self, window):
-        gtk.Statusbar.__init__(self)
+        Gtk.Statusbar.__init__(self)
         self._disable_border()
         self.message_area = self._create_message_area()
         self._create_default_widgets()
@@ -330,52 +328,52 @@ class ShellStatusbar(gtk.Statusbar):
     def _disable_border(self):
         # Disable border on statusbar
         children = self.get_children()
-        if children and isinstance(children[0], gtk.Frame):
+        if children and isinstance(children[0], Gtk.Frame):
             frame = children[0]
-            frame.set_shadow_type(gtk.SHADOW_NONE)
+            frame.set_shadow_type(Gtk.ShadowType.NONE)
 
     def _create_message_area(self):
         for child in self.get_children():
             child.hide()
-        area = gtk.HBox(False, 4)
+        area = Gtk.HBox(False, 4)
         self.add(area)
         area.show()
         return area
 
     def _create_default_widgets(self):
-        alignment = gtk.Alignment(0.0, 0.0, 1.0, 1.0)
+        alignment = Gtk.Alignment(0.0, 0.0, 1.0, 1.0)
         # FIXME: These looks good on Mac, might need to tweak
         # on Linux to look good
         alignment.set_padding(2, 3, 5, 0)
         self.message_area.pack_start(alignment, True, True, 0)
         alignment.show()
 
-        widget_area = gtk.HBox(False, 0)
+        widget_area = Gtk.HBox(False, 0)
         alignment.add(widget_area)
         widget_area.show()
 
-        self._text_label = gtk.Label()
+        self._text_label = Gtk.Label()
         self._text_label.set_alignment(0.0, 0.5)
         widget_area.pack_start(self._text_label, True, True, 0)
         self._text_label.show()
 
-        vsep = gtk.VSeparator()
+        vsep = Gtk.VSeparator()
         widget_area.pack_start(vsep, False, False, 0)
         vsep.show()
 
-        self._feedback_button = gtk.Button(_('Feedback'))
-        image = gtk.Image()
-        image.set_from_stock(STOQ_FEEDBACK, gtk.ICON_SIZE_MENU)
+        self._feedback_button = Gtk.Button(_('Feedback'))
+        image = Gtk.Image()
+        image.set_from_stock(STOQ_FEEDBACK, Gtk.IconSize.MENU)
         self._feedback_button.set_image(image)
         image.show()
         self._feedback_button.set_can_focus(False)
         self._feedback_button.connect('clicked',
                                       self._on_feedback__clicked)
-        self._feedback_button.set_relief(gtk.RELIEF_NONE)
+        self._feedback_button.set_relief(Gtk.ReliefStyle.NONE)
         widget_area.pack_start(self._feedback_button, False, False, 0)
         self._feedback_button.show()
 
-        vsep = gtk.VSeparator()
+        vsep = Gtk.VSeparator()
         widget_area.pack_start(vsep, False, False, 0)
         vsep.show()
 
@@ -406,4 +404,4 @@ class ShellStatusbar(gtk.Statusbar):
         run_dialog(StatusDialog, self.get_toplevel())
 
 
-gobject.type_register(ShellStatusbar)
+GObject.type_register(ShellStatusbar)

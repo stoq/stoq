@@ -27,7 +27,7 @@ import operator
 import platform
 from serial import SerialException
 
-import gtk
+from gi.repository import Gtk
 from kiwi.enums import ListType
 from kiwi.ui.objectlist import Column
 from stoqdrivers.interfaces import ICouponPrinter
@@ -188,7 +188,7 @@ class ECFEditor(BaseEditor):
 
         if yesno(_("An ECF Printer was added. You need to restart Stoq "
                    "before using it. Would you like to restart it now?"),
-                 gtk.RESPONSE_YES, _("Restart now"), _("Restart later")):
+                 Gtk.ResponseType.YES, _("Restart now"), _("Restart later")):
             self.store.commit()
             raise SystemExit
 

@@ -23,7 +23,7 @@
 ##
 """ Crash report dialog """
 
-import gtk
+from gi.repository import Gtk
 from kiwi.component import get_utility
 from kiwi.ui.dialogs import HIGAlertDialog
 
@@ -57,8 +57,8 @@ class CrashReportDialog(object):
         app_info = get_utility(IAppInfo, None)
 
         self._dialog = HIGAlertDialog(parent=self._parent,
-                                      flags=gtk.DIALOG_MODAL,
-                                      type=gtk.MESSAGE_WARNING)
+                                      flags=Gtk.DialogFlags.MODAL,
+                                      type=Gtk.MessageType.WARNING)
 
         self._dialog.set_details_label(_("Details ..."))
         primary_fmt = _('We\'r sorry to inform you that an error occurred while '
@@ -73,33 +73,33 @@ class CrashReportDialog(object):
         self._create_email()
 
         self._no_button = self._dialog.add_button(_('No thanks'),
-                                                  gtk.RESPONSE_NO)
+                                                  Gtk.ResponseType.NO)
         self._yes_button = self._dialog.add_button(_('Send report'),
-                                                   gtk.RESPONSE_YES)
+                                                   Gtk.ResponseType.YES)
 
         self._insert_tracebacks()
 
     def _create_details(self):
-        sw = gtk.ScrolledWindow()
+        sw = Gtk.ScrolledWindow()
         self._dialog.set_details_widget(sw)
-        sw.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        sw.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         sw.show()
 
-        view = gtk.TextView()
+        view = Gtk.TextView()
         sw.add(view)
         view.set_size_request(500, 350)
         view.show()
         self._details_buffer = view.get_buffer()
 
     def _create_comments(self):
-        sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        sw = Gtk.ScrolledWindow()
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self._dialog.main_vbox.pack_start(sw, False, False, 6)
-        sw.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        sw.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         sw.show()
 
-        view = gtk.TextView()
-        view.set_wrap_mode(gtk.WRAP_WORD)
+        view = Gtk.TextView()
+        view.set_wrap_mode(Gtk.WrapMode.WORD)
         view.set_accepts_tab(False)
         view_style = view.get_style()
 
@@ -108,7 +108,7 @@ class CrashReportDialog(object):
                 return
             self._comments_buffer.set_text("")
             view.modify_text(
-                gtk.STATE_NORMAL, view_style.text[gtk.STATE_NORMAL])
+                Gtk.StateType.NORMAL, view_style.text[Gtk.StateType.NORMAL])
         view.connect('focus-in-event', focus_in)
 
         def focus_out(view, event):
@@ -116,7 +116,7 @@ class CrashReportDialog(object):
                 return
             self._comments_buffer.set_text(_DEFAULT_COMMENT)
             view.modify_text(
-                gtk.STATE_NORMAL, view_style.text[gtk.STATE_INSENSITIVE])
+                Gtk.StateType.NORMAL, view_style.text[Gtk.StateType.INSENSITIVE])
 
         view.connect('focus-out-event', focus_out)
         view.set_size_request(-1, 100)
@@ -127,7 +127,7 @@ class CrashReportDialog(object):
             self._comments_buffer.get_iter_at_offset(0), _DEFAULT_COMMENT,
             'highlight')
         view.modify_text(
-            gtk.STATE_NORMAL, view_style.text[gtk.STATE_INSENSITIVE])
+            Gtk.StateType.NORMAL, view_style.text[Gtk.StateType.INSENSITIVE])
         view.show()
         self._comments_view = view
 
@@ -163,15 +163,15 @@ class CrashReportDialog(object):
         message = data.get('message')
         if message is not None:
             if data.get('report-url'):
-                label = gtk.LinkButton(data['report-url'], message)
+                label = Gtk.LinkButton(data['report-url'], message)
             else:
-                label = gtk.Label(message)
+                label = Gtk.Label(message)
             self._dialog.vbox.pack_start(label, True, True, 0)
             label.show()
         self._finish()
 
     def _show_error(self):
-        label = gtk.Label(_("Failed to submit bugreport"))
+        label = Gtk.Label(_("Failed to submit bugreport"))
         self._dialog.vbox.pack_start(label, True, True, 0)
         label.show()
         self._finish()
@@ -194,7 +194,7 @@ class CrashReportDialog(object):
         self._report_submitter.submit()
 
     def _on_dialog__response(self, dialog, response):
-        if response == gtk.RESPONSE_YES:
+        if response == Gtk.ResponseType.YES:
             if self.submitted:
                 self._destroy()
 
@@ -235,5 +235,5 @@ def show_dialog(callback=None):
 
 if __name__ == '__main__':   # pragma: no cover
     ec = api.prepare_test()
-    show_dialog(callback=gtk.main_quit)
-    gtk.main()
+    show_dialog(callback=Gtk.main_quit)
+    Gtk.main()

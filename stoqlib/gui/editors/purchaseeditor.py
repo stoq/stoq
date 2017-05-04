@@ -24,7 +24,7 @@
 """ Purchase editors """
 
 
-import gtk
+from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -69,7 +69,7 @@ class PurchaseItemEditor(BaseEditor):
         self.order.set_text(unicode(self.model.order.identifier))
         for widget in [self.quantity, self.cost, self.quantity_sold,
                        self.quantity_returned]:
-            widget.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
+            widget.set_adjustment(Gtk.Adjustment(lower=0, upper=MAX_INT,
                                                  step_incr=1))
 
         unit = self.model.sellable.unit

@@ -23,7 +23,7 @@
 ##
 
 import contextlib
-import gtk
+from gi.repository import Gtk
 import mock
 
 from stoqlib.gui.dialogs.personmergedialog import PersonMergeDialog
@@ -130,7 +130,7 @@ class TestPersonMergeDialog(GUITest):
             self.click(dialog.merge_button)
 
         yesno.assert_called_once_with(
-            'This will merge 2 persons into 1. Are you sure?', gtk.RESPONSE_NO,
+            'This will merge 2 persons into 1. Are you sure?', Gtk.ResponseType.NO,
             'Merge', "Don't merge")
 
         # If we search again, there should be no duplicates

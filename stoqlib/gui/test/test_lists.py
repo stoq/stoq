@@ -24,7 +24,7 @@
 
 """Tests for :mod:`stoqlib.gui.base.lists`"""
 
-import gtk
+from gi.repository import Gtk
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column
 import mock
@@ -88,7 +88,7 @@ class TestModelListSlave(GUITest):
 
     @mock.patch('kiwi.ui.listdialog.yesno')
     def test_remove_item(self, yesno):
-        yesno.return_value = gtk.RESPONSE_OK
+        yesno.return_value = Gtk.ResponseType.OK
 
         list_slave = _ModelListSlave(store=self.store)
         item_to_remove = self.store.find(_TestModel, unicode_var=u'XXX').one()
@@ -116,7 +116,7 @@ class TestModelListSlave(GUITest):
 
     @mock.patch('kiwi.ui.listdialog.yesno')
     def test_remove_item_reuse_store(self, yesno):
-        yesno.return_value = gtk.RESPONSE_OK
+        yesno.return_value = Gtk.ResponseType.OK
 
         list_slave = _ModelListSlave(store=self.store, reuse_store=True)
         item_to_remove = self.store.find(_TestModel, unicode_var=u'XXX').one()

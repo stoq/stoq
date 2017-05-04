@@ -24,7 +24,7 @@
 
 import logging
 
-import gtk
+from gi.repository import Gtk
 
 from stoqlib.database.runtime import get_default_store
 from stoqlib.gui.base.dialogs import run_dialog
@@ -75,7 +75,7 @@ class BooksUI(object):
         ui_string = self._get_menu_ui_string() % menu_items_str
 
         group = get_accels('plugin.books')
-        ag = gtk.ActionGroup('BooksMenuActions')
+        ag = Gtk.ActionGroup('BooksMenuActions')
         ag.add_actions([
             ('BooksMenu', None, _(u'Books')),
             ('BookSearch', None, _(u'Book Search'),
@@ -94,7 +94,7 @@ class BooksUI(object):
         ui_string = self._get_menu_ui_string() % menu_items_str
 
         group = get_accels('plugin.books')
-        ag = gtk.ActionGroup('BooksMenuActions')
+        ag = Gtk.ActionGroup('BooksMenuActions')
         ag.add_actions([
             ('BooksMenu', None, _(u'Books')),
             ('BookSearch', None, _(u'Book Search'),
@@ -110,7 +110,7 @@ class BooksUI(object):
         ui_string = self._get_menu_ui_string() % menu_items_str
 
         group = get_accels('plugin.books')
-        ag = gtk.ActionGroup('BooksMenuActions')
+        ag = Gtk.ActionGroup('BooksMenuActions')
         ag.add_actions([
             ('BooksMenu', None, _(u'Books')),
             ('BookSearch', None, _(u'Book Search'),

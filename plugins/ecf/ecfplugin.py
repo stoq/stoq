@@ -50,7 +50,7 @@ class ECFPlugin(object):
 
     def activate(self):
         # Do this in a nested import so we can import the plugin without
-        # importing gtk.
+        # importing Gtk.
         from ecf.ecfui import ECFUI
         self.ui = ECFUI()
 

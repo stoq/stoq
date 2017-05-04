@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 from kiwi.python import Settable
 import mock
 
@@ -50,7 +50,7 @@ class TestWorkOrderEditor(GUITest):
                 yesno,
                 ("Changing the backup key will make any backup done with "
                  "the previous key unrecoverable. Are you sure?"),
-                gtk.RESPONSE_NO, "Change", "Keep old key")
+                Gtk.ResponseType.NO, "Change", "Keep old key")
 
         with mock.patch('stoqlib.gui.editors.backupsettings.yesno') as yesno:
             editor.model.key = '321'
@@ -60,7 +60,7 @@ class TestWorkOrderEditor(GUITest):
                 yesno,
                 ("Changing the backup key will make any backup done with "
                  "the previous key unrecoverable. Are you sure?"),
-                gtk.RESPONSE_NO, "Change", "Keep old key")
+                Gtk.ResponseType.NO, "Change", "Keep old key")
 
     def test_key_validate(self):
         editor = BackupSettingsEditor(

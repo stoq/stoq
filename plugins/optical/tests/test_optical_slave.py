@@ -24,7 +24,7 @@
 
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gdk
 import mock
 
 from stoqlib.gui.editors.noteeditor import NoteEditor
@@ -88,7 +88,7 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
         workorder = self.create_workorder()
         slave = WorkOrderOpticalSlave(self.store, workorder)
 
-        e = gtk.gdk.Event(type=gtk.gdk.FOCUS_CHANGE)
+        e = Gdk.Event(type=Gdk.FOCUS_CHANGE)
         slave.le_near_pd.send_focus_change(e)
 
     def test_notes_button(self):

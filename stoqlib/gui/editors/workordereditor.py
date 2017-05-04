@@ -25,7 +25,7 @@
 
 import datetime
 
-import gtk
+from gi.repository import Gtk, Gdk
 
 from storm.expr import In
 from kiwi.ui.gadgets import render_pixbuf
@@ -156,8 +156,8 @@ class WorkOrderEditor(BaseEditor):
         :param tab_label: the label that will be display on the tab
         :param slave: the slave that will be attached to the new tab
         """
-        event_box = gtk.EventBox()
-        self.slaves_notebook.append_page(event_box, gtk.Label(tab_label))
+        event_box = Gtk.EventBox()
+        self.slaves_notebook.append_page(event_box, Gtk.Label(tab_label))
         self.attach_slave(tab_label, slave, event_box)
         event_box.show()
 
@@ -227,7 +227,7 @@ class WorkOrderEditor(BaseEditor):
 
         stock_id, tooltip = get_workorder_state_icon(self.model)
         if stock_id is not None:
-            self.state_icon.set_from_stock(stock_id, gtk.ICON_SIZE_MENU)
+            self.state_icon.set_from_stock(stock_id, Gtk.IconSize.MENU)
             self.state_icon.set_visible(True)
             self.state_icon.set_tooltip_text(tooltip)
         else:
@@ -392,10 +392,10 @@ class WorkOrderPackageSendEditor(BaseEditor):
             Column('equipment', _(u"Equipment (Description)"), data_type=str,
                    expand=True, pack_end=True),
             Column('category_color', title=_(u'Equipment'),
-                   column='equipment', data_type=gtk.gdk.Pixbuf,
+                   column='equipment', data_type=Gdk.Pixbuf,
                    format_func=render_pixbuf),
             Column('flag_icon', title=_(u'Equipment'), column='equipment',
-                   data_type=gtk.gdk.Pixbuf, format_func_data=True,
+                   data_type=Gdk.Pixbuf, format_func_data=True,
                    format_func=self._format_state_icon),
             Column('branch_name', _(u"Branch"), data_type=str, visible=False),
             Column('client_name', _(u"Client"), data_type=str),
@@ -415,8 +415,8 @@ class WorkOrderPackageSendEditor(BaseEditor):
         stock_id, tooltip = get_workorder_state_icon(item.work_order)
         if stock_id is not None:
             # We are using self.identifier because render_icon is a
-            # gtk.Widget's # method. It has nothing to do with results tough.
-            return self.identifier.render_icon(stock_id, gtk.ICON_SIZE_MENU)
+            # Gtk.Widget's # method. It has nothing to do with results tough.
+            return self.identifier.render_icon(stock_id, Gtk.IconSize.MENU)
 
     def _find_workorders(self):
         current_branch = api.get_current_branch(self.store)

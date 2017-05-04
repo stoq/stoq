@@ -25,7 +25,7 @@
 
 import logging
 
-import gtk
+from gi.repository import Gtk
 from kiwi.ui.delegates import GladeDelegate, GladeSlaveDelegate
 
 from stoqlib.database.runtime import StoqlibStore
@@ -221,9 +221,9 @@ class PluggableWizard(GladeDelegate):
         Disables the finish button in the wizard.
         """
         if self.edit_mode:
-            self.ok_button.set_label(gtk.STOCK_OK)
+            self.ok_button.set_label(Gtk.STOCK_OK)
         else:
-            self.next_button.set_label(gtk.STOCK_GO_FORWARD)
+            self.next_button.set_label(Gtk.STOCK_GO_FORWARD)
 
     def set_message(self, message):
         """
@@ -329,8 +329,8 @@ class BaseWizard(PluggableWizard, RunnableView):
         def on_help__clicked(button):
             show_section(section)
 
-        self.buttonbox.set_layout(gtk.BUTTONBOX_END)
-        self.help_button = gtk.Button(stock=gtk.STOCK_HELP)
+        self.buttonbox.set_layout(Gtk.ButtonBoxStyle.END)
+        self.help_button = Gtk.Button(stock=Gtk.STOCK_HELP)
         self.help_button.connect('clicked', on_help__clicked)
         self.buttonbox.add(self.help_button)
         self.buttonbox.set_child_secondary(self.help_button, True)
@@ -339,7 +339,7 @@ class BaseWizard(PluggableWizard, RunnableView):
     def cancel(self):
         if (self._need_cancel_confirmation() and
             not yesno(_("If you cancel this dialog all changes will be "
-                        "lost. Are you sure?"), gtk.RESPONSE_NO,
+                        "lost. Are you sure?"), Gtk.ResponseType.NO,
                       _("Cancel"), _("Don't cancel"))):
             return True
 
@@ -402,8 +402,8 @@ class BaseWizard(PluggableWizard, RunnableView):
     def on_toplevel__response(self, dialog, response, *args, **kwargs):
         # FIXME: For the delete-event to really stops from destroying the
         # dialog, we also need to stop the response event emission. See
-        # http://faq.pygtk.org/index.py?req=show&file=faq10.013.htp
+        # http://faq.pyGtk.org/index.py?req=show&file=faq10.013.htp
         # for more details
         if (self._need_cancel_confirmation() and
-                response == gtk.RESPONSE_DELETE_EVENT):
+                response == Gtk.ResponseType.DELETE_EVENT):
             dialog.emit_stop_by_name('response')

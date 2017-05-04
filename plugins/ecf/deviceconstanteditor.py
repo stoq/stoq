@@ -26,7 +26,7 @@
 
 import re
 
-import gtk
+from gi.repository import Gtk
 from kiwi.decorators import signal_block
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, ObjectList
@@ -188,7 +188,7 @@ class DeviceConstantsDialog(BasicDialog):
         self._create_ui()
 
     def _create_ui(self):
-        hbox = gtk.HBox()
+        hbox = Gtk.HBox()
         self.klist = ObjectList([Column('name')])
         self.klist.set_size_request(150, -1)
         self.klist.get_treeview().set_headers_visible(False)

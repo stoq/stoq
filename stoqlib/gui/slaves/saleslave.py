@@ -24,7 +24,7 @@
 """ Slaves for sale management """
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
 from kiwi.decorators import signal_block
 from kiwi.ui.delegates import GladeSlaveDelegate
@@ -183,12 +183,12 @@ class SaleDiscountSlave(BaseEditorSlave):
         return self._validate_percentage(percentage, _(u'Discount'))
 
     def on_discount_perc__icon_press(self, entry, icon_pos, event):
-        if icon_pos != gtk.ENTRY_ICON_PRIMARY:
+        if icon_pos != Gtk.EntryIconPosition.PRIMARY:
             return
         self._run_credentials_dialog()
 
     def on_discount_value__icon_press(self, entry, icon_pos, event):
-        if icon_pos != gtk.ENTRY_ICON_PRIMARY:
+        if icon_pos != Gtk.EntryIconPosition.PRIMARY:
             return
         self._run_credentials_dialog()
 
@@ -215,7 +215,7 @@ class SaleListToolbar(GladeSlaveDelegate):
 
     def __init__(self, store, sales, parent=None):
         self.store = store
-        if sales.get_selection_mode() != gtk.SELECTION_BROWSE:
+        if sales.get_selection_mode() != Gtk.SelectionMode.BROWSE:
             raise TypeError("Only SELECTION_BROWSE mode for the "
                             "list is supported on this slave")
         self.sales = sales
@@ -331,7 +331,7 @@ class SaleListToolbar(GladeSlaveDelegate):
 
 def cancel_sale(sale, reason):
     msg = _('Do you really want to cancel this sale ?')
-    if yesno(msg, gtk.RESPONSE_NO, _("Cancel sale"), _("Don't cancel sale")):
+    if yesno(msg, Gtk.ResponseType.NO, _("Cancel sale"), _("Don't cancel sale")):
         sale.cancel(reason)
         return True
     return False

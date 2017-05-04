@@ -26,7 +26,7 @@
 import collections
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.enums import ListType
@@ -89,7 +89,7 @@ class ProductAttributeSlave(BaseEditorSlave):
         if not attr.is_active:
             # Do not attach the widget if the attribute is inactive
             return
-        widget = gtk.CheckButton(label=attr.description)
+        widget = Gtk.CheckButton(label=attr.description)
         widget.set_sensitive(attr.has_active_options())
         self.main_box.pack_start(widget, False, True, 0)
         widget.show()
@@ -123,11 +123,11 @@ class ProductAttributeSlave(BaseEditorSlave):
         for attr in group.attributes:
             self._add_attribute(attr)
 
-        self._create_attribute_box = gtk.HBox()
-        btn = gtk.Button(_("Add a new attribute"))
+        self._create_attribute_box = Gtk.HBox()
+        btn = Gtk.Button(_("Add a new attribute"))
         btn.connect('clicked', self._on_add_new_attribute_btn__clicked)
         self._create_attribute_box.pack_start(btn, False, True, 0)
-        label = gtk.Label()
+        label = Gtk.Label()
         self._create_attribute_box.pack_start(label, True, True, 0)
         self._create_attribute_box.show_all()
         self.main_box.pack_start(self._create_attribute_box, False, True, 0)
@@ -170,7 +170,7 @@ class ProductGridSlave(BaseEditorSlave):
 
     def _add_options(self, attr, pos):
         combo = ProxyComboBox()
-        label = gtk.Label(attr.attribute.description + u':')
+        label = Gtk.Label(attr.attribute.description + u':')
         label.set_alignment(xalign=1, yalign=0.5)
 
         # This dictionary is populated with the purpose of tests
@@ -179,9 +179,9 @@ class ProductGridSlave(BaseEditorSlave):
         row_pos = pos / 3
         col_pos = 2 * (pos % 3)
         self.attr_table.attach(label, col_pos, col_pos + 1, row_pos, row_pos + 1,
-                               gtk.EXPAND | gtk.FILL, 0, 0, 0)
+                               Gtk.EXPAND | Gtk.AttachOptions.FILL, 0, 0, 0)
         self.attr_table.attach(combo, col_pos + 1, col_pos + 2, row_pos, row_pos + 1,
-                               gtk.EXPAND | gtk.FILL, 0, 0, 0)
+                               Gtk.EXPAND | Gtk.AttachOptions.FILL, 0, 0, 0)
         self.attr_table.show_all()
         self._fill_options(combo, attr)
         combo.connect('changed', self._on_combo_selection__changed)
@@ -267,7 +267,7 @@ class ProductInformationSlave(BaseEditorSlave):
         for widget in [self.minimum_quantity, self.maximum_quantity,
                        self.width, self.height, self.depth, self.weight]:
             widget.set_adjustment(
-                gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
+                Gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
 
         if not self.db_form:
             return
@@ -480,7 +480,7 @@ class ProductComponentSlave(BaseEditorSlave):
             self.sort_components_check.set_sensitive(False)
 
         self.yield_quantity.set_adjustment(
-            gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
+            Gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
 
         self.component_tree.set_columns(self._get_columns())
         self._populate_component_tree()
@@ -642,7 +642,7 @@ class ProductComponentSlave(BaseEditorSlave):
 
         msg = _("This will remove the component \"%s\". Are you sure?") % (
             root_component.description)
-        if not yesno(msg, gtk.RESPONSE_NO,
+        if not yesno(msg, Gtk.ResponseType.NO,
                      _("Remove component"),
                      _("Keep component")):
             return

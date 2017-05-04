@@ -26,7 +26,7 @@
 
 import datetime
 
-import gtk
+from gi.repository import Gtk, Gdk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel, ObjectTree
 from kiwi.ui.gadgets import render_pixbuf
@@ -47,7 +47,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class DetailsTab(gtk.VBox):
+class DetailsTab(Gtk.VBox):
     details_dialog_class = None
 
     def __init__(self, model, parent):
@@ -66,10 +66,10 @@ class DetailsTab(gtk.VBox):
         self.klist.show()
 
         if len(self.klist) and self.get_details_dialog_class():
-            self.button_box = gtk.HButtonBox()
-            self.button_box.set_layout(gtk.BUTTONBOX_START)
+            self.button_box = Gtk.HButtonBox()
+            self.button_box.set_layout(Gtk.ButtonBoxStyle.START)
 
-            details_button = gtk.Button(self.details_lbl)
+            details_button = Gtk.Button(self.details_lbl)
             self.button_box.pack_start(details_button, True, True, 0)
             details_button.set_sensitive(bool(self.klist.get_selected()))
             details_button.show()
@@ -107,7 +107,7 @@ class DetailsTab(gtk.VBox):
 
     def get_label(self):
         """Returns the name of the tab."""
-        label = gtk.Label(self.labels[1])
+        label = Gtk.Label(self.labels[1])
         return label
 
     def get_details_model(self, model):
@@ -154,7 +154,7 @@ class SalesTab(DetailsTab):
         self.has_open_inventory = self._has_open_inventory()
 
         if len(self.klist):
-            return_button = gtk.Button(_('Return sale'))
+            return_button = Gtk.Button(_('Return sale'))
             self.button_box.pack_start(return_button, True, True, 0)
             return_button.set_sensitive(bool(self.klist.get_selected()))
             return_button.show()
@@ -186,12 +186,12 @@ class SalesTab(DetailsTab):
                 Column("invoice_number", title=_("Invoice #"),
                        data_type=int, width=90),
                 Column("open_date", title=_("Date"), data_type=datetime.date,
-                       justify=gtk.JUSTIFY_RIGHT, width=80),
+                       justify=Gtk.Justification.RIGHT, width=80),
                 Column("salesperson_name", title=_("Salesperson"),
                        searchable=True, expand=True, data_type=str),
                 Column("status_name", title=_("Status"), width=80,
                        data_type=str),
-                Column("total", title=_("Total"), justify=gtk.JUSTIFY_RIGHT,
+                Column("total", title=_("Total"), justify=Gtk.Justification.RIGHT,
                        data_type=currency, width=100)]
 
     def populate(self):
@@ -220,7 +220,7 @@ class ReturnedSalesTab(DetailsTab):
                 Column("invoice_number", title=_("Invoice #"),
                        data_type=int, width=90),
                 Column("return_date", title=_("Return Date"),
-                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT,
+                       data_type=datetime.date, justify=Gtk.Justification.RIGHT,
                        width=80),
                 Column("product_name", title=_("Product"),
                        searchable=True, data_type=str),
@@ -232,7 +232,7 @@ class ReturnedSalesTab(DetailsTab):
                        expand=True, data_type=str),
                 Column("price", title=_("Price"), data_type=currency),
                 Column("quantity", title=_("Qty"), data_type=str),
-                Column("total", title=_("Total"), justify=gtk.JUSTIFY_RIGHT,
+                Column("total", title=_("Total"), justify=Gtk.Justification.RIGHT,
                        data_type=currency, width=100)]
 
     def populate(self):
@@ -264,13 +264,13 @@ class ProductsTab(DetailsTab):
                 Column("description", title=_("Description"), data_type=str,
                        expand=True, searchable=True),
                 Column("quantity", title=_("Total quantity"),
-                       data_type=str, width=120, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, width=120, justify=Gtk.Justification.RIGHT),
                 Column("sale_date", title=_("Sale date"),
                        data_type=datetime.date, width=150),
                 Column("value", title=_("Value"), width=100,
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=currency, justify=Gtk.Justification.RIGHT),
                 Column("total_value", title=_("Total value"), width=100,
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT, )]
+                       data_type=currency, justify=Gtk.Justification.RIGHT, )]
 
     def populate(self):
         for item in self.model.get_client_products(with_children=False):
@@ -287,7 +287,7 @@ class ServicesTab(DetailsTab):
 
     def get_columns(self):
         return [Column("code", title=_("Code"), data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT, width=120, sorted=True),
+                       justify=Gtk.Justification.RIGHT, width=120, sorted=True),
                 Column("description",
                        title=_("Description"), data_type=str, expand=True,
                        searchable=True),
@@ -308,10 +308,10 @@ class WorkOrdersTab(DetailsTab):
                 Column("equipment", title=_("Equipment"),
                        data_type=str, expand=True, pack_end=True),
                 Column('category_color', title=_(u'Equipment'),
-                       column='equipment', data_type=gtk.gdk.Pixbuf,
+                       column='equipment', data_type=Gdk.Pixbuf,
                        format_func=render_pixbuf),
                 Column('flag_icon', title=_(u'Equipment'), column='equipment',
-                       data_type=gtk.gdk.Pixbuf, format_func_data=True,
+                       data_type=Gdk.Pixbuf, format_func_data=True,
                        format_func=self._format_state_icon),
                 Column("open_date", title=_("Open date"),
                        data_type=datetime.date, width=120),
@@ -336,9 +336,9 @@ class WorkOrdersTab(DetailsTab):
     def _format_state_icon(self, item, data):
         stock_id, tooltip = get_workorder_state_icon(item.work_order)
         if stock_id is not None:
-            # We are using self because render_icon is a gtk.Widget's # method.
+            # We are using self because render_icon is a Gtk.Widget's # method.
             # It has nothing to do with results tough.
-            return self.render_icon(stock_id, gtk.ICON_SIZE_MENU)
+            return self.render_icon(stock_id, Gtk.IconSize.MENU)
 
 
 class PaymentsTab(DetailsTab):
@@ -359,13 +359,13 @@ class PaymentsTab(DetailsTab):
                 Column("status_str", title=_("Status"), width=80,
                        data_type=str),
                 ColoredColumn("value", title=_("Value"),
-                              justify=gtk.JUSTIFY_RIGHT, data_type=currency,
+                              justify=Gtk.Justification.RIGHT, data_type=currency,
                               color='red', width=100,
                               data_func=payment_value_colorize),
                 Column("days_late", title=_("Days Late"), width=110,
                        format_func=(lambda days_late: days_late and
                                     str(days_late) or u""),
-                       justify=gtk.JUSTIFY_RIGHT, data_type=str)]
+                       justify=Gtk.Justification.RIGHT, data_type=str)]
 
     def populate(self):
         for obj in self.model.get_client_payments():

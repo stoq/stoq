@@ -26,7 +26,7 @@
 
 import datetime
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 
 from stoqlib.domain.views import PurchaseReceivingView
@@ -45,7 +45,7 @@ class PurchaseReceivingSearch(SearchDialog):
     size = (750, 500)
     search_spec = PurchaseReceivingView
     report_class = PurchaseReceivalReport
-    selection_mode = gtk.SELECTION_MULTIPLE
+    selection_mode = Gtk.SelectionMode.MULTIPLE
     branch_filter_column = PurchaseReceivingView.branch_id
     text_field_columns = [PurchaseReceivingView.supplier_name,
                           PurchaseReceivingView.responsible_name,

@@ -26,7 +26,7 @@
 
 import operator
 
-import gtk
+from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.objectlist import ObjectList, Column
@@ -66,7 +66,7 @@ class InvoiceLayoutEditor(BaseEditor):
         BaseEditor.__init__(self, store, model)
         self.enable_normal_window()
         self.text.set_sensitive(False)
-        self.preview_button = self.add_button(stock=gtk.STOCK_PRINT_PREVIEW)
+        self.preview_button = self.add_button(stock=Gtk.STOCK_PRINT_PREVIEW)
         self.preview_button.connect('clicked', self._on_preview_button__clicked)
 
     def create_model(self, store):

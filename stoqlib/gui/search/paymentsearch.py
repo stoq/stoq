@@ -27,7 +27,7 @@
 import datetime
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
@@ -58,7 +58,7 @@ class _BaseBillCheckSearch(SearchDialog):
 
     title = _(u"Bill & Check Payments Search")
     size = (-1, 500)
-    selection_mode = gtk.SELECTION_MULTIPLE
+    selection_mode = Gtk.SelectionMode.MULTIPLE
     report_class = BillCheckPaymentReport
     search_label = _(u'Bill or check number:')
     branch_filter_column = Payment.branch_id
@@ -123,7 +123,7 @@ class CardPaymentSearch(SearchEditor):
     editor_class = CardPaymentDetailsEditor
     report_class = CardPaymentReport
     search_label = (u'Client:')
-    selection_mode = gtk.SELECTION_BROWSE
+    selection_mode = Gtk.SelectionMode.BROWSE
     text_field_columns = [CardPaymentView.drawee_name,
                           CardPaymentView.identifier_str]
     branch_filter_column = Payment.branch_id

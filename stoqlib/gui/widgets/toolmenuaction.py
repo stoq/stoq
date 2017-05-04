@@ -23,11 +23,10 @@
 ##
 ##
 
-import gobject
-import gtk
+from gi.repository import Gtk, GObject
 
 
-class ToolMenuAction(gtk.Action):
+class ToolMenuAction(Gtk.Action):
     def add_actions(self, uimanager, actions, add_separator=True, position=None):
         new_item = self.get_proxies()[0]
         # FIXME: Temporary workaround until set_tool_item_type works
@@ -38,7 +37,7 @@ class ToolMenuAction(gtk.Action):
         menu_items = []
         # Insert a separator only if menu already had children
         if add_separator and len(menu.get_children()):
-            sep = gtk.SeparatorMenuItem()
+            sep = Gtk.SeparatorMenuItem()
             sep.set_visible(True)
             menu_items.append(sep)
             menu.prepend(sep)
@@ -58,11 +57,11 @@ class ToolMenuAction(gtk.Action):
         return menu_items
 
 
-gobject.type_register(ToolMenuAction)
+GObject.type_register(ToolMenuAction)
 
 # FIXME: This is at least present in PyGTK 2.22
-MenuToolButton = getattr(gtk, 'MenuToolButton', None)
+MenuToolButton = getattr(Gtk, 'MenuToolButton', None)
 if MenuToolButton is None:
-    MenuToolButton = gobject.type_from_name('GtkMenuToolButton').pytype
+    MenuToolButton = GObject.type_from_name('GtkMenuToolButton').pytype
 
 ToolMenuAction.set_tool_item_type(MenuToolButton)

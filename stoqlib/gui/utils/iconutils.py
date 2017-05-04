@@ -23,7 +23,7 @@
 ##
 ##
 
-import gtk
+from gi.repository import Gtk
 
 from stoqlib.gui.stockicons import STOQ_TRANSPORTER
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -44,9 +44,9 @@ def get_workorder_state_icon(work_order):
     if work_order.is_in_transport():
         return STOQ_TRANSPORTER, _(u"In transport")
     elif work_order.is_rejected:
-        return gtk.STOCK_DIALOG_WARNING, _(u"Rejected")
+        return Gtk.STOCK_DIALOG_WARNING, _(u"Rejected")
     elif work_order.is_approved():
-        return gtk.STOCK_APPLY, _(u"Approved")
+        return Gtk.STOCK_APPLY, _(u"Approved")
 
     return (None, None)
 

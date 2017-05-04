@@ -24,7 +24,7 @@
 
 import datetime
 
-import gtk
+from gi.repository import Gtk
 
 
 from stoqlib.api import api
@@ -59,7 +59,7 @@ class CreditCheckHistorySearch(SearchEditor):
         self.client = client
         self._reuse_store = reuse_store
         SearchEditor.__init__(self, store)
-        self.set_edit_button_label(_('Details'), gtk.STOCK_INFO)
+        self.set_edit_button_label(_('Details'), Gtk.STOCK_INFO)
 
     #
     # SearchEditor Hooks

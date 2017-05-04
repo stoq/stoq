@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 import mock
 
 from kiwi.ui.forms import TextField
@@ -114,7 +114,7 @@ class TestReturnedSaleDialog(GUITest):
         with mock.patch.object(self.store, 'commit'):
             self.click(dialog.receive_button)
             yesno.assert_called_once_with(u'Receive pending returned sale?',
-                                          gtk.RESPONSE_NO,
+                                          Gtk.ResponseType.NO,
                                           u'Receive', u"Don't receive")
             self.assertEquals(model.returned_sale.status, ReturnedSale.STATUS_CONFIRMED)
 

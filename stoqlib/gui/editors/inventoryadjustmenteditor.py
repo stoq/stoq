@@ -27,7 +27,7 @@
 import collections
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import MultiLineField, NumericField, TextField
 from kiwi.ui.objectlist import Column
@@ -65,7 +65,7 @@ class InventoryAdjustmentEditor(BaseEditor):
 
     def _setup_widgets(self):
         self.main_dialog.ok_button.set_label(_(u'_Finish Inventory'))
-        self.main_dialog.cancel_button.set_label(gtk.STOCK_CLOSE)
+        self.main_dialog.cancel_button.set_label(Gtk.STOCK_CLOSE)
 
         company = self.model.branch.person.company
         if company is not None:
@@ -149,7 +149,7 @@ class InventoryAdjustmentEditor(BaseEditor):
         return yesno(_("Some products were not adjusted. By proceeding, you "
                        "will be discarding those products' count and their "
                        "old quantities will still be in the stock. Are you sure?"),
-                     gtk.RESPONSE_NO,
+                     Gtk.ResponseType.NO,
                      _("Ignore adjustments"), _("Continue adjusting"))
 
     def on_confirm(self):
@@ -158,7 +158,7 @@ class InventoryAdjustmentEditor(BaseEditor):
     def on_cancel(self):
         if yesno(_("Some products were already adjusted. Do you want to "
                    "save that information or discard them?"),
-                 gtk.RESPONSE_NO, _("Save adjustments"), _("Discard adjustments")):
+                 Gtk.ResponseType.NO, _("Save adjustments"), _("Discard adjustments")):
             # change retval to True so the store gets commited
             self.retval = self.model
 

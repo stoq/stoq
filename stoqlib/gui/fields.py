@@ -27,13 +27,10 @@ import datetime
 import os
 import tempfile
 
-import gio
-import gobject
-import gtk
+from gi.repository import Gtk, GObject, Gio, Pango
 from kiwi.ui.dialogs import selectfile
 from kiwi.ui.entry import ENTRY_MODE_DATA
 from kiwi.ui.forms import TextField, ChoiceField, Field
-import pango
 
 from stoqlib.api import api
 from stoqlib.domain.attachment import Attachment
@@ -79,14 +76,14 @@ class DomainChoiceField(ChoiceField):
     default_overrides = dict(has_add_button=True, has_edit_button=True)
 
     #: If we have the permission to add new object of this kind
-    can_add = gobject.property(type=bool, default=True)
+    can_add = GObject.property(type=bool, default=True)
 
     #: If we have the permission to edit the currently selected object
-    can_edit = gobject.property(type=bool, default=True)
+    can_edit = GObject.property(type=bool, default=True)
 
     #: If we have the permission to view the details of the currently
     #: selected object
-    can_view = gobject.property(type=bool, default=True)
+    can_view = GObject.property(type=bool, default=True)
 
     #: If we are using the ids to pupulate the field instead of domain
     #: objects. This changes what gets send as argument on :meth:`.populate`
@@ -169,7 +166,7 @@ class AddressField(DomainChoiceField):
     default_overrides.update(use_entry=True)
 
     #: The person the address belongs to, must be a :py:class:`stoqlib.domain.person.Person`
-    person = gobject.property(type=object, default=None)
+    person = GObject.property(type=object, default=None)
 
     # Field
 
@@ -212,12 +209,12 @@ class PaymentMethodField(ChoiceField):
     #: The type of the payment used to get creatable methods.
     #: See :meth:`stoqlib.lib.interfaces.IPaymentOperation.creatable`
     #: for more information
-    payment_type = gobject.property(type=object, default=None)
+    payment_type = GObject.property(type=object, default=None)
 
     #: If this is being created separated from a |sale| / |purchase|
     #: See :meth:`stoqlib.lib.interfaces.IPaymentOperation.creatable`
     #: for more information
-    separate = gobject.property(type=bool, default=True)
+    separate = GObject.property(type=bool, default=True)
 
     # Field
 
@@ -239,7 +236,7 @@ class PaymentCategoryField(DomainChoiceField):
     #: This is the type of payment category we will display in this field, it
     #: it should either be PaymentCategory.TYPE_PAYABLE or
     #: PaymentCategory.TYPE_RECEIVABLE
-    category_type = gobject.property(type=object, default=None)
+    category_type = GObject.property(type=object, default=None)
 
     # Field
 
@@ -268,7 +265,7 @@ class PersonField(DomainChoiceField):
 
     #: This is the type of person we will display in this field, it
     #: must be a class referencing a :py:class:`stoqlib.domain.person.Person`
-    person_type = gobject.property(type=object)
+    person_type = GObject.property(type=object)
 
     # Field
 
@@ -342,7 +339,7 @@ class PersonQueryField(TextField):
 
     #: This is the type of person we will display in this field, it
     #: must be a class referencing a :py:class:`stoqlib.domain.person.Person`
-    person_type = gobject.property(type=object)
+    person_type = GObject.property(type=object)
 
     widget_data_type = object
 
@@ -369,7 +366,7 @@ class PersonQueryField(TextField):
 
         # Update edit button to be a info button
         self.edit_button.set_image(
-            gtk.image_new_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_MENU))
+            Gtk.image_new_from_stock(Gtk.STOCK_INFO, Gtk.IconSize.MENU))
 
     def populate(self, obj):
         self.set_value(obj)
@@ -463,24 +460,24 @@ class AttachmentField(Field):
 
     no_attachment_lbl = _('No attachment.')
 
-    attachment = gobject.property(type=object, default=None)
+    attachment = GObject.property(type=object, default=None)
 
     def build_widget(self):
-        button = gtk.Button()
+        button = Gtk.Button()
         button.connect('clicked', self._on_open_button__clicked)
 
-        box = gtk.HBox(False, 4)
+        box = Gtk.HBox(False, 4)
         button.add(box)
 
-        self._label = gtk.Label(self.no_attachment_lbl)
-        self._label.set_ellipsize(pango.ELLIPSIZE_END)
+        self._label = Gtk.Label(self.no_attachment_lbl)
+        self._label.set_ellipsize(Pango.EllipsizeMode.END)
         self._label.set_alignment(0.5, 0.5)
         box.pack_start(self._label, True, True, 0)
 
-        self.image = gtk.Image()
+        self.image = Gtk.Image()
         box.pack_end(self.image, False, False, 0)
 
-        self.sep = gtk.VSeparator()
+        self.sep = Gtk.VSeparator()
         box.pack_start(self.sep, False, False, 0)
 
         button.show_all()
@@ -497,12 +494,12 @@ class AttachmentField(Field):
 
         if has_attachment:
             self._label.set_label(self.attachment.get_description())
-            app_info = gio.app_info_get_default_for_type(
+            app_info = Gio.app_info_get_default_for_type(
                 self.attachment.mimetype,
                 must_support_uris=False)
             if app_info:
                 gicon = app_info.get_icon()
-                self.image.set_from_gicon(gicon, gtk.ICON_SIZE_SMALL_TOOLBAR)
+                self.image.set_from_gicon(gicon, Gtk.IconSize.SMALL_TOOLBAR)
         else:
             self._label.set_label(self.no_attachment_lbl)
 
@@ -520,7 +517,7 @@ class AttachmentField(Field):
 
     def delete_button_clicked(self, button):
         if not yesno(_("Are you sure you want to remove the attachment?"),
-                     gtk.RESPONSE_NO, _("Remove"), _("Don't remove")):
+                     Gtk.ResponseType.NO, _("Remove"), _("Don't remove")):
             return
 
         self.attachment.blob = None
@@ -537,11 +534,11 @@ class AttachmentField(Field):
         with selectfile(_("Select attachment"), filters=filters) as sf:
             rv = sf.run()
             filename = sf.get_filename()
-            if rv != gtk.RESPONSE_OK or not filename:
+            if rv != Gtk.ResponseType.OK or not filename:
                 return
 
         data = open(filename, 'rb').read()
-        mimetype = gio.content_type_guess(filename, data, False)
+        mimetype = Gio.content_type_guess(filename, data, False)
         if self.attachment is None:
             self.attachment = Attachment(store=self.store)
         self.attachment.name = unicode(os.path.basename(filename))
@@ -558,8 +555,8 @@ class AttachmentField(Field):
             filename = f.name
             f.write(self.attachment.blob)
 
-        gfile = gio.File(path=filename)
-        app_info = gio.app_info_get_default_for_type(
+        gfile = Gio.File(path=filename)
+        app_info = Gio.app_info_get_default_for_type(
             self.attachment.mimetype, False)
         app_info.launch([gfile])
 

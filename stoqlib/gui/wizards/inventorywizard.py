@@ -25,7 +25,7 @@
 import decimal
 import logging
 
-import gtk
+from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 
@@ -205,7 +205,7 @@ class InventoryCountItemStep(SellableItemStep):
         if self.wizard.manual_count:
             self.hide_item_addition_toolbar()
 
-        self.slave.klist.set_selection_mode(gtk.SELECTION_SINGLE)
+        self.slave.klist.set_selection_mode(Gtk.SelectionMode.SINGLE)
         self.slave.klist.connect('cell-edited', self._on_klist__cell_edited)
         self.slave.klist.connect('row-activated', self._on_klist__row_activated)
         self.slave.klist.set_cell_data_func(self._on_klist__cell_data_func)
@@ -285,7 +285,7 @@ class InventoryCountItemStep(SellableItemStep):
             sellable, value, quantity)
 
     def get_columns(self):
-        adjustment = gtk.Adjustment(lower=0, upper=MAX_INT,
+        adjustment = Gtk.Adjustment(lower=0, upper=MAX_INT,
                                     step_incr=1, page_incr=10)
         return [
             Column('code', title=_('Code'), data_type=str, sorted=True),

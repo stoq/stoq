@@ -21,22 +21,21 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gobject
-import gtk
+from gi.repository import Gtk, GObject
 
 
-class NotebookCloseButton(gtk.Button):
+class NotebookCloseButton(Gtk.Button):
     """A simple button that doesn't have much border or padding, to be used
     specially with notebooks.
     """
     __gtype_name__ = 'NotebookCloseButton'
 
     def __init__(self):
-        gtk.Button.__init__(self)
-        self.set_relief(gtk.RELIEF_NONE)
+        Gtk.Button.__init__(self)
+        self.set_relief(Gtk.ReliefStyle.NONE)
 
-        image = gtk.image_new_from_stock(gtk.STOCK_CLOSE, gtk.ICON_SIZE_MENU)
+        image = Gtk.image_new_from_stock(Gtk.STOCK_CLOSE, Gtk.IconSize.MENU)
         self.add(image)
 
 
-gobject.type_register(NotebookCloseButton)
+GObject.type_register(NotebookCloseButton)

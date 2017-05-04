@@ -31,11 +31,7 @@
 
 import pickle
 
-import gobject
-import glib
-import pango
-import gtk
-from gtk import gdk
+from gi.repository import Gtk, Gdk, Glib, GObject, Pango
 from gtk import keysyms
 
 from kiwi.python import clamp
@@ -54,14 +50,14 @@ _cursors = {}
 
 
 def _get_cursor(gdk_pos):
-    # Do a lazy initialization of those gdk.Cursor objects
+    # Do a lazy initialization of those Gdk.Cursor objects
     # If we initialize them too early (e.g. in the module) they would
     # break Stoq running on non graphical environments.
     c = _cursors.get(gdk_pos, None)
     if c is not None:
         return c
 
-    return _cursors.setdefault(gdk_pos, gdk.Cursor(gdk_pos))
+    return _cursors.setdefault(gdk_pos, Gdk.Cursor(gdk_pos))
 
 
 class Range(object):
@@ -88,7 +84,7 @@ class FieldInfo(object):
 
     def update_label(self, text):
         fmt = '<span letter_spacing="3072">%s</span>'
-        self.widget.set_markup(fmt % (glib.markup_escape_text(text), ))
+        self.widget.set_markup(fmt % (Glib.markup_escape_text(text), ))
 
     def allocate(self, width, height):
         req_width, req_height = self.widget.size_request()
@@ -116,25 +112,25 @@ class FieldInfo(object):
 
         if x in Range(cx - 1, cx + 1):
             if intop:
-                return  # _get_cursor(gdk.TOP_LEFT_CORNER)
+                return  # _get_cursor(Gdk.TOP_LEFT_CORNER)
             elif inbottom:
-                return  # _get_cursor(gdk.BOTTOM_LEFT_CORNER)
+                return  # _get_cursor(Gdk.BOTTOM_LEFT_CORNER)
             else:
-                return  # _get_cursor(gdk.LEFT_SIDE)
+                return  # _get_cursor(Gdk.LEFT_SIDE)
         elif x in Range(cx + cw - 2, cx + cw + 1):
             if intop:
-                return  # _get_cursor(gdk.TOP_RIGHT_CORNER)
+                return  # _get_cursor(Gdk.TOP_RIGHT_CORNER)
             elif inbottom:
-                return _get_cursor(gdk.BOTTOM_RIGHT_CORNER)
+                return _get_cursor(Gdk.BOTTOM_RIGHT_CORNER)
             else:
-                return _get_cursor(gdk.RIGHT_SIDE)
+                return _get_cursor(Gdk.RIGHT_SIDE)
         elif intop:
-            return  # _get_cursor(gdk.TOP_SIDE)
+            return  # _get_cursor(Gdk.TOP_SIDE)
         elif inbottom:
-            return _get_cursor(gdk.BOTTOM_SIDE)
+            return _get_cursor(Gdk.BOTTOM_SIDE)
 
 
-class FieldGrid(gtk.Layout):
+class FieldGrid(Gtk.Layout):
     """FieldGrid is a Grid like widget which you can add fields to
 
     * **field-added** (object): Emitted when a field is added to the grid
@@ -145,21 +141,21 @@ class FieldGrid(gtk.Layout):
     """
 
     gsignal('selection-changed', object,
-            flags=gobject.SIGNAL_RUN_LAST | gobject.SIGNAL_ACTION)
+            flags=GObject.SIGNAL_RUN_LAST | GObject.SIGNAL_ACTION)
     gsignal('field-added', object)
     gsignal('field-removed', object)
 
     def __init__(self, font, width, height):
-        gtk.Layout.__init__(self)
+        Gtk.Layout.__init__(self)
         self.set_can_focus(True)
         self.drag_dest_set(
-            gtk.DEST_DEFAULT_ALL,
+            Gtk.DestDefaults.ALL,
             [('OBJECTLIST_ROW', 0, 10),
              ('text/uri-list', 0, 11),
              ('_NETSCAPE_URL', 0, 12)],
-            gdk.ACTION_LINK | gdk.ACTION_COPY | gdk.ACTION_MOVE)
+            Gdk.DragAction.LINK | Gdk.DragAction.COPY | Gdk.DragAction.MOVE)
 
-        self.font = pango.FontDescription(font)
+        self.font = Pango.FontDescription(font)
         self.width = width
         self.height = height
         self._fields = []
@@ -202,7 +198,7 @@ class FieldGrid(gtk.Layout):
         self.emit('field-removed', field)
 
     def _add_field(self, name, description, x, y, width=-1, height=1, model=None):
-        label = gtk.Label()
+        label = Gtk.Label()
         label.set_alignment(0, 0)
         label.set_padding(2, 4)
         if not description:
@@ -253,11 +249,11 @@ class FieldGrid(gtk.Layout):
         if self._moving_field is not None:
             raise AssertionError("can't move two fields at once")
 
-        mask = (gdk.BUTTON_RELEASE_MASK | gdk.BUTTON_RELEASE_MASK |
-                gdk.POINTER_MOTION_MASK)
-        grab = gdk.pointer_grab(self.window, False, mask, None, None,
+        mask = (Gdk.EventMask.BUTTON_RELEASE_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK |
+                Gdk.EventMask.POINTER_MOTION_MASK)
+        grab = Gdk.pointer_grab(self.window, False, mask, None, None,
                                 long(time))
-        if grab != gdk.GRAB_SUCCESS:
+        if grab != Gdk.GrabStatus.SUCCESS:
             raise AssertionError("grab failed")
 
         self._moving_field = field
@@ -294,7 +290,7 @@ class FieldGrid(gtk.Layout):
         if not self._moving_field:
             return
 
-        gdk.pointer_ungrab(long(time))
+        Gdk.pointer_ungrab(long(time))
         self._moving_field = None
 
     def _get_coords(self, x, y):
@@ -330,34 +326,34 @@ class FieldGrid(gtk.Layout):
     #
 
     def do_realize(self):
-        gtk.Layout.do_realize(self)
-        # Use the same gdk.window (from gtk.Layout) to capture these events.
+        Gtk.Layout.do_realize(self)
+        # Use the same Gdk.window (from Gtk.Layout) to capture these events.
         self.window.set_events(self.get_events() |
-                               gdk.BUTTON_PRESS_MASK |
-                               gdk.BUTTON_RELEASE_MASK |
-                               gdk.KEY_PRESS_MASK |
-                               gdk.KEY_RELEASE_MASK |
-                               gdk.ENTER_NOTIFY_MASK |
-                               gdk.LEAVE_NOTIFY_MASK |
-                               gdk.POINTER_MOTION_MASK)
+                               Gdk.EventMask.BUTTON_PRESS_MASK |
+                               Gdk.EventMask.BUTTON_RELEASE_MASK |
+                               Gdk.EventMask.KEY_PRESS_MASK |
+                               Gdk.EventMask.KEY_RELEASE_MASK |
+                               Gdk.EventMask.ENTER_NOTIFY_MASK |
+                               Gdk.EventMask.LEAVE_NOTIFY_MASK |
+                               Gdk.EventMask.POINTER_MOTION_MASK)
 
-        self.modify_bg(gtk.STATE_NORMAL, gdk.color_parse('white'))
-        gc = gdk.GC(self.window,
-                    line_style=gdk.LINE_ON_OFF_DASH,
+        self.modify_bg(Gtk.StateType.NORMAL, Gdk.color_parse('white'))
+        gc = Gdk.GC(self.window,
+                    line_style=Gdk.LINE_ON_OFF_DASH,
                     line_width=2)
-        gc.set_rgb_fg_color(gdk.color_parse('blue'))
+        gc.set_rgb_fg_color(Gdk.color_parse('blue'))
         self._selection_gc = gc
 
-        gc = gdk.GC(self.window)
-        gc.set_rgb_fg_color(gdk.color_parse('grey80'))
+        gc = Gdk.GC(self.window)
+        gc.set_rgb_fg_color(Gdk.color_parse('grey80'))
         self._grid_gc = gc
 
-        gc = gdk.GC(self.window)
-        gc.set_rgb_fg_color(gdk.color_parse('black'))
+        gc = Gdk.GC(self.window)
+        gc.set_rgb_fg_color(Gdk.color_parse('black'))
         self._border_gc = gc
 
-        gc = gdk.GC(self.window)
-        gc.set_rgb_fg_color(gdk.color_parse('grey40'))
+        gc = Gdk.GC(self.window)
+        gc.set_rgb_fg_color(Gdk.color_parse('grey40'))
         self._field_border_gc = gc
 
     def do_size_request(self, req):
@@ -463,7 +459,7 @@ class FieldGrid(gtk.Layout):
         elif event.keyval == keysyms.Delete:
             self._remove_selected_field()
 
-        if gtk.Layout.do_key_press_event(self, event):
+        if Gtk.Layout.do_key_press_event(self, event):
             return True
 
         return True
@@ -492,7 +488,7 @@ class FieldGrid(gtk.Layout):
 
     def do_focus(self, direction):
         self.set_can_focus(False)
-        res = gtk.Layout.do_focus(self, direction)
+        res = Gtk.Layout.do_focus(self, direction)
         self.set_can_focus(True)
 
         return res
@@ -554,4 +550,4 @@ class FieldGrid(gtk.Layout):
         self.height = height
         self.queue_resize()
 
-gobject.type_register(FieldGrid)
+GObject.type_register(FieldGrid)

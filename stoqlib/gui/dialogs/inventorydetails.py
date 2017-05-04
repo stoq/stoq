@@ -28,7 +28,7 @@ import decimal
 
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
-import pango
+from gi.repository import Pango
 
 from stoqlib.domain.inventory import Inventory, InventoryItemsView
 from stoqlib.gui.base.dialogs import run_dialog
@@ -92,7 +92,7 @@ class InventoryDetailsDialog(BaseEditor):
                        expand=True, format_func=self._format_description,
                        format_func_data=True),
                 Column('reason', _('Reason'), data_type=str,
-                       ellipsize=pango.ELLIPSIZE_END),
+                       ellipsize=Pango.EllipsizeMode.END),
                 Column('recorded_quantity', _("Recorded"), data_type=decimal.Decimal),
                 Column('counted_quantity', _("Counted"), data_type=decimal.Decimal),
                 Column('actual_quantity', _("Actual"), data_type=decimal.Decimal),

@@ -24,7 +24,7 @@
 ##
 """ Dialogs for payment method management"""
 
-import gtk
+from gi.repository import Gtk
 from kiwi.ui.objectlist import ObjectList, Column
 
 from stoqlib.api import api
@@ -71,7 +71,7 @@ class PaymentMethodsDialog(BasicDialog):
     def _setup_list(self):
         methods = PaymentMethod.get_editable_methods(self.store)
         self.klist = ObjectList(self._get_columns(), methods,
-                                gtk.SELECTION_BROWSE)
+                                Gtk.SelectionMode.BROWSE)
         self.klist.connect("selection-changed",
                            self._on_klist__selection_changed)
         self.klist.connect("row-activated", self._on_klist__row_activated)

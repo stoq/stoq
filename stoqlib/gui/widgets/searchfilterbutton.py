@@ -22,14 +22,14 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 
 
-class SearchFilterButton(gtk.Button):
+class SearchFilterButton(Gtk.Button):
     def __init__(self, label=None, stock=None, use_underline=True):
-        gtk.Button.__init__(self, label, stock, use_underline)
-        self.set_icon_size(gtk.ICON_SIZE_MENU)
-        self.set_relief(gtk.RELIEF_NONE)
+        Gtk.Button.__init__(self, label, stock, use_underline)
+        self.set_icon_size(Gtk.IconSize.MENU)
+        self.set_relief(Gtk.ReliefStyle.NONE)
         if label != stock and label:
             self._set_label(label)
 

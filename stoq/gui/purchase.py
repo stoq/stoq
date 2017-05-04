@@ -26,8 +26,7 @@
 import datetime
 from decimal import Decimal
 
-import pango
-import gtk
+from gi.repository import Gtk, Pango
 from kiwi.currency import currency
 from kiwi.python import all
 
@@ -95,10 +94,10 @@ class PurchaseApp(ShellApp):
         actions = [
             # File
             ("OrderMenu", None, _("Order")),
-            ("NewOrder", gtk.STOCK_NEW, _("Order..."),
+            ("NewOrder", Gtk.STOCK_NEW, _("Order..."),
              group.get('new_order'),
              _("Create a new purchase order")),
-            ("NewQuote", gtk.STOCK_INDEX, _("Quote..."),
+            ("NewQuote", Gtk.STOCK_INDEX, _("Quote..."),
              group.get('new_quote'),
              _("Create a new purchase quote")),
             ("NewConsignment", None, _("Consignment..."),
@@ -144,20 +143,20 @@ class PurchaseApp(ShellApp):
              group.get("search_consignment_items")),
 
             # Order
-            ("Confirm", gtk.STOCK_APPLY, _("Confirm..."),
+            ("Confirm", Gtk.STOCK_APPLY, _("Confirm..."),
              group.get('order_confirm'),
              _("Confirm the selected order(s), marking it as sent to the "
                "supplier")),
-            ("Cancel", gtk.STOCK_CANCEL, _("Cancel..."),
+            ("Cancel", Gtk.STOCK_CANCEL, _("Cancel..."),
              group.get('order_cancel'),
              _("Cancel the selected order")),
-            ("Edit", gtk.STOCK_EDIT, _("Edit..."),
+            ("Edit", Gtk.STOCK_EDIT, _("Edit..."),
              group.get('order_edit'),
              _("Edit the selected order, allowing you to change it's details")),
-            ("Details", gtk.STOCK_INFO, _("Details..."),
+            ("Details", Gtk.STOCK_INFO, _("Details..."),
              group.get('order_details'),
              _("Show details of the selected order")),
-            ("Finish", gtk.STOCK_APPLY, _("Finish..."),
+            ("Finish", Gtk.STOCK_APPLY, _("Finish..."),
              group.get('order_finish'),
              _('Complete the selected partially received order')),
         ]
@@ -199,7 +198,7 @@ class PurchaseApp(ShellApp):
                                              api.escape(_('Orders total:'))),
                                       format='<b>%s</b>',
                                       parent=self.get_statusbar_message_area())
-        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.results.set_selection_mode(Gtk.SelectionMode.MULTIPLE)
         self.Confirm.set_sensitive(False)
 
         self._inventory_widgets = [self.NewConsignment,
@@ -218,7 +217,7 @@ class PurchaseApp(ShellApp):
             self.refresh()
 
         self._update_view()
-        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.results.set_selection_mode(Gtk.SelectionMode.MULTIPLE)
         self.check_open_inventory()
 
         self.search.focus_search_entry()
@@ -266,10 +265,10 @@ class PurchaseApp(ShellApp):
                 SearchColumn('open_date', title=_('Opened'),
                              long_title=_('Date Opened'), width=90,
                              data_type=datetime.date, sorted=True,
-                             order=gtk.SORT_DESCENDING),
+                             order=Gtk.SortType.DESCENDING),
                 SearchColumn('supplier_name', title=_('Supplier'),
                              data_type=str, searchable=True, expand=True,
-                             ellipsize=pango.ELLIPSIZE_END),
+                             ellipsize=Pango.EllipsizeMode.END),
                 SearchColumn('ordered_quantity', title=_('Ordered'),
                              data_type=Decimal, width=90,
                              format_func=format_quantity),
@@ -380,7 +379,7 @@ class PurchaseApp(ShellApp):
         confirm_label = stoqlib_ngettext(_("Confirm order"),
                                          _("Confirm orders"),
                                          len(valid_order_views))
-        if not yesno(msg, gtk.RESPONSE_YES, confirm_label, _("Don't confirm")):
+        if not yesno(msg, Gtk.ResponseType.YES, confirm_label, _("Don't confirm")):
             return
 
         with api.new_store() as store:
@@ -412,7 +411,7 @@ class PurchaseApp(ShellApp):
         select_label = stoqlib_ngettext(_('The selected order will be cancelled.'),
                                         _('The selected orders will be cancelled.'),
                                         len(order_views))
-        if not yesno(select_label, gtk.RESPONSE_YES,
+        if not yesno(select_label, Gtk.ResponseType.YES,
                      cancel_label, _("Don't cancel")):
             return
         with api.new_store() as store:

@@ -24,7 +24,7 @@ import locale
 import platform
 
 from kiwi.environ import environ
-import gtk
+from gi.repository import Gtk
 
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import BasicDialog
@@ -52,8 +52,8 @@ class WelcomeDialog(BasicDialog):
         self._open_uri(uri)
 
     def _build_ui(self):
-        sw = gtk.ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        sw = Gtk.ScrolledWindow()
+        sw.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         self.vbox.remove(self.main)
         self.vbox.add(sw)
         sw.show()

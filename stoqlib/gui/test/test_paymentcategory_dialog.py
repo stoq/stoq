@@ -23,7 +23,7 @@
 ##
 
 import mock
-import gtk
+from gi.repository import Gtk
 
 from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
 from stoqlib.gui.test.uitestutils import GUITest
@@ -43,15 +43,15 @@ class TestPaymentCategoryDialog(GUITest):
 
         dialog.list_slave.listcontainer.list.select(category)
 
-        yesno.return_value = gtk.RESPONSE_OK
+        yesno.return_value = Gtk.ResponseType.OK
         self.click(dialog.list_slave.listcontainer.remove_button)
 
         yesno.assert_called_once_with('Do you want to remove category ?',
-                                      buttons=((gtk.STOCK_CANCEL,
-                                                gtk.RESPONSE_CANCEL),
-                                               (gtk.STOCK_REMOVE,
-                                                gtk.RESPONSE_OK)),
-                                      default=gtk.RESPONSE_OK,
+                                      buttons=((Gtk.STOCK_CANCEL,
+                                                Gtk.ResponseType.CANCEL),
+                                               (Gtk.STOCK_REMOVE,
+                                                Gtk.ResponseType.OK)),
+                                      default=Gtk.ResponseType.OK,
                                       parent=None)
 
         self.check_dialog(dialog, 'payment-category-delete')

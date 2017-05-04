@@ -26,8 +26,7 @@
 
 import datetime
 
-import pango
-import gtk
+from gi.repository import Gtk, Gdk, Pango
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, SummaryLabel, ColoredColumn
 
@@ -51,11 +50,11 @@ _ = stoqlib_gettext
 
 def payment_value_colorize(payment):
     if payment.status == Payment.STATUS_CANCELLED:
-        return gtk.gdk.color_parse('gray')
+        return Gdk.color_parse('gray')
     if payment.is_inpayment():
-        return gtk.gdk.color_parse('blue')
+        return Gdk.color_parse('blue')
 
-    return gtk.gdk.color_parse('red')
+    return Gdk.color_parse('red')
 
 
 class _TemporaryReceivingDetails:
@@ -178,7 +177,7 @@ class PurchaseDetailsDialog(BaseEditor):
     def _get_ordered_columns(self):
         return [Column('description', title=_('Description'), data_type=str,
                        expand=True, searchable=True,
-                       ellipsize=pango.ELLIPSIZE_END),
+                       ellipsize=Pango.EllipsizeMode.END),
                 QuantityColumn('quantity', title=_('Qty')),
                 Column('cost', title=_('Cost'), data_type=currency,
                        format_func=get_formatted_cost),
@@ -187,7 +186,7 @@ class PurchaseDetailsDialog(BaseEditor):
     def _get_received_columns(self):
         return [Column('description', title=_('Description'), data_type=str,
                        expand=True, searchable=True,
-                       ellipsize=pango.ELLIPSIZE_END),
+                       ellipsize=Pango.EllipsizeMode.END),
                 QuantityColumn('quantity_received', title=_('Qty Received')),
                 Column('cost', title=_('Cost'), data_type=currency,
                        format_func=get_formatted_cost),
@@ -198,31 +197,31 @@ class PurchaseDetailsDialog(BaseEditor):
     def _get_payments_columns(self):
         return [IdentifierColumn('identifier', title=_('Payment #')),
                 Column('description', _("Description"), data_type=str,
-                       expand=True, ellipsize=pango.ELLIPSIZE_END),
+                       expand=True, ellipsize=Pango.EllipsizeMode.END),
                 Column('due_date', _("Due date"), sorted=True,
-                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=datetime.date, justify=Gtk.Justification.RIGHT),
                 Column('paid_date', _("Paid date"), data_type=datetime.date),
                 Column('status_str', _("Status"), data_type=str),
                 ColoredColumn('value', _("Value"), data_type=currency,
-                              justify=gtk.JUSTIFY_RIGHT, use_data_model=True,
+                              justify=Gtk.Justification.RIGHT, use_data_model=True,
                               data_func=payment_value_colorize),
                 ColoredColumn('paid_value', _("Paid value"), data_type=currency,
-                              justify=gtk.JUSTIFY_RIGHT, use_data_model=True,
+                              justify=Gtk.Justification.RIGHT, use_data_model=True,
                               data_func=payment_value_colorize)]
 
     def _get_payments_info_columns(self):
         return [Column('change_date', _(u"When"), data_type=datetime.date,
                        sorted=True),
                 Column('description', _(u"Payment"), data_type=str, expand=True,
-                       ellipsize=pango.ELLIPSIZE_END),
+                       ellipsize=Pango.EllipsizeMode.END),
                 Column('changed_field', _(u"Changed"), data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT),
+                       justify=Gtk.Justification.RIGHT),
                 Column('from_value', _(u"From"), data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT),
+                       justify=Gtk.Justification.RIGHT),
                 Column('to_value', _(u"To"), data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT),
+                       justify=Gtk.Justification.RIGHT),
                 Column('reason', _(u"Reason"), data_type=str,
-                       ellipsize=pango.ELLIPSIZE_END)]
+                       ellipsize=Pango.EllipsizeMode.END)]
 
     def _export_csv(self):
         sse = SpreadSheetExporter()

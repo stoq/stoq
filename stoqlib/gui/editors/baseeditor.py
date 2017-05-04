@@ -25,8 +25,7 @@
 
 import logging
 
-import gtk
-from gtk import gdk
+from gi.repository import Gtk, Gdk
 from kiwi.enums import ListType
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.listdialog import ListContainer
@@ -134,16 +133,16 @@ class BaseEditorSlave(GladeSlaveDelegate):
             widget = getattr(self, widget_name)
             if isinstance(widget, ProxyLabel):
                 pass
-            elif isinstance(widget, gtk.Entry):
+            elif isinstance(widget, Gtk.Entry):
                 # First, we need to be able to select text from entries
                 widget.set_editable(False)
                 # Second, make sure they don't look like they're editable,
                 # copy over the insentive style
                 style = widget.get_style()
                 widget.modify_text(
-                    gtk.STATE_NORMAL, style.text[gtk.STATE_INSENSITIVE])
+                    Gtk.StateType.NORMAL, style.text[Gtk.StateType.INSENSITIVE])
                 widget.modify_base(
-                    gtk.STATE_NORMAL, style.base[gtk.STATE_INSENSITIVE])
+                    Gtk.StateType.NORMAL, style.base[Gtk.StateType.INSENSITIVE])
             else:
                 widget.set_sensitive(False)
 
@@ -433,13 +432,13 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         :param label: label of the button
         :param stock: stock label of the button
         :param returns: the button added
-        :rtype: gtk.Button
+        :rtype: Gtk.Button
         """
 
         if label is None and stock is None:
             raise TypeError("You need to provide a label or a stock argument")
 
-        button = gtk.Button(label=label, stock=stock)
+        button = Gtk.Button(label=label, stock=stock)
         button.props.can_focus = True
         self.main_dialog.action_area.pack_start(button, False, False, 0)
         self.main_dialog.action_area.reorder_child(button, 0)
@@ -452,7 +451,7 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         """
         if (self._need_cancel_confirmation() and
             not yesno(_("If you cancel this dialog all changes will be lost. "
-                        "Are you sure?"), gtk.RESPONSE_NO,
+                        "Are you sure?"), Gtk.ResponseType.NO,
                       _("Cancel"), _("Don't cancel"))):
             return False
 
@@ -515,7 +514,7 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         should behave as a normal window instead of a dialog.
         """
         toplevel = self.main_dialog.get_toplevel()
-        toplevel.set_type_hint(gdk.WINDOW_TYPE_HINT_NORMAL)
+        toplevel.set_type_hint(Gdk.WindowTypeHint.NORMAL)
 
     def set_confirm_widget(self, widget_name):
         """
@@ -531,7 +530,7 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         :param message_type: type of message to add
         """
         if message_type is None:
-            message_type = gtk.MESSAGE_INFO
+            message_type = Gtk.MessageType.INFO
         self.main_dialog.set_message(message, message_type)
 
     # RunnableView
@@ -572,10 +571,10 @@ class BaseEditor(BaseEditorSlave, RunnableView):
     def _on_toplevel__response(self, dialog, response, *args, **kwargs):
         # FIXME: For the delete-event to really stops from destroying the
         # dialog, we also need to stop the response event emission. See
-        # http://faq.pygtk.org/index.py?req=show&file=faq10.013.htp
+        # http://faq.pyGtk.org/index.py?req=show&file=faq10.013.htp
         # for more details
         if (self._need_cancel_confirmation() and
-                response == gtk.RESPONSE_DELETE_EVENT):
+                response == Gtk.ResponseType.DELETE_EVENT):
             dialog.emit_stop_by_name('response')
 
 
@@ -608,7 +607,7 @@ class BaseRelationshipEditorSlave(GladeSlaveDelegate):
         self._setup_widgets()
 
     def _setup_relations_list(self):
-        self.relations_list = ListContainer(self.get_columns(), gtk.ORIENTATION_HORIZONTAL)
+        self.relations_list = ListContainer(self.get_columns(), Gtk.Orientation.HORIZONTAL)
         self.relations_list._vbox.padding = 0
         self.model_vbox.pack_start(self.relations_list, True, True, 0)
 
@@ -627,7 +626,7 @@ class BaseRelationshipEditorSlave(GladeSlaveDelegate):
 
         self._setup_relations_list()
 
-        size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
+        size_group = Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
         size_group.add_widget(self.add_button)
         size_group.add_widget(self.relations_list.edit_button)
         size_group.add_widget(self.relations_list.remove_button)

@@ -26,7 +26,7 @@
 
 import datetime
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from storm.expr import Join, Cast
 
@@ -112,13 +112,13 @@ class TillFiscalOperationsSearch(SearchDialog):
     def get_columns(self, *args):
         return [IdentifierColumn('identifier', title=_('Payment #'), sorted=True),
                 SearchColumn('date', title=_('Date'), width=100,
-                             data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                             data_type=datetime.date, justify=Gtk.Justification.RIGHT),
                 SearchColumn('description', title=_('Description'),
                              data_type=str, expand=True),
                 SearchColumn('station_name', title=_('Station'), data_type=str,
                              width=120),
                 SearchColumn('cfop', title=_('C.F.O.P.'), data_type=str,
-                             width=100, justify=gtk.JUSTIFY_RIGHT),
+                             width=100, justify=Gtk.Justification.RIGHT),
                 SearchColumn('value', _('Value'), data_type=currency,
                              width=80)]
 
@@ -154,7 +154,7 @@ class TillClosedSearch(SearchDialog):
     def get_columns(self, *args):
         return [SearchColumn('opening_date', sorted=True, width=110,
                              title=_(u'Opening Date'), data_type=datetime.date,
-                             justify=gtk.JUSTIFY_RIGHT),
+                             justify=Gtk.Justification.RIGHT),
                 SearchColumn('closing_date', width=110, title=_(u'Closing Date'),
                              data_type=datetime.date),
                 SearchColumn('initial_cash_amount', title=_('Initial'),

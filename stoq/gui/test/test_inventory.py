@@ -24,7 +24,7 @@
 
 import contextlib
 
-import gtk
+from gi.repository import Gtk
 import mock
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.inventory import Inventory
@@ -84,7 +84,7 @@ class TestInventory(BaseGUITest):
                 self.activate(app.Cancel)
                 yesno.assert_called_once_with(u'Are you sure you want to cancel '
                                               u'this inventory ?',
-                                              gtk.RESPONSE_NO,
+                                              Gtk.ResponseType.NO,
                                               u"Cancel inventory",
                                               u"Don't cancel")
                 self.assertEquals(results[0].status, Inventory.STATUS_CANCELLED)
@@ -106,7 +106,7 @@ class TestInventory(BaseGUITest):
                 self.activate(app.Cancel)
                 yesno.assert_called_once_with(u'Are you sure you want to cancel '
                                               u'this inventory ?',
-                                              gtk.RESPONSE_NO,
+                                              Gtk.ResponseType.NO,
                                               u"Cancel inventory",
                                               u"Don't cancel")
                 self.assertEquals(results[0].status, Inventory.STATUS_OPEN)

@@ -24,7 +24,7 @@
 ##
 """Dialog for listing payment categories"""
 
-import gtk
+from gi.repository import Gdk
 from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import Column
 
@@ -42,7 +42,7 @@ class WorkOrderCategoryListSlave(ModelListSlave):
     columns = [
         Column('name', title=_('Category'), data_type=str,
                expand=True, sorted=True),
-        Column('color', title=_('Color'), data_type=gtk.gdk.Pixbuf,
+        Column('color', title=_('Color'), data_type=Gdk.Pixbuf,
                format_func=render_pixbuf),
         Column('color', data_type=str, column='color')
     ]

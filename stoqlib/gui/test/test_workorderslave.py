@@ -24,7 +24,7 @@
 
 import contextlib
 import decimal
-import gtk
+from gi.repository import Gtk
 import mock
 
 from stoqlib.api import api
@@ -181,7 +181,7 @@ class TestWorkOrderItemSlave(GUITest):
             yesno.return_value = True
             self.click(editor.slave.delete_button)
             yesno.assert_called_once_with(
-                'Delete this item?', gtk.RESPONSE_NO, 'Delete item', 'Keep it')
+                'Delete this item?', Gtk.ResponseType.NO, 'Delete item', 'Keep it')
 
         self.assertEqual(len(editor.slave.klist), 0)
         self.assertEqual(

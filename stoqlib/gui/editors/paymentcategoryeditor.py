@@ -26,7 +26,7 @@
 
 import collections
 
-import gtk
+from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import ColorField, ChoiceField, TextField
 
@@ -87,7 +87,7 @@ class PaymentCategoryEditor(BaseEditor):
         if (payments_count > 0 and not
             yesno(_("Changing the payment type will remove this category "
                     "from %s payments. Are you sure?") % payments_count,
-                  gtk.RESPONSE_NO, _("Change"), _("Don't change"))):
+                  Gtk.ResponseType.NO, _("Change"), _("Don't change"))):
             return False
 
         for p in payments:

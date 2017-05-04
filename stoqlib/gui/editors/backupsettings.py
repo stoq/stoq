@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 
@@ -46,7 +46,7 @@ class BackupSettingsEditor(BaseEditor):
         if self._old_key and self._old_key != self.model.key:
             msg = _("Changing the backup key will make any backup done with "
                     "the previous key unrecoverable. Are you sure?")
-            if not yesno(msg, gtk.RESPONSE_NO, _("Change"), _("Keep old key")):
+            if not yesno(msg, Gtk.ResponseType.NO, _("Change"), _("Keep old key")):
                 return False
 
         return True

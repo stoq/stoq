@@ -26,7 +26,7 @@ import collections
 import datetime
 import decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi import ValueUnset
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
@@ -310,7 +310,7 @@ class BatchSelectionDialog(BaseEditor):
         spin.data_type = decimal.Decimal
         unit = self.model.product.sellable.unit
         upper = self._quantity if self._validate_max_quantity else MAX_INT
-        spin.set_adjustment(gtk.Adjustment(lower=0, upper=upper,
+        spin.set_adjustment(Gtk.Adjustment(lower=0, upper=upper,
                                            step_incr=1, page_incr=10))
         if unit and unit.allow_fraction:
             spin.set_digits(QUANTITY_PRECISION)
@@ -355,7 +355,7 @@ class BatchSelectionDialog(BaseEditor):
         n_rows = self.main_table.get_property('n-rows')
         for i, widget in enumerate([entry, spin]):
             self.main_table.attach(widget, i, i + 1, n_rows, n_rows + 1,
-                                   gtk.FILL, 0, 0, 0)
+                                   Gtk.AttachOptions.FILL, 0, 0, 0)
             widget.show()
 
         focus_chain = self.main_table.get_focus_chain() or []

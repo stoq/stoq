@@ -24,7 +24,7 @@
 ##
 """ Dialogs for payment method management"""
 
-import gtk
+from gi.repository import Gtk
 from kiwi.ui.objectlist import ObjectList, Column
 
 from stoqlib.api import api
@@ -84,7 +84,7 @@ class PluginManagerDialog(BasicDialog):
         self.ok_button.set_sensitive(selected.can_activate())
 
     def _setup_widgets(self):
-        self.set_ok_label(_(u'Activate'), gtk.STOCK_APPLY)
+        self.set_ok_label(_(u'Activate'), Gtk.STOCK_APPLY)
         self.ok_button.set_sensitive(False)
         plugins = []
 
@@ -95,7 +95,7 @@ class PluginManagerDialog(BasicDialog):
                                         desc))
 
         self.klist = ObjectList(self._get_columns(), plugins,
-                                gtk.SELECTION_BROWSE)
+                                Gtk.SelectionMode.BROWSE)
         self.klist.set_headers_visible(False)
         self.klist.connect("selection-changed",
                            self._on_klist__selection_changed)
@@ -106,7 +106,7 @@ class PluginManagerDialog(BasicDialog):
     def _get_columns(self):
         return [Column('is_active', title=_('Active'), width=20, data_type=bool),
                 Column('icon', data_type=str, width=24, use_stock=True,
-                       icon_size=gtk.ICON_SIZE_BUTTON),
+                       icon_size=Gtk.IconSize.BUTTON),
                 Column('description', data_type=str, expand=True,
                        use_markup=True)]
 
@@ -131,7 +131,7 @@ class PluginManagerDialog(BasicDialog):
         msg = _("Are you sure you want activate this plugin?\n"
                 "Please note that, once activated you will not "
                 "be able to disable it.")
-        response = yesno(msg, gtk.RESPONSE_NO,
+        response = yesno(msg, Gtk.ResponseType.NO,
                          _("Activate plugin"), _("Not now"))
 
         if response:

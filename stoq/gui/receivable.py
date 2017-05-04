@@ -33,8 +33,7 @@ import os
 import sys
 import traceback
 
-import pango
-import gtk
+from gi.repository import Gtk, Gdk, Pango
 from kiwi.currency import currency
 from kiwi.python import all
 from kiwi.ui.dialogs import save
@@ -91,7 +90,7 @@ class ReceivableApp(BaseAccountWindow):
         group = get_accels('app.receivable')
         actions = [
             # File
-            ('AddReceiving', gtk.STOCK_ADD, _('Account receivable...'),
+            ('AddReceiving', Gtk.STOCK_ADD, _('Account receivable...'),
              group.get('add_receiving'),
              _('Create a new account receivable')),
             ('PaymentFlowHistory', None,
@@ -102,19 +101,19 @@ class ReceivableApp(BaseAccountWindow):
 
             # Payment
             ('PaymentMenu', None, _('Payment')),
-            ('Details', gtk.STOCK_INFO, _('Details...'),
+            ('Details', Gtk.STOCK_INFO, _('Details...'),
              group.get('payment_details'),
              _('Show details for the selected payment'), ),
-            ('Receive', gtk.STOCK_APPLY, _('Receive...'),
+            ('Receive', Gtk.STOCK_APPLY, _('Receive...'),
              group.get('payment_receive'),
              _('Receive the selected payments')),
-            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment...'),
+            ('CancelPayment', Gtk.STOCK_REMOVE, _('Cancel payment...'),
              group.get('payment_cancel'),
              _('Cancel the selected payment')),
-            ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...'),
+            ('SetNotPaid', Gtk.STOCK_UNDO, _('Set as not paid...'),
              group.get('payment_set_not_paid'),
              _('Mark the selected payment as not paid')),
-            ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...'),
+            ('ChangeDueDate', Gtk.STOCK_REFRESH, _('Change due date...'),
              group.get('payment_change_due_date'),
              _('Change the due date of the selected payment')),
             ('Renegotiate', None, _('Renegotiate...'),
@@ -126,7 +125,7 @@ class ReceivableApp(BaseAccountWindow):
             ('Comments', None, _('Comments...'),
              group.get('payment_comments'),
              _('Add comments to the selected payment')),
-            ('PrintDocument', gtk.STOCK_PRINT, _('Print document...'),
+            ('PrintDocument', Gtk.STOCK_PRINT, _('Print document...'),
              group.get('payment_print_bill'),
              _('Print a bill for the selected payment')),
             ('PrintReceipt', None, _('Print _receipt...'),
@@ -182,15 +181,15 @@ class ReceivableApp(BaseAccountWindow):
     def get_columns(self):
         return [IdentifierColumn('identifier', title=_('Payment #')),
                 SearchColumn('description', title=_('Description'),
-                             data_type=str, ellipsize=pango.ELLIPSIZE_END,
+                             data_type=str, ellipsize=Pango.EllipsizeMode.END,
                              expand=True, pack_end=True),
                 Column('color', title=_('Description'), width=20,
-                       data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf,
+                       data_type=Gdk.Pixbuf, format_func=render_pixbuf,
                        column='description'),
                 Column('comments_number', title=_(u'Comments'),
                        visible=False),
                 SearchColumn('drawee', title=_('Drawee'), data_type=str,
-                             ellipsize=pango.ELLIPSIZE_END, width=140),
+                             ellipsize=Pango.EllipsizeMode.END, width=140),
                 SearchColumn('due_date', title=_('Due date'),
                              data_type=datetime.date, width=100, sorted=True),
                 SearchColumn('paid_date', title=_('Paid date'),

@@ -26,7 +26,7 @@
 import datetime
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, ColoredColumn, COL_MODEL
 from storm.expr import Eq
@@ -181,7 +181,7 @@ class ProductSearch(SellableSearch):
     def _setup_print_slave(self):
         self._print_slave = SearchDialogPrintSlave()
         change_button_appearance(self._print_slave.print_price_button,
-                                 gtk.STOCK_PRINT, _("_Price table"))
+                                 Gtk.STOCK_PRINT, _("_Price table"))
         self.attach_slave('print_holder', self._print_slave)
         self._print_slave.connect('print', self.on_print_price_button_clicked)
         self._print_slave.print_price_button.set_sensitive(False)
@@ -386,22 +386,22 @@ class ProductsSoldSearch(ProductSearch):
 
     def setup_widgets(self):
         super(ProductSearch, self).setup_widgets()
-        hbox = gtk.HBox()
+        hbox = Gtk.HBox()
         hbox.set_spacing(6)
 
         self.vbox.pack_start(hbox, False, True, 0)
         self.vbox.reorder_child(hbox, 2)
         self.vbox.set_spacing(6)
 
-        label = gtk.Label()
+        label = Gtk.Label()
         hbox.pack_start(label, True, True, 0)
 
         # Create two labels to show a summary for the search (kiwi's
         # SummaryLabel supports only one column)
-        self.quantity_label = gtk.Label()
+        self.quantity_label = Gtk.Label()
         hbox.pack_start(self.quantity_label, False, False, 0)
 
-        self.total_sold_label = gtk.Label()
+        self.total_sold_label = Gtk.Label()
         hbox.pack_start(self.total_sold_label, False, False, 0)
         hbox.show_all()
 
@@ -453,7 +453,7 @@ class ProductStockSearch(ProductSearch):
     def setup_widgets(self):
         super(ProductStockSearch, self).setup_widgets()
 
-        difference_label = gtk.Label()
+        difference_label = Gtk.Label()
         difference_label.set_markup(
             "<small><b>%s</b></small>"
             % api.escape(_(u"The DIFFERENCE column is equal to "

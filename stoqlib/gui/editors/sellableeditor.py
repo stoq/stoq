@@ -25,7 +25,7 @@
 
 import collections
 
-import gtk
+from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import PercentageField, TextField
 from stoqdrivers.enum import TaxType, UnitType
@@ -245,7 +245,7 @@ class SellableEditor(BaseEditor):
                                     self.unit_combo,
                                     ])
 
-        self._print_labels_btn = self.add_button('print_labels', gtk.STOCK_PRINT)
+        self._print_labels_btn = self.add_button('print_labels', Gtk.STOCK_PRINT)
         self._print_labels_btn.connect('clicked', self.on_print_labels_clicked,
                                        'print_labels')
         label = self._print_labels_btn.get_children()[0]
@@ -292,7 +292,7 @@ class SellableEditor(BaseEditor):
             button.connect(connect_on, callback_func, label)
 
     def _add_delete_button(self):
-        self._add_extra_button(_('Remove'), gtk.STOCK_DELETE,
+        self._add_extra_button(_('Remove'), Gtk.STOCK_DELETE,
                                self._on_delete_button__clicked)
 
     def _add_close_button(self):
@@ -352,20 +352,20 @@ class SellableEditor(BaseEditor):
 
     def set_main_tab_label(self, tabname):
         self.sellable_notebook.set_tab_label(self.sellable_tab,
-                                             gtk.Label(tabname))
+                                             Gtk.Label(tabname))
 
     def add_extra_tab(self, tabname, tabslave):
         self.sellable_notebook.set_show_tabs(True)
         self.sellable_notebook.set_show_border(True)
 
-        event_box = gtk.EventBox()
+        event_box = Gtk.EventBox()
         event_box.show()
-        self.sellable_notebook.append_page(event_box, gtk.Label(tabname))
+        self.sellable_notebook.append_page(event_box, Gtk.Label(tabname))
         self.attach_slave(tabname, tabslave, event_box)
 
     def set_widget_formats(self):
         for widget in (self.cost, self.price):
-            widget.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
+            widget.set_adjustment(Gtk.Adjustment(lower=0, upper=MAX_INT,
                                                  step_incr=1))
         self.requires_weighing_label.set_size("small")
         self.requires_weighing_label.set_text("")
@@ -480,7 +480,7 @@ class SellableEditor(BaseEditor):
         sellable_description = self._sellable.get_description()
         msg = (_("This will delete '%s' from the database. Are you sure?")
                % sellable_description)
-        if not yesno(msg, gtk.RESPONSE_NO, _("Delete"), _("Keep")):
+        if not yesno(msg, Gtk.ResponseType.NO, _("Delete"), _("Keep")):
             return
 
         try:
@@ -506,7 +506,7 @@ class SellableEditor(BaseEditor):
                  "Please note that when it's closed, you won't be able to "
                  "commercialize it anymore.")
                % self._sellable.get_description())
-        if not yesno(msg, gtk.RESPONSE_NO,
+        if not yesno(msg, Gtk.ResponseType.NO,
                      parent_button_label, _("Don't close")):
             return
 
@@ -518,7 +518,7 @@ class SellableEditor(BaseEditor):
         msg = (_("Do you really want to reopen '%s'?\n"
                  "Note that when it's opened, you will be able to "
                  "commercialize it again.") % self._sellable.get_description())
-        if not yesno(msg, gtk.RESPONSE_NO,
+        if not yesno(msg, Gtk.ResponseType.NO,
                      parent_button_label, _("Keep closed")):
             return
 

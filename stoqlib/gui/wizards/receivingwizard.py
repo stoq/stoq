@@ -27,7 +27,7 @@
 import datetime
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 from storm.expr import And
@@ -115,7 +115,7 @@ class PurchaseSelectionStep(BaseWizardStep):
         executer = self.search.get_query_executer()
         executer.add_query_callback(self.get_extra_query)
         self._create_filters()
-        self.search.result_view.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.search.result_view.set_selection_mode(Gtk.SelectionMode.MULTIPLE)
         self.search.result_view.connect('selection-changed',
                                         self._on_results__selection_changed)
         self.search.result_view.connect('row-activated',
@@ -252,7 +252,7 @@ class ReceivingOrderItemStep(BaseWizardStep):
         self.force_validation()
 
     def _setup_widgets(self):
-        adjustment = gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1)
+        adjustment = Gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1)
         self.purchase_items.set_columns([
             Column('code', title=_('Code'),
                    data_type=str, searchable=True, visible=False),
@@ -357,7 +357,7 @@ class ReceivingOrderItemStep(BaseWizardStep):
 
     def _on_purchase_items__cell_data_func(self, column, renderer, obj, text):
         renderer.set_property('sensitive', not obj.purchase_item.parent_item)
-        if not isinstance(renderer, gtk.CellRendererText):
+        if not isinstance(renderer, Gtk.CellRendererText):
             return text
 
         if column.attribute == 'quantity':
@@ -455,7 +455,7 @@ class ReceivingOrderWizard(BaseWizard):
         if not param:
             return
         if not yesno(_(u'Do you want to print the labels for the received products?'),
-                     gtk.RESPONSE_YES, _(u'Print labels'), _(u"Don't print")):
+                     Gtk.ResponseType.YES, _(u'Print labels'), _(u"Don't print")):
             return
         label_data = run_dialog(SkipLabelsEditor, self, self.store)
         if label_data:

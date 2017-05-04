@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -30,21 +30,21 @@ _ = stoqlib_gettext
 
 
 def get_filters_for_images():
-    """Return a list with a single gtk.FileFilter for all images
+    """Return a list with a single Gtk.FileFilter for all images
     """
-    ffilter = gtk.FileFilter()
+    ffilter = Gtk.FileFilter()
     ffilter.set_name(_('All Images'))
     ffilter.add_pixbuf_formats()
     return [ffilter]
 
 
 def get_filters_for_attachment():
-    """This function creates a list of gtk.FileFilter to be used when choosing
+    """This function creates a list of Gtk.FileFilter to be used when choosing
     a file for attachment.
-    :returns: a list of gtk.FileFilter
+    :returns: a list of Gtk.FileFilter
     """
     def add_mimetype_filter(filters, name, mimetype):
-        ffilter = gtk.FileFilter()
+        ffilter = Gtk.FileFilter()
         ffilter.set_name(name)
         ffilter.add_mime_type(mimetype)
         filters.append(ffilter)
@@ -52,7 +52,7 @@ def get_filters_for_attachment():
     filters = []
 
     # Generates filter for all files.
-    ffilter = gtk.FileFilter()
+    ffilter = Gtk.FileFilter()
     ffilter.set_name(_('All Files'))
     ffilter.add_pattern('*')
     filters.append(ffilter)

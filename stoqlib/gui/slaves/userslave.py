@@ -28,7 +28,7 @@
 
 import hashlib
 
-import gtk
+from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
@@ -175,7 +175,7 @@ class PasswordEditor(BaseEditor):
                                                   visual_mode=self.visual_mode)
         self.attach_slave('password_holder', self.password_slave)
 
-        self._sizegroup = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
+        self._sizegroup = Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
         self._sizegroup.add_widget(self.current_password_lbl)
         self._sizegroup.add_widget(self.password_slave.password_lbl)
         self._sizegroup.add_widget(self.password_slave.confirm_password_lbl)
@@ -235,7 +235,7 @@ class UserDetailsSlave(BaseEditorSlave):
         self.password_slave = PasswordEditorSlave(self.store)
         self.attach_slave('password_holder', self.password_slave)
 
-        self._sizegroup = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
+        self._sizegroup = Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
         self._sizegroup.add_widget(self.username_lbl)
         self._sizegroup.add_widget(self.role_lbl)
         self._sizegroup.add_widget(self.profile)

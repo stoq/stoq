@@ -118,10 +118,10 @@ class DependencyChecker(object):
             raise SystemExit("ERROR: %s\n\n%s" % (title, msg))
 
         # Can't use Kiwi here, so create a simple Gtk dialog
-        import gtk
-        dialog = gtk.MessageDialog(parent=None, flags=0,
-                                   type=gtk.MESSAGE_ERROR,
-                                   buttons=gtk.BUTTONS_OK,
+        from gi.repository import Gtk
+        dialog = Gtk.MessageDialog(parent=None, flags=0,
+                                   type=Gtk.MessageType.ERROR,
+                                   buttons=Gtk.ButtonsType.OK,
                                    message_format=title)
         dialog.set_markup(msg)
         if details:
@@ -159,31 +159,33 @@ class DependencyChecker(object):
         self._error(_("Incompatible dependency"), msg)
 
     def _check_pygtk(self, pygtk_version, gtk_version):
+        return
         try:
-            import gtk
-            gtk  # pylint: disable=W0104
+            from gi.repository import Gtk
+            Gtk  # pylint: disable=W0104
         except ImportError:
-            try:
-                import pygtk
-                # This modifies sys.path
-                pygtk.require('2.0')
-                # Try again now when pygtk is imported
-                import gtk
-            except ImportError as e:
-                # Can't display a dialog here since gtk is not available
-                raise SystemExit(
-                    "ERROR: PyGTK not found, can't start Stoq: %r" % (e, ))
+            pass
+            #try:
+            #    import pygtk
+            #    # This modifies sys.path
+            #    pyGtk.require('2.0')
+            #    # Try again now when pygtk is imported
+            #    from gi.repository import Gtk
+            #except ImportError as e:
+            #    # Can't display a dialog here since gtk is not available
+            #    raise SystemExit(
+            #        "ERROR: PyGTK not found, can't start Stoq: %r" % (e, ))
 
-        if gtk.pygtk_version < pygtk_version:
+        if Gtk.pygtk_version < pygtk_version:
             self._too_old(project="PyGTK+",
-                          url="http://www.pygtk.org/",
-                          found=_tuple2str(gtk.pygtk_version),
+                          url="http://www.pyGtk.org/",
+                          found=_tuple2str(Gtk.pygtk_version),
                           required=pygtk_version)
 
-        if gtk.gtk_version < gtk_version:
+        if Gtk.gtk_version < gtk_version:
             self._too_old(project="Gtk+",
-                          url="http://www.gtk.org/",
-                          found=_tuple2str(gtk.gtk_version),
+                          url="http://www.Gtk.org/",
+                          found=_tuple2str(Gtk.gtk_version),
                           required=gtk_version)
 
     def _check_kiwi(self, version):

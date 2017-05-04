@@ -30,7 +30,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 
 
 class TestPreferencesEditor(GUITest):
-    @mock.patch('stoqlib.gui.editors.preferenceseditor.gio.app_info_get_default_for_type')
+    @mock.patch('stoqlib.gui.editors.preferenceseditor.Gio.app_info_get_default_for_type')
     def test_show(self, app_info):
         # stoq.gui.application sets this default style, but if we run this test
         # isolated, it will fail

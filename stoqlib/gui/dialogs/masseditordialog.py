@@ -45,8 +45,7 @@ import traceback
 import datetime
 from decimal import Decimal
 
-import gtk
-import pango
+from gi.repository import Gtk, Pango
 from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import converter
@@ -68,7 +67,7 @@ log = logging.getLogger(__name__)
 #   Operations
 #
 
-class Operation(gtk.HBox):
+class Operation(Gtk.HBox):
     """Base class for an operation
 
     An operation has some parameters (created by subclasses at will) and should
@@ -78,7 +77,7 @@ class Operation(gtk.HBox):
     def __init__(self, store, field, other_fields):
         self._store = store
         self._field = field
-        gtk.HBox.__init__(self, spacing=6)
+        Gtk.HBox.__init__(self, spacing=6)
         self.setup(other_fields)
         self.show_all()
 
@@ -88,7 +87,7 @@ class Operation(gtk.HBox):
     def add_label(self, label):
         """Add a label to self
         """
-        label = gtk.Label(label)
+        label = Gtk.Label(label)
         self.pack_start(label, False, False, 0)
         return label
 
@@ -268,7 +267,7 @@ class SetDateValueOperation(Operation):
 #   Field Editors
 #
 
-class Editor(gtk.HBox):
+class Editor(Gtk.HBox):
     """Base class for field editors
 
     Subclasses must define a list of operations and a datatype
@@ -289,7 +288,7 @@ class Editor(gtk.HBox):
         self._other_fields = other_fields
         self._oper = None
         self._field = field
-        gtk.HBox.__init__(self, spacing=6)
+        Gtk.HBox.__init__(self, spacing=6)
         self.operations_combo = ProxyComboBox()
         self.pack_start(self.operations_combo, True, True, 0)
         self.operations_combo.connect('changed', self._on_operation_changed)
@@ -493,7 +492,7 @@ class ReferenceField(AccessorField):
         return ''
 
 
-class MassEditorWidget(gtk.HBox):
+class MassEditorWidget(Gtk.HBox):
     _editors = {
         currency: DecimalEditor,
         Decimal: DecimalEditor,
@@ -507,7 +506,7 @@ class MassEditorWidget(gtk.HBox):
         self._editor = None
         self._fields = fields
         self._results = results
-        gtk.HBox.__init__(self, spacing=6)
+        Gtk.HBox.__init__(self, spacing=6)
         self._setup_widgets()
 
     def _filter_fields(self, data_type):
@@ -530,14 +529,14 @@ class MassEditorWidget(gtk.HBox):
         self.editor_placeholder.add(self._editor)
 
     def _setup_widgets(self):
-        label = gtk.Label(_('Update'))
+        label = Gtk.Label(_('Update'))
         self.pack_start(label, False, False, 0)
         self.field_combo = ProxyComboBox()
         self.field_combo.connect('changed', self._on_field_combo__changed)
         self.pack_start(self.field_combo, False, False, 0)
-        self.editor_placeholder = gtk.EventBox()
+        self.editor_placeholder = Gtk.EventBox()
         self.pack_start(self.editor_placeholder, False, False, 0)
-        self.apply_button = gtk.Button(stock=gtk.STOCK_APPLY)
+        self.apply_button = Gtk.Button(stock=Gtk.STOCK_APPLY)
         self.apply_button.connect('clicked', self._on_apply_button__clicked)
         self.pack_start(self.apply_button, False, False, 0)
 
@@ -661,7 +660,7 @@ class MassEditorSearch(SearchDialog):
 
         retval = yesno(
             _('This will update {} products. Are you sure?'.format(total_products)),
-            gtk.RESPONSE_NO, _('Apply changes'), _('Don\'t apply.'))
+            Gtk.ResponseType.NO, _('Apply changes'), _('Don\'t apply.'))
         if not retval:
             # Don't close the dialog. Let the user make more changes if he
             # wants to or cancel the dialog.
@@ -679,8 +678,8 @@ class MassEditorSearch(SearchDialog):
             for i, total in self.mass_editor.confirm(self):
                 d.progressbar.set_text('%s/%s' % (i + 1, total))
                 d.progressbar.set_fraction((i + 1) / float(total))
-                while gtk.events_pending():
-                    gtk.main_iteration(False)
+                while Gtk.events_pending():
+                    Gtk.main_iteration(False)
         except Exception as e:
             d.stop()
             self.retval = False
@@ -703,7 +702,7 @@ class MassEditorSearch(SearchDialog):
         renderer.set_property('weight-set', is_changed)
         text = field.format_func(item)
         if is_changed:
-            renderer.set_property('weight', pango.WEIGHT_BOLD)
+            renderer.set_property('weight', Pango.Weight.BOLD)
         return text
 
     def _on_results__cell_edited(self, results, obj, column):

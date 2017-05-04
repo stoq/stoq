@@ -24,7 +24,7 @@
 ##
 
 import mock
-import gtk
+from gi.repository import Gtk
 
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.gui.dialogs.pluginsdialog import PluginManagerDialog
@@ -62,5 +62,5 @@ class TestPluginManagerDialog(GUITest):
         yesno.assert_called_once_with('Are you sure you want activate this '
                                       'plugin?\nPlease note that, once '
                                       'activated you will not be able to '
-                                      'disable it.', gtk.RESPONSE_NO,
+                                      'disable it.', Gtk.ResponseType.NO,
                                       'Activate plugin', 'Not now')

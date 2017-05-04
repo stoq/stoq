@@ -25,8 +25,7 @@
 
 import logging
 
-import pango
-import gtk
+from gi.repository import Gtk, Gdk, Pango
 from kiwi.datatypes import converter
 
 from stoqlib.api import api
@@ -80,7 +79,7 @@ class StockApp(ShellApp):
     search_spec = ProductFullStockView
     search_labels = _('Matching:')
     report_table = SimpleProductReport
-    pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
+    pixbuf_converter = converter.get_converter(Gdk.Pixbuf)
 
     #
     # Application
@@ -91,11 +90,11 @@ class StockApp(ShellApp):
         actions = [
             ("NewReceiving", STOQ_RECEIVING, _("Order _receival..."),
              group.get('new_receiving')),
-            ('NewTransfer', gtk.STOCK_CONVERT, _('Transfer...'),
+            ('NewTransfer', Gtk.STOCK_CONVERT, _('Transfer...'),
              group.get('transfer_product')),
             ('NewStockDecrease', None, _('Stock decrease...'),
              group.get('stock_decrease')),
-            ('StockInitial', gtk.STOCK_GO_UP, _('Register initial stock...')),
+            ('StockInitial', Gtk.STOCK_GO_UP, _('Register initial stock...')),
             ("LoanNew", None, _("Loan...")),
             ("LoanClose", None, _("Close loan...")),
             ("SearchPurchaseReceiving", None, _("Received purchases..."),
@@ -135,10 +134,10 @@ class StockApp(ShellApp):
             ("ProductMenu", None, _("Product")),
             ("PrintLabels", None, _("Print labels...")),
             ("ManageStock", None, _("Manage stock...")),
-            ("ProductStockHistory", gtk.STOCK_INFO, _("History..."),
+            ("ProductStockHistory", Gtk.STOCK_INFO, _("History..."),
              group.get('history'),
              _('Show the stock history of the selected product')),
-            ("EditProduct", gtk.STOCK_EDIT, _("Edit..."),
+            ("EditProduct", Gtk.STOCK_EDIT, _("Edit..."),
              group.get('edit_product'),
              _("Edit the selected product, allowing you to change it's "
                "details")),
@@ -187,7 +186,7 @@ class StockApp(ShellApp):
 
         self.image_viewer = None
 
-        self.image = gtk.Image()
+        self.image = Gtk.Image()
         self.edit_button = self.uimanager.get_widget('/toolbar/AppToolbarPH/EditProduct')
         self.edit_button.set_icon_widget(self.image)
         self.image.show()
@@ -260,7 +259,7 @@ class StockApp(ShellApp):
                              data_type=str, width=100, visible=False),
                 SearchColumn('description', title=_("Description"),
                              data_type=str, expand=True,
-                             ellipsize=pango.ELLIPSIZE_END),
+                             ellipsize=Pango.EllipsizeMode.END),
                 SearchColumn('manufacturer', title=_("Manufacturer"),
                              data_type=str, visible=False),
                 SearchColumn('brand', title=_("Brand"),
@@ -341,14 +340,14 @@ class StockApp(ShellApp):
 
     def _update_edit_image(self, pixbuf=None):
         if not pixbuf:
-            self.image.set_from_stock(gtk.STOCK_EDIT,
-                                      gtk.ICON_SIZE_LARGE_TOOLBAR)
+            self.image.set_from_stock(Gtk.STOCK_EDIT,
+                                      Gtk.IconSize.LARGE_TOOLBAR)
             return
 
         # FIXME: get this icon size from settings
         icon_size = 24
         pixbuf = pixbuf.scale_simple(icon_size, icon_size,
-                                     gtk.gdk.INTERP_BILINEAR)
+                                     Gdk.INTERP_BILINEAR)
         self.image.set_from_pixbuf(pixbuf)
 
     def _update_filter_slave(self, slave):
@@ -382,8 +381,8 @@ class StockApp(ShellApp):
         msg = stoqlib_ngettext(_(u"You have %s incoming transfer"),
                                _(u"You have %s incoming transfers"),
                                n_transfers) % n_transfers
-        info_bar = self.window.add_info_bar(gtk.MESSAGE_QUESTION, msg)
-        button = info_bar.add_button(_(u"Receive"), gtk.RESPONSE_OK)
+        info_bar = self.window.add_info_bar(Gtk.MessageType.QUESTION, msg)
+        button = info_bar.add_button(_(u"Receive"), Gtk.ResponseType.OK)
         button.connect('clicked', self._on_info_transfers__clicked)
 
         return info_bar
@@ -398,8 +397,8 @@ class StockApp(ShellApp):
         msg = stoqlib_ngettext(_(u"You have %s returned sale to receive"),
                                _(u"You have %s returned sales to receive"),
                                n_returned) % n_returned
-        info_returned_bar = self.window.add_info_bar(gtk.MESSAGE_QUESTION, msg)
-        button = info_returned_bar.add_button(_(u"Returned sale"), gtk.RESPONSE_OK)
+        info_returned_bar = self.window.add_info_bar(Gtk.MessageType.QUESTION, msg)
+        button = info_returned_bar.add_button(_(u"Returned sale"), Gtk.ResponseType.OK)
         button.connect('clicked', self._on_info_returned_sales__clicked)
 
         return info_returned_bar

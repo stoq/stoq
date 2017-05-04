@@ -33,13 +33,12 @@ try:
 except ImportError:
     pass
 
-import glib
-import gobject
+from gi.repository import Glib, GObject
 from kiwi.utils import gsignal
 from stoqdrivers.serialbase import SerialPort
 
 
-class ECFAsyncPrinterStatus(gobject.GObject):
+class ECFAsyncPrinterStatus(GObject.GObject):
     """
     @ivar printer:
     """
@@ -52,7 +51,7 @@ class ECFAsyncPrinterStatus(gobject.GObject):
         @param printer_class:
         @param delay:
         """
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         self._reply = ''
         self._device_name = device_name
         self._delay = delay
@@ -60,11 +59,11 @@ class ECFAsyncPrinterStatus(gobject.GObject):
         self.printer = printer_class(self._port)
 
         if platform.system() != 'Windows':
-            self._timeout_id = glib.timeout_add(self._delay * 1000, self._on_timeout)
-            glib.io_add_watch(self._port, glib.IO_OUT, self._fd_watch_out)
-            glib.io_add_watch(self._port, glib.IO_IN, self._fd_watch_in)
+            self._timeout_id = Glib.timeout_add(self._delay * 1000, self._on_timeout)
+            Glib.io_add_watch(self._port, Glib.IO_OUT, self._fd_watch_out)
+            Glib.io_add_watch(self._port, Glib.IO_IN, self._fd_watch_in)
         else:
-            self._timeout_id = glib.timeout_add(400, self._check_windows)
+            self._timeout_id = Glib.timeout_add(400, self._check_windows)
 
     def _check_windows(self):
         try:
@@ -85,7 +84,7 @@ class ECFAsyncPrinterStatus(gobject.GObject):
 
     def _remove_timeout(self):
         if self._timeout_id != -1:
-            glib.source_remove(self._timeout_id)
+            Glib.source_remove(self._timeout_id)
             self._timeout_id = -1
 
     def _fd_watch_out(self, port, condition):

@@ -180,9 +180,8 @@ class Stoq(Plugin):
         os.environ['LANG'] = 'C'
         os.environ['LANGUAGE'] = 'C'
 
-        if 'STOQ_USE_GI' in os.environ:
-            from stoq.lib import gicompat
-            gicompat.enable()
+        from kiwi import compat
+        sys.modules['gi'] = compat
 
         # If we import tests.base before Cover.setup() in the coverage plugin
         # is called the statistics will skip the modules imported by tests.base

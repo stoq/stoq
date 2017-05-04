@@ -27,8 +27,7 @@
 
 import datetime
 
-import pango
-import gtk
+from gi.repository import Gtk, Pango
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, SummaryLabel, ColoredColumn
 
@@ -122,17 +121,17 @@ class RenegotiationDetailsDialog(BaseEditor):
                        width=150, expand=True),
                 Column('due_date', _("Due date"), sorted=True,
                        data_type=datetime.date, width=90,
-                       justify=gtk.JUSTIFY_RIGHT),
+                       justify=Gtk.Justification.RIGHT),
                 Column('paid_date', _("Paid date"),
                        data_type=datetime.date, width=90),
                 Column('status_str', _("Status"), data_type=str, width=80),
                 ColoredColumn('base_value', _("Value"), data_type=currency,
                               width=90, color='red',
-                              justify=gtk.JUSTIFY_RIGHT,
+                              justify=Gtk.Justification.RIGHT,
                               data_func=payment_value_colorize),
                 ColoredColumn('paid_value', _("Paid value"), data_type=currency,
                               width=92, color='red',
-                              justify=gtk.JUSTIFY_RIGHT,
+                              justify=Gtk.Justification.RIGHT,
                               data_func=payment_value_colorize)]
 
     def _get_items_columns(self):
@@ -147,16 +146,16 @@ class RenegotiationDetailsDialog(BaseEditor):
                        data_type=datetime.date, sorted=True, ),
                 Column('description', _(u"Payment"),
                        data_type=str, expand=True,
-                       ellipsize=pango.ELLIPSIZE_END),
+                       ellipsize=Pango.EllipsizeMode.END),
                 Column('changed_field', _(u"Changed"),
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=Gtk.Justification.RIGHT),
                 Column('from_value', _(u"From"),
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=Gtk.Justification.RIGHT),
                 Column('to_value', _(u"To"),
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=Gtk.Justification.RIGHT),
                 Column('reason', _(u"Reason"),
                        data_type=str, expand=True,
-                       ellipsize=pango.ELLIPSIZE_END)]
+                       ellipsize=Pango.EllipsizeMode.END)]
     #
     # BaseEditor hooks
     #

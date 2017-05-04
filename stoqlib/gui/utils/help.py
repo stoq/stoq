@@ -25,8 +25,7 @@
 
 import os
 
-import glib
-import gtk
+from gi.repository import Gtk, Glib
 
 from stoqlib.lib.kiwilibrary import library
 from stoqlib.gui.base.dialogs import get_current_toplevel
@@ -63,8 +62,8 @@ def show_section(section, screen=None):
             screen = toplevel.get_screen()
 
     try:
-        gtk.show_uri(screen, 'ghelp:' + uri, gtk.get_current_event_time())
-    except glib.GError:
+        Gtk.show_uri(screen, 'ghelp:' + uri, Gtk.get_current_event_time())
+    except Glib.GError:
         open_browser('http://doc.stoq.com.br/manual/%s/%s.html' % (
             stoq.short_version,
             section or 'index', ), screen)

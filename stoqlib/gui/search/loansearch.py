@@ -26,7 +26,7 @@
 import datetime
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 
@@ -99,7 +99,7 @@ class LoanSearch(SearchDialog):
     size = (750, 500)
     search_spec = LoanView
     report_class = LoanReceipt
-    selection_mode = gtk.SELECTION_MULTIPLE
+    selection_mode = Gtk.SelectionMode.MULTIPLE
     advanced_search = False
 
     def __init__(self, store):

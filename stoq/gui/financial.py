@@ -31,13 +31,11 @@ import datetime
 import decimal
 
 from dateutil.relativedelta import relativedelta
-import gobject
-import gtk
+from gi.repository import Gtk, GObject, Pango
 from kiwi.currency import currency
 from kiwi.python import Settable
 from kiwi.ui.dialogs import selectfile
 from kiwi.ui.objectlist import ColoredColumn, Column
-import pango
 from stoqlib.api import api
 from stoqlib.database.expr import Date
 from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
@@ -80,7 +78,7 @@ class FinancialSearchResults(SearchResultListView):
         else:
             super(FinancialSearchResults, self).search_completed(results)
 
-gobject.type_register(FinancialSearchResults)
+GObject.type_register(FinancialSearchResults)
 
 
 class MonthOption(DateSearchOption):
@@ -125,7 +123,7 @@ class TransactionPage(object):
         self.result_view.set_cell_data_func(self._on_result_view__cell_data_func)
         tree_view = self.search.result_view.get_treeview()
         tree_view.set_rules_hint(True)
-        tree_view.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
+        tree_view.set_grid_lines(Gtk.TREE_VIEW_GRID_LINES_BOTH)
 
     def _add_date_filter(self):
         self.date_filter = DateSearchFilter(_('Date:'))
@@ -199,7 +197,7 @@ class TransactionPage(object):
             return self._get_account_columns()
 
     def _on_result_view__cell_data_func(self, column, renderer, account_view, text):
-        if not isinstance(renderer, gtk.CellRendererText):
+        if not isinstance(renderer, Gtk.CellRendererText):
             return text
 
         if self.model.kind != 'account':
@@ -212,7 +210,7 @@ class TransactionPage(object):
 
         renderer.set_property('weight-set', is_imbalance)
         if is_imbalance:
-            renderer.set_property('weight', pango.WEIGHT_BOLD)
+            renderer.set_property('weight', Pango.Weight.BOLD)
 
         return text
 
@@ -349,25 +347,25 @@ class FinancialApp(ShellApp):
         actions = [
             ('TransactionMenu', None, _('Transaction')),
             ('AccountMenu', None, _('Account')),
-            ('Import', gtk.STOCK_ADD, _('Import...'),
+            ('Import', Gtk.STOCK_ADD, _('Import...'),
              group.get('import'), _('Import a GnuCash or OFX file')),
             ('ConfigurePaymentMethods', None,
              _('Payment methods'),
              group.get('configure_payment_methods'),
              _('Select accounts for the payment methods on the system')),
-            ('DeleteAccount', gtk.STOCK_DELETE, _('Delete...'),
+            ('DeleteAccount', Gtk.STOCK_DELETE, _('Delete...'),
              group.get('delete_account'),
              _('Delete the selected account')),
-            ('DeleteTransaction', gtk.STOCK_DELETE, _('Delete...'),
+            ('DeleteTransaction', Gtk.STOCK_DELETE, _('Delete...'),
              group.get('delete_transaction'),
              _('Delete the selected transaction')),
-            ("NewAccount", gtk.STOCK_NEW, _("Account..."),
+            ("NewAccount", Gtk.STOCK_NEW, _("Account..."),
              group.get('new_account'),
              _("Add a new account")),
-            ("NewTransaction", gtk.STOCK_NEW, _("Transaction..."),
+            ("NewTransaction", Gtk.STOCK_NEW, _("Transaction..."),
              group.get('new_store'),
              _("Add a new transaction")),
-            ("Edit", gtk.STOCK_EDIT, _("Edit..."),
+            ("Edit", Gtk.STOCK_EDIT, _("Edit..."),
              group.get('edit')),
         ]
         self.financial_ui = self.add_ui_actions('', actions,
@@ -445,7 +443,7 @@ class FinancialApp(ShellApp):
                 _("Print a report of these transactions"))
 
     def _create_initial_page(self):
-        pixbuf = self.accounts.render_icon('stoq-money', gtk.ICON_SIZE_MENU)
+        pixbuf = self.accounts.render_icon('stoq-money', Gtk.IconSize.MENU)
         page = self.notebook.get_nth_page(0)
         hbox = self._create_tab_label(_('Accounts'), pixbuf)
         self.notebook.set_tab_label(page, hbox)
@@ -535,10 +533,10 @@ class FinancialApp(ShellApp):
         return not self._is_accounts_tab()
 
     def _create_tab_label(self, title, pixbuf, account_view_id=None, page=None):
-        hbox = gtk.HBox()
-        image = gtk.image_new_from_pixbuf(pixbuf)
+        hbox = Gtk.HBox()
+        image = Gtk.image_new_from_pixbuf(pixbuf)
         hbox.pack_start(image, False, False, 0)
-        label = gtk.Label(title)
+        label = Gtk.Label(title)
         hbox.pack_start(label, True, False, 0)
         if account_view_id:
             button = NotebookCloseButton()
@@ -579,19 +577,19 @@ class FinancialApp(ShellApp):
     def _import(self):
         ffilters = []
 
-        all_filter = gtk.FileFilter()
+        all_filter = Gtk.FileFilter()
         all_filter.set_name(_('All supported formats'))
         all_filter.add_pattern('*.ofx')
         all_filter.add_mime_type('application/xml')
         all_filter.add_mime_type('application/x-gzip')
         ffilters.append(all_filter)
 
-        ofx_filter = gtk.FileFilter()
+        ofx_filter = Gtk.FileFilter()
         ofx_filter.set_name(_('Open Financial Exchange (OFX)'))
         ofx_filter.add_pattern('*.ofx')
         ffilters.append(ofx_filter)
 
-        gnucash_filter = gtk.FileFilter()
+        gnucash_filter = Gtk.FileFilter()
         gnucash_filter.set_name(_('GNUCash xml format'))
         gnucash_filter.add_mime_type('application/xml')
         gnucash_filter.add_mime_type('application/x-gzip')
@@ -712,13 +710,13 @@ class FinancialApp(ShellApp):
             if not yesno(
                 _('This account is used in at least one payment method.\n'
                   'To be able to delete it the payment methods needs to be'
-                  're-configured first'), gtk.RESPONSE_NO,
+                  're-configured first'), Gtk.ResponseType.NO,
                 _("Configure payment methods"), _("Keep account")):
                 store.close()
                 return
         elif not yesno(
             _('Are you sure you want to remove account "%s" ?') % (
-                (account_view.description, )), gtk.RESPONSE_NO,
+                (account_view.description, )), Gtk.ResponseType.NO,
             _("Remove account"), _("Keep account")):
             store.close()
             return
@@ -740,7 +738,7 @@ class FinancialApp(ShellApp):
     def _delete_transaction(self, item):
         msg = _('Are you sure you want to remove transaction "%s" ?') % (
             (item.description))
-        if not yesno(msg, gtk.RESPONSE_YES,
+        if not yesno(msg, Gtk.ResponseType.YES,
                      _(u"Remove transaction"), _(u"Keep transaction")):
             return
 

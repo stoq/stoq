@@ -246,11 +246,11 @@ class ObjectListReport(TableReport):
         TableReport.__init__(self, filename, data, *args, **kwargs)
 
     def get_columns(self):
-        import gtk
+        from gi.repository import Gtk, Gdk
         alignments = {
-            gtk.JUSTIFY_LEFT: 'left',
-            gtk.JUSTIFY_RIGHT: 'right',
-            gtk.JUSTIFY_CENTER: 'center',
+            Gtk.Justification.LEFT: 'left',
+            Gtk.Justification.RIGHT: 'right',
+            Gtk.Justification.CENTER: 'center',
         }
 
         # The real columns from the objectlist
@@ -259,7 +259,7 @@ class ObjectListReport(TableReport):
         for c in self._objectlist.get_columns():
             if not c.treeview_column.get_visible():
                 continue
-            if c.data_type == gtk.gdk.Pixbuf:
+            if c.data_type == Gdk.Pixbuf:
                 continue
 
             self._columns.append(c)

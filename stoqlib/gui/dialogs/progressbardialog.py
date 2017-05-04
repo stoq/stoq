@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import BasicDialog
@@ -95,11 +95,11 @@ class ProgressbarDialog(BasicDialog):
         self.main_label.set_text(self.start_msg)
         self.set_ok_label(_("Done"))
 
-        self.progressbar = gtk.ProgressBar()
+        self.progressbar = Gtk.ProgressBar()
         self.vbox.pack_start(self.progressbar, False, False, 0)
         self.progressbar.show()
 
-        self.expander = gtk.Expander(label=_("Details..."))
+        self.expander = Gtk.Expander(label=_("Details..."))
         self.expander.set_expanded(False)
         self.vbox.pack_start(self.expander, True, True, 0)
         self.expander.show()

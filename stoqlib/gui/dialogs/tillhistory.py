@@ -26,7 +26,7 @@
 
 import datetime
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, ColoredColumn
 
@@ -52,7 +52,7 @@ _ = stoqlib_gettext
 class TillHistoryDialog(SearchDialog):
     size = (780, -1)
     search_spec = TillEntry
-    selection_mode = gtk.SELECTION_MULTIPLE
+    selection_mode = Gtk.SelectionMode.MULTIPLE
     searchbar_labels = _('Till Entries matching:')
     title = _('Till history')
 
@@ -92,10 +92,10 @@ class TillHistoryDialog(SearchDialog):
         self._add_editor_button(_('Cash _Out...'), CashOutEditor,
                                 STOQ_MONEY_REMOVE)
 
-        self.print_button = gtk.Button(None, gtk.STOCK_PRINT, True)
+        self.print_button = Gtk.Button(None, Gtk.STOCK_PRINT, True)
         self.print_button.set_property("use-stock", True)
         self.print_button.connect('clicked', self._print_button_clicked)
-        self.action_area.set_layout(gtk.BUTTONBOX_START)
+        self.action_area.set_layout(Gtk.ButtonBoxStyle.START)
         self.action_area.pack_end(self.print_button, False, False, 6)
         self.print_button.show()
         self.print_button.set_sensitive(False)

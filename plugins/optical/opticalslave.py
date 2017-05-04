@@ -25,7 +25,7 @@
 
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk, Gdk
 from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
@@ -124,12 +124,12 @@ class ProductOpticSlave(BaseEditorSlave):
         ])
         self._toggle_details_type(self.model.optical_type)
 
-        self.cl_axis.set_adjustment(gtk.Adjustment(0, 0, 180, 1, 10))
-        self.cl_cylindrical.set_adjustment(gtk.Adjustment(0, -10, 10,
+        self.cl_axis.set_adjustment(Gtk.Adjustment(0, 0, 180, 1, 10))
+        self.cl_cylindrical.set_adjustment(Gtk.Adjustment(0, -10, 10,
                                                           Decimal('0.25'), 1))
-        self.cl_degree.set_adjustment(gtk.Adjustment(0, -30, 30,
+        self.cl_degree.set_adjustment(Gtk.Adjustment(0, -30, 30,
                                                      Decimal('0.25'), 1))
-        self.gl_refraction_index.set_adjustment(gtk.Adjustment(0, 0, 2,
+        self.gl_refraction_index.set_adjustment(Gtk.Adjustment(0, 0, 2,
                                                                Decimal('0.1'),
                                                                Decimal('0.5')))
 
@@ -234,7 +234,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
             # If the minimum value is greater than 0, we keep the ajustment
             # minimum at 0, to force the user to fill the values.
             lower = min(lower, 0)
-            widget.set_adjustment(gtk.Adjustment(lower=lower, upper=upper,
+            widget.set_adjustment(Gtk.Adjustment(lower=lower, upper=upper,
                                                  step_incr=step, page_incr=page))
             return widget
 
@@ -307,11 +307,11 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         making it easier for him to change the value
         (just like if he was navigating using the tab key)
         """
-        if event.type == gtk.gdk.FOCUS_CHANGE:
+        if event.type == Gdk.FOCUS_CHANGE:
             # Create a flag to control the focus change between widgets
             self._focus_change = True
 
-        elif event.type == gtk.gdk.BUTTON_RELEASE:  # pragma: nocover
+        elif event.type == Gdk.BUTTON_RELEASE:  # pragma: nocover
             if self._focus_change:
                 # Select all text on entry box
                 widget.select_region(0, -1)
@@ -362,7 +362,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         age = localtoday() - date
         if age.days > LATE_PRESCRIPTION_DAYS:
             # This is not a validation error, just a warning for the user.
-            icon = widget.render_icon(gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_MENU)
+            icon = widget.render_icon(Gtk.STOCK_DIALOG_WARNING, Gtk.IconSize.MENU)
             widget.set_pixbuf(icon)
             widget.set_tooltip(_('Attention: prescription date is older than '
                                  'one year'))

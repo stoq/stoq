@@ -27,7 +27,7 @@ import logging
 import os
 import time
 
-import gtk
+from gi.repository import Gtk
 from serial import SerialException
 
 from kiwi.python import Settable
@@ -123,7 +123,7 @@ class ECFUI(object):
         self._setup_params()
         self._setup_events()
 
-        self._till_summarize_action = gtk.Action(
+        self._till_summarize_action = Gtk.Action(
             'Summary', _('Summary'), None, None)
         self._till_summarize_action.connect(
             'activate', self._on_TillSummary__activate)
@@ -232,7 +232,7 @@ class ECFUI(object):
           </menubar>
         </ui>"""
 
-        ag = gtk.ActionGroup('ECFMenuActions')
+        ag = Gtk.ActionGroup('ECFMenuActions')
         ag.add_actions([
             ('ECFMenu', None, _('ECF')),
             ('ConfigurePrinter', None, _('Configure fiscal printer...'),
@@ -256,7 +256,7 @@ class ECFUI(object):
 
         group = get_accels('plugin.ecf')
 
-        ag = gtk.ActionGroup('ECFMenuActions')
+        ag = Gtk.ActionGroup('ECFMenuActions')
         ag.add_actions([
             ('ECFMenu', None, _('ECF')),
             ('ReadMemory', None, _('Read Memory'),
@@ -316,12 +316,12 @@ class ECFUI(object):
                     _(u"It's not possible to emit a read X for the "
                       "configured printer.\nWould you like to ignore "
                       "this error and continue?"),
-                    buttons=((_(u"Cancel"), gtk.RESPONSE_CANCEL),
-                             (_(u"Ignore"), gtk.RESPONSE_YES),
-                             (_(u"Try Again"), gtk.RESPONSE_NONE)))
-                if response == gtk.RESPONSE_NONE:
+                    buttons=((_(u"Cancel"), Gtk.ResponseType.CANCEL),
+                             (_(u"Ignore"), Gtk.ResponseType.YES),
+                             (_(u"Try Again"), Gtk.ResponseType.NONE)))
+                if response == Gtk.ResponseType.NONE:
                     continue
-                elif response == gtk.RESPONSE_CANCEL:
+                elif response == Gtk.ResponseType.CANCEL:
                     retval = False
 
             break
@@ -354,7 +354,7 @@ class ECFUI(object):
                         "if you want to save the paulista invoice file. "
                         "Go to the admin application and fill the "
                         "required information for the ECF."),
-                buttons=((_(u"Cancel Close Till"), gtk.RESPONSE_CANCEL), ))
+                buttons=((_(u"Cancel Close Till"), Gtk.ResponseType.CANCEL), ))
             return False
 
         retval = True
@@ -369,12 +369,12 @@ class ECFUI(object):
                     short=_(u"It's not possible to emit a reduce Z for the "
                             "configured printer.\nWould you like to ignore "
                             "this error and continue?"),
-                    buttons=((_(u"Cancel"), gtk.RESPONSE_CANCEL),
-                             (_(u"Ignore"), gtk.RESPONSE_YES),
-                             (_(u"Try Again"), gtk.RESPONSE_NONE)))
-                if response == gtk.RESPONSE_NONE:
+                    buttons=((_(u"Cancel"), Gtk.ResponseType.CANCEL),
+                             (_(u"Ignore"), Gtk.ResponseType.YES),
+                             (_(u"Try Again"), Gtk.ResponseType.NONE)))
+                if response == Gtk.ResponseType.NONE:
                     continue
-                elif response == gtk.RESPONSE_CANCEL:
+                elif response == Gtk.ResponseType.CANCEL:
                     retval = False
 
             break
@@ -514,7 +514,7 @@ class ECFUI(object):
                     "number %d and value %.2f ?") % (
                 last_doc.last_till_entry.identifier,
                 last_doc.last_till_entry.value)
-        return yesno(msg, gtk.RESPONSE_NO, _("Cancel Last Document"),
+        return yesno(msg, Gtk.ResponseType.NO, _("Cancel Last Document"),
                      _("Not now"))
 
     def _cancel_last_till_entry(self, last_doc, store):

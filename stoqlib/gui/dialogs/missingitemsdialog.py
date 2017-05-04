@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column
@@ -63,7 +63,7 @@ class MissingItemsDialog(SimpleListDialog):
                                   header_text=msg)
 
         if self._is_sale_quote:
-            label = gtk.Label(_('Do you want to order the sale instead?'))
+            label = Gtk.Label(_('Do you want to order the sale instead?'))
             self.notice.add(label)
             label.show()
             self.set_ok_label(_('Order sale'))

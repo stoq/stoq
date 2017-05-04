@@ -27,8 +27,7 @@
 
 import datetime
 
-import gtk
-import pango
+from gi.repository import Gtk, Pango
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.sale import Delivery, Sale
@@ -87,7 +86,7 @@ class DeliverySearch(SearchEditor):
 
     def get_columns(self):
         return [IdentifierColumn('sale_identifier', title=_('Sale #'),
-                                 order=gtk.SORT_DESCENDING),
+                                 order=Gtk.SortType.DESCENDING),
                 SearchColumn('status_str', title=_('Status'), data_type=str,
                              search_attribute='status',
                              valid_values=self._get_status_values()),
@@ -95,7 +94,7 @@ class DeliverySearch(SearchEditor):
                              data_type=str, search_attribute='sale_status',
                              valid_values=self._get_sale_status_values()),
                 Column('address_str', title=_('Address'), data_type=str,
-                       expand=True, ellipsize=pango.ELLIPSIZE_END),
+                       expand=True, ellipsize=Pango.EllipsizeMode.END),
                 SearchColumn('tracking_code', title=_('Tracking code'),
                              data_type=str),
                 SearchColumn('transporter_name', title=_('Transporter'),

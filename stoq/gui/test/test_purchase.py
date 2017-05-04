@@ -24,7 +24,7 @@
 
 import datetime
 import mock
-import gtk
+from gi.repository import Gtk
 
 from stoqlib.api import api
 
@@ -174,7 +174,7 @@ class TestPurchase(BaseGUITest):
                 self.activate(app.Confirm)
                 yesno.assert_called_once_with(u'The selected order will be '
                                               u'marked as sent.',
-                                              gtk.RESPONSE_YES,
+                                              Gtk.ResponseType.YES,
                                               u"Confirm order", u"Don't confirm")
                 self.assertEquals(purchase.status, PurchaseOrder.ORDER_CONFIRMED)
 
@@ -226,7 +226,7 @@ class TestPurchase(BaseGUITest):
             with mock.patch.object(self.store, 'commit'):
                 self.activate(app.Cancel)
                 yesno.assert_called_once_with(u'The selected order will be '
-                                              u'cancelled.', gtk.RESPONSE_YES,
+                                              u'cancelled.', Gtk.ResponseType.YES,
                                               u"Cancel order", u"Don't cancel")
                 self.assertEquals(purchase.status, PurchaseOrder.ORDER_CANCELLED)
 

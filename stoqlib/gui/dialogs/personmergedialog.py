@@ -47,7 +47,7 @@ Room for improvement:
       knows there is someone duplicate)
 """
 
-import gtk
+from gi.repository import Gtk
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
@@ -152,7 +152,7 @@ class NameColumn(Column):
         column = Column.attach(self, objectlist)
 
         # Add another renderer for checking if the person will be merged
-        self._bool_renderer = gtk.CellRendererToggle()
+        self._bool_renderer = Gtk.CellRendererToggle()
         self._bool_renderer.connect('toggled', self._on_merge_toggled)
         column.pack_start(self._bool_renderer, False)
         column.reorder(self._bool_renderer, 0)
@@ -242,8 +242,8 @@ class PersonMergeDialog(BaseEditor):
     def _update_progress(self, current, total):
         self._progress_dialog.progressbar.set_text('%s/%s' % (current, total))
         self._progress_dialog.progressbar.set_fraction((current + 1) / float(total))
-        while gtk.events_pending():
-            gtk.main_iteration(False)
+        while Gtk.events_pending():
+            Gtk.main_iteration(False)
 
     def _close_progress(self):
         self._progress_dialog.stop()
@@ -320,7 +320,7 @@ class PersonMergeDialog(BaseEditor):
         to_merge = model.get_to_merge()
         msg = (_("This will merge %s persons into 1. Are you sure?") %
                len(to_merge))
-        if not yesno(msg, gtk.RESPONSE_NO, _("Merge"), _("Don't merge")):
+        if not yesno(msg, Gtk.ResponseType.NO, _("Merge"), _("Don't merge")):
             return
 
         with api.new_store() as store:

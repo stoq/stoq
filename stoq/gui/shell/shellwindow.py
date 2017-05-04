@@ -29,8 +29,7 @@ import platform
 import os
 import operator
 
-import gtk
-import glib
+from gi.repository import Gtk, Glib, Gdk
 from kiwi.component import get_utility
 from kiwi.environ import environ
 from kiwi.ui.delegates import GladeDelegate
@@ -116,7 +115,7 @@ class ShellWindow(GladeDelegate):
         self.current_app = None
         self.current_app_widget = None
         self.shell = shell
-        self.uimanager = gtk.UIManager()
+        self.uimanager = Gtk.UIManager()
         self.in_ui_test = False
         self.tool_items = []
         self.options = options
@@ -140,7 +139,7 @@ class ShellWindow(GladeDelegate):
         if self.options.debug:
             self.add_debug_ui()
 
-        self.main_vbox = gtk.VBox()
+        self.main_vbox = Gtk.VBox()
 
     #
     # Private
@@ -170,10 +169,10 @@ class ShellWindow(GladeDelegate):
             ('SignOut', None, _('Sign out...'),
              group.get('sign_out'),
              _('Sign out the currently logged in user and login as another')),
-            ('Print', gtk.STOCK_PRINT, _("Print..."),
+            ('Print', Gtk.STOCK_PRINT, _("Print..."),
              group.get('print')),
-            ('ExportSpreadSheet', gtk.STOCK_SAVE_AS, _('Export to spreadsheet...')),
-            ("Quit", gtk.STOCK_QUIT, _('Quit'),
+            ('ExportSpreadSheet', Gtk.STOCK_SAVE_AS, _('Export to spreadsheet...')),
+            ("Quit", Gtk.STOCK_QUIT, _('Quit'),
              group.get('quit'),
              _('Exit the application')),
 
@@ -191,7 +190,7 @@ class ShellWindow(GladeDelegate):
 
             # Help
             ("HelpMenu", None, _("_Help")),
-            ("HelpContents", gtk.STOCK_HELP, _("Contents"),
+            ("HelpContents", Gtk.STOCK_HELP, _("Contents"),
              group.get('help_contents')),
             ("HelpTranslate", None, _("Translate Stoq..."), None,
              _("Translate this application online")),
@@ -199,7 +198,7 @@ class ShellWindow(GladeDelegate):
              _("Get support for Stoq online")),
             ("HelpChat", None, _("Online chat..."), None,
              _("Talk about Stoq online")),
-            ("HelpAbout", gtk.STOCK_ABOUT),
+            ("HelpAbout", Gtk.STOCK_ABOUT),
 
             # Toolbar
             ("NewToolMenu", None, _("New")),
@@ -223,8 +222,8 @@ class ShellWindow(GladeDelegate):
 
         self.Print.set_short_label(_("Print"))
         self.add_tool_menu_actions([
-            ("NewToolItem", _("New"), '', gtk.STOCK_NEW),
-            ("SearchToolItem", _("Search"), None, gtk.STOCK_FIND),
+            ("NewToolItem", _("New"), '', Gtk.STOCK_NEW),
+            ("SearchToolItem", _("Search"), None, Gtk.STOCK_FIND),
             ("HomeToolItem", _("Home"), None, STOQ_LAUNCHER),
         ])
         self.NewToolItem.props.is_important = True
@@ -237,7 +236,7 @@ class ShellWindow(GladeDelegate):
         self.application_actions = {}
         actions = []
         for app in self.get_available_applications():
-            action = gtk.Action(app.name, app.fullname, app.description, app.icon)
+            action = Gtk.Action(app.name, app.fullname, app.description, app.icon)
             action.connect('activate', callback, app.name)
             actions.append(action)
             self.application_actions[app.name] = action
@@ -258,7 +257,7 @@ class ShellWindow(GladeDelegate):
         self.toplevel.add(self.main_vbox)
         self.main_vbox.show()
 
-        self.application_box = gtk.VBox()
+        self.application_box = Gtk.VBox()
         self.main_vbox.pack_start(self.application_box, True, True, 0)
         self.application_box.show()
 
@@ -314,7 +313,7 @@ class ShellWindow(GladeDelegate):
         self._osx_app.insert_app_menu_item(
             self.HelpAbout.get_proxies()[0], 0)
         self._osx_app.insert_app_menu_item(
-            gtk.SeparatorMenuItem(), 1)
+            Gtk.SeparatorMenuItem(), 1)
         self.Preferences.set_visible(False)
         self._osx_app.insert_app_menu_item(
             self.Preferences.get_proxies()[0], 2)
@@ -365,7 +364,7 @@ class ShellWindow(GladeDelegate):
         # by default all windows are added to the same window group.
         # We want to avoid setting modallity on other windows
         # when running a dialog using gtk_dialog_run/run_dialog.
-        window_group = gtk.WindowGroup()
+        window_group = Gtk.WindowGroup()
         window_group.add_window(toplevel)
 
     def _check_online_plugins(self):
@@ -398,7 +397,7 @@ class ShellWindow(GladeDelegate):
             'You can do it by registering on <a href="{}">Stoq.link</a>.'
         ).format(', '.join(online_plugins), url)
         msg = '<b>%s</b>\n%s' % (title, desc)
-        self.add_info_bar(gtk.MESSAGE_WARNING, msg)
+        self.add_info_bar(Gtk.MessageType.WARNING, msg)
 
     def _check_demo_mode(self):
         if not api.sysparam.get_bool('DEMO_MODE'):
@@ -414,9 +413,9 @@ class ShellWindow(GladeDelegate):
                 % button_label)
         msg = '<b>%s</b>\n%s' % (api.escape(title), api.escape(desc))
 
-        button = gtk.Button(button_label)
+        button = Gtk.Button(button_label)
         button.connect('clicked', self._on_enable_production__clicked)
-        self.add_info_bar(gtk.MESSAGE_WARNING, msg, action_widget=button)
+        self.add_info_bar(Gtk.MessageType.WARNING, msg, action_widget=button)
 
     def _check_client_birthdays(self):
         if not api.sysparam.get_bool('BIRTHDAY_NOTIFICATION'):
@@ -445,12 +444,12 @@ class ShellWindow(GladeDelegate):
                 _("There is %s client doing birthday today!"),
                 _("There are %s clients doing birthday today!"),
                 clients_count) % (clients_count, )
-            button = gtk.Button(_("Check the calendar"))
+            button = Gtk.Button(_("Check the calendar"))
             button.connect('clicked', self._on_check_calendar__clicked)
 
             self._birthdays_bar = self.add_info_bar(
-                gtk.MESSAGE_INFO,
-                "<b>%s</b>" % (glib.markup_escape_text(msg), ),
+                Gtk.MessageType.INFO,
+                "<b>%s</b>" % (Glib.markup_escape_text(msg), ),
                 action_widget=button)
 
     def _check_information(self):
@@ -467,10 +466,10 @@ class ShellWindow(GladeDelegate):
     def _display_changelog_message(self):
         msg = _("Welcome to Stoq version %s!") % stoq.version
 
-        button = gtk.Button(_("See what's new"))
+        button = Gtk.Button(_("See what's new"))
         button.connect('clicked', self._on_show_changelog__clicked)
 
-        self._changelog_bar = self.add_info_bar(gtk.MESSAGE_INFO, msg,
+        self._changelog_bar = self.add_info_bar(Gtk.MessageType.INFO, msg,
                                                 action_widget=button)
 
     def _display_unstable_version_message(self):
@@ -478,7 +477,7 @@ class ShellWindow(GladeDelegate):
             'You are currently using an <b>unstable version</b> of Stoq that '
             'is under development,\nbe aware that it may behave incorrectly, '
             'crash or even loose your data.\n<b>Do not use in production.</b>')
-        self.add_info_bar(gtk.MESSAGE_WARNING, msg)
+        self.add_info_bar(Gtk.MessageType.WARNING, msg)
 
     def _save_window_size(self):
         if not hasattr(self, '_width'):
@@ -486,7 +485,7 @@ class ShellWindow(GladeDelegate):
         # Do not save the size of the window when we are in fullscreen
         window = self.get_toplevel()
         window = window.get_window()
-        if window.get_state() & gtk.gdk.WINDOW_STATE_FULLSCREEN:
+        if window.get_state() & Gdk.WINDOW_STATE_FULLSCREEN:
             return
         d = api.user_settings.get('launcher-geometry', {})
         d['width'] = str(self._width)
@@ -507,7 +506,7 @@ class ShellWindow(GladeDelegate):
         # Setup the default window size, for smaller sizes use
         # 75% of the height or 600px if it's higher than 800px
         if height == -1:
-            screen = gtk.gdk.screen_get_default()
+            screen = Gdk.screen_get_default()
             height = min(int(screen.get_height() * 0.75), 600)
         toplevel = self.get_toplevel()
         toplevel.set_default_size(width, height)
@@ -531,10 +530,10 @@ class ShellWindow(GladeDelegate):
         if not toolbar:
             return
 
-        style_map = {'icons': gtk.TOOLBAR_ICONS,
-                     'text': gtk.TOOLBAR_TEXT,
-                     'both': gtk.TOOLBAR_BOTH,
-                     'both-horizontal': gtk.TOOLBAR_BOTH_HORIZ}
+        style_map = {'icons': Gtk.ToolbarStyle.ICONS,
+                     'text': Gtk.ToolbarStyle.TEXT,
+                     'both': Gtk.ToolbarStyle.BOTH,
+                     'both-horizontal': Gtk.ToolbarStyle.BOTH_HORIZ}
         # We set both horizontal as default to improve usability,
         # it's easier for the user to know what some of the buttons
         # in the toolbar does by having a label next to it
@@ -546,7 +545,7 @@ class ShellWindow(GladeDelegate):
 
     def _run_about(self):
         info = get_utility(IAppInfo)
-        about = gtk.AboutDialog()
+        about = Gtk.AboutDialog()
         about.set_name(info.get("name"))
         about.set_version(info.get("version"))
         about.set_website(stoq.website)
@@ -593,7 +592,7 @@ class ShellWindow(GladeDelegate):
     def _get_action_group(self, name):
         action_group = self._action_groups.get(name)
         if action_group is None:
-            action_group = gtk.ActionGroup(name)
+            action_group = Gtk.ActionGroup(name)
             self.uimanager.insert_action_group(action_group, 0)
             self._action_groups[name] = action_group
         return action_group
@@ -699,7 +698,7 @@ class ShellWindow(GladeDelegate):
     def show_app(self, app, app_window, **params):
         app_window.reparent(self.application_box)
         self.application_box.set_child_packing(app_window, True, True, 0,
-                                               gtk.PACK_START)
+                                               Gtk.PACK_START)
         # Default action settings for applications
         self.Print.set_visible(True)
         self.Print.set_sensitive(False)
@@ -741,8 +740,8 @@ class ShellWindow(GladeDelegate):
         self.current_widget = app_window
 
         if not self.in_ui_test:
-            while gtk.events_pending():
-                gtk.main_iteration()
+            while Gtk.events_pending():
+                Gtk.main_iteration()
             app_window.show()
         app.setup_focus()
 
@@ -783,7 +782,7 @@ class ShellWindow(GladeDelegate):
     def add_info_bar(self, message_type, label, action_widget=None):
         """Show an information bar to the user.
 
-        :param message_type: message type, a gtk.MessageType
+        :param message_type: message type, a Gtk.MessageType
         :param label: label to display
         :param action_widget: optional, most likely a button
         :returns: the infobar
@@ -840,7 +839,7 @@ class ShellWindow(GladeDelegate):
                 action.set_visible(False)
                 # Disable keyboard shortcut
                 path = action.get_accel_path()
-                gtk.accel_map_change_entry(path, 0, 0, True)
+                Gtk.accel_map_change_entry(path, 0, 0, True)
 
         return ui_id
 
@@ -899,7 +898,7 @@ class ShellWindow(GladeDelegate):
         if not new_items:
             return
         widget = new_items[0].get_children()
-        if isinstance(widget, gtk.Container):
+        if isinstance(widget, Gtk.Container):
             button = widget.get_children()[0]
             button.set_sensitive(sensitive)
 
@@ -962,7 +961,7 @@ class ShellWindow(GladeDelegate):
         # Set the icon for the application
         app_icon = get_application_icon(app_name)
         toplevel = self.get_toplevel()
-        icon = toplevel.render_icon(app_icon, gtk.ICON_SIZE_MENU)
+        icon = toplevel.render_icon(app_icon, Gtk.IconSize.MENU)
         toplevel.set_icon(icon)
 
         # FIXME: We should remove the toplevel windows of all ShellApp's
@@ -1035,10 +1034,10 @@ class ShellWindow(GladeDelegate):
         tooltip = action.get_tooltip()
         if not tooltip:
             return
-        if isinstance(widget, gtk.MenuItem):
+        if isinstance(widget, Gtk.MenuItem):
             widget.connect('select', self._on_menu_item__select, tooltip)
             widget.connect('deselect', self._on_menu_item__deselect)
-        elif isinstance(widget, gtk.ToolItem):
+        elif isinstance(widget, Gtk.ToolItem):
             child = widget.get_child()
             if child is None:
                 return
@@ -1051,14 +1050,14 @@ class ShellWindow(GladeDelegate):
         tooltip = action.get_tooltip()
         if not tooltip:
             return
-        if isinstance(widget, gtk.MenuItem):
+        if isinstance(widget, Gtk.MenuItem):
             try:
                 widget.disconnect_by_func(self._on_menu_item__select)
                 widget.disconnect_by_func(self._on_menu_item__deselect)
             except TypeError:
                 # Maybe it was already disconnected
                 pass
-        elif isinstance(widget, gtk.ToolItem):
+        elif isinstance(widget, Gtk.ToolItem):
             child = widget.get_child()
             try:
                 child.disconnect_by_func(
@@ -1085,7 +1084,7 @@ class ShellWindow(GladeDelegate):
             return
         if not yesno(_(u"This will enable production mode and finish the "
                        u"demonstration. Are you sure?"),
-                     gtk.RESPONSE_NO,
+                     Gtk.ResponseType.NO,
                      _(u"Enable production mode"), _(u"Continue testing")):
             return
 
@@ -1165,7 +1164,7 @@ class ShellWindow(GladeDelegate):
             return
         is_active = action.get_active()
         window = window.get_window()
-        is_fullscreen = window.get_state() & gtk.gdk.WINDOW_STATE_FULLSCREEN
+        is_fullscreen = window.get_state() & Gdk.WINDOW_STATE_FULLSCREEN
         if is_active != is_fullscreen:
             if is_active:
                 window.fullscreen()
@@ -1233,12 +1232,12 @@ class VersionChecker(object):
         # Only display version message in admin app
         if 'AdminApp' not in self.window.__class__.__name__:
             return
-        button = gtk.LinkButton(
+        button = Gtk.LinkButton(
             'http://www.stoq.com.br/novidades',
             _(u'Learn More...'))
         msg = _('<b>There is a new Stoq version available (%s)</b>') % (
             latest_version, )
-        self.window.add_info_bar(gtk.MESSAGE_INFO, msg, action_widget=button)
+        self.window.add_info_bar(Gtk.MessageType.INFO, msg, action_widget=button)
 
     def _check_details(self, latest_version):
         current_version = tuple(stoq.version.split('.'))

@@ -32,7 +32,7 @@ import datetime
 from decimal import Decimal
 
 from dateutil.relativedelta import relativedelta
-import gtk
+from gi.repository import Gtk
 from kiwi import ValueUnset
 from kiwi.component import get_utility
 from kiwi.currency import format_price, currency
@@ -257,13 +257,13 @@ class PaymentListSlave(GladeSlaveDelegate):
         if self._has_bank_account():
             columns.extend([Column('bank_account.bank_number',
                                    title=_('Bank ID'),
-                                   data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                                   data_type=str, justify=Gtk.Justification.RIGHT),
                             Column('bank_account.bank_branch',
                                    title=_('Bank branch'),
-                                   data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                                   data_type=str, justify=Gtk.Justification.RIGHT),
                             Column('bank_account.bank_account',
                                    title=_('Bank account'),
-                                   data_type=str, justify=gtk.JUSTIFY_RIGHT)])
+                                   data_type=str, justify=Gtk.Justification.RIGHT)])
 
         # Money methods doesn't have a payment_number related with it.
         if self.method.method_name != u'money':
@@ -274,12 +274,12 @@ class PaymentListSlave(GladeSlaveDelegate):
                 title += ' (*)'
             columns.append(Column('payment_number',
                                   title=title,
-                                  data_type=str, justify=gtk.JUSTIFY_RIGHT))
+                                  data_type=str, justify=Gtk.Justification.RIGHT))
 
         columns.extend([Column('due_date', title=_('Due date'),
                                data_type=datetime.date),
                         Column('value', title=_('Value'), data_type=currency,
-                               justify=gtk.JUSTIFY_RIGHT)])
+                               justify=Gtk.Justification.RIGHT)])
 
         return columns
 
@@ -863,7 +863,7 @@ class CardMethodSlave(BaseEditorSlave):
             self._add_card_type(name, ptype)
 
     def _add_card_type(self, name, payment_type):
-        radio = gtk.RadioButton(self._radio_group, name)
+        radio = Gtk.RadioButton(self._radio_group, name)
         radio.set_data('type', payment_type)
         radio.connect('toggled', self._on_card_type_radio_toggled)
         self.types_box.pack_start(radio, True, True, 0)
@@ -1353,7 +1353,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         else:
             description = payment_method.get_description()
 
-        radio = gtk.RadioButton(group, description)
+        radio = Gtk.RadioButton(group, description)
         self.methods_box.pack_start(radio, True, True, 0)
         radio.connect('toggled', self._on_method__toggled)
         radio.set_data('method', payment_method)

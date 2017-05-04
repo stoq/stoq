@@ -27,7 +27,7 @@
 import datetime
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
@@ -49,7 +49,7 @@ class StockDecreaseSearch(SearchDialog):
     size = (750, 500)
     search_spec = StockDecreaseView
     report_class = StockDecreaseReport
-    selection_mode = gtk.SELECTION_MULTIPLE
+    selection_mode = Gtk.SelectionMode.MULTIPLE
     text_field_columns = [StockDecreaseView.removed_by_name,
                           StockDecreaseView.branch_name,
                           StockDecreaseView.reason]

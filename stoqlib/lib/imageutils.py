@@ -30,7 +30,7 @@ https://github.com/nowsecure/datagrid-gtk3/blob/master/datagrid_gtk3/utils/image
 
 import io
 
-import gtk
+from gi.repository import Gdk
 from PIL import Image, ImageFilter
 
 _image_border_size = 6
@@ -51,7 +51,7 @@ def image2pixbuf(image):
     """
     with io.BytesIO() as f:
         image.save(f, 'png')
-        loader = gtk.gdk.PixbufLoader('png')
+        loader = Gdk.PixbufLoader('png')
         loader.write(f.getvalue())
         pixbuf = loader.get_pixbuf()
         loader.close()
@@ -200,8 +200,8 @@ def get_pixbuf(image_bytes, draw_border=True, fill_image=None):
     h = max(h, fill_image[1])
 
     # Make sure the image is on the center of the image_max_size
-    square_pic = gtk.gdk.Pixbuf(
-        gtk.gdk.COLORSPACE_RGB, True, pixbuf.get_bits_per_sample(),
+    square_pic = Gdk.Pixbuf(
+        Gdk.COLORSPACE_RGB, True, pixbuf.get_bits_per_sample(),
         w, h)
     # Fill with transparent white
     square_pic.fill(0xffffff00)

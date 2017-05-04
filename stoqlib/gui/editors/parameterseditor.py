@@ -24,7 +24,7 @@
 """ System parameters editor"""
 
 from decimal import Decimal
-import gtk
+from gi.repository import Gtk
 
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.entry import ProxyEntry
@@ -102,9 +102,9 @@ class SystemParameterEditor(BaseEditor):
         if not self.sensitive:
             style = widget.get_style()
             widget.modify_text(
-                gtk.STATE_NORMAL, style.text[gtk.STATE_INSENSITIVE])
+                Gtk.StateType.NORMAL, style.text[Gtk.StateType.INSENSITIVE])
             widget.modify_base(
-                gtk.STATE_NORMAL, style.base[gtk.STATE_INSENSITIVE])
+                Gtk.StateType.NORMAL, style.base[Gtk.StateType.INSENSITIVE])
         widget.data_type = unicode
         widget.model_attribute = "field_value"
         self.proxy.add_widget("field_value", widget)
@@ -143,16 +143,16 @@ class SystemParameterEditor(BaseEditor):
         self._entry = widget
 
     def _setup_text_view_slave(self):
-        sw = gtk.ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        sw.set_policy(gtk.POLICY_AUTOMATIC,
-                      gtk.POLICY_AUTOMATIC)
+        sw = Gtk.ScrolledWindow()
+        sw.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC,
+                      Gtk.PolicyType.AUTOMATIC)
         widget = ProxyTextView()
         widget.props.sensitive = self.sensitive
         widget.data_type = unicode
         widget.model_attribute = "field_value"
         if self.detail.wrap:
-            widget.set_wrap_mode(gtk.WRAP_WORD)
+            widget.set_wrap_mode(Gtk.WrapMode.WORD)
         self.proxy.add_widget("field_value", widget)
         sw.add(widget)
         sw.show()
@@ -162,16 +162,16 @@ class SystemParameterEditor(BaseEditor):
         self._entry = widget
 
     def _setup_entry_with_filechooser_button_slave(self, dir_only=False):
-        hbox = gtk.HBox(spacing=6)
+        hbox = Gtk.HBox(spacing=6)
         hbox.props.sensitive = self.sensitive
         self._setup_entry_slave(hbox)
         title = _(u'Cat 52 directory selection')
-        filechooser_button = gtk.FileChooserButton(title)
+        filechooser_button = Gtk.FileChooserButton(title)
         filechooser_button.connect('selection-changed',
                                    self._on_filechooser_button__selection_changed)
 
         if dir_only:
-            filechooser_button.set_action(gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER)
+            filechooser_button.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
 
         hbox.pack_start(filechooser_button, False, True, 0)
         filechooser_button.show()
@@ -180,7 +180,7 @@ class SystemParameterEditor(BaseEditor):
         hbox.show()
 
     def _setup_image_slave(self):
-        event_box = gtk.EventBox()
+        event_box = Gtk.EventBox()
         event_box.show()
 
         field_name = self.model.field_name
@@ -226,15 +226,15 @@ class SystemParameterEditor(BaseEditor):
                        self._on_entry__validation_changed)
 
     def _setup_radio_slave(self):
-        box = gtk.HBox()
+        box = Gtk.HBox()
         box.props.sensitive = self.sensitive
-        yes_widget = gtk.RadioButton()
+        yes_widget = Gtk.RadioButton()
         yes_widget.set_label(_("Yes"))
         yes_widget.connect("toggled", self._on_yes_radio__toggled)
         group = yes_widget.get_group()[0]
         box.pack_start(yes_widget, True, True, 0)
         yes_widget.show()
-        no_widget = gtk.RadioButton()
+        no_widget = Gtk.RadioButton()
         no_widget.set_label(_("No"))
         no_widget.set_group(group)
         box.pack_start(no_widget, True, True, 0)

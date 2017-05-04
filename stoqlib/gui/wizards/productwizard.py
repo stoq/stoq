@@ -23,7 +23,7 @@
 ##
 ##
 
-import gtk
+from gi.repository import Gtk
 
 from stoqlib.api import api
 from stoqlib.domain.product import Product
@@ -177,7 +177,7 @@ class ProductCreateWizard(BaseWizard):
             inner_rv = rv
 
             while yesno(_("Would you like to register another product alike?"),
-                        gtk.RESPONSE_NO, _("Yes"), _("No")):
+                        Gtk.ResponseType.NO, _("Yes"), _("No")):
                 with api.new_store() as store:
                     template = store.fetch(rv)
                     inner_rv = run_dialog(ProductEditor, parent, store,

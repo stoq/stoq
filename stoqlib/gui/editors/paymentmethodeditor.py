@@ -47,7 +47,7 @@ This module contains the following editors and slaves:
 import collections
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
@@ -455,7 +455,7 @@ class ProviderListSlave(ModelListSlave):
             return False
 
         msg = _('Do you want remove %s?' % provider.short_name)
-        remove = yesno(msg, gtk.RESPONSE_NO, _('Remove'), _("Cancel"))
+        remove = yesno(msg, Gtk.ResponseType.NO, _('Remove'), _("Cancel"))
         if remove:
             self.delete_model(provider, self.store)
             self.remove_list_item(provider)
@@ -487,7 +487,7 @@ class CardDeviceListSlave(ModelListSlave):
                    % providers))
             return False
         msg = _('Removing this device will also remove all related costs.')
-        remove = yesno(msg, gtk.RESPONSE_NO, _('Remove'), _("Keep device"))
+        remove = yesno(msg, Gtk.ResponseType.NO, _('Remove'), _("Keep device"))
         if remove:
             device.delete(device.id, self.store)
             self.remove_list_item(device)

@@ -26,7 +26,7 @@
 import datetime
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
@@ -387,7 +387,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
     def _remove_quote(self):
         q = self.search.results.get_selected().quotation
         msg = _('Are you sure you want to remove "%s" ?') % q.get_description()
-        if not yesno(msg, gtk.RESPONSE_NO,
+        if not yesno(msg, Gtk.ResponseType.NO,
                      _("Remove quote"), _("Don't remove")):
             return
 
@@ -495,7 +495,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
     def _cancel_group(self):
         msg = _("This will cancel the group and related quotes. "
                 "Are you sure?")
-        if not yesno(msg, gtk.RESPONSE_NO,
+        if not yesno(msg, Gtk.ResponseType.NO,
                      _("Cancel group"), _("Don't Cancel")):
             return
 
@@ -536,7 +536,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
 
         if not yesno(_('Should we close the quotes used to compose the '
                        'purchase order ?'),
-                     gtk.RESPONSE_NO, _("Close quotes"), _("Don't close")):
+                     Gtk.ResponseType.NO, _("Close quotes"), _("Don't close")):
             return
 
         store = api.new_store()
@@ -576,7 +576,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
 
     def post_init(self):
         self.wizard.enable_finish()
-        self.wizard.next_button.set_label(gtk.STOCK_CLOSE)
+        self.wizard.next_button.set_label(Gtk.STOCK_CLOSE)
 
     def has_next_step(self):
         return False

@@ -25,8 +25,7 @@
 
 from decimal import Decimal
 
-import pango
-import gtk
+from gi.repository import Gtk, Pango
 from kiwi import ValueUnset
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
@@ -183,9 +182,9 @@ class ProductionMaterialListSlave(BaseEditorSlave):
         return [
             Column('code', title=_('Code'), data_type=str),
             Column('category_description', title=_('Category'),
-                   data_type=str, expand=True, ellipsize=pango.ELLIPSIZE_END),
+                   data_type=str, expand=True, ellipsize=Pango.EllipsizeMode.END),
             Column('description', title=_('Description'), data_type=str,
-                   expand=True, ellipsize=pango.ELLIPSIZE_END, sorted=True),
+                   expand=True, ellipsize=Pango.EllipsizeMode.END, sorted=True),
             Column('unit_description', title=_('Unit'),
                    data_type=str),
             Column('needed', title=_('Needed'), data_type=Decimal,
@@ -311,11 +310,11 @@ class QualityTestResultSlave(BaseEditorSlave):
 
         test = self.model.quality_test
         if test.result_value_passes(value):
-            self.result_icon.set_from_stock(gtk.STOCK_OK,
-                                            gtk.ICON_SIZE_BUTTON)
+            self.result_icon.set_from_stock(Gtk.STOCK_OK,
+                                            Gtk.IconSize.BUTTON)
         else:
-            self.result_icon.set_from_stock(gtk.STOCK_DIALOG_WARNING,
-                                            gtk.ICON_SIZE_BUTTON)
+            self.result_icon.set_from_stock(Gtk.STOCK_DIALOG_WARNING,
+                                            Gtk.IconSize.BUTTON)
 
     #
     #   Public API

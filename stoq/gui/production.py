@@ -25,7 +25,7 @@
 
 import datetime
 
-import gtk
+from gi.repository import Gtk
 
 from kiwi.ui.objectlist import Column
 
@@ -69,7 +69,7 @@ class ProductionApp(ShellApp):
             ('menubar', None, ''),
 
             # File
-            ('NewProduction', gtk.STOCK_NEW,
+            ('NewProduction', Gtk.STOCK_NEW,
              _('Production order...'),
              group.get('new_production_order'),
              _('Create a new production')),
@@ -79,19 +79,19 @@ class ProductionApp(ShellApp):
 
             # Production
             ('ProductionMenu', None, _('Production')),
-            ('StartProduction', gtk.STOCK_CONVERT, _('Start production...'),
+            ('StartProduction', Gtk.STOCK_CONVERT, _('Start production...'),
              group.get('production_start'),
              _('Start the selected production')),
-            ('EditProduction', gtk.STOCK_EDIT, _('Edit production...'),
+            ('EditProduction', Gtk.STOCK_EDIT, _('Edit production...'),
              group.get('production_edit'),
              _('Edit the selected production')),
-            ('FinalizeProduction', gtk.STOCK_APPLY, _('Finalize production...'),
+            ('FinalizeProduction', Gtk.STOCK_APPLY, _('Finalize production...'),
              None,
              _('Finalize the selected production')),
-            ('CancelProduction', gtk.STOCK_CANCEL, _('Cancel production...'),
+            ('CancelProduction', Gtk.STOCK_CANCEL, _('Cancel production...'),
              None,
              _('Cancel the selected production')),
-            ('ProductionDetails', gtk.STOCK_INFO, _('Production details...'),
+            ('ProductionDetails', Gtk.STOCK_INFO, _('Production details...'),
              group.get('production_details'),
              _('Show production details and register produced items')),
 
@@ -167,7 +167,7 @@ class ProductionApp(ShellApp):
 
     def get_columns(self):
         return [IdentifierColumn('identifier', title=_('Production #'), sorted=True,
-                                 order=gtk.SORT_DESCENDING),
+                                 order=Gtk.SortType.DESCENDING),
                 Column('status_string', title=_(u'Status'), data_type=str,
                        visible=False),
                 SearchColumn('description', title=_(u'Description'),
@@ -248,7 +248,7 @@ class ProductionApp(ShellApp):
 
     def _finalize_production(self):
         if not yesno(_("The selected order will be finalized."),
-                     gtk.RESPONSE_YES, _("Finalize order"), _("Don't finalize")):
+                     Gtk.ResponseType.YES, _("Finalize order"), _("Don't finalize")):
             return
 
         with api.new_store() as store:
@@ -259,7 +259,7 @@ class ProductionApp(ShellApp):
 
     def _cancel_production(self):
         if not yesno(_("The selected order will be cancelled."),
-                     gtk.RESPONSE_YES, _("Cancel order"), _("Don't cancel")):
+                     Gtk.ResponseType.YES, _("Cancel order"), _("Don't cancel")):
             return
 
         with api.new_store() as store:

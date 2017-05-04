@@ -25,7 +25,7 @@
 
 import datetime
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.python import enum
 
@@ -89,7 +89,7 @@ class FiscalBookEntrySearch(SearchDialog):
     def _setup_icms_columns(self):
         col = SearchColumn('icms_value',
                            title=_('ICMS Total'),
-                           justify=gtk.JUSTIFY_RIGHT,
+                           justify=Gtk.Justification.RIGHT,
                            data_type=currency, width=100)
         self._setup_columns(col, IcmsIpiView, 'icms_value',
                             _("ICMS Total:"))
@@ -97,7 +97,7 @@ class FiscalBookEntrySearch(SearchDialog):
     def _setup_ipi_columns(self):
         col = SearchColumn('ipi_value',
                            title=_('IPI Total'),
-                           justify=gtk.JUSTIFY_RIGHT,
+                           justify=Gtk.Justification.RIGHT,
                            data_type=currency, width=100)
         self._setup_columns(col, IcmsIpiView, 'ipi_value',
                             _("IPI Total:"))
@@ -105,7 +105,7 @@ class FiscalBookEntrySearch(SearchDialog):
     def _setup_iss_columns(self):
         col = SearchColumn('iss_value',
                            title=_('ISS Total'),
-                           justify=gtk.JUSTIFY_RIGHT,
+                           justify=Gtk.Justification.RIGHT,
                            data_type=currency, width=100)
         self._setup_columns(col, IssView, 'iss_value',
                             _("ISS Total:"))
@@ -116,7 +116,7 @@ class FiscalBookEntrySearch(SearchDialog):
 
     def get_columns(self):
         return [SearchColumn('date', title=_('Date'), width=80,
-                             data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                             data_type=datetime.date, justify=Gtk.Justification.RIGHT),
                 SearchColumn('invoice_number', title=_('Invoice'),
                              data_type=int, width=100, sorted=True),
                 SearchColumn('cfop_code', title=_('C.F.O.P.'),

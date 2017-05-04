@@ -25,7 +25,7 @@
 """A gadget that will transform a regular entry in an advanced entry, that
 allows the user to select the object using a regular search."""
 
-import gtk
+from gi.repository import Gtk
 from kiwi.ui.entry import ENTRY_MODE_DATA
 
 from stoqlib.api import api
@@ -49,7 +49,7 @@ class SearchEntryGadget(object):
         ProxyComboEntry.
 
         When instanciated, the gadget will remove the entry from the editor, add
-        a gtk.HBox on its place, and re-attach the entry to the newly created
+        a Gtk.HBox on its place, and re-attach the entry to the newly created
         hbox. This hbox will also have two buttons: One for showing the related
         search dialog (or search editor), and another one to add/edit a new
         object.
@@ -108,8 +108,8 @@ class SearchEntryGadget(object):
         self._replace_widget()
 
         # Add the two buttons
-        self.find_button = self._create_button(gtk.STOCK_FIND)
-        self.edit_button = self._create_button(gtk.STOCK_NEW)
+        self.find_button = self._create_button(Gtk.STOCK_FIND)
+        self.edit_button = self._create_button(Gtk.STOCK_NEW)
         can_edit = self._entry.get_editable() and self._entry.get_sensitive()
         self.find_button.set_sensitive(can_edit)
 
@@ -117,7 +117,7 @@ class SearchEntryGadget(object):
         self.edit_button.set_tooltip_text(self.new_tooltip)
 
         # the entry needs a completion to work in MODE_DATA
-        self._completion = gtk.EntryCompletion()
+        self._completion = Gtk.EntryCompletion()
         self._entry.set_completion(self._completion)
         self._entry.set_mode(ENTRY_MODE_DATA)
 
@@ -132,9 +132,9 @@ class SearchEntryGadget(object):
         self._executer.set_filter_columns(self._filter, self._search_columns)
 
     def _create_button(self, stock):
-        image = gtk.image_new_from_stock(stock, gtk.ICON_SIZE_MENU)
-        button = gtk.Button()
-        button.set_relief(gtk.RELIEF_NONE)
+        image = Gtk.image_new_from_stock(stock, Gtk.IconSize.MENU)
+        button = Gtk.Button()
+        button.set_relief(Gtk.ReliefStyle.NONE)
         button.set_image(image)
         button.show()
         self.box.pack_start(button, False, False, 0)
@@ -148,10 +148,10 @@ class SearchEntryGadget(object):
 
         # stolen from gazpacho code (widgets/base/base.py):
         props = {}
-        for pspec in gtk.container_class_list_child_properties(container):
+        for pspec in Gtk.container_class_list_child_properties(container):
             props[pspec.name] = container.child_get_property(self._entry, pspec.name)
 
-        self.box = gtk.HBox()
+        self.box = Gtk.HBox()
         self.box.show()
         self._entry.reparent(self.box)
         container.add(self.box)
@@ -197,11 +197,11 @@ class SearchEntryGadget(object):
         if obj:
             display_value = obj.get_description()
             self._entry.prefill([(display_value, obj)])
-            self.update_edit_button(gtk.STOCK_INFO, self.edit_tooltip)
+            self.update_edit_button(Gtk.STOCK_INFO, self.edit_tooltip)
         else:
             display_value = ''
             self._entry.prefill([])
-            self.update_edit_button(gtk.STOCK_NEW, self.new_tooltip)
+            self.update_edit_button(Gtk.STOCK_NEW, self.new_tooltip)
 
         self._value = obj
         self._entry.update(obj)
@@ -211,7 +211,7 @@ class SearchEntryGadget(object):
         return obj
 
     def update_edit_button(self, stock, tooltip):
-        image = gtk.image_new_from_stock(stock, gtk.ICON_SIZE_MENU)
+        image = Gtk.image_new_from_stock(stock, Gtk.IconSize.MENU)
         self.edit_button.set_image(image)
         self.edit_button.set_tooltip_text(tooltip)
 

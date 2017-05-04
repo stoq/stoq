@@ -26,7 +26,7 @@
 
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from storm.expr import Ne
 
@@ -78,7 +78,7 @@ class SellableSearch(SearchEditor):
             status closed
         """
         if selection_mode is None:
-            selection_mode = gtk.SELECTION_BROWSE
+            selection_mode = Gtk.SelectionMode.BROWSE
 
         self._image_viewer = None
         self._first_search = True
@@ -130,8 +130,8 @@ class SellableSearch(SearchEditor):
         super(SellableSearch, self).confirm(retval=retval)
 
     def setup_widgets(self):
-        self.image_viewer_toggler = gtk.CheckMenuItem(_("Show image viewer"))
-        self.popup = gtk.Menu()
+        self.image_viewer_toggler = Gtk.CheckMenuItem(_("Show image viewer"))
+        self.popup = Gtk.Menu()
         self.popup.add(self.image_viewer_toggler)
         self.popup.show_all()
 
@@ -357,7 +357,7 @@ class SaleSellableSearch(SellableSearch):
                 SearchColumn('model', title=_('Model'),
                              data_type=str, visible=False),
                 SearchColumn('price', title=_('Price'), data_type=currency,
-                             justify=gtk.JUSTIFY_RIGHT, width=120),
+                             justify=Gtk.Justification.RIGHT, width=120),
                 SearchColumn('category_description', title=_('Category'),
                              data_type=str, visible=False),
                 AccessorColumn('stock', title=_(u'Stock'),

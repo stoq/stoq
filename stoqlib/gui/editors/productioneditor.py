@@ -35,7 +35,7 @@ This file contains several editors used in the production process:
 
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
@@ -80,7 +80,7 @@ class ProductionItemEditor(BaseEditor):
     def setup_editor_widgets(self):
         self.identifier.set_text(unicode(self.model.order.identifier))
         self.quantity.set_adjustment(
-            gtk.Adjustment(lower=0, upper=self.get_max_quantity(), step_incr=1))
+            Gtk.Adjustment(lower=0, upper=self.get_max_quantity(), step_incr=1))
 
         if isinstance(self.model, (ProductionItem, ProductionMaterial)):
             sellable = self.model.product.sellable

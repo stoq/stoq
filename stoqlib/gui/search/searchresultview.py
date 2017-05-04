@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gobject
+from gi.repository import GObject
 from kiwi.ui.objectlist import ObjectList, ObjectTree
 from kiwi.utils import gsignal
 from zope.interface import implementer
@@ -118,7 +118,7 @@ class SearchResultListView(ObjectList):
     def _on__right_click(self, object_list, results, event):
         self.emit('item-popup-menu', results, event)
 
-gobject.type_register(SearchResultListView)
+GObject.type_register(SearchResultListView)
 
 
 # Used by SellableCategorySearch

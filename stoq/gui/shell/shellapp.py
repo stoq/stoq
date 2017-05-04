@@ -25,7 +25,7 @@
 
 import logging
 
-import gtk
+from gi.repository import Gtk
 from kiwi.ui.delegates import GladeDelegate
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
@@ -127,7 +127,7 @@ class ShellApp(GladeDelegate):
         msg = _(u'There is an inventory process open at the moment.\n'
                 'While that inventory is open, you will be unable to do '
                 'operations that modify your stock.')
-        self.inventory_bar = self.window.add_info_bar(gtk.MESSAGE_WARNING, msg)
+        self.inventory_bar = self.window.add_info_bar(Gtk.MessageType.WARNING, msg)
 
     #
     # Overridables
@@ -199,7 +199,7 @@ class ShellApp(GladeDelegate):
         if self.search_spec is None:
             raise NotImplementedError
 
-        if self.results.get_selection_mode() == gtk.SELECTION_MULTIPLE:
+        if self.results.get_selection_mode() == Gtk.SelectionMode.MULTIPLE:
             results = self.results.get_selected_rows() or list(self.search.get_last_results())
         else:
             # There are not multiple selection.

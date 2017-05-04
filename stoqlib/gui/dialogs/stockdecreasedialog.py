@@ -26,10 +26,9 @@
 
 import datetime
 
-import gtk
+from gi.repository import Gtk, Pango
 from kiwi.ui.objectlist import Column, SummaryLabel
 from kiwi.currency import currency
-import pango
 
 from stoqlib.api import api
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
@@ -69,8 +68,8 @@ class StockDecreaseDetailsDialog(BaseEditor):
         :param slave: the slave we are attaching to the new tab
         :param name: the name of the tab
         """
-        event_box = gtk.EventBox()
-        self.notebook.insert_page(event_box, gtk.Label(name))
+        event_box = Gtk.EventBox()
+        self.notebook.insert_page(event_box, Gtk.Label(name))
         self.attach_slave(name, slave, event_box)
         event_box.show()
 
@@ -113,13 +112,13 @@ class StockDecreaseDetailsDialog(BaseEditor):
 
     def _get_product_columns(self):
         columns = [Column("sellable.code", title=_("Code"), data_type=str,
-                          justify=gtk.JUSTIFY_RIGHT, ellipsize=pango.ELLIPSIZE_END),
+                          justify=Gtk.Justification.RIGHT, ellipsize=Pango.EllipsizeMode.END),
                    Column("sellable.description", title=_("Description"),
                           data_type=str, expand=True),
                    Column('batch.batch_number', title=_("Batch"),
                           data_type=str),
                    Column("quantity", title=_("Qty"),
-                          data_type=int, justify=gtk.JUSTIFY_RIGHT),
+                          data_type=int, justify=Gtk.Justification.RIGHT),
                    ]
         if api.sysparam.get_bool("CREATE_PAYMENTS_ON_STOCK_DECREASE"):
             columns.append(Column('total_cost', title=_("Cost"),

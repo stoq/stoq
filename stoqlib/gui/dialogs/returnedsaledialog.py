@@ -24,7 +24,7 @@
 ##
 """ Classes for returned sale dailgos (details and undo)"""
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 from storm.expr import Eq
@@ -73,7 +73,7 @@ class ReturnedSaleDialog(BaseEditor):
         notes = [_('Return reason'), self.model.reason]
         if self.model.returned_sale.is_undone():
             notes.extend([_('Undo reason'), self.model.returned_sale.undo_reason])
-        buffer = gtk.TextBuffer()
+        buffer = Gtk.TextBuffer()
         buffer.set_text('\n\n'.join(notes))
         self.reason.set_buffer(buffer)
 
@@ -118,8 +118,8 @@ class ReturnedSaleDialog(BaseEditor):
         :param slave: the slave we are attaching to the new tab
         :param name: the name of the tab
         """
-        event_box = gtk.EventBox()
-        self.details_notebook.insert_page(event_box, gtk.Label(name))
+        event_box = Gtk.EventBox()
+        self.details_notebook.insert_page(event_box, Gtk.Label(name))
         self.attach_slave(name, slave, event_box)
         event_box.show()
 
@@ -136,7 +136,7 @@ class ReturnedSaleDialog(BaseEditor):
     #
 
     def on_receive_button__clicked(self, event):
-        if yesno(_(u'Receive pending returned sale?'), gtk.RESPONSE_NO,
+        if yesno(_(u'Receive pending returned sale?'), Gtk.ResponseType.NO,
                  _(u'Receive'), _(u"Don't receive")):
             current_user = api.get_current_user(self.store)
             self.model.returned_sale.confirm(current_user)

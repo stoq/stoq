@@ -25,10 +25,9 @@
 
 import decimal
 
-import gtk
+from gi.repository import Gtk, Pango
 from kiwi.python import strip_accents
 from kiwi.ui.objectlist import Column
-import pango
 from zope.interface import providedBy
 
 from stoqlib.api import api
@@ -158,14 +157,14 @@ class ParameterSearch(BaseEditor):
         self._filter_results(self.entry.get_text())
 
     def _on_results__cell_data_func(self, column, renderer, obj, text):
-        if not isinstance(renderer, gtk.CellRendererText):
+        if not isinstance(renderer, Gtk.CellRendererText):
             return text
 
         is_missing = obj.check_missing and obj.check_missing(obj)
         renderer.set_property('weight-set', is_missing)
         renderer.set_property('foreground-set', is_missing)
         if is_missing:
-            renderer.set_property('weight', pango.WEIGHT_BOLD)
+            renderer.set_property('weight', Pango.Weight.BOLD)
             renderer.set_property('foreground', 'red')
 
         return text

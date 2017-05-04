@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 import mock
 
 from stoq.gui.admin import AdminApp
@@ -68,8 +68,8 @@ class TestNfeUI(BaseGUITest):
         editor = FormFieldEditor(self.store)
         form = self.store.find(UIForm, form_name=u'employee').one()
         editor.forms.select(form)
-        renderer_text = gtk.CellRendererText()
-        renderer_toggle = gtk.CellRendererToggle()
+        renderer_text = Gtk.CellRendererText()
+        renderer_toggle = Gtk.CellRendererToggle()
 
         obj = self.store.find(UIField, field_name=u'street').any()
         # In order to test the following method, we must call it mannually,

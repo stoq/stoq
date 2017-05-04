@@ -24,7 +24,7 @@
 
 import datetime
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.utils import gsignal
@@ -56,12 +56,12 @@ class AccountTransactionEditor(BaseEditor):
         self.new = False
         BaseEditor.__init__(self, store, model)
 
-        payment_button = gtk.Button(_("Show Payment"))
+        payment_button = Gtk.Button(_("Show Payment"))
         payment_button.connect("clicked", self._on_payment_button__clicked)
         box = self.main_dialog.action_area
         box.pack_start(payment_button, False, False, 0)
         box.set_child_secondary(payment_button, True)
-        box.set_layout(gtk.BUTTONBOX_END)
+        box.set_layout(Gtk.ButtonBoxStyle.END)
 
         # Setup the label, according to the type of transaction
         account_labels = Account.account_labels[account.account_type]

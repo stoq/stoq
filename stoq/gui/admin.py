@@ -26,8 +26,7 @@
 import logging
 import operator
 
-import glib
-import gtk
+from gi.repository import Gtk, Glib
 
 from stoqlib.api import api
 from stoqlib.domain.invoice import InvoiceLayout
@@ -97,7 +96,7 @@ class Tasks(object):
     def __init__(self, app):
         self.app = app
 
-        self.theme = gtk.icon_theme_get_default()
+        self.theme = Gtk.icon_theme_get_default()
 
     def set_model(self, model):
         self.model = model
@@ -148,8 +147,8 @@ class Tasks(object):
             stock_id = pixbuf
             try:
                 pixbuf = self.theme.load_icon(pixbuf, 32, 0)
-            except glib.GError:
-                pixbuf = self.app.get_toplevel().render_icon(pixbuf, gtk.ICON_SIZE_DIALOG)
+            except Glib.GError:
+                pixbuf = self.app.get_toplevel().render_icon(pixbuf, Gtk.IconSize.DIALOG)
             if pixbuf is not None:
                 pixbuf.stock_id = stock_id
         self.model.append([label, name, pixbuf])
@@ -421,7 +420,7 @@ class AdminApp(ShellApp):
         self.tasks = Tasks(self)
         self.tasks.set_model(self.model)
         self.tasks.add_defaults()
-        self.model.set_sort_column_id(COL_LABEL, gtk.SORT_ASCENDING)
+        self.model.set_sort_column_id(COL_LABEL, Gtk.SortType.ASCENDING)
         self.iconview.set_text_column(COL_LABEL)
         self.iconview.set_pixbuf_column(COL_PIXBUF)
         self.iconview.connect('item-activated', self.tasks.on_item_activated)

@@ -26,9 +26,8 @@
 
 import datetime
 
-import gtk
+from gi.repository import Gtk, Gdk, Pango
 from kiwi.ui.objectlist import Column
-import pango
 
 from stoqlib.api import api
 from stoqlib.domain.sale import Delivery, Sale
@@ -84,7 +83,7 @@ class DeliveryApp(ShellApp):
              None),
 
             # Delivery
-            ("Edit", gtk.STOCK_EDIT, _("Edit..."),
+            ("Edit", Gtk.STOCK_EDIT, _("Edit..."),
              # group.get('delivery_pick'),
              None,
              _("Edit the selected delivery")),
@@ -100,11 +99,11 @@ class DeliveryApp(ShellApp):
              # group.get('delivery_send'),
              None,
              _("Send the selected delivery to deliver")),
-            ("Receive", gtk.STOCK_APPLY, _("Mark as received..."),
+            ("Receive", Gtk.STOCK_APPLY, _("Mark as received..."),
              # group.get('delivery_receive'),
              None,
              _("Mark the selected delivery as received by the client")),
-            ("Cancel", gtk.STOCK_CANCEL, _("Cancel..."),
+            ("Cancel", Gtk.STOCK_CANCEL, _("Cancel..."),
              # group.get('delivery_cancel'),
              None,
              _("Cancel the selected delivery")),
@@ -207,7 +206,7 @@ class DeliveryApp(ShellApp):
             SearchColumn('client_name', title=_(u'Client'),
                          data_type=str, expand=True),
             Column('flag_icon', title=_(u'Status (Description)'),
-                   column='client_name', data_type=gtk.gdk.Pixbuf,
+                   column='client_name', data_type=Gdk.Pixbuf,
                    format_func=self._format_state_icon, format_func_data=True),
             SearchColumn('branch_name', title=_(u'Branch'),
                          data_type=str, visible=False),
@@ -245,7 +244,7 @@ class DeliveryApp(ShellApp):
 
     def _cancel(self):
         if not yesno(_("This will cancel the delivery. Are you sure?"),
-                     gtk.RESPONSE_NO, _(u"Cancel"), _(u"Don't cancel")):
+                     Gtk.ResponseType.NO, _(u"Cancel"), _(u"Don't cancel")):
             return
 
         selection = self.search.get_selected_item()
@@ -257,7 +256,7 @@ class DeliveryApp(ShellApp):
 
     def _pick(self):
         if not yesno(_("This will mark the delivery as picked. Are you sure?"),
-                     gtk.RESPONSE_NO, _(u"Mark as picked"), _(u"Don't mark")):
+                     Gtk.ResponseType.NO, _(u"Mark as picked"), _(u"Don't mark")):
             return
 
         selection = self.search.get_selected_item()
@@ -269,7 +268,7 @@ class DeliveryApp(ShellApp):
 
     def _pack(self):
         if not yesno(_("This will mark the delivery as packed. Are you sure?"),
-                     gtk.RESPONSE_NO, _(u"Mark as packed"), _(u"Don't mark")):
+                     Gtk.ResponseType.NO, _(u"Mark as packed"), _(u"Don't mark")):
             return
 
         selection = self.search.get_selected_item()
@@ -282,7 +281,7 @@ class DeliveryApp(ShellApp):
     def _send(self):
         if not yesno(_("This will mark the delivery as sent to the client. "
                        "Are you sure?"),
-                     gtk.RESPONSE_NO, _(u"Mark as sent"), _(u"Don't mark")):
+                     Gtk.ResponseType.NO, _(u"Mark as sent"), _(u"Don't mark")):
             return
 
         selection = self.search.get_selected_item()
@@ -295,7 +294,7 @@ class DeliveryApp(ShellApp):
     def _receive(self):
         if not yesno(_("This will mark the delivery as received by the client. "
                        "Are you sure?"),
-                     gtk.RESPONSE_NO, _(u"Mark as received"), _(u"Don't mark")):
+                     Gtk.ResponseType.NO, _(u"Mark as received"), _(u"Don't mark")):
             return
 
         selection = self.search.get_selected_item()
@@ -313,9 +312,9 @@ class DeliveryApp(ShellApp):
 
         stock_id, tooltip = get_delivery_state_icon(item.delivery)
         if stock_id is not None:
-            # We are using self.results because render_icon is a gtk.Widget's
+            # We are using self.results because render_icon is a Gtk.Widget's
             # method. It has nothing to do with results tough.
-            return self.results.render_icon(stock_id, gtk.ICON_SIZE_MENU)
+            return self.results.render_icon(stock_id, Gtk.IconSize.MENU)
 
     def _get_main_query(self, state):
         if state.value is None:
@@ -357,7 +356,7 @@ class DeliveryApp(ShellApp):
     #
 
     def _on_results__cell_data_func(self, column, renderer, item, text):
-        if not isinstance(renderer, gtk.CellRendererText):
+        if not isinstance(renderer, Gtk.CellRendererText):
             return text
 
         delivery = item.delivery
@@ -368,8 +367,8 @@ class DeliveryApp(ShellApp):
 
         for prop, is_set, value in [
                 ('strikethrough', is_finished, True),
-                ('style', is_picked, pango.STYLE_ITALIC),
-                ('weight', is_waiting, pango.WEIGHT_BOLD)]:
+                ('style', is_picked, Pango.Style.ITALIC),
+                ('weight', is_waiting, Pango.Weight.BOLD)]:
             renderer.set_property(prop + '-set', is_set)
             if is_set:
                 renderer.set_property(prop, value)

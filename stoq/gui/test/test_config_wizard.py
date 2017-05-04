@@ -25,7 +25,7 @@
 import os
 import tempfile
 
-import gtk
+from gi.repository import Gtk
 import mock
 from stoqlib.database.settings import DatabaseSettings
 from stoqlib.gui.test.uitestutils import GUITest
@@ -157,7 +157,7 @@ class TestFirstTimeConfigWizard(GUITest):
         step.process_view.emit(u'finished', 30)
         yesno.assert_called_once_with(
             u'Something went wrong while trying to create the database. Try again?',
-            gtk.RESPONSE_NO, u'Change settings', u'Try again')
+            Gtk.ResponseType.NO, u'Change settings', u'Try again')
 
         step.process_view.emit(u'finished', 999)
         warning.assert_called_once_with(
@@ -252,7 +252,7 @@ class TestFirstTimeConfigWizard(GUITest):
         step.process_view.emit(u'finished', 0)
         yesno.assert_called_once_with(
             u"The specified database 'dbname' does not exist.\n"
-            u"Do you want to create it?", gtk.RESPONSE_YES,
+            u"Do you want to create it?", Gtk.ResponseType.YES,
             u"Create database", u"Don't create")
 
         create_default_profile_settings.assert_called_once_with()

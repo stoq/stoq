@@ -24,7 +24,7 @@
 
 import datetime
 
-import gtk
+from gi.repository import Gtk
 import mock
 from nose.exc import SkipTest
 
@@ -158,7 +158,7 @@ class TestServices(BaseGUITest):
                 yesno.assert_called_once_with(u"This will finish the selected "
                                               "order, marking the work as done."
                                               " Are you sure?",
-                                              gtk.RESPONSE_NO, u"Finish order",
+                                              Gtk.ResponseType.NO, u"Finish order",
                                               u"Don't finish")
 
         # Status should not be altered. ie, its still in Progress
@@ -199,7 +199,7 @@ class TestServices(BaseGUITest):
                 yesno.assert_called_once_with(u"This will finish the selected "
                                               "order, marking the work as done."
                                               " Are you sure?",
-                                              gtk.RESPONSE_NO, u"Finish order",
+                                              Gtk.ResponseType.NO, u"Finish order",
                                               u"Don't finish")
 
         # status should be updated to Finished

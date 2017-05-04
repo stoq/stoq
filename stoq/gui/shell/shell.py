@@ -29,7 +29,7 @@ import logging
 import os
 import sys
 
-import glib
+from gi.repository import Glib
 
 # FIXME: We can import whatever we want here, but don't import anything
 #        significant, it's good to maintain lazy loaded things during startup
@@ -262,7 +262,7 @@ class Shell(object):
     def _check_param_online_services(self):
         from stoqlib.database.runtime import new_store
         from stoqlib.lib.parameters import sysparam
-        import gtk
+        from gi.repository import Gtk
 
         if sysparam.get_bool('ONLINE_SERVICES') is None:
             from kiwi.ui.dialogs import HIGAlertDialog
@@ -272,18 +272,18 @@ class Shell(object):
             #        sent to these dialogs are properly escaped
             dialog = HIGAlertDialog(
                 parent=None,
-                flags=gtk.DIALOG_MODAL,
-                type=gtk.MESSAGE_WARNING)
-            dialog.add_button(_("Not right now"), gtk.RESPONSE_NO)
-            dialog.add_button(_("Enable online services"), gtk.RESPONSE_YES)
+                flags=Gtk.DialogFlags.MODAL,
+                type=Gtk.MessageType.WARNING)
+            dialog.add_button(_("Not right now"), Gtk.ResponseType.NO)
+            dialog.add_button(_("Enable online services"), Gtk.ResponseType.YES)
 
             dialog.set_primary(_('Do you want to enable Stoq online services?'))
             dialog.set_details(PRIVACY_STRING, use_markup=True)
-            dialog.set_default_response(gtk.RESPONSE_YES)
+            dialog.set_default_response(Gtk.ResponseType.YES)
             response = dialog.run()
             dialog.destroy()
             store = new_store()
-            sysparam.set_bool(store, 'ONLINE_SERVICES', response == gtk.RESPONSE_YES)
+            sysparam.set_bool(store, 'ONLINE_SERVICES', response == Gtk.ResponseType.YES)
             store.commit()
             store.close()
 
@@ -316,7 +316,7 @@ class Shell(object):
         # If user defined 0 minutes, ignore automatic logout.
         if minutes != 0:
             seconds = minutes * 60
-            glib.timeout_add_seconds(5, self._verify_idle_logout, seconds)
+            Glib.timeout_add_seconds(5, self._verify_idle_logout, seconds)
 
     def _verify_idle_logout(self, seconds):
         # This is called once every 10 seconds
@@ -366,9 +366,9 @@ class Shell(object):
         # Finally, go out of the reactor and show possible crash reports
         log.debug("Show some crash reports")
         self._show_crash_reports()
-        log.debug("Stoq gtk.main")
-        import gtk
-        gtk.main_quit()
+        log.debug("Stoq Gtk.main")
+        from gi.repository import Gtk
+        Gtk.main_quit()
 
         if restart:
             from stoqlib.lib.process import Process
@@ -393,10 +393,10 @@ class Shell(object):
             return
         if 'STOQ_DISABLE_CRASHREPORT' in os.environ:
             return
-        import gtk
+        from gi.repository import Gtk
         from stoqlib.gui.dialogs.crashreportdialog import show_dialog
-        show_dialog(gtk.main_quit)
-        gtk.main()
+        show_dialog(Gtk.main_quit)
+        Gtk.main()
 
     #
     # Public API
@@ -496,8 +496,8 @@ class Shell(object):
 
         log.debug("Entering main loop")
         self._bootstrap.entered_main = True
-        import gtk
-        gtk.main()
+        from gi.repository import Gtk
+        Gtk.main()
         log.info("Leaving main loop")
 
     def quit(self, restart=False, app=None):

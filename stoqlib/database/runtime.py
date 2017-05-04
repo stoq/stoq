@@ -694,7 +694,7 @@ def new_store():
 # User methods
 #
 def _register_branch_station(caller_store, station_name):
-    import gtk
+    from gi.repository import Gtk
     from stoqlib.lib.parameters import sysparam
 
     if not sysparam.get_bool('DEMO_MODE'):
@@ -704,7 +704,7 @@ def _register_branch_station(caller_store, station_name):
                 u"(requires administrator access) ?")
         if not yesno(fmt % (station_name,
                             db_settings.address),
-                     gtk.RESPONSE_YES, _(u"Register computer"), _(u"Quit")):
+                     Gtk.RESPONSE_YES, _(u"Register computer"), _(u"Quit")):
             raise SystemExit
 
         from stoqlib.gui.utils.login import LoginHelper

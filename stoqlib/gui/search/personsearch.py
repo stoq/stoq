@@ -28,7 +28,7 @@ from decimal import Decimal
 
 from kiwi.ui.objectlist import Column
 from kiwi.currency import currency
-import pango
+from gi.repository import Pango
 from storm.expr import Eq
 
 from stoqlib.api import api
@@ -352,7 +352,7 @@ class UserSearch(BasePersonSearch):
                              data_type=str, width=150, searchable=True),
                 SearchColumn('profile_name', title=_('Profile'),
                              data_type=str, width=120,
-                             ellipsize=pango.ELLIPSIZE_END),
+                             ellipsize=Pango.EllipsizeMode.END),
                 SearchColumn('name', title=_('Name'), data_type=str,
                              expand=True),
                 Column('status_str', title=_('Status'), data_type=str,

@@ -25,12 +25,11 @@
 import decimal
 import operator
 
-import gtk
+from gi.repository import Gtk, Pango
 from kiwi.currency import currency
 from kiwi.datatypes import converter, ValidationError
 from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.popup import PopupWindow
-import pango
 
 from stoqlib.gui.stockicons import STOQ_CALC
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -94,11 +93,11 @@ class CalculatorPopup(PopupWindow):
         self.widget.connect('icon-press', self._on_entry__icon_press)
         self._toggle_calculator_icon()
 
-        vbox = gtk.VBox(spacing=6)
+        vbox = Gtk.VBox(spacing=6)
         vbox.show()
 
-        self._main_label = gtk.Label()
-        self._main_label.set_ellipsize(pango.ELLIPSIZE_END)
+        self._main_label = Gtk.Label()
+        self._main_label.set_ellipsize(Pango.EllipsizeMode.END)
         vbox.pack_start(self._main_label, True, True, 0)
         self._main_label.show()
 
@@ -112,17 +111,17 @@ class CalculatorPopup(PopupWindow):
         vbox.pack_start(self._entry, True, True, 0)
         self._entry.show()
 
-        hbox = gtk.HBox(spacing=6)
+        hbox = Gtk.HBox(spacing=6)
         vbox.pack_start(hbox, True, True, 0)
         hbox.show()
 
-        self._label = gtk.Label()
+        self._label = Gtk.Label()
         self._label.set_property('xalign', 1.0)
         self._label.set_use_markup(True)
         hbox.pack_start(self._label, True, True, 0)
         self._label.show()
 
-        self._warning = gtk.Image()
+        self._warning = Gtk.Image()
         hbox.pack_start(self._warning, False, False, 0)
 
         return vbox
@@ -161,8 +160,8 @@ class CalculatorPopup(PopupWindow):
         if warning is None:
             self._warning.hide()
         else:
-            self._warning.set_from_stock(gtk.STOCK_DIALOG_WARNING,
-                                         gtk.ICON_SIZE_MENU)
+            self._warning.set_from_stock(Gtk.STOCK_DIALOG_WARNING,
+                                         Gtk.IconSize.MENU)
             self._warning.set_tooltip_text(warning)
             self._warning.show()
 
@@ -224,7 +223,7 @@ class CalculatorPopup(PopupWindow):
 
     def _toggle_calculator_icon(self):
         if self.widget.get_sensitive():
-            pixbuf = self.render_icon(STOQ_CALC, gtk.ICON_SIZE_MENU)
+            pixbuf = self.render_icon(STOQ_CALC, Gtk.IconSize.MENU)
         else:
             pixbuf = None
 
@@ -256,7 +255,7 @@ class CalculatorPopup(PopupWindow):
         self._toggle_calculator_icon()
 
     def _on_entry__icon_press(self, entry, icon_pos, event):
-        if icon_pos != gtk.ENTRY_ICON_SECONDARY:
+        if icon_pos != Gtk.EntryIconPosition.SECONDARY:
             return
 
         self.popup()

@@ -24,7 +24,7 @@
 
 import datetime
 
-import gtk
+from gi.repository import Gtk
 
 from stoqlib.api import api
 from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
@@ -89,7 +89,7 @@ class CallsSearch(SearchEditor):
         self.print_button.show()
 
         # To separate the csv and print buttons.
-        self.action_area.set_layout(gtk.BUTTONBOX_EDGE)
+        self.action_area.set_layout(Gtk.ButtonBoxStyle.EDGE)
 
         self.results.connect('has_rows', self._on_results__has_rows)
 

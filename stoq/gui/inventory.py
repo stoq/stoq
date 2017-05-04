@@ -25,7 +25,7 @@
 
 import datetime
 
-import gtk
+from gi.repository import Gtk
 from kiwi.ui.objectlist import Column
 from kiwi.ui.dialogs import save
 from storm.expr import Join
@@ -75,24 +75,24 @@ class InventoryApp(ShellApp):
 
             # Inventory
             ('InventoryMenu', None, _('Inventory')),
-            ('Details', gtk.STOCK_INFO, _('Details...'),
+            ('Details', Gtk.STOCK_INFO, _('Details...'),
              group.get('inventory_details'),
              _('See details about this inventory')),
-            ('CountingAction', gtk.STOCK_INDEX, _('_Count...'),
+            ('CountingAction', Gtk.STOCK_INDEX, _('_Count...'),
              group.get('inventory_count'),
              _('Register the actual stock of products in the selected '
                'inventory')),
-            ('AdjustAction', gtk.STOCK_CONVERT, _('_Adjust...'),
+            ('AdjustAction', Gtk.STOCK_CONVERT, _('_Adjust...'),
              group.get('inventory_adjust'),
              _('Adjust the stock accordingly to the counting in the selected '
                'inventory')),
-            ('Cancel', gtk.STOCK_CANCEL, _('Cancel...'),
+            ('Cancel', Gtk.STOCK_CANCEL, _('Cancel...'),
              group.get('inventory_cancel'),
              _('Cancel the selected inventory')),
-            ('Export', gtk.STOCK_SAVE, _('Export for external counting...'),
+            ('Export', Gtk.STOCK_SAVE, _('Export for external counting...'),
              None,
              _('Export the list of products for external counting')),
-            ('PrintProductListing', gtk.STOCK_PRINT,
+            ('PrintProductListing', Gtk.STOCK_PRINT,
              _('Print product listing...'),
              group.get('inventory_print'),
              _('Print the product listing for this inventory'))
@@ -152,7 +152,7 @@ class InventoryApp(ShellApp):
 
     def get_columns(self):
         return [IdentifierColumn('identifier', title=_('Inventory #'),
-                                 sorted=True, order=gtk.SORT_DESCENDING),
+                                 sorted=True, order=Gtk.SortType.DESCENDING),
                 SearchColumn('status_str', title=_('Status'),
                              data_type=str, width=100,
                              valid_values=self._get_status_values(),
@@ -223,7 +223,7 @@ class InventoryApp(ShellApp):
 
     def _cancel_inventory(self):
         if not yesno(_('Are you sure you want to cancel this inventory ?'),
-                     gtk.RESPONSE_NO, _("Cancel inventory"), _("Don't cancel")):
+                     Gtk.ResponseType.NO, _("Cancel inventory"), _("Don't cancel")):
             return
 
         store = api.new_store()

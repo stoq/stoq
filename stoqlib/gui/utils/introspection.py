@@ -22,12 +22,12 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 
 
 def _foreach_child(widget, cb, lvl=0):
     cb(widget, lvl)
-    if isinstance(widget, gtk.Container):
+    if isinstance(widget, Gtk.Container):
         for child in widget.get_children():
             _foreach_child(child, cb, lvl + 1)
 
@@ -35,7 +35,7 @@ def _foreach_child(widget, cb, lvl=0):
 def introspect_slaves(window):
     """Traverses all the children of window and prints out all the
     kiwi slaves.
-    :param window: a gtk.Window subclass
+    :param window: a Gtk.Window subclass
     """
     print('Analyzing', window)
 
@@ -44,7 +44,7 @@ def introspect_slaves(window):
         print(' ' * lvl, slave.__class__.__name__, filename)
 
     def _parse(widget, lvl):
-        if isinstance(widget, gtk.EventBox):
+        if isinstance(widget, Gtk.EventBox):
             slave = widget.get_data('kiwi::slave')
             if slave is not None:
                 _printone(slave, lvl)

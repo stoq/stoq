@@ -24,8 +24,7 @@
 
 """Editors for user preferences"""
 
-import gio
-import gtk
+from gi.repository import Gtk, Gio
 
 from stoqlib.api import api
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
@@ -96,10 +95,10 @@ class PreferencesEditor(BaseEditor):
         :param args: additional args to slave
         :param kwargs: additional kwargs to slave
         """
-        event_box = gtk.EventBox()
+        event_box = Gtk.EventBox()
         event_box.set_border_width(6)
         self.preferences_notebook.append_page(event_box,
-                                              gtk.Label(tab_name))
+                                              Gtk.Label(tab_name))
 
         slave = slave_class(*args, **kwargs)
         if isinstance(slave, BaseEditorSlave):
@@ -138,7 +137,7 @@ class PreferencesEditor(BaseEditor):
         self.preferences_notebook.set_show_tabs(True)
         self.preferences_notebook.set_show_border(True)
         self.preferences_notebook.set_tab_label(self.general_tab,
-                                                gtk.Label(_('General')))
+                                                Gtk.Label(_('General')))
         # Hide cancel button as the model isn't on a db store and
         # therefore there's nothing to rollback.
         self.main_dialog.cancel_button.hide()
@@ -169,7 +168,7 @@ class PreferencesEditor(BaseEditor):
         ])
 
     def _prefill_spreadsheet(self):
-        app_info = gio.app_info_get_default_for_type(
+        app_info = Gio.app_info_get_default_for_type(
             'application/vnd.ms-excel', False)
 
         options = [(_("Ask (default)"), None)]

@@ -23,8 +23,7 @@
 ##
 ##
 
-import glib
-import gtk
+from gi.repository import Gtk, Glib
 from kiwi.ui.delegates import GladeDelegate
 from kiwi.utils import gsignal
 
@@ -57,7 +56,7 @@ class ProgressDialog(GladeDelegate):
         self._timeout_id = -1
         self._start_id = -1
         self.label.set_label(label)
-        self.toplevel.set_position(gtk.WIN_POS_CENTER)
+        self.toplevel.set_position(Gtk.WindowPosition.CENTER)
 
     def start(self, wait=50):
         """Start the task, it'll pulsate the progress bar until stop() is called
@@ -65,18 +64,18 @@ class ProgressDialog(GladeDelegate):
           to 50
         """
         if self._pulse:
-            self._timeout_id = glib.timeout_add(100, self._pulse_timeout)
-        self._start_id = glib.timeout_add(wait, self._real_start)
+            self._timeout_id = Glib.timeout_add(100, self._pulse_timeout)
+        self._start_id = Glib.timeout_add(wait, self._real_start)
 
     def stop(self):
         """Stops pulsating and hides the dialog
         """
         self.hide()
         if self._timeout_id != -1:
-            glib.source_remove(self._timeout_id)
+            Glib.source_remove(self._timeout_id)
             self._timeout_id = -1
         if self._start_id != -1:
-            glib.source_remove(self._start_id)
+            Glib.source_remove(self._start_id)
             self._start_id = -1
 
     def set_label(self, label):

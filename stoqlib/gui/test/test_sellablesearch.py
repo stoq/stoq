@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 
 import mock
 
@@ -67,7 +67,7 @@ class TestSaleSellableSearch(GUITest):
 
         self.assertRaises(TypeError, SaleSellableSearch, self.store,
                           sale_items=[sale_item],
-                          selection_mode=gtk.SELECTION_MULTIPLE)
+                          selection_mode=Gtk.SelectionMode.MULTIPLE)
         self.assertRaises(TypeError, SaleSellableSearch, self.store,
                           sale_items=[sale_item], quantity=None)
 

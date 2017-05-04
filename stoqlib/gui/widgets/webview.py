@@ -26,7 +26,7 @@ import logging
 import json
 import urlparse
 
-import gtk
+from gi.repository import Gtk
 import webkit
 
 from stoqlib.api import api
@@ -51,10 +51,10 @@ def register_scheme(scheme):
 register_scheme('stoq')
 
 
-class WebView(gtk.ScrolledWindow):
+class WebView(Gtk.ScrolledWindow):
     def __init__(self):
-        gtk.ScrolledWindow.__init__(self)
-        self.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        Gtk.ScrolledWindow.__init__(self)
+        self.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
 
         self._view = webkit.WebView()
         settings = self._view.props.settings
@@ -222,9 +222,9 @@ class WebView(gtk.ScrolledWindow):
             open_browser(uri, self.get_screen())
 
     def _create_view_for_inspector(self, introspector_view):
-        window = gtk.Window()
+        window = Gtk.Window()
         window.set_size_request(800, 600)
-        sw = gtk.ScrolledWindow()
+        sw = Gtk.ScrolledWindow()
         window.add(sw)
         view = webkit.WebView()
         sw.add(introspector_view)
@@ -286,7 +286,7 @@ class WebView(gtk.ScrolledWindow):
 
 
 def show_html(html):
-    w = gtk.Window()
+    w = Gtk.Window()
     w.set_size_request(600, 400)
     wv = WebView()
     wv.load_string(html)

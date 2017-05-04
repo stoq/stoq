@@ -22,7 +22,7 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 import mock
 
 from stoqlib.domain.product import GridOption
@@ -156,7 +156,7 @@ class TestGridOptionsSlave(GUITest):
         # Selecting one option to remove
         slave.listcontainer.list.select(option)
         self.assertSensitive(slave.listcontainer, ['remove_button'])
-        yesno.return_value = gtk.RESPONSE_OK
+        yesno.return_value = Gtk.ResponseType.OK
         self.click(slave.listcontainer.remove_button)
         self.assertEquals(len(slave.listcontainer.list), 0)
 

@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 import mock
 
 from stoqlib.api import api
@@ -34,7 +34,7 @@ import stoq
 from stoq.gui.shell.shellapp import ShellApp
 from stoq.gui.shell.shellwindow import ShellWindow
 
-gtk.set_interactive(False)
+Gtk.set_interactive(False)
 
 
 class MockShellWindow(ShellWindow):

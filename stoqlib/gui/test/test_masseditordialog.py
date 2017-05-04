@@ -25,8 +25,7 @@
 import datetime
 from decimal import Decimal
 import mock
-import gtk
-import pango
+from gi.repository import Gtk, Pango
 
 from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.gui.dialogs.masseditordialog import (MultiplyOperation,
@@ -262,14 +261,14 @@ class TestMassEditor(GUITest):
 
         # Note that below we are testing the properties of the renderer, and not
         # really the value returned
-        renderer = gtk.CellRendererText()
+        renderer = Gtk.CellRendererText()
         search._on_cell_data_func(col, renderer, sellable, '10')
         self.assertFalse(renderer.get_property('weight-set'))
 
         field.set_new_value(sellable, 15)
         search._on_cell_data_func(col, renderer, sellable, '10')
         self.assertTrue(renderer.get_property('weight-set'))
-        self.assertEqual(renderer.get_property('weight'), pango.WEIGHT_BOLD)
+        self.assertEqual(renderer.get_property('weight'), Pango.Weight.BOLD)
 
     def test_change_editor(self):
         price_field = AccessorField('Test', None, 'base_price', Decimal)

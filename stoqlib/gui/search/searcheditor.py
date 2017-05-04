@@ -23,7 +23,7 @@
 ##
 """ Implementation of basic dialogs for searching data """
 
-import gtk
+from gi.repository import Gtk
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 from storm.store import Store
@@ -112,7 +112,7 @@ class SearchEditor(SearchDialog):
         """
 
         if selection_mode is None:
-            selection_mode = gtk.SELECTION_BROWSE
+            selection_mode = Gtk.SelectionMode.BROWSE
         self.interface = interface
         self._read_only = False
         self._message_bar = None
@@ -172,7 +172,7 @@ class SearchEditor(SearchDialog):
                 # will activate visual_mode for the editor
                 self._read_only = True
                 self._toolbar.edit_button_label.set_text(_('Details'))
-                self._toolbar.edit_button_image.set_from_stock('gtk-info', gtk.ICON_SIZE_BUTTON)
+                self._toolbar.edit_button_image.set_from_stock('gtk-info', Gtk.IconSize.BUTTON)
             else:
                 self.hide_edit_button()
 
@@ -188,7 +188,7 @@ class SearchEditor(SearchDialog):
         self._toolbar.edit_button_label.set_label(label)
         if stock:
             self._toolbar.edit_button_image.set_from_stock(stock,
-                                                           gtk.ICON_SIZE_BUTTON)
+                                                           Gtk.IconSize.BUTTON)
 
     def update_widgets(self, *args):
         self._toolbar.edit_button.set_sensitive(len(self.results))
@@ -257,7 +257,7 @@ class SearchEditor(SearchDialog):
 
     def _edit(self, obj):
         if obj is None:
-            if self.results.get_selection_mode() == gtk.SELECTION_MULTIPLE:
+            if self.results.get_selection_mode() == Gtk.SelectionMode.MULTIPLE:
                 obj = self.results.get_selected_rows()
                 qty = len(obj)
                 if qty != 1:

@@ -24,7 +24,7 @@
 
 import contextlib
 
-import gtk
+from gi.repository import Gtk
 from kiwi.python import Settable
 import mock
 
@@ -91,7 +91,7 @@ class TestStatusButton(BaseGUITest):
                  STOQ_STATUS_WARNING),
                 (ResourceStatus.STATUS_ERROR,
                  STOQ_STATUS_ERROR)]:
-            pixbuf = btn.render_icon(stock, gtk.ICON_SIZE_MENU)
+            pixbuf = btn.render_icon(stock, Gtk.IconSize.MENU)
             with contextlib.nested(
                     mock.patch.object(btn, 'render_icon'),
                     mock.patch.object(btn._image, 'set_from_pixbuf')) as (ri, sfp):
@@ -99,5 +99,5 @@ class TestStatusButton(BaseGUITest):
 
                 manager.emit('status-changed', status)
 
-                self.assertCalledOnceWith(ri, stock, gtk.ICON_SIZE_MENU)
+                self.assertCalledOnceWith(ri, stock, Gtk.IconSize.MENU)
                 self.assertCalledOnceWith(sfp, pixbuf)

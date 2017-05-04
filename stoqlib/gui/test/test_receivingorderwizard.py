@@ -25,7 +25,7 @@
 import contextlib
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.python import Settable
 import mock
 
@@ -110,7 +110,7 @@ class TestReceivingOrderWizard(GUITest):
 
             yesno.assert_called_once_with(
                 "Do you want to print the labels for the received products?",
-                gtk.RESPONSE_YES, "Print labels", "Don't print")
+                Gtk.ResponseType.YES, "Print labels", "Don't print")
 
             run_dialog.assert_called_once_with(
                 SkipLabelsEditor, wizard, self.store)

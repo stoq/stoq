@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 import mock
 
 from kiwi.ui.objectlist import ObjectList
@@ -36,11 +36,11 @@ class TestXLSExporter(GUITest):
 
     def _run_exporter(self, sse):
         objectlist = ObjectList()
-        path = 'stoqlib.gui.dialogs.spreadsheetexporterdialog.gio.app_info_get_default_for_type'
-        with mock.patch(path) as gio:
+        path = 'stoqlib.gui.dialogs.spreadsheetexporterdialog.Gio.app_info_get_default_for_type'
+        with mock.patch(path) as Gio:
             app_info = mock.Mock()
             app_info.get_name.return_value = 'App Name'
-            gio.return_value = app_info
+            Gio.return_value = app_info
             sse.export(object_list=objectlist,
                        name='Title', filename_prefix='name-prefix')
 
@@ -66,5 +66,5 @@ class TestXLSExporter(GUITest):
 
         yesno.assert_called_once_with(
             ('A spreadsheet has been created, what do '
-             'you want to do with it?'), gtk.RESPONSE_NO, 'Save it to disk',
+             'you want to do with it?'), Gtk.ResponseType.NO, 'Save it to disk',
             'Open with App Name')

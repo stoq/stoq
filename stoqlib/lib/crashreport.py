@@ -31,7 +31,7 @@ import time
 import traceback
 import os
 
-import gobject
+from gi.repository import GObject
 from kiwi.component import get_utility
 from kiwi.utils import gsignal
 
@@ -102,9 +102,9 @@ def collect_report():
         report_['app_version'] = _fix_version(info.get('ver'))
 
     # External dependencies
-    import gtk
-    report_['pygtk_version'] = _fix_version(gtk.pygtk_version)
-    report_['gtk_version'] = _fix_version(gtk.gtk_version)
+    from gi.repository import Gtk
+    report_['pygtk_version'] = _fix_version(Gtk.pygtk_version)
+    report_['gtk_version'] = _fix_version(Gtk.gtk_version)
 
     import kiwi
     report_['kiwi_version'] = _fix_version(
@@ -215,12 +215,12 @@ def has_tracebacks():
     return bool(_tracebacks)
 
 
-class ReportSubmitter(gobject.GObject):
+class ReportSubmitter(GObject.GObject):
     gsignal('failed', object)
     gsignal('submitted', object)
 
     def __init__(self):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
 
         self._count = 0
         self._api = WebService()

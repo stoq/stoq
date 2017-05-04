@@ -21,7 +21,7 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-import gtk
+from gi.repository import Gtk
 import mock
 
 from stoqlib.domain.invoice import InvoiceLayout
@@ -46,11 +46,11 @@ class TestInvoiceLayoutListSlave(GUITest):
         dialog.list_slave.listcontainer.list.select(item)
 
         with mock.patch('kiwi.ui.listdialog.yesno') as yesno:
-            yesno.side_effect = lambda *x, **y: gtk.RESPONSE_OK
+            yesno.side_effect = lambda *x, **y: Gtk.ResponseType.OK
             self.click(dialog.list_slave.listcontainer.remove_button)
 
             yesno.assert_called_with('Do you want to remove Standard Invoice ?',
                                      buttons=(
-                                         ('gtk-cancel', gtk.RESPONSE_CANCEL),
-                                         ('gtk-remove', gtk.RESPONSE_OK)),
-                                     default=gtk.RESPONSE_OK, parent=None)
+                                         ('gtk-cancel', Gtk.ResponseType.CANCEL),
+                                         ('gtk-remove', Gtk.ResponseType.OK)),
+                                     default=Gtk.ResponseType.OK, parent=None)

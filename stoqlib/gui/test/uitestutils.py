@@ -29,8 +29,7 @@ import re
 import sys
 import traceback
 
-import gobject
-import gtk
+from gi.repository import Gtk, GObject
 from kiwi.interfaces import IValidatableProxyWidget
 from kiwi.ui.objectlist import ObjectList, ObjectTree
 from kiwi.ui.views import SignalProxyObject, SlaveView
@@ -95,25 +94,25 @@ class GUIDumper(object):
     def _get_packing_properties(self, widget):
         # FIXME: Workaround for GtkWindow::parent property
         #        on PyGTK for natty
-        if isinstance(widget, gtk.Window):
+        if isinstance(widget, Gtk.Window):
             return []
 
         props = []
-        if gobject.type_name(widget).endswith('Box'):
+        if GObject.type_name(widget).endswith('Box'):
             # FIXME: In gtk3 this can be tested for Gtk.Orientable
             # and get the orientation from the property
-            if isinstance(widget, gtk.ButtonBox):
+            if isinstance(widget, Gtk.ButtonBox):
                 props.append('orientation={}'.format(
-                    'horizontal' if isinstance(widget, gtk.HButtonBox) else 'vertical'))
-            elif isinstance(widget, gtk.Box):
+                    'horizontal' if isinstance(widget, Gtk.HButtonBox) else 'vertical'))
+            elif isinstance(widget, Gtk.Box):
                 props.append('orientation={}'.format(
-                    'horizontal' if isinstance(widget, gtk.HBox) else 'vertical'))
+                    'horizontal' if isinstance(widget, Gtk.HBox) else 'vertical'))
 
         parent = widget.props.parent
         if not parent:
             return props
 
-        if isinstance(parent, gtk.Box):
+        if isinstance(parent, Gtk.Box):
             (expand, fill,
              padding, pack_type) = parent.query_child_packing(widget)
             if expand:
@@ -122,13 +121,13 @@ class GUIDumper(object):
                 props.append('fill=%r' % (bool(fill), ))
             if padding != 0:
                 props.append('padding=%d' % (padding, ))
-            if pack_type == gtk.PACK_END:
+            if pack_type == Gtk.PACK_END:
                 props.append('pack-end')
         return props
 
     def _dump_children(self, widget, indent):
         indent += 1
-        if isinstance(widget, gtk.Table):
+        if isinstance(widget, Gtk.Table):
             def table_sort(a, b):
                 props_a = _get_table_packing_properties(widget, a)
                 props_b = _get_table_packing_properties(widget, b)
@@ -137,40 +136,40 @@ class GUIDumper(object):
             for child in sorted(widget.get_children(),
                                 cmp=table_sort):
                 self._dump_widget(child, indent)
-        elif isinstance(widget, gtk.Container):
+        elif isinstance(widget, Gtk.Container):
             for child in widget.get_children():
                 self._dump_widget(child, indent)
-        elif isinstance(widget, gtk.Bin):
+        elif isinstance(widget, Gtk.Bin):
             self._dump_widget([widget.get_child()], indent)
-        if isinstance(widget, gtk.MenuItem):
+        if isinstance(widget, Gtk.MenuItem):
             menu = widget.get_submenu()
             if menu is not None:
                 self._dump_widget(menu, indent)
 
     def _dump_widget(self, widget, indent=0):
-        if isinstance(widget, gtk.Window):
+        if isinstance(widget, Gtk.Window):
             self._dump_window(widget, indent)
-        elif isinstance(widget, gtk.Entry):
+        elif isinstance(widget, Gtk.Entry):
             self._dump_entry(widget, indent)
-        elif isinstance(widget, gtk.ToggleButton):
+        elif isinstance(widget, Gtk.ToggleButton):
             self._dump_toggle_button(widget, indent)
-        elif isinstance(widget, gtk.Button):
+        elif isinstance(widget, Gtk.Button):
             self._dump_button(widget, indent)
-        elif isinstance(widget, gtk.Label):
+        elif isinstance(widget, Gtk.Label):
             self._dump_label(widget, indent)
         elif isinstance(widget, (ProxyComboBox, ProxyComboEntry)):
             self._dump_proxy_combo(widget, indent)
         elif isinstance(widget, ProxyDateEntry):
             self._dump_proxy_date_entry(widget, indent)
-        elif isinstance(widget, gtk.IconView):
+        elif isinstance(widget, Gtk.IconView):
             self._dump_iconview(widget, indent)
         elif isinstance(widget, ObjectList):
             self._dump_objectlist(widget, indent)
-        elif isinstance(widget, gtk.EventBox):
+        elif isinstance(widget, Gtk.EventBox):
             self._dump_event_box(widget, indent)
-        elif isinstance(widget, gtk.MenuItem):
+        elif isinstance(widget, Gtk.MenuItem):
             self._dump_menu_item(widget, indent)
-        elif isinstance(widget, gtk.ToolItem):
+        elif isinstance(widget, Gtk.ToolItem):
             self._dump_tool_item(widget, indent)
         else:
             self._write_widget(widget, indent)
@@ -178,7 +177,7 @@ class GUIDumper(object):
 
     def _is_interactive_widget(self, widget):
         # FIXME: Add more widgets, but needs a careful audit
-        return isinstance(widget, (gtk.Entry, ))
+        return isinstance(widget, (Gtk.Entry, ))
 
     def _write_widget(self, widget, indent=0, props=None, extra=None):
         extra = extra or []
@@ -194,7 +193,7 @@ class GUIDumper(object):
         if not props:
             props = []
 
-        g_name = gobject.type_name(widget)
+        g_name = GObject.type_name(widget)
         if g_name in ['GtkHBox', 'GtkVBox']:
             g_name = 'GtkBox'
         elif g_name in ['GtkHButtonBox', 'GtkVButtonBox']:
@@ -266,15 +265,15 @@ class GUIDumper(object):
         props = [text]
         if not entry.get_editable():
             props.append('ineditable')
-        if isinstance(entry, gtk.SpinButton):
+        if isinstance(entry, Gtk.SpinButton):
             if entry.props.wrap:
                 props.append('wrappable')
 
         self._write_widget(entry, indent, props)
 
     def _dump_label(self, label, indent):
-        if (isinstance(label, gtk.AccelLabel) and
-                isinstance(label.get_parent(), gtk.MenuItem)):
+        if (isinstance(label, Gtk.AccelLabel) and
+                isinstance(label.get_parent(), Gtk.MenuItem)):
             return
 
         props = []
@@ -291,25 +290,25 @@ class GUIDumper(object):
 
     def _dump_menu_item(self, menuitem, indent):
         # GtkUIManager creates plenty of invisible separators
-        if (isinstance(menuitem, gtk.SeparatorMenuItem) and
+        if (isinstance(menuitem, Gtk.SeparatorMenuItem) and
                 not menuitem.get_visible()):
             return
 
         # GtkUIManager creates empty items at the end of lists
-        if (type(menuitem) == gtk.MenuItem and
+        if (type(menuitem) == Gtk.MenuItem and
                 not menuitem.get_visible() and
                 not menuitem.get_sensitive() and
                 menuitem.get_label() == 'Empty'):
             return
 
         # Skip tearoff menus
-        if (isinstance(menuitem, gtk.TearoffMenuItem) and
+        if (isinstance(menuitem, Gtk.TearoffMenuItem) and
                 not menuitem.get_visible()):
             return
 
         props = []
         label = menuitem.get_label()
-        if (isinstance(menuitem, gtk.ImageMenuItem) and
+        if (isinstance(menuitem, Gtk.ImageMenuItem) and
                 menuitem.get_use_stock()):
                 props.append('stock=%r' % (label, ))
         elif label:
@@ -320,19 +319,19 @@ class GUIDumper(object):
 
     def _dump_tool_item(self, toolitem, indent):
         # GtkUIManager creates plenty of invisible separators
-        if (isinstance(toolitem, gtk.SeparatorToolItem) and
+        if (isinstance(toolitem, Gtk.SeparatorToolItem) and
                 not toolitem.get_visible()):
             return
 
         props = []
-        if isinstance(toolitem, gtk.ToolButton):
+        if isinstance(toolitem, Gtk.ToolButton):
             label = toolitem.get_label()
             if label:
                 props.append(repr(label))
 
         self._write_widget(toolitem, indent, props)
 
-        if isinstance(toolitem, gtk.MenuToolButton):
+        if isinstance(toolitem, Gtk.MenuToolButton):
             menu = toolitem.get_menu()
             if menu:
                 self._dump_widget(menu, indent + 2)
@@ -456,7 +455,7 @@ class GUIDumper(object):
         self.output += 'app: %s\n' % (app.__class__.__name__, )
         self._dump_widget(app.get_toplevel())
 
-        popups = app.uimanager.get_toplevels(gtk.UI_MANAGER_POPUP)
+        popups = app.uimanager.get_toplevels(Gtk.UIManagerItemType.POPUP)
         for popup in popups:
             self.output += '\n'
             self.output += 'popup: %s\n' % (popup.get_name(), )
@@ -541,7 +540,7 @@ class GUITest(DomainTest):
         This verifies that the button is clickable (visible and sensitive) and
         emits the clicked signal
         """
-        if not isinstance(button, gtk.Button):
+        if not isinstance(button, Gtk.Button):
             raise TypeError("%r must be a button" % (button, ))
 
         if not button.get_visible():
@@ -559,7 +558,7 @@ class GUITest(DomainTest):
         This verifies that the button is activatable (visible and sensitive) and
         emits the activate signal
         """
-        if not isinstance(widget, (gtk.Action, gtk.Widget)):
+        if not isinstance(widget, (Gtk.Action, Gtk.Widget)):
             raise TypeError("%r must be an action or a widget" % (widget, ))
 
         if not widget.get_visible():

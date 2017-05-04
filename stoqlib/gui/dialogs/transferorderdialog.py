@@ -24,7 +24,7 @@
 ##
 """ Classes for Transfer Order Details Dialog """
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, SummaryLabel
 
@@ -79,8 +79,8 @@ class TransferOrderDetailsDialog(BaseEditor):
         :param slave: the slave we are attaching to the new tab
         :param name: the name of the tab
         """
-        event_box = gtk.EventBox()
-        self.details_notebook.insert_page(event_box, gtk.Label(name))
+        event_box = Gtk.EventBox()
+        self.details_notebook.insert_page(event_box, Gtk.Label(name))
         self.attach_slave(name, slave, event_box)
         event_box.show()
 
@@ -120,15 +120,15 @@ class TransferOrderDetailsDialog(BaseEditor):
 
     def _get_product_columns(self):
         return [Column("sellable.code", title=_("Code"), data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT, width=130),
+                       justify=Gtk.Justification.RIGHT, width=130),
                 Column("sellable.description", title=_("Description"),
                        data_type=str, expand=True),
                 Column("quantity", title=_("Quantity"),
-                       data_type=int, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=int, justify=Gtk.Justification.RIGHT),
                 Column("sellable.cost", title=_("Cost"), width=100,
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=currency, justify=Gtk.Justification.RIGHT),
                 Column("total", title=_(u"Total Cost"), width=100,
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT)]
+                       data_type=currency, justify=Gtk.Justification.RIGHT)]
 
     #
     # BaseEditor Hooks
@@ -145,7 +145,7 @@ class TransferOrderDetailsDialog(BaseEditor):
     def on_receive_button__clicked(self, event):
         assert self.model.status == self.model.STATUS_SENT
 
-        if yesno(_(u'Receive the order?'), gtk.RESPONSE_YES, _(u'Receive'),
+        if yesno(_(u'Receive the order?'), Gtk.ResponseType.YES, _(u'Receive'),
                  _(u"Don't receive")):
             responsible = api.get_current_user(self.store).person.employee
             self.model.receive(responsible)

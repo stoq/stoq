@@ -148,7 +148,7 @@ def threaded(original):
 
     @functools.wraps(original)
     def _run_thread_task(*args, **kwargs):
-        import gtk
+        from gi.repository import Gtk
         q = Queue.Queue()
 
         # Wrap the actual function inside a try/except so that we can return the
@@ -169,8 +169,8 @@ def threaded(original):
         # We we'll wait for the new thread to finish here, while keeping the
         # interface responsive (a nice progress dialog should be displayed)
         while t.is_alive():
-            if gtk.events_pending():
-                gtk.main_iteration(False)
+            if Gtk.events_pending():
+                Gtk.main_iteration(False)
 
         try:
             retval = q.get_nowait()

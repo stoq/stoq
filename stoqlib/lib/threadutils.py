@@ -27,7 +27,7 @@
 import ctypes
 import threading
 
-import glib
+from gi.repository import Glib
 
 
 def terminate_thread(thread):
@@ -67,4 +67,4 @@ def schedule_in_main_thread(func, *args):
     It will as soon as the mainloop schedules it, normally
     it happens within a few ms.
     """
-    glib.idle_add(func, *args)
+    Glib.idle_add(func, *args)

@@ -24,7 +24,7 @@
 
 import unittest
 
-import gtk
+from gi.repository import Gdk
 import mock
 
 from stoqlib.domain.address import Address, CityLocation
@@ -81,7 +81,7 @@ class TestAddressEditor(GUITest):
         # editor, pressing TAB or even trying to click on Ok is enough
         address_slave.state.grab_focus()
         address_slave.city.emit('focus-out-event',
-                                gtk.gdk.Event(gtk.gdk.FOCUS_CHANGE))
+                                Gdk.Event(Gdk.FOCUS_CHANGE))
         self.assertNotSensitive(editor.main_dialog, ['ok_button'])
         self.assertInvalid(address_slave, ['city'])
 

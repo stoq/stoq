@@ -24,8 +24,7 @@
 
 import datetime
 
-import gtk
-import pango
+from gi.repository import Gtk, Pango
 
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
@@ -80,16 +79,16 @@ class LonelyPaymentDetailsDialog(BaseEditor):
                        data_type=datetime.date, sorted=True, ),
                 Column('description', _("Payment"),
                        data_type=str, expand=True,
-                       ellipsize=pango.ELLIPSIZE_END),
+                       ellipsize=Pango.EllipsizeMode.END),
                 Column('changed_field', _("Changed"),
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=Gtk.Justification.RIGHT),
                 Column('from_value', _("From"),
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=Gtk.Justification.RIGHT),
                 Column('to_value', _("To"),
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=Gtk.Justification.RIGHT),
                 Column('reason', _("Reason"),
                        data_type=str, expand=True,
-                       ellipsize=pango.ELLIPSIZE_END)]
+                       ellipsize=Pango.EllipsizeMode.END)]
 
     #
     # BaseEditor

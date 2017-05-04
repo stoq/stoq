@@ -27,8 +27,7 @@
 
 import platform
 
-import glib
-import gtk
+from gi.repository import Gtk, Glib
 from kiwi.utils import gsignal
 
 from stoqlib.lib.process import Process, PIPE
@@ -38,24 +37,24 @@ CHILD_TIMEOUT = 100  # in ms
 N_BYTES = 4096  # a page
 
 
-class ProcessView(gtk.ScrolledWindow):
+class ProcessView(Gtk.ScrolledWindow):
     gsignal('read-line', str)
     gsignal('finished', object)
 
     def __init__(self):
-        gtk.ScrolledWindow.__init__(self)
-        self.set_policy(gtk.POLICY_NEVER,
-                        gtk.POLICY_AUTOMATIC)
-        self.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        Gtk.ScrolledWindow.__init__(self)
+        self.set_policy(Gtk.PolicyType.NEVER,
+                        Gtk.PolicyType.AUTOMATIC)
+        self.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         self.listen_stdout = True
         self.listen_stderr = False
         self._create_view()
 
     def _create_view(self):
-        self._textview = gtk.TextView()
+        self._textview = Gtk.TextView()
         self._textview.set_editable(False)
         self._textview.set_cursor_visible(False)
-        self._textview.set_wrap_mode(gtk.WRAP_WORD)
+        self._textview.set_wrap_mode(Gtk.WrapMode.WORD)
         self._textview.set_property('width-request', 1)
         self.add(self._textview)
         self.show()
@@ -97,7 +96,7 @@ class ProcessView(gtk.ScrolledWindow):
             threadit(self._watch_fd, self.proc.stderr)
 
         # We could probably listen to SIGCHLD here instead
-        glib.timeout_add(CHILD_TIMEOUT, self._check_child_finished)
+        Glib.timeout_add(CHILD_TIMEOUT, self._check_child_finished)
 
     def feed(self, line):
         tbuffer = self._textview.get_buffer()

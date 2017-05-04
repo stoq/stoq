@@ -24,7 +24,7 @@
 
 import logging
 
-import gtk
+from gi.repository import Gtk
 from kiwi.environ import environ
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
@@ -100,7 +100,7 @@ class SearchDialog(BasicDialog):
     search_label = None
 
     #: Selection mode to use (if its possible to select more than one row)
-    selection_mode = gtk.SELECTION_BROWSE
+    selection_mode = Gtk.SelectionMode.BROWSE
 
     #: Default size for this dialog
     size = ()
@@ -199,8 +199,8 @@ class SearchDialog(BasicDialog):
         # be able to use both the keyboard and the mouse to select items
         # in the search list.
         selection_mode = selection_mode or self.selection_mode
-        if (selection_mode != gtk.SELECTION_BROWSE and
-                selection_mode != gtk.SELECTION_MULTIPLE):
+        if (selection_mode != Gtk.SelectionMode.BROWSE and
+                selection_mode != Gtk.SelectionMode.MULTIPLE):
             raise ValueError('Invalid selection mode %r' % selection_mode)
         return selection_mode
 
@@ -279,16 +279,16 @@ class SearchDialog(BasicDialog):
         :param stock: the gtk stock id to be used in the button.
         :param image: the image filename.
         """
-        button = gtk.Button(label=label)
+        button = Gtk.Button(label=label)
         if image:
-            image_widget = gtk.Image()
+            image_widget = Gtk.Image()
             image_widget.set_from_file(
                 environ.get_resource_filename('stoq', 'pixmaps', image))
             image_widget.show()
             button.set_image(image_widget)
         elif stock:
             button_set_image_with_label(button, stock, label)
-        self.action_area.set_layout(gtk.BUTTONBOX_END)
+        self.action_area.set_layout(Gtk.ButtonBoxStyle.END)
         self.action_area.pack_start(button, False, False, 6)
         self.action_area.set_child_secondary(button, True)
         return button
@@ -309,7 +309,7 @@ class SearchDialog(BasicDialog):
 
     def get_selection(self):
         mode = self.results.get_selection_mode()
-        if mode == gtk.SELECTION_BROWSE:
+        if mode == Gtk.SelectionMode.BROWSE:
             return self.results.get_selected()
         return self.results.get_selected_rows()
 

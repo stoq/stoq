@@ -95,8 +95,11 @@ class ShellBootstrap(object):
             from stoq.lib import gicompat
             gicompat.enable()
 
-        import gobject
-        gobject.threads_init()
+        from kiwi import compat
+        sys.modules['gi'] = compat
+
+        from gi.repository import GObject
+        GObject.threads_init()
 
     def _set_uptime(self):
         from stoqlib.lib.uptime import set_initial
@@ -198,7 +201,7 @@ class ShellBootstrap(object):
         sys.excepthook = hook
 
     def _setup_gtk(self):
-        import gtk
+        from gi.repository import Gtk, Gdk
         from kiwi.environ import environ
 
         # Total madness to make sure we can draw treeview lines,
@@ -214,27 +217,25 @@ class ShellBootstrap(object):
         data = environ.get_resource_string("stoq", "misc", "stoq.gtkrc")
         data = data.replace('\\x7f\\x01', '\x7f\x01')
 
-        gtk.rc_parse_string(data)
+        Gtk.rc_parse_string(data)
 
         # Creating a button as a temporary workaround for bug
         # https://bugzilla.gnome.org/show_bug.cgi?id=632538, until gtk 3.0
-        gtk.Button()
-        settings = gtk.settings_get_default()
+        Gtk.Button()
+        settings = Gtk.settings_get_default()
         settings.props.gtk_button_images = True
 
         from stoqlib.lib.environment import is_developer_mode
-        if is_developer_mode() and gtk.gtk_version[0] == 2:
-            from gtk import gdk
-
+        if is_developer_mode() and Gtk.gtk_version[0] == 2:
             # Install a Control-Q handler that forcefully exits
             # the program without saving any kind of state
             def event_handler(event):
-                if (event.type == gdk.KEY_PRESS and
-                        event.state & gdk.CONTROL_MASK and
-                        event.keyval == gtk.keysyms.q):
+                if (event.type == Gdk.KEY_PRESS and
+                        event.state & Gdk.ModifierType.CONTROL_MASK and
+                        event.keyval == Gtk.keysyms.q):
                     os._exit(0)
-                gtk.main_do_event(event)
-            gdk.event_handler_set(event_handler)
+                Gtk.main_do_event(event)
+            Gdk.event_handler_set(event_handler)
 
     def _setup_kiwi(self):
         from kiwi.datatypes import get_localeconv
@@ -304,12 +305,12 @@ class ShellBootstrap(object):
         from kiwi.component import provide_utility
         provide_utility(ISystemNotifier, DialogSystemNotifier(), replace=True)
 
-        import gtk
+        from gi.repository import Gtk
         from kiwi.environ import environ
         from kiwi.ui.pixbufutils import pixbuf_from_string
         data = environ.get_resource_string(
             'stoq', 'pixmaps', 'stoq-stock-app-24x24.png')
-        gtk.window_set_default_icon(pixbuf_from_string(data))
+        Gtk.window_set_default_icon(pixbuf_from_string(data))
 
         if platform.system() == 'Darwin':
             from AppKit import NSApplication, NSData, NSImage
@@ -417,10 +418,10 @@ class ShellBootstrap(object):
         if self.entered_main:
             return
 
-        import gtk
+        from gi.repository import Gtk
         from stoqlib.gui.dialogs.crashreportdialog import show_dialog
-        show_dialog(callback=gtk.main_quit)
-        gtk.main()
+        show_dialog(callback=Gtk.main_quit)
+        Gtk.main()
         raise SystemExit
 
 

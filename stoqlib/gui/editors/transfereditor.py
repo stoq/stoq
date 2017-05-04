@@ -24,7 +24,7 @@
 ##
 """ Transfer editors """
 
-import gtk
+from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 
@@ -61,7 +61,7 @@ class TransferItemSlave(BaseEditorSlave):
     def _setup_widgets(self):
         self.original_cost.update(self.model.sellable.cost)
         for widget in [self.quantity, self.stock_cost]:
-            widget.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
+            widget.set_adjustment(Gtk.Adjustment(lower=0, upper=MAX_INT,
                                                  step_incr=1, page_incr=10))
 
     def setup_proxies(self):

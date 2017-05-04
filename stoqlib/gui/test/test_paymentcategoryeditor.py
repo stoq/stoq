@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 import mock
 
 from stoqlib.domain.payment.category import PaymentCategory
@@ -56,7 +56,7 @@ class TestPaymentCategoryEditor(GUITest):
             yesno.assert_called_once_with(
                 "Changing the payment type will remove "
                 "this category from 1 payments. Are you sure?",
-                gtk.RESPONSE_NO, "Change", "Don't change")
+                Gtk.ResponseType.NO, "Change", "Don't change")
             self.assertEqual(payment.category, payment_category)
 
             yesno.reset_mock()
@@ -66,5 +66,5 @@ class TestPaymentCategoryEditor(GUITest):
             yesno.assert_called_once_with(
                 "Changing the payment type will remove "
                 "this category from 1 payments. Are you sure?",
-                gtk.RESPONSE_NO, "Change", "Don't change")
+                Gtk.ResponseType.NO, "Change", "Don't change")
             self.assertEqual(payment.category, None)

@@ -26,7 +26,7 @@
 
 import datetime
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
@@ -115,10 +115,10 @@ class SupplierDetailsDialog(BaseEditor):
     def _get_purchase_columns(self):
         return [IdentifierColumn("identifier", title=_('Purchase #'), sorted=True),
                 Column("open_date", title=_("Date"), data_type=datetime.date,
-                       justify=gtk.JUSTIFY_RIGHT, width=80),
+                       justify=Gtk.Justification.RIGHT, width=80),
                 Column("status_str", title=_("Status"), width=80,
                        data_type=str),
-                Column("total", title=_("Total"), justify=gtk.JUSTIFY_RIGHT,
+                Column("total", title=_("Total"), justify=Gtk.Justification.RIGHT,
                        data_type=currency, width=100)]
 
     def _get_product_columns(self):
@@ -127,9 +127,9 @@ class SupplierDetailsDialog(BaseEditor):
                 Column("description", title=_("Description"), data_type=str,
                        expand=True, searchable=True),
                 Column("qty_str", title=_("Total quantity"),
-                       data_type=str, width=120, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, width=120, justify=Gtk.Justification.RIGHT),
                 Column("total_value", title=_("Total value"), width=80,
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT, )]
+                       data_type=currency, justify=Gtk.Justification.RIGHT, )]
 
     def _get_payments_columns(self):
         return [IdentifierColumn("identifier", title=_('Payment #')),
@@ -143,13 +143,13 @@ class SupplierDetailsDialog(BaseEditor):
                 Column("status_str", title=_("Status"), width=80,
                        data_type=str),
                 ColoredColumn("base_value", title=_("Value"),
-                              justify=gtk.JUSTIFY_RIGHT, data_type=currency,
+                              justify=Gtk.Justification.RIGHT, data_type=currency,
                               color='red', width=100,
                               data_func=payment_value_colorize),
                 Column("days_late", title=_("Days Late"), width=110,
                        format_func=(lambda days_late: days_late and
                                     str(days_late) or u""),
-                       justify=gtk.JUSTIFY_RIGHT, data_type=str)]
+                       justify=Gtk.Justification.RIGHT, data_type=str)]
 
     #
     # BaseEditor Hooks

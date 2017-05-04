@@ -29,7 +29,7 @@ from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import converter
 import mock
-import gtk
+from gi.repository import Gtk
 
 from stoqlib.api import api
 from stoqlib.database.runtime import StoqlibStore
@@ -388,7 +388,7 @@ class TestPos(BaseGUITest):
 
                 yesno.assert_called_once_with(
                     'Do you want to print the booklets for this sale?',
-                    gtk.RESPONSE_YES, 'Print booklets', "Don't print")
+                    Gtk.ResponseType.YES, 'Print booklets', "Don't print")
                 payments = list(self.sale.group.get_payments_by_method_name(u'store_credit'))
                 print_report.assert_called_once_with(BookletReport, payments)
 
@@ -591,7 +591,7 @@ class TestPos(BaseGUITest):
         self.assertFalse(retval)
         yesno.assert_called_once_with(
             u'You must finish the current sale before '
-            u'you change to another application.', gtk.RESPONSE_NO,
+            u'you change to another application.', Gtk.ResponseType.NO,
             u'Cancel sale', u'Finish sale')
 
     @mock.patch('stoq.gui.pos.yesno')
@@ -613,7 +613,7 @@ class TestPos(BaseGUITest):
         self.assertFalse(retval)
         yesno.assert_called_once_with(
             u'You must finish or cancel the current sale before '
-            u'you can close the POS application.', gtk.RESPONSE_NO,
+            u'you can close the POS application.', Gtk.ResponseType.NO,
             u'Cancel sale', u'Finish sale')
 
     def test_get_sellable_and_batch(self):
@@ -728,7 +728,7 @@ class TestPos(BaseGUITest):
             self.activate(pos.NewTrade)
             message = (u"There is already a trade in progress... Do you "
                        u"want to cancel it and start a new one?")
-            yesno.assert_called_once_with(message, gtk.RESPONSE_NO,
+            yesno.assert_called_once_with(message, Gtk.ResponseType.NO,
                                           u"Cancel trade", u"Finish trade")
 
     @mock.patch('stoq.gui.pos.PosApp.run_dialog')
@@ -751,7 +751,7 @@ class TestPos(BaseGUITest):
             self.click(remove_button)
             yesno.assert_called_once_with(
                 "Do you really want to cancel the trade in progress?",
-                gtk.RESPONSE_NO, "Cancel trade", "Don't cancel")
+                Gtk.ResponseType.NO, "Cancel trade", "Don't cancel")
 
     @mock.patch('stoq.gui.pos.yesno')
     def test_cancel_order(self, yesno):
@@ -764,7 +764,7 @@ class TestPos(BaseGUITest):
 
         self.activate(pos.CancelOrder)
         yesno.assert_called_once_with(u'This will cancel the current order. Are '
-                                      u'you sure?', gtk.RESPONSE_NO,
+                                      u'you sure?', Gtk.ResponseType.NO,
                                       u"Don't cancel", u"Cancel order")
 
         self.assertEquals(olist[0], sale_item)
@@ -835,7 +835,7 @@ class TestPos(BaseGUITest):
             self.activate(pos.TillClose)
             yesno.assert_called_once_with(u'You must finish or cancel the current '
                                           u'sale before you can close the till.',
-                                          gtk.RESPONSE_NO, u"Cancel sale", u"Finish sale")
+                                          Gtk.ResponseType.NO, u"Cancel sale", u"Finish sale")
 
     @mock.patch('stoq.gui.pos.PosApp.run_dialog')
     def test_activate_menu_options(self, run_dialog):

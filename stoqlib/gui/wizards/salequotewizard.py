@@ -27,7 +27,7 @@
 from decimal import Decimal
 
 from dateutil.relativedelta import relativedelta
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
@@ -173,7 +173,7 @@ class StartSaleQuoteStep(WizardEditorStep):
 
         if client and client.status != Client.STATUS_SOLVENT:
             self.client_gadget.update_edit_button(
-                gtk.STOCK_DIALOG_WARNING, _("The client is not solvent"))
+                Gtk.STOCK_DIALOG_WARNING, _("The client is not solvent"))
 
     #
     #   Callbacks
@@ -731,7 +731,7 @@ class SaleQuoteWizard(BaseWizard):
         msg_list.append(_('Would you like to print the quote details now?'))
 
         # We can only print the details if the quote was confirmed.
-        if yesno('\n\n'.join(msg_list), gtk.RESPONSE_YES,
+        if yesno('\n\n'.join(msg_list), Gtk.ResponseType.YES,
                  _("Print quote details"), _("Don't print")):
             print_report(SaleOrderReport, self.model)
 

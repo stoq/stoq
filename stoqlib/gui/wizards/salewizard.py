@@ -26,7 +26,7 @@
 
 import decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.component import get_utility
 from kiwi.currency import currency, format_price
 from kiwi.datatypes import ValidationError
@@ -482,7 +482,7 @@ class ConfirmSaleBatchStep(WizardEditorStep):
     #
 
     def _on_sale_items__cell_data_func(self, column, renderer, obj, text):
-        if not isinstance(renderer, gtk.CellRendererText):
+        if not isinstance(renderer, Gtk.CellRendererText):
             return text
 
         # Set red to provide a visual indication for the user that
@@ -918,7 +918,7 @@ class ConfirmSaleWizard(BaseWizard):
         return self.get_total_to_pay() > 0
 
     def print_sale_details(self):
-        if yesno(_("Do you want to print this sale's details?"), gtk.RESPONSE_YES,
+        if yesno(_("Do you want to print this sale's details?"), Gtk.ResponseType.YES,
                  _("Print Details"), _("Don't Print")):
             print_report(SaleOrderReport, self.model)
 

@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 import mock
 
 from kiwi.ui.forms import TextField
@@ -86,7 +86,7 @@ class TestTransferOrderDetailsDialog(GUITest):
         with mock.patch.object(self.store, 'commit'):
             self.click(dialog.receive_button)
 
-        yesno.assert_called_once_with(u'Receive the order?', gtk.RESPONSE_YES,
+        yesno.assert_called_once_with(u'Receive the order?', Gtk.ResponseType.YES,
                                       u'Receive', u"Don't receive")
 
         self.assertEquals(order.status, order.STATUS_RECEIVED)

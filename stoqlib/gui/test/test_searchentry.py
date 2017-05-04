@@ -24,7 +24,7 @@
 
 
 import mock
-import gtk
+from gi.repository import Gtk
 from kiwi.ui.widgets.entry import ProxyEntry
 
 from stoqlib.domain.person import ClientView
@@ -41,7 +41,7 @@ class TestSearchEntryGadget(GUITest):
     def _create_interface(self, run_editor=None):
         self.sale = self.create_sale()
 
-        self.window = gtk.Window()
+        self.window = Gtk.Window()
         self.entry = ProxyEntry()
         self.window.add(self.entry)
         self.client_gadget = SearchEntryGadget(
@@ -51,8 +51,8 @@ class TestSearchEntryGadget(GUITest):
         self.client_gadget.get_model_obj = lambda obj: obj and obj.client
 
     def test_create(self):
-        window = gtk.Window()
-        box = gtk.VBox()
+        window = Gtk.Window()
+        box = Gtk.VBox()
         window.add(box)
         entry = ProxyEntry()
         box.pack_start(entry, True, True, 0)
@@ -139,7 +139,7 @@ class TestSearchEntryGadget(GUITest):
     @mock.patch('stoqlib.gui.widgets.searchentry.run_dialog')
     def test_with_cfop(self, run_dialog, new_store):
         new_store.return_value = self.store
-        window = gtk.Window()
+        window = Gtk.Window()
         entry = ProxyEntry()
         window.add(entry)
 

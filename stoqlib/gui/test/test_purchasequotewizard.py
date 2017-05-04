@@ -23,7 +23,7 @@
 ##
 
 import mock
-import gtk
+from gi.repository import Gtk
 
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import Storable
@@ -154,7 +154,7 @@ class TestReceiveQuoteWizard(GUITest):
                                                        self.purchase_clone)
                     yesno.assert_called_once_with(
                         'Should we close the quotes used to compose the '
-                        'purchase order ?', gtk.RESPONSE_NO, 'Close quotes',
+                        'purchase order ?', Gtk.ResponseType.NO, 'Close quotes',
                         "Don't close")
 
         self.click(self.wizard.next_button)

@@ -257,28 +257,28 @@ icon_info = [
 
 # register stoq stock icons
 def register():
-    import gtk
+    from gi.repository import Gtk
     from kiwi.environ import environ
     from kiwi.ui.pixbufutils import pixbuf_from_string
 
     size_dict = {
-        GTK_ICON_SIZE_BUTTON: gtk.ICON_SIZE_BUTTON,
-        GTK_ICON_SIZE_DIALOG: gtk.ICON_SIZE_DIALOG,
-        GTK_ICON_SIZE_DND: gtk.ICON_SIZE_DND,
-        GTK_ICON_SIZE_LARGE_TOOLBAR: gtk.ICON_SIZE_LARGE_TOOLBAR,
-        GTK_ICON_SIZE_MENU: gtk.ICON_SIZE_MENU,
-        GTK_ICON_SIZE_SMALL_TOOLBAR: gtk.ICON_SIZE_SMALL_TOOLBAR,
+        GTK_ICON_SIZE_BUTTON: Gtk.IconSize.BUTTON,
+        GTK_ICON_SIZE_DIALOG: Gtk.IconSize.DIALOG,
+        GTK_ICON_SIZE_DND: Gtk.IconSize.DND,
+        GTK_ICON_SIZE_LARGE_TOOLBAR: Gtk.IconSize.LARGE_TOOLBAR,
+        GTK_ICON_SIZE_MENU: Gtk.IconSize.MENU,
+        GTK_ICON_SIZE_SMALL_TOOLBAR: Gtk.IconSize.SMALL_TOOLBAR,
     }
 
-    iconfactory = gtk.IconFactory()
-    stock_ids = gtk.stock_list_ids()
+    iconfactory = Gtk.IconFactory()
+    stock_ids = Gtk.stock_list_ids()
     for stock_id, arg in icon_info:
         # only load image files when our stock_id is not present
         if stock_id in stock_ids:
             continue
-        iconset = gtk.IconSet()
+        iconset = Gtk.IconSet()
         for size, filename in arg.items():
-            iconsource = gtk.IconSource()
+            iconsource = Gtk.IconSource()
             data = environ.get_resource_string('stoq', 'pixmaps', filename)
             if filename.endswith('png'):
                 format = 'png'

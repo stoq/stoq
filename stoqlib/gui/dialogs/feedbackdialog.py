@@ -26,7 +26,7 @@
 
 import logging
 
-import gtk
+from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
@@ -64,7 +64,7 @@ class FeedbackDialog(BaseEditor):
 
     def setup_proxies(self):
         self.add_proxy(self.model, self.proxy_widgets)
-        self.feedback.set_wrap_mode(gtk.WRAP_WORD)
+        self.feedback.set_wrap_mode(Gtk.WrapMode.WORD)
         if self.model.email:
             self.feedback.grab_focus()
         else:

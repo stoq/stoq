@@ -27,7 +27,7 @@ import collections
 import datetime
 import decimal
 
-import gtk
+from gi.repository import Gtk, Pango
 
 from kiwi import ValueUnset
 from kiwi.currency import currency
@@ -35,7 +35,6 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.forms import PriceField, NumericField
 from kiwi.ui.objectlist import Column
-import pango
 from storm.expr import And, Eq, Or
 
 from stoqlib.api import api
@@ -83,7 +82,7 @@ class _WorkOrderItemEditor(BaseEditor):
         self._original_quantity_decreased = model.quantity_decreased
         self.manager = None
         BaseEditor.__init__(self, store, model, visual_mode=visual_mode)
-        self.price.set_icon_activatable(gtk.ENTRY_ICON_PRIMARY,
+        self.price.set_icon_activatable(Gtk.EntryIconPosition.PRIMARY,
                                         activatable=True)
 
     #
@@ -190,7 +189,7 @@ class _WorkOrderItemEditor(BaseEditor):
                  valid_data['max_discount']))
 
     def on_price__icon_press(self, entry, icon_pos, event):
-        if icon_pos != gtk.ENTRY_ICON_PRIMARY:
+        if icon_pos != Gtk.EntryIconPosition.PRIMARY:
             return
 
         # Ask for the credentials of a different user that can possibly allow a
@@ -464,13 +463,13 @@ class WorkOrderHistorySlave(BaseEditorSlave):
         self.details_list.set_columns([
             Column('date', _(u"Date"), data_type=datetime.datetime, sorted=True),
             Column('user_name', _(u"Who"), data_type=str, expand=True,
-                   ellipsize=pango.ELLIPSIZE_END),
+                   ellipsize=Pango.EllipsizeMode.END),
             Column('what', _(u"What"), data_type=str, expand=True),
             Column('old_value', _(u"Old value"), data_type=str, visible=False),
             Column('new_value', _(u"New value"), data_type=str),
             Column('notes', _(u"Notes"), data_type=str,
                    format_func=self._format_notes,
-                   ellipsize=pango.ELLIPSIZE_END)])
+                   ellipsize=Pango.EllipsizeMode.END)])
         self.update_items()
 
     #

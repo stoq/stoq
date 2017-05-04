@@ -26,9 +26,7 @@
 
 import time
 
-import glib
-import gtk
-import pango
+from gi.repository import Gtk, Gdk, Glib, Pango
 import pangocairo
 
 from kiwi.component import get_utility
@@ -46,19 +44,19 @@ _WINDOW_TIMEOUT = 100  # How often we should check if there are
 _ = stoqlib_gettext
 
 
-class SplashScreen(gtk.Window):
+class SplashScreen(Gtk.Window):
 
     def __init__(self):
-        gtk.Window.__init__(self)
+        Gtk.Window.__init__(self)
         self.set_name('SplashWindow')
-        self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_SPLASHSCREEN)
+        self.set_type_hint(Gdk.WindowTypeHint.SPLASHSCREEN)
         self.resize(WIDTH, HEIGHT)
         # Ubuntu has backported the 3.0 has-resize-grip property,
         # disable it as it doesn't make sense for splash screens
         if hasattr(self.props, 'has_resize_grip'):
             self.props.has_resize_grip = False
 
-        darea = gtk.DrawingArea()
+        darea = Gtk.DrawingArea()
         try:
             darea.connect("expose-event", self.expose)
         except TypeError:
@@ -69,12 +67,12 @@ class SplashScreen(gtk.Window):
         pixbuf_data = environ.get_resource_string("stoq", "pixmaps", "splash.png")
         self._pixbuf = pixbuf_from_string(pixbuf_data)
 
-        glib.timeout_add(_WINDOW_TIMEOUT, self._hide_splash_timeout)
+        Glib.timeout_add(_WINDOW_TIMEOUT, self._hide_splash_timeout)
 
     def _hide_splash_timeout(self):
         # Hide the splash screen as soon as there is another window
         # created
-        if len(gtk.window_list_toplevels()) > 1:
+        if len(Gtk.window_list_toplevels()) > 1:
             self.destroy()
             return False
         return True
@@ -86,18 +84,18 @@ class SplashScreen(gtk.Window):
         version = info.get("version")
         if ' ' in version:
             ver, rev = version.split(' ')
-            version = '%s\n<span font="8">%s</span>' % (ver, glib.markup_escape_text(rev))
+            version = '%s\n<span font="8">%s</span>' % (ver, Glib.markup_escape_text(rev))
         return _("Version %s") % (version, )
 
     def _draw_gi(self, cr):
-        gtk.gdk.cairo_set_source_pixbuf(cr, self._pixbuf, 0, 0)
+        Gdk.cairo_set_source_pixbuf(cr, self._pixbuf, 0, 0)
         cr.paint()
 
         cr.set_source_rgb(.8, .8, .8)
         layout = pangocairo.create_layout(cr)
-        desc = pango.FontDescription('Sans 12')
+        desc = Pango.FontDescription('Sans 12')
         layout.set_font_description(desc)
-        layout.set_alignment(pango.ALIGN_CENTER)
+        layout.set_alignment(Pango.Alignment.CENTER)
         layout.set_markup(self._get_label(), -1)
         pangocairo.update_layout(cr, layout)
         w, h = layout.get_pixel_size()
@@ -120,8 +118,8 @@ class SplashScreen(gtk.Window):
         cr.set_source_rgb(1, 1, 1)
         pcr = pangocairo.CairoContext(cr)
         layout = pcr.create_layout()
-        layout.set_alignment(pango.ALIGN_CENTER)
-        layout.set_font_description(pango.FontDescription("Sans 10"))
+        layout.set_alignment(Pango.Alignment.CENTER)
+        layout.set_font_description(Pango.FontDescription("Sans 10"))
         layout.set_markup(self._get_label())
         pcr.update_layout(layout)
         w, h = layout.get_pixel_size()
@@ -129,12 +127,12 @@ class SplashScreen(gtk.Window):
         pcr.show_layout(layout)
 
     def show(self):
-        gtk.Window.show(self)
+        Gtk.Window.show(self)
 
         time.sleep(0.01)
-        while gtk.events_pending():
+        while Gtk.events_pending():
             time.sleep(0.01)
-            gtk.main_iteration()
+            Gtk.main_iteration()
 
 
 _splash = None

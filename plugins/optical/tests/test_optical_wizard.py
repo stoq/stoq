@@ -27,7 +27,7 @@ __tests__ = 'plugins/optical/opticalwizard.py'
 import decimal
 
 import mock
-import gtk
+from gi.repository import Gtk
 
 from stoqlib.api import api
 from stoqlib.domain.sale import Sale, SaleComment
@@ -158,7 +158,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
 
         self.assertEqual(wizard.model.payments.count(), 0)
         yesno.assert_called_once_with(_('Would you like to print the quote '
-                                        'details now?'), gtk.RESPONSE_YES,
+                                        'details now?'), Gtk.ResponseType.YES,
                                       _("Print quote details"), _("Don't print"))
 
         # Test get_saved_items, using the existing model here
@@ -342,7 +342,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         wizard.print_quote_details(workorder)
 
         yesno.assert_called_once_with('Would you like to print the quote details now?',
-                                      gtk.RESPONSE_YES,
+                                      Gtk.ResponseType.YES,
                                       'Print quote details',
                                       "Don't print")
         print_report.assert_called_once_with(OpticalWorkOrderReceiptReport, [workorder])

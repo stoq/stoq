@@ -26,7 +26,7 @@
 import datetime
 from dateutil.relativedelta import relativedelta
 
-import gtk
+from gi.repository import Gtk
 
 from kiwi.datatypes import ValidationError
 
@@ -70,7 +70,7 @@ class BaseTaxSlave(BaseEditorSlave):
             widget = getattr(self, name)
             widget.set_digits(2)
             widget.set_adjustment(
-                gtk.Adjustment(lower=0, upper=100, step_incr=1))
+                Gtk.Adjustment(lower=0, upper=100, step_incr=1))
 
         for w in self.hide_widgets:
             getattr(self, w).hide()
@@ -78,8 +78,8 @@ class BaseTaxSlave(BaseEditorSlave):
 
         for name, tooltip in self.tooltips.items():
             widget = getattr(self, name)
-            if isinstance(widget, gtk.Entry):
-                widget.set_property('primary-icon-stock', gtk.STOCK_INFO)
+            if isinstance(widget, Gtk.Entry):
+                widget.set_property('primary-icon-stock', Gtk.STOCK_INFO)
                 widget.set_property('primary-icon-tooltip-text', tooltip)
                 widget.set_property('primary-icon-sensitive', True)
                 widget.set_property('primary-icon-activatable', False)

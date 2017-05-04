@@ -25,7 +25,7 @@
 
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 import string
 from kiwi.ui.objectlist import Column
 from kiwi.datatypes import ValidationError
@@ -193,7 +193,7 @@ class OpticalSaleQuoteWizard(WorkOrderQuoteWizard):
     def print_quote_details(self, model, payments_created=False):
         msg = _('Would you like to print the quote details now?')
         # We can only print the details if the quote was confirmed.
-        if yesno(msg, gtk.RESPONSE_YES,
+        if yesno(msg, Gtk.ResponseType.YES,
                  _("Print quote details"), _("Don't print")):
             orders = WorkOrder.find_by_sale(self.model.store, self.model)
             print_report(OpticalWorkOrderReceiptReport, list(orders))

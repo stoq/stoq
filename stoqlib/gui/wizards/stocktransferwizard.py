@@ -25,7 +25,7 @@
 
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 from storm.expr import And
@@ -251,7 +251,7 @@ class StockTransferWizard(BaseWizard):
 
     def _receipt_dialog(self, order):
         msg = _('Would you like to print a receipt for this transfer?')
-        if yesno(msg, gtk.RESPONSE_YES, _("Print receipt"), _("Don't print")):
+        if yesno(msg, Gtk.ResponseType.YES, _("Print receipt"), _("Don't print")):
             print_report(TransferOrderReceipt, order)
 
     def finish(self):

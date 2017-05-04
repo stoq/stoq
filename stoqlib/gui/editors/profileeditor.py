@@ -23,7 +23,7 @@
 ##
 """ User profile editor implementation.  """
 
-import gtk
+from gi.repository import Gtk
 from kiwi.component import get_utility
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.checkbutton import ProxyCheckButton
@@ -72,7 +72,7 @@ class UserProfileEditor(BaseEditor):
 
             # Create the user interface for each application which is
             # a HBox, a CheckButton and an Image
-            box = gtk.HBox()
+            box = Gtk.HBox()
             box.show()
 
             button = ProxyCheckButton()
@@ -82,7 +82,7 @@ class UserProfileEditor(BaseEditor):
             button.show()
             box.pack_start(button, True, True, 6)
 
-            image = gtk.image_new_from_stock(icon_name, gtk.ICON_SIZE_MENU)
+            image = Gtk.image_new_from_stock(icon_name, Gtk.IconSize.MENU)
             box.pack_start(image, False, False, 0)
             image.show()
 

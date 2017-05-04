@@ -25,7 +25,7 @@
 """ Classes for Receiving Order Details Dialog """
 
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, SummaryLabel
 
@@ -87,16 +87,16 @@ class ReceivingOrderDetailsDialog(BaseEditor):
 
     def _get_product_columns(self):
         return [Column("sellable.code", title=_("Code"), data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT, width=130),
+                       justify=Gtk.Justification.RIGHT, width=130),
                 Column("sellable.description", title=_("Description"),
                        data_type=str, width=80, expand=True),
                 Column("quantity_unit_string", title=_("Quantity"),
                        data_type=str, width=90,
-                       justify=gtk.JUSTIFY_RIGHT),
+                       justify=Gtk.Justification.RIGHT),
                 Column("cost", title=_("Cost"), width=80,
                        format_func=get_formatted_cost, data_type=currency,
-                       justify=gtk.JUSTIFY_RIGHT),
-                Column("total", title=_("Total"), justify=gtk.JUSTIFY_RIGHT,
+                       justify=Gtk.Justification.RIGHT),
+                Column("total", title=_("Total"), justify=Gtk.Justification.RIGHT,
                        data_type=currency, width=100)]
 
     #

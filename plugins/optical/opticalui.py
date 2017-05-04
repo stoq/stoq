@@ -25,7 +25,7 @@
 import decimal
 import logging
 
-import gtk
+from gi.repository import Gtk
 from storm.expr import LeftJoin
 
 from stoqlib.api import api
@@ -194,7 +194,7 @@ class OpticalUI(object):
         """
 
         group = get_accels('plugin.optical')
-        ag = gtk.ActionGroup('OpticalSalesActions')
+        ag = Gtk.ActionGroup('OpticalSalesActions')
         ag.add_actions([
             ('OpticalMenu', None, _(u'Optical')),
             ('OpticalPreSale', None, _(u'Sale with work order...'),
@@ -232,7 +232,7 @@ class OpticalUI(object):
         </ui>
         """
 
-        ag = gtk.ActionGroup('OpticalServicesActions')
+        ag = Gtk.ActionGroup('OpticalServicesActions')
         ag.add_actions([
             ('OpticalDetails', None, _(u'Edit optical details...'),
              None, None,
@@ -261,7 +261,7 @@ class OpticalUI(object):
 
         # Also add an print button
         if editor.edit_mode:
-            print_button = editor.add_button(_('Print'), gtk.STOCK_PRINT)
+            print_button = editor.add_button(_('Print'), Gtk.STOCK_PRINT)
             print_button.connect('clicked', _print_report)
 
     def _add_product_slave(self, editor, model, store):

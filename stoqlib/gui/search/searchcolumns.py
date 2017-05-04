@@ -25,8 +25,7 @@
 
 import decimal
 
-import gobject
-import gtk
+from gi.repository import Gtk, GObject
 from kiwi.ui.objectlist import Column
 
 from stoqlib.lib.formatters import format_quantity
@@ -66,25 +65,25 @@ class SearchColumn(Column):
     """
 
     #: overrides the function that generates the query to process the search
-    search_func = gobject.property(type=object, default=None)
+    search_func = GObject.property(type=object, default=None)
 
     #: names the search interface differently from the column
-    search_label = gobject.property(type=object, default=None)
+    search_label = GObject.property(type=object, default=None)
 
     #: use the query on the *having* part instead of the *where*'s on
-    use_having = gobject.property(type=bool, default=False)
+    use_having = GObject.property(type=bool, default=False)
 
     #: if we should allow filtering by multiple values
-    multiple_selection = gobject.property(type=bool, default=False)
+    multiple_selection = GObject.property(type=bool, default=False)
 
     #: the search attribute to use when filtering by this column
-    search_attribute = gobject.property(type=object, default=None)
+    search_attribute = GObject.property(type=object, default=None)
 
     #: valid values to select when filtering by this column
-    valid_values = gobject.property(type=object, default=None)
+    valid_values = GObject.property(type=object, default=None)
 
     #: long title to use in this column
-    long_title = gobject.property(type=str, default=None)
+    long_title = GObject.property(type=str, default=None)
 
     def __init__(self, attribute, title=None, data_type=None, **kwargs):
         kwargs.setdefault('search_attribute', attribute)
@@ -121,7 +120,7 @@ class IdentifierColumn(SearchColumn):
         if title is None:
             title = _(u"#")
         if justify is None:
-            justify = gtk.JUSTIFY_RIGHT
+            justify = Gtk.Justification.RIGHT
 
         super(IdentifierColumn, self).__init__(
             attribute=attribute, title=title, data_type=data_type,
@@ -139,7 +138,7 @@ class QuantityColumn(SearchColumn):
         super(QuantityColumn, self).__init__(attribute=attribute, title=title,
                                              data_type=decimal.Decimal,
                                              format_func=self._format_func, format_func_data=True,
-                                             width=width, justify=gtk.JUSTIFY_RIGHT, **kwargs)
+                                             width=width, justify=Gtk.Justification.RIGHT, **kwargs)
 
     def _format_func(self, obj, data):
         quantity = getattr(obj, self.attribute) or 0

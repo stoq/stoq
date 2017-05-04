@@ -22,8 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gobject
-import gtk
+from gi.repository import Gtk, GObject
 from kiwi.ui.entry import KiwiEntry
 
 # Ported from evolution
@@ -41,7 +40,7 @@ class HintedEntry(KiwiEntry):
     def set_hint(self, text):
         self._hint = text
         if self._hint_shown:
-            gtk.Entry.set_text(self, text)
+            Gtk.Entry.set_text(self, text)
 
     def set_text(self, text):
         if not text and not self.has_focus():
@@ -57,18 +56,18 @@ class HintedEntry(KiwiEntry):
     def show_hint(self):
         self._hint_shown = True
         super(HintedEntry, self).set_text(self._hint)
-        self.modify_text(gtk.STATE_NORMAL,
-                         self.get_style().text[gtk.STATE_INSENSITIVE])
+        self.modify_text(Gtk.StateType.NORMAL,
+                         self.get_style().text[Gtk.StateType.INSENSITIVE])
 
     def show_text(self, text):
         self._hint_shown = False
         super(HintedEntry, self).set_text(text)
-        self.modify_text(gtk.STATE_NORMAL, None)
+        self.modify_text(Gtk.StateType.NORMAL, None)
 
     def do_grab_focus(self):
         if self._hint_shown:
-            # Why do we have to do_grab_focus from gtk.Widget here?
-            return gtk.Widget.do_grab_focus(self)
+            # Why do we have to do_grab_focus from Gtk.Widget here?
+            return Gtk.Widget.do_grab_focus(self)
         else:
             return KiwiEntry.do_grab_focus(self)
 
@@ -84,4 +83,4 @@ class HintedEntry(KiwiEntry):
         return KiwiEntry.do_focus_out_event(self, event)
 
 
-gobject.type_register(HintedEntry)
+GObject.type_register(HintedEntry)

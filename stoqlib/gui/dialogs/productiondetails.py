@@ -25,8 +25,7 @@
 
 from decimal import Decimal
 
-import pango
-import gtk
+from gi.repository import Gtk, Pango
 from kiwi.ui.objectlist import Column, ColoredColumn
 
 from stoqlib.api import api
@@ -64,7 +63,7 @@ class ProductionDetailsDialog(BaseEditor):
         self.materials.set_columns(self._get_material_columns())
         self.services.set_columns(self._get_service_columns())
         self.produced_items.set_columns(self._get_produced_items_columns())
-        self.produced_items.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.produced_items.set_selection_mode(Gtk.SelectionMode.MULTIPLE)
 
     def _setup_data(self):
         # FIXME: Improve this
@@ -85,45 +84,45 @@ class ProductionDetailsDialog(BaseEditor):
         return [Column('description',
                        title=_('Description'),
                        data_type=str, expand=True, searchable=True,
-                       ellipsize=pango.ELLIPSIZE_END, sorted=True),
+                       ellipsize=Pango.EllipsizeMode.END, sorted=True),
                 Column('unit_description', _("Unit"),
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=Gtk.Justification.RIGHT),
                 Column('quantity', title=_('Quantity'),
-                       data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=Decimal, justify=Gtk.Justification.RIGHT),
                 Column('produced', title=_('Produced'),
-                       data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=Decimal, justify=Gtk.Justification.RIGHT),
                 Column('lost', title=_('Lost'),
-                       data_type=Decimal, justify=gtk.JUSTIFY_RIGHT)]
+                       data_type=Decimal, justify=Gtk.Justification.RIGHT)]
 
     def _get_material_columns(self):
         return [Column('description', title=_('Description'),
                        data_type=str, expand=True, searchable=True,
-                       ellipsize=pango.ELLIPSIZE_END, sorted=True),
+                       ellipsize=Pango.EllipsizeMode.END, sorted=True),
                 Column('product.location', _("Location"), data_type=str),
                 Column('unit_description', _("Unit"),
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=Gtk.Justification.RIGHT),
                 Column('needed', title=_('Needed'),
-                       data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=Decimal, justify=Gtk.Justification.RIGHT),
                 Column('allocated', title=_('Allocated'),
-                       data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=Decimal, justify=Gtk.Justification.RIGHT),
                 Column('consumed', title=_('Consumed'),
-                       data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=Decimal, justify=Gtk.Justification.RIGHT),
                 Column('lost', title=_('Lost'),
-                       data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=Decimal, justify=Gtk.Justification.RIGHT),
                 Column('to_purchase', title=_('To Purchase'),
-                       data_type=Decimal, justify=gtk.JUSTIFY_RIGHT,
+                       data_type=Decimal, justify=Gtk.Justification.RIGHT,
                        visible=False),
                 Column('to_make', title=_('To Make'),
-                       data_type=Decimal, justify=gtk.JUSTIFY_RIGHT,
+                       data_type=Decimal, justify=Gtk.Justification.RIGHT,
                        visible=False)]
 
     def _get_service_columns(self):
         return [Column('description', _("Description"), data_type=str,
-                       expand=True, ellipsize=pango.ELLIPSIZE_END),
+                       expand=True, ellipsize=Pango.EllipsizeMode.END),
                 Column('quantity', _("Quantity"),
-                       data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=Decimal, justify=Gtk.Justification.RIGHT),
                 Column('unit_description', _("Unit"),
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT)]
+                       data_type=str, justify=Gtk.Justification.RIGHT)]
 
     def _get_test_result(self, item, quality_test):
         """Gets test result from cache, or fetch from database.

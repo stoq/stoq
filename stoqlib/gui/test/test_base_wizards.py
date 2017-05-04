@@ -23,7 +23,7 @@
 ##
 
 import mock
-import gtk
+from gi.repository import Gtk
 
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
@@ -67,7 +67,7 @@ class TestBaseWizard(GUITest):
             yesno.assert_called_once_with(
                 ("If you cancel this dialog all changes will be "
                  "lost. Are you sure?"),
-                gtk.RESPONSE_NO, "Cancel", "Don't cancel")
+                Gtk.ResponseType.NO, "Cancel", "Don't cancel")
             self.assertEquals(close.call_count, 1)
 
         yesno.reset_mock()
@@ -80,5 +80,5 @@ class TestBaseWizard(GUITest):
             yesno.assert_called_once_with(
                 ("If you cancel this dialog all changes will be "
                  "lost. Are you sure?"),
-                gtk.RESPONSE_NO, "Cancel", "Don't cancel")
+                Gtk.ResponseType.NO, "Cancel", "Don't cancel")
             self.assertEquals(close.call_count, 0)

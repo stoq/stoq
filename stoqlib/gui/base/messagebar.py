@@ -23,14 +23,14 @@
 ##
 ##
 
-import gtk
+from gi.repository import Gtk
 
 
-class MessageBar(gtk.InfoBar):
+class MessageBar(Gtk.InfoBar):
     def __init__(self, message, message_type=None):
         if message_type is None:
-            message_type = gtk.MESSAGE_INFO
-        self.label = gtk.Label(message)
+            message_type = Gtk.MessageType.INFO
+        self.label = Gtk.Label(message)
         self.label.set_use_markup(True)
         self.label.set_line_wrap(True)
         self.label.set_width_chars(100)
@@ -38,7 +38,7 @@ class MessageBar(gtk.InfoBar):
         self.label.set_padding(12, 0)
         self.label.show()
 
-        gtk.InfoBar.__init__(self)
+        Gtk.InfoBar.__init__(self)
         self.get_content_area().add(self.label)
         self.set_message_type(message_type)
 
@@ -48,7 +48,7 @@ class MessageBar(gtk.InfoBar):
 
         :param message: the message to be displayed
         :param message_type: defines the color and urgency of a message. One of
-          gtk.MESSAGE_* .
+          Gtk.MessageType.* .
         """
         # If the message type changed
         if message_type:

@@ -23,7 +23,7 @@
 ##
 ##
 
-import gtk
+from gi.repository import Gtk
 
 from kiwi.ui.objectlist import Column
 
@@ -96,7 +96,7 @@ class SaleInvoicePrinterDialog(BaseEditor):
         self._setup_widgets()
 
     def _setup_widgets(self):
-        self.main_dialog.ok_button.set_label(gtk.STOCK_PRINT)
+        self.main_dialog.ok_button.set_label(Gtk.STOCK_PRINT)
 
         if self.model.invoice.invoice_number is not None:
             self.invoice_number.set_sensitive(False)

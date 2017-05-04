@@ -19,7 +19,7 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 
 from kiwi.currency import currency
 from kiwi.python import Settable
@@ -41,7 +41,7 @@ class StockTextColumn(Column):
 
     def attach(self, objectlist):
         column = Column.attach(self, objectlist)
-        self._pixbuf_renderer = gtk.CellRendererPixbuf()
+        self._pixbuf_renderer = Gtk.CellRendererPixbuf()
         column.pack_start(self._pixbuf_renderer, False)
         return column
 
@@ -88,10 +88,10 @@ class AccountTree(ObjectTree):
                                          data_func=colorize,
                                          use_data_model=True))
         ObjectTree.__init__(self, columns,
-                            mode=gtk.SELECTION_SINGLE)
+                            mode=Gtk.SelectionMode.SINGLE)
 
         def render_icon(icon):
-            return self.render_icon(icon, gtk.ICON_SIZE_MENU)
+            return self.render_icon(icon, Gtk.IconSize.MENU)
         self._pixbuf_money = render_icon(STOQ_MONEY)
         self._pixbuf_payable = render_icon(STOQ_PAYABLE_APP)
         self._pixbuf_receivable = render_icon(STOQ_BILLS)

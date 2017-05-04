@@ -27,7 +27,7 @@
 import datetime
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.component import get_utility
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
@@ -287,7 +287,7 @@ class PurchaseItemStep(SellableItemStep):
             return
 
         minimum = supplier_info.minimum_purchase
-        self.quantity.set_adjustment(gtk.Adjustment(lower=minimum,
+        self.quantity.set_adjustment(Gtk.Adjustment(lower=minimum,
                                                     upper=MAX_INT,
                                                     step_incr=1))
         self.quantity.set_value(minimum)

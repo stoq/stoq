@@ -27,8 +27,7 @@
 import datetime
 import decimal
 
-import pango
-import gtk
+from gi.repository import Gtk, Pango
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, ColoredColumn
 
@@ -112,8 +111,8 @@ class SaleDetailsDialog(BaseEditor):
         :param slave: the slave we are attaching to the new tab
         :param name: the name of the tab
         """
-        event_box = gtk.EventBox()
-        self.details_notebook.insert_page(event_box, gtk.Label(name))
+        event_box = Gtk.EventBox()
+        self.details_notebook.insert_page(event_box, Gtk.Label(name))
         self.attach_slave(name, slave, event_box)
         event_box.show()
 
@@ -226,7 +225,7 @@ class SaleDetailsDialog(BaseEditor):
             page_no = self.details_notebook.page_num(self.returned_items_vbox)
             self.details_notebook.remove_page(page_no)
 
-        buffer = gtk.TextBuffer()
+        buffer = Gtk.TextBuffer()
         buffer.set_text('\n\n'.join(notes))
         self.notes.set_buffer(buffer)
 
@@ -252,17 +251,17 @@ class SaleDetailsDialog(BaseEditor):
                        width=150, expand=True),
                 Column('due_date', _("Due date"), sorted=True,
                        data_type=datetime.date, width=90,
-                       justify=gtk.JUSTIFY_RIGHT),
+                       justify=Gtk.Justification.RIGHT),
                 Column('paid_date', _("Paid date"),
                        data_type=datetime.date, width=90),
                 Column('status_str', _("Status"), data_type=str, width=80),
                 ColoredColumn('value', _("Value"), data_type=currency,
                               width=90, color='red',
-                              justify=gtk.JUSTIFY_RIGHT,
+                              justify=Gtk.Justification.RIGHT,
                               data_func=payment_value_colorize),
                 ColoredColumn('paid_value', _("Paid value"), data_type=currency,
                               width=92, color='red',
-                              justify=gtk.JUSTIFY_RIGHT,
+                              justify=Gtk.Justification.RIGHT,
                               data_func=payment_value_colorize)]
 
     def _get_items_columns(self):
@@ -286,16 +285,16 @@ class SaleDetailsDialog(BaseEditor):
                        data_type=datetime.date, sorted=True, ),
                 Column('description', _(u"Payment"),
                        data_type=str, expand=True,
-                       ellipsize=pango.ELLIPSIZE_END),
+                       ellipsize=Pango.EllipsizeMode.END),
                 Column('changed_field', _(u"Changed"),
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=Gtk.Justification.RIGHT),
                 Column('from_value', _(u"From"),
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=Gtk.Justification.RIGHT),
                 Column('to_value', _(u"To"),
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=Gtk.Justification.RIGHT),
                 Column('reason', _(u"Reason"),
                        data_type=str, expand=True,
-                       ellipsize=pango.ELLIPSIZE_END)]
+                       ellipsize=Pango.EllipsizeMode.END)]
 
     def _get_returned_items_columns(self):
         return [
@@ -316,10 +315,10 @@ class SaleDetailsDialog(BaseEditor):
         return [
             Column('date', _(u"Date"), data_type=datetime.datetime, sorted=True),
             Column('author_name', _(u"Who"), data_type=str, expand=True,
-                   ellipsize=pango.ELLIPSIZE_END),
+                   ellipsize=Pango.EllipsizeMode.END),
             Column('comment', _(u"Notes"), data_type=str, expand=True,
                    format_func=self._format_comments,
-                   ellipsize=pango.ELLIPSIZE_END)]
+                   ellipsize=Pango.EllipsizeMode.END)]
 
     #
     # BaseEditor hooks

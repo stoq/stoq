@@ -22,13 +22,13 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk, Gdk
 
 import webbrowser
 
 
 def open_browser(uri, screen=None):
     try:
-        gtk.show_uri(screen, uri, gtk.gdk.CURRENT_TIME)
+        Gtk.show_uri(screen, uri, Gdk.CURRENT_TIME)
     except Exception:
         webbrowser.open(uri, new=True)

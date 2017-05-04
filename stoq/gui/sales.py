@@ -27,8 +27,7 @@ import decimal
 from datetime import date
 from dateutil.relativedelta import relativedelta
 
-import pango
-import gtk
+from gi.repository import Gtk, Pango
 from kiwi.currency import currency
 from storm.expr import And
 
@@ -196,15 +195,15 @@ class SalesApp(ShellApp):
             ("SaleMenu", None, _("Sale")),
 
             ("SalesCancel", None, _("Cancel...")),
-            ("ChangeClient", gtk.STOCK_EDIT, _("Change client...")),
-            ("ChangeSalesperson", gtk.STOCK_EDIT, _("Change salesperson...")),
-            ("SalesPrintInvoice", gtk.STOCK_PRINT, _("_Print invoice...")),
-            ("Return", gtk.STOCK_CANCEL, _("Return..."), '',
+            ("ChangeClient", Gtk.STOCK_EDIT, _("Change client...")),
+            ("ChangeSalesperson", Gtk.STOCK_EDIT, _("Change salesperson...")),
+            ("SalesPrintInvoice", Gtk.STOCK_PRINT, _("_Print invoice...")),
+            ("Return", Gtk.STOCK_CANCEL, _("Return..."), '',
              _("Return the selected sale, canceling it's payments")),
-            ("Edit", gtk.STOCK_EDIT, _("Edit..."), '',
+            ("Edit", Gtk.STOCK_EDIT, _("Edit..."), '',
              _("Edit the selected sale, allowing you to change the details "
                "of it")),
-            ("Details", gtk.STOCK_INFO, _("Details..."), '',
+            ("Details", Gtk.STOCK_INFO, _("Details..."), '',
              _("Show details of the selected sale"))
         ]
 
@@ -297,30 +296,30 @@ class SalesApp(ShellApp):
                 SearchColumn('paid', title=_('Paid'), width=120,
                              data_type=bool, visible=False),
                 SearchColumn('open_date', title=_('Open date'), width=120,
-                             data_type=date, justify=gtk.JUSTIFY_RIGHT,
+                             data_type=date, justify=Gtk.Justification.RIGHT,
                              visible=False),
                 SearchColumn('close_date', title=_('Close date'), width=120,
-                             data_type=date, justify=gtk.JUSTIFY_RIGHT,
+                             data_type=date, justify=Gtk.Justification.RIGHT,
                              visible=False),
                 SearchColumn('confirm_date', title=_('Confirm date'),
-                             data_type=date, justify=gtk.JUSTIFY_RIGHT,
+                             data_type=date, justify=Gtk.Justification.RIGHT,
                              visible=False, width=120),
                 SearchColumn('cancel_date', title=_('Cancel date'), width=120,
-                             data_type=date, justify=gtk.JUSTIFY_RIGHT,
+                             data_type=date, justify=Gtk.Justification.RIGHT,
                              visible=False),
                 SearchColumn('return_date', title=_('Return date'), width=120,
-                             data_type=date, justify=gtk.JUSTIFY_RIGHT,
+                             data_type=date, justify=Gtk.Justification.RIGHT,
                              visible=False),
                 SearchColumn('expire_date', title=_('Expire date'), width=120,
-                             data_type=date, justify=gtk.JUSTIFY_RIGHT,
+                             data_type=date, justify=Gtk.Justification.RIGHT,
                              visible=False),
                 self._status_col,
                 SearchColumn('client_name', title=_('Client'),
                              data_type=str, width=140, expand=True,
-                             ellipsize=pango.ELLIPSIZE_END),
+                             ellipsize=Pango.EllipsizeMode.END),
                 SearchColumn('salesperson_name', title=_('Salesperson'),
                              data_type=str, width=130,
-                             ellipsize=pango.ELLIPSIZE_END),
+                             ellipsize=Pango.EllipsizeMode.END),
                 SearchColumn('total_quantity', title=_('Items'),
                              data_type=decimal.Decimal, width=60,
                              format_func=format_quantity),

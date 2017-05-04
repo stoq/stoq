@@ -26,7 +26,7 @@
 
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 from storm.expr import And, Eq
@@ -297,7 +297,7 @@ class StockDecreaseWizard(BaseWizard):
 
     def _receipt_dialog(self):
         msg = _('Would you like to print a receipt?')
-        if yesno(msg, gtk.RESPONSE_YES,
+        if yesno(msg, Gtk.ResponseType.YES,
                  _("Print receipt"), _("Don't print")):
             print_report(StockDecreaseReceipt, self.model)
 

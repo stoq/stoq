@@ -32,7 +32,7 @@ import urllib
 from dateutil.parser import parse
 from dateutil.relativedelta import MO, relativedelta
 from dateutil.tz import tzlocal, tzutc
-import gtk
+from gi.repository import Gtk
 
 from stoqlib.api import api
 from stoqlib.domain.person import Client
@@ -139,7 +139,7 @@ class CalendarView(WebView):
 
         options['firstDay'] = firstday
         options['isRTL'] = (
-            gtk.widget_get_default_direction() == gtk.TEXT_DIR_RTL)
+            Gtk.widget_get_default_direction() == Gtk.TextDirection.RTL)
         options['data'] = self._show_events
         options['loading_msg'] = _('Loading calendar content, please wait...')
         self.js_function_call('startup', options)
@@ -261,7 +261,7 @@ class CalendarApp(ShellApp):
     def __init__(self, window, store=None):
         # Create this here because CalendarView will update it.
         # It will only be shown on create_ui though
-        self.date_label = gtk.Label('')
+        self.date_label = Gtk.Label('')
         self._calendar = CalendarView(self)
         ShellApp.__init__(self, window, store=store)
         threadit(self._setup_daemon)
@@ -289,9 +289,9 @@ class CalendarApp(ShellApp):
             ('NewWorkOrder', None, _("Work order"),
              group.get('new_work_order'), _("Add a new work order")),
             # View
-            ('Back', gtk.STOCK_GO_BACK, _("Back"),
+            ('Back', Gtk.STOCK_GO_BACK, _("Back"),
              group.get('go_back'), _("Go back")),
-            ('Forward', gtk.STOCK_GO_FORWARD, _("Forward"),
+            ('Forward', Gtk.STOCK_GO_FORWARD, _("Forward"),
              group.get('go_forward'), _("Go forward")),
             ('Today', STOQ_CALENDAR_TODAY, _("Show today"),
              group.get('show_today'), _("Show today")),
@@ -377,7 +377,7 @@ class CalendarApp(ShellApp):
                                    self.NewReceivable])
 
         # Reparent the toolbar, to show the date next to it.
-        self.hbox = gtk.HBox()
+        self.hbox = Gtk.HBox()
         toolbar = self.uimanager.get_widget('/toolbar')
         toolbar.reparent(self.hbox)
 

@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 import mock
 
 from decimal import Decimal
@@ -255,7 +255,7 @@ class TestSaleQuoteItemSlave(GUITest):
         # Lets call the manager and ask for permission
         with mock.patch('stoqlib.gui.editors.saleeditor.run_dialog') as rd:
             rd.return_value = manager
-            slave.price.emit('icon-press', gtk.ENTRY_ICON_PRIMARY, None)
+            slave.price.emit('icon-press', Gtk.EntryIconPosition.PRIMARY, None)
 
         # Now it should be possible to confirm
         self.click(editor.main_dialog.ok_button)
@@ -290,7 +290,7 @@ class TestSaleQuoteItemSlave(GUITest):
         # Lets call the manager and ask for permission
         with mock.patch('stoqlib.gui.editors.saleeditor.run_dialog') as rd:
             rd.return_value = manager
-            slave.price.emit('icon-press', gtk.ENTRY_ICON_PRIMARY, None)
+            slave.price.emit('icon-press', Gtk.EntryIconPosition.PRIMARY, None)
 
         # Forget about the discount
         slave.price.update(currency('10'))

@@ -26,7 +26,7 @@
 import inspect
 import logging
 
-import gtk
+from gi.repository import Gtk, Gdk
 from kiwi.ui.dialogs import error, warning, info, yesno
 from kiwi.ui.delegates import GladeDelegate
 from kiwi.ui.views import BaseView
@@ -106,7 +106,7 @@ class BasicDialog(GladeDelegate, RunnableView):
         if main_label_text:
             self.main_label.set_text(main_label_text)
         if header_text:
-            header_label = gtk.Label()
+            header_label = Gtk.Label()
             header_label.set_markup(header_text)
             self.header.add(header_label)
             header_label.show()
@@ -120,20 +120,20 @@ class BasicDialog(GladeDelegate, RunnableView):
     #
 
     def _create_dialog_ui(self):
-        self.toplevel = gtk.Dialog()
+        self.toplevel = Gtk.Dialog()
         self._main_vbox = self.toplevel.get_content_area()
 
-        self.vbox = gtk.VBox()
+        self.vbox = Gtk.VBox()
         self._main_vbox.pack_start(self.vbox, True, True, 0)
         self.vbox.show()
 
         # FIXME
         # stoqlib/gui/base/search.py - hides the header
-        self.header = gtk.EventBox()
+        self.header = Gtk.EventBox()
         self.vbox.pack_start(self.header, False, False, 0)
         self.header.show()
 
-        self.main = gtk.EventBox()
+        self.main = Gtk.EventBox()
         self.vbox.pack_start(self.main, True, True, 6)
         self.main.show()
 
@@ -142,50 +142,50 @@ class BasicDialog(GladeDelegate, RunnableView):
         # stoqlib/gui/base/lists.py - removes the label
         # stoqlib/gui/base/search.py - removes the label
         # plugins/ecf/deviceconstanteditor.py - removes the label
-        self.main_label = gtk.Label()
+        self.main_label = Gtk.Label()
         self.main.add(self.main_label)
         self.main_label.show()
 
-        hbox1 = gtk.HBox()
+        hbox1 = Gtk.HBox()
         self.vbox.pack_start(hbox1, False, True, 0)
         hbox1.show()
 
         # FIXME
         # stoqlib/gui/dialogs/paymentmethod.py
         # stoqlib/gui/search/salesearch.py
-        self.extra_holder = gtk.EventBox()
+        self.extra_holder = Gtk.EventBox()
         hbox1.pack_start(self.extra_holder, True, True, 6)
         self.extra_holder.show()
 
         # FIXME
         # stoqlib/gui/search/productsearch.py
         # stoqlib/gui/search/servicesearch.py
-        self.print_holder = gtk.EventBox()
+        self.print_holder = Gtk.EventBox()
         hbox1.pack_start(self.print_holder, True, True, 0)
         self.print_holder.show()
 
         # FIXME
         # stoqlib/gui/base/search.py
         # stoqlib/gui/slaves/productslave.py
-        self.details_holder = gtk.EventBox()
+        self.details_holder = Gtk.EventBox()
         hbox1.pack_end(self.details_holder, False, False, 6)
         self.details_holder.show()
 
         # FIXME
         # stoqlib/gui/dialogs/quotedialog.py
-        self.notice = gtk.EventBox()
+        self.notice = Gtk.EventBox()
         hbox1.pack_start(self.notice, False, True, 0)
         self.notice.show()
 
         action_area = self.toplevel.get_action_area()
         action_area.set_border_width(6)
-        action_area.set_layout(gtk.BUTTONBOX_END)
+        action_area.set_layout(Gtk.ButtonBoxStyle.END)
 
-        self.cancel_button = gtk.Button(stock=gtk.STOCK_CANCEL)
+        self.cancel_button = Gtk.Button(stock=Gtk.STOCK_CANCEL)
         action_area.pack_start(self.cancel_button, True, True, 6)
         self.cancel_button.show()
 
-        self.ok_button = gtk.Button(stock=gtk.STOCK_OK)
+        self.ok_button = Gtk.Button(stock=Gtk.STOCK_OK)
         self.ok_button.set_use_underline(True)
         action_area.pack_start(self.ok_button, True, True, 6)
         self.ok_button.show()
@@ -205,8 +205,8 @@ class BasicDialog(GladeDelegate, RunnableView):
             from stoqlib.gui.utils.help import show_section
             show_section(section)
 
-        self.action_area.set_layout(gtk.BUTTONBOX_END)
-        self.help_button = gtk.Button(stock=gtk.STOCK_HELP)
+        self.action_area.set_layout(Gtk.ButtonBoxStyle.END)
+        self.help_button = Gtk.Button(stock=Gtk.STOCK_HELP)
         self.help_button.connect('clicked', on_help__clicked)
         self.action_area.pack_start(self.help_button, False, False, 6)
         self.action_area.set_child_secondary(self.help_button, True)
@@ -250,12 +250,12 @@ class BasicDialog(GladeDelegate, RunnableView):
 
     def set_ok_label(self, text, icon=None):
         if not icon:
-            icon = gtk.STOCK_OK
+            icon = Gtk.STOCK_OK
         change_button_appearance(self.ok_button, icon, text)
 
     def set_cancel_label(self, text, icon=None):
         if not icon:
-            icon = gtk.STOCK_CANCEL
+            icon = Gtk.STOCK_CANCEL
         change_button_appearance(self.cancel_button, icon, text)
 
     def set_confirm_widget(self, widget):
@@ -284,7 +284,7 @@ class BasicDialog(GladeDelegate, RunnableView):
         :param message_type: type of message to add
         """
         if message_type is None:
-            message_type = gtk.MESSAGE_INFO
+            message_type = Gtk.MessageType.INFO
         if self._message_bar is not None:
             self._message_bar.destroy()
             self._message_bar = None
@@ -394,20 +394,20 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
     add_current_toplevel(toplevel)
 
     if _fullscreen is not None:
-        toplevel.set_position(gtk.WIN_POS_CENTER)
-    elif parent and isinstance(parent, gtk.Window) and parent.props.visible:
+        toplevel.set_position(Gtk.WindowPosition.CENTER)
+    elif parent and isinstance(parent, Gtk.Window) and parent.props.visible:
         toplevel.set_transient_for(parent)
-        toplevel.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+        toplevel.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
     else:
         if parent:
-            toplevel.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+            toplevel.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         else:
-            toplevel.set_position(gtk.WIN_POS_CENTER)
+            toplevel.set_position(Gtk.WindowPosition.CENTER)
         # FIXME: This should not be necessary, but gnome shell hides window
         # decorations for HINT_DIALOG. We should study what dialogs should
         # have HINT_NORMAL (with window decorations) and what can have
         # HINT_DIALOG
-        toplevel.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_NORMAL)
+        toplevel.set_type_hint(Gdk.WindowTypeHint.NORMAL)
 
     log.info("%s: Opening" % dialog_name)
 
@@ -460,14 +460,14 @@ class DialogSystemNotifier:
 
     def yesno(self, text, default=None, *verbs):
         if default is None:
-            default = gtk.RESPONSE_YES
+            default = Gtk.ResponseType.YES
         if len(verbs) != 2:
             raise ValueError(
                 "Button descriptions must be a tuple with 2 items")
         if verbs == (_("Yes"), _("No")):
-            buttons = gtk.BUTTONS_YES_NO
+            buttons = Gtk.ButtonsType.YES_NO
         else:
-            buttons = ((verbs[0], gtk.RESPONSE_YES),
-                       (verbs[1], gtk.RESPONSE_NO))
+            buttons = ((verbs[0], Gtk.ResponseType.YES),
+                       (verbs[1], Gtk.ResponseType.NO))
         return (yesno(text, get_current_toplevel(), default, buttons)
-                == gtk.RESPONSE_YES)
+                == Gtk.ResponseType.YES)

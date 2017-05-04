@@ -26,7 +26,7 @@
 import collections
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
@@ -200,9 +200,9 @@ class ProductSupplierEditor(BaseEditor):
         self.unit_label.set_text(description)
         self.base_cost.set_digits(sysparam.get_int('COST_PRECISION_DIGITS'))
         self.base_cost.set_adjustment(
-            gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
+            Gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
         self.minimum_purchase.set_adjustment(
-            gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
+            Gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
 
     #
     # BaseEditor hooks
@@ -263,10 +263,10 @@ class ProductComponentEditor(BaseEditor):
         self.price_lbl.hide()
         self.component_description.set_text(self.model.description)
         self.quantity.set_adjustment(
-            gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1,
+            Gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1,
                            page_incr=10))
         self.price.set_adjustment(
-            gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1,
+            Gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1,
                            page_incr=10))
         # set a default quantity value for new components
         if not self.model.quantity:
@@ -393,11 +393,11 @@ class ProductEditor(SellableEditor):
             self._disable_child_widgets()
             msg = (_("Some properties of this product have been disabled for "
                      "editing as that should be done on the parent product."))
-            self._add_infobar(msg, gtk.MESSAGE_INFO)
+            self._add_infobar(msg, Gtk.MessageType.INFO)
         elif self.model.product_type == Product.TYPE_GRID:
             msg = (_("This is just a skeleton product responsible for "
                      "creating grid products. Create those on the 'Grid' tab"))
-            self._add_infobar(msg, gtk.MESSAGE_INFO)
+            self._add_infobar(msg, Gtk.MessageType.INFO)
         if self.model.product_type == Product.TYPE_PACKAGE:
             # We are building its sale price on Pack content tab, so disable
             # this the widget and set a simbolic value
@@ -406,7 +406,7 @@ class ProductEditor(SellableEditor):
             self.sale_price_button.set_property('sensitive', False)
             msg = (_("The price of this product consists of the sum of "
                      "its components price on 'Pack content' tab"))
-            self._add_infobar(msg, gtk.MESSAGE_INFO)
+            self._add_infobar(msg, Gtk.MessageType.INFO)
 
     def get_extra_tabs(self):
         from stoqlib.gui.slaves.productslave import (ProductTaxSlave,
@@ -599,11 +599,11 @@ class ProductStockEditor(BaseEditor):
         # Make everything aligned by pytting notes_lbl on the same size group
         info_slave.left_labels_group.add_widget(details_slave.notes_lbl)
 
-        event_box = gtk.EventBox()
+        event_box = Gtk.EventBox()
         event_box.show()
         image_gallery_slave = ImageGallerySlave(
             self.store, self.model.sellable, self.visual_mode)
-        self.notebook.append_page(event_box, gtk.Label(_("Images")))
+        self.notebook.append_page(event_box, Gtk.Label(_("Images")))
         self.attach_slave('images', image_gallery_slave, event_box)
 
 

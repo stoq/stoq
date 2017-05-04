@@ -27,11 +27,10 @@
 import datetime
 import urllib
 
-import gtk
+from gi.repository import Gtk, Gdk, Pango
 from kiwi.currency import currency
 from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import Column
-import pango
 from storm.expr import And, Or, Eq
 from zope.interface import implementer
 
@@ -253,17 +252,17 @@ class ServicesApp(ShellApp):
              group.get("search_clients")),
 
             # Order
-            ("Edit", gtk.STOCK_EDIT, _(u"Edit..."),
+            ("Edit", Gtk.STOCK_EDIT, _(u"Edit..."),
              group.get('order_edit'),
              _(u"Edit the selected order")),
-            ("Finish", gtk.STOCK_APPLY, _(u"Finish..."),
+            ("Finish", Gtk.STOCK_APPLY, _(u"Finish..."),
              group.get('order_finish'),
              _(u"Finish the selected order")),
-            ("Cancel", gtk.STOCK_CANCEL, _(u"Cancel..."),
+            ("Cancel", Gtk.STOCK_CANCEL, _(u"Cancel..."),
              group.get('order_cancel'),
              _(u"Cancel the selected order")),
             ("DeliverOrder", None, _(u"Deliver...")),
-            ("Details", gtk.STOCK_INFO, _(u"Details..."),
+            ("Details", Gtk.STOCK_INFO, _(u"Details..."),
              group.get('order_details'),
              _(u"Show details of the selected order")),
             ("PrintQuote", None, _(u"Print quote..."),
@@ -418,10 +417,10 @@ class ServicesApp(ShellApp):
             Column('equipment', title=_(u'Equipment (Description)'),
                    data_type=str, expand=True, pack_end=True),
             Column('category_color', title=_(u'Equipment (Description)'),
-                   column='equipment', data_type=gtk.gdk.Pixbuf,
+                   column='equipment', data_type=Gdk.Pixbuf,
                    format_func=render_pixbuf),
             Column('flag_icon', title=_(u'Equipment (Description)'),
-                   column='equipment', data_type=gtk.gdk.Pixbuf,
+                   column='equipment', data_type=Gdk.Pixbuf,
                    format_func=self._format_state_icon, format_func_data=True),
             SearchColumn('client_name', title=_(u'Client'),
                          data_type=str),
@@ -498,9 +497,9 @@ class ServicesApp(ShellApp):
 
         stock_id, tooltip = get_workorder_state_icon(item.work_order)
         if stock_id is not None:
-            # We are using self.results because render_icon is a gtk.Widget's
+            # We are using self.results because render_icon is a Gtk.Widget's
             # method. It has nothing to do with results tough.
-            return self.results.render_icon(stock_id, gtk.ICON_SIZE_MENU)
+            return self.results.render_icon(stock_id, Gtk.IconSize.MENU)
 
     def _get_main_query(self, state):
         item = state.value
@@ -633,7 +632,7 @@ class ServicesApp(ShellApp):
             msg = _(u"Some items on this work order are not fully reserved. "
                     u"Do you still want to mark it as finished?")
 
-        if not yesno(msg, gtk.RESPONSE_NO,
+        if not yesno(msg, Gtk.ResponseType.NO,
                      _(u"Finish order"), _(u"Don't finish")):
             return
 
@@ -657,7 +656,7 @@ class ServicesApp(ShellApp):
     def _close_order(self):
         if not yesno(_(u"This will mark the order as delivered. Are you "
                        "sure?"),
-                     gtk.RESPONSE_NO, _(u"Mark as delivered"),
+                     Gtk.ResponseType.NO, _(u"Mark as delivered"),
                      _(u"Don't mark")):
             return
 
@@ -671,7 +670,7 @@ class ServicesApp(ShellApp):
     def _approve_order(self):
         if not yesno(_(u"This will inform the order that the client has "
                        u"approved the work. Are you sure?"),
-                     gtk.RESPONSE_NO, _(u"Approve"), _(u"Don't approve")):
+                     Gtk.ResponseType.NO, _(u"Approve"), _(u"Don't approve")):
             return
 
         selection = self.search.get_selected_item()
@@ -783,7 +782,7 @@ class ServicesApp(ShellApp):
         return False
 
     def _on_results__cell_data_func(self, column, renderer, wov, text):
-        if not isinstance(renderer, gtk.CellRendererText):
+        if not isinstance(renderer, Gtk.CellRendererText):
             return text
 
         work_order = wov.work_order
@@ -794,8 +793,8 @@ class ServicesApp(ShellApp):
 
         for prop, is_set, value in [
                 ('strikethrough', is_delivered, True),
-                ('style', is_finished, pango.STYLE_ITALIC),
-                ('weight', is_late, pango.WEIGHT_BOLD)]:
+                ('style', is_finished, Pango.Style.ITALIC),
+                ('weight', is_late, Pango.Weight.BOLD)]:
             renderer.set_property(prop + '-set', is_set)
             if is_set:
                 renderer.set_property(prop, value)

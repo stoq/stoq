@@ -25,7 +25,7 @@
 import collections
 import decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.forms import TextField
@@ -128,7 +128,7 @@ class DiscountEditor(BaseEditor):
     #
 
     def on_discount__icon_press(self, entry, icon_pos, event):
-        if icon_pos != gtk.ENTRY_ICON_SECONDARY:
+        if icon_pos != Gtk.EntryIconPosition.SECONDARY:
             return
 
         # Ask for the credentials of a different user that can possibly allow

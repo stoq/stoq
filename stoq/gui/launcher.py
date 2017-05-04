@@ -24,7 +24,7 @@
 """ Application to launcher other application.  """
 
 
-import gtk
+from gi.repository import Gtk
 from stoqlib.api import api
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -48,17 +48,17 @@ class LauncherApp(ShellApp):
     #
 
     def create_ui(self):
-        self.model.set_sort_column_id(COL_LABEL, gtk.SORT_ASCENDING)
+        self.model.set_sort_column_id(COL_LABEL, Gtk.SortType.ASCENDING)
         self.iconview.set_markup_column(COL_LABEL)
         self.iconview.set_pixbuf_column(COL_PIXBUF)
         if hasattr(self.iconview, "set_item_orientation"):
-            self.iconview.set_item_orientation(gtk.ORIENTATION_HORIZONTAL)
+            self.iconview.set_item_orientation(Gtk.Orientation.HORIZONTAL)
         self.iconview.set_item_width(300)
-        self.iconview.set_selection_mode(gtk.SELECTION_BROWSE)
+        self.iconview.set_selection_mode(Gtk.SelectionMode.BROWSE)
         self.iconview.set_spacing(10)
 
         for app in self.window.get_available_applications():
-            pixbuf = self.get_toplevel().render_icon(app.icon, gtk.ICON_SIZE_DIALOG)
+            pixbuf = self.get_toplevel().render_icon(app.icon, Gtk.IconSize.DIALOG)
             text = '<b>%s</b>\n<small>%s</small>' % (
                 api.escape(app.fullname),
                 api.escape(app.description))

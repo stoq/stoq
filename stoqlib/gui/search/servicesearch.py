@@ -24,7 +24,7 @@
 ##
 """ Search dialogs for services """
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from storm.expr import Ne
 
@@ -65,7 +65,7 @@ class ServiceSearch(SellableSearch):
     def _setup_print_slave(self):
         self._print_slave = SearchDialogPrintSlave()
         change_button_appearance(self._print_slave.print_price_button,
-                                 gtk.STOCK_PRINT, _("Price table"))
+                                 Gtk.STOCK_PRINT, _("Price table"))
         self.attach_slave('print_holder', self._print_slave)
         self._print_slave.connect('print', self.on_print_price_button_clicked)
         self._print_slave.print_price_button.set_sensitive(False)

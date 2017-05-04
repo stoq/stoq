@@ -29,8 +29,7 @@ import math
 import os
 import tempfile
 
-import gio
-import gtk
+from gi.repository import Gtk, Gdk, Gio
 from kiwi.datatypes import converter
 from kiwi.ui.dialogs import save, selectfile
 from kiwi.utils import gsignal
@@ -45,7 +44,7 @@ from stoqlib.lib.imageutils import get_thumbnail, get_pixbuf
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
-_pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
+_pixbuf_converter = converter.get_converter(Gdk.Pixbuf)
 
 
 class ImageSlave(BaseEditorSlave):
@@ -69,7 +68,7 @@ class ImageSlave(BaseEditorSlave):
         self._setup_thumbnail()
         self._setup_widgets()
 
-        self._app_info = gio.app_info_get_default_for_type('image/png', False)
+        self._app_info = Gio.app_info_get_default_for_type('image/png', False)
         if not self._app_info:
             # Hide view item if we don't have any app to visualize it.
             self.view_item.hide()
@@ -107,14 +106,14 @@ class ImageSlave(BaseEditorSlave):
         self._thumbnail = get_pixbuf(self.image_model.thumbnail, fill_image=size)
 
     def _setup_widgets(self):
-        self.set_main_item = gtk.ImageMenuItem(stock_id=STOQ_CHECK)
+        self.set_main_item = Gtk.ImageMenuItem(stock_id=STOQ_CHECK)
         self.set_main_item.set_label(_("Set as main image"))
-        self.set_internal_item = gtk.CheckMenuItem(_("Internal use only"))
-        self.view_item = gtk.MenuItem(_("View"))
-        self.save_item = gtk.MenuItem(_("Save"))
-        self.erase_item = gtk.MenuItem(_("Remove"))
+        self.set_internal_item = Gtk.CheckMenuItem(_("Internal use only"))
+        self.view_item = Gtk.MenuItem(_("View"))
+        self.save_item = Gtk.MenuItem(_("Save"))
+        self.erase_item = Gtk.MenuItem(_("Remove"))
 
-        self.popmenu = gtk.Menu()
+        self.popmenu = Gtk.Menu()
         for item, callback in [
                 (self.set_main_item, self._on_popup_set_main__activate),
                 (self.set_internal_item, self._on_popup_set_internal__activate),
@@ -142,8 +141,8 @@ class ImageSlave(BaseEditorSlave):
             sensitive = False
             is_main = False
             internal_use = False
-            self.image.set_from_stock(gtk.STOCK_ADD,
-                                      gtk.ICON_SIZE_DIALOG)
+            self.image.set_from_stock(Gtk.STOCK_ADD,
+                                      Gtk.IconSize.DIALOG)
             self.image.set_tooltip_text(_("Add a new image"))
 
         self.view_item.set_sensitive(sensitive)
@@ -158,10 +157,10 @@ class ImageSlave(BaseEditorSlave):
 
         self.icon.set_visible(is_main or internal_use)
         if is_main:
-            self.icon.set_from_stock(STOQ_CHECK, gtk.ICON_SIZE_MENU)
+            self.icon.set_from_stock(STOQ_CHECK, Gtk.IconSize.MENU)
             self.icon.set_tooltip_text(_("This is the main image"))
         elif internal_use:
-            self.icon.set_from_stock(STOQ_LOCKED, gtk.ICON_SIZE_MENU)
+            self.icon.set_from_stock(STOQ_LOCKED, Gtk.IconSize.MENU)
             self.icon.set_tooltip_text(_("This is for internal use only"))
 
         self._updating_widgets = False
@@ -180,7 +179,7 @@ class ImageSlave(BaseEditorSlave):
     def _view_image(self):
         filename = self._save_image()
 
-        gfile = gio.File(path=filename)
+        gfile = Gio.File(path=filename)
         self._app_info.launch([gfile])
 
     def _edit_image(self):
@@ -188,14 +187,14 @@ class ImageSlave(BaseEditorSlave):
         with selectfile(_("Select Image"), filters=filters) as sf:
             rv = sf.run()
             filename = sf.get_filename()
-            if rv != gtk.RESPONSE_OK or not filename:
+            if rv != Gtk.ResponseType.OK or not filename:
                 return
 
         if not self.image_model:
             self.image_model = Image(store=self.store,
                                      sellable=self._sellable)
 
-        pb = gtk.gdk.pixbuf_new_from_file(filename)
+        pb = Gdk.pixbuf_new_from_file(filename)
         self.image_model.image = _pixbuf_converter.as_string(pb)
         self.image_model.filename = unicode(os.path.basename(filename))
 
@@ -360,7 +359,8 @@ class ImageGallerySlave(BaseEditorSlave):
             widget.show()
 
             self.images_table.attach(widget, col, col + 1, row, row + 1,
-                                     xoptions=gtk.FILL, yoptions=gtk.FILL)
+                                     xoptions=Gtk.AttachOptions.FILL,
+                                     yoptions=Gtk.AttachOptions.FILL)
 
         self._images_per_row = images_per_row
 

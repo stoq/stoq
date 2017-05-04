@@ -25,7 +25,7 @@
 
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.enums import ListType
@@ -98,7 +98,7 @@ class InitialStockDialog(BaseEditor):
             yield _TemporaryStorableItem(sellable, product, storable)
 
     def _get_columns(self):
-        adj = gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1)
+        adj = Gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1)
         return [Column("code", title=_(u"Code"), data_type=str, sorted=True,
                        width=100),
                 Column("barcode", title=_(u"Barcode"), data_type=str,
@@ -185,7 +185,7 @@ class InitialStockDialog(BaseEditor):
     #
 
     def _on_storables__cell_data_func(self, column, renderer, obj, text):
-        if not isinstance(renderer, gtk.CellRendererText):
+        if not isinstance(renderer, Gtk.CellRendererText):
             return text
 
         if column.attribute == 'initial_stock':

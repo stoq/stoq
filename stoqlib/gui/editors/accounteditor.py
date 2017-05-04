@@ -24,7 +24,7 @@
 
 import datetime
 
-import gtk
+from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.combo import ProxyComboBox
 from kiwi.ui.widgets.entry import ProxyEntry
@@ -88,7 +88,7 @@ class AccountEditor(BaseEditor):
         BaseEditor.__init__(self, store, model)
 
         action_area = self.main_dialog.action_area
-        action_area.set_layout(gtk.BUTTONBOX_END)
+        action_area.set_layout(Gtk.ButtonBoxStyle.END)
         action_area.pack_start(self._test_button, False, False, 0)
         action_area.set_child_secondary(self._test_button, True)
         self._test_button.show()
@@ -103,7 +103,7 @@ class AccountEditor(BaseEditor):
                        store=store)
 
     def _setup_widgets(self):
-        self._test_button = gtk.Button(_("Print a test bill"))
+        self._test_button = Gtk.Button(_("Print a test bill"))
         self._test_button.connect('clicked',
                                   self._on_test_button__clicked)
         self.parent_accounts = AccountTree(with_code=False, create_mode=True)
@@ -188,16 +188,16 @@ class AccountEditor(BaseEditor):
 
     def _add_widget(self, label, widget, options=False):
         n_rows = self.table.props.n_rows
-        l = gtk.Label()
+        l = Gtk.Label()
         l.set_markup(label)
         l.props.xalign = 1.0
         self.table.resize(n_rows + 1, 2)
         self.table.attach(
             l, 0, 1, n_rows, n_rows + 1,
-            gtk.FILL, 0, 0, 0)
+            Gtk.AttachOptions.FILL, 0, 0, 0)
         self.table.attach(
             widget, 1, 2, n_rows, n_rows + 1,
-            gtk.EXPAND | gtk.FILL, 0, 0, 0)
+            Gtk.EXPAND | Gtk.AttachOptions.FILL, 0, 0, 0)
         if options:
             self._bank_option_widgets.extend([l, widget])
         else:

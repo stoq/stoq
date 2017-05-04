@@ -26,8 +26,7 @@
 
 import datetime
 
-import gtk
-import pango
+from gi.repository import Gtk, Pango
 
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
@@ -123,20 +122,20 @@ class PurchaseFinishPaymentAdjustStep(WizardEditorStep):
         return [IdentifierColumn('identifier', title=_('Purchase #')),
                 Column('description', _("Description"), data_type=str,
                        width=150, expand=True,
-                       ellipsize=pango.ELLIPSIZE_END),
+                       ellipsize=Pango.EllipsizeMode.END),
                 Column('due_date', _("Due date"), sorted=True,
                        data_type=datetime.date, width=90,
-                       justify=gtk.JUSTIFY_RIGHT),
+                       justify=Gtk.Justification.RIGHT),
                 Column('paid_date', _("Paid date"),
                        data_type=datetime.date, width=90),
                 Column('status_str', _("Status"), data_type=str, width=80),
                 ColoredColumn('value', _("Value"), data_type=currency,
                               width=90, color='red',
-                              justify=gtk.JUSTIFY_RIGHT,
+                              justify=Gtk.Justification.RIGHT,
                               data_func=payment_value_colorize),
                 ColoredColumn('paid_value', _("Paid value"),
                               data_type=currency, width=92, color='red',
-                              justify=gtk.JUSTIFY_RIGHT,
+                              justify=Gtk.Justification.RIGHT,
                               data_func=payment_value_colorize)]
 
     def _clear_not_paid(self):

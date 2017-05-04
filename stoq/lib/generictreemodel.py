@@ -19,6 +19,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
 # USA
 
+# XXX: Maybe this can go away with gtk3
 
 # System
 import collections
@@ -27,7 +28,7 @@ import random
 import traceback
 import sys
 
- # GObject
+# GObject
 try:
     from gi.repository import GObject  # pylint: disable=E0611
     from gi.repository import Gtk  # pylint: disable=E0611
@@ -71,7 +72,7 @@ def handle_exception(default_return):
         def wrapped_func(*args, **kargs):
             try:
                 return func(*args, **kargs)
-            except:
+            except Exception:
                 traceback.print_exc()
             return default_return
         return wrapped_func
@@ -103,7 +104,7 @@ class GenericTreeModel(GObject.GObject, Gtk.TreeModel):
     the model of row deletion.
     """
 
-    leak_references = GObject.Property(
+    leak_references = GObject.property(
         default=True, type=bool,
         blurb=("If True, strong references to user data attached to iters are "
                "stored in a dictionary pool (default). Otherwise the user data is "
@@ -153,7 +154,7 @@ class GenericTreeModel(GObject.GObject, Gtk.TreeModel):
     def iter_is_valid(self, iter):
         """
         :Returns:
-            True if the gtk.TreeIter specified by iter is valid for the custom tree model.
+            True if the Gtk.TreeIter specified by iter is valid for the custom tree model.
         """
         return iter.stamp == self.stamp
 

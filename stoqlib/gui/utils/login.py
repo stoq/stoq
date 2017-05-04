@@ -25,7 +25,7 @@
 
 import logging
 
-import gtk
+from gi.repository import Gtk, Gdk
 from kiwi.component import get_utility, provide_utility
 from kiwi.ui.delegates import GladeDelegate
 
@@ -51,13 +51,13 @@ class LoginDialog(GladeDelegate, RunnableView):
     size = (-1, -1)
 
     def __init__(self, title=None):
-        self.keyactions = {gtk.keysyms.Escape: self.on_escape_pressed}
+        self.keyactions = {Gtk.keysyms.Escape: self.on_escape_pressed}
         GladeDelegate.__init__(self, gladefile=self.gladefile,
                                keyactions=self.keyactions,
-                               delete_handler=gtk.main_quit)
+                               delete_handler=Gtk.main_quit)
         if title:
             self.set_title(title)
-        self.get_toplevel().set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
+        self.get_toplevel().set_type_hint(Gdk.WindowTypeHint.DIALOG)
         self.setup_widgets()
 
     def setup_widgets(self):
@@ -69,7 +69,7 @@ class LoginDialog(GladeDelegate, RunnableView):
             self.remember.hide()
             self.remember.set_active(False)
 
-        gtkimage = gtk.Image()
+        gtkimage = Gtk.Image()
         gtkimage.set_from_pixbuf(render_logo_pixbuf('login'))
         self.logo_container.add(gtkimage)
         self.logo_container.show_all()
@@ -86,7 +86,7 @@ class LoginDialog(GladeDelegate, RunnableView):
         self.username.grab_focus()
 
     def on_escape_pressed(self):
-        gtk.main_quit()
+        Gtk.main_quit()
 
     def on_delete_event(self, window, event):
         self.close()
@@ -95,7 +95,7 @@ class LoginDialog(GladeDelegate, RunnableView):
         self._do_login()
 
     def on_quit_button__clicked(self, button):
-        gtk.main_quit()
+        Gtk.main_quit()
         self.retval = False
         # oneiric didn't need this, but it is required for
         # precise for reasons unknown
@@ -122,9 +122,9 @@ class LoginDialog(GladeDelegate, RunnableView):
         self.notification_label.set_color('black')
         msg = _(" Authenticating user...")
         self.notification_label.set_text(msg)
-        while gtk.events_pending():
-            gtk.main_iteration()
-        gtk.main_quit()
+        while Gtk.events_pending():
+            Gtk.main_iteration()
+        Gtk.main_quit()
         self.set_field_sensitivity(True)
 
     def run(self, username=None, password=None, msg=None):
@@ -133,7 +133,7 @@ class LoginDialog(GladeDelegate, RunnableView):
             self.notification_label.set_text(msg)
         self._initialize(username, password)
         self.show()
-        gtk.main()
+        Gtk.main()
         return self.retval
 
 

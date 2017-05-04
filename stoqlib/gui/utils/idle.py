@@ -33,9 +33,7 @@ import ctypes
 import ctypes.util
 import platform
 
-from gtk import gdk
-import glib
-import gtk
+from gi.repository import Gtk, Gdk, Glib
 
 
 class LASTINPUTINFO(ctypes.Structure):
@@ -57,14 +55,14 @@ class XScreenSaverInfo(ctypes.Structure):
 class IdleXScreenSaver(object):
     def __init__(self):
         self.xss = self._get_library('Xss')
-        self.gdk = self._get_library('gdk-x11-2.0')
+        self.gdk_ = self._get_library('gdk-x11-2.0')
 
-        self.gdk.gdk_display_get_default.restype = ctypes.c_void_p
+        self.gdk_.gdk_display_get_default.restype = ctypes.c_void_p
         # GDK_DISPLAY_XDISPLAY expands to gdk_x11_display_get_xdisplay
-        self.gdk.gdk_x11_display_get_xdisplay.restype = ctypes.c_void_p
-        self.gdk.gdk_x11_display_get_xdisplay.argtypes = [ctypes.c_void_p]
+        self.gdk_.gdk_x11_display_get_xdisplay.restype = ctypes.c_void_p
+        self.gdk_.gdk_x11_display_get_xdisplay.argtypes = [ctypes.c_void_p]
         # GDK_ROOT_WINDOW expands to gdk_x11_get_default_root_xwindow
-        self.gdk.gdk_x11_get_default_root_xwindow.restype = ctypes.c_void_p
+        self.gdk_.gdk_x11_get_default_root_xwindow.restype = ctypes.c_void_p
 
         self.xss.XScreenSaverAllocInfo.restype = ctypes.POINTER(XScreenSaverInfo)
         self.xss.XScreenSaverQueryExtension.restype = ctypes.c_int
@@ -81,8 +79,8 @@ class IdleXScreenSaver(object):
         #     &event_base, &error_base);
         event_base = ctypes.c_int()
         error_base = ctypes.c_int()
-        gtk_display = self.gdk.gdk_display_get_default()
-        self.dpy = self.gdk.gdk_x11_display_get_xdisplay(gtk_display)
+        gtk_display = self.gdk_.gdk_display_get_default()
+        self.dpy = self.gdk_.gdk_x11_display_get_xdisplay(gtk_display)
         available = self.xss.XScreenSaverQueryExtension(self.dpy,
                                                         ctypes.byref(event_base),
                                                         ctypes.byref(error_base))
@@ -105,7 +103,7 @@ class IdleXScreenSaver(object):
 
         # XScreenSaverQueryInfo(GDK_DISPLAY_XDISPLAY(gdk_display_get_default()),
         #                       GDK_ROOT_WINDOW(), mit_info);
-        drawable = self.gdk.gdk_x11_get_default_root_xwindow()
+        drawable = self.gdk_.gdk_x11_get_default_root_xwindow()
         self.xss.XScreenSaverQueryInfo(self.dpy, drawable, self.xss_info)
         # return (mit_info->idle) / 1000;
         return self.xss_info.contents.idle / 1000
@@ -113,19 +111,19 @@ class IdleXScreenSaver(object):
 
 class IdleEventHandler(object):
     def __init__(self):
-        gdk.event_handler_set(self._filter_callback)
-        glib.timeout_add_seconds(1, self._increase_idle)
+        Gdk.event_handler_set(self._filter_callback)
+        Glib.timeout_add_seconds(1, self._increase_idle)
         self._idle = 0
 
     def _filter_callback(self, event):
-        if event.type in [gdk.BUTTON_PRESS,
-                          gdk.BUTTON_RELEASE,
-                          gdk.KEY_PRESS,
-                          gdk.KEY_RELEASE,
-                          gdk.MOTION_NOTIFY,
-                          gdk.SCROLL]:
+        if event.type in [Gdk.EventType.BUTTON_PRESS,
+                          Gdk.BUTTON_RELEASE,
+                          Gdk.KEY_PRESS,
+                          Gdk.KEY_RELEASE,
+                          Gdk.MOTION_NOTIFY,
+                          Gdk.SCROLL]:
             self._idle = 0
-        gtk.main_do_event(event)
+        Gtk.main_do_event(event)
 
     def _increase_idle(self):
         self._idle += 1

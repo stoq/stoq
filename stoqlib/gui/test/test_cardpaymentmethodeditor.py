@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 import mock
 
 from decimal import Decimal
@@ -248,7 +248,7 @@ class TestProviderListSlave(GUITest):
 
         # Try remove the provider it's being referenced by a operation cost
         operation_cost = self.create_operation_cost(provider=provider)
-        yesno.return_value = gtk.RESPONSE_OK
+        yesno.return_value = Gtk.ResponseType.OK
         self.click(slave.listcontainer.remove_button)
         info.assert_called_with("You can not remove this provider.\n"
                                 "It is being used in card device.")
@@ -263,7 +263,7 @@ class TestProviderListSlave(GUITest):
         card_data.provider = None
         self.click(slave.listcontainer.remove_button)
         yesno.assert_called_with("Do you want remove %s?" % provider.short_name,
-                                 gtk.RESPONSE_NO,
+                                 Gtk.ResponseType.NO,
                                  "Remove",
                                  "Cancel")
         check_provider = self.store.find(CreditProvider, short_name=u'Default Provider').count()
@@ -305,7 +305,7 @@ class TestCardDeviceListSlave(GUITest):
         provider.default_device = None
         self.click(slave.listcontainer.remove_button)
         yesno.assert_called_once_with("Removing this device will also remove"
-                                      " all related costs.", gtk.RESPONSE_NO,
+                                      " all related costs.", Gtk.ResponseType.NO,
                                       "Remove",
                                       "Keep device")
 

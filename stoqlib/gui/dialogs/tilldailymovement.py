@@ -25,7 +25,7 @@
 import collections
 import datetime
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, SummaryLabel
@@ -112,7 +112,7 @@ class TillDailyMovementDialog(BaseEditor):
                 Column('client', title=_('Client'), data_type=str, expand=True),
                 Column('branch', title=_('Branch'), data_type=str, visible=False),
                 Column('value', title=_('Value'), data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT)]
+                       justify=Gtk.Justification.RIGHT)]
 
     def _get_lonely_payments_columns(self):
         return [IdentifierColumn('identifier', title=_('Payment #'), sorted=True),

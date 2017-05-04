@@ -27,7 +27,7 @@
 import datetime
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, ObjectList, SummaryLabel
 
@@ -72,13 +72,13 @@ class ProductStockHistoryDialog(BaseEditor):
         self._setup_widgets()
 
     def add_tab(self, name):
-        box = gtk.HBox()
+        box = Gtk.HBox()
         box.set_border_width(6)
         box.show()
         olist = ObjectList()
         box.pack_start(olist, True, True, 0)
         olist.show()
-        self.history_notebook.append_page(box, gtk.Label(name))
+        self.history_notebook.append_page(box, Gtk.Label(name))
         return olist
 
     def _add_batches_tab(self):
@@ -181,15 +181,15 @@ class ProductStockHistoryDialog(BaseEditor):
                 Column('batch_date', title=_('Batch Date'),
                        data_type=datetime.date, visible=False),
                 Column("receival_date", title=_("Date"),
-                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=datetime.date, justify=Gtk.Justification.RIGHT),
                 IdentifierColumn("purchase_identifier",
                                  title=_("Purchase #")),
                 Column("supplier_name", title=_("Supplier"), expand=True,
                        data_type=str),
                 Column("invoice_number", title=_("Invoice"), data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT),
+                       justify=Gtk.Justification.RIGHT),
                 Column("quantity", title=_("Quantity"), data_type=Decimal,
-                       justify=gtk.JUSTIFY_RIGHT),
+                       justify=Gtk.Justification.RIGHT),
                 Column("cost", title=_("Cost"), data_type=currency),
                 Column("unit_description", title=_("Unit"), data_type=str)]
 
@@ -201,7 +201,7 @@ class ProductStockHistoryDialog(BaseEditor):
                        data_type=datetime.date, visible=False),
                 Column("sale_date",
                        title=_("Date Started"), data_type=datetime.date,
-                       justify=gtk.JUSTIFY_RIGHT),
+                       justify=Gtk.Justification.RIGHT),
                 Column("client_name",
                        title=_("Client"), expand=True, data_type=str),
                 Column("quantity", title=_("Sold"),
@@ -219,7 +219,7 @@ class ProductStockHistoryDialog(BaseEditor):
                        data_type=datetime.date, visible=False),
                 Column("transfer_order.open_date",
                        title=_("Date Created"), data_type=datetime.date,
-                       justify=gtk.JUSTIFY_RIGHT),
+                       justify=Gtk.Justification.RIGHT),
                 Column("transfer_order.source_branch_name",
                        title=_("Source"), expand=True,
                        data_type=str),
@@ -239,7 +239,7 @@ class ProductStockHistoryDialog(BaseEditor):
                 Column('batch_date', title=_('Batch Date'),
                        data_type=datetime.date, visible=False),
                 Column("opened", title=_(u"Opened"),
-                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=datetime.date, justify=Gtk.Justification.RIGHT),
                 Column("code", title=_(u"Code"), data_type=str, visible=False),
                 Column("category_description", title=_(u"Category"),
                        data_type=str, visible=False),
@@ -258,7 +258,7 @@ class ProductStockHistoryDialog(BaseEditor):
                 Column('batch_date', title=_('Batch Date'),
                        data_type=datetime.date, visible=False),
                 Column("date", title=_("Date"), data_type=datetime.date,
-                       justify=gtk.JUSTIFY_RIGHT),
+                       justify=Gtk.Justification.RIGHT),
                 Column("removed_by_name", title=_("Removed By"), expand=True,
                        data_type=str),
                 Column("quantity", title=_("Quantity"), data_type=int),
@@ -273,9 +273,9 @@ class ProductStockHistoryDialog(BaseEditor):
                 Column("responsible_name", title=_("Responsible"),
                        data_type=str),
                 Column("open_date", title=_("Open date"),
-                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=datetime.date, justify=Gtk.Justification.RIGHT),
                 Column("close_date", title=_("Close date"),
-                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=datetime.date, justify=Gtk.Justification.RIGHT),
                 Column("recorded_quantity", title=_("Recorded qty"),
                        data_type=Decimal, format_func=format_quantity),
                 Column("actual_quantity", title=_("Counted qty"),
@@ -298,7 +298,7 @@ class ProductStockHistoryDialog(BaseEditor):
                 Column("price", title=_(u"Price"), data_type=currency,
                        format_func=get_formatted_cost),
                 Column("return_date", title=_(u"Return Date"),
-                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT)]
+                       data_type=datetime.date, justify=Gtk.Justification.RIGHT)]
 
     def _get_batches_columns(self):
         return [Column('batch_number', title=_('Batch'), data_type=str,

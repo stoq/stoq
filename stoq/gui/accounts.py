@@ -28,8 +28,7 @@ import urllib
 
 from dateutil.relativedelta import relativedelta
 
-import gtk
-import pango
+from gi.repository import Gtk, Pango
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.api import api
 from stoqlib.domain.payment.category import PaymentCategory
@@ -69,7 +68,7 @@ class BaseAccountWindow(ShellApp):
     def create_ui(self):
         if api.sysparam.get_bool('SMART_LIST_LOADING'):
             self.search.enable_lazy_search()
-        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.results.set_selection_mode(Gtk.SelectionMode.MULTIPLE)
         self.search.set_summary_label(column='value',
                                       label='<b>%s</b>' % (_('Total'), ),
                                       format='<b>%s</b>',
@@ -271,7 +270,7 @@ class BaseAccountWindow(ShellApp):
         return False
 
     def _on_results__cell_data_func(self, column, renderer, pv, text):
-        if not isinstance(renderer, gtk.CellRendererText):
+        if not isinstance(renderer, Gtk.CellRendererText):
             return text
 
         state = self.main_filter.get_state()
@@ -293,7 +292,7 @@ class BaseAccountWindow(ShellApp):
         if show_strikethrough:
             renderer.set_property('strikethrough', True)
         if is_late:
-            renderer.set_property('weight', pango.WEIGHT_BOLD)
+            renderer.set_property('weight', Pango.Weight.BOLD)
 
         return text
 

@@ -23,7 +23,7 @@
 ##
 
 import datetime
-import gtk
+from gi.repository import Gtk
 
 from kiwi.currency import currency
 
@@ -62,7 +62,7 @@ class PaymentReceivingSearch(SearchDialog):
     def _setup_button_slave(self):
         self._button_slave = SearchDialogButtonSlave()
         change_button_appearance(self._button_slave.button,
-                                 gtk.STOCK_APPLY, _("Receive"))
+                                 Gtk.STOCK_APPLY, _("Receive"))
         self.attach_slave('print_holder', self._button_slave)
         self._button_slave.connect('click', self.on_receive_button_clicked)
         self._button_slave.button.set_sensitive(False)

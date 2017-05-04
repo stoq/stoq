@@ -32,7 +32,7 @@ instead signals and interfaces for that.
 import collections
 from decimal import Decimal
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import SummaryLabel
@@ -564,7 +564,7 @@ class SellableItemSlave(BaseEditorSlave):
         self.unit_label.set_bold(True)
 
         for widget in [self.quantity, self.cost]:
-            widget.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
+            widget.set_adjustment(Gtk.Adjustment(lower=0, upper=MAX_INT,
                                                  step_incr=1))
 
         self._reset_sellable()
@@ -819,7 +819,7 @@ class SellableItemSlave(BaseEditorSlave):
                      valid_data['max_discount']))
 
     def on_cost__icon_press(self, entry, icon_pos, event):
-        if icon_pos != gtk.ENTRY_ICON_PRIMARY:
+        if icon_pos != Gtk.EntryIconPosition.PRIMARY:
             return
 
         # No need to check credentials if it is not a price

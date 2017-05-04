@@ -27,8 +27,8 @@ import os
 import threading
 
 import dateutil.parser
-import glib
-import gobject
+from gi.repository import Glib
+from gi.repository import GObject
 from kiwi.python import Settable
 from kiwi.utils import gsignal
 
@@ -41,7 +41,7 @@ from stoqlib.lib.webservice import WebService
 from stoqlib.net.server import ServerProxy, ServerError
 
 
-class ResourceStatus(gobject.GObject):
+class ResourceStatus(GObject.GObject):
     """The status of a given resource"""
 
     gsignal('status-changed', int, str)
@@ -122,7 +122,7 @@ class ResourceStatusAction(object):
         return (self.resource, self.name) == (other.resource, other.name)
 
 
-class ResourceStatusManager(gobject.GObject):
+class ResourceStatusManager(GObject.GObject):
 
     gsignal('status-changed', int)
     gsignal('action-finished', object, object)
@@ -136,7 +136,7 @@ class ResourceStatusManager(gobject.GObject):
         self._lock = threading.Lock()
         self.running_action = None
         self.resources = {}
-        glib.timeout_add_seconds(self.REFRESH_TIMEOUT,
+        Glib.timeout_add_seconds(self.REFRESH_TIMEOUT,
                                  self.refresh_and_notify)
 
     #

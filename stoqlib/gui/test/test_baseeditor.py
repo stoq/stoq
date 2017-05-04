@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 import mock
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
@@ -166,4 +166,4 @@ class TestBaseEditor(GUITest):
         self.assertFalse(editor.cancel())
         yesno.assert_called_once_with(
             "If you cancel this dialog all changes will be lost. "
-            "Are you sure?", gtk.RESPONSE_NO, "Cancel", "Don't cancel")
+            "Are you sure?", Gtk.ResponseType.NO, "Cancel", "Don't cancel")

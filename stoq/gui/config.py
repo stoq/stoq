@@ -51,8 +51,7 @@ import platform
 import subprocess
 import sys
 
-import glib
-import gtk
+from gi.repository import Gtk, Glib, Gdk
 from kiwi.component import provide_utility
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
@@ -343,8 +342,8 @@ class LinkStep(WizardEditorStep):
     def _setup_widgets(self):
         self.image.set_from_file(
             library.get_resource_filename('stoq', 'pixmaps', 'link_step.png'))
-        self.image_eventbox.add_events(gtk.gdk.BUTTON_PRESS_MASK |
-                                       gtk.gdk.POINTER_MOTION_MASK)
+        self.image_eventbox.add_events(Gdk.EventType.BUTTON_PRESS_MASK |
+                                       Gdk.EventMask.POINTER_MOTION_MASK)
         self.send_progress.hide()
         self.send_error_label.hide()
 
@@ -405,10 +404,10 @@ class LinkStep(WizardEditorStep):
         self.send_progress.set_text(_('Sending...'))
         self.send_progress.set_pulse_step(0.05)
         self.wizard.next_button.set_sensitive(False)
-        glib.timeout_add(50, self._pulse)
+        Glib.timeout_add(50, self._pulse)
 
         # Cancel the request after 30 seconds without a reply
-        glib.timeout_add(30000, self._cancel_request)
+        Glib.timeout_add(30000, self._cancel_request)
 
         # Stay on the same step while sending the details
         return self
@@ -420,7 +419,7 @@ class LinkStep(WizardEditorStep):
     def on_image_eventbox__motion_notify_event(self, widget, event):
         w = widget.get_window()
         if self._inside_button(event):
-            cursor = gtk.gdk.Cursor(gtk.gdk.HAND2)
+            cursor = Gdk.Cursor(Gdk.HAND2)
         else:
             cursor = w.get_parent().get_property('cursor')
         w.set_cursor(cursor)
@@ -711,7 +710,7 @@ class CreateDatabaseStep(BaseWizardStep):
         dbname = settings.dbname
         if yesno(_(u"The specified database '%s' does not exist.\n"
                    u"Do you want to create it?") % dbname,
-                 gtk.RESPONSE_YES, _(u"Create database"), _(u"Don't create")):
+                 Gtk.ResponseType.YES, _(u"Create database"), _(u"Don't create")):
             self.process_view.feed("** Creating database\r\n")
             self._launch_stoqdbadmin()
         else:
@@ -810,7 +809,7 @@ class CreateDatabaseStep(BaseWizardStep):
                 # Allow him to try again
                 if yesno(_("Something went wrong while trying to create "
                            "the database. Try again?"),
-                         gtk.RESPONSE_NO, _("Change settings"), _("Try again")):
+                         Gtk.ResponseType.NO, _("Change settings"), _("Try again")):
                     return
                 self._launch_stoqdbadmin()
                 return
@@ -851,7 +850,7 @@ class FinishInstallationStep(BaseWizardStep):
 
     def post_init(self):
         # replaces the cancel button with a quit button
-        self.wizard.cancel_button.set_label(gtk.STOCK_QUIT)
+        self.wizard.cancel_button.set_label(Gtk.STOCK_QUIT)
         # self._cancel will be a callback for the quit button
         self.wizard.cancel = self._cancel
         self.wizard.next_button.set_label(_(u'Run Stoq'))

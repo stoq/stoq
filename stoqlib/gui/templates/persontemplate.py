@@ -24,7 +24,7 @@
 ##
 """ Templates implementation for person editors.  """
 
-import gtk
+from gi.repository import Gtk
 
 from stoqlib.domain.person import Company, Individual, Person, Supplier
 from stoqlib.exceptions import DatabaseInconsistency
@@ -102,8 +102,8 @@ class _PersonEditorTemplate(BaseEditorSlave):
         :param slave: the slave that will be attached to the new tab
         :param position: the position the tab will be attached
         """
-        event_box = gtk.EventBox()
-        self.person_notebook.append_page(event_box, gtk.Label(tab_label))
+        event_box = Gtk.EventBox()
+        self.person_notebook.append_page(event_box, Gtk.Label(tab_label))
         self.attach_slave(tab_label, slave, event_box)
         event_box.show()
 

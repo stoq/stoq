@@ -22,8 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 #
 
-import gobject
-import gtk
+from gi.repository import Gtk, GObject
 
 from kiwi.datatypes import number
 from kiwi.ui.objectlist import empty_marker, ListLabel
@@ -61,7 +60,7 @@ class LazyObjectModelRow(object):
 
 
 # FIXME: Port to Gtk.TreeModel so it works under gi
-class LazyObjectModel(gtk.GenericTreeModel, gtk.TreeSortable):
+class LazyObjectModel(Gtk.GenericTreeModel, Gtk.TreeSortable):
 
     __gtype_name__ = 'LazyObjectModel'
 
@@ -108,7 +107,7 @@ class LazyObjectModel(gtk.GenericTreeModel, gtk.TreeSortable):
 
     @debug
     def on_get_flags(self):
-        return gtk.TREE_MODEL_LIST_ONLY
+        return Gtk.TreeModelFlags.LIST_ONLY
 
     @debug
     def on_get_n_columns(self):
@@ -172,7 +171,7 @@ class LazyObjectModel(gtk.GenericTreeModel, gtk.TreeSortable):
 
     @debug
     def __getitem__(self, key):
-        if isinstance(key, gtk.TreeIter):
+        if isinstance(key, Gtk.TreeIter):
             index = self.get_user_data(key)
         elif isinstance(key, (basestring, int)):
             index = int(key)
@@ -188,7 +187,7 @@ class LazyObjectModel(gtk.GenericTreeModel, gtk.TreeSortable):
 
     # GtkTreeSortable
 
-    if gtk.gtk_version >= (3, 0):
+    if Gtk.gtk_version >= (3, 0):
         @debug
         def do_get_sort_column_id(self):
             return (self._sort_order >= 0, self._sort_column_id, self._sort_order)
@@ -265,7 +264,7 @@ class LazyObjectModel(gtk.GenericTreeModel, gtk.TreeSortable):
         self._result = self._executer.get_ordered_result(self._orig_result,
                                                          order_attr)
 
-        if self._sort_order == gtk.SORT_DESCENDING:
+        if self._sort_order == Gtk.SortType.DESCENDING:
             # Results should be reversed, so we need to invert the start and
             # end values, and use the end of the list as a reference.
             # This should be as easy as reversed(self._results[-end:-start])
@@ -385,7 +384,7 @@ class LazyObjectListUpdater(object):
             return False
 
         timeout = {}
-        timeout['source_id'] = gtk.timeout_add(
+        timeout['source_id'] = Gtk.timeout_add(
             self.SCROLL_TIMEOUT, timeout_func, timeout)
         self._timeout_queue.append(timeout)
 
@@ -416,4 +415,4 @@ class LazySummaryLabel(ListLabel):
         self.set_value(column.as_string(value))
 
 
-gobject.type_register(LazySummaryLabel)
+GObject.type_register(LazySummaryLabel)

@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 import mock
 
 from stoqlib.api import api
@@ -96,7 +96,7 @@ class TestNewLoanWizard(GUITest):
                           [wizard.retval, loan_item])
 
         yesno.assert_called_once_with('Would you like to print the receipt now?',
-                                      gtk.RESPONSE_YES, 'Print receipt', "Don't print")
+                                      Gtk.ResponseType.YES, 'Print receipt', "Don't print")
         self.assertEquals(print_report.call_count, 1)
 
         # verifies if stock was decreased correctly

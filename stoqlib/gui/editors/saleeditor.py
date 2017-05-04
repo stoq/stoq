@@ -25,7 +25,7 @@
 
 import collections
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
@@ -100,13 +100,13 @@ class SaleQuoteItemSlave(BaseEditorSlave):
         self.description.set_text(self.model.sellable.get_description())
         self.original_price.update(self.model.base_price)
 
-        self.price.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
+        self.price.set_adjustment(Gtk.Adjustment(lower=0, upper=MAX_INT,
                                                  step_incr=1, page_incr=10))
         unit = self.model.sellable.unit
         digits = QUANTITY_PRECISION if unit and unit.allow_fraction else 0
         for widget in [self.quantity, self.reserved]:
             widget.set_digits(digits)
-            widget.set_adjustment(gtk.Adjustment(lower=0, upper=MAX_INT,
+            widget.set_adjustment(Gtk.Adjustment(lower=0, upper=MAX_INT,
                                                  step_incr=1, page_incr=10))
 
         manager = get_plugin_manager()
@@ -338,7 +338,7 @@ class SaleQuoteItemSlave(BaseEditorSlave):
                                              "doesn't have enough of stock to reserve"))
 
     def on_price__icon_press(self, entry, icon_pos, event):
-        if icon_pos != gtk.ENTRY_ICON_PRIMARY:  # pragma no cover
+        if icon_pos != Gtk.EntryIconPosition.PRIMARY:  # pragma no cover
             return
 
         # Ask for the credentials of a different user that can possibly allow a
@@ -377,7 +377,7 @@ class SaleClientEditor(_BaseSalePersonChangeEditor):
         client = widget.read()
         if client is not None and client.status != Client.STATUS_SOLVENT:
             self.fields['client'].gadget.update_edit_button(
-                gtk.STOCK_DIALOG_WARNING)
+                Gtk.STOCK_DIALOG_WARNING)
 
 
 class SalesPersonEditor(_BaseSalePersonChangeEditor):

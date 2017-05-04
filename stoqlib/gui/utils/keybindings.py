@@ -24,7 +24,7 @@
 
 import platform
 
-import gtk
+from gi.repository import Gtk
 from kiwi.component import get_utility
 
 from stoqlib.lib.interfaces import IApplicationDescriptions
@@ -471,7 +471,7 @@ class KeyBindingCategory(object):
         self.label = label
 
 
-_pre_gtk_2_24_9 = gtk.gtk_version < (2, 24, 9)
+_pre_gtk_2_24_9 = Gtk.gtk_version < (2, 24, 9)
 
 
 class KeyBindingGroup(object):

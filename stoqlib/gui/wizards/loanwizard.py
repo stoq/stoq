@@ -27,7 +27,7 @@
 from decimal import Decimal
 import datetime
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
@@ -267,7 +267,7 @@ class LoanSelectionStep(BaseWizardStep):
         self._create_filters()
         self.search.results.connect('selection-changed',
                                     self._on_results_selection_changed)
-        self.search.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.search.results.set_selection_mode(Gtk.SelectionMode.MULTIPLE)
         self.search.focus_search_entry()
 
     #
@@ -337,7 +337,7 @@ class LoanItemSelectionStep(SellableItemStep):
         self.force_validation()
 
     def get_columns(self):
-        adjustment = gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1)
+        adjustment = Gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1)
         return [
             Column('sellable.code', title=_('Code'),
                    data_type=str, visible=False),
@@ -461,7 +461,7 @@ class NewLoanWizard(BaseWizard):
     def _print_receipt(self, order):
         # we can only print the receipt if the loan was confirmed.
         if yesno(_('Would you like to print the receipt now?'),
-                 gtk.RESPONSE_YES, _("Print receipt"), _("Don't print")):
+                 Gtk.ResponseType.YES, _("Print receipt"), _("Don't print")):
             print_report(LoanReceipt, order)
 
     #

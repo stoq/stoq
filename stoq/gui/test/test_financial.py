@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk
 import mock
 
 from stoq.gui.financial import FinancialApp
@@ -166,7 +166,7 @@ class TestFinancial(BaseGUITest):
                 self.activate(app.DeleteTransaction)
                 yesno.assert_called_once_with(u'Are you sure you want to remove '
                                               u'transaction "Test transaction" ?',
-                                              gtk.RESPONSE_YES,
+                                              Gtk.ResponseType.YES,
                                               u'Remove transaction',
                                               u'Keep transaction')
         # The original transaction, also must have been deleted.
@@ -230,7 +230,7 @@ class TestFinancial(BaseGUITest):
                 self.activate(app.DeleteAccount)
                 yesno.assert_called_once_with(u'Are you sure you want to remove '
                                               u'account "The Account" ?',
-                                              gtk.RESPONSE_NO,
+                                              Gtk.ResponseType.NO,
                                               u'Remove account', u'Keep account')
                 self.assertTrue(selected_account not in accounts)
 
@@ -256,7 +256,7 @@ class TestFinancial(BaseGUITest):
                 yesno.assert_called_once_with(u'Are you sure you want to remove '
                                               u'transaction "Test Account '
                                               u'Transaction" ?',
-                                              gtk.RESPONSE_YES,
+                                              Gtk.ResponseType.YES,
                                               u'Remove transaction',
                                               u'Keep transaction')
                 self.assertEquals(len(olist), 0)

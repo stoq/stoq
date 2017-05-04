@@ -23,8 +23,7 @@
 ##
 """ Some extra methods to deal with gtk/kiwi widgets """
 
-import gtk
-import pango
+from gi.repository import Gtk, Pango
 
 
 def change_button_appearance(button, icon=None, text=None):
@@ -32,14 +31,14 @@ def change_button_appearance(button, icon=None, text=None):
     hbox = alignment.get_children()[0]
     image, label = hbox.get_children()
     if icon:
-        image.set_from_stock(icon, gtk.ICON_SIZE_BUTTON)
+        image.set_from_stock(icon, Gtk.IconSize.BUTTON)
     if text is not None:
         label.set_text_with_mnemonic(text)
 
 
 def set_bold(widget):
-    bold = pango.AttrWeight(pango.WEIGHT_HEAVY, 0, -1)
-    attrs = pango.AttrList()
+    bold = Pango.AttrWeight(Pango.Weight.HEAVY, 0, -1)
+    attrs = Pango.AttrList()
     attrs.insert(bold)
     widget.set_property('attributes', attrs)
 
@@ -55,12 +54,12 @@ def button_set_image_with_label(button, stock_id, text):
     if button.get_child():
         button.remove(button.get_child())
 
-    align = gtk.Alignment(0.5, 0.5, 1.0, 1.0)
-    box = gtk.VBox()
+    align = Gtk.Alignment(0.5, 0.5, 1.0, 1.0)
+    box = Gtk.VBox()
     align.add(box)
-    image = gtk.Image()
-    image.set_from_stock(stock_id, gtk.ICON_SIZE_LARGE_TOOLBAR)
-    label = gtk.Label(text)
+    image = Gtk.Image()
+    image.set_from_stock(stock_id, Gtk.IconSize.LARGE_TOOLBAR)
+    label = Gtk.Label(text)
     if '_' in text:
         label.set_use_underline(True)
 

@@ -27,8 +27,7 @@
 import platform
 import sys
 
-import glib
-import gtk
+from gi.repository import Gtk, Glib
 
 from stoqlib.api import api
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
@@ -73,7 +72,7 @@ class UpdateSchemaStep(BaseWizardStep):
         self.process_view.connect('finished', self._on_processview__finished)
         self.expander.add(self.process_view)
         self._launch_stoqdbadmin()
-        glib.timeout_add(50, self._on_timeout_add)
+        Glib.timeout_add(50, self._on_timeout_add)
 
     def has_next_step(self):
         return False
@@ -144,7 +143,7 @@ class UpdateSchemaStep(BaseWizardStep):
     def _finish(self, returncode):
         self._finished = True
         if returncode:
-            self.wizard.cancel_button.set_label(gtk.STOCK_QUIT)
+            self.wizard.cancel_button.set_label(Gtk.STOCK_QUIT)
             self.progressbar.set_fraction(0.0)
         else:
             # Migration may have changed some parameters, so clear the cache.

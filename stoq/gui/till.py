@@ -27,8 +27,7 @@ import decimal
 from datetime import date
 import logging
 
-import pango
-import gtk
+from gi.repository import Gtk, Pango
 from kiwi.currency import currency
 from kiwi.datatypes import converter
 from kiwi.ui.objectlist import Column
@@ -125,21 +124,21 @@ class TillApp(ShellApp):
             ("SearchClosedTill", None, _("Closed till search..."),
              group.get('search_closed_till'),
              _("Search for all closed tills")),
-            ("Confirm", gtk.STOCK_APPLY, _("Confirm..."),
+            ("Confirm", Gtk.STOCK_APPLY, _("Confirm..."),
              group.get('confirm_sale'),
              _("Confirm the selected sale, decreasing stock and making it "
                "possible to receive it's payments")),
             # FIXME: This button should change the label to "Cancel" when the
             # selected sale can be cancelled and not returned, since that's
             # what is going to happen when the user click in it
-            ("Return", gtk.STOCK_CANCEL, _("Return..."),
+            ("Return", Gtk.STOCK_CANCEL, _("Return..."),
              group.get('return_sale'),
              _("Return the selected sale, returning stock and the client's "
                "payments")),
-            ("Details", gtk.STOCK_INFO, _("Details..."),
+            ("Details", Gtk.STOCK_INFO, _("Details..."),
              group.get('sale_details'),
              _("Show details of the selected sale")),
-            ("Payment", gtk.STOCK_INFO, _("Edit payments..."), None,
+            ("Payment", Gtk.STOCK_INFO, _("Edit payments..."), None,
              _("Edit payments of the selected sale")),
         ]
 
@@ -167,7 +166,7 @@ class TillApp(ShellApp):
         self._setup_printer()
         self._setup_widgets()
         self.status_link.set_use_markup(True)
-        self.status_link.set_justify(gtk.JUSTIFY_CENTER)
+        self.status_link.set_justify(Gtk.Justification.CENTER)
 
     def get_title(self):
         return _('[%s] - Till') % (
@@ -222,7 +221,7 @@ class TillApp(ShellApp):
             Column('status_name', title=_(u'Status'), data_type=str,
                    visible=True),
             SearchColumn('open_date', title=_('Date Started'), width=110,
-                         data_type=date, justify=gtk.JUSTIFY_RIGHT),
+                         data_type=date, justify=Gtk.Justification.RIGHT),
         ]
 
         if api.sysparam.get_bool('USE_SALE_TOKEN'):
@@ -232,10 +231,10 @@ class TillApp(ShellApp):
         columns.extend([
             SearchColumn('client_name', title=_('Client'),
                          data_type=str, expand=True,
-                         ellipsize=pango.ELLIPSIZE_END),
+                         ellipsize=Pango.EllipsizeMode.END),
             SearchColumn('salesperson_name', title=_('Salesperson'),
                          data_type=str, width=180,
-                         ellipsize=pango.ELLIPSIZE_END),
+                         ellipsize=Pango.EllipsizeMode.END),
             SearchColumn('total_quantity', title=_('Quantity'),
                          data_type=decimal.Decimal, width=100,
                          format_func=format_quantity),
@@ -301,7 +300,7 @@ class TillApp(ShellApp):
         if (sale.status == Sale.STATUS_QUOTE and
             expire_date and expire_date.date() < date.today() and
             not yesno(_("This quote has expired. Confirm it anyway?"),
-                      gtk.RESPONSE_YES,
+                      Gtk.ResponseType.YES,
                       _("Confirm quote"), _("Don't confirm"))):
             store.close()
             return
@@ -352,7 +351,7 @@ class TillApp(ShellApp):
                 if not yesno(_("Failed to open the fiscal coupon.\n"
                                "Until it is opened, it's not possible to "
                                "confirm the sale. Do you want to try again?"),
-                             gtk.RESPONSE_YES, _("Try again"), _("Cancel coupon")):
+                             Gtk.ResponseType.YES, _("Try again"), _("Cancel coupon")):
                     return None
 
         return coupon

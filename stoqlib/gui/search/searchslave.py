@@ -27,7 +27,7 @@ import decimal
 import logging
 import warnings
 
-import gtk
+from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import SummaryLabel
 from kiwi.ui.delegates import SlaveDelegate
@@ -122,7 +122,7 @@ class SearchSlave(SlaveDelegate):
             api.get_current_user(self.store).username.encode('utf-8'), )
         self.columns = self.restore_columns(columns)
 
-        self.vbox = gtk.VBox()
+        self.vbox = Gtk.VBox()
         SlaveDelegate.__init__(self, toplevel=self.vbox)
         self.vbox.show()
 
@@ -147,16 +147,16 @@ class SearchSlave(SlaveDelegate):
     def _create_basic_search(self):
         # This hbox is here so we can have a padding on the filters
         # from the left window edge
-        filters_container = gtk.HBox()
+        filters_container = Gtk.HBox()
         filters_container.show()
 
-        filters_box = gtk.VBox(spacing=6)
+        filters_box = Gtk.VBox(spacing=6)
         filters_container.pack_start(filters_box, False, False, 6)
         filters_box.show()
 
         self.vbox.pack_start(filters_container, False, True, 6)
 
-        hbox = gtk.HBox()
+        hbox = Gtk.HBox()
         filters_box.pack_start(hbox, False, False, 0)
         hbox.show()
         self.hbox = hbox
@@ -167,7 +167,7 @@ class SearchSlave(SlaveDelegate):
 
         self.search_entry = self._primary_filter.entry
 
-        self.search_button = SearchFilterButton(stock=gtk.STOCK_FIND)
+        self.search_button = SearchFilterButton(stock=Gtk.STOCK_FIND)
         hbox.pack_start(self.search_button, False, False, 0)
         self.search_button.show()
 
@@ -267,10 +267,10 @@ class SearchSlave(SlaveDelegate):
         """
         Enables an advanced search
         """
-        self.label_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-        self.combo_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
+        self.label_group = Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
+        self.combo_group = Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
 
-        self.menu = gtk.Menu()
+        self.menu = Gtk.Menu()
         for column in self.columns:
             if not isinstance(column, SearchColumn):
                 continue
@@ -298,7 +298,7 @@ class SearchSlave(SlaveDelegate):
         """
         assert data_type in (datetime.date, decimal.Decimal, int, currency, str,
                              bool)
-        menu_item = gtk.MenuItem(title)
+        menu_item = Gtk.MenuItem(title)
         menu_item.show()
         menu_item.connect('activate', self._on_menu_item__activate, attr, title,
                           data_type, valid_values, callback, use_having,
@@ -554,7 +554,7 @@ class SearchSlave(SlaveDelegate):
 
         if not parent:
             parent = self.vbox
-        elif not isinstance(parent, gtk.Box):
+        elif not isinstance(parent, Gtk.Box):
             raise TypeError("parent %r must be a GtkBox subclass" % (
                 parent))
 

@@ -24,7 +24,7 @@
 ##
 """ Classes for Stock Decrease Details Dialog """
 
-import gtk
+from gi.repository import Gtk
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.loan import Loan
@@ -57,8 +57,8 @@ class LoanDetailsDialog(BaseEditor):
         :param slave: the slave we are attaching to the new tab
         :param name: the name of the tab
         """
-        event_box = gtk.EventBox()
-        self.details_notebook.insert_page(event_box, gtk.Label(name))
+        event_box = Gtk.EventBox()
+        self.details_notebook.insert_page(event_box, Gtk.Label(name))
         self.attach_slave(name, slave, event_box)
         event_box.show()
 
@@ -69,17 +69,17 @@ class LoanDetailsDialog(BaseEditor):
 
     def _get_product_columns(self):
         return [Column("sellable.code", title=_("Code"), data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT, width=130),
+                       justify=Gtk.Justification.RIGHT, width=130),
                 Column("sellable.description", title=_("Description"),
                        data_type=str, expand=True),
                 Column("quantity", title=_("Quantity"),
-                       data_type=int, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=int, justify=Gtk.Justification.RIGHT),
                 Column("sale_quantity", title=_("Sold"),
-                       data_type=int, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=int, justify=Gtk.Justification.RIGHT),
                 Column("return_quantity", title=_("Returned"),
-                       data_type=int, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=int, justify=Gtk.Justification.RIGHT),
                 Column("price", title=_("Price"),
-                       data_type=int, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=int, justify=Gtk.Justification.RIGHT),
                 ]
 
     #

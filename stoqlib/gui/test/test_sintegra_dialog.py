@@ -25,7 +25,7 @@
 import datetime
 
 import mock
-import gtk
+from gi.repository import Gtk
 
 from stoqlib.api import api
 from stoqlib.domain.system import SystemTable
@@ -64,5 +64,5 @@ class TestSintegraDialog(GUITest):
             args, kwargs = save.call_args
             label, toplevel, filename = args
             self.assertEquals(label, _("Save Sintegra file"))
-            self.assertTrue(isinstance(toplevel, gtk.Dialog))
+            self.assertTrue(isinstance(toplevel, Gtk.Dialog))
             self.assertEquals(filename, 'sintegra-2012-01.txt')

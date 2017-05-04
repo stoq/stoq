@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+from gi.repository import Gtk, Gdk
 from kiwi.ui.delegates import GladeDelegate
 from kiwi.datatypes import converter
 
@@ -31,7 +31,7 @@ from stoqlib.gui.base.dialogs import RunnableView
 from stoqlib.lib.imageutils import get_pixbuf, get_thumbnail
 from stoqlib.lib.translation import stoqlib_gettext as _
 
-_pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
+_pixbuf_converter = converter.get_converter(Gdk.Pixbuf)
 
 
 class SellableImageViewer(GladeDelegate, RunnableView):
@@ -62,8 +62,8 @@ class SellableImageViewer(GladeDelegate, RunnableView):
     def set_sellable(self, sellable):
         self.sellable = sellable
         if not self.sellable or not self.sellable.image:
-            self.image.set_from_stock(gtk.STOCK_MISSING_IMAGE,
-                                      gtk.ICON_SIZE_DIALOG)
+            self.image.set_from_stock(Gtk.STOCK_MISSING_IMAGE,
+                                      Gtk.IconSize.DIALOG)
             return
 
         if self._use_thumbnail:
@@ -89,7 +89,7 @@ class SellableImageViewer(GladeDelegate, RunnableView):
             else:
                 height = int(width / image_aspect)
 
-            pixbuf = pixbuf.scale_simple(width, height, gtk.gdk.INTERP_BILINEAR)
+            pixbuf = pixbuf.scale_simple(width, height, Gdk.INTERP_BILINEAR)
 
         self.image.set_from_pixbuf(pixbuf)
 

@@ -28,8 +28,7 @@
 import datetime
 from decimal import Decimal
 
-import pango
-import gtk
+from gi.repository import Gtk, Pango
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 from storm.expr import Count, And
@@ -87,12 +86,12 @@ class _BaseSaleSearch(SearchDialog):
 
     def get_columns(self):
         return [IdentifierColumn('identifier', title=_('Sale #'), sorted=True,
-                                 order=gtk.SORT_DESCENDING),
+                                 order=Gtk.SortType.DESCENDING),
                 SearchColumn('open_date', title=_('Date Started'), width=110,
-                             data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                             data_type=datetime.date, justify=Gtk.Justification.RIGHT),
                 SearchColumn('client_name', title=_('Client'),
                              data_type=str, expand=True,
-                             ellipsize=pango.ELLIPSIZE_END),
+                             ellipsize=Pango.EllipsizeMode.END),
                 SearchColumn('salesperson_name', title=_('Salesperson'),
                              data_type=str, width=150),
                 SearchColumn('total_quantity', title=_('Items'),
@@ -213,22 +212,22 @@ class SoldItemsByBranchSearch(SearchDialog):
         self._setup_summary()
 
     def _setup_summary(self):
-        hbox = gtk.HBox()
+        hbox = Gtk.HBox()
         hbox.set_spacing(6)
 
         self.vbox.pack_start(hbox, False, True, 0)
         self.vbox.reorder_child(hbox, 2)
         self.vbox.set_spacing(6)
 
-        label = gtk.Label()
+        label = Gtk.Label()
         hbox.pack_start(label, True, True, 0)
 
         # Create some labels to show a summary for the search (kiwi's
         # SummaryLabel supports only one column)
-        self.items_label = gtk.Label()
-        self.quantity_label = gtk.Label()
-        self.items_per_sale_label = gtk.Label()
-        self.total_label = gtk.Label()
+        self.items_label = Gtk.Label()
+        self.quantity_label = Gtk.Label()
+        self.items_per_sale_label = Gtk.Label()
+        self.total_label = Gtk.Label()
         for widget in [self.items_label, self.quantity_label,
                        self.items_per_sale_label, self.total_label]:
             hbox.pack_start(widget, False, False, 0)
@@ -267,7 +266,7 @@ class SoldItemsByBranchSearch(SearchDialog):
 
     def get_columns(self):
         return [SearchColumn('code', title=_('Code'), data_type=str,
-                             sorted=True, order=gtk.SORT_DESCENDING),
+                             sorted=True, order=Gtk.SortType.DESCENDING),
                 SearchColumn('description', title=_('Product'), data_type=str,
                              expand=True),
                 SearchColumn('category', title=_('Category'), data_type=str,
@@ -307,7 +306,7 @@ class SoldItemsByClientSearch(SearchDialog):
     def get_columns(self):
         columns = [
             SearchColumn('code', title=_('Code'), data_type=str, sorted=True,
-                         order=gtk.SORT_DESCENDING),
+                         order=Gtk.SortType.DESCENDING),
             SearchColumn('description', title=_('Description'),
                          data_type=str, expand=True),
             SearchColumn('client_name', title=_('Client'), data_type=str),
@@ -349,7 +348,7 @@ class UnconfirmedSaleItemsSearch(SearchDialog):
 
     def get_columns(self):
         return [IdentifierColumn('identifier', title=_('Sale #'),
-                                 sorted=True, order=gtk.SORT_DESCENDING),
+                                 sorted=True, order=Gtk.SortType.DESCENDING),
                 SearchColumn('status_str', title=_('Status'),
                              search_attribute='status',
                              valid_values=self._get_status_values(), data_type=str),
@@ -373,7 +372,7 @@ class UnconfirmedSaleItemsSearch(SearchDialog):
                              visible=False),
                 SearchColumn('total', title=_('Total'), data_type=currency,),
                 IdentifierColumn('wo_identifier', title=_('WO #'),
-                                 visible=False, justify=gtk.JUSTIFY_RIGHT),
+                                 visible=False, justify=Gtk.Justification.RIGHT),
                 SearchColumn('wo_status_str', title=_('WO Status'), data_type=str,
                              search_attribute='wo_status', visible=False,
                              valid_values=self._get_wo_status_values()),
@@ -383,21 +382,21 @@ class UnconfirmedSaleItemsSearch(SearchDialog):
                              data_type=datetime.date, visible=False)]
 
     def _setup_summary(self):
-        hbox = gtk.HBox()
+        hbox = Gtk.HBox()
         hbox.set_spacing(6)
 
         self.vbox.pack_start(hbox, False, True, 0)
         self.vbox.reorder_child(hbox, 2)
         self.vbox.set_spacing(6)
 
-        label = gtk.Label()
+        label = Gtk.Label()
         hbox.pack_start(label, True, True, 0)
 
         # Create some labels to show a summary for the search (kiwi's
         # SummaryLabel supports only one column)
-        self.quantity_label = gtk.Label()
-        self.reserved_label = gtk.Label()
-        self.total_label = gtk.Label()
+        self.quantity_label = Gtk.Label()
+        self.reserved_label = Gtk.Label()
+        self.total_label = Gtk.Label()
         for widget in [self.quantity_label, self.reserved_label,
                        self.total_label]:
             hbox.pack_start(widget, False, False, 0)
