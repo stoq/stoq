@@ -118,7 +118,7 @@ class DeviceSettings(Domain):
         else:
             # Serial device
             interface = 'serial'
-            port = SerialPort(device=self.device_name)
+            port = SerialPort(device=self.device_name, baudrate=self.baudrate)
             product_id = vendor_id = None
 
         if self.type == DeviceSettings.CHEQUE_PRINTER_DEVICE:
@@ -129,7 +129,7 @@ class DeviceSettings(Domain):
                                     product_id=product_id, vendor_id=vendor_id)
         elif self.type == DeviceSettings.SCALE_DEVICE:
             return Scale(brand=self.brand, model=self.model,
-                         device=self.device_name)
+                         device=self.device_name, port=port)
 
         raise DatabaseInconsistency("The device type referred by this "
                                     "record (%r) is invalid, given %r."
