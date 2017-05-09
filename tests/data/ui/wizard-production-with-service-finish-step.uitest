@@ -40,6 +40,9 @@ model: ProductionOrder<1>
   status: u'opened'
 
 model: Service<2>
+  city_taxation_code: None
+  p_iss: None
+  service_list_item_code: None
 
 model: ProductComponent<3>
   component_id: Product<5>
