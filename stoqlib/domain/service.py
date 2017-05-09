@@ -29,6 +29,7 @@ from storm.expr import Join, LeftJoin
 from storm.references import Reference
 from zope.interface import implementer
 
+from stoqlib.database.properties import UnicodeCol, PercentCol
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ServiceCreateEvent, ServiceEditEvent,
@@ -53,6 +54,15 @@ class Service(Domain):
 
     #: The |sellable| for this service
     sellable = Reference('id', 'Sellable.id')
+
+    #: The taxation code for this service in the city
+    city_taxation_code = UnicodeCol()
+
+    #: The federal service list item code for this service
+    service_list_item_code = UnicodeCol()
+
+    #: ISS Aliquot in percentage
+    p_iss = PercentCol()
 
     def __init__(self, **kwargs):
         assert 'sellable' in kwargs
