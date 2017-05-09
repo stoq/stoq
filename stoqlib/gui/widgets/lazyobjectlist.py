@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 #
 
+import gobject
 import gtk
 
 from kiwi.datatypes import number
@@ -396,6 +397,8 @@ class LazyObjectListUpdater(object):
 
 
 class LazySummaryLabel(ListLabel):
+    __gtype_name__ = 'LazySummaryLabel'
+
     def __init__(self, klist, column, label=_('Total:'), value_format='%s',
                  font_desc=None):
         ListLabel.__init__(self, klist, column, label, value_format, font_desc)
@@ -411,3 +414,6 @@ class LazySummaryLabel(ListLabel):
             return
         column = self._column
         self.set_value(column.as_string(value))
+
+
+gobject.type_register(LazySummaryLabel)

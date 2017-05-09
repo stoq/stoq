@@ -1,13 +1,13 @@
 search: UnconfirmedSaleItemsSearch
 GtkDialog(toplevel): title='Unconfirmed Sale Items Search', hidden
-  GtkVBox(_main_vbox):
-    GtkVBox(vbox, expand=True, fill=True):
+  GtkBox(_main_vbox, orientation=vertical):
+    GtkBox(vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(header): hidden
       GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
-        GtkVBox(vbox):
-          GtkHBox(fill=True, padding=6):
-            GtkVBox(filters_box, padding=6):
-              GtkHBox(hbox):
+        GtkBox(vbox, orientation=vertical):
+          GtkBox(orientation=horizontal, fill=True, padding=6):
+            GtkBox(filters_box, orientation=vertical, padding=6):
+              GtkBox(hbox, orientation=horizontal):
                 ComboSearchFilter(branch_filter):
                   GtkLabel(): 'Branch:'
                   ProxyComboBox(padding=6):
@@ -15,7 +15,7 @@ GtkDialog(toplevel): title='Unconfirmed Sale Items Search', hidden
                     item: 'Moda Stoq'
                     item: 'Stoq Elite Fashion'
                     item: 'The Meaning of Life shop', selected
-                SearchFilter(_primary_filter):
+                StringSearchFilter(_primary_filter):
                   GtkLabel(): 'Search:'
                   ProxyComboBox(padding=6): hidden
                     item: 'Contains All Words', selected
@@ -43,17 +43,17 @@ GtkDialog(toplevel): title='Unconfirmed Sale Items Search', hidden
             column: title='Estimated finish', hidden
             column: title='WO Finish date', hidden
             row: 99, u'Quoting', u'', None, u'The Funniest Joke in this Code', None, u'SalesPerson', None, datetime.datetime(2013, 12, 11, 0, 0), <currency $100>, Decimal('41.000'), Decimal('1.000'), Decimal('4100.00000'), None, '', None, None
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkLabel(expand=True, fill=True):
         GtkLabel(quantity_label): 'Quantity: 41'
         GtkLabel(reserved_label): 'Delivered: 1'
         GtkLabel(total_label): 'Total: $4100.00'
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
       GtkButton(sale_details_button, padding=6): 'Sale Details', insensitive

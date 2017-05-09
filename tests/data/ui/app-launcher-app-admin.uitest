@@ -1,6 +1,6 @@
 app: LauncherApp
 GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
-  GtkVBox():
+  GtkBox(orientation=vertical):
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
@@ -99,9 +99,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
             GtkImageMenuItem(): 'Employees'
       GtkToolButton(): 'Print', hidden, insensitive
       GtkToolButton(): 'Quit', hidden
-    GtkVBox(expand=True, fill=True):
-      GtkVBox(expand=True, fill=True):
-        GtkVBox(expand=True, fill=True):
+    GtkBox(orientation=vertical, expand=True, fill=True):
+      GtkBox(orientation=vertical, expand=True, fill=True):
+        GtkBox(orientation=vertical, expand=True, fill=True):
           GtkScrolledWindow(expand=True, fill=True):
             GtkIconView():
               text: Branches, stock: stoq-branches
@@ -131,13 +131,13 @@ GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
               text: Users, stock: stoq-hr
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
-        GtkHBox():
+        GtkBox(orientation=horizontal):
           GtkLabel(expand=True, fill=True):
-      GtkHBox(expand=True, fill=True):
+      GtkBox(orientation=horizontal, expand=True, fill=True):
         GtkAlignment(expand=True, fill=True):
-          GtkHBox():
+          GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkButton(pack-end):
+        StatusButton(pack-end):

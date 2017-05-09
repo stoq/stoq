@@ -1,6 +1,6 @@
 app: SalesApp
 GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
-  GtkVBox():
+  GtkBox(orientation=vertical):
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
@@ -112,15 +112,15 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
       GtkToolButton(): 'Edit', insensitive
       GtkToolButton(): 'Details', insensitive
       GtkToolButton(): 'Return', insensitive
-    GtkVBox(expand=True, fill=True):
-      GtkVBox(main_vbox, expand=True, fill=True):
-        GtkHBox(menu_hbox, fill=True): hidden
-        GtkVBox(vbox4, expand=True, fill=True):
+    GtkBox(orientation=vertical, expand=True, fill=True):
+      GtkBox(main_vbox, orientation=vertical, expand=True, fill=True):
+        GtkBox(menu_hbox, orientation=horizontal, fill=True): hidden
+        GtkBox(vbox4, orientation=vertical, expand=True, fill=True):
           GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlave is attached
-            GtkVBox(vbox):
-              GtkHBox(fill=True, padding=6):
-                GtkVBox(filters_box, padding=6):
-                  GtkHBox(hbox):
+            GtkBox(vbox, orientation=vertical):
+              GtkBox(orientation=horizontal, fill=True, padding=6):
+                GtkBox(filters_box, orientation=vertical, padding=6):
+                  GtkBox(hbox, orientation=horizontal):
                     ComboSearchFilter():
                       GtkLabel(): 'Branch:'
                       ProxyComboBox(padding=6):
@@ -143,7 +143,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
                         item: 'Cancelled'
                         item: 'Returned'
                         item: 'Renegotiated'
-                    SearchFilter(_primary_filter):
+                    StringSearchFilter(_primary_filter):
                       GtkLabel(): 'matching:'
                       ProxyComboBox(padding=6): hidden
                         item: 'Contains All Words', selected
@@ -170,23 +170,23 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
                 row: 1, 1001, True, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 4, 5, 0, 0), datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Vitalina Claudino', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $436>
                 row: 2, 1002, False, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 4, 5, 0, 0), datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Alessandra Almeida Itaber\xe1', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $706>
                 row: 3, 1003, False, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 4, 5, 0, 0), datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Luis Sergio da Silva Marin', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $873>
-          GtkVBox(list_vbox, fill=True):
+          GtkBox(list_vbox, orientation=vertical, fill=True):
           GtkEventBox(list_toolbar_holder, fill=True):
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
-        GtkHBox():
+        GtkBox(orientation=horizontal):
           GtkLabel(expand=True, fill=True):
-      GtkHBox(expand=True, fill=True):
+      GtkBox(orientation=horizontal, expand=True, fill=True):
         GtkAlignment(expand=True, fill=True):
-          GtkHBox():
+          GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkHBox(_summary_label):
+        SummaryLabel(_summary_label):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
           GtkLabel(): '<b>$2015.00</b>'
-        GtkButton(pack-end):
+        StatusButton(pack-end):
 
 popup: SaleSelection
 GtkMenu(popup): hidden

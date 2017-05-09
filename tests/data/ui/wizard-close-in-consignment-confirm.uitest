@@ -1,32 +1,32 @@
 wizard: CloseInConsignmentWizard
 GtkDialog(toplevel): title='Closing In Consignment', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave CloseConsignmentPaymentStep is attached
-        GtkVBox(step.toplevel):
+        GtkBox(step.toplevel, orientation=vertical):
           GtkEventBox(step.place_holder, expand=True, fill=True): slave MultipleMethodSlave is attached
-            GtkVBox(toplevel):
-              GtkHBox(hbox1, fill=True):
+            GtkBox(toplevel, orientation=vertical):
+              GtkBox(hbox1, orientation=horizontal, fill=True):
                 GtkLabel(label1): '<b>Method:</b>'
-                GtkHBox(methods_box, expand=True, fill=True):
+                GtkBox(methods_box, orientation=horizontal, expand=True, fill=True):
                   GtkRadioButton(expand=True, fill=True): 'Money', active
                   GtkRadioButton(expand=True, fill=True): 'Bill'
                   GtkRadioButton(expand=True, fill=True): 'Check'
                   GtkRadioButton(expand=True, fill=True): 'Deposit'
-                GtkHBox(hbox2, fill=True):
+                GtkBox(hbox2, orientation=horizontal, fill=True):
                   ProxyLabel(currency, fill=True): '$CURRENCY:'
                   ProxyEntry(value): '0.0', insensitive
                   GtkButton(add_button, fill=True): 'gtk-add', insensitive
-              GtkHBox(hbox3, expand=True, fill=True):
-                GtkVBox(vbox2, expand=True, fill=True):
+              GtkBox(hbox3, orientation=horizontal, expand=True, fill=True):
+                GtkBox(vbox2, orientation=vertical, expand=True, fill=True):
                   ObjectList(payments, expand=True, fill=True):
                     column: title='Description', expand
                     column: title='Status'
                     column: title='Value'
                     column: title='Due date'
                     row: u'1/1 Money for order 00333', u'To Pay', <currency $125>, datetime.datetime(2012, 10, 10, 0, 0)
-                GtkVBox(vbox3, fill=True):
+                GtkBox(vbox3, orientation=vertical, fill=True):
                   GtkButton(remove_button): 'gtk-remove', insensitive
                   GtkLabel(label2, expand=True, fill=True):
                   GtkTable(footer_table, fill=True):
@@ -41,13 +41,13 @@ GtkDialog(toplevel): title='Closing In Consignment', hidden
                     GtkLabel(change): 'Change:'
                     ProxyLabel(change_value): '<span weight="bold">$ 0.00</span>'
       ProxyLabel(notification_lbl, fill=True): hidden
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
 
 model: PurchaseOrder<1>
   confirm_date: None

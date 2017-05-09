@@ -1,12 +1,12 @@
 wizard: ProductionWizard
 GtkDialog(toplevel): title='New Production', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave FinishOpenProductionOrderStep is attached
-        GtkVBox(step.toplevel):
+        GtkBox(step.toplevel, orientation=vertical):
           GtkEventBox(step.place_holder, expand=True, fill=True): slave ProductionMaterialListSlave is attached
-            GtkVBox(toplevel):
+            GtkBox(toplevel, orientation=vertical):
               GtkLabel(label1, fill=True): '<b>Listing all the components needed by the production:</b>'
               ObjectList(materials, expand=True, fill=True):
                 column: title='Code'
@@ -18,17 +18,17 @@ GtkDialog(toplevel): title='New Production', hidden
                 column: title='To Purchase'
                 column: title='To Make'
                 row: u'', u'', u'Description', u'', Decimal('1.000000'), Decimal('0'), Decimal('1.000000'), Decimal('0.000')
-              GtkHBox(hbox1):
+              GtkBox(hbox1, orientation=horizontal):
                 ProxyButton(edit_button): 'gtk-edit', insensitive
                 ProxyCheckButton(start_production_check, expand=True, fill=True): 'Start Production even if there are missing components'
       ProxyLabel(notification_lbl, fill=True):
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
 
 model: ProductionOrder<1>
   cancel_date: None

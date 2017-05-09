@@ -1,6 +1,6 @@
 app: CalendarApp
 GtkWindow(toplevel): title='[Moda Stoq] - Calendar', hidden
-  GtkVBox():
+  GtkBox(orientation=vertical):
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
@@ -59,9 +59,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Calendar', hidden
           GtkImageMenuItem(): 'Translate Stoq...'
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): '_About'
-    GtkVBox(expand=True, fill=True):
-      GtkVBox(main_vbox, expand=True, fill=True):
-        GtkHBox(hbox):
+    GtkBox(orientation=vertical, expand=True, fill=True):
+      GtkBox(main_vbox, orientation=vertical, expand=True, fill=True):
+        GtkBox(hbox, orientation=horizontal):
           GtkToolbar(expand=True, fill=True):
             GtkMenuToolButton(): 'Home'
                 GtkMenu(): hidden
@@ -106,13 +106,13 @@ GtkWindow(toplevel): title='[Moda Stoq] - Calendar', hidden
           WebKitWebView():
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
-        GtkHBox():
+        GtkBox(orientation=horizontal):
           GtkLabel(expand=True, fill=True):
-      GtkHBox(expand=True, fill=True):
+      GtkBox(orientation=horizontal, expand=True, fill=True):
         GtkAlignment(expand=True, fill=True):
-          GtkHBox():
+          GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkButton(pack-end):
+        StatusButton(pack-end):

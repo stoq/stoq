@@ -1,12 +1,12 @@
 wizard: WorkOrderPackageReceiveWizard
 GtkDialog(toplevel): title='Receive work orders', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave WorkOrderPackageReceiveOrdersStep is attached
         GtkAlignment(step.alignment1):
-          GtkVBox(step.vbox1):
-            GtkHBox(step.hbox1, fill=True):
+          GtkBox(step.vbox1, orientation=vertical):
+            GtkBox(step.hbox1, orientation=horizontal, fill=True):
               GtkLabel(step.label1, fill=True): 'Package:'
               ProxyLabel(step.identifier, expand=True, fill=True): '<span ></span>'
             ObjectList(step.workorders, expand=True, fill=True):
@@ -30,13 +30,13 @@ GtkDialog(toplevel): title='Receive work orders', hidden
               row: 673, None, u'Opened', u'Description - Equipment 7', None, None, u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
               row: 674, None, u'Opened', u'Description - Equipment 8', None, None, u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
               row: 675, None, u'Opened', u'Description - Equipment 9', None, None, u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), None
-            GtkHBox(step.hbox2, fill=True):
+            GtkBox(step.hbox2, orientation=horizontal, fill=True):
               GtkButton(step.details_btn, fill=True): 'gtk-info', insensitive
       ProxyLabel(notification_lbl, fill=True):
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

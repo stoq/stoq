@@ -1,21 +1,21 @@
 editor: WorkOrderEditor
 GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
-  GtkVBox(main_dialog._main_vbox):
-    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+  GtkBox(main_dialog._main_vbox, orientation=vertical):
+    GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave WorkOrderEditor is attached
-        GtkVBox(toplevel):
+        GtkBox(toplevel, orientation=vertical):
           GtkAlignment(alignment1, fill=True):
             GtkTable(table1):
               GtkLabel(label4): 'Work order:'
               ProxyLabel(identifier): '<span >01234</span>'
               GtkLabel(label20): 'Status:'
-              GtkHBox(hbox2):
+              GtkBox(hbox2, orientation=horizontal):
                 ProxyLabel(status_str, expand=True, fill=True): '<span >Opened</span>'
                 GtkImage(state_icon): hidden
                 GtkButton(toggle_status_btn, fill=True): 'Approve'
               GtkLabel(label5): 'Category:'
-              GtkHBox(hbox1):
+              GtkBox(hbox1, orientation=horizontal):
                 ProxyComboBox(category, expand=True, fill=True): insensitive
                   item: 'No category', selected
                 GtkButton(category_create, fill=True): insensitive
@@ -23,12 +23,12 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
               GtkLabel(label9): 'Supplier order:'
               ProxyEntry(supplier_order): ''
               GtkLabel(label8): 'Client:'
-              GtkHBox():
+              GtkBox(orientation=horizontal):
                 ProxyEntry(client, expand=True, fill=True): 'Client', insensitive
                 GtkButton():
                 GtkButton():
               GtkLabel(sellable_lbl): 'Equipment:'
-              GtkHBox(hbox3):
+              GtkBox(hbox3, orientation=horizontal):
                 GtkLabel(sellable_desc, expand=True, fill=True): 'Description'
                 GtkButton(equip_search_button, fill=True):
                 GtkLabel(label7, fill=True): 'Qty:'
@@ -37,15 +37,15 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
               ProxyEntry(description): '', mandatory
           GtkNotebook(slaves_notebook, expand=True, fill=True):
             GtkEventBox(opening_holder): slave WorkOrderOpeningSlave is attached
-              GtkVBox(toplevel):
-                GtkHBox(hbox7, fill=True):
+              GtkBox(toplevel, orientation=vertical):
+                GtkBox(hbox7, orientation=horizontal, fill=True):
                   GtkLabel(label6, fill=True): 'Opening date:'
                   ProxyDateEntry(open_date, expand=True, fill=True): datetime.datetime(2012, 1, 1, 0, 0)
                 GtkLabel(label9, fill=True): 'Defect reported by client:'
                 GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
                   ProxyTextView(defect_reported):
             GtkEventBox(quote_holder): slave WorkOrderQuoteSlave is attached
-              GtkVBox(toplevel):
+              GtkBox(toplevel, orientation=vertical):
                 GtkTable(table2, fill=True):
                   GtkLabel(description_lbl): 'Equipment:', hidden
                   ProxyEntry(description): '', hidden
@@ -69,7 +69,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                 GtkScrolledWindow(scrolledwindow2, expand=True, fill=True):
                   ProxyTextView(defect_detected):
             GtkEventBox(execution_holder): slave WorkOrderExecutionSlave is attached, insensitive
-              GtkVBox(toplevel):
+              GtkBox(toplevel, orientation=vertical):
                 GtkTable(table3, fill=True):
                   GtkLabel(label17): 'Execution responsible:'
                   ProxyComboEntry(execution_responsible):
@@ -81,9 +81,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                     item: 'SalesPerson'
                 GtkHSeparator(hseparator1, fill=True):
                 GtkEventBox(sellable_item_holder, expand=True, fill=True): slave _WorkOrderItemSlave is attached
-                  GtkVBox(toplevel):
+                  GtkBox(toplevel, orientation=vertical):
                     GtkTable(item_table, fill=True): hidden
-                      GtkHBox(hbox2):
+                      GtkBox(hbox2, orientation=horizontal):
                         ProxyLabel(item_lbl, fill=True): 'Item:'
                         ProxyEntry(barcode, fill=True): '', invalid
                         GtkButton(product_button):
@@ -99,8 +99,8 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                       GtkLabel(stock_quantity_lbl): 'Stock:', hidden
                       ProxyLabel(stock_quantity): '<span >0.0</span>', hidden
                     GtkEventBox(list_holder, expand=True, fill=True): slave AdditionListSlave is attached
-                      GtkVBox(toplevel):
-                        GtkVBox(list_vbox, expand=True, fill=True):
+                      GtkBox(toplevel, orientation=vertical):
+                        GtkBox(list_vbox, orientation=vertical, expand=True, fill=True):
                           ObjectTree(klist, expand=True, fill=True):
                             column: title='Code', hidden
                             column: title='Barcode', hidden
@@ -109,20 +109,20 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                             column: title='Quantity'
                             column: title='Consumed quantity'
                             column: title='Total'
-                          GtkHBox(summary, fill=True):
+                          SummaryLabel(summary, fill=True):
                             GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                             GtkLabel(): '<b>$ 0.00</b>'
-                        GtkHBox(hbox1, fill=True):
-                          GtkHBox(button_box):
+                        GtkBox(hbox1, orientation=horizontal, fill=True):
+                          GtkBox(button_box, orientation=horizontal):
                             GtkButton(add_button): hidden
                             GtkButton(edit_button): insensitive
                             GtkButton(delete_button): hidden, insensitive
-                          GtkHBox(message_hbox, expand=True, fill=True):
+                          GtkBox(message_hbox, orientation=horizontal, expand=True, fill=True):
                             GtkLabel(message_label, expand=True, fill=True): 'This order is related to a sale. Edit the sale if you need to change the items'
                             GtkButton(message_details_button, fill=True): 'Details', hidden
             GtkEventBox(history_holder): slave WorkOrderHistorySlave is attached
               GtkAlignment(toplevel):
-                GtkVBox(vbox1):
+                GtkBox(vbox1, orientation=vertical):
                   ObjectList(details_list, expand=True, fill=True):
                     column: title='Date'
                     column: title='Who', expand
@@ -130,15 +130,15 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                     column: title='Old value', hidden
                     column: title='New value'
                     column: title='Notes'
-                  GtkHBox(hbox1, fill=True):
+                  GtkBox(hbox1, orientation=horizontal, fill=True):
                     GtkButton(details_btn, fill=True): 'gtk-info', insensitive
             GtkEventBox(): slave WorkOrderOpticalSlave is attached
-              GtkVBox(toplevel):
+              GtkBox(toplevel, orientation=vertical):
                 GtkTable(table1, fill=True):
                   GtkLabel(label3): 'Medic:'
                   ProxyComboEntry(medic_combo): mandatory
                     item: ''
-                  GtkHBox(hbox1):
+                  GtkBox(hbox1, orientation=horizontal):
                     GtkButton(medic_create, expand=True, fill=True):
                     GtkButton(medic_details, expand=True, fill=True): insensitive
                   GtkLabel(label11): 'Lens type:'
@@ -152,7 +152,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                   GtkButton(notes_button): 'Observations', hidden
                   GtkLabel(estimated_finish_lbl): 'Delivery date:', hidden
                   ProxyDateEntry(estimated_finish): None, hidden
-                GtkHBox(distance_box, expand=True, fill=True):
+                GtkBox(distance_box, orientation=horizontal, expand=True, fill=True):
                   GtkLabel(label5, fill=True): 'Distance'
                   GtkTable(distance_table1, fill=True):
                     GtkLabel(label14):
@@ -183,9 +183,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                     ProxySpinButton(le_distance_prism): '0.00'
                     ProxySpinButton(le_distance_base): '0.00'
                     ProxySpinButton(le_addition): '0.00'
-                GtkHBox(hbox3, expand=True, fill=True):
-                  GtkVBox(vbox2, fill=True):
-                    GtkHBox(near_box, fill=True):
+                GtkBox(hbox3, orientation=horizontal, expand=True, fill=True):
+                  GtkBox(vbox2, orientation=vertical, fill=True):
+                    GtkBox(near_box, orientation=horizontal, fill=True):
                       GtkLabel(label6, fill=True): 'Near'
                       GtkTable(near_table, fill=True):
                         GtkLabel(label22):
@@ -206,7 +206,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                         ProxySpinButton(le_near_pd): '0.0'
                     GtkLabel(label2, expand=True, fill=True):
                   GtkAlignment(alignment1, fill=True):
-                    GtkHBox(frame_box):
+                    GtkBox(frame_box, orientation=horizontal):
                       GtkLabel(label33, fill=True): 'Frame'
                       GtkTable(frame_table, expand=True, fill=True):
                         GtkCheckButton(client_frame_check): "Client's frame"
@@ -224,12 +224,12 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                           item: '3 pieces', selected
                           item: 'Closed ring'
                           item: 'Nylon String'
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(): 'gtk-print'
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive

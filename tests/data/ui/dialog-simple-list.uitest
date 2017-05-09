@@ -1,7 +1,7 @@
 dialog: SimpleListDialog
 GtkDialog(toplevel): title='', hidden
-  GtkVBox(_main_vbox):
-    GtkVBox(vbox, expand=True, fill=True):
+  GtkBox(_main_vbox, orientation=vertical):
+    GtkBox(vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(header):
       GtkEventBox(main, expand=True, fill=True, padding=6):
         ObjectList(_klist):
@@ -17,11 +17,11 @@ GtkDialog(toplevel): title='', hidden
           row: 7, 'Object 7'
           row: 8, 'Object 8'
           row: 9, 'Object 9'
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

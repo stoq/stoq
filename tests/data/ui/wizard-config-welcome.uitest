@@ -1,11 +1,11 @@
 wizard: FirstTimeConfigWizard
 GtkDialog(toplevel): title='Stoq - Installation', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave WelcomeStep is attached
-        GtkVBox(step.toplevel):
-          GtkHBox(step.hbox2, padding=5):
+        GtkBox(step.toplevel, orientation=vertical):
+          GtkBox(step.hbox2, orientation=horizontal, padding=5):
             ProxyLabel(step.title_label, expand=True, fill=True): '<span weight="bold">Welcome to the Stoq installation wizard.</span>'
             GtkImage(step.image1, fill=True):
           GtkHSeparator(step.hseparator1, fill=True):
@@ -13,10 +13,10 @@ GtkDialog(toplevel): title='Stoq - Installation', hidden
           GtkLabel(step.label3, expand=True, fill=True):
           GtkLabel(step.label1, fill=True): 'Click <b>Forward</b> to continue.'
       ProxyLabel(notification_lbl, fill=True): hidden
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): 'gtk-go-forward'
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

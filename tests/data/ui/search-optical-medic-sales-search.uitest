@@ -1,20 +1,20 @@
 search: MedicSalesSearch
 GtkDialog(toplevel): title='Sold Items by medic', hidden
-  GtkVBox(_main_vbox):
-    GtkVBox(vbox, expand=True, fill=True):
+  GtkBox(_main_vbox, orientation=vertical):
+    GtkBox(vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(header): hidden
       GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
-        GtkVBox(vbox):
-          GtkHBox(fill=True, padding=6):
-            GtkVBox(filters_box, padding=6):
-              GtkHBox(hbox):
+        GtkBox(vbox, orientation=vertical):
+          GtkBox(orientation=horizontal, fill=True, padding=6):
+            GtkBox(filters_box, orientation=vertical, padding=6):
+              GtkBox(hbox, orientation=horizontal):
                 ComboSearchFilter():
                   GtkLabel(): 'In Branch:'
                   ProxyComboBox(padding=6):
                     item: 'Any'
                     item: 'Moda Stoq', selected
                     item: 'Stoq Elite Fashion'
-                SearchFilter(_primary_filter):
+                StringSearchFilter(_primary_filter):
                   GtkLabel(): 'Search:'
                   ProxyComboBox(padding=6): hidden
                     item: 'Contains All Words', selected
@@ -54,15 +54,15 @@ GtkDialog(toplevel): title='Sold Items by medic', hidden
             column: title='Qty'
             column: title='Total'
             row: 99413, datetime.today(), datetime.today(), u'', None, u'Moda Stoq', u'Description', None, u'Medic', u'1234', False, u'', None, Decimal('1.000'), Decimal('10.00000')
-          GtkHBox(_summary_label):
+          SummaryLabel(_summary_label):
             GtkLabel(expand=True, fill=True, padding=6): 'Total:'
             GtkLabel(): '<b>$10.00</b>'
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
       GtkButton(csv_button, padding=6): 'Export to spreadsheet...'

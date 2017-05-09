@@ -1,15 +1,15 @@
 editor: PurchasePaymentConfirmSlave
 GtkDialog(main_dialog.toplevel): title='Confirm payment', hidden
-  GtkVBox(main_dialog._main_vbox):
+  GtkBox(main_dialog._main_vbox, orientation=vertical):
     GtkInfoBar(main_dialog._message_bar):
-      GtkHBox(expand=True, fill=True):
+      GtkBox(orientation=horizontal, expand=True, fill=True):
         GtkLabel(expand=True, fill=True): 'Note that this operation will not generate a till entry for the money payment(s). \nIf you are removing money from the till, do a cash removal in the Till application too.'
-      GtkVButtonBox(fill=True):
-    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkButtonBox(orientation=vertical, fill=True):
+    GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave PurchasePaymentConfirmSlave is attached
-        GtkVBox(toplevel):
-          GtkHBox(hbox1):
+        GtkBox(toplevel, orientation=vertical):
+          GtkBox(hbox1, orientation=horizontal):
             GtkTable(table1):
               GtkLabel(date_lbl): 'Paid date:'
               ProxyDateEntry(close_date): date.today()
@@ -23,7 +23,7 @@ GtkDialog(main_dialog.toplevel): title='Confirm payment', hidden
               ProxyEntry(discount): '0.00'
               GtkLabel(label1): 'Total value:'
               ProxyLabel(total_value): '<span >$10.00</span>'
-            GtkVBox(details_box, expand=True, fill=True):
+            GtkBox(details_box, orientation=vertical, expand=True, fill=True):
               GtkTable(table2):
                 GtkLabel(identifier_lbl): 'Order number:', hidden
                 ProxyLabel(identifier): '<span >-1</span>', hidden
@@ -75,7 +75,7 @@ GtkDialog(main_dialog.toplevel): title='Confirm payment', hidden
                   item: 'No cost center.', selected
                   item: 'Cost Center'
               GtkExpander(expander): hidden
-                GtkVBox(vbox3):
+                GtkBox(vbox3, orientation=vertical):
                   ProxyCheckButton(pay_penalty, expand=True, fill=True): 'Pay penalty', active
                   ProxyCheckButton(pay_interest, expand=True, fill=True): 'Pay interest', active
           ObjectList(installments, expand=True, fill=True):
@@ -86,14 +86,14 @@ GtkDialog(main_dialog.toplevel): title='Confirm payment', hidden
             column: title='Value'
             column: title='Paid value'
             row: 28567, u'payment description', datetime.today(), None, <currency $10>, <currency $10>
-          GtkHButtonBox(hbuttonbox1):
+          GtkButtonBox(hbuttonbox1, orientation=horizontal):
             GtkButton(details_button): hidden
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
       GtkButton(main_dialog.help_button, padding=6): 'gtk-help'

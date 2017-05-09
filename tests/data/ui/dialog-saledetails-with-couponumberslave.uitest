@@ -1,5 +1,5 @@
 dialog: SaleDetailsDialog
-GtkVBox(toplevel):
+GtkBox(toplevel, orientation=vertical):
   GtkTable(table1, fill=True):
     GtkLabel(label9): '<b>Sale Number:</b>'
     ProxyLabel(identifier): '<span >01001</span>'
@@ -9,22 +9,22 @@ GtkVBox(toplevel):
           GtkTable():
             ProxyLabel(coupon_id_lbl): 'Coupon Number:'
             ProxyLabel(coupon_id): '<span >0</span>'
-            GtkHBox():
+            GtkBox(orientation=horizontal):
     GtkLabel(label1): 'Open Date:'
     ProxyLabel(open_date_lbl): '<span >YYYY-MM-DD</span>'
     GtkLabel(label5): 'Client:'
-    GtkHBox(hbox1):
+    GtkBox(hbox1, orientation=horizontal):
       ProxyLabel(client_lbl, expand=True, fill=True): '<span ></span>'
       GtkButton(details_button, fill=True): insensitive
     GtkLabel(label6): 'Status:'
-    GtkHBox(hbox2):
+    GtkBox(hbox2, orientation=horizontal):
       ProxyLabel(status_lbl, expand=True, fill=True): '<span >Opened</span>'
       GtkButton(status_details_button, fill=True): hidden
     GtkLabel(label2): 'Salesperson:'
     ProxyLabel(salesperson_lbl): '<span >SalesPerson</span>'
   GtkNotebook(details_notebook, expand=True, fill=True):
-    GtkVBox(vbox):
-      GtkVBox(items_vbox, expand=True, fill=True):
+    GtkBox(vbox, orientation=vertical):
+      GtkBox(items_vbox, orientation=vertical, expand=True, fill=True):
         ObjectTree(items_list, expand=True, fill=True):
           column: title='Code'
           column: title='Description', expand
@@ -44,7 +44,7 @@ GtkVBox(toplevel):
         ProxyLabel(surcharge_lbl): '<span >$ 0.00</span>'
         GtkLabel(label3): 'Total:'
         ProxyLabel(total_lbl): '<span >$ 0.00</span>'
-    GtkVBox(payments_vbox):
+    GtkBox(payments_vbox, orientation=vertical):
       ObjectList(payments_list, expand=True, fill=True):
         column: title='Payment #'
         column: title='Type'
@@ -65,7 +65,7 @@ GtkVBox(toplevel):
         ProxyLabel(total_interest): '<span >$ 0.00</span>'
         GtkLabel(label10): 'Total:'
         ProxyLabel(total_value): '<span >$ 0.00</span>'
-    GtkVBox(vbox3):
+    GtkBox(vbox3, orientation=vertical):
       ObjectList(payments_info_list, expand=True, fill=True):
         column: title='When'
         column: title='Payment', expand
@@ -73,19 +73,19 @@ GtkVBox(toplevel):
         column: title='From'
         column: title='To'
         column: title='Reason', expand
-    GtkVBox(vbox2):
-      GtkVBox(vbox5, expand=True, fill=True):
+    GtkBox(vbox2, orientation=vertical):
+      GtkBox(vbox5, orientation=vertical, expand=True, fill=True):
         ObjectList(comments_list, expand=True, fill=True):
           column: title='Date'
           column: title='Who', expand
           column: title='Notes', expand
-        GtkHButtonBox(hbuttonbox2, fill=True):
+        GtkButtonBox(hbuttonbox2, orientation=horizontal, fill=True):
           GtkButton(comment_add): 'Add Comment'
           GtkButton(comment_info): 'gtk-info', insensitive
-    GtkVBox(vbox6):
+    GtkBox(vbox6, orientation=vertical):
       GtkScrolledWindow(scrolledwindow2, expand=True, fill=True):
         ProxyTextView(notes): invalid
-  GtkHButtonBox(hbuttonbox1, fill=True):
+  GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
     GtkButton(print_booklets): 'Print booklets', hidden
     GtkButton(print_bills): 'Print Bills', hidden
     GtkButton(print_button): 'gtk-print'

@@ -1,14 +1,14 @@
 editor: PreferencesEditor
 GtkDialog(main_dialog.toplevel): title='Add Preferences', hidden
-  GtkVBox(main_dialog._main_vbox):
-    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+  GtkBox(main_dialog._main_vbox, orientation=vertical):
+    GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave PreferencesEditor is attached
         GtkNotebook(toplevel):
-          GtkVBox(general_tab):
+          GtkBox(general_tab, orientation=vertical):
             GtkFrame(frame1, expand=True, fill=True):
               GtkAlignment(alignment1):
-                GtkVBox(vbox1):
+                GtkBox(vbox1, orientation=vertical):
                   ProxyLabel(notice_lbl): 'Some of these options will only take effect after you restart Stoq.'
                   GtkTable(table1, expand=True, fill=True):
                     ProxyLabel(toolbar_style_lbl): 'Toolbar style:'
@@ -32,11 +32,11 @@ GtkDialog(main_dialog.toplevel): title='Add Preferences', hidden
                       item: 'Ask (default)', selected
                       item: 'Save to disk'
           GtkEventBox():
-            GtkVBox(_main_vbox):
-              GtkVBox(vbox, expand=True, fill=True):
+            GtkBox(_main_vbox, orientation=vertical):
+              GtkBox(vbox, orientation=vertical, expand=True, fill=True):
                 GtkEventBox(header):
                 GtkEventBox(main, expand=True, fill=True, padding=6):
-                  GtkHBox():
+                  GtkBox(orientation=horizontal):
                     ObjectList(categories):
                       column: title='Label', expand
                       row: u'Accounts Payable'
@@ -53,25 +53,25 @@ GtkDialog(main_dialog.toplevel): title='Add Preferences', hidden
                       row: u'Services'
                       row: u'Stock'
                       row: u'Till'
-                    GtkVBox(expand=True, fill=True):
+                    GtkBox(orientation=vertical, expand=True, fill=True):
                       ObjectList(shortcuts, expand=True, fill=True):
                         column: title='Description', expand
                         column: title='Shortcut'
                       GtkLabel(_label, padding=6): 'You need to restart Stoq for the changes to take effect', hidden
-                GtkHBox(fill=True):
+                GtkBox(orientation=horizontal, fill=True):
                   GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
                   GtkEventBox(print_holder, expand=True, fill=True):
                   GtkEventBox(notice, fill=True):
                   GtkEventBox(details_holder, padding=6, pack-end):
-              GtkHButtonBox(fill=True, pack-end):
+              GtkButtonBox(orientation=horizontal, fill=True, pack-end):
                 GtkButton(padding=6): 'Reset defaults'
                 GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
                 GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
       GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

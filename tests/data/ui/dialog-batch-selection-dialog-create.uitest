@@ -1,7 +1,7 @@
 dialog: BatchSelectionDialog
 GtkAlignment(alignment1):
-  GtkVBox(vbox1):
-    GtkHBox(hbox1, fill=True):
+  GtkBox(vbox1, orientation=vertical):
+    GtkBox(hbox1, orientation=horizontal, fill=True):
       GtkLabel(label1, fill=True): 'Product:'
       ProxyLabel(description, expand=True, fill=True): '<span >Description</span>'
     GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):

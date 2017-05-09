@@ -1,6 +1,6 @@
 search: ParameterSearch
-GtkVBox(toplevel):
-  GtkHBox(hbox1, fill=True):
+GtkBox(toplevel, orientation=vertical):
+  GtkBox(hbox1, orientation=horizontal, fill=True):
     GtkLabel(label8, fill=True): 'Filter:'
     GtkEntry(entry, expand=True, fill=True): ''
     GtkButton(search_button, fill=True): 'gtk-find'
@@ -90,5 +90,5 @@ GtkVBox(toplevel):
     row: u'Till', u'Show total received payments of the day on till', u'No'
     row: u'Work order', u'Notice that will be added to the work order report', u''
     row: u'Work order', u'Defect detected template for work orders', u''
-  GtkHButtonBox(hbuttonbox1, fill=True):
+  GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
     GtkButton(edit_button): 'gtk-edit', insensitive

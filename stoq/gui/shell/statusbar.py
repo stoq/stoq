@@ -237,6 +237,7 @@ class StatusDialog(BasicDialog):
 
 class StatusButton(gtk.Button):
 
+    __gtype_name__ = 'StatusButton'
     _BLINK_RATE = 500
     _MAX_LENGTH = 28
 
@@ -311,6 +312,9 @@ class StatusButton(gtk.Button):
 
     def _on_manager__status_changed(self, manager, status):
         self._update_status(status)
+
+
+gobject.type_register(StatusButton)
 
 
 class ShellStatusbar(gtk.Statusbar):

@@ -1,13 +1,13 @@
 wizard: SaleReturnWizard
 GtkDialog(toplevel): title='Return Sale Order', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave SaleReturnInvoiceStep is attached
         GtkFrame(step.toplevel):
           GtkAlignment(step.alignment1):
-            GtkVBox(step.vbox1):
-              GtkHBox(step.hbox1, fill=True):
+            GtkBox(step.vbox1, orientation=vertical):
+              GtkBox(step.hbox1, orientation=horizontal, fill=True):
                 GtkTable(step.table2, expand=True, fill=True):
                   GtkLabel(step.label3): 'Responsible:'
                   ProxyLabel(step.responsible): '<span >Administrator</span>'
@@ -22,16 +22,16 @@ GtkDialog(toplevel): title='Return Sale Order', hidden
                   ProxyLabel(step.total_amount_lbl): '<span >Overpaid:</span>'
                   ProxyLabel(step.total_amount_abs): '<span >$30.00</span>'
                   ProxyCheckButton(step.credit_checkbutton): 'Create credit for future sales', hidden
-              GtkVBox(step.vbox2):
+              GtkBox(step.vbox2, orientation=vertical):
                 GtkLabel(step.label7, expand=True, fill=True): 'Reason:'
                 GtkScrolledWindow(step.scrolledwindow1, expand=True, fill=True):
                   ProxyTextView(step.reason): mandatory
       ProxyLabel(notification_lbl, fill=True):
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): '_Finish', insensitive
           GtkButton(ok_button): 'gtk-ok', hidden
           GtkButton(help_button): 'gtk-help'
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

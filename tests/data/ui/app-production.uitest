@@ -1,6 +1,6 @@
 app: ProductionApp
 GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
-  GtkVBox():
+  GtkBox(orientation=vertical):
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
@@ -90,14 +90,14 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
       GtkToolButton(): 'Finalize', insensitive
       GtkToolButton(): 'Cancel', insensitive
       GtkToolButton(): 'Details', insensitive
-    GtkVBox(expand=True, fill=True):
-      GtkVBox(main_vbox, expand=True, fill=True):
-        GtkVBox(list_vbox, expand=True, fill=True):
+    GtkBox(orientation=vertical, expand=True, fill=True):
+      GtkBox(main_vbox, orientation=vertical, expand=True, fill=True):
+        GtkBox(list_vbox, orientation=vertical, expand=True, fill=True):
           GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlave is attached
-            GtkVBox(vbox):
-              GtkHBox(fill=True, padding=6):
-                GtkVBox(filters_box, padding=6):
-                  GtkHBox(hbox):
+            GtkBox(vbox, orientation=vertical):
+              GtkBox(orientation=horizontal, fill=True, padding=6):
+                GtkBox(filters_box, orientation=vertical, padding=6):
+                  GtkBox(hbox, orientation=horizontal):
                     ComboSearchFilter(status_filter):
                       GtkLabel(): 'Show productions with status'
                       ProxyComboBox(padding=6):
@@ -108,7 +108,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
                         item: 'Quality Assurance'
                         item: 'Closed'
                         item: 'Cancelled'
-                    SearchFilter(_primary_filter):
+                    StringSearchFilter(_primary_filter):
                       GtkLabel(): 'matching:'
                       ProxyComboBox(padding=6): hidden
                         item: 'Contains All Words', selected
@@ -127,16 +127,16 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
                 column: title='Cancelled'
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
-        GtkHBox():
+        GtkBox(orientation=horizontal):
           GtkLabel(expand=True, fill=True):
-      GtkHBox(expand=True, fill=True):
+      GtkBox(orientation=horizontal, expand=True, fill=True):
         GtkAlignment(expand=True, fill=True):
-          GtkHBox():
+          GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkButton(pack-end):
+        StatusButton(pack-end):
 
 popup: ProductionSelection
 GtkMenu(popup): hidden

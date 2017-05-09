@@ -1,6 +1,6 @@
 app: LauncherApp
 GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
-  GtkVBox():
+  GtkBox(orientation=vertical):
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
@@ -98,18 +98,18 @@ GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
       GtkToolButton(): 'Confirm', insensitive
       GtkToolButton(): 'Return', insensitive
       GtkToolButton(): 'Details', insensitive
-    GtkVBox(expand=True, fill=True):
-      GtkVBox(expand=True, fill=True):
-        GtkVBox(expand=True, fill=True):
-          GtkVBox(expand=True, fill=True):
+    GtkBox(orientation=vertical, expand=True, fill=True):
+      GtkBox(orientation=vertical, expand=True, fill=True):
+        GtkBox(orientation=vertical, expand=True, fill=True):
+          GtkBox(orientation=vertical, expand=True, fill=True):
             GtkHSeparator(fill=True):
             ProxyLabel(expand=True, fill=True): '<span weight="bold" size="xx-large">Till closed</span>\n\n<span size="large"><a href="open-till">Open till</a></span>'
             GtkHSeparator(fill=True):
           GtkEventBox(expand=True, fill=True): hidden, insensitive
-            GtkVBox():
-              GtkHBox(fill=True, padding=6):
-                GtkVBox(padding=6):
-                  GtkHBox():
+            GtkBox(orientation=vertical):
+              GtkBox(orientation=horizontal, fill=True, padding=6):
+                GtkBox(orientation=vertical, padding=6):
+                  GtkBox(orientation=horizontal):
                     ComboSearchFilter():
                       GtkLabel(): 'Show orders'
                       ProxyComboBox(padding=6):
@@ -121,7 +121,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
                         item: 'Cancelled'
                         item: 'Returned'
                         item: 'Renegotiated'
-                    SearchFilter():
+                    StringSearchFilter():
                       GtkLabel(): 'Search:'
                       ProxyComboBox(padding=6): hidden
                         item: 'Contains All Words', selected
@@ -138,25 +138,25 @@ GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
                 column: title='Salesperson'
                 column: title='Quantity'
                 column: title='Total'
-          GtkVBox():
+          GtkBox(orientation=vertical):
             GtkAlignment():
-              GtkHBox(): hidden
+              GtkBox(orientation=horizontal): hidden
                 ProxyLabel(expand=True, fill=True): '<span size="xx-large" weight="bold"><span weight="bold" size="xx-large">Till closed</span></span>'
-                GtkVBox(expand=True, fill=True):
+                GtkBox(orientation=vertical, expand=True, fill=True):
                   ProxyLabel(expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $ 0.00</span>'
                   ProxyLabel(expand=True, fill=True): hidden
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
-        GtkHBox():
+        GtkBox(orientation=horizontal):
           GtkLabel(expand=True, fill=True):
-      GtkHBox(expand=True, fill=True):
+      GtkBox(orientation=horizontal, expand=True, fill=True):
         GtkAlignment(expand=True, fill=True):
-          GtkHBox():
+          GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkButton(pack-end):
+        StatusButton(pack-end):
 
 popup: TillSelection
 GtkMenu(): hidden

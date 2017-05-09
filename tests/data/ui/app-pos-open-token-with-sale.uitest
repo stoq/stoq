@@ -1,6 +1,6 @@
 app: PosApp
 GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
-  GtkVBox():
+  GtkBox(orientation=vertical):
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
@@ -86,33 +86,33 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
           GtkMenu(): hidden
       GtkToolButton(): 'Print', hidden, insensitive
       GtkToolButton(): 'Quit', hidden
-    GtkVBox(expand=True, fill=True):
-      GtkVBox(main_vbox, expand=True, fill=True):
-        GtkVBox(pos_vbox, expand=True, fill=True):
-          GtkHBox(list_header_hbox, fill=True):
+    GtkBox(orientation=vertical, expand=True, fill=True):
+      GtkBox(main_vbox, orientation=vertical, expand=True, fill=True):
+        GtkBox(pos_vbox, orientation=vertical, expand=True, fill=True):
+          GtkBox(list_header_hbox, orientation=horizontal, fill=True):
             GtkAlignment(alignment1, expand=True, fill=True):
-              GtkHBox(search_box):
-                GtkHBox(item_hbox, fill=True):
+              GtkBox(search_box, orientation=horizontal):
+                GtkBox(item_hbox, orientation=horizontal, fill=True):
                   GtkLabel(label2, expand=True, fill=True): 'Barcode:'
                   ProxyEntry(barcode, expand=True, fill=True): '', invalid
                   ProxyLabel(kiwilabel2, expand=True, fill=True): 'Quantity:'
                   ProxySpinButton(quantity, expand=True, fill=True): '1.000'
-                  GtkHButtonBox(item_button_box, expand=True, fill=True):
+                  GtkButtonBox(item_button_box, orientation=horizontal, expand=True, fill=True):
                     GtkButton(add_button): insensitive
                     GtkButton(advanced_search):
                 GtkLabel(token_lbl, expand=True, fill=True): '[foobar] None'
                 GtkImage(stoq_logo, fill=True, pack-end):
           GtkAlignment(sellable_align, fill=True):
-            GtkHBox(hbox1):
+            GtkBox(hbox1, orientation=horizontal):
               ProxyLabel(sellable_description, expand=True, fill=True): hidden
-          GtkVBox(list_vbox, expand=True, fill=True):
-            GtkVBox(till_status_box, expand=True, fill=True): hidden
+          GtkBox(list_vbox, orientation=vertical, expand=True, fill=True):
+            GtkBox(till_status_box, orientation=vertical, expand=True, fill=True): hidden
               GtkHSeparator(hseparator1, fill=True):
               ProxyLabel(till_status_label, expand=True, fill=True): '<span weight="bold" size="xx-large">Till open</span>'
               GtkHSeparator(hseparator2, fill=True):
-            GtkHBox(token_box, expand=True, fill=True): hidden
+            GtkBox(token_box, orientation=horizontal, expand=True, fill=True): hidden
               GtkLabel(label4, expand=True, fill=True):
-              GtkVBox(vbox6, expand=True, fill=True):
+              GtkBox(vbox6, orientation=vertical, expand=True, fill=True):
                 GtkLabel(label10, expand=True, fill=True):
                 GtkLabel(label9, fill=True): 'Sale Token:'
                 ProxyEntry(sale_token, fill=True): 'foobar', invalid
@@ -127,7 +127,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                 column: title='Quantity'
                 column: title='Total'
                 row: u'123456', u'Description', u'', <currency $10>, u'1 ', Decimal('10.00')
-              GtkVBox(details_box):
+              GtkBox(details_box, orientation=vertical):
                 ProxyLabel(details_lbl, fill=True): '<b>Description</b>\n1 x $10.00'
                 GtkAspectFrame(aspectframe1):
                   GtkEventBox(image_holder):
@@ -138,9 +138,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                   GtkLabel(extra_details_lbl):
                   GtkLabel(label3): 'More details'
             GtkAlignment(alignment2, fill=True):
-              GtkHBox(footer_hbox):
-                GtkVBox(toolbar_vbox, fill=True):
-                  GtkHButtonBox(toolbar_button_box, fill=True):
+              GtkBox(footer_hbox, orientation=horizontal):
+                GtkBox(toolbar_vbox, orientation=vertical, fill=True):
+                  GtkButtonBox(toolbar_button_box, orientation=horizontal, fill=True):
                     GtkButton(save_button):
                     GtkButton(checkout_button):
                     GtkButton(delivery_button):
@@ -149,13 +149,13 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                 ProxyLabel(order_total_label, expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $10.00</span>'
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
-        GtkHBox():
+        GtkBox(orientation=horizontal):
           GtkLabel(expand=True, fill=True):
-      GtkHBox(expand=True, fill=True):
+      GtkBox(orientation=horizontal, expand=True, fill=True):
         GtkAlignment(expand=True, fill=True):
-          GtkHBox():
+          GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkButton(pack-end):
+        StatusButton(pack-end):

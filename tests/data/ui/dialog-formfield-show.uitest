@@ -1,10 +1,10 @@
 dialog: FormFieldEditor
 GtkDialog(toplevel): title='Form fields', hidden
-  GtkVBox(_main_vbox):
-    GtkVBox(vbox, expand=True, fill=True):
+  GtkBox(_main_vbox, orientation=vertical):
+    GtkBox(vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(header):
       GtkEventBox(main, expand=True, fill=True, padding=6):
-        GtkHBox():
+        GtkBox(orientation=horizontal):
           ObjectList(forms):
             column: title='Description', expand
             row: u'Branch'
@@ -14,16 +14,16 @@ GtkDialog(toplevel): title='Form fields', hidden
             row: u'Supplier'
             row: u'Transporter'
             row: u'User'
-          GtkVBox(expand=True, fill=True):
+          GtkBox(orientation=vertical, expand=True, fill=True):
             ObjectList(fields, expand=True, fill=True):
               column: title='Description', expand
               column: title='Visible'
               column: title='Mandatory'
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

@@ -1,13 +1,13 @@
 search: UnconfirmedSaleItemsSearch
 GtkDialog(toplevel): title='Unconfirmed Sale Items Search', hidden
-  GtkVBox(_main_vbox):
-    GtkVBox(vbox, expand=True, fill=True):
+  GtkBox(_main_vbox, orientation=vertical):
+    GtkBox(vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(header): hidden
       GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
-        GtkVBox(vbox):
-          GtkHBox(fill=True, padding=6):
-            GtkVBox(filters_box, padding=6):
-              GtkHBox(hbox):
+        GtkBox(vbox, orientation=vertical):
+          GtkBox(orientation=horizontal, fill=True, padding=6):
+            GtkBox(filters_box, orientation=vertical, padding=6):
+              GtkBox(hbox, orientation=horizontal):
                 ComboSearchFilter(branch_filter):
                   GtkLabel(): 'Branch:'
                   ProxyComboBox(padding=6):
@@ -15,7 +15,7 @@ GtkDialog(toplevel): title='Unconfirmed Sale Items Search', hidden
                     item: 'Moda Stoq', selected
                     item: 'Stoq Elite Fashion'
                     item: 'The Meaning of Life shop'
-                SearchFilter(_primary_filter):
+                StringSearchFilter(_primary_filter):
                   GtkLabel(): 'Search:'
                   ProxyComboBox(padding=6): hidden
                     item: 'Contains All Words', selected
@@ -45,17 +45,17 @@ GtkDialog(toplevel): title='Unconfirmed Sale Items Search', hidden
             row: 73, u'Quoting', u'', None, u'Holy Grail', None, u'SalesPerson', None, datetime.datetime(2013, 12, 11, 0, 0), <currency $100>, Decimal('29.000'), Decimal('29.000'), Decimal('2900.00000'), None, '', None, None
             row: 43, u'Quoting', u'', None, u'Description', None, u'SalesPerson', None, datetime.datetime(2014, 6, 12, 0, 0), <currency $100>, Decimal('33.000'), Decimal('33.000'), Decimal('3300.00000'), 44, u'Opened', None, None
             row: 42, u'Ordered', u'', None, u'Schrubbery', None, u'SalesPerson', None, datetime.datetime(2013, 12, 11, 0, 0), <currency $100>, Decimal('66.000'), Decimal('23.000'), Decimal('6600.00000'), None, '', None, None
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkLabel(expand=True, fill=True):
         GtkLabel(quantity_label): 'Quantity: 128'
         GtkLabel(reserved_label): 'Delivered: 85'
         GtkLabel(total_label): 'Total: $12800.00'
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden
       GtkButton(sale_details_button, padding=6): 'Sale Details'

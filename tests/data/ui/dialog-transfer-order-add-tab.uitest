@@ -1,5 +1,5 @@
 dialog: TransferOrderDetailsDialog
-GtkVBox(details_vbox):
+GtkBox(details_vbox, orientation=vertical):
   GtkTable(table1, fill=True, padding=6):
     GtkLabel(label1): 'Status:'
     GtkLabel(status): 'Pending'
@@ -20,17 +20,17 @@ GtkVBox(details_vbox):
     ProxyLabel(kiwilabel6): 'Responsible:'
     ProxyLabel(destination_responsible_name): '<span >Bolton</span>'
   GtkNotebook(details_notebook, expand=True, fill=True):
-    GtkVBox(products_vbox):
+    GtkBox(products_vbox, orientation=vertical):
       ObjectList(product_list, expand=True, fill=True):
         column: title='Code'
         column: title='Description', expand
         column: title='Quantity'
         column: title='Cost'
         column: title='Total Cost'
-      GtkHBox(fill=True):
+      SummaryLabel(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
         GtkLabel(): '<b>$ 0.00</b>'
-    GtkHBox(hbox1):
+    GtkBox(hbox1, orientation=horizontal):
       GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
         ProxyTextView(comments):
     GtkEventBox():
@@ -39,6 +39,6 @@ GtkVBox(details_vbox):
           GtkTable():
             ProxyLabel(field_name_lbl): 'Slave field:'
             ProxyEntry(field_name): ''
-            GtkHBox():
-  GtkHButtonBox(hbuttonbox1, expand=True, fill=True):
+            GtkBox(orientation=horizontal):
+  GtkButtonBox(hbuttonbox1, orientation=horizontal, expand=True, fill=True):
     GtkButton(print_button): 'gtk-print'

@@ -1,11 +1,11 @@
 wizard: ReceivingOrderWizard
 GtkDialog(toplevel): title='Receive Purchase Order', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave ReceivingOrderItemStep is attached
         GtkAlignment(step.toplevel):
-          GtkVBox(step.vbox1):
+          GtkBox(step.vbox1, orientation=vertical):
             ObjectTree(step.purchase_items, expand=True, fill=True):
               column: title='Code', hidden
               column: title='Barcode', hidden
@@ -19,15 +19,15 @@ GtkDialog(toplevel): title='Receive Purchase Order', hidden
               row: u'', u'', u'Description', u'', Decimal('1.000'), Decimal('1.000'), u'', <currency $125>, <currency $125>
               row: u'', u'', u'Package', u'', Decimal('1.000'), Decimal('1.000'), u'', <currency $125>, <currency $125>
                 row: u'', u'', u'Component', u'', Decimal('1.000'), Decimal('1.000'), u'', <currency $125>, <currency $125>
-            GtkHBox(step.hbox1, fill=True):
+            GtkBox(step.hbox1, orientation=horizontal, fill=True):
               GtkButton(step.edit_btn): 'gtk-edit', insensitive
               GtkLabel(step.label1, expand=True, fill=True): 'Total Received:'
               ProxyLabel(step.total_received, fill=True): '<span >$375.00</span>'
       ProxyLabel(notification_lbl, fill=True): hidden
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): 'gtk-go-forward'
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

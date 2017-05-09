@@ -1,57 +1,57 @@
 editor: DeliveryEditor
 GtkDialog(main_dialog.toplevel): title='Delivery editor', hidden
-  GtkVBox(main_dialog._main_vbox):
-    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+  GtkBox(main_dialog._main_vbox, orientation=vertical):
+    GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave DeliveryEditor is attached
         GtkAlignment(alignment1):
-          GtkVBox(vbox2):
+          GtkBox(vbox2, orientation=vertical):
             GtkEventBox(forms): slave BasicForm is attached
               GtkAlignment(toplevel):
                 GtkTable():
                   ProxyLabel(client_str_lbl): 'Client:'
                   ProxyLabel(client_str): '<span ></span>'
-                  GtkHBox():
+                  GtkBox(orientation=horizontal):
                   ProxyLabel(freight_type_lbl): 'Freight type:'
                   ProxyComboBox(freight_type):
                     item: 'Third party'
                     item: 'No freight'
                     item: 'FOB'
                     item: 'CIF', selected
-                  GtkHBox():
+                  GtkBox(orientation=horizontal):
                   ProxyLabel(transporter_id_lbl): 'Transporter:'
                   ProxyComboEntry(transporter_id):
                     item: 'John', selected
                     item: 'Jos\xc3\xa9 Carlos de Carvalho'
-                  GtkHBox():
+                  GtkBox(orientation=horizontal):
                     GtkButton(transporter_id_add_button):
                     GtkButton(transporter_id_edit_button):
                   ProxyLabel(volumes_kind_lbl): 'Volumes kind:'
                   ProxyEntry(volumes_kind): ''
-                  GtkHBox():
+                  GtkBox(orientation=horizontal):
                   ProxyLabel(address_lbl): 'Address:'
                   ProxyComboEntry(address): mandatory
-                  GtkHBox():
+                  GtkBox(orientation=horizontal):
                     GtkButton(address_add_button): insensitive
                     GtkButton(address_edit_button): insensitive
                   ProxyLabel(volumes_quantity_lbl): 'Volumes quantity:'
                   ProxyEntry(volumes_quantity): ''
-                  GtkHBox():
+                  GtkBox(orientation=horizontal):
                   ProxyCheckButton(is_sent_check): 'Was sent to deliver?'
-                  GtkHBox():
+                  GtkBox(orientation=horizontal):
                   ProxyCheckButton(is_received_check): 'Was received by client?'
-                  GtkHBox():
+                  GtkBox(orientation=horizontal):
                   ProxyLabel(send_date_lbl): 'Send date:'
                   ProxyDateEntry(send_date): None, insensitive
-                  GtkHBox():
+                  GtkBox(orientation=horizontal):
                   ProxyLabel(receive_date_lbl): 'Receive date:'
                   ProxyDateEntry(receive_date): None, insensitive
-                  GtkHBox():
+                  GtkBox(orientation=horizontal):
                   ProxyLabel(tracking_code_lbl): 'Tracking code:'
                   ProxyEntry(tracking_code): '', insensitive
-                  GtkHBox():
+                  GtkBox(orientation=horizontal):
                   GtkLabel(empty):
-                  GtkHBox():
+                  GtkBox(orientation=horizontal):
             GtkHSeparator(hseparator1, fill=True):
             GtkEventBox(delivery_items_holder, expand=True, fill=True):
               ObjectList(delivery_items):
@@ -59,11 +59,11 @@ GtkDialog(main_dialog.toplevel): title='Delivery editor', hidden
                 column: title='Quantity'
                 row: u'Delivery item 1', Decimal('1.000')
                 row: u'Delivery item 2', Decimal('1.000')
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive

@@ -1,7 +1,7 @@
 dialog: PluginManagerDialog
 GtkDialog(toplevel): title='Plugin Manager', hidden
-  GtkVBox(_main_vbox):
-    GtkVBox(vbox, expand=True, fill=True):
+  GtkBox(_main_vbox, orientation=vertical):
+    GtkBox(vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(header):
         GtkLabel(): 'Select the plugin you want to activate and click in the apply button.'
       GtkEventBox(main, expand=True, fill=True, padding=6):
@@ -14,12 +14,12 @@ GtkDialog(toplevel): title='Plugin Manager', hidden
           row: True, 'stoq-plugin', u'<b>ECF Fiscal Printer</b>\nCoupon Fiscal Emission (ECF) support'
           row: True, 'stoq-plugin', u'<b>Nota Fiscal Eletr\xf4nica</b>\nPermits emission of NF-e (Nota Fiscal Eletr\xf4nica)'
           row: True, 'stoq-plugin', u'<b>Optical Plugin</b>\nUse Stoq in optical stores'
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
       GtkButton(help_button, padding=6): 'gtk-help'

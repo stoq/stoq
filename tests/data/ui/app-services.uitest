@@ -1,6 +1,6 @@
 app: ServicesApp
 GtkWindow(toplevel): title='[Moda Stoq] - Services', hidden
-  GtkVBox():
+  GtkBox(orientation=vertical):
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
@@ -102,15 +102,15 @@ GtkWindow(toplevel): title='[Moda Stoq] - Services', hidden
       GtkToolButton(): 'Finish', insensitive
       GtkToolButton(): 'Cancel...', insensitive
       GtkToolButton(): 'Details...', insensitive
-    GtkVBox(expand=True, fill=True):
-      GtkVBox(main_vbox, expand=True, fill=True):
-        GtkHBox(menu_hbox, fill=True):
-        GtkVBox(list_vbox, expand=True, fill=True):
+    GtkBox(orientation=vertical, expand=True, fill=True):
+      GtkBox(main_vbox, orientation=vertical, expand=True, fill=True):
+        GtkBox(menu_hbox, orientation=horizontal, fill=True):
+        GtkBox(list_vbox, orientation=vertical, expand=True, fill=True):
           GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlave is attached
-            GtkVBox(vbox):
-              GtkHBox(fill=True, padding=6):
-                GtkVBox(filters_box, padding=6):
-                  GtkHBox(hbox):
+            GtkBox(vbox, orientation=vertical):
+              GtkBox(orientation=horizontal, fill=True, padding=6):
+                GtkBox(filters_box, orientation=vertical, padding=6):
+                  GtkBox(hbox, orientation=horizontal):
                     ComboSearchFilter():
                       GtkLabel(): 'Branch:'
                       ProxyComboBox(padding=6):
@@ -131,7 +131,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Services', hidden
                         item: 'Approved'
                         item: 'In transport'
                         item: 'Rejected'
-                    SearchFilter(_primary_filter):
+                    StringSearchFilter(_primary_filter):
                       GtkLabel(): 'matching:'
                       ProxyComboBox(padding=6): hidden
                         item: 'Contains All Words', selected
@@ -163,19 +163,19 @@ GtkWindow(toplevel): title='[Moda Stoq] - Services', hidden
                 row: 667, None, u'Opened', None, u'Description - ', None, None, u'Client', u'Moda Stoq', u'Moda Stoq', None, None, datetime.datetime(2013, 1, 1, 0, 0), None, None, None, None, Decimal('0')
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
-        GtkHBox():
+        GtkBox(orientation=horizontal):
           GtkLabel(expand=True, fill=True):
-      GtkHBox(expand=True, fill=True):
+      GtkBox(orientation=horizontal, expand=True, fill=True):
         GtkAlignment(expand=True, fill=True):
-          GtkHBox():
+          GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkHBox(_summary_label):
+        SummaryLabel(_summary_label):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
           GtkLabel(): '<b>$ 0.00</b>'
-        GtkButton(pack-end):
+        StatusButton(pack-end):
 
 popup: ServicesSelection
 GtkMenu(popup): hidden

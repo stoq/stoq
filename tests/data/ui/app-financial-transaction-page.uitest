@@ -1,6 +1,6 @@
 app: FinancialApp
 GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
-  GtkVBox():
+  GtkBox(orientation=vertical):
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
@@ -86,10 +86,10 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
       GtkToolButton(): 'Edit', insensitive
       GtkToolButton(): 'Delete', hidden, insensitive
       GtkToolButton(): 'Delete', insensitive
-    GtkVBox(expand=True, fill=True):
-      GtkVBox(main_vbox, expand=True, fill=True):
+    GtkBox(orientation=vertical, expand=True, fill=True):
+      GtkBox(main_vbox, orientation=vertical, expand=True, fill=True):
         GtkNotebook(notebook, expand=True, fill=True):
-          GtkVBox(list_vbox):
+          GtkBox(list_vbox, orientation=vertical):
             GtkEventBox(search_holder, expand=True, fill=True):
               AccountTree(accounts):
                 column: title='Account name', expand
@@ -112,11 +112,11 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
                 row: u'Income', None, Decimal('-45752.82')
                 row: u'Saldos Iniciais', None, 0
                 row: u'Tills', None, 0
-          GtkVBox():
-            GtkHBox(fill=True, padding=6):
-              GtkVBox(padding=6):
-                GtkHBox():
-                  SearchFilter():
+          GtkBox(orientation=vertical):
+            GtkBox(orientation=horizontal, fill=True, padding=6):
+              GtkBox(orientation=vertical, padding=6):
+                GtkBox(orientation=horizontal):
+                  StringSearchFilter():
                     GtkLabel(): 'Search:'
                     ProxyComboBox(padding=6): hidden
                       item: 'Contains All Words', selected
@@ -147,7 +147,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
                   ProxyDateEntry(padding=6): None, insensitive
                   GtkLabel(): 'To:', insensitive
                   ProxyDateEntry(padding=6): None, insensitive
-            stoq+gui+financial+FinancialSearchResults(expand=True, fill=True):
+            FinancialSearchResults(expand=True, fill=True):
               column: title='Date'
               column: title='Code'
               column: title='Description', expand
@@ -175,16 +175,16 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
               row: datetime.datetime(2012, 2, 28, 0, 0), u'022804', u'Salar\xedo Osvaldo Fevereiro', u'Sal\xe1rios', Decimal('-1800.00'), Decimal('-1800.00'), Decimal('24688.32')
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
-        GtkHBox():
+        GtkBox(orientation=horizontal):
           GtkLabel(expand=True, fill=True):
-      GtkHBox(expand=True, fill=True):
+      GtkBox(orientation=horizontal, expand=True, fill=True):
         GtkAlignment(expand=True, fill=True):
-          GtkHBox():
+          GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkButton(pack-end):
+        StatusButton(pack-end):
 
 popup: TransactionSelection
 GtkMenu(trans_popup): hidden

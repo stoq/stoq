@@ -1,6 +1,6 @@
 app: PurchaseApp
 GtkWindow(toplevel): title='[Moda Stoq] - Purchase', hidden
-  GtkVBox():
+  GtkBox(orientation=vertical):
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
@@ -109,15 +109,15 @@ GtkWindow(toplevel): title='[Moda Stoq] - Purchase', hidden
       GtkToolButton(): 'Edit', insensitive
       GtkToolButton(): 'Cancel', insensitive
       GtkToolButton(): 'Details', insensitive
-    GtkVBox(expand=True, fill=True):
-      GtkVBox(main_vbox, expand=True, fill=True):
-        GtkHBox(menu_hbox, fill=True):
-        GtkVBox(list_vbox, expand=True, fill=True):
+    GtkBox(orientation=vertical, expand=True, fill=True):
+      GtkBox(main_vbox, orientation=vertical, expand=True, fill=True):
+        GtkBox(menu_hbox, orientation=horizontal, fill=True):
+        GtkBox(list_vbox, orientation=vertical, expand=True, fill=True):
           GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlave is attached
-            GtkVBox(vbox):
-              GtkHBox(fill=True, padding=6):
-                GtkVBox(filters_box, padding=6):
-                  GtkHBox(hbox):
+            GtkBox(vbox, orientation=vertical):
+              GtkBox(orientation=horizontal, fill=True, padding=6):
+                GtkBox(filters_box, orientation=vertical, padding=6):
+                  GtkBox(hbox, orientation=horizontal):
                     ComboSearchFilter(branch_filter):
                       GtkLabel(): 'Branch:'
                       ProxyComboBox(padding=6):
@@ -134,7 +134,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Purchase', hidden
                         item: 'Consigned'
                         item: 'Cancelled'
                         item: 'Closed'
-                    SearchFilter(_primary_filter):
+                    StringSearchFilter(_primary_filter):
                       GtkLabel(): 'matching:'
                       ProxyComboBox(padding=6): hidden
                         item: 'Contains All Words', selected
@@ -154,19 +154,19 @@ GtkWindow(toplevel): title='[Moda Stoq] - Purchase', hidden
                 row: 1, u'Closed', datetime.datetime(2012, 1, 1, 0, 0), u'Cia de Roupas S\xe3o Carlos', Decimal('50.000'), Decimal('50.000'), Decimal('7930.00000000000')
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
-        GtkHBox():
+        GtkBox(orientation=horizontal):
           GtkLabel(expand=True, fill=True):
-      GtkHBox(expand=True, fill=True):
+      GtkBox(orientation=horizontal, expand=True, fill=True):
         GtkAlignment(expand=True, fill=True):
-          GtkHBox():
+          GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkHBox(_summary_label):
+        SummaryLabel(_summary_label):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Orders total:</b>'
           GtkLabel(): '<b>$7930.00</b>'
-        GtkButton(pack-end):
+        StatusButton(pack-end):
 
 popup: PurchaseSelection
 GtkMenu(popup): hidden

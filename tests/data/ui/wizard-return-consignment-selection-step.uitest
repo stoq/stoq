@@ -1,16 +1,16 @@
 wizard: CloseInConsignmentWizard
 GtkDialog(toplevel): title='Closing In Consignment', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave ConsignmentSelectionStep is attached
-        GtkVBox(step.toplevel):
+        GtkBox(step.toplevel, orientation=vertical):
           GtkEventBox(step.searchbar_holder, expand=True, fill=True): slave SearchSlave is attached
-            GtkVBox(vbox):
-              GtkHBox(fill=True, padding=6):
-                GtkVBox(filters_box, padding=6):
-                  GtkHBox(hbox):
-                    SearchFilter(_primary_filter):
+            GtkBox(vbox, orientation=vertical):
+              GtkBox(orientation=horizontal, fill=True, padding=6):
+                GtkBox(filters_box, orientation=vertical, padding=6):
+                  GtkBox(hbox, orientation=horizontal):
+                    StringSearchFilter(_primary_filter):
                       GtkLabel(): 'Search:'
                       ProxyComboBox(padding=6): hidden
                         item: 'Contains All Words', selected
@@ -28,13 +28,13 @@ GtkDialog(toplevel): title='Closing In Consignment', hidden
                 column: title='Qty Received'
                 column: title='Order Total'
                 row: 334, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 2, 2, 0, 0), u'Supplier', Decimal('8.000'), Decimal('5.000'), Decimal('1000.00000000000')
-          GtkHBox(step.hbox1, fill=True):
+          GtkBox(step.hbox1, orientation=horizontal, fill=True):
             GtkButton(step.details_button, fill=True): '_Details', insensitive
       ProxyLabel(notification_lbl, fill=True): hidden
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): 'gtk-go-forward', insensitive
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

@@ -1,8 +1,8 @@
 slave: BillMethodSlave
 GtkFrame(frame1):
-  GtkVBox(vbox1):
+  GtkBox(vbox1, orientation=vertical):
     GtkTable(table1, fill=True):
-      GtkHBox(hbox1):
+      GtkBox(hbox1, orientation=horizontal):
         ProxyLabel(installments_number_lbl, fill=True, padding=6): 'Installments:'
         ProxySpinButton(installments_number): '1'
         ProxyLabel(first_duedate_lbl, fill=True): 'Start at:'
@@ -14,7 +14,7 @@ GtkFrame(frame1):
           item: 'weeks'
           item: 'months', selected
           item: 'years'
-      GtkHBox(bank_info_box): hidden
+      GtkBox(bank_info_box, orientation=horizontal): hidden
         GtkLabel(bank_label, fill=True, padding=6): 'Bank ID:'
         ProxyEntry(bank_id, fill=True): ''
         GtkLabel(bank_branch_label, fill=True): 'Bank Branch:'
@@ -24,16 +24,16 @@ GtkFrame(frame1):
         GtkLabel(bank_label1, expand=True, fill=True, padding=6): 'First Number:'
         ProxyEntry(bank_first_check_number, expand=True, padding=6): ''
     GtkEventBox(slave_holder, expand=True, fill=True): slave PaymentListSlave is attached
-      GtkVBox(toplevel):
+      GtkBox(toplevel, orientation=vertical):
         ObjectList(payment_list, expand=True, fill=True):
           column: title='Description', expand
           column: title='Number'
           column: title='Due date'
           column: title='Value'
           row: u'1/1 Bill for order 12345', None, datetime.date(2012, 1, 1), <currency $200>
-        GtkHBox(hbox1):
+        GtkBox(hbox1, orientation=horizontal):
           ProxyLabel(difference_status_label, expand=True, fill=True): '<span >Difference</span>'
           ProxyLabel(difference_label, fill=True): '<span >$ 0.00</span>'
-        GtkHBox(hbox2):
+        GtkBox(hbox2, orientation=horizontal):
           ProxyLabel(total_status_label, expand=True, fill=True): 'Total:'
           ProxyLabel(total_label, fill=True): '<span >$200.00</span>'

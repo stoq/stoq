@@ -1,12 +1,12 @@
 wizard: PersonRoleWizard
 GtkDialog(toplevel): title='New User', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave RoleEditorStep is attached
-        GtkVBox(step.toplevel):
+        GtkBox(step.toplevel, orientation=vertical):
           GtkEventBox(step.place_holder, expand=True, fill=True):
-            GtkVBox():
+            GtkBox(orientation=vertical):
               GtkNotebook(expand=True, fill=True):
                 GtkEventBox():
                   GtkAlignment():
@@ -34,7 +34,7 @@ GtkDialog(toplevel): title='New User', hidden
                         item: 'Secret\xc3\xa1rio'
                         item: 'System Administrator'
                       GtkButton(): hidden
-                GtkVBox():
+                GtkBox(orientation=vertical):
                   GtkTable(fill=True):
                     GtkLabel(): 'Name:'
                     ProxyEntry(): 'user name'
@@ -46,7 +46,7 @@ GtkDialog(toplevel): title='New User', hidden
                     ProxyEntry(): ''
                     GtkLabel(): 'Mobile:'
                     ProxyEntry(): ''
-                  GtkHBox(fill=True):
+                  GtkBox(orientation=horizontal, fill=True):
                     GtkLabel(expand=True, fill=True):
                     GtkButton(fill=True): 'Co_ntacts...'
                     GtkButton(fill=True): 'Credit Check History...', hidden
@@ -56,10 +56,10 @@ GtkDialog(toplevel): title='New User', hidden
                     GtkTable():
                       GtkLabel(): 'Street:'
                       ProxyEntry(): 'street'
-                      GtkHBox():
+                      GtkBox(orientation=horizontal):
                         GtkLabel(expand=True, fill=True):
                         ProxyCheckButton(fill=True): 'Number:', active
-                      GtkHBox():
+                      GtkBox(orientation=horizontal):
                         ProxyEntry(expand=True, fill=True): '123'
                         GtkLabel(fill=True): 'Postal Code:'
                         ProxyEntry(fill=True): '     -   '
@@ -75,11 +75,11 @@ GtkDialog(toplevel): title='New User', hidden
                       ProxyComboEntry():
                         item: 'Brazil', selected
                         item: '... 252 more countries ...'
-                  GtkHBox(fill=True):
+                  GtkBox(orientation=horizontal, fill=True):
                     ProxyLabel(expand=True, fill=True):
                     GtkButton(fill=True): 'More _Addresses...'
                   GtkEventBox(fill=True):
-                GtkVBox():
+                GtkBox(orientation=vertical):
                   GtkFrame(fill=True):
                     GtkEventBox():
                       GtkTable():
@@ -93,7 +93,7 @@ GtkDialog(toplevel): title='New User', hidden
                         ProxyDateEntry(): None
                   GtkFrame(fill=True): hidden
                     GtkEventBox():
-                GtkVBox():
+                GtkBox(orientation=vertical):
                   GtkEventBox(fill=True):
                     GtkTable():
                       GtkLabel(): 'Status:'
@@ -101,10 +101,10 @@ GtkDialog(toplevel): title='New User', hidden
                       ProxyRadioButton(): 'Inactive'
                       GtkLabel():
                   GtkEventBox(fill=True):
-                    GtkVBox():
+                    GtkBox(orientation=vertical):
                       GtkTable(fill=True):
                         GtkLabel(): 'Gender:'
-                        GtkHBox():
+                        GtkBox(orientation=horizontal):
                           GtkRadioButton(expand=True): 'Not set', active
                           GtkRadioButton(expand=True): 'Male'
                           GtkRadioButton(expand=True): 'Female'
@@ -135,38 +135,38 @@ GtkDialog(toplevel): title='New User', hidden
                         GtkLabel(): 'Spouse:', hidden
                         ProxyEntry(): '', hidden
                   GtkEventBox(expand=True, fill=True):
-                    GtkVBox():
+                    GtkBox(orientation=vertical):
                       GtkLabel(fill=True): hidden
                       GtkLabel(fill=True): 'Observations:'
                       GtkScrolledWindow(expand=True, fill=True):
                         ProxyTextView():
                 GtkEventBox():
-                  GtkVBox():
-                    GtkHBox(fill=True):
+                  GtkBox(orientation=vertical):
+                    GtkBox(orientation=horizontal, fill=True):
                       GtkLabel(fill=True): 'Branch:'
                       ProxyComboEntry(expand=True, fill=True): invalid
                         item: 'Moda Stoq'
                         item: 'Stoq Elite Fashion'
                         item: 'branch', selected
                       GtkButton(fill=True): 'gtk-add'
-                    GtkVBox(expand=True, fill=True):
-                      kiwi+ui+listdialog+ListContainer(expand=True, fill=True):
-                        GtkVBox(expand=True, fill=True, padding=6):
+                    GtkBox(orientation=vertical, expand=True, fill=True):
+                      ListContainer(expand=True, fill=True):
+                        GtkBox(orientation=vertical, expand=True, fill=True, padding=6):
                           ObjectList(expand=True, fill=True):
                             column: title='Branch Name', expand
-                          GtkHBox(fill=True):
-                            GtkButton(fill=True): 'gtk-add', hidden
-                            GtkButton(fill=True): 'gtk-remove', insensitive
-                            GtkButton(fill=True): 'gtk-edit', hidden, insensitive
+                          GtkBox(orientation=horizontal):
+                            GtkButton(): 'gtk-add', hidden
+                            GtkButton(): 'gtk-remove', insensitive
+                            GtkButton(): 'gtk-edit', hidden, insensitive
       ProxyLabel(notification_lbl, fill=True):
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
           GtkButton(help_button): 'gtk-help'
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
 
 model: LoginUser<1>
   is_active: True

@@ -1,16 +1,16 @@
 wizard: ReceiveQuoteWizard
 GtkDialog(toplevel): title='Receive Quote Wizard', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave QuoteGroupSelectionStep is attached
-        GtkVBox(step.toplevel):
+        GtkBox(step.toplevel, orientation=vertical):
           GtkEventBox(step.search_group_holder, expand=True, fill=True): slave SearchSlave is attached
-            GtkVBox(vbox):
-              GtkHBox(fill=True, padding=6):
-                GtkVBox(filters_box, padding=6):
-                  GtkHBox(hbox):
-                    SearchFilter(_primary_filter):
+            GtkBox(vbox, orientation=vertical):
+              GtkBox(orientation=horizontal, fill=True, padding=6):
+                GtkBox(filters_box, orientation=vertical, padding=6):
+                  GtkBox(hbox, orientation=horizontal):
+                    StringSearchFilter(_primary_filter):
                       GtkLabel(): 'Supplier:'
                       ProxyComboBox(padding=6): hidden
                         item: 'Contains All Words', selected
@@ -40,14 +40,14 @@ GtkDialog(toplevel): title='Receive Quote Wizard', hidden
                 column: title='Open date'
                 column: title='Deadline'
                 row: 12345, 67890, u'Supplier', datetime.datetime(2012, 1, 1, 0, 0), None
-          GtkHButtonBox(step.hbuttonbox1, fill=True):
+          GtkButtonBox(step.hbuttonbox1, orientation=horizontal, fill=True):
             GtkButton(step.edit_button): 'gtk-edit'
             GtkButton(step.remove_button): 'gtk-remove'
       ProxyLabel(notification_lbl, fill=True): hidden
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): 'gtk-go-forward'
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

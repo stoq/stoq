@@ -1,6 +1,6 @@
 slave: MedicDetailsSlave
-GtkVBox(toplevel):
-  GtkHBox(hbox1, fill=True):
+GtkBox(toplevel, orientation=vertical):
+  GtkBox(hbox1, orientation=horizontal, fill=True):
     GtkLabel(label6):
     GtkFrame(frame1, expand=True, fill=True):
       GtkAlignment(alignment1):

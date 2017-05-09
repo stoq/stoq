@@ -1,10 +1,10 @@
 dialog: ShortcutsEditor
 GtkDialog(toplevel): title='Keyboard shortcuts', hidden
-  GtkVBox(_main_vbox):
-    GtkVBox(vbox, expand=True, fill=True):
+  GtkBox(_main_vbox, orientation=vertical):
+    GtkBox(vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(header):
       GtkEventBox(main, expand=True, fill=True, padding=6):
-        GtkHBox():
+        GtkBox(orientation=horizontal):
           ObjectList(categories):
             column: title='Label', expand
             row: u'Accounts Payable'
@@ -21,17 +21,17 @@ GtkDialog(toplevel): title='Keyboard shortcuts', hidden
             row: u'Services'
             row: u'Stock'
             row: u'Till'
-          GtkVBox(expand=True, fill=True):
+          GtkBox(orientation=vertical, expand=True, fill=True):
             ObjectList(shortcuts, expand=True, fill=True):
               column: title='Description', expand
               column: title='Shortcut'
             GtkLabel(_label, padding=6): 'You need to restart Stoq for the changes to take effect', hidden
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(padding=6): 'Reset defaults'
       GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

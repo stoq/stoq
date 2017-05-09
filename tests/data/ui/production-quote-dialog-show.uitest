@@ -1,5 +1,5 @@
 dialog: ProductionQuoteDialog
-GtkVBox(toplevel):
+GtkBox(toplevel, orientation=vertical):
   GtkLabel(label1): '<b>Select the orders to generate a quote group for purchase:</b>'
   ObjectList(productions, expand=True, fill=True, padding=6):
     column: title=' '
@@ -8,7 +8,7 @@ GtkVBox(toplevel):
     column: title='Responsible'
     column: title='Opened'
     row: True, 333, u'production', u'SalesPerson', datetime.today()
-  GtkHBox(hbox1):
-    GtkHButtonBox(hbuttonbox1, fill=True):
+  GtkBox(hbox1, orientation=horizontal):
+    GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
       GtkButton(select_all): 'gtk-select-all', insensitive
       GtkButton(unselect_all): '_Unselect All'

@@ -1,20 +1,20 @@
 search: ProductSearchQuantity
 GtkDialog(toplevel): title='Product History Search', hidden
-  GtkVBox(_main_vbox):
-    GtkVBox(vbox, expand=True, fill=True):
+  GtkBox(_main_vbox, orientation=vertical):
+    GtkBox(vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(header): hidden
       GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
-        GtkVBox(vbox):
-          GtkHBox(fill=True, padding=6):
-            GtkVBox(filters_box, padding=6):
-              GtkHBox(hbox):
+        GtkBox(vbox, orientation=vertical):
+          GtkBox(orientation=horizontal, fill=True, padding=6):
+            GtkBox(filters_box, orientation=vertical, padding=6):
+              GtkBox(hbox, orientation=horizontal):
                 ComboSearchFilter(branch_filter):
                   GtkLabel(): 'Branch:'
                   ProxyComboBox(padding=6):
                     item: 'Any'
                     item: 'Moda Stoq', selected
                     item: 'Stoq Elite Fashion'
-                SearchFilter(_primary_filter):
+                StringSearchFilter(_primary_filter):
                   GtkLabel(): 'Search:'
                   ProxyComboBox(padding=6): hidden
                     item: 'Contains All Words', selected
@@ -48,23 +48,23 @@ GtkDialog(toplevel): title='Product History Search', hidden
             column: title='Manualy Decreased', hidden
             column: title='Lost', hidden
             row: u'2', u'Botas', Decimal('5.000'), None, Decimal('12.000'), None, None, None, None
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
-          GtkHBox(toplevel): hidden
-            GtkHButtonBox(hbuttonbox1, fill=True):
+          GtkBox(toplevel, orientation=horizontal): hidden
+            GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
               GtkButton(new_button):
               GtkButton(edit_button): insensitive
             GtkEventBox(toolbar_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end): slave _SearchDialogDetailsSlave is attached
-          GtkVBox(toplevel):
-            GtkHBox(hbox1, fill=True):
+          GtkBox(toplevel, orientation=vertical):
+            GtkBox(hbox1, orientation=horizontal, fill=True):
               GtkLabel(label3, expand=True, fill=True):
-              GtkHButtonBox(hbuttonbox1, fill=True):
+              GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
                 GtkButton(details_button): hidden
                 GtkButton(print_button): 'gtk-print'
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
       GtkButton(branch_stock_button, padding=6): 'Stock details', insensitive

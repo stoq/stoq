@@ -1,5 +1,5 @@
 slave: ClientStatusSlave
-GtkVBox(toplevel):
+GtkBox(toplevel, orientation=vertical):
   GtkTable(table1, expand=True, fill=True):
     GtkLabel(label1): 'Financial Status:'
     ProxyComboBox(statuses_combo):

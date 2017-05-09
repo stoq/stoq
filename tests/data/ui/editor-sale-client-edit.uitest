@@ -1,7 +1,7 @@
 editor: SaleClientEditor
 GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale"', hidden
-  GtkVBox(main_dialog._main_vbox):
-    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+  GtkBox(main_dialog._main_vbox, orientation=vertical):
+    GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6):
         GtkEventBox(): slave BasicForm is attached
@@ -9,13 +9,13 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale"', hidden
             GtkTable():
               ProxyLabel(identifier_lbl): 'Sale #:'
               ProxyLabel(identifier): '<span >12345</span>'
-              GtkHBox():
+              GtkBox(orientation=horizontal):
               ProxyLabel(open_date_lbl): 'Open date:'
               ProxyLabel(open_date): '<span >YYYY-MM-DD</span>'
-              GtkHBox():
+              GtkBox(orientation=horizontal):
               ProxyLabel(status_str_lbl): 'Status:'
               ProxyLabel(status_str): '<span >Confirmed</span>'
-              GtkHBox():
+              GtkBox(orientation=horizontal):
               ProxyLabel(salesperson_id_lbl): 'Salesperson:'
               ProxyComboEntry(salesperson_id): insensitive
                 item: 'Administrator'
@@ -24,19 +24,19 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale"', hidden
                 item: 'Maria Aparecida Ardana'
                 item: 'Osvaldo Denadai Marin'
                 item: 'SalesPerson', selected
-              GtkHBox():
+              GtkBox(orientation=horizontal):
                 GtkButton(salesperson_id_add_button): insensitive
                 GtkButton(salesperson_id_edit_button): insensitive
               ProxyLabel(client_lbl): 'Client:'
               ProxyEntry(client): 'Bender'
-              GtkHBox():
+              GtkBox(orientation=horizontal):
                 GtkButton(client_add_button):
                 GtkButton(client_edit_button):
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

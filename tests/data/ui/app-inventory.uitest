@@ -1,6 +1,6 @@
 app: InventoryApp
 GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
-  GtkVBox():
+  GtkBox(orientation=vertical):
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
@@ -83,21 +83,21 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
       GtkToolButton(): 'Count', insensitive
       GtkToolButton(): 'Adjust', insensitive
       GtkToolButton(): 'Cancel', insensitive
-    GtkVBox(expand=True, fill=True):
-      GtkVBox(main_vbox, expand=True, fill=True):
-        GtkVBox(vbox2, expand=True, fill=True):
+    GtkBox(orientation=vertical, expand=True, fill=True):
+      GtkBox(main_vbox, orientation=vertical, expand=True, fill=True):
+        GtkBox(vbox2, orientation=vertical, expand=True, fill=True):
           GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlave is attached
-            GtkVBox(vbox):
-              GtkHBox(fill=True, padding=6):
-                GtkVBox(filters_box, padding=6):
-                  GtkHBox(hbox):
+            GtkBox(vbox, orientation=vertical):
+              GtkBox(orientation=horizontal, fill=True, padding=6):
+                GtkBox(filters_box, orientation=vertical, padding=6):
+                  GtkBox(hbox, orientation=horizontal):
                     ComboSearchFilter(branch_filter):
                       GtkLabel(): 'Show inventories at:'
                       ProxyComboBox(padding=6):
                         item: 'All branches'
                         item: 'Moda Stoq', selected
                         item: 'Stoq Elite Fashion'
-                    SearchFilter(): hidden
+                    StringSearchFilter(): hidden
                       GtkLabel(): 'Search:'
                       ProxyComboBox(padding=6): hidden
                         item: 'Contains All Words', selected
@@ -114,16 +114,16 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
                 column: title='Closed'
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
-        GtkHBox():
+        GtkBox(orientation=horizontal):
           GtkLabel(expand=True, fill=True):
-      GtkHBox(expand=True, fill=True):
+      GtkBox(orientation=horizontal, expand=True, fill=True):
         GtkAlignment(expand=True, fill=True):
-          GtkHBox():
+          GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkButton(pack-end):
+        StatusButton(pack-end):
 
 popup: InventorySelection
 GtkMenu(popup): hidden

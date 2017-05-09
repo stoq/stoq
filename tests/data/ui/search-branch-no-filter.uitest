@@ -1,20 +1,20 @@
 search: BranchSearch
 GtkDialog(toplevel): title='Branch Search', hidden
-  GtkVBox(_main_vbox):
-    GtkVBox(vbox, expand=True, fill=True):
+  GtkBox(_main_vbox, orientation=vertical):
+    GtkBox(vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(header): hidden
       GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
-        GtkVBox(vbox):
-          GtkHBox(fill=True, padding=6):
-            GtkVBox(filters_box, padding=6):
-              GtkHBox(hbox):
+        GtkBox(vbox, orientation=vertical):
+          GtkBox(orientation=horizontal, fill=True, padding=6):
+            GtkBox(filters_box, orientation=vertical, padding=6):
+              GtkBox(hbox, orientation=horizontal):
                 ComboSearchFilter():
                   GtkLabel(): 'Show branches with status'
                   ProxyComboBox(padding=6):
                     item: 'Any', selected
                     item: 'Active'
                     item: 'Inactive'
-                SearchFilter(_primary_filter):
+                StringSearchFilter(_primary_filter):
                   GtkLabel(): 'matching'
                   ProxyComboBox(padding=6): hidden
                     item: 'Contains All Words', selected
@@ -34,16 +34,16 @@ GtkDialog(toplevel): title='Branch Search', hidden
             row: u'Las Vegas', u'Las Vegas shop', None, u'12345678', None, u'Active'
             row: u'Stoq Com\xe9rcio Ltda ME', u'Stoq Elite Fashion', None, u'33227766', None, u'Active'
             row: u'Stoq Roupas e Acess\xf3rios Ltda', u'Moda Stoq', None, u'48763983', None, u'Active'
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
-          GtkHBox(toplevel):
-            GtkHButtonBox(hbuttonbox1, fill=True):
+          GtkBox(toplevel, orientation=horizontal):
+            GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
               GtkButton(new_button):
               GtkButton(edit_button): insensitive
             GtkEventBox(toolbar_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive

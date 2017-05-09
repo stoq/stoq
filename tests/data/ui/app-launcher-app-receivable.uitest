@@ -1,6 +1,6 @@
 app: LauncherApp
 GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
-  GtkVBox():
+  GtkBox(orientation=vertical):
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
@@ -92,14 +92,14 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
       GtkSeparatorToolItem():
       GtkToolButton(): 'Receive', insensitive
       GtkToolButton(): 'Details', insensitive
-    GtkVBox(expand=True, fill=True):
-      GtkVBox(expand=True, fill=True):
-        GtkVBox(expand=True, fill=True):
+    GtkBox(orientation=vertical, expand=True, fill=True):
+      GtkBox(orientation=vertical, expand=True, fill=True):
+        GtkBox(orientation=vertical, expand=True, fill=True):
           GtkEventBox(expand=True, fill=True):
-            GtkVBox():
-              GtkHBox(fill=True, padding=6):
-                GtkVBox(padding=6):
-                  GtkHBox():
+            GtkBox(orientation=vertical):
+              GtkBox(orientation=horizontal, fill=True, padding=6):
+                GtkBox(orientation=vertical, padding=6):
+                  GtkBox(orientation=horizontal):
                     ComboSearchFilter():
                       GtkLabel(): 'Branch:'
                       ProxyComboBox(padding=6):
@@ -113,7 +113,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
                         item: 'Received payments'
                         item: 'To receive'
                         item: 'Late payments'
-                    SearchFilter():
+                    StringSearchFilter():
                       GtkLabel(): 'matching:'
                       ProxyComboBox(padding=6): hidden
                         item: 'Contains All Words', selected
@@ -139,19 +139,19 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
                 row: 4, u'1/1 Bill for sale 00003', None, None, u'Luis Sergio da Silva Marin', datetime.datetime(2008, 9, 15, 0, 0), None, u'To Pay', <currency $873>, None, None
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
-        GtkHBox():
+        GtkBox(orientation=horizontal):
           GtkLabel(expand=True, fill=True):
-      GtkHBox(expand=True, fill=True):
+      GtkBox(orientation=horizontal, expand=True, fill=True):
         GtkAlignment(expand=True, fill=True):
-          GtkHBox():
+          GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkHBox():
+        LazySummaryLabel():
           GtkLabel(expand=True, fill=True, padding=6): '<b>Total</b>'
           GtkLabel(): '<b>$2015.00</b>'
-        GtkButton(pack-end):
+        StatusButton(pack-end):
 
 popup: ReceivableSelection
 GtkMenu(): hidden

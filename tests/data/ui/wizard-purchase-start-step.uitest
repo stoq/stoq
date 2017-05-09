@@ -1,13 +1,13 @@
 wizard: PurchaseWizard
 GtkDialog(toplevel): title='New Order', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave StartPurchaseStep is attached
-        GtkVBox(step.toplevel):
+        GtkBox(step.toplevel, orientation=vertical):
           GtkTable(step.table, fill=True):
             ProxyLabel(step.kiwilabel1): 'Open Date:'
-            GtkHBox(step.hbox3):
+            GtkBox(step.hbox3, orientation=horizontal):
               ProxyDateEntry(step.open_date, fill=True): date.today()
               ProxyLabel(step.kiwilabel3, expand=True, fill=True): 'Order Number:'
               ProxyLabel(step.identifier, fill=True): '<span >12345</span>'
@@ -16,26 +16,26 @@ GtkDialog(toplevel): title='New Order', hidden
               item: 'Moda Stoq', selected
               item: 'Stoq Elite Fashion'
             ProxyLabel(step.kiwilabel2): 'Supplier:'
-            GtkHBox(step.hbox4):
+            GtkBox(step.hbox4, orientation=horizontal):
               ProxyComboEntry(step.supplier, expand=True, fill=True):
                 item: 'Cia de Roupas S\xc3\xa3o Carlos', selected
-              GtkHBox(step.supplier_buttons, fill=True):
+              GtkBox(step.supplier_buttons, orientation=horizontal, fill=True):
                 GtkButton(step.add_supplier, fill=True):
                 GtkButton(step.edit_supplier, fill=True):
             GtkCheckButton(step.all_products): 'Show products from all suppliers'
             ProxyLabel(step.kiwilabel5): 'Freight Type:'
             GtkRadioButton(step.cif_radio): 'CIF (Cost Insurance Freight)'
-            GtkHBox(step.radio_hbox):
-              GtkHBox(step.hbox1, expand=True, fill=True):
+            GtkBox(step.radio_hbox, orientation=horizontal):
+              GtkBox(step.hbox1, orientation=horizontal, expand=True, fill=True):
                 GtkRadioButton(step.fob_radio, fill=True): 'FOB (Free On Board):', active
                 ProxyLabel(step.kiwilabel6, fill=True): '$CURRENCY'
                 ProxyEntry(step.expected_freight, fill=True): '0.0'
       ProxyLabel(notification_lbl, fill=True): hidden
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): 'gtk-go-forward'
           GtkButton(ok_button): 'gtk-ok', hidden
           GtkButton(help_button): 'gtk-help'
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

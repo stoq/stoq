@@ -1,10 +1,10 @@
 slave: WorkOrderOpticalSlave
-GtkVBox(toplevel):
+GtkBox(toplevel, orientation=vertical):
   GtkTable(table1, fill=True):
     GtkLabel(label3): 'Medic:'
     ProxyComboEntry(medic_combo): mandatory
       item: ''
-    GtkHBox(hbox1):
+    GtkBox(hbox1, orientation=horizontal):
       GtkButton(medic_create, expand=True, fill=True):
       GtkButton(medic_details, expand=True, fill=True): insensitive
     GtkLabel(label11): 'Lens type:'
@@ -18,7 +18,7 @@ GtkVBox(toplevel):
     GtkButton(notes_button): 'Observations', hidden
     GtkLabel(estimated_finish_lbl): 'Delivery date:', hidden
     ProxyDateEntry(estimated_finish): None, hidden
-  GtkHBox(distance_box, expand=True, fill=True):
+  GtkBox(distance_box, orientation=horizontal, expand=True, fill=True):
     GtkLabel(label5, fill=True): 'Distance'
     GtkTable(distance_table1, fill=True):
       GtkLabel(label14):
@@ -49,9 +49,9 @@ GtkVBox(toplevel):
       ProxySpinButton(le_distance_prism): '0.00'
       ProxySpinButton(le_distance_base): '0.00'
       ProxySpinButton(le_addition): '0.00'
-  GtkHBox(hbox3, expand=True, fill=True):
-    GtkVBox(vbox2, fill=True):
-      GtkHBox(near_box, fill=True):
+  GtkBox(hbox3, orientation=horizontal, expand=True, fill=True):
+    GtkBox(vbox2, orientation=vertical, fill=True):
+      GtkBox(near_box, orientation=horizontal, fill=True):
         GtkLabel(label6, fill=True): 'Near'
         GtkTable(near_table, fill=True):
           GtkLabel(label22):
@@ -72,7 +72,7 @@ GtkVBox(toplevel):
           ProxySpinButton(le_near_pd): '0.0'
       GtkLabel(label2, expand=True, fill=True):
     GtkAlignment(alignment1, fill=True):
-      GtkHBox(frame_box):
+      GtkBox(frame_box, orientation=horizontal):
         GtkLabel(label33, fill=True): 'Frame'
         GtkTable(frame_table, expand=True, fill=True):
           GtkCheckButton(client_frame_check): "Client's frame"

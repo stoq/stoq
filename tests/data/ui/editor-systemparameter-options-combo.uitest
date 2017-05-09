@@ -1,14 +1,14 @@
 editor: SystemParameterEditor
 GtkDialog(main_dialog.toplevel): title="Edit 'Scale barcode format' Parameter", hidden
-  GtkVBox(main_dialog._main_vbox):
-    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+  GtkBox(main_dialog._main_vbox, orientation=vertical):
+    GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave SystemParameterEditor is attached
         GtkTable(table1):
           GtkLabel(label1): 'Group:'
           ProxyLabel(parameter_group): 'Sales'
           GtkLabel(label2): 'Parameter Name:'
-          GtkVBox(vbox1):
+          GtkBox(vbox1, orientation=vertical):
             ProxyLabel(parameter_name, fill=True): '<span underline="single">Scale barcode format</span>'
             ProxyLabel(parameter_desc, expand=True, fill=True): '<span size="small">Format used by the barcode printed by the scale. This format always starts with 2 followed by 4,5 or 6 digits product code and by a 5 digit weight or a 6 digit price. Check or scale documentation and configuration to see the best option.</span>'
           GtkLabel(label3): 'Current Value:'
@@ -19,12 +19,12 @@ GtkDialog(main_dialog.toplevel): title="Edit 'Scale barcode format' Parameter", 
               item: '4 Digits Code with Weight'
               item: '5 Digits Code with Weight'
               item: '6 Digits Code with Weight'
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
       GtkButton(main_dialog.help_button, padding=6): 'gtk-help'

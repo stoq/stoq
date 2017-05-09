@@ -1,6 +1,6 @@
 search: ParameterSearch
-GtkVBox(toplevel):
-  GtkHBox(hbox1, fill=True):
+GtkBox(toplevel, orientation=vertical):
+  GtkBox(hbox1, orientation=horizontal, fill=True):
     GtkLabel(label8, fill=True): 'Filter:'
     GtkEntry(entry, expand=True, fill=True): 'account'
     GtkButton(search_button, fill=True): 'gtk-find'
@@ -12,5 +12,5 @@ GtkVBox(toplevel):
     row: u'Accounts', u'Parent till account', u'Tills'
     row: u'Accounts', u'Imbalance account', u'Imbalance'
     row: u'Accounts', u'Parent bank account', u'Banks'
-  GtkHButtonBox(hbuttonbox1, fill=True):
+  GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
     GtkButton(edit_button): 'gtk-edit', insensitive

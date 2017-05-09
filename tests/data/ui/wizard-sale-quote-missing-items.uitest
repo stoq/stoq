@@ -1,12 +1,12 @@
 wizard: SaleQuoteWizard
 GtkDialog(toplevel): title='New Sale Quote', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave SaleQuoteItemStep is attached
-        GtkVBox(step.toplevel):
+        GtkBox(step.toplevel, orientation=vertical):
           GtkTable(step.item_table, fill=True):
-            GtkHBox(step.hbox2):
+            GtkBox(step.hbox2, orientation=horizontal):
               ProxyLabel(step.item_lbl, fill=True): 'Item:'
               ProxyEntry(step.barcode, fill=True): '123', invalid
               GtkButton(step.product_button):
@@ -22,8 +22,8 @@ GtkDialog(toplevel): title='New Sale Quote', hidden
             GtkLabel(step.stock_quantity_lbl): 'Stock:', hidden
             ProxyLabel(step.stock_quantity): '<span >0.0</span>', hidden
           GtkEventBox(step.list_holder, expand=True, fill=True): slave AdditionListSlave is attached
-            GtkVBox(toplevel):
-              GtkVBox(list_vbox, expand=True, fill=True):
+            GtkBox(toplevel, orientation=vertical):
+              GtkBox(list_vbox, orientation=vertical, expand=True, fill=True):
                 ObjectTree(klist, expand=True, fill=True):
                   column: title='Code', hidden
                   column: title='Barcode', hidden
@@ -42,25 +42,25 @@ GtkDialog(toplevel): title='New Sale Quote', hidden
                   column: title='Discount'
                   column: title='Total'
                   row: u'', u'123', u'Description', None, None, u'', Decimal('1.000'), u'', u'5102', None, None, <currency $ 0>, <currency $499>, <currency $499>, 0, <currency $499>
-                GtkHBox(step.summary, fill=True):
+                SummaryLabel(step.summary, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
                   GtkLabel(): '<b>$499.00</b>'
-              GtkHBox(hbox1, fill=True):
-                GtkHBox(button_box):
+              GtkBox(hbox1, orientation=horizontal, fill=True):
+                GtkBox(button_box, orientation=horizontal):
                   GtkButton(add_button): hidden
                   GtkButton(edit_button): insensitive
                   GtkButton(delete_button): insensitive
                   GtkButton(step.discount_btn, pack-end): 'Apply discount'
                   GtkButton(step.delivery_btn, pack-end): 'Add delivery'
-                GtkHBox(message_hbox, expand=True, fill=True):
+                GtkBox(message_hbox, orientation=horizontal, expand=True, fill=True):
                   GtkLabel(message_label, expand=True, fill=True): '<b>Not enough stock. Estimated time to obtain missing items: 3 days.</b>'
                   GtkButton(message_details_button, fill=True): 'Details'
       ProxyLabel(notification_lbl, fill=True):
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
           GtkButton(help_button): 'gtk-help'
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

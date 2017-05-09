@@ -1,10 +1,10 @@
 wizard: NewLoanWizard
 GtkDialog(toplevel): title='New Loan Wizard', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave StartNewLoanStep is attached
-        GtkVBox(step.toplevel):
+        GtkBox(step.toplevel, orientation=vertical):
           GtkTable(step.data_table, fill=True):
             ProxyLabel(step.salesperson_lbl): '<span >Responsible:</span>'
             ProxyComboEntry(step.salesperson): insensitive
@@ -15,7 +15,7 @@ GtkDialog(toplevel): title='New Loan Wizard', hidden
               item: 'Osvaldo Denadai Marin'
             GtkEventBox(step.invoice_number_holder):
             GtkLabel(step.label1): 'Client:'
-            GtkHBox():
+            GtkBox(orientation=horizontal):
               ProxyEntry(step.client, expand=True, fill=True): 'Client'
               GtkButton():
               GtkButton():
@@ -33,7 +33,7 @@ GtkDialog(toplevel): title='New Loan Wizard', hidden
             GtkLabel(step.cost_center_lbl): 'Cost Center:', hidden
             ProxyComboBox(step.cost_center): hidden
           GtkHSeparator(step.hseparator1, fill=True):
-          GtkHBox(step.hbox2, fill=True):
+          GtkBox(step.hbox2, orientation=horizontal, fill=True):
             GtkTable(step.summary_table, expand=True, fill=True): hidden
               ProxyLabel(step.kiwilabel3): 'Subtotal:'
               ProxyLabel(step.subtotal_lbl): '0.00'
@@ -42,20 +42,20 @@ GtkDialog(toplevel): title='New Loan Wizard', hidden
               ProxyLabel(step.kiwilabel5): 'Total:'
               ProxyLabel(step.total_lbl): '0.00'
             GtkLabel(step.label3, expand=True, fill=True):
-            GtkHButtonBox(step.hbuttonbox1, pack-end):
+            GtkButtonBox(step.hbuttonbox1, orientation=horizontal, pack-end):
               GtkButton(step.observations_button, pack-end): 'Observations...'
-          GtkHBox(step.total_box, expand=True, fill=True): hidden
+          GtkBox(step.total_box, orientation=horizontal, expand=True, fill=True): hidden
             GtkEventBox(step.cash_change_holder, expand=True, fill=True):
             GtkExpander(step.subtotal_expander, expand=True, fill=True):
               GtkEventBox(step.discount_surcharge_slave):
               GtkLabel(step.label2): 'Order Details'
           GtkEventBox(step.select_method_holder, fill=True, pack-end):
       ProxyLabel(notification_lbl, fill=True): hidden
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): 'gtk-go-forward'
           GtkButton(ok_button): 'gtk-ok', hidden
           GtkButton(help_button): 'gtk-help'
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

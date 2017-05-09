@@ -1,12 +1,12 @@
 wizard: OpticalSaleQuoteWizard
 GtkDialog(toplevel): title='Sale with work order', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave OpticalStartSaleQuoteStep is attached
-        GtkVBox(step.toplevel):
-          GtkHBox(step.hbox1, fill=True):
-            GtkVBox(step.vbox3, expand=True, fill=True):
+        GtkBox(step.toplevel, orientation=vertical):
+          GtkBox(step.hbox1, orientation=horizontal, fill=True):
+            GtkBox(step.vbox3, orientation=vertical, expand=True, fill=True):
               GtkTable(step.table3, fill=True):
                 ProxyLabel(step.salesperson_lbl): 'Salesperson:'
                 ProxyComboEntry(step.salesperson): insensitive
@@ -16,17 +16,17 @@ GtkDialog(toplevel): title='Sale with work order', hidden
                   item: 'Maria Aparecida Ardana'
                   item: 'Osvaldo Denadai Marin'
                 GtkLabel(step.label1): 'Client:'
-                GtkHBox():
+                GtkBox(orientation=horizontal):
                   ProxyEntry(step.client, expand=True, fill=True): 'Client'
                   GtkButton():
                   GtkButton():
                 GtkLabel(step.nature_lbl): 'Operation Nature:'
                 ProxyEntry(step.operation_nature): 'Sale'
                 GtkLabel(step.cfop_lbl): 'C.F.O.P.:', hidden
-                GtkHBox(step.hbox3):
+                GtkBox(step.hbox3, orientation=horizontal):
                   ProxyComboEntry(step.cfop, expand=True, fill=True): hidden
                   GtkButton(step.create_cfop, expand=True, fill=True): hidden
-            GtkVBox(step.vbox4, expand=True, fill=True):
+            GtkBox(step.vbox4, orientation=vertical, expand=True, fill=True):
               GtkTable(step.right_col_table, fill=True):
                 GtkLabel(step.expire_label): 'Expire'
                 ProxyDateEntry(step.expire_date): None
@@ -40,17 +40,17 @@ GtkDialog(toplevel): title='Sale with work order', hidden
                 ProxyComboBox(step.client_category): hidden
                   item: '', selected
           GtkHSeparator(step.hseparator1, fill=True):
-          GtkVBox(step.total_box, fill=True):
-            GtkHBox(step.hbox2, fill=True):
-              GtkHButtonBox(step.hbuttonbox1, pack-end):
+          GtkBox(step.total_box, orientation=vertical, fill=True):
+            GtkBox(step.hbox2, orientation=horizontal, fill=True):
+              GtkButtonBox(step.hbuttonbox1, orientation=horizontal, pack-end):
                 GtkButton(step.notes_button, pack-end): 'Observations...'
           GtkEventBox(step.select_method_holder, fill=True, pack-end):
       ProxyLabel(notification_lbl, fill=True): hidden
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): 'gtk-go-forward'
           GtkButton(ok_button): 'gtk-ok', hidden
           GtkButton(help_button): 'gtk-help'
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

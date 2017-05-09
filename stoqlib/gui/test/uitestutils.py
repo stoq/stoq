@@ -98,11 +98,21 @@ class GUIDumper(object):
         if isinstance(widget, gtk.Window):
             return []
 
+        props = []
+        if gobject.type_name(widget).endswith('Box'):
+            # FIXME: In gtk3 this can be tested for Gtk.Orientable
+            # and get the orientation from the property
+            if isinstance(widget, gtk.ButtonBox):
+                props.append('orientation={}'.format(
+                    'horizontal' if isinstance(widget, gtk.HButtonBox) else 'vertical'))
+            elif isinstance(widget, gtk.Box):
+                props.append('orientation={}'.format(
+                    'horizontal' if isinstance(widget, gtk.HBox) else 'vertical'))
+
         parent = widget.props.parent
         if not parent:
-            return []
+            return props
 
-        props = []
         if isinstance(parent, gtk.Box):
             (expand, fill,
              padding, pack_type) = parent.query_child_packing(widget)
@@ -184,6 +194,12 @@ class GUIDumper(object):
         if not props:
             props = []
 
+        g_name = gobject.type_name(widget)
+        if g_name in ['GtkHBox', 'GtkVBox']:
+            g_name = 'GtkBox'
+        elif g_name in ['GtkHButtonBox', 'GtkVButtonBox']:
+            g_name = 'GtkButtonBox'
+
         if not widget.get_visible():
             props.append('hidden')
         if not widget.get_sensitive():
@@ -195,7 +211,7 @@ class GUIDumper(object):
                 self._is_interactive_widget(widget)):
             props.append('unfocusable')
             fmt = "%s %s is not focusable"
-            self.failures.append(fmt % (gobject.type_name(widget),
+            self.failures.append(fmt % (g_name,
                                         self._items.get(hash(widget),
                                                         '???')))
 
@@ -214,7 +230,7 @@ class GUIDumper(object):
             prop_lines = ''
         self.output += "%s%s(%s):%s\n" % (
             spaces,
-            gobject.type_name(widget),
+            g_name,
             ', '.join(line_props),
             prop_lines)
         spaces = (' ' * ((indent + 1) * 2))

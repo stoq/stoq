@@ -1,13 +1,13 @@
 search: PurchaseReceivingSearch
 GtkDialog(toplevel): title='Purchase Receiving Search', hidden
-  GtkVBox(_main_vbox):
-    GtkVBox(vbox, expand=True, fill=True):
+  GtkBox(_main_vbox, orientation=vertical):
+    GtkBox(vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(header): hidden
       GtkEventBox(main, expand=True, fill=True, padding=6): slave SearchSlave is attached
-        GtkVBox(vbox):
-          GtkHBox(fill=True, padding=6):
-            GtkVBox(filters_box, padding=6):
-              GtkHBox(hbox):
+        GtkBox(vbox, orientation=vertical):
+          GtkBox(orientation=horizontal, fill=True, padding=6):
+            GtkBox(filters_box, orientation=vertical, padding=6):
+              GtkBox(hbox, orientation=horizontal):
                 ComboSearchFilter(branch_filter):
                   GtkLabel(): 'Branch:'
                   ProxyComboBox(padding=6):
@@ -16,7 +16,7 @@ GtkDialog(toplevel): title='Purchase Receiving Search', hidden
                     item: 'Stoq Elite Fashion'
                     item: 'Dummy shop'
                     item: 'Dummy shop (1)'
-                SearchFilter(_primary_filter):
+                StringSearchFilter(_primary_filter):
                   GtkLabel(): 'Search:'
                   ProxyComboBox(padding=6): hidden
                     item: 'Contains All Words', selected
@@ -35,17 +35,17 @@ GtkDialog(toplevel): title='Purchase Receiving Search', hidden
             column: title='Invoice total'
             row: 81954, datetime.datetime(2012, 1, 1, 0, 0), u'Mark', u'Administrator', u'Administrator', 222, None
             row: 78526, datetime.datetime(2012, 2, 2, 0, 0), u'Dominique', u'Administrator', u'Administrator', 222, None
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end): slave _SearchDialogDetailsSlave is attached
-          GtkVBox(toplevel):
-            GtkHBox(hbox1, fill=True):
+          GtkBox(toplevel, orientation=vertical):
+            GtkBox(hbox1, orientation=horizontal, fill=True):
               GtkLabel(label3, expand=True, fill=True):
-              GtkHButtonBox(hbuttonbox1, fill=True):
+              GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
                 GtkButton(details_button):
                 GtkButton(print_button): 'gtk-print'
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden

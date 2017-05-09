@@ -1,8 +1,8 @@
 dialog: StockCostDialog
-GtkVBox(toplevel):
+GtkBox(toplevel, orientation=vertical):
   GtkLabel(branch_label, fill=True): 'Fixing stock cost for products in <b>Moda Stoq</b>'
   GtkEventBox(on_slave_holder, expand=True, fill=True): slave ListSlave is attached
-    kiwi+ui+listdialog+ListContainer(listcontainer):
+    ListContainer(listcontainer):
       ObjectList(expand=True, fill=True):
         column: title='Code'
         column: title='Description', expand
@@ -17,7 +17,7 @@ GtkVBox(toplevel):
         row: u'08', u'Blusa Frente-\xdanica com Pregas', Decimal('153.00000000')
         row: u'09', u'Blusa Balon\xea com Bordado nas Costas', Decimal('99.00000000')
         row: u'10', u'Vestido Vadalena', Decimal('199.00000000')
-      GtkVBox(fill=True):
-        GtkButton(fill=True): 'gtk-add', hidden
-        GtkButton(fill=True): 'gtk-remove', hidden
-        GtkButton(fill=True): 'gtk-edit', hidden
+      GtkBox(orientation=vertical, fill=True):
+        GtkButton(): 'gtk-add', hidden
+        GtkButton(): 'gtk-remove', hidden
+        GtkButton(): 'gtk-edit', hidden

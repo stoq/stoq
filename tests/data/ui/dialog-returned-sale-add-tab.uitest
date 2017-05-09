@@ -1,5 +1,5 @@
 dialog: ReturnedSaleDialog
-GtkVBox(details_vbox):
+GtkBox(details_vbox, orientation=vertical):
   GtkTable(table1, fill=True):
     GtkLabel(label4): 'Returned Sale:'
     ProxyLabel(identifier): '<span >00060</span>'
@@ -8,7 +8,7 @@ GtkVBox(details_vbox):
     GtkLabel(label1): 'Sale:'
     ProxyLabel(sale_identifier): '<span >00336</span>'
     ProxyLabel(kiwilabel4): 'Status:'
-    GtkHBox(hbox2):
+    GtkBox(hbox2, orientation=horizontal):
       ProxyLabel(status_str, fill=True): '<span >Pending</span>'
       GtkButton(receive_button, fill=True): 'Receive'
     GtkLabel(label3): 'Returned date:'
@@ -20,14 +20,14 @@ GtkVBox(details_vbox):
     ProxyLabel(kiwilabel1): 'Confirmed By:'
     ProxyLabel(receiving_responsible):
   GtkNotebook(details_notebook, expand=True, fill=True):
-    GtkVBox(products_vbox):
+    GtkBox(products_vbox, orientation=vertical):
       ObjectTree(returned_items_list, expand=True, fill=True):
         column: title='Product Code'
         column: title='Description', expand
         column: title='Qty returned'
         column: title='Price'
         column: title='Total'
-    GtkHBox(hbox1):
+    GtkBox(hbox1, orientation=horizontal):
       GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
         ProxyTextView(reason): invalid
     GtkEventBox():
@@ -36,7 +36,7 @@ GtkVBox(details_vbox):
           GtkTable():
             ProxyLabel(field_name_lbl): 'Slave field:'
             ProxyEntry(field_name): ''
-            GtkHBox():
-  GtkHButtonBox(hbuttonbox1, fill=True):
+            GtkBox(orientation=horizontal):
+  GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
     GtkButton(undo_button): 'Undo Returned Sale', insensitive
     GtkButton(print_button): 'gtk-print'

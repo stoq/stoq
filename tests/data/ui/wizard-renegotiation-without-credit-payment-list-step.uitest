@@ -1,10 +1,10 @@
 wizard: PaymentRenegotiationWizard
 GtkDialog(toplevel): title='Payments Renegotiation Wizard', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave PaymentRenegotiationPaymentListStep is attached
-        GtkVBox(step.toplevel):
+        GtkBox(step.toplevel, orientation=vertical):
           GtkTable(step.table2, fill=True):
             GtkLabel(step.label6): 'Client:'
             ProxyComboEntry(step.client): insensitive
@@ -17,9 +17,9 @@ GtkDialog(toplevel): title='Payments Renegotiation Wizard', hidden
             column: title='Status'
             column: title='Value'
             row: 333, u'Test payment', datetime.today(), u'Cancelled', <currency $10>
-          GtkHBox(step.hbox1, fill=True):
+          GtkBox(step.hbox1, orientation=horizontal, fill=True):
             GtkEventBox(step.cash_change_holder, expand=True, fill=True): slave CashChangeSlave is attached
-              GtkVBox(toplevel):
+              GtkBox(toplevel, orientation=vertical):
                 GtkTable(table1, padding=6):
                   ProxyLabel(kiwilabel1): 'Received: ($CURRENCY)'
                   ProxyEntry(received_value): '$10.00'
@@ -36,9 +36,9 @@ GtkDialog(toplevel): title='Payments Renegotiation Wizard', hidden
               GtkLabel(step.label5): 'Total:'
               ProxyEntry(step.total): '10.00', insensitive
           GtkEventBox(step.select_method_holder, fill=True): slave SelectPaymentMethodSlave is attached
-            GtkVBox(toplevel):
+            GtkBox(toplevel, orientation=vertical):
               GtkFrame(frame1, expand=True, fill=True):
-                GtkHBox(methods_box):
+                GtkBox(methods_box, orientation=horizontal):
                   GtkRadioButton(padding=6): 'Money', active
                   GtkRadioButton(padding=6): 'Bill'
                   GtkRadioButton(padding=6): 'Card'
@@ -49,10 +49,10 @@ GtkDialog(toplevel): title='Payments Renegotiation Wizard', hidden
                   GtkRadioButton(padding=6): 'Multiple'
                 GtkLabel(): 'Payment method:'
       ProxyLabel(notification_lbl, fill=True): hidden
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

@@ -1,10 +1,10 @@
 wizard: PurchaseFinishWizard
 GtkDialog(toplevel): title='Purchase Finish', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave PurchaseFinishPaymentAdjustStep is attached
-        GtkVBox(step.toplevel):
+        GtkBox(step.toplevel, orientation=vertical):
           GtkLabel(step.label1, fill=True): '<b>Payments to pay will be cancelled and new ones will be created to match the remaining value.</b>'
           ObjectList(step.payment_list, expand=True, fill=True):
             column: title='Purchase #'
@@ -22,13 +22,13 @@ GtkDialog(toplevel): title='Purchase Finish', hidden
             GtkLabel(step.missing_label): 'Missing:'
             ProxyLabel(step.missing_value): '<span weight="bold">$ 0.00</span>'
       ProxyLabel(notification_lbl, fill=True):
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
 
 model: PaymentGroup<1>
 

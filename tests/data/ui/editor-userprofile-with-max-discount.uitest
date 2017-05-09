@@ -1,69 +1,69 @@
 editor: UserProfileEditor
 GtkDialog(main_dialog.toplevel): title='Edit Details of "assistant"', hidden
-  GtkVBox(main_dialog._main_vbox):
-    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+  GtkBox(main_dialog._main_vbox, orientation=vertical):
+    GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave UserProfileEditor is attached
         GtkTable(table1):
           ProxyLabel(kiwilabel1): 'Profile Name:'
           ProxyEntry(profile_name): 'assistant'
           ProxyLabel(kiwilabel3): 'Maximum Discount:'
-          GtkHBox(hbox2):
+          GtkBox(hbox2, orientation=horizontal):
             ProxySpinButton(max_discount, expand=True, fill=True): '10.00'
             GtkLabel(label1): '%'
           ProxyLabel(kiwilabel2): 'Available Applications:'
-          GtkHBox(hbox1):
+          GtkBox(hbox1, orientation=horizontal):
             GtkScrolledWindow(scrolled_window, expand=True, fill=True):
               GtkViewport(viewport2):
-                GtkVBox(applications_vbox):
-                  GtkHBox(fill=True):
+                GtkBox(applications_vbox, orientation=vertical):
+                  GtkBox(orientation=horizontal, fill=True):
                     ProxyCheckButton(financial, expand=True, fill=True, padding=6): 'Financial'
                     GtkImage():
-                  GtkHBox(fill=True):
+                  GtkBox(orientation=horizontal, fill=True):
                     ProxyCheckButton(pos, expand=True, fill=True, padding=6): 'Point of Sales'
                     GtkImage():
-                  GtkHBox(fill=True):
+                  GtkBox(orientation=horizontal, fill=True):
                     ProxyCheckButton(sales, expand=True, fill=True, padding=6): 'Sales'
                     GtkImage():
-                  GtkHBox(fill=True):
+                  GtkBox(orientation=horizontal, fill=True):
                     ProxyCheckButton(delivery, expand=True, fill=True, padding=6): 'Delivery'
                     GtkImage():
-                  GtkHBox(fill=True):
+                  GtkBox(orientation=horizontal, fill=True):
                     ProxyCheckButton(payable, expand=True, fill=True, padding=6): 'Accounts Payable'
                     GtkImage():
-                  GtkHBox(fill=True):
+                  GtkBox(orientation=horizontal, fill=True):
                     ProxyCheckButton(services, expand=True, fill=True, padding=6): 'Services'
                     GtkImage():
-                  GtkHBox(fill=True):
+                  GtkBox(orientation=horizontal, fill=True):
                     ProxyCheckButton(calendar, expand=True, fill=True, padding=6): 'Calendar'
                     GtkImage():
-                  GtkHBox(fill=True):
+                  GtkBox(orientation=horizontal, fill=True):
                     ProxyCheckButton(receivable, expand=True, fill=True, padding=6): 'Accounts Receivable'
                     GtkImage():
-                  GtkHBox(fill=True):
+                  GtkBox(orientation=horizontal, fill=True):
                     ProxyCheckButton(purchase, expand=True, fill=True, padding=6): 'Purchase'
                     GtkImage():
-                  GtkHBox(fill=True):
+                  GtkBox(orientation=horizontal, fill=True):
                     ProxyCheckButton(admin, expand=True, fill=True, padding=6): 'Administrative'
                     GtkImage():
-                  GtkHBox(fill=True):
+                  GtkBox(orientation=horizontal, fill=True):
                     ProxyCheckButton(till, expand=True, fill=True, padding=6): 'Till'
                     GtkImage():
-                  GtkHBox(fill=True):
+                  GtkBox(orientation=horizontal, fill=True):
                     ProxyCheckButton(production, expand=True, fill=True, padding=6): 'Production'
                     GtkImage():
-                  GtkHBox(fill=True):
+                  GtkBox(orientation=horizontal, fill=True):
                     ProxyCheckButton(inventory, expand=True, fill=True, padding=6): 'Inventory'
                     GtkImage():
-                  GtkHBox(fill=True):
+                  GtkBox(orientation=horizontal, fill=True):
                     ProxyCheckButton(stock, expand=True, fill=True, padding=6): 'Stock'
                     GtkImage():
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
       GtkButton(main_dialog.help_button, padding=6): 'gtk-help'

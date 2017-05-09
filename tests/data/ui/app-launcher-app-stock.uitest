@@ -1,6 +1,6 @@
 app: LauncherApp
 GtkWindow(toplevel): title='[Moda Stoq] - Stock', hidden
-  GtkVBox():
+  GtkBox(orientation=vertical):
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
@@ -110,22 +110,22 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stock', hidden
       GtkSeparatorToolItem():
       GtkToolButton(): 'History', insensitive
       GtkToolButton(): 'Edit', insensitive
-    GtkVBox(expand=True, fill=True):
-      GtkVBox(expand=True, fill=True):
-        GtkHBox(fill=True):
-        GtkVBox(expand=True, fill=True):
+    GtkBox(orientation=vertical, expand=True, fill=True):
+      GtkBox(orientation=vertical, expand=True, fill=True):
+        GtkBox(orientation=horizontal, fill=True):
+        GtkBox(orientation=vertical, expand=True, fill=True):
           GtkEventBox(expand=True, fill=True):
-            GtkVBox():
-              GtkHBox(fill=True, padding=6):
-                GtkVBox(padding=6):
-                  GtkHBox():
+            GtkBox(orientation=vertical):
+              GtkBox(orientation=horizontal, fill=True, padding=6):
+                GtkBox(orientation=vertical, padding=6):
+                  GtkBox(orientation=horizontal):
                     ComboSearchFilter():
                       GtkLabel(): 'Show by:'
                       ProxyComboBox(padding=6):
                         item: 'All branches'
                         item: 'Moda Stoq', selected
                         item: 'Stoq Elite Fashion'
-                    SearchFilter():
+                    StringSearchFilter():
                       GtkLabel(): 'Search:'
                       ProxyComboBox(padding=6): hidden
                         item: 'Contains All Words', selected
@@ -155,22 +155,22 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stock', hidden
                 row: u'08', u'7826592136954', u'Blusas Algod\xe3o', u'Blusa Frente-\xdanica com Pregas', None, u'', u'', u'', Decimal('3.000'), False
                 row: u'09', u'5892458629421', u'Blusas Poliester', u'Blusa Balon\xea com Bordado nas Costas', None, u'', u'', u'', Decimal('3.000'), False
                 row: u'10', u'1598756984265', u'Viscose', u'Vestido Vadalena', None, u'', u'', u'', Decimal('4.000'), False
-          GtkHBox():
+          GtkBox(orientation=horizontal):
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
-        GtkHBox():
+        GtkBox(orientation=horizontal):
           GtkLabel(expand=True, fill=True):
-      GtkHBox(expand=True, fill=True):
+      GtkBox(orientation=horizontal, expand=True, fill=True):
         GtkAlignment(expand=True, fill=True):
-          GtkHBox():
+          GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkHBox():
+        LazySummaryLabel():
           GtkLabel(expand=True, fill=True, padding=6): '<b>Stock Total:</b>'
           GtkLabel(): '<b>31.0</b>'
-        GtkButton(pack-end):
+        StatusButton(pack-end):
 
 popup: StockSelection
 GtkMenu(): hidden

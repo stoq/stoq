@@ -1,10 +1,10 @@
 editor: WorkOrderPackageSendEditor
 GtkDialog(main_dialog.toplevel): title='Add Send work orders', hidden
-  GtkVBox(main_dialog._main_vbox):
-    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+  GtkBox(main_dialog._main_vbox, orientation=vertical):
+    GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave WorkOrderPackageSendEditor is attached
-        GtkVBox(toplevel):
+        GtkBox(toplevel, orientation=vertical):
           GtkTable(table1, expand=True, fill=True):
             GtkLabel(label1): 'Identifier:'
             ProxyEntry(identifier): '123321'
@@ -27,14 +27,14 @@ GtkDialog(main_dialog.toplevel): title='Add Send work orders', hidden
               row: True, 666, None, u'Waiting', u'Description - Equipment 0', None, None, u'Moda Stoq', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
               row: True, 667, None, u'Waiting', u'Description - Equipment 1', None, None, u'Moda Stoq', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
               row: False, 668, None, u'Waiting', u'Description - Equipment 2', None, None, u'Moda Stoq', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
-          GtkHBox(hbox1):
+          GtkBox(hbox1, orientation=horizontal):
             GtkButton(edit_btn, fill=True): 'Observations', insensitive
             GtkButton(details_btn, fill=True): 'gtk-info', insensitive
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

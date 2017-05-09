@@ -5,4 +5,4 @@ GtkWindow(toplevel): title=None, hidden
       GtkTable():
         ProxyLabel(coupon_id_lbl): 'Coupon Number:'
         ProxyLabel(coupon_id): '<span >0</span>'
-        GtkHBox():
+        GtkBox(orientation=horizontal):

@@ -1,12 +1,12 @@
 editor: SaleQuoteItemEditor
 GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale Quote Item"', hidden
-  GtkVBox(main_dialog._main_vbox):
-    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+  GtkBox(main_dialog._main_vbox, orientation=vertical):
+    GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave SaleQuoteItemEditor is attached
         GtkNotebook(toplevel):
           GtkEventBox(item-holder): slave SaleQuoteItemSlave is attached
-            GtkVBox(toplevel):
+            GtkBox(toplevel, orientation=vertical):
               GtkTable(table1):
                 GtkLabel(label3): 'Order:'
                 GtkLabel(sale): '23456'
@@ -120,7 +120,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale Quote Item"', hidd
               GtkLabel(v_cred_icms_sn_label): 'Valor ICMS SN:'
               ProxyEntry(v_cred_icms_sn): '', insensitive
           GtkEventBox(): slave InvoiceItemIpiSlave is attached
-            GtkVBox(toplevel):
+            GtkBox(toplevel, orientation=vertical):
               GtkTable(table1, fill=True):
                 GtkLabel(template_label): 'Template:'
                 ProxyComboBox(template):
@@ -167,7 +167,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale Quote Item"', hidd
                 GtkLabel(v_ipi_label): 'Valor do IPI'
                 ProxyEntry(v_ipi): '0.00', ineditable, insensitive
           GtkEventBox(): slave InvoiceItemPisSlave is attached
-            GtkVBox(toplevel):
+            GtkBox(toplevel, orientation=vertical):
               GtkTable(table1, fill=True):
                 GtkLabel(template_label): 'Template:'
                 ProxyComboBox(template):
@@ -216,7 +216,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale Quote Item"', hidd
                 GtkLabel(v_pis_label): 'Valor do PIS:'
                 ProxyEntry(v_pis): '0.00', insensitive
           GtkEventBox(): slave InvoiceItemCofinsSlave is attached
-            GtkVBox(toplevel):
+            GtkBox(toplevel, orientation=vertical):
               GtkTable(table1, fill=True):
                 GtkLabel(template_label): 'Template:'
                 ProxyComboBox(template):
@@ -264,11 +264,11 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale Quote Item"', hidd
                 ProxySpinButton(p_cofins): '', insensitive
                 GtkLabel(v_cofins_label): 'Valor da COFINS:'
                 ProxyEntry(v_cofins): '0.00', insensitive
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

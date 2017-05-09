@@ -1,15 +1,15 @@
 wizard: ConfirmSaleWizard
 GtkDialog(toplevel): title='Sale Checkout', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave PaymentMethodStep is attached
-        GtkVBox(step.toplevel):
+        GtkBox(step.toplevel, orientation=vertical):
           GtkEventBox(step.place_holder, expand=True, fill=True): slave StoreCreditMethodSlave is attached
             GtkFrame(frame1):
-              GtkVBox(vbox1):
+              GtkBox(vbox1, orientation=vertical):
                 GtkTable(table1, fill=True):
-                  GtkHBox(hbox1):
+                  GtkBox(hbox1, orientation=horizontal):
                     ProxyLabel(installments_number_lbl, fill=True, padding=6): 'Installments:'
                     ProxySpinButton(installments_number): '1'
                     ProxyLabel(first_duedate_lbl, fill=True): 'Start at:'
@@ -21,7 +21,7 @@ GtkDialog(toplevel): title='Sale Checkout', hidden
                       item: 'weeks'
                       item: 'months', selected
                       item: 'years'
-                  GtkHBox(bank_info_box): hidden
+                  GtkBox(bank_info_box, orientation=horizontal): hidden
                     GtkLabel(bank_label, fill=True, padding=6): 'Bank ID:'
                     ProxyEntry(bank_id, fill=True): ''
                     GtkLabel(bank_branch_label, fill=True): 'Bank Branch:'
@@ -31,28 +31,28 @@ GtkDialog(toplevel): title='Sale Checkout', hidden
                     GtkLabel(bank_label1, expand=True, fill=True, padding=6): 'First Number:'
                     ProxyEntry(bank_first_check_number, expand=True, padding=6): ''
                 GtkEventBox(slave_holder, expand=True, fill=True): slave PaymentListSlave is attached
-                  GtkVBox(toplevel):
+                  GtkBox(toplevel, orientation=vertical):
                     ObjectList(payment_list, expand=True, fill=True):
                       column: title='Description', expand
                       column: title='Number'
                       column: title='Due date'
                       column: title='Value'
                       row: u'1/1 Store Credit for sale 12345', None, date.today(), <currency $10>
-                    GtkHBox(hbox1):
+                    GtkBox(hbox1, orientation=horizontal):
                       ProxyLabel(difference_status_label, expand=True, fill=True): '<span >Difference</span>'
                       ProxyLabel(difference_label, fill=True): '<span >$ 0.00</span>'
-                    GtkHBox(hbox2):
+                    GtkBox(hbox2, orientation=horizontal):
                       ProxyLabel(total_status_label, expand=True, fill=True): 'Total:'
                       ProxyLabel(total_label, fill=True): '<span >$10.00</span>'
       ProxyLabel(notification_lbl, fill=True):
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
           GtkButton(help_button): 'gtk-help'
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
 
 model: Sale<1>
   cancel_date: None

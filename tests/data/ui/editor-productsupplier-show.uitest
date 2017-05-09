@@ -1,7 +1,7 @@
 editor: ProductSupplierEditor
 GtkDialog(main_dialog.toplevel): title='Edit Details of "Product Supplier"', hidden
-  GtkVBox(main_dialog._main_vbox):
-    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+  GtkBox(main_dialog._main_vbox, orientation=vertical):
+    GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave ProductSupplierEditor is attached
         GtkTable(table1):
@@ -10,25 +10,25 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product Supplier"', hid
           GtkLabel(label2): 'Supplier Cost:'
           ProxySpinButton(base_cost): '0.00', mandatory
           ProxyLabel(label10): 'ICMS:'
-          GtkHBox(hbox3):
+          GtkBox(hbox3, orientation=horizontal):
             ProxyEntry(icms, fill=True): '0.0'
             ProxyLabel(kiwilabel1, expand=True, fill=True): '%'
           GtkLabel(label1): 'Lead Time:'
-          GtkHBox(hbox2):
+          GtkBox(hbox2, orientation=horizontal):
             ProxySpinButton(lead_time, expand=True, fill=True): '1'
             GtkLabel(label4, fill=True): 'Day(s)'
           GtkLabel(label5): 'Minimum Purchase:'
-          GtkHBox(hbox1):
+          GtkBox(hbox1, orientation=horizontal):
             ProxySpinButton(minimum_purchase, expand=True, fill=True): '1.00'
             ProxyLabel(unit_label, expand=True, fill=True): '<span >Unit(s)</span>'
           GtkLabel(label3): 'Additional \nInformation:'
           GtkScrolledWindow(scrolledwindow1):
             ProxyTextView(notes):
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive

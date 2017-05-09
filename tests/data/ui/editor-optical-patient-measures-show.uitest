@@ -1,12 +1,12 @@
 editor: OpticalPatientMeasuresEditor
 GtkDialog(main_dialog.toplevel): title='Measures', hidden
-  GtkVBox(main_dialog._main_vbox):
-    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+  GtkBox(main_dialog._main_vbox, orientation=vertical):
+    GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave OpticalPatientMeasuresEditor is attached
-        GtkVBox(toplevel):
-          GtkHBox(hbox1, fill=True):
-            GtkVBox(vbox2, fill=True):
+        GtkBox(toplevel, orientation=vertical):
+          GtkBox(hbox1, orientation=horizontal, fill=True):
+            GtkBox(vbox2, orientation=vertical, fill=True):
               GtkLabel(label2, fill=True): 'Keratometer'
               GtkTable(table1, fill=True):
                 GtkLabel(label7):
@@ -29,7 +29,7 @@ GtkDialog(main_dialog.toplevel): title='Measures', hidden
               GtkViewport(viewport1, expand=True, fill=True):
                 GtkScrolledWindow(scrolledwindow1):
                   ProxyTextView(notes):
-            GtkVBox(vbox3, expand=True, fill=True):
+            GtkBox(vbox3, orientation=vertical, expand=True, fill=True):
               GtkLabel(label3, fill=True): 'Biomicroscope'
               GtkTable(table2, fill=True):
                 GtkLabel(label10):
@@ -65,11 +65,11 @@ GtkDialog(main_dialog.toplevel): title='Measures', hidden
                 GtkLabel(label23): 'Schrirmer'
                 ProxyEntry(re_schirmer): ''
                 ProxyEntry(le_schirmer): ''
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

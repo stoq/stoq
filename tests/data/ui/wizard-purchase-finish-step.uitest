@@ -1,21 +1,21 @@
 wizard: PurchaseWizard
 GtkDialog(toplevel): title='New Order', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave FinishPurchaseStep is attached
-        GtkVBox(step.toplevel):
+        GtkBox(step.toplevel, orientation=vertical):
           GtkTable(step.table, expand=True, fill=True):
             GtkLabel(step.label1): 'Salesperson Name:'
             ProxyEntry(step.salesperson_name): ''
             GtkLabel(step.label2): 'Transporter:'
-            GtkHBox(step.hbox2):
+            GtkBox(step.hbox2, orientation=horizontal):
               ProxyComboEntry(step.transporter, expand=True, fill=True):
                 item: 'Jos\xc3\xa9 Carlos de Carvalho'
               GtkButton(step.add_transporter, fill=True):
               GtkButton(step.edit_transporter):
             GtkLabel(step.label3): 'Expected Receival Date:'
-            GtkHBox(step.hbox1):
+            GtkBox(step.hbox1, orientation=horizontal):
               ProxyDateEntry(step.expected_receival_date, fill=True): datetime.date(2010, 1, 4)
               ProxyLabel(step.kiwilabel5, expand=True, fill=True):
             GtkLabel(step.label4): 'Observations'
@@ -25,14 +25,14 @@ GtkDialog(toplevel): title='New Order', hidden
             GtkAlignment(step.alignment1):
               GtkButton(step.print_button): 'gtk-print'
       ProxyLabel(notification_lbl, fill=True):
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
           GtkButton(help_button): 'gtk-help'
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
 
 model: PurchaseOrder<1>
   confirm_date: None

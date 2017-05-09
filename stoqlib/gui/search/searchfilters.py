@@ -142,6 +142,9 @@ class SearchFilter(gtk.HBox):
             self._add_remove_button()
 
 
+gobject.type_register(SearchFilter)
+
+
 class DateSearchFilter(SearchFilter):
     """
     A filter which helps you to search by a date interval.
@@ -451,6 +454,9 @@ class DateSearchFilter(SearchFilter):
                 self._internal_set_start_date(end - datetime.timedelta(days=1))
 
 
+gobject.type_register(DateSearchFilter)
+
+
 class ComboSearchFilter(SearchFilter):
     """
     - a label
@@ -568,6 +574,9 @@ class ComboSearchFilter(SearchFilter):
             self.emit('changed')
 
 
+gobject.type_register(ComboSearchFilter)
+
+
 class BoolSearchFilter(SearchFilter):
     """
     - a checkbutton
@@ -634,6 +643,9 @@ class BoolSearchFilter(SearchFilter):
             self.emit('changed')
 
 
+gobject.type_register(BoolSearchFilter)
+
+
 class StringSearchFilter(SearchFilter):
     """
     Contains:
@@ -644,6 +656,9 @@ class StringSearchFilter(SearchFilter):
     :ivar entry: the entry
     :ivar label: the label
     """
+
+    __gtype_name__ = 'StringSearchFilter'
+
     def __init__(self, label, chars=0, container=None):
         """
         Create a new StringSearchFilter object.
@@ -767,6 +782,9 @@ class StringSearchFilter(SearchFilter):
 
     def set_label(self, label):
         self.title_label.set_text(label)
+
+
+gobject.type_register(StringSearchFilter)
 
 
 class NumberSearchFilter(SearchFilter):
@@ -910,12 +928,17 @@ class NumberSearchFilter(SearchFilter):
         self._options[option_type] = option
 
 
+gobject.type_register(NumberSearchFilter)
+
+
 class MultiSearchFilter(SearchFilter):
     """A multi object search filter, containing:
 
       - a label
       - a multicombo widget
     """
+
+    __gtype_name__ = 'MultiSearchFilter'
 
     def __init__(self, label, items):
         super(MultiSearchFilter, self).__init__(label=label)
@@ -961,3 +984,6 @@ class MultiSearchFilter(SearchFilter):
 
     def _on_combo__content_changed(self, combo):
         self.emit('changed')
+
+
+gobject.type_register(MultiSearchFilter)

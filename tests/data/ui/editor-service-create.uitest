@@ -1,12 +1,12 @@
 editor: ServiceEditor
 GtkDialog(main_dialog.toplevel): title='Add Service', hidden
-  GtkVBox(main_dialog._main_vbox):
-    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+  GtkBox(main_dialog._main_vbox, orientation=vertical):
+    GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave ServiceEditor is attached
-        GtkVBox(toplevel):
+        GtkBox(toplevel, orientation=vertical):
           GtkNotebook(sellable_notebook, expand=True, fill=True):
-            GtkVBox(sellable_tab):
+            GtkBox(sellable_tab, orientation=vertical):
               GtkTable(table, expand=True, fill=True):
                 GtkLabel(code_lbl): 'Code:'
                 ProxyEntry(code): '12345'
@@ -23,7 +23,7 @@ GtkDialog(main_dialog.toplevel): title='Add Service', hidden
                   item: '5.202 Devolucao'
                   item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado'
                 GtkLabel(category_lbl): 'Category:'
-                GtkHBox(hbox1):
+                GtkBox(hbox1, orientation=horizontal):
                   ProxyComboEntry(category_combo, expand=True, fill=True):
                     item: 'Bermudas'
                     item: 'Bermudas:Bermudas Sarja'
@@ -47,22 +47,22 @@ GtkDialog(main_dialog.toplevel): title='Add Service', hidden
                 GtkLabel(label2): 'Description:'
                 ProxyEntry(description): '', mandatory
                 ProxyLabel(label4): 'Cost ($CURRENCY):'
-                GtkHBox(cost_hbox):
+                GtkBox(cost_hbox, orientation=horizontal):
                   ProxySpinButton(cost, fill=True): '0.00', invalid
                 GtkLabel(label9): 'Tributary Situation:'
-                GtkHBox(tax_hbox):
+                GtkBox(tax_hbox, orientation=horizontal):
                   ProxyComboBox(tax_constant, fill=True):
                     item: 'No tax'
                     item: 'Service tax', selected
-                  GtkHBox(tax_box, fill=True):
+                  GtkBox(tax_box, orientation=horizontal, fill=True):
                     ProxyLabel(tax_value): '<span ></span>'
                     GtkLabel(label_percent, fill=True): '%'
                 ProxyLabel(label5): 'Sale Price ($CURRENCY):'
-                GtkHBox(price_hbox):
+                GtkBox(price_hbox, orientation=horizontal):
                   ProxySpinButton(price, fill=True): '0.00', invalid
                   GtkButton(sale_price_button, fill=True):
                 GtkLabel(label3): 'Unit:'
-                GtkHBox(unit_hbox):
+                GtkBox(unit_hbox, orientation=horizontal):
                   ProxyComboBox(unit_combo, expand=True, fill=True):
                     item: 'No units', selected
                     item: 'Kg'
@@ -71,7 +71,7 @@ GtkDialog(main_dialog.toplevel): title='Add Service', hidden
                 GtkLabel(on_sale_lbl):
                 ProxyLabel(requires_weighing_label): '<span size="small"></span>'
                 GtkEventBox(slave_holder): slave SellableDetailsSlave is attached
-                  GtkVBox(toplevel):
+                  GtkBox(toplevel, orientation=vertical):
                     GtkTable(table1, expand=True, fill=True):
                       GtkLabel(notes_lbl): 'Details:'
                       GtkScrolledWindow(scrolledwindow1):
@@ -82,28 +82,28 @@ GtkDialog(main_dialog.toplevel): title='Add Service', hidden
                   GtkViewport(viewport):
                     GtkTable(images_table):
             GtkEventBox(): slave CategoryPriceSlave is attached
-              GtkVBox(toplevel):
-                GtkHBox(hbox1, fill=True):
+              GtkBox(toplevel, orientation=vertical):
+                GtkBox(hbox1, orientation=horizontal, fill=True):
                   GtkLabel(model_name_label, fill=True): 'Category:'
                   ProxyComboEntry(target_combo, expand=True, fill=True): invalid
                   GtkButton(add_button, fill=True): 'gtk-add', insensitive
-                GtkVBox(model_vbox, expand=True, fill=True):
-                  kiwi+ui+listdialog+ListContainer(relations_list, expand=True, fill=True):
-                    GtkVBox(expand=True, fill=True, padding=6):
+                GtkBox(model_vbox, orientation=vertical, expand=True, fill=True):
+                  ListContainer(relations_list, expand=True, fill=True):
+                    GtkBox(orientation=vertical, expand=True, fill=True, padding=6):
                       ObjectList(expand=True, fill=True):
                         column: title='Category', expand
                         column: title='Price'
                         column: title='Markup'
-                      GtkHBox(fill=True):
-                        GtkButton(fill=True): 'gtk-add', hidden
-                        GtkButton(fill=True): 'gtk-remove', insensitive
-                        GtkButton(fill=True): 'gtk-edit', insensitive
-      GtkHBox(fill=True):
+                      GtkBox(orientation=horizontal):
+                        GtkButton(): 'gtk-add', hidden
+                        GtkButton(): 'gtk-remove', insensitive
+                        GtkButton(): 'gtk-edit', insensitive
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(_print_labels_btn): 'gtk-print', insensitive
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive

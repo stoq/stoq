@@ -1,6 +1,6 @@
 app: LauncherApp
 GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
-  GtkVBox():
+  GtkBox(orientation=vertical):
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
@@ -86,33 +86,33 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
           GtkMenu(): hidden
       GtkToolButton(): 'Print', hidden, insensitive
       GtkToolButton(): 'Quit', hidden
-    GtkVBox(expand=True, fill=True):
-      GtkVBox(expand=True, fill=True):
-        GtkVBox(expand=True, fill=True):
-          GtkHBox(fill=True):
+    GtkBox(orientation=vertical, expand=True, fill=True):
+      GtkBox(orientation=vertical, expand=True, fill=True):
+        GtkBox(orientation=vertical, expand=True, fill=True):
+          GtkBox(orientation=horizontal, fill=True):
             GtkAlignment(expand=True, fill=True):
-              GtkHBox():
-                GtkHBox(fill=True):
+              GtkBox(orientation=horizontal):
+                GtkBox(orientation=horizontal, fill=True):
                   GtkLabel(expand=True, fill=True): 'Barcode:'
                   ProxyEntry(expand=True, fill=True): '', insensitive
                   ProxyLabel(expand=True, fill=True): 'Quantity:'
                   ProxySpinButton(expand=True, fill=True): '1.000', insensitive
-                  GtkHButtonBox(expand=True, fill=True):
+                  GtkButtonBox(orientation=horizontal, expand=True, fill=True):
                     GtkButton(): insensitive
                     GtkButton():
                 GtkLabel(expand=True, fill=True):
                 GtkImage(fill=True, pack-end):
           GtkAlignment(fill=True):
-            GtkHBox():
+            GtkBox(orientation=horizontal):
               ProxyLabel(expand=True, fill=True): hidden
-          GtkVBox(expand=True, fill=True):
-            GtkVBox(expand=True, fill=True):
+          GtkBox(orientation=vertical, expand=True, fill=True):
+            GtkBox(orientation=vertical, expand=True, fill=True):
               GtkHSeparator(fill=True):
               ProxyLabel(expand=True, fill=True): '<span weight="bold" size="xx-large">Till closed</span>\n\n<span size="large"><a href="open-till">Open till</a></span>'
               GtkHSeparator(fill=True):
-            GtkHBox(expand=True, fill=True): hidden
+            GtkBox(orientation=horizontal, expand=True, fill=True): hidden
               GtkLabel(expand=True, fill=True):
-              GtkVBox(expand=True, fill=True):
+              GtkBox(orientation=vertical, expand=True, fill=True):
                 GtkLabel(expand=True, fill=True):
                 GtkLabel(fill=True): 'Sale Token:'
                 ProxyEntry(fill=True): '', invalid
@@ -126,7 +126,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                 column: title='Price'
                 column: title='Quantity'
                 column: title='Total'
-              GtkVBox():
+              GtkBox(orientation=vertical):
                 ProxyLabel(fill=True):
                 GtkAspectFrame():
                   GtkEventBox():
@@ -137,9 +137,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                   GtkLabel():
                   GtkLabel(): 'More details'
             GtkAlignment(fill=True):
-              GtkHBox():
-                GtkVBox(fill=True):
-                  GtkHButtonBox(fill=True):
+              GtkBox(orientation=horizontal):
+                GtkBox(orientation=vertical, fill=True):
+                  GtkButtonBox(orientation=horizontal, fill=True):
                     GtkButton(): hidden, insensitive
                     GtkButton(): insensitive
                     GtkButton(): insensitive
@@ -148,13 +148,13 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                 ProxyLabel(expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $ 0.00</span>'
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
-        GtkHBox():
+        GtkBox(orientation=horizontal):
           GtkLabel(expand=True, fill=True):
-      GtkHBox(expand=True, fill=True):
+      GtkBox(orientation=horizontal, expand=True, fill=True):
         GtkAlignment(expand=True, fill=True):
-          GtkHBox():
+          GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkButton(pack-end):
+        StatusButton(pack-end):

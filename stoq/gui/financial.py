@@ -70,6 +70,8 @@ from stoq.gui.shell.shellapp import ShellApp
 
 class FinancialSearchResults(SearchResultListView):
 
+    __gtype_name__ = 'FinancialSearchResults'
+
     def search_completed(self, results):
         page = self.page
         executer = page.search.get_query_executer()

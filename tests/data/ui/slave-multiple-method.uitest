@@ -1,26 +1,26 @@
 slave: MultipleMethodSlave
-GtkVBox(toplevel):
-  GtkHBox(hbox1, fill=True):
+GtkBox(toplevel, orientation=vertical):
+  GtkBox(hbox1, orientation=horizontal, fill=True):
     GtkLabel(label1): '<b>Method:</b>'
-    GtkHBox(methods_box, expand=True, fill=True):
+    GtkBox(methods_box, orientation=horizontal, expand=True, fill=True):
       GtkRadioButton(expand=True, fill=True): 'Money', active
       GtkRadioButton(expand=True, fill=True): 'Bill'
       GtkRadioButton(expand=True, fill=True): 'Card'
       GtkRadioButton(expand=True, fill=True): 'Check'
       GtkRadioButton(expand=True, fill=True): 'Deposit'
       GtkRadioButton(expand=True, fill=True): 'Store Credit'
-    GtkHBox(hbox2, fill=True):
+    GtkBox(hbox2, orientation=horizontal, fill=True):
       ProxyLabel(currency, fill=True): '$CURRENCY:'
       ProxyEntry(value): '10.0'
       GtkButton(add_button, fill=True): 'gtk-add'
-  GtkHBox(hbox3, expand=True, fill=True):
-    GtkVBox(vbox2, expand=True, fill=True):
+  GtkBox(hbox3, orientation=horizontal, expand=True, fill=True):
+    GtkBox(vbox2, orientation=vertical, expand=True, fill=True):
       ObjectList(payments, expand=True, fill=True):
         column: title='Description', expand
         column: title='Status'
         column: title='Value'
         column: title='Due date'
-    GtkVBox(vbox3, fill=True):
+    GtkBox(vbox3, orientation=vertical, fill=True):
       GtkButton(remove_button): 'gtk-remove', insensitive
       GtkLabel(label2, expand=True, fill=True):
       GtkTable(footer_table, fill=True):

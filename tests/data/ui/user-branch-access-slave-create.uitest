@@ -1,17 +1,17 @@
 slave: UserBranchAccessSlave
-GtkVBox(toplevel):
-  GtkHBox(hbox1, fill=True):
+GtkBox(toplevel, orientation=vertical):
+  GtkBox(hbox1, orientation=horizontal, fill=True):
     GtkLabel(model_name_label, fill=True): 'Branch:'
     ProxyComboEntry(target_combo, expand=True, fill=True): invalid
       item: 'Moda Stoq'
       item: 'Stoq Elite Fashion'
     GtkButton(add_button, fill=True): 'gtk-add', insensitive
-  GtkVBox(model_vbox, expand=True, fill=True):
-    kiwi+ui+listdialog+ListContainer(relations_list, expand=True, fill=True):
-      GtkVBox(expand=True, fill=True, padding=6):
+  GtkBox(model_vbox, orientation=vertical, expand=True, fill=True):
+    ListContainer(relations_list, expand=True, fill=True):
+      GtkBox(orientation=vertical, expand=True, fill=True, padding=6):
         ObjectList(expand=True, fill=True):
           column: title='Branch Name', expand
-        GtkHBox(fill=True):
-          GtkButton(fill=True): 'gtk-add', hidden
-          GtkButton(fill=True): 'gtk-remove', insensitive
-          GtkButton(fill=True): 'gtk-edit', hidden, insensitive
+        GtkBox(orientation=horizontal):
+          GtkButton(): 'gtk-add', hidden
+          GtkButton(): 'gtk-remove', insensitive
+          GtkButton(): 'gtk-edit', hidden, insensitive

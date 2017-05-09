@@ -1,5 +1,5 @@
 dialog: CostCenterDialog
-GtkVBox(toplevel):
+GtkBox(toplevel, orientation=vertical):
   GtkTable(table1, fill=True, padding=5):
     GtkLabel(label1): 'Name:'
     ProxyLabel(name_lbl): '<span >Cost Center</span>'
@@ -8,7 +8,7 @@ GtkVBox(toplevel):
     GtkLabel(label2): 'Budget:'
     ProxyLabel(budget_lbl): '<span >$ 0.00</span>'
   GtkNotebook(details_notebook, expand=True, fill=True):
-    GtkVBox(stock_transactions_vbox):
+    GtkBox(stock_transactions_vbox, orientation=vertical):
       ObjectList(stock_transactions_list, expand=True, fill=True):
         column: title='Date'
         column: title='Responsible', hidden
@@ -18,10 +18,10 @@ GtkVBox(toplevel):
         column: title='Qty'
         column: title='Total'
         row: datetime.today(), u'Administrator', u'Description', u'Sold in sale 01234', <currency $10.50>, Decimal('5.000'), <currency $52.50>
-      GtkHBox(fill=True):
+      SummaryLabel(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
         GtkLabel(): '<b>$52.50</b>'
-    GtkVBox(payments_vbox):
+    GtkBox(payments_vbox, orientation=vertical):
       ObjectList(payments_list, expand=True, fill=True):
         column: title='Payment #'
         column: title='Method'
@@ -31,13 +31,13 @@ GtkVBox(toplevel):
         column: title='Status'
         column: title='Value', hidden
         column: title='Paid value'
-      GtkHBox(fill=True):
+      SummaryLabel(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
         GtkLabel(): '<b>$ 0.00</b>'
-      GtkHBox(fill=True):
+      SummaryLabel(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total paid:</b>'
         GtkLabel(): '<b>$ 0.00</b>'
-    GtkVBox(sales_vbox):
+    GtkBox(sales_vbox, orientation=vertical):
       ObjectList(sales_list, expand=True, fill=True):
         column: title='Sale #'
         column: title='Client', expand
@@ -46,10 +46,10 @@ GtkVBox(toplevel):
         column: title='Confirm date'
         column: title='Total'
         row: 1234, u'', u'Moda Stoq', datetime.today(), None, <currency $100>
-      GtkHBox(fill=True):
+      SummaryLabel(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
         GtkLabel(): '<b>$100.00</b>'
-    GtkVBox(stock_decreases_vbox):
+    GtkBox(stock_decreases_vbox, orientation=vertical):
       ObjectList(stock_decreases_list, expand=True, fill=True):
         column: title='Decrease #'
         column: title='Date'

@@ -1,35 +1,35 @@
 wizard: FirstTimeConfigWizard
 GtkDialog(toplevel): title='Stoq - Installation', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave LinkStep is attached
-        GtkVBox(step.toplevel):
-          GtkHBox(step.hbox1, expand=True, fill=True):
-            GtkVBox(step.vbox3, fill=True):
+        GtkBox(step.toplevel, orientation=vertical):
+          GtkBox(step.hbox1, orientation=horizontal, expand=True, fill=True):
+            GtkBox(step.vbox3, orientation=vertical, fill=True):
               GtkAlignment(step.alignment1, fill=True):
                 GtkEventBox(step.image_eventbox):
                   GtkImage(step.image):
-            GtkVBox(step.tef_info_vbox, expand=True, fill=True):
-              GtkVBox(step.vbox2, fill=True):
+            GtkBox(step.tef_info_vbox, orientation=vertical, expand=True, fill=True):
+              GtkBox(step.vbox2, orientation=vertical, fill=True):
                 ProxyCheckButton(step.register_now, fill=True): 'Register to Stoq.link now', active
-                GtkHBox(step.hbox2, expand=True, fill=True):
+                GtkBox(step.hbox2, orientation=horizontal, expand=True, fill=True):
                   GtkLabel(step.label4, fill=True): 'Name:'
                   ProxyEntry(step.name, fill=True): 'Name'
-                GtkHBox(step.hbox3, expand=True, fill=True):
+                GtkBox(step.hbox3, orientation=horizontal, expand=True, fill=True):
                   GtkLabel(step.label5, fill=True): 'Email:'
                   ProxyEntry(step.email, fill=True): 'example@example.com'
-                GtkHBox(step.hbox4, expand=True, fill=True):
+                GtkBox(step.hbox4, orientation=horizontal, expand=True, fill=True):
                   GtkLabel(step.label6, fill=True): 'Phone:'
                   ProxyEntry(step.phone, fill=True): '1212341234'
               GtkProgressBar(step.send_progress, fill=True): hidden
               GtkLabel(step.send_error_label, fill=True): 'An error ocurred sending your details. Please <a href="http://www.stoq.com.br/contato">contact us</a>.', hidden
               GtkLabel(step.label3, expand=True, fill=True):
       ProxyLabel(notification_lbl, fill=True): hidden
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): 'gtk-go-forward'
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

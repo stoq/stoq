@@ -33,6 +33,9 @@ try:
     from gi.repository import Gtk  # pylint: disable=E0611
     GObject  # pylint: disable=W0104
     Gtk  # pylint: disable=W0104
+    # This will be removed in the gtk3 migration. Make sure that GObject/Gtk
+    # won't be really imported here because they are actually pygtk/pygobject
+    raise ImportError
 except ImportError:
     import mock
     GObject = mock.Mock()

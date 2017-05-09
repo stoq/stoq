@@ -1,17 +1,17 @@
 editor: OpticalWorkOrderEditor
 GtkDialog(main_dialog.toplevel): title='Optical Details', hidden
-  GtkVBox(main_dialog._main_vbox):
-    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+  GtkBox(main_dialog._main_vbox, orientation=vertical):
+    GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave OpticalWorkOrderEditor is attached
-        GtkVBox(toplevel):
+        GtkBox(toplevel, orientation=vertical):
           GtkEventBox(place_holder, expand=True, fill=True): slave WorkOrderOpticalSlave is attached
-            GtkVBox(toplevel):
+            GtkBox(toplevel, orientation=vertical):
               GtkTable(table1, fill=True):
                 GtkLabel(label3): 'Medic:'
                 ProxyComboEntry(medic_combo): mandatory
                   item: ''
-                GtkHBox(hbox1):
+                GtkBox(hbox1, orientation=horizontal):
                   GtkButton(medic_create, expand=True, fill=True):
                   GtkButton(medic_details, expand=True, fill=True): insensitive
                 GtkLabel(label11): 'Lens type:'
@@ -25,7 +25,7 @@ GtkDialog(main_dialog.toplevel): title='Optical Details', hidden
                 GtkButton(notes_button): 'Observations', hidden
                 GtkLabel(estimated_finish_lbl): 'Delivery date:', hidden
                 ProxyDateEntry(estimated_finish): None, hidden
-              GtkHBox(distance_box, expand=True, fill=True):
+              GtkBox(distance_box, orientation=horizontal, expand=True, fill=True):
                 GtkLabel(label5, fill=True): 'Distance'
                 GtkTable(distance_table1, fill=True):
                   GtkLabel(label14):
@@ -56,9 +56,9 @@ GtkDialog(main_dialog.toplevel): title='Optical Details', hidden
                   ProxySpinButton(le_distance_prism): '0.00'
                   ProxySpinButton(le_distance_base): '0.00'
                   ProxySpinButton(le_addition): '0.00'
-              GtkHBox(hbox3, expand=True, fill=True):
-                GtkVBox(vbox2, fill=True):
-                  GtkHBox(near_box, fill=True):
+              GtkBox(hbox3, orientation=horizontal, expand=True, fill=True):
+                GtkBox(vbox2, orientation=vertical, fill=True):
+                  GtkBox(near_box, orientation=horizontal, fill=True):
                     GtkLabel(label6, fill=True): 'Near'
                     GtkTable(near_table, fill=True):
                       GtkLabel(label22):
@@ -79,7 +79,7 @@ GtkDialog(main_dialog.toplevel): title='Optical Details', hidden
                       ProxySpinButton(le_near_pd): '0.0'
                   GtkLabel(label2, expand=True, fill=True):
                 GtkAlignment(alignment1, fill=True):
-                  GtkHBox(frame_box):
+                  GtkBox(frame_box, orientation=horizontal):
                     GtkLabel(label33, fill=True): 'Frame'
                     GtkTable(frame_table, expand=True, fill=True):
                       GtkCheckButton(client_frame_check): "Client's frame"
@@ -97,11 +97,11 @@ GtkDialog(main_dialog.toplevel): title='Optical Details', hidden
                         item: '3 pieces', selected
                         item: 'Closed ring'
                         item: 'Nylon String'
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive

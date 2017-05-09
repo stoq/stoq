@@ -1,12 +1,12 @@
 slave: CardDeviceListSlave
-kiwi+ui+listdialog+ListContainer(listcontainer):
+ListContainer(listcontainer):
   ObjectList(expand=True, fill=True):
     column: title='Description', expand
     column: title='Monthly cost', expand
     row: u'Cielo', None
     row: u'Default', None
     row: u'Santander', None
-  GtkVBox(fill=True, padding=6):
-    GtkButton(fill=True): 'gtk-add'
-    GtkButton(fill=True): 'gtk-remove', insensitive
-    GtkButton(fill=True): 'gtk-edit', insensitive
+  GtkBox(orientation=vertical, fill=True, padding=6):
+    GtkButton(): 'gtk-add'
+    GtkButton(): 'gtk-remove', insensitive
+    GtkButton(): 'gtk-edit', insensitive

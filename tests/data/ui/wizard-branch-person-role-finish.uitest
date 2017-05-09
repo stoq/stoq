@@ -1,14 +1,14 @@
 wizard: PersonRoleWizard
 GtkDialog(toplevel): title='New Branch', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave RoleEditorStep is attached
-        GtkVBox(step.toplevel):
+        GtkBox(step.toplevel, orientation=vertical):
           GtkEventBox(step.place_holder, expand=True, fill=True):
-            GtkVBox():
+            GtkBox(orientation=vertical):
               GtkNotebook(expand=True, fill=True):
-                GtkVBox():
+                GtkBox(orientation=vertical):
                   GtkTable(fill=True):
                     GtkLabel(): 'Name:'
                     ProxyEntry(): 'branch name'
@@ -20,7 +20,7 @@ GtkDialog(toplevel): title='New Branch', hidden
                     ProxyEntry(): ''
                     GtkLabel(): 'Mobile:'
                     ProxyEntry(): ''
-                  GtkHBox(fill=True):
+                  GtkBox(orientation=horizontal, fill=True):
                     GtkLabel(expand=True, fill=True):
                     GtkButton(fill=True): 'Co_ntacts...'
                     GtkButton(fill=True): 'Credit Check History...', hidden
@@ -30,10 +30,10 @@ GtkDialog(toplevel): title='New Branch', hidden
                     GtkTable():
                       GtkLabel(): 'Street:'
                       ProxyEntry(): 'street'
-                      GtkHBox():
+                      GtkBox(orientation=horizontal):
                         GtkLabel(expand=True, fill=True):
                         ProxyCheckButton(fill=True): 'Number:', active
-                      GtkHBox():
+                      GtkBox(orientation=horizontal):
                         ProxyEntry(expand=True, fill=True): '123'
                         GtkLabel(fill=True): 'Postal Code:'
                         ProxyEntry(fill=True): '     -   '
@@ -49,11 +49,11 @@ GtkDialog(toplevel): title='New Branch', hidden
                       ProxyComboEntry():
                         item: 'Brazil', selected
                         item: '... 252 more countries ...'
-                  GtkHBox(fill=True):
+                  GtkBox(orientation=horizontal, fill=True):
                     ProxyLabel(expand=True, fill=True):
                     GtkButton(fill=True): 'More _Addresses...'
                   GtkEventBox(fill=True):
-                GtkVBox():
+                GtkBox(orientation=vertical):
                   GtkFrame(fill=True): hidden
                     GtkEventBox():
                   GtkFrame(fill=True):
@@ -67,7 +67,7 @@ GtkDialog(toplevel): title='New Branch', hidden
                         ProxyEntry(): ''
                         GtkLabel(): 'City Registry:'
                         ProxyEntry(): ''
-                GtkVBox():
+                GtkBox(orientation=vertical):
                   GtkEventBox(fill=True):
                     GtkTable():
                       GtkLabel(): 'Manager:'
@@ -90,20 +90,20 @@ GtkDialog(toplevel): title='New Branch', hidden
                       ProxyCheckButton(): 'Can execute work orders from other branches'
                   GtkEventBox(fill=True):
                   GtkEventBox(expand=True, fill=True):
-                    GtkVBox():
+                    GtkBox(orientation=vertical):
                       GtkLabel(fill=True): hidden
                       GtkLabel(fill=True): 'Observations:'
                       GtkScrolledWindow(expand=True, fill=True):
                         ProxyTextView():
       ProxyLabel(notification_lbl, fill=True):
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
           GtkButton(help_button): 'gtk-help'
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
 
 model: Branch<1>
   acronym: None

@@ -1,6 +1,6 @@
 app: LauncherApp
 GtkWindow(toplevel): title='[Moda Stoq] - Stoq', hidden
-  GtkVBox():
+  GtkBox(orientation=vertical):
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
@@ -63,9 +63,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stoq', hidden
       GtkSeparatorToolItem():
       GtkToolButton(): 'Print', hidden, insensitive
       GtkToolButton(): 'Quit'
-    GtkVBox(expand=True, fill=True):
-      GtkVBox(main_vbox, expand=True, fill=True):
-        GtkVBox(iconview_vbox, expand=True, fill=True):
+    GtkBox(orientation=vertical, expand=True, fill=True):
+      GtkBox(main_vbox, orientation=vertical, expand=True, fill=True):
+        GtkBox(iconview_vbox, orientation=vertical, expand=True, fill=True):
           GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
             GtkIconView(iconview):
               markup: <b>Accounts Payable</b>
@@ -98,16 +98,16 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stoq', hidden
 <small>Manage your company from the cloud with Stoq.link.</small>
               markup: <b>Till</b>
 <small>Control tills and their workflow.</small>
-        GtkVBox(application_box, expand=True, fill=True): hidden
+        GtkBox(application_box, orientation=vertical, expand=True, fill=True): hidden
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
-        GtkHBox():
+        GtkBox(orientation=horizontal):
           GtkLabel(expand=True, fill=True):
-      GtkHBox(expand=True, fill=True):
+      GtkBox(orientation=horizontal, expand=True, fill=True):
         GtkAlignment(expand=True, fill=True):
-          GtkHBox():
+          GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkButton(pack-end):
+        StatusButton(pack-end):

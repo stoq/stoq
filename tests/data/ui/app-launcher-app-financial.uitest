@@ -1,6 +1,6 @@
 app: LauncherApp
 GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
-  GtkVBox():
+  GtkBox(orientation=vertical):
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
@@ -86,10 +86,10 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
       GtkToolButton(): 'Edit', insensitive
       GtkToolButton(): 'Delete', insensitive
       GtkToolButton(): 'Delete', hidden, insensitive
-    GtkVBox(expand=True, fill=True):
-      GtkVBox(expand=True, fill=True):
+    GtkBox(orientation=vertical, expand=True, fill=True):
+      GtkBox(orientation=vertical, expand=True, fill=True):
         GtkNotebook(expand=True, fill=True):
-          GtkVBox():
+          GtkBox(orientation=vertical):
             GtkEventBox(expand=True, fill=True):
               AccountTree():
                 column: title='Account name', expand
@@ -114,16 +114,16 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
                 row: u'Tills', None, 0
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
-        GtkHBox():
+        GtkBox(orientation=horizontal):
           GtkLabel(expand=True, fill=True):
-      GtkHBox(expand=True, fill=True):
+      GtkBox(orientation=horizontal, expand=True, fill=True):
         GtkAlignment(expand=True, fill=True):
-          GtkHBox():
+          GtkBox(orientation=horizontal):
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkButton(pack-end):
+        StatusButton(pack-end):
 
 popup: TransactionSelection
 GtkMenu(): hidden

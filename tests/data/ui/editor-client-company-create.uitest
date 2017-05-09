@@ -1,16 +1,16 @@
 editor: ClientEditor
 GtkDialog(main_dialog.toplevel): title='Add ', hidden
-  GtkVBox(main_dialog._main_vbox):
-    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+  GtkBox(main_dialog._main_vbox, orientation=vertical):
+    GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave ClientEditor is attached
-        GtkHBox(toplevel):
+        GtkBox(toplevel, orientation=horizontal):
           GtkEventBox(main_holder, expand=True, fill=True): slave CompanyEditorTemplate is attached
-            GtkHBox(hbox1):
+            GtkBox(hbox1, orientation=horizontal):
               GtkEventBox(main_holder, expand=True, fill=True): slave _PersonEditorTemplate is attached
-                GtkVBox(toplevel):
+                GtkBox(toplevel, orientation=vertical):
                   GtkNotebook(person_notebook, expand=True, fill=True):
-                    GtkVBox(identification_tab):
+                    GtkBox(identification_tab, orientation=vertical):
                       GtkTable(table1, fill=True):
                         GtkLabel(name_lbl): 'Name:'
                         ProxyEntry(name): '', mandatory
@@ -22,7 +22,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                         ProxyEntry(fax_number): ''
                         GtkLabel(mobile_lbl): 'Mobile:'
                         ProxyEntry(mobile_number): ''
-                      GtkHBox(hbox2, fill=True):
+                      GtkBox(hbox2, orientation=horizontal, fill=True):
                         GtkLabel(label5, expand=True, fill=True):
                         GtkButton(contact_info_button, fill=True): 'Co_ntacts...'
                         GtkButton(credit_check_history_button, fill=True): 'Credit Check History...'
@@ -32,10 +32,10 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                         GtkTable(table2):
                           GtkLabel(address_lbl): 'Street:'
                           ProxyEntry(street): '', mandatory
-                          GtkHBox(hbox2):
+                          GtkBox(hbox2, orientation=horizontal):
                             GtkLabel(label8, expand=True, fill=True):
                             ProxyCheckButton(streetnumber_check, fill=True): 'Number:', active
-                          GtkHBox(hbox1):
+                          GtkBox(hbox1, orientation=horizontal):
                             ProxyEntry(streetnumber, expand=True, fill=True): '', mandatory
                             GtkLabel(postal_code_lbl, fill=True): 'Postal Code:'
                             ProxyEntry(postal_code, fill=True): '     -   '
@@ -51,11 +51,11 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                           ProxyComboEntry(country):
                             item: 'Brazil', selected
                             item: '... 252 more countries ...'
-                      GtkHBox(hbox1, fill=True):
+                      GtkBox(hbox1, orientation=horizontal, fill=True):
                         ProxyLabel(kiwilabel2, expand=True, fill=True):
                         GtkButton(address_button, fill=True): 'More _Addresses...'
                       GtkEventBox(role_holder, fill=True):
-                    GtkVBox(person_data_tab):
+                    GtkBox(person_data_tab, orientation=vertical):
                       GtkFrame(individual_frame, fill=True): hidden
                         GtkEventBox(individual_holder):
                       GtkFrame(company_frame, fill=True):
@@ -69,9 +69,9 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                             ProxyEntry(state_registry): ''
                             GtkLabel(label4): 'City Registry:'
                             ProxyEntry(city_registry): ''
-                    GtkVBox(details_tab):
+                    GtkBox(details_tab, orientation=vertical):
                       GtkEventBox(person_status_holder, fill=True): slave ClientStatusSlave is attached
-                        GtkVBox(toplevel):
+                        GtkBox(toplevel, orientation=vertical):
                           GtkTable(table1, expand=True, fill=True):
                             GtkLabel(label1): 'Financial Status:'
                             ProxyComboBox(statuses_combo):
@@ -85,13 +85,13 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                           GtkHSeparator(hseparator1, fill=True):
                       GtkEventBox(details_holder, fill=True):
                       GtkEventBox(note_holder, expand=True, fill=True): slave NoteSlave is attached
-                        GtkVBox(toplevel):
+                        GtkBox(toplevel, orientation=vertical):
                           GtkLabel(message_label, fill=True): hidden
                           GtkLabel(observations_label, fill=True): 'Observations:'
                           GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
                             ProxyTextView(notes):
                     GtkEventBox(): slave ClientCreditSlave is attached
-                      GtkHBox(toplevel):
+                      GtkBox(toplevel, orientation=horizontal):
                         GtkFrame(frame2, expand=True, fill=True, padding=6):
                           GtkAlignment(alignment2):
                             GtkTable(table3):
@@ -111,12 +111,12 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                               GtkButton(credit_transactions_button):
                               GtkButton(print_credit_letter): 'gtk-print'
                           GtkLabel(label6): '<b>Credit</b>'
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive
       GtkButton(main_dialog.help_button, padding=6): 'gtk-help'

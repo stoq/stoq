@@ -1,12 +1,12 @@
 wizard: ReceivingOrderWizard
 GtkDialog(toplevel): title='Receive Purchase Order', hidden
-  GtkVBox(PluggableWizard-vbox):
-    GtkVBox(vbox1, expand=True, fill=True):
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave ReceivingInvoiceStep is attached
-        GtkVBox(step.toplevel):
+        GtkBox(step.toplevel, orientation=vertical):
           GtkEventBox(step.place_holder, expand=True, fill=True): slave ReceivingInvoiceSlave is attached
-            GtkVBox(toplevel):
+            GtkBox(toplevel, orientation=vertical):
               GtkTable(table, fill=True):
                 GtkLabel(label10): 'Branch:'
                 ProxyLabel(branch): '<span >Moda Stoq</span>'
@@ -21,7 +21,7 @@ GtkDialog(toplevel): title='Receive Purchase Order', hidden
                 ProxyLabel(kiwilabel6): 'IPI ($CURRENCY):'
                 ProxyEntry(ipi): '0.00', insensitive
                 GtkLabel(label8): 'Invoice Number:'
-                GtkHBox(invoice_hbox):
+                GtkBox(invoice_hbox, orientation=horizontal):
                   ProxyEntry(invoice_number, fill=True): '1'
                   GtkLabel(label1, expand=True, fill=True):
                 ProxyLabel(kiwilabel200): 'ICMS Total ($CURRENCY):'
@@ -47,13 +47,13 @@ GtkDialog(toplevel): title='Receive Purchase Order', hidden
                   item: 'CIF - Freight value highlighted on invoice'
                 ProxyLabel(kiwilabel11): 'Invoice Total ($CURRENCY):'
                 ProxyLabel(total): '<span weight="bold">$375.00</span>'
-                GtkHButtonBox(notes_box):
+                GtkButtonBox(notes_box, orientation=horizontal):
                   GtkButton(observations_button): 'Observations...'
       ProxyLabel(notification_lbl, fill=True):
-      GtkHBox(hbox1, fill=True, pack-end):
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+    GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

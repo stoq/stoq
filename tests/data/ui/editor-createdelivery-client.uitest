@@ -1,49 +1,49 @@
 editor: CreateDeliveryEditor
 GtkDialog(main_dialog.toplevel): title='Add Delivery', hidden
-  GtkVBox(main_dialog._main_vbox):
-    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+  GtkBox(main_dialog._main_vbox, orientation=vertical):
+    GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave CreateDeliveryEditor is attached
-        GtkVBox(toplevel):
+        GtkBox(toplevel, orientation=vertical):
           GtkEventBox(forms, fill=True): slave BasicForm is attached
             GtkAlignment(toplevel):
               GtkTable():
                 ProxyLabel(client_lbl): 'Client:'
                 ProxyEntry(client): 'Client01'
-                GtkHBox():
+                GtkBox(orientation=horizontal):
                   GtkButton(client_add_button):
                   GtkButton(client_edit_button):
                 ProxyLabel(price_lbl): 'Delivery cost:'
                 ProxyEntry(price): '0.00'
-                GtkHBox():
+                GtkBox(orientation=horizontal):
                 ProxyLabel(transporter_id_lbl): 'Transporter:'
                 ProxyComboEntry(transporter_id):
                   item: 'Jos\xc3\xa9 Carlos de Carvalho'
-                GtkHBox():
+                GtkBox(orientation=horizontal):
                   GtkButton(transporter_id_add_button):
                   GtkButton(transporter_id_edit_button): insensitive
                 ProxyLabel(estimated_fix_date_lbl): 'Estimated delivery date:'
                 ProxyDateEntry(estimated_fix_date): date.today()
-                GtkHBox():
+                GtkBox(orientation=horizontal):
                 ProxyLabel(address_lbl): 'Address:'
                 ProxyComboEntry(address):
                   item: 'Mainstreet 138, Cidade Araci', selected
-                GtkHBox():
+                GtkBox(orientation=horizontal):
                   GtkButton(address_add_button):
                   GtkButton(address_edit_button):
                 ProxyLabel(volumes_kind_lbl): 'Volumes kind:'
                 ProxyEntry(volumes_kind): 'Volumes'
-                GtkHBox():
+                GtkBox(orientation=horizontal):
                 ProxyLabel(freight_type_lbl): 'Freight type:'
                 ProxyComboBox(freight_type):
                   item: 'Third party'
                   item: 'No freight'
                   item: 'FOB'
                   item: 'CIF', selected
-                GtkHBox():
+                GtkBox(orientation=horizontal):
                 ProxyLabel(volumes_quantity_lbl): 'Volumes quantity:'
                 ProxyEntry(volumes_quantity): '1'
-                GtkHBox():
+                GtkBox(orientation=horizontal):
           GtkHSeparator(hseparator1, fill=True):
           GtkLabel(label3, fill=True): 'Products to Deliver:'
           GtkEventBox(addition_list_holder, expand=True, fill=True):
@@ -63,11 +63,11 @@ GtkDialog(main_dialog.toplevel): title='Add Delivery', hidden
             GtkButton(additional_info_button): 'Additional _Instructions'
           GtkAlignment(alignment1, fill=True):
             ProxyLabel(additional_info_label): '<span size="small">There is Additional Instructions</span>', hidden
-      GtkHBox(fill=True):
+      GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
-    GtkHButtonBox(fill=True, pack-end):
+    GtkButtonBox(orientation=horizontal, fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
