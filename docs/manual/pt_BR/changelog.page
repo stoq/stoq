@@ -5,7 +5,7 @@
   <title>Novidades da versão</title>
   <info>
     <desc>
-      Novidades da versão 2.0.90
+      Novidades da versão 2.1
     </desc>
 
     <link type="guide" xref="index" group="changelog" />
@@ -27,15 +27,18 @@
   </note>
 
   <section id="last-version">
-    <title>Novidades da versão 2.0.90</title>
+    <title>Novidades da versão 2.1</title>
     <p>
-      Data do lançamento: 2017-02-09
+      Data do lançamento: 2017-05-12
     </p>
 
     <section>
       <title>Principais funcionalidades</title>
       <list>
-        <item><p>TBA</p></item>
+        <item><p>Nova galeria de imagens, permitindo o registro de mais de uma imagem por produto</p></item>
+        <item><p>Novo modo de visão Kanban para o aplicativo Serviços</p></item>
+        <item><p>Atualização das tabelas do IBPT</p></item>
+        <item><p>Diversas correções e melhorias</p></item>
       </list>
     </section>
 
