@@ -95,8 +95,7 @@ GtkDialog(main_dialog.toplevel): title='Add Invoice Layouts', hidden
                 row: 'Tax', u'VALOR_IPI', 1
                 row: 'Tax', u'VALOR_ISS', 1
             GtkScrolledWindow(sw):
-              GtkViewport(viewport1):
-                stoqlib+gui+editors+invoiceeditor+InvoiceGrid(grid):
+              stoqlib+gui+editors+invoiceeditor+InvoiceGrid(grid):
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

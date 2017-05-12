@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
 <interface>
-  <requires lib="gtk+" version="2.18"/>
-  <!-- interface-requires kiwiwidgets 0.0 -->
-  <!-- interface-naming-policy toplevel-contextual -->
+  <requires lib="gtk+" version="3.0"/>
+  <requires lib="kiwiwidgets" version="0.0"/>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="lower">1</property>
+    <property name="upper">500</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment2">
+    <property name="lower">1</property>
+    <property name="upper">500</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkWindow" id="InvoiceLayoutEditor">
     <property name="default_width">440</property>
     <property name="default_height">250</property>
@@ -21,8 +33,8 @@
                 <child>
                   <object class="GtkLabel" id="label1">
                     <property name="visible">True</property>
-                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Description:</property>
+                    <property name="xalign">1</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -35,8 +47,6 @@
                     <property name="visible">True</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                     <property name="data_type">unicode</property>
                     <property name="model_attribute">description</property>
                   </object>
@@ -49,8 +59,8 @@
                 <child>
                   <object class="GtkLabel" id="label2">
                     <property name="visible">True</property>
-                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Width:</property>
+                    <property name="xalign">1</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -63,8 +73,6 @@
                     <property name="visible">True</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment1</property>
                     <property name="data_type">int</property>
                     <property name="model_attribute">width</property>
@@ -78,8 +86,8 @@
                 <child>
                   <object class="GtkLabel" id="label3">
                     <property name="visible">True</property>
-                    <property name="xalign">0</property>
                     <property name="label" translatable="yes">Height:</property>
+                    <property name="xalign">0</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -92,8 +100,6 @@
                     <property name="visible">True</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment2</property>
                     <property name="data_type">int</property>
                     <property name="model_attribute">height</property>
@@ -107,10 +113,11 @@
                 <child>
                   <object class="ProxyCheckButton" id="continuous_page">
                     <property name="label" translatable="yes">Continuous page</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
                     <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="xalign">0.5</property>
                     <property name="draw_indicator">True</property>
                     <property name="data_type">bool</property>
                     <property name="model_attribute">continuous_page</property>
@@ -155,8 +162,8 @@
                         <child>
                           <object class="GtkLabel" id="label4">
                             <property name="visible">True</property>
-                            <property name="xalign">1</property>
                             <property name="label" translatable="yes">Name:</property>
+                            <property name="xalign">1</property>
                           </object>
                           <packing>
                             <property name="x_options">GTK_FILL</property>
@@ -165,8 +172,8 @@
                         <child>
                           <object class="GtkLabel" id="label5">
                             <property name="visible">True</property>
-                            <property name="xalign">1</property>
                             <property name="label" translatable="yes">Position:</property>
+                            <property name="xalign">1</property>
                           </object>
                           <packing>
                             <property name="top_attach">1</property>
@@ -177,8 +184,8 @@
                         <child>
                           <object class="GtkLabel" id="label6">
                             <property name="visible">True</property>
-                            <property name="xalign">1</property>
                             <property name="label" translatable="yes">Size:</property>
+                            <property name="xalign">1</property>
                           </object>
                           <packing>
                             <property name="top_attach">2</property>
@@ -189,8 +196,8 @@
                         <child>
                           <object class="ProxyLabel" id="text_lbl">
                             <property name="visible">True</property>
-                            <property name="xalign">1</property>
                             <property name="label" translatable="yes">Text:</property>
+                            <property name="xalign">1</property>
                           </object>
                           <packing>
                             <property name="top_attach">3</property>
@@ -204,11 +211,7 @@
                             <property name="can_focus">True</property>
                             <property name="invisible_char">•</property>
                             <property name="truncate_multiline">True</property>
-                            <property name="invisible_char_set">True</property>
                             <property name="primary_icon_activatable">False</property>
-                            <property name="secondary_icon_activatable">True</property>
-                            <property name="primary_icon_sensitive">True</property>
-                            <property name="secondary_icon_sensitive">True</property>
                             <property name="data_type">unicode</property>
                           </object>
                           <packing>
@@ -221,8 +224,8 @@
                         <child>
                           <object class="ProxyLabel" id="field_size">
                             <property name="visible">True</property>
-                            <property name="xalign">0</property>
                             <property name="use_markup">True</property>
+                            <property name="xalign">0</property>
                             <property name="model_attribute">field_size</property>
                           </object>
                           <packing>
@@ -235,8 +238,8 @@
                         <child>
                           <object class="ProxyLabel" id="field_pos">
                             <property name="visible">True</property>
-                            <property name="xalign">0</property>
                             <property name="use_markup">True</property>
+                            <property name="xalign">0</property>
                             <property name="model_attribute">field_pos</property>
                           </object>
                           <packing>
@@ -249,9 +252,9 @@
                         <child>
                           <object class="ProxyLabel" id="field_name">
                             <property name="visible">True</property>
-                            <property name="xalign">0</property>
                             <property name="use_markup">True</property>
                             <property name="ellipsize">end</property>
+                            <property name="xalign">0</property>
                             <property name="model_attribute">field_name</property>
                           </object>
                           <packing>
@@ -277,12 +280,10 @@
             <child>
               <object class="GtkScrolledWindow" id="sw">
                 <property name="visible">True</property>
-                <property name="hscrollbar_policy">automatic</property>
-                <property name="vscrollbar_policy">automatic</property>
+                <property name="hscrollbar_policy">always</property>
+                <property name="vscrollbar_policy">always</property>
                 <child>
-                  <object class="GtkViewport" id="viewport1">
-                    <property name="visible">True</property>
-                  </object>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -299,17 +300,5 @@
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkAdjustment" id="adjustment1">
-    <property name="lower">1</property>
-    <property name="upper">500</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="adjustment2">
-    <property name="lower">1</property>
-    <property name="upper">500</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
   </object>
 </interface>

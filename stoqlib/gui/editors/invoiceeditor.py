@@ -138,11 +138,13 @@ class InvoiceLayoutEditor(BaseEditor):
         self.grid = InvoiceGrid('Monospace 8',
                                 self.model.width,
                                 self.model.height)
+        self.grid.set_hadjustment(self.sw.get_hadjustment())
+        self.grid.set_vadjustment(self.sw.get_vadjustment())
         self.grid.connect('field-added', self._on_grid__field_added)
         self.grid.connect('field-removed', self._on_grid__field_removed)
         self.grid.connect('selection-changed',
                           self._on_grid__selection_changed)
-        self.sw.add_with_viewport(self.grid)
+        self.sw.add(self.grid)
         self.grid.show()
 
     def _create_field_list(self):
