@@ -51,6 +51,11 @@ class ProcessView(Gtk.ScrolledWindow):
         self.listen_stderr = False
         self._create_view()
 
+        # FIXME: The overlay scrolling when a TextView is inside a
+        # ScrolledWindow is somewhat broken in a way that it would make it get
+        # a height of 0 when being displayed.
+        self.set_property('overlay_scrolling', False)
+
     def _create_view(self):
         self._textview = Gtk.TextView()
         self._textview.set_editable(False)

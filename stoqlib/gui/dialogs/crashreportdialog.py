@@ -80,6 +80,10 @@ class CrashReportDialog(object):
 
     def _create_details(self):
         sw = Gtk.ScrolledWindow()
+        # FIXME: The overlay scrolling when a TextView is inside a
+        # ScrolledWindow is somewhat broken in a way that it would make it get
+        # a height of 0 when being displayed.
+        sw.set_property('overlay_scrolling', False)
         self._dialog.set_details_widget(sw)
         sw.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         sw.show()
