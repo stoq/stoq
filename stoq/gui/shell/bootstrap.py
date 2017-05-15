@@ -201,6 +201,7 @@ class ShellBootstrap(object):
     def _setup_gtk(self):
         from gi.repository import Gtk, Gdk
         from kiwi.environ import environ
+        from stoqlib.lib.template import render_template_string
 
         # Total madness to make sure we can draw treeview lines,
         # this affects the GtkTreeView::grid-line-pattern style property
@@ -212,14 +213,16 @@ class ShellBootstrap(object):
         # Byte 2 should ideally be allowed to be 0, but neither C nor Python
         #        allows that.
         #
-        data = environ.get_resource_string("stoq", "misc", "stoq.gtkrc")
-        data = data.replace('\\x7f\\x01', '\x7f\x01')
+        data = environ.get_resource_string("stoq", "misc", "stoq.css")
+        data = render_template_string(data)
 
-        Gtk.rc_parse_string(data)
+        style_provider = Gtk.CssProvider()
+        style_provider.load_from_data(data)
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            style_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-        # Creating a button as a temporary workaround for bug
-        # https://bugzilla.gnome.org/show_bug.cgi?id=632538, until gtk 3.0
-        Gtk.Button()
         settings = Gtk.Settings.get_default()
         settings.props.gtk_button_images = True
 

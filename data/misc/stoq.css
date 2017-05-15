@@ -1,0 +1,64 @@
+<%
+
+from gi.repository import Gtk
+
+
+if (Gtk.MAJOR_VERSION, Gtk.MINOR_VERSION) >= (3, 16):
+    row_even = 'row:even'
+    row_odd = 'row:odd'
+else:
+    row_even = 'row:nth-child(even)'
+    row_odd = 'row:nth-child(odd)'
+
+%>
+
+/* Fit a bit more data in all TreeViews */
+GtkTreeView {
+    -GtkTreeView-vertical-separator: 0;
+    -GtkTreeView-horizontal-separator: 0;
+    -GtkTreeView-grid-line-width: 0;
+}
+
+/* Make rules hinting be displayed */
+GtkTreeView ${row_even} {
+    background-color: shade(@theme_base_color, 1.0);
+}
+GtkTreeView ${row_odd} {
+    background-color: shade(@theme_base_color, 0.95);
+}
+GtkTreeView:selected ${row_even} {
+    background-color: @theme_selected_bg_color;
+}
+GtkTreeView:selected ${row_odd} {
+    background-color: @theme_selected_bg_color;
+}
+
+/* Transaction Tabs in the Financial Application should
+ * look greenish, like gnucash */
+FinancialSearchResults GtkTreeView {
+    -GtkTreeView-grid-line-pattern: "\x7f\x01";
+    -GtkTreeView-grid-line-width: 1;
+}
+FinancialSearchResults GtkTreeView ${row_even} {
+    background-color: #f5ffe0;
+}
+FinancialSearchResults GtkTreeView ${row_odd} {
+    background-color: #c2e7c4;
+}
+FinancialSearchResults GtkTreeView:selected ${row_even} {
+    background-color: @theme_selected_bg_color;
+}
+FinancialSearchResults GtkTreeView:selected ${row_odd} {
+    background-color: @theme_selected_bg_color;
+}
+
+/* Notebook buttons should have less padding then a normal button */
+NotebookCloseButton {
+    outline-offset: 0;
+    outline-width: 0;
+    padding: 0;
+}
+
+KanbanView {
+    outline-width: 0;
+}
