@@ -128,7 +128,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
                         item: 'Contains Exactly'
                         item: 'Identical to'
                         item: 'Does Not Contain', selected
-                      HintedEntry(padding=6): ''
+                      GtkEntry(padding=6): ''
                     stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(): 'gtk-find'
               SearchResultListView(expand=True, fill=True):
                 column: title='Sale #'

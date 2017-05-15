@@ -27,7 +27,7 @@ GtkDialog(toplevel): title='Trade Sale Order', hidden
                               item: 'Contains Exactly'
                               item: 'Identical to'
                               item: 'Does Not Contain'
-                            HintedEntry(search_entry, padding=6): ''
+                            GtkEntry(search_entry, padding=6): ''
                           stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
                         ComboSearchFilter():
                           GtkLabel(): 'Show sales with status'

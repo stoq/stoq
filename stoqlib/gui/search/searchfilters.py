@@ -61,7 +61,6 @@ from stoqlib.gui.search.searchoptions import (Any,
                                               LowerThan,
                                               Today,
                                               Yesterday)
-from stoqlib.gui.widgets.hintedentry import HintedEntry
 from stoqlib.gui.widgets.searchfilterbutton import SearchFilterButton
 from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.translation import stoqlib_gettext
@@ -676,9 +675,8 @@ class StringSearchFilter(SearchFilter):
         self.mode.connect('content-changed', self._on_mode__content_changed)
         self.pack_start(self.mode, False, False, 6)
 
-        self.entry = HintedEntry()
-        self.entry.set_hint(_("Search"))
-        self.entry.show_hint()
+        self.entry = Gtk.Entry()
+        self.entry.set_placeholder_text(_("Search"))
         self.entry.props.secondary_icon_sensitive = False
         data = environ.get_resource_string('stoq', 'pixmaps',
                                            'stoq-funnel-16x16.png')

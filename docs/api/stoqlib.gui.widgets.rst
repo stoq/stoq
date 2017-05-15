@@ -33,14 +33,6 @@ widgets Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`hintedentry` Module
--------------------------
-
-.. automodule:: stoqlib.gui.widgets.hintedentry
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`kanbanview` Module
 ------------------------
 

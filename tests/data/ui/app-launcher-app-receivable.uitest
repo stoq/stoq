@@ -120,7 +120,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
                         item: 'Contains Exactly'
                         item: 'Identical to'
                         item: 'Does Not Contain'
-                      HintedEntry(padding=6): ''
+                      GtkEntry(padding=6): ''
                     stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(): 'gtk-find'
               SearchResultListView(expand=True, fill=True):
                 column: title='Payment #'

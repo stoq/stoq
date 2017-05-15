@@ -21,7 +21,7 @@ GtkDialog(toplevel): title='Product History Search', hidden
                     item: 'Contains Exactly'
                     item: 'Identical to'
                     item: 'Does Not Contain'
-                  HintedEntry(search_entry, padding=6): 'bot'
+                  GtkEntry(search_entry, padding=6): 'bot'
                 stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
               DateSearchFilter(date_filter):
                 GtkLabel(): 'Date:'

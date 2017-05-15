@@ -15,7 +15,7 @@ GtkDialog(toplevel): title='Product Stock Search', hidden
                     item: 'Contains Exactly'
                     item: 'Identical to'
                     item: 'Does Not Contain'
-                  HintedEntry(search_entry, padding=6): 'bot'
+                  GtkEntry(search_entry, padding=6): 'bot'
                 stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
               ComboSearchFilter(branch_filter):
                 GtkLabel(): 'In branch:'

@@ -12,7 +12,7 @@ kiwi+ui+dialogs+HIGAlertDialog(): title=' ', hidden
           GtkLabel(): 'Details ...'
         GtkScrolledWindow(padding=6):
           GtkTextView():
-        HintedEntry(padding=6): ''
+        GtkEntry(padding=6): ''
     GtkBox(orientation=horizontal, fill=True, pack-end):
       GtkButtonBox(orientation=horizontal, fill=True, pack-end):
         GtkButton(expand=True, fill=True): 'No thanks'

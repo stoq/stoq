@@ -29,7 +29,6 @@ from kiwi.ui.dialogs import HIGAlertDialog
 
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import get_current_toplevel
-from stoqlib.gui.widgets.hintedentry import HintedEntry
 from stoqlib.lib.crashreport import ReportSubmitter
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.translation import stoqlib_gettext
@@ -136,9 +135,8 @@ class CrashReportDialog(object):
         self._comments_view = view
 
     def _create_email(self):
-        self._email_entry = HintedEntry()
-        self._email_entry.set_hint(_DEFAULT_EMAIL)
-        self._email_entry.show_hint()
+        self._email_entry = Gtk.Entry()
+        self._email_entry.set_placeholder_text(_DEFAULT_EMAIL)
         self._dialog.main_vbox.pack_start(self._email_entry, False, False, 6)
         self._email_entry.show()
 
