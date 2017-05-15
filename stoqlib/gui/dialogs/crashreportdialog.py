@@ -110,16 +110,14 @@ class CrashReportDialog(object):
             if self._comments_buffer.props.text != _DEFAULT_COMMENT:
                 return
             self._comments_buffer.set_text("")
-            view.override_color(
-                Gtk.StateType.NORMAL, sc.get_color(Gtk.StateFlags.NORMAL))
+            sc.remove_class('visualmode')
         view.connect('focus-in-event', focus_in)
 
         def focus_out(view, event):
             if self._comments_buffer.props.text:
                 return
             self._comments_buffer.set_text(_DEFAULT_COMMENT)
-            view.override_color(
-                Gtk.StateType.NORMAL, sc.get_color(Gtk.StateFlags.INSENSITIVE))
+            sc.add_class('visualmode')
 
         view.connect('focus-out-event', focus_out)
         view.set_size_request(-1, 100)
@@ -129,8 +127,7 @@ class CrashReportDialog(object):
         self._comments_buffer.insert_with_tags_by_name(
             self._comments_buffer.get_iter_at_offset(0), _DEFAULT_COMMENT,
             'highlight')
-        view.override_color(
-            Gtk.StateType.NORMAL, sc.get_color(Gtk.StateFlags.INSENSITIVE))
+        sc.add_class('visualmode')
         view.show()
         self._comments_view = view
 

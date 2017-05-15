@@ -62,3 +62,9 @@ NotebookCloseButton {
 KanbanView {
     outline-width: 0;
 }
+
+.visualmode {
+    /* This seems to be the way sensntive colors are calculated
+     * in the default theme */
+    color: mix (@theme_fg_color, @theme_bg_color, 0.4);
+}

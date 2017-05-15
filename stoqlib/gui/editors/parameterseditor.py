@@ -101,12 +101,7 @@ class SystemParameterEditor(BaseEditor):
         widget.set_editable(self.sensitive)
         if not self.sensitive:
             sc = widget.get_style_context()
-            widget.override_color(
-                Gtk.StateType.NORMAL,
-                sc.get_color(Gtk.StateFlags.INSENSITIVE))
-            widget.override_background_color(
-                Gtk.StateType.NORMAL,
-                sc.get_background_color(Gtk.StateFlags.INSENSITIVE))
+            sc.add_class('visualmode')
         widget.data_type = unicode
         widget.model_attribute = "field_value"
         self.proxy.add_widget("field_value", widget)
