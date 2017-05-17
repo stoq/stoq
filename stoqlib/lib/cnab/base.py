@@ -51,6 +51,14 @@ class Field(object):
         self.default_value = default_value
         self.value = None
 
+    def copy(self):
+        size = self.size
+        if self.type is Decimal:
+            size = size - self.decimals
+        return type(self)(name=self.name, type=self.type, size=size,
+                          default_value=self.default_value,
+                          decimals=self.decimals)
+
     def get_value(self):
         """Gets the value of this field.
 
@@ -126,6 +134,7 @@ class Record(object):
         self._fields = []
         field_map = {}
         for field in self.fields:
+            field = field.copy()
             field.set_record(self)
             field_map[field.name] = field
             self._fields.append(field)
@@ -135,6 +144,7 @@ class Record(object):
             pos = self._fields.index(field_map[key])
             self._fields.pop(pos)
             for field in reversed(new_values):
+                field = field.copy()
                 field.set_record(self)
                 self._fields.insert(pos, field)
                 field_map[field.name] = field
