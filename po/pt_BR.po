@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-14 02:10-0300\n"
-"PO-Revision-Date: 2017-05-12 12:56+0000\n"
+"POT-Creation-Date: 2017-05-17 02:10-0300\n"
+"PO-Revision-Date: 2017-05-17 19:12+0000\n"
 "Last-Translator: Thiago Bellini Ribeiro <hackedbellini@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -1165,13 +1165,13 @@ msgstr "Data final:"
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:6
 #: ../data/glade/OnSaleInfoSlave.ui.h:4 ../data/glade/QualityTestEditor.ui.h:3
-#: ../stoqlib/gui/search/searchfilters.py:177
+#: ../stoqlib/gui/search/searchfilters.py:176
 msgid "From:"
 msgstr "De:"
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:7
 #: ../data/glade/OnSaleInfoSlave.ui.h:5 ../data/glade/QualityTestEditor.ui.h:4
-#: ../stoqlib/gui/search/searchfilters.py:187
+#: ../stoqlib/gui/search/searchfilters.py:186
 msgid "To:"
 msgstr "Até:"
 
@@ -3063,7 +3063,7 @@ msgstr "Data de recebimento:"
 #: ../plugins/ecf/ecfui.py:372 ../stoq/gui/delivery.py:247
 #: ../stoq/gui/inventory.py:107 ../stoq/gui/production.py:123
 #: ../stoq/gui/purchase.py:174 ../stoq/gui/sales.py:219
-#: ../stoqlib/gui/base/wizards.py:343 ../stoqlib/gui/editors/baseeditor.py:457
+#: ../stoqlib/gui/base/wizards.py:343 ../stoqlib/gui/editors/baseeditor.py:452
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:458
 msgid "Cancel"
 msgstr "Cancelar"
@@ -6488,7 +6488,7 @@ msgid "Forms"
 msgstr "Formulários"
 
 #: ../stoq/gui/admin.py:117 ../stoqlib/gui/dialogs/invoicedialog.py:82
-#: ../stoqlib/gui/editors/invoiceeditor.py:232
+#: ../stoqlib/gui/editors/invoiceeditor.py:234
 msgid "Invoice Printers"
 msgstr "Impressoras N.F."
 
@@ -6945,7 +6945,7 @@ msgstr "%s não é um nome válido de base de dados"
 msgid "Done!"
 msgstr "Feito!"
 
-#: ../stoq/gui/config.py:404 ../stoqlib/gui/dialogs/crashreportdialog.py:182
+#: ../stoq/gui/config.py:404 ../stoqlib/gui/dialogs/crashreportdialog.py:185
 msgid "Sending..."
 msgstr "Enviando..."
 
@@ -7233,7 +7233,7 @@ msgstr ""
 
 #: ../stoq/gui/delivery.py:98
 msgid "Send..."
-msgstr ""
+msgstr "Enviar..."
 
 #: ../stoq/gui/delivery.py:101
 msgid "Send the selected delivery to deliver"
@@ -7304,7 +7304,7 @@ msgstr ""
 
 #: ../stoq/gui/delivery.py:208
 msgid "Status (Description)"
-msgstr ""
+msgstr "Estado (Descrição)"
 
 #: ../stoq/gui/delivery.py:213 ../stoqlib/domain/uiform.py:151
 #: ../stoqlib/gui/editors/deliveryeditor.py:133
@@ -7340,7 +7340,7 @@ msgstr ""
 #: ../stoq/gui/production.py:262 ../stoq/gui/purchase.py:415
 #: ../stoq/gui/sales.py:540 ../stoqlib/gui/base/wizards.py:343
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:174
-#: ../stoqlib/gui/editors/baseeditor.py:457
+#: ../stoqlib/gui/editors/baseeditor.py:452
 msgid "Don't cancel"
 msgstr "Não cancelar"
 
@@ -7384,7 +7384,7 @@ msgstr ""
 
 #: ../stoq/gui/delivery.py:349
 msgid "All Deliveries"
-msgstr ""
+msgstr "Todas as entregas"
 
 #: ../stoq/gui/financial.py:234 ../stoq/gui/financial.py:349
 #: ../stoqlib/gui/editors/accounteditor.py:76
@@ -9042,7 +9042,7 @@ msgid ""
 "locale installed."
 msgstr "Não foi possível setar a localização para %s. Tenha certeza de ter instalado os pacotes para esta localização."
 
-#: ../stoq/gui/shell/bootstrap.py:386
+#: ../stoq/gui/shell/bootstrap.py:389
 msgid "There was an error quering the database"
 msgstr "Ocorreu um erro ao realizar uma consulta na base de dados"
 
@@ -9136,7 +9136,7 @@ msgid "Opens up a new window"
 msgstr "Abre uma nova janela"
 
 #: ../stoq/gui/shell/shellwindow.py:163
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:157
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:160
 msgid "Close"
 msgstr "Fechar"
 
@@ -9234,7 +9234,7 @@ msgid "Talk about Stoq online"
 msgstr "Falar sobre o Stoq on-line"
 
 #: ../stoq/gui/shell/shellwindow.py:205 ../stoq/gui/shell/shellwindow.py:226
-#: ../stoqlib/gui/search/searchfilters.py:680
+#: ../stoqlib/gui/search/searchfilters.py:679
 #: ../stoqlib/gui/widgets/searchentry.py:41
 msgid "Search"
 msgstr "Buscar"
@@ -9855,7 +9855,7 @@ msgstr "Mostra pagamentos, pedidos e outras coisas que acontecerão no futuro."
 
 #: ../stoq/lib/applist.py:41
 msgid "Control your deliveries."
-msgstr ""
+msgstr "Controle as suas entregas"
 
 #: ../stoq/lib/applist.py:43
 msgid "Control accounts and financial transactions."
@@ -11031,7 +11031,7 @@ msgstr "Enviado"
 
 #: ../stoqlib/domain/sale.py:572
 msgid "No freight"
-msgstr ""
+msgstr "Sem frete"
 
 #: ../stoqlib/domain/sale.py:575
 msgid "Third party"
@@ -11354,7 +11354,7 @@ msgstr "A filial de destino deste pacote é %s e você está na %s. Não é poss
 
 #: ../stoqlib/domain/workorder.py:977 ../stoqlib/domain/workorder.py:995
 #: ../stoqlib/domain/workorder.py:1027 ../stoqlib/gui/base/dialogs.py:467
-#: ../stoqlib/gui/editors/parameterseditor.py:239
+#: ../stoqlib/gui/editors/parameterseditor.py:234
 #: ../stoqlib/gui/search/parametersearch.py:94
 #: ../stoqlib/gui/wizards/productwizard.py:180
 #: ../stoqlib/reporting/inventory.py:44
@@ -11363,7 +11363,7 @@ msgstr "Não"
 
 #: ../stoqlib/domain/workorder.py:977 ../stoqlib/domain/workorder.py:995
 #: ../stoqlib/domain/workorder.py:1027 ../stoqlib/gui/base/dialogs.py:467
-#: ../stoqlib/gui/editors/parameterseditor.py:234
+#: ../stoqlib/gui/editors/parameterseditor.py:229
 #: ../stoqlib/gui/search/parametersearch.py:94
 #: ../stoqlib/gui/wizards/productwizard.py:180
 #: ../stoqlib/reporting/inventory.py:44
@@ -11457,7 +11457,7 @@ msgstr "Mantê-los"
 msgid "_Finish"
 msgstr "_Finalizar"
 
-#: ../stoqlib/gui/base/wizards.py:341 ../stoqlib/gui/editors/baseeditor.py:455
+#: ../stoqlib/gui/base/wizards.py:341 ../stoqlib/gui/editors/baseeditor.py:450
 msgid "If you cancel this dialog all changes will be lost. Are you sure?"
 msgstr "Se você cancelar esse diálogo, todas as mudanças serão descartadas. Você tem certeza?"
 
@@ -11541,7 +11541,7 @@ msgstr "Senha fornecida errada..."
 
 #: ../stoqlib/gui/dialogs/certificatedialog.py:77
 msgid "Certificate Chooser"
-msgstr ""
+msgstr "Gerenciador de certificados"
 
 #: ../stoqlib/gui/dialogs/certificatedialog.py:103
 #: ../stoqlib/gui/dialogs/clientdetails.py:350
@@ -11560,11 +11560,11 @@ msgstr "Tipo"
 #: ../stoqlib/gui/dialogs/certificatedialog.py:104
 #: ../stoqlib/gui/editors/certificateeditor.py:37
 msgid "Certificate"
-msgstr ""
+msgstr "Certificado"
 
 #: ../stoqlib/gui/dialogs/certificatedialog.py:114
 msgid "Certificates"
-msgstr ""
+msgstr "Certificados"
 
 #: ../stoqlib/gui/dialogs/clientcategorydialog.py:47
 msgid "Max discount"
@@ -11726,40 +11726,40 @@ msgstr "Custo de estoque"
 msgid "Total paid:"
 msgstr "Total pago:"
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:39
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:38
 msgid "Add a comment (comments are not publicly visible)"
 msgstr "Adicionar um comentário (comentários não são visíveis publicamente)"
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:40
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:39
 msgid "Enter your email address here"
 msgstr "Digite o seu endereço de email aqui"
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:63
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:62
 msgid "Details ..."
 msgstr "Detalhes..."
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:64
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:63
 #, python-format
 msgid ""
 "We'r sorry to inform you that an error occurred while running %s. Please help us improving Stoq by sending a automatically generated report about the incident.\n"
 "Click on details to see the report text."
 msgstr "Lamentamos informar, mas ocorreu um erro ao executar %s . Ajude-nos a melhorar Stoq enviando um relatório gerado automaticamente sobre o incidente.\nClique em detalhes para ver o texto do relatório."
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:75
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:74
 msgid "No thanks"
 msgstr "Não, obrigado"
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:77
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:76
 msgid "Send report"
 msgstr "Enviar relatório"
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:154
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:157
 msgid ""
 "Thanks for submitting the crash report!\n"
 "We will use it to make Stoq a better software."
 msgstr "Obrigado por nos enviar o relatório de erros!\nNós o utilizaremos para tornar o Stoq um software ainda melhor."
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:174
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:177
 msgid "Failed to submit bugreport"
 msgstr "Falha ao enviar o relatório de erros"
 
@@ -12740,7 +12740,7 @@ msgstr "Receber a ordem?"
 
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:160
 msgid "This will cancel the transfer. Are you sure?"
-msgstr ""
+msgstr "Isso vai cancelar a transferência: Você tem certeza?"
 
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:173
 msgid "Cancel transfer"
@@ -12750,7 +12750,7 @@ msgstr "Cancelar transferência"
 msgid ""
 "The cancellation was not authorized by SEFAZ. You should do a reverse "
 "transfer."
-msgstr ""
+msgstr "O cancelamento não foi autorizado pela SEFAZ. Você deve realizar uma transferência reversa."
 
 #: ../stoqlib/gui/dialogs/workordercategorydialog.py:60
 msgid "Work order categories"
@@ -12816,17 +12816,17 @@ msgstr "Manter a chave antiga"
 msgid "The backup key needs to have at least 10 characters"
 msgstr "A chave de backup deve ter ao menos 10 caracteres"
 
-#: ../stoqlib/gui/editors/baseeditor.py:372
+#: ../stoqlib/gui/editors/baseeditor.py:367
 #, python-format
 msgid "Details of %s"
 msgstr "Detalhes de %s"
 
-#: ../stoqlib/gui/editors/baseeditor.py:374
+#: ../stoqlib/gui/editors/baseeditor.py:369
 #, python-format
 msgid "Edit Details of \"%s\""
 msgstr "Editar detalhes de \"%s\""
 
-#: ../stoqlib/gui/editors/baseeditor.py:375
+#: ../stoqlib/gui/editors/baseeditor.py:370
 #, python-format
 msgid "Add %s"
 msgstr "Adicionar %s"
@@ -12853,19 +12853,19 @@ msgstr "A categoria já existe."
 
 #: ../stoqlib/gui/editors/certificateeditor.py:70
 msgid "No certificate selected"
-msgstr ""
+msgstr "Nenhum certificado selecionado"
 
 #: ../stoqlib/gui/editors/certificateeditor.py:75
 msgid "There can be only one active certificate at a time"
-msgstr ""
+msgstr "Só pode haver um certificado ativo por vez"
 
 #: ../stoqlib/gui/editors/certificateeditor.py:95
 msgid "Token lib file (.so)"
-msgstr ""
+msgstr "Arquivo da biblioteca do token (.so)"
 
 #: ../stoqlib/gui/editors/certificateeditor.py:99
 msgid "Certificate file"
-msgstr ""
+msgstr "Arquivo do certificado"
 
 #: ../stoqlib/gui/editors/clientcategoryeditor.py:44
 msgid "Client Category"
@@ -12921,7 +12921,7 @@ msgstr "Crédito do cliente não pode ser negativo."
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:68
 msgid "Volumes"
-msgstr ""
+msgstr "Volumes"
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:116
 msgid "New Delivery"
@@ -12930,7 +12930,7 @@ msgstr "Nova entrega"
 #: ../stoqlib/gui/editors/deliveryeditor.py:138
 #: ../stoqlib/gui/editors/deliveryeditor.py:287
 msgid "Freight type"
-msgstr ""
+msgstr "Tipo do frete"
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:140
 msgid "Delivery cost"
@@ -12943,12 +12943,12 @@ msgstr "Data estimada da entrega"
 #: ../stoqlib/gui/editors/deliveryeditor.py:142
 #: ../stoqlib/gui/editors/deliveryeditor.py:289
 msgid "Volumes kind"
-msgstr ""
+msgstr "Tipo dos volumes"
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:143
 #: ../stoqlib/gui/editors/deliveryeditor.py:290
 msgid "Volumes quantity"
-msgstr ""
+msgstr "Quantidade de volumes"
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:197
 msgid "Delivery Instructions"
@@ -13199,15 +13199,15 @@ msgstr "A largura deve ser maior que zero"
 msgid "height value must greater than zero."
 msgstr "A altura deve ser maior que zero"
 
-#: ../stoqlib/gui/editors/invoiceeditor.py:216
+#: ../stoqlib/gui/editors/invoiceeditor.py:218
 msgid "You need at least one sale to be able to preview invoice layouts"
 msgstr "Você necessita de uma venda para visualizar o layout de notas fiscais"
 
-#: ../stoqlib/gui/editors/invoiceeditor.py:223
+#: ../stoqlib/gui/editors/invoiceeditor.py:225
 msgid "Not enough fields or data to create an invoice preview."
 msgstr "Não há campos ou dados suficiente para visualizar a nota."
 
-#: ../stoqlib/gui/editors/invoiceeditor.py:242
+#: ../stoqlib/gui/editors/invoiceeditor.py:244
 msgid "Untitled Printer"
 msgstr "Impressora sem título"
 
@@ -13258,16 +13258,16 @@ msgstr "Quantidade não disponível em estoque."
 msgid "The note must have at least %s characters."
 msgstr "A anotação deve ter ao menos %s caracteres"
 
-#: ../stoqlib/gui/editors/parameterseditor.py:170
+#: ../stoqlib/gui/editors/parameterseditor.py:165
 msgid "Cat 52 directory selection"
 msgstr "Selecione o diretório"
 
-#: ../stoqlib/gui/editors/parameterseditor.py:266
+#: ../stoqlib/gui/editors/parameterseditor.py:261
 #, python-format
 msgid "Edit '%s' Parameter"
 msgstr "Alterar parâmetro '%s'"
 
-#: ../stoqlib/gui/editors/parameterseditor.py:326
+#: ../stoqlib/gui/editors/parameterseditor.py:321
 msgid "Field can not be empty."
 msgstr "Campo não pode ser vazio."
 
@@ -13675,7 +13675,7 @@ msgstr "Custo não pode ser zero ou negativo."
 #: ../stoqlib/gui/editors/producteditor.py:606
 #: ../stoqlib/gui/editors/sellableeditor.py:272
 msgid "Images"
-msgstr ""
+msgstr "Imagens"
 
 #: ../stoqlib/gui/editors/producteditor.py:622
 msgid "Adjust stock quantity"
@@ -15097,37 +15097,37 @@ msgstr "S_elecione Itens"
 msgid "Method:"
 msgstr "Forma:"
 
-#: ../stoqlib/gui/search/searchfilters.py:232
+#: ../stoqlib/gui/search/searchfilters.py:231
 msgid "from"
 msgstr "de"
 
-#: ../stoqlib/gui/search/searchfilters.py:233
+#: ../stoqlib/gui/search/searchfilters.py:232
 msgid "to"
 msgstr "até"
 
-#: ../stoqlib/gui/search/searchfilters.py:293
+#: ../stoqlib/gui/search/searchfilters.py:292
 msgid "Custom day"
 msgstr "Dia"
 
-#: ../stoqlib/gui/search/searchfilters.py:294
+#: ../stoqlib/gui/search/searchfilters.py:293
 msgid "Custom interval"
 msgstr "Intervalo"
 
-#: ../stoqlib/gui/search/searchfilters.py:419
-#: ../stoqlib/gui/search/searchfilters.py:429
-#: ../stoqlib/gui/search/searchfilters.py:449
+#: ../stoqlib/gui/search/searchfilters.py:418
+#: ../stoqlib/gui/search/searchfilters.py:428
+#: ../stoqlib/gui/search/searchfilters.py:448
 msgid "Invalid date"
 msgstr "Data inválida"
 
-#: ../stoqlib/gui/search/searchfilters.py:689
+#: ../stoqlib/gui/search/searchfilters.py:687
 msgid "Add a filter"
 msgstr "Adicionar um filtro"
 
-#: ../stoqlib/gui/search/searchfilters.py:693
+#: ../stoqlib/gui/search/searchfilters.py:691
 msgid "Clear the search"
 msgstr "Limpar busca"
 
-#: ../stoqlib/gui/search/searchfilters.py:824
+#: ../stoqlib/gui/search/searchfilters.py:822
 msgid "And"
 msgstr "E"
 
@@ -15386,11 +15386,11 @@ msgstr "Saiu em"
 
 #: ../stoqlib/gui/slaves/imageslave.py:110
 msgid "Set as main image"
-msgstr ""
+msgstr "Definir como imagem principal"
 
 #: ../stoqlib/gui/slaves/imageslave.py:111
 msgid "Internal use only"
-msgstr ""
+msgstr "Uso interno apenas"
 
 #: ../stoqlib/gui/slaves/imageslave.py:112
 msgid "View"
@@ -15398,15 +15398,15 @@ msgstr "Visualizar"
 
 #: ../stoqlib/gui/slaves/imageslave.py:146
 msgid "Add a new image"
-msgstr ""
+msgstr "Adicionar uma nova imagem"
 
 #: ../stoqlib/gui/slaves/imageslave.py:161
 msgid "This is the main image"
-msgstr ""
+msgstr "Esta é a imagem principal"
 
 #: ../stoqlib/gui/slaves/imageslave.py:164
 msgid "This is for internal use only"
-msgstr ""
+msgstr "Está imagem é apenas para uso interno"
 
 #: ../stoqlib/gui/slaves/imageslave.py:187
 msgid "Select Image"
@@ -15732,7 +15732,7 @@ msgstr "Não é possível aceitar a devolução de vendas de clientes sem docume
 
 #: ../stoqlib/gui/slaves/saleslave.py:359
 msgid "Sale cancelled due to client return."
-msgstr ""
+msgstr "Venda cancelada devido a um retorno do cliente."
 
 #: ../stoqlib/gui/slaves/sellableslave.py:89
 msgid "Markup"
@@ -16429,7 +16429,7 @@ msgstr "Verificar informações do item selecionado"
 
 #: ../stoqlib/gui/widgets/queryentry.py:308
 msgid "No items found"
-msgstr ""
+msgstr "Nenhum item encontrado"
 
 #: ../stoqlib/gui/widgets/queryentry.py:614
 msgid "Birth date"
@@ -16470,11 +16470,11 @@ msgstr "Verificar informações do fornecedor selecionado"
 
 #: ../stoqlib/gui/widgets/queryentry.py:670
 msgid "Loading tokens..."
-msgstr ""
+msgstr "Carregando tokens..."
 
 #: ../stoqlib/gui/widgets/queryentry.py:671
 msgid "No tokens found... Register some in the admin app"
-msgstr ""
+msgstr "Nenhum token encontrado. Registre alguns no aplicativo Administrativo"
 
 #: ../stoqlib/gui/widgets/searchentry.py:43
 msgid "Create"
@@ -17726,14 +17726,14 @@ msgstr "Se você tem um computador que será um Ponto de Vendas e o mesmo possui
 
 #: ../stoqlib/lib/parameters.py:287
 msgid "Use tokens to control sales"
-msgstr ""
+msgstr "Utilizar tokens para controlar vendas"
 
 #: ../stoqlib/lib/parameters.py:288
 msgid ""
 "A token is a phisical object that will be attached to a sale during its "
 "lifetime. For example, it can be a bar table, a hotel room, a real token in "
 "a convenience store and so on. "
-msgstr ""
+msgstr "Um token é um objeto físico que será atrelado a uma venda durante a sua vida. Por exemplo, ele pode ser uma mesa de bar, um quarto de hotel ou mesmo um token real em uma loja de conveniência, entre outros."
 
 #: ../stoqlib/lib/parameters.py:296
 msgid "Default payment method selected"
@@ -18447,13 +18447,13 @@ msgstr "Um template a ser usado para preencher o campo \"Defeito detectado\" ao 
 
 #: ../stoqlib/lib/parameters.py:885
 msgid "Notice that will be added to the work order report"
-msgstr ""
+msgstr "Aviso a ser adicionado ao relatório de ordem de serviço"
 
 #: ../stoqlib/lib/parameters.py:886
 msgid ""
 "This notice will be added to the work order receipt and can be used to warn "
 "the client about warranties and limitations"
-msgstr ""
+msgstr "Este aviso será adicionado ao recibo da ordem de serviço e pode ser utilizado para avisar o cliente sobre garantias e limitações"
 
 #: ../stoqlib/lib/parameters.py:893
 msgid "Automatic logout after inactivity period"
@@ -18555,7 +18555,7 @@ msgstr "Você precisa ter uma inscrição estadual cadastrada para a empresa %s"
 #: ../stoqlib/lib/xmlutils.py:128
 #, python-brace-format
 msgid "{number}) {field} is invalid"
-msgstr ""
+msgstr "{number}) {field} é inválido"
 
 #: ../stoqlib/net/calendarevents.py:132
 #, python-brace-format

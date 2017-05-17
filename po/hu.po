@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-14 02:10-0300\n"
+"POT-Creation-Date: 2017-05-17 02:10-0300\n"
 "PO-Revision-Date: 2017-05-05 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Hungarian (http://www.transifex.com/async/stoq/language/hu/)\n"
@@ -1157,13 +1157,13 @@ msgstr ""
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:6
 #: ../data/glade/OnSaleInfoSlave.ui.h:4 ../data/glade/QualityTestEditor.ui.h:3
-#: ../stoqlib/gui/search/searchfilters.py:177
+#: ../stoqlib/gui/search/searchfilters.py:176
 msgid "From:"
 msgstr ""
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:7
 #: ../data/glade/OnSaleInfoSlave.ui.h:5 ../data/glade/QualityTestEditor.ui.h:4
-#: ../stoqlib/gui/search/searchfilters.py:187
+#: ../stoqlib/gui/search/searchfilters.py:186
 msgid "To:"
 msgstr ""
 
@@ -3055,7 +3055,7 @@ msgstr ""
 #: ../plugins/ecf/ecfui.py:372 ../stoq/gui/delivery.py:247
 #: ../stoq/gui/inventory.py:107 ../stoq/gui/production.py:123
 #: ../stoq/gui/purchase.py:174 ../stoq/gui/sales.py:219
-#: ../stoqlib/gui/base/wizards.py:343 ../stoqlib/gui/editors/baseeditor.py:457
+#: ../stoqlib/gui/base/wizards.py:343 ../stoqlib/gui/editors/baseeditor.py:452
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:458
 msgid "Cancel"
 msgstr ""
@@ -6480,7 +6480,7 @@ msgid "Forms"
 msgstr ""
 
 #: ../stoq/gui/admin.py:117 ../stoqlib/gui/dialogs/invoicedialog.py:82
-#: ../stoqlib/gui/editors/invoiceeditor.py:232
+#: ../stoqlib/gui/editors/invoiceeditor.py:234
 msgid "Invoice Printers"
 msgstr ""
 
@@ -6937,7 +6937,7 @@ msgstr ""
 msgid "Done!"
 msgstr ""
 
-#: ../stoq/gui/config.py:404 ../stoqlib/gui/dialogs/crashreportdialog.py:182
+#: ../stoq/gui/config.py:404 ../stoqlib/gui/dialogs/crashreportdialog.py:185
 msgid "Sending..."
 msgstr ""
 
@@ -7332,7 +7332,7 @@ msgstr ""
 #: ../stoq/gui/production.py:262 ../stoq/gui/purchase.py:415
 #: ../stoq/gui/sales.py:540 ../stoqlib/gui/base/wizards.py:343
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:174
-#: ../stoqlib/gui/editors/baseeditor.py:457
+#: ../stoqlib/gui/editors/baseeditor.py:452
 msgid "Don't cancel"
 msgstr ""
 
@@ -9034,7 +9034,7 @@ msgid ""
 "locale installed."
 msgstr ""
 
-#: ../stoq/gui/shell/bootstrap.py:386
+#: ../stoq/gui/shell/bootstrap.py:389
 msgid "There was an error quering the database"
 msgstr ""
 
@@ -9128,7 +9128,7 @@ msgid "Opens up a new window"
 msgstr ""
 
 #: ../stoq/gui/shell/shellwindow.py:163
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:157
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:160
 msgid "Close"
 msgstr ""
 
@@ -9226,7 +9226,7 @@ msgid "Talk about Stoq online"
 msgstr ""
 
 #: ../stoq/gui/shell/shellwindow.py:205 ../stoq/gui/shell/shellwindow.py:226
-#: ../stoqlib/gui/search/searchfilters.py:680
+#: ../stoqlib/gui/search/searchfilters.py:679
 #: ../stoqlib/gui/widgets/searchentry.py:41
 msgid "Search"
 msgstr ""
@@ -11346,7 +11346,7 @@ msgstr ""
 
 #: ../stoqlib/domain/workorder.py:977 ../stoqlib/domain/workorder.py:995
 #: ../stoqlib/domain/workorder.py:1027 ../stoqlib/gui/base/dialogs.py:467
-#: ../stoqlib/gui/editors/parameterseditor.py:239
+#: ../stoqlib/gui/editors/parameterseditor.py:234
 #: ../stoqlib/gui/search/parametersearch.py:94
 #: ../stoqlib/gui/wizards/productwizard.py:180
 #: ../stoqlib/reporting/inventory.py:44
@@ -11355,7 +11355,7 @@ msgstr ""
 
 #: ../stoqlib/domain/workorder.py:977 ../stoqlib/domain/workorder.py:995
 #: ../stoqlib/domain/workorder.py:1027 ../stoqlib/gui/base/dialogs.py:467
-#: ../stoqlib/gui/editors/parameterseditor.py:234
+#: ../stoqlib/gui/editors/parameterseditor.py:229
 #: ../stoqlib/gui/search/parametersearch.py:94
 #: ../stoqlib/gui/wizards/productwizard.py:180
 #: ../stoqlib/reporting/inventory.py:44
@@ -11449,7 +11449,7 @@ msgstr ""
 msgid "_Finish"
 msgstr ""
 
-#: ../stoqlib/gui/base/wizards.py:341 ../stoqlib/gui/editors/baseeditor.py:455
+#: ../stoqlib/gui/base/wizards.py:341 ../stoqlib/gui/editors/baseeditor.py:450
 msgid "If you cancel this dialog all changes will be lost. Are you sure?"
 msgstr ""
 
@@ -11718,40 +11718,40 @@ msgstr ""
 msgid "Total paid:"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:39
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:38
 msgid "Add a comment (comments are not publicly visible)"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:40
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:39
 msgid "Enter your email address here"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:63
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:62
 msgid "Details ..."
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:64
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:63
 #, python-format
 msgid ""
 "We'r sorry to inform you that an error occurred while running %s. Please help us improving Stoq by sending a automatically generated report about the incident.\n"
 "Click on details to see the report text."
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:75
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:74
 msgid "No thanks"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:77
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:76
 msgid "Send report"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:154
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:157
 msgid ""
 "Thanks for submitting the crash report!\n"
 "We will use it to make Stoq a better software."
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:174
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:177
 msgid "Failed to submit bugreport"
 msgstr ""
 
@@ -12808,17 +12808,17 @@ msgstr ""
 msgid "The backup key needs to have at least 10 characters"
 msgstr ""
 
-#: ../stoqlib/gui/editors/baseeditor.py:372
+#: ../stoqlib/gui/editors/baseeditor.py:367
 #, python-format
 msgid "Details of %s"
 msgstr ""
 
-#: ../stoqlib/gui/editors/baseeditor.py:374
+#: ../stoqlib/gui/editors/baseeditor.py:369
 #, python-format
 msgid "Edit Details of \"%s\""
 msgstr ""
 
-#: ../stoqlib/gui/editors/baseeditor.py:375
+#: ../stoqlib/gui/editors/baseeditor.py:370
 #, python-format
 msgid "Add %s"
 msgstr ""
@@ -13191,15 +13191,15 @@ msgstr ""
 msgid "height value must greater than zero."
 msgstr ""
 
-#: ../stoqlib/gui/editors/invoiceeditor.py:216
+#: ../stoqlib/gui/editors/invoiceeditor.py:218
 msgid "You need at least one sale to be able to preview invoice layouts"
 msgstr ""
 
-#: ../stoqlib/gui/editors/invoiceeditor.py:223
+#: ../stoqlib/gui/editors/invoiceeditor.py:225
 msgid "Not enough fields or data to create an invoice preview."
 msgstr ""
 
-#: ../stoqlib/gui/editors/invoiceeditor.py:242
+#: ../stoqlib/gui/editors/invoiceeditor.py:244
 msgid "Untitled Printer"
 msgstr ""
 
@@ -13250,16 +13250,16 @@ msgstr ""
 msgid "The note must have at least %s characters."
 msgstr ""
 
-#: ../stoqlib/gui/editors/parameterseditor.py:170
+#: ../stoqlib/gui/editors/parameterseditor.py:165
 msgid "Cat 52 directory selection"
 msgstr ""
 
-#: ../stoqlib/gui/editors/parameterseditor.py:266
+#: ../stoqlib/gui/editors/parameterseditor.py:261
 #, python-format
 msgid "Edit '%s' Parameter"
 msgstr ""
 
-#: ../stoqlib/gui/editors/parameterseditor.py:326
+#: ../stoqlib/gui/editors/parameterseditor.py:321
 msgid "Field can not be empty."
 msgstr ""
 
@@ -15089,37 +15089,37 @@ msgstr ""
 msgid "Method:"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:232
+#: ../stoqlib/gui/search/searchfilters.py:231
 msgid "from"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:233
+#: ../stoqlib/gui/search/searchfilters.py:232
 msgid "to"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:293
+#: ../stoqlib/gui/search/searchfilters.py:292
 msgid "Custom day"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:294
+#: ../stoqlib/gui/search/searchfilters.py:293
 msgid "Custom interval"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:419
-#: ../stoqlib/gui/search/searchfilters.py:429
-#: ../stoqlib/gui/search/searchfilters.py:449
+#: ../stoqlib/gui/search/searchfilters.py:418
+#: ../stoqlib/gui/search/searchfilters.py:428
+#: ../stoqlib/gui/search/searchfilters.py:448
 msgid "Invalid date"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:689
+#: ../stoqlib/gui/search/searchfilters.py:687
 msgid "Add a filter"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:693
+#: ../stoqlib/gui/search/searchfilters.py:691
 msgid "Clear the search"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:824
+#: ../stoqlib/gui/search/searchfilters.py:822
 msgid "And"
 msgstr ""
 
