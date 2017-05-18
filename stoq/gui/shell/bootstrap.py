@@ -108,6 +108,17 @@ class ShellBootstrap(object):
         from stoqlib.lib.translation import stoqlib_gettext as _
 
         self._locale_error = None
+
+        # We only support pt_BR in Windows and we need to set LC_ALL
+        # or we might run in some problems in case it is not set.
+        # We are settings os.environ directly beucase locale.setlocale
+        # doesn't work on Windows
+        if platform.system() == 'Windows':
+            lang = 'pt_BR.UTF_8'
+            os.environ['LC_ALL'] = lang
+            os.environ['LANGUAGE'] = lang
+            return
+
         settings = get_settings()
         lang = settings.get('user-locale', None)
         if not lang:
