@@ -112,7 +112,7 @@ class ServerProxy(object):
 
                 if res:
                     # When stoqserver is located in another machine
-                    if res[0] not in ['127.0.0.1', '::1']:
+                    if res[0] not in ['127.0.0.1', '::1', '', None]:
                         address = res[0]
                     else:
                         # XXX: For now we only support ipv4
