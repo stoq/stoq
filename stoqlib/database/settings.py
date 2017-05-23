@@ -531,7 +531,7 @@ class DatabaseSettings(object):
         if not os.isatty(sys.__stdin__.fileno()):
             return False
 
-        text = raw_input(
+        text = input(
             "Database %s has existing tables, "
             "do you really want to delete it?\n[yes/no] " % (dbname, ))
         if text == 'yes':
