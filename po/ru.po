@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-17 02:10-0300\n"
-"PO-Revision-Date: 2017-05-05 05:10+0000\n"
+"POT-Creation-Date: 2017-05-23 02:10-0300\n"
+"PO-Revision-Date: 2017-05-23 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Russian (http://www.transifex.com/async/stoq/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -1566,6 +1566,12 @@ msgstr ""
 
 #: ../data/glade/LoginDialog.ui.h:3
 msgid "Remember me"
+msgstr ""
+
+#: ../data/glade/LoginDialog.ui.h:4
+msgid ""
+"<a href=\"https://async.freshdesk.com/support/solutions/articles/4000102725"
+"-esqueci-minha-senha-\">Forgot your password?</a>"
 msgstr ""
 
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:4
@@ -9027,14 +9033,14 @@ msgstr ""
 msgid "This will undo the rejection of the order. Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/shell/bootstrap.py:120
+#: ../stoq/gui/shell/bootstrap.py:131
 #, python-format
 msgid ""
 "Could not set locale to %s. Make sure that you have the packages for this "
 "locale installed."
 msgstr ""
 
-#: ../stoq/gui/shell/bootstrap.py:389
+#: ../stoq/gui/shell/bootstrap.py:400
 msgid "There was an error quering the database"
 msgstr ""
 
