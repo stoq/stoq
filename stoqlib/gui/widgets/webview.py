@@ -45,7 +45,7 @@ USER_AGENT = ("Mozilla/5.0 (X11; Linux x86_64) "
 
 
 def register_scheme(scheme):
-    for method in filter(lambda s: s.startswith('uses_'), dir(urlparse)):
+    for method in [s for s in dir(urlparse) if s.startswith('uses_')]:
         getattr(urlparse, method).append(scheme)
 register_scheme('stoq')
 
