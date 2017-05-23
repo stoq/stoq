@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-17 02:10-0300\n"
-"PO-Revision-Date: 2017-05-17 19:12+0000\n"
+"POT-Creation-Date: 2017-05-23 02:10-0300\n"
+"PO-Revision-Date: 2017-05-23 17:23+0000\n"
 "Last-Translator: Thiago Bellini Ribeiro <hackedbellini@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -1575,6 +1575,12 @@ msgstr "_Senha:"
 #: ../data/glade/LoginDialog.ui.h:3
 msgid "Remember me"
 msgstr "Lembre-se de mim"
+
+#: ../data/glade/LoginDialog.ui.h:4
+msgid ""
+"<a href=\"https://async.freshdesk.com/support/solutions/articles/4000102725"
+"-esqueci-minha-senha-\">Forgot your password?</a>"
+msgstr "<a href=\"https://async.freshdesk.com/support/solutions/articles/4000102725-esqueci-minha-senha-\">Esqueceu sua senha?</a>"
 
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:4
 #: ../data/glade/PurchaseDetailsDialog.ui.h:8
@@ -9035,14 +9041,14 @@ msgstr "Isso vai rejeitar a ordem. Você tem certeza?"
 msgid "This will undo the rejection of the order. Are you sure?"
 msgstr "Isso vai desfazer a rejeição da ordem. Você tem certeza?"
 
-#: ../stoq/gui/shell/bootstrap.py:120
+#: ../stoq/gui/shell/bootstrap.py:131
 #, python-format
 msgid ""
 "Could not set locale to %s. Make sure that you have the packages for this "
 "locale installed."
 msgstr "Não foi possível setar a localização para %s. Tenha certeza de ter instalado os pacotes para esta localização."
 
-#: ../stoq/gui/shell/bootstrap.py:389
+#: ../stoq/gui/shell/bootstrap.py:400
 msgid "There was an error quering the database"
 msgstr "Ocorreu um erro ao realizar uma consulta na base de dados"
 
