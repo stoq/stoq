@@ -130,4 +130,4 @@ class ViewableTest(DomainTest):
         self.assertEquals(len(data), 11)
 
         self.assertEquals(data, [
-            (i, 55, sum(xrange(i + 1)), i) for i in xrange(11)])
+            (i, 55, sum(range(i + 1)), i) for i in range(11)])

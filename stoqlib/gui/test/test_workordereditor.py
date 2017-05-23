@@ -226,7 +226,7 @@ class TestWorkOrderPackageSendEditor(GUITest):
         destination_branch.can_execute_foreign_work_orders = True
         workorders_ids = set()
 
-        for i in xrange(10):
+        for i in range(10):
             wo = self.create_workorder(description=u"Equipment %d" % i)
             wo.client = self.create_client()
             wo.identifier = 666 + i
@@ -281,7 +281,7 @@ class TestWorkOrderPackageSendEditor(GUITest):
         destination_branch = self.create_branch()
         workorders_ids = set()
 
-        for i in xrange(10):
+        for i in range(10):
             wo = self.create_workorder(description=u"Equipment %d" % i)
             wo.client = self.create_client()
             wo.identifier = 666 + i

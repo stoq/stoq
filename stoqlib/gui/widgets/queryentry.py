@@ -196,7 +196,7 @@ class _QueryEntryPopup(PopupWindow):
         cells_height = sum(
             self._treeview.get_background_area(
                 Gtk.TreePath(path), self._treeview.get_column(0)).height
-            for path in xrange(len(self._treeview.get_model())))
+            for path in range(len(self._treeview.get_model())))
         # Use half of the available screen space
         height = min(cells_height, monitor.height / 2)
         height += self.FRAME_PADDING[0] + self.FRAME_PADDING[1]

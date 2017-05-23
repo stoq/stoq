@@ -30,7 +30,7 @@ from stoq.gui.test.baseguitest import BaseGUITest
 
 class TestServices(BaseGUITest):
     def test_initial(self):
-        for i in xrange(2):
+        for i in range(2):
             sale = self.create_sale()
             sale.identifier = 666 + i
             self.add_product(sale)

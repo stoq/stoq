@@ -92,7 +92,7 @@ class CalendarEvents(object):
         branch = api.get_current_branch(store)
         for v in ClientWithSalesView.find_by_birth_date(
                 store, (start, end), branch=branch):
-            for year in xrange(start.year, end.year + 1):
+            for year in range(start.year, end.year + 1):
                 date, ev = self._create_client_birthday(v, year)
                 self._append_event(day_events, date, 'client_birthdays', ev)
 

@@ -44,7 +44,7 @@ from stoq.gui.test.baseguitest import BaseGUITest
 
 class TestServices(BaseGUITest):
     def test_initial(self):
-        for i in xrange(2):
+        for i in range(2):
             wo = self.create_workorder()
             wo.identifier = 666 + i
             wo.open_date = datetime.datetime(2013, 1, 1)

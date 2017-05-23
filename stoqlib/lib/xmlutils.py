@@ -367,4 +367,4 @@ def get_digest(node):
 
 
 def format_base64(string):
-    return '\n'.join(string[i:i + 64] for i in xrange(0, len(string), 64))
+    return '\n'.join(string[i:i + 64] for i in range(0, len(string), 64))

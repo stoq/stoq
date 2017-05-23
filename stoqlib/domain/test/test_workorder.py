@@ -1153,7 +1153,7 @@ class _TestWorkOrderPackageView(DomainTest):
         package2 = self.create_workorder_package()
         package2.status = self.default_status[0]
 
-        for i in xrange(5):
+        for i in range(5):
             package2.add_order(self.create_workorder())
 
         packageview1 = self.store.find(self.view, id=package1.id).one()

@@ -46,7 +46,7 @@ class TestFileUtils(unittest.TestCase):
 
         # Test with a random md5sum in a large file
         with tempfile.NamedTemporaryFile() as f:
-            for x in xrange(1000000):
+            for x in range(1000000):
                 f.write(random.choice(string.printable))
             f.flush()
 
