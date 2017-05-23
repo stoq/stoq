@@ -275,7 +275,7 @@ class Viewable(ClassInittableObject):
             **new_attrs)
 
         if cls.group_by:
-            klass_dict['group_by'] = cls.group_by[:] + new_attrs.values()
+            klass_dict['group_by'] = cls.group_by[:] + list(new_attrs.values())
 
         return type(cls.__name__ + 'Ext', (cls, ), klass_dict)
 

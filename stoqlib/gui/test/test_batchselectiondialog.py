@@ -52,15 +52,15 @@ class TestBatchSelectionDialog(GUITest):
                                         1, u'3')
 
         dialog = BatchSelectionDialog(self.store, storable, 33)
-        for entry in dialog._spins.keys():
+        for entry in list(dialog._spins.keys()):
             entry.update(1)
             dialog._spins[entry].update(12)
 
-        for entry in dialog._spins.keys()[1:]:
+        for entry in list(dialog._spins.keys())[1:]:
             entry.update(2)
             dialog._spins[entry].update(7)
 
-        for entry in dialog._spins.keys()[2:]:
+        for entry in list(dialog._spins.keys())[2:]:
             entry.update(3)
             dialog._spins[entry].update(8)
 

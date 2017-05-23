@@ -142,7 +142,7 @@ class StatusDialog(BasicDialog):
         running_action = self._manager.running_action
         self._refresh_btn.set_sensitive(running_action is None)
 
-        for name, resource in self._manager.resources.iteritems():
+        for name, resource in self._manager.resources.items():
             img, lbl, buttonbox = self._widgets[name]
 
             status_stock, _ignored = _status_mapper[resource.status]
@@ -275,7 +275,7 @@ class StatusButton(Gtk.Button):
         if status is not None:
             tooltip = '\n'.join(
                 "[%s] %s: %s" % (r.status_str, r.label, r.reason or _("N/A"))
-                for r in self._manager.resources.itervalues())
+                for r in self._manager.resources.values())
         else:
             tooltip = ''
 

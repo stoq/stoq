@@ -1055,7 +1055,7 @@ class _TestWorkOrderView(DomainTest):
 
 class TestWorkOrderView(_TestWorkOrderView):
     view = WorkOrderView
-    default_status = WorkOrder.statuses.keys()
+    default_status = list(WorkOrder.statuses.keys())
 
     def test_equipment(self):
         wo = self.create_workorder(description=u'Foo')

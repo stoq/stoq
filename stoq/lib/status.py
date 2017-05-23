@@ -192,7 +192,7 @@ class ResourceStatusManager(GObject.GObject):
     #
 
     def _iter_resources(self):
-        return sorted(self.resources.itervalues(), key=lambda r: r.priority)
+        return sorted(self.resources.values(), key=lambda r: r.priority)
 
     def _refresh_and_notify(self, resources=None, force=False):
         with self._lock:

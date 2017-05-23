@@ -100,7 +100,7 @@ class ProductAttributeSlave(BaseEditorSlave):
 
     def get_selected_attributes(self):
         active_check_box = []
-        for widget, value in self._widgets.iteritems():
+        for widget, value in self._widgets.items():
             if widget.get_active():
                 active_check_box.append(value)
         return active_check_box
@@ -199,7 +199,7 @@ class ProductGridSlave(BaseEditorSlave):
                 Column('sellable.code', title=_('Code'), data_type=str)]
 
     def can_add(self):
-        selected_option = self._option_list.values()
+        selected_option = list(self._option_list.values())
         # In order to add a new product...
         # ...The user should select all options...
         if len(selected_option) != len(self._attr_list):
@@ -231,7 +231,7 @@ class ProductGridSlave(BaseEditorSlave):
         if not self.model.description:
             warning(_('You should fill the description first'))
             return False
-        self.model.add_grid_child(self._option_list.values())
+        self.model.add_grid_child(list(self._option_list.values()))
         self.product_list.add_list(self.model.children)
         self.add_product_button.set_sensitive(False)
 

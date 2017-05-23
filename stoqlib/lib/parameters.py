@@ -1327,7 +1327,7 @@ class ParameterAccess(object):
         self._values[param_name] = value
 
     def get_details(self):
-        return self._details.values()
+        return list(self._details.values())
 
     def get_detail_by_name(self, param_name):
         """

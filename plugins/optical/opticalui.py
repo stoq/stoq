@@ -127,7 +127,7 @@ class ProductSearchExtention(SearchExtension):
         }
 
         columns = []
-        for label, columns_list in info_cols.iteritems():
+        for label, columns_list in info_cols.items():
             for c in columns_list:
                 columns.append(
                     SearchColumn(c[0], title='%s - %s' % (label, c[1]),

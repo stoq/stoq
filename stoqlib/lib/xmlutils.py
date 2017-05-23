@@ -294,7 +294,7 @@ class PyKCS11Signer(object):
             # Get the label the same way as NSS does
             priv_keys_dict['%s:%s' % (self._label, key_lbl)] = (key_id, priv_key)
 
-        key_lbl = certificate_callback(priv_keys_dict.keys())
+        key_lbl = certificate_callback(list(priv_keys_dict.keys()))
         key_id, priv_key = priv_keys_dict[key_lbl]
 
         # Cert

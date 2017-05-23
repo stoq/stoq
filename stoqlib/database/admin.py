@@ -216,7 +216,7 @@ def _ensure_card_providers():
                  u'MASTER': u'MASTERCARD',
                  u'AMEX': u'AMERICAN EXPRESS'}
     store = new_store()
-    for short_name, provider_id in providers.iteritems():
+    for short_name, provider_id in providers.items():
         provider = CreditProvider.get_provider_by_provider_id(provider_id, store)
         if not provider.is_empty():
             continue

@@ -48,7 +48,7 @@ class _RequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             # This will call translate_path bellow
             return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 
-        for name, resource in resources.iteritems():
+        for name, resource in resources.items():
             if realpath.startswith(name):
                 # TODO: This is to keep compatibility with twisted api.
                 # Maybe we should rewrite our handlers to use a different api

@@ -332,7 +332,7 @@ class ImageGallerySlave(BaseEditorSlave):
         self._slaves[None] = empty_slave
 
         # Remove slaves of removed images
-        for removed in slaves.itervalues():
+        for removed in slaves.values():
             slave.disconnect_by_func(self._on_image_slave__image_changed)
 
         self._organize(force=True)
@@ -351,7 +351,7 @@ class ImageGallerySlave(BaseEditorSlave):
         for child in list(self.images_table.get_children()):
             self.images_table.remove(child)
 
-        for i, slave in enumerate(self._slaves.itervalues()):
+        for i, slave in enumerate(self._slaves.values()):
             row = int(math.floor(float(i) / images_per_row))
             col = i % images_per_row
 

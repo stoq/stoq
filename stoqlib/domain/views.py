@@ -169,7 +169,7 @@ class ProductFullStockView(Viewable):
                 manufacturer, tax_description, unit, image_id]
 
     def __eq__(self, other):
-        hvs = self.highjacked.values()
+        hvs = list(self.highjacked.values())
         # Viewable's __eq__ would only consider equal objects of the same
         # class, but the HighjackedViewable is an exception to the rule!
         if (other.__class__ in [self.__class__] + hvs or

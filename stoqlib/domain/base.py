@@ -173,7 +173,7 @@ class Domain(ORMObject):
         """Returns the object as a dictionary"""
         dictionary = {}
         for cls in self.__class__.__mro__:
-            for key, value in cls.__dict__.iteritems():
+            for key, value in cls.__dict__.items():
                 if isinstance(value, Property):
                     attribute = getattr(self, key)
                     # Handle Identifier Columns as string instead of int

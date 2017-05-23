@@ -401,7 +401,7 @@ class TillDailyMovementDialog(BaseEditor):
 
         # Summary's per card provider data
         self.percard_list.clear()
-        keys = self.card_summary.keys()
+        keys = list(self.card_summary.keys())
         for key in sorted(keys):
             card_summary_data = Settable(provider=key[0] + ' ' + key[1],
                                          income=self.card_summary[key])

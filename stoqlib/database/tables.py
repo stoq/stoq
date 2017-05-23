@@ -199,4 +199,4 @@ def get_table_type_by_name(table_name):
 
 
 def get_table_types():
-    return _get_tables_cache().values()
+    return list(_get_tables_cache().values())

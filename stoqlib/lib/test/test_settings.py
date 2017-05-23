@@ -24,7 +24,7 @@ class SettingsTest(unittest.TestCase):
 
             # Now, lets remove that value.
             settings.remove('other_value')
-            self.assertEquals(settings.items(), [('value', 123)])
+            self.assertEquals(list(settings.items()), [('value', 123)])
 
             # Getting it again should return None
             self.assertEquals(settings.get('other_value'), None)

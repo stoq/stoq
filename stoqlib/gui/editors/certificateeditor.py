@@ -52,7 +52,7 @@ class CertificateEditor(BaseEditor):
 
     def setup_proxies(self):
         self.type.prefill([
-            (v, k) for k, v in Certificate.types_str.iteritems()])
+            (v, k) for k, v in Certificate.types_str.items()])
         self.password.update(self.model.password.password)
         self.proxy = self.add_proxy(self.model, self.certificate_widgets)
 

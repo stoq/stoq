@@ -147,7 +147,7 @@ class UserProfile(Domain):
     def get_permissions(self):
         apps = {setting.app_dir_name: setting.has_permission
                 for setting in self.profile_settings}
-        for virtual_app, references in ProfileSettings.virtual_apps.iteritems():
+        for virtual_app, references in ProfileSettings.virtual_apps.items():
             apps[virtual_app] = any(apps.get(r, False) for r in references)
 
         return apps
