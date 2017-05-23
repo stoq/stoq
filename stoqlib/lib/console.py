@@ -100,4 +100,4 @@ class Console(object):
             code.interact(local=self.ns, banner=banner)
 
     def execute(self, filename):
-        execfile(filename, self.ns)
+        exec(compile(open(filename).read(), filename, 'exec'), self.ns)

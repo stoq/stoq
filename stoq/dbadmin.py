@@ -88,7 +88,7 @@ class StoqCommandHandler:
                     self.prog_name, cmd, self.prog_name))
                 return 1
 
-        nargs = func.func_code.co_argcount - 2
+        nargs = func.__code__.co_argcount - 2
         if len(args) < nargs:
             raise SystemExit("%s: %s requires at least %d argument(s)" % (
                 self.prog_name, cmd, nargs))

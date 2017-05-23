@@ -49,7 +49,7 @@ class _InvoiceLayoutListSlave(ModelListSlave):
         Column('description', _('Description'), data_type=str,
                expand=True, sorted=True),
         Column('size', _('Size'), data_type=str, width=90,
-               format_func=lambda (w, h): '%dx%d' % (w, h)),
+               format_func=lambda w_h: '%dx%d' % (w_h[0], w_h[1])),
     ]
 
     def delete_model(self, model, store):

@@ -114,7 +114,7 @@ class Patch(object):
             # Execute the patch, we cannot use __import__() since there are
             # hyphens in the filename and data/sql lacks an __init__.py
             ns = {}
-            execfile(self.filename, ns, ns)
+            exec(compile(open(self.filename).read(), self.filename, 'exec'), ns, ns)
             function = ns['apply_patch']
 
             # Create a new store that will be used to apply the patch and

@@ -112,7 +112,7 @@ if platform.system() == 'Windows':
             filename = os.path.join(logdir, name + ".log")
             try:
                 fp = open(filename, "w")
-            except IOError, e:
+            except IOError as e:
                 if e.errno != errno.EACCES:
                     raise
                 fp = open(os.devnull, "w")

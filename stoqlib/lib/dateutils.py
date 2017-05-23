@@ -298,7 +298,7 @@ def get_month_intervals_for_year(year):
 
     while True:
         try:
-            yield months.next(), months.next()
+            yield next(months), next(months)
         except StopIteration:
             break
 

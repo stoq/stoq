@@ -46,7 +46,8 @@ class StockTextColumn(Column):
         return column
 
     def cell_data_func(self, tree_column, renderer,
-                       model, treeiter, (column, renderer_prop)):
+                       model, treeiter, col_data):
+        column, renderer_prop = col_data
         row = model[treeiter]
         data = column.get_attribute(row[0], column.attribute, None)
         text = column.as_string(data)

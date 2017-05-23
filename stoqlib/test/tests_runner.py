@@ -199,7 +199,7 @@ class Stoq(Plugin):
         config = os.path.join(
             os.path.dirname(stoqlib.__file__), 'tests', 'config.py')
         if os.path.exists(config):
-            execfile(config, globals(), locals())
+            exec(compile(open(config).read(), config, 'exec'), globals(), locals())
 
         bootstrap_suite(address=hostname, dbname=dbname, port=port,
                         username=username, password=password, quick=quick)

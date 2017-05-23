@@ -189,7 +189,7 @@ def test_grid_editor():  # pragma nocover
     attribute.group = None
     run_dialog(GridAttributeEditor,
                parent=None, store=ec.store, model=attribute)
-    print attribute.group
+    print(attribute.group)
 
 if __name__ == '__main__':  # pragma nocover
     test_grid_editor()

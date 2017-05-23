@@ -61,9 +61,9 @@ class _WeakRef(object):
     def __init__(self, func):
         try:
             # bound method
-            self.obj = weakref.ref(func.im_self)
-            self.meth = weakref.ref(func.im_func)
-            self.id = id(func.im_func)
+            self.obj = weakref.ref(func.__self__)
+            self.meth = weakref.ref(func.__func__)
+            self.id = id(func.__func__)
         except AttributeError:
             # normal callable
             self.obj = None

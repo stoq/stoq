@@ -155,6 +155,6 @@ if __name__ == '__main__':
     try:
         retval = proxy.call('ping')
     except ServerError as e:
-        print "error: %s" % (e, )
+        print("error: %s" % (e, ))
     else:
-        print retval
+        print(retval)

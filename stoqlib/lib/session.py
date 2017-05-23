@@ -127,7 +127,7 @@ class _NssHTTPConnection(httplib.HTTPConnection):
         try:
             # If the cert fails validation it will raise an exception
             cert_is_valid = cert.verify_hostname(hostname)
-        except Exception, e:
+        except Exception as e:
             logging.error('failed verifying socket hostname "%s" matches cert subject "%s" (%s)',
                           hostname, cert.subject, e.strerror)
             return False
@@ -275,6 +275,6 @@ if __name__ == '__main__':
                'Accept': u'application/soap+xml; charset=utf-8'}
     with NssSession() as s:
         res = s.post(url, data, headers)
-        print "status:", res.status_code
-        print "reason:", res.reason
-        print "text:", res.text
+        print("status:", res.status_code)
+        print("reason:", res.reason)
+        print("text:", res.text)

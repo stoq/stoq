@@ -156,7 +156,7 @@ class DeliveryApp(ShellApp):
         self.uimanager.remove_ui(self.delivery_ui)
 
     def new_activate(self):
-        print "FIXME: new_activate"
+        print("FIXME: new_activate")
 
     def search_activate(self):
         self.run_dialog(TransporterSearch, self.store)

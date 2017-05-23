@@ -159,7 +159,8 @@ class NameColumn(Column):
         return column
 
     def cell_data_func(self, tree_column, text_renderer,
-                       model, treeiter, (column, renderer_prop)):
+                       model, treeiter, col_data):
+        column, renderer_prop = col_data
         obj = model[treeiter][0]
         if obj.parent:
             text_renderer.set_property(renderer_prop, obj.name)

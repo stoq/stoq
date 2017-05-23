@@ -34,7 +34,7 @@ ProxyTextView
 
 def main(args):
     if len(args) < 2:
-        print 'ERROR: need a filename'
+        print('ERROR: need a filename')
         return
 
     b = Gtk.Builder()

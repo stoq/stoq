@@ -329,7 +329,7 @@ class TestPurchaseOrder(DomainTest):
         purchase_item = self.create_purchase_order_item(order=order)
         purchase_item.sellable.description = u'Test'
         items = order.get_data_for_labels()
-        settable = items.next()
+        settable = next(items)
         self.assertEquals(settable.description, u'Test')
 
     def test_remove_item(self):
