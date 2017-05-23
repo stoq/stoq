@@ -114,7 +114,7 @@ def collect_report():
         parts = psycopg2.__version__.split(' ')
         extra = ' '.join(parts[1:])
         report_['psycopg_version'] = _fix_version(
-            map(int, parts[0].split('.')) + [extra])
+            list(map(int, parts[0].split('.'))) + [extra])
     except Exception:
         report_['psycopg_version'] = _fix_version(psycopg2.__version__)
 
