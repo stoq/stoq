@@ -16,6 +16,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Device for station', hidden
           GtkLabel(label6): 'Brand:'
           ProxyComboBox(brand_combo):
             item: 'Choose...', selected
+            item: 'Micheletti'
             item: 'Toledo'
           GtkLabel(label8): 'Model:'
           ProxyComboBox(model_combo): insensitive

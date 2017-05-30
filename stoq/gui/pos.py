@@ -38,6 +38,8 @@ from storm.expr import And, Lower
 
 from stoqdrivers.enum import UnitType
 from stoqlib.api import api
+from stoqlib.gui.base.dialogs import (get_current_toplevel, add_current_toplevel,
+                                      _pop_current_toplevel)
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import Transporter, Client
 from stoqlib.domain.product import StorableBatch
@@ -173,6 +175,26 @@ class FakeToken():
     """
     description = _('Direct sale')
     sale = None
+
+
+class MessageDialog(Gtk.Window):
+    def __init__(self, message):
+        super(MessageDialog, self).__init__()
+
+        self._label = Gtk.Label()
+        self._label.set_markup('<span font-size="xx-large">%s</span>' % message)
+
+        self.set_size_request(400, 300)
+        self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
+        self.connect('delete-event', lambda *a: True)
+        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.set_deletable(False)
+        self.set_transient_for(get_current_toplevel())
+        self.set_modal(True)
+        self.set_title('POS')
+        self.add(self._label)
+        self.show_all()
+        add_current_toplevel(self)
 
 
 class PosApp(ShellApp):
@@ -1205,6 +1227,33 @@ class PosApp(ShellApp):
 
         self._update_widgets()
         self._set_sale_sensitive(bool(self._token))
+
+        # When the user uses tokens, has a default product set, and uses a
+        # scale automatically add that product to the sale token
+        default_product = sysparam.get_object(self.store, 'DEFAULT_SCALE_TOKEN_PRODUCT')
+        if default_product and api.device_manager.scale:
+            default_sellable = default_product.sellable
+            if (default_sellable.unit and
+                    default_sellable.unit.unit_index == UnitType.WEIGHT):
+                data = api.device_manager.scale.read_data()
+                quantity = data.weight
+            else:
+                quantity = 1
+            item = TemporarySaleItem(sellable=default_sellable, quantity=quantity)
+            self.add_sale_item(item)
+            self._set_sale_sensitive(bool(self._token))
+
+            msg = _('Item added: {description} ({total})'.format(
+                description=item.description,
+                total=get_formatted_price(item.total)))
+            dialog = MessageDialog(msg)
+
+            def hide_dialog():
+                dialog.hide()
+                _pop_current_toplevel()
+                self.checkout(save_only=True)
+
+            GLib.timeout_add(4000, hide_dialog)
 
     def _set_selected_sellable(self, sellable, batch=None):
         """Saves the selected sellable for adding later.

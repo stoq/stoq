@@ -55,6 +55,7 @@ GtkBox(vbox1, orientation=vertical):
     row: 'Receivable', 'Show full time of the sale on receivable payments', 'No'
     row: 'Sales', 'Default salesperson role', 'Salesperson'
     row: 'Sales', 'Delivery service', 'Delivery'
+    row: 'Sales', 'Default Scale Token Product', ''
     row: 'Sales', 'Show POS application in Fullscreen', 'No'
     row: 'Sales', 'Exclude cashier operations in Point of Sale', 'No'
     row: 'Sales', 'Use tokens to control sales', 'No'

@@ -203,6 +203,7 @@ class ProductSupplierInfo(Domain):
         return self.branch.get_description() if self.branch else _(u'All Branches')
 
 
+@implementer(IDescribable)
 class Product(Domain):
     """A Product is a thing that can be:
 
@@ -449,6 +450,9 @@ class Product(Domain):
     #
     #  Public API
     #
+
+    def get_description(self):
+        return self.description
 
     def set_as_storable_product(self, quantity=0, branch=None, cost=None):
         """ Change a product without storable to a product with stock control.

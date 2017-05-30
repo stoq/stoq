@@ -141,6 +141,7 @@ class TestProduct(DomainTest):
     def test_description(self):
         self.sellable.description = u"Green shoe"
         self.assertEqual(self.product.description, u"Green shoe")
+        self.assertEqual(self.product.get_description(), u"Green shoe")
 
     def test_get_main_supplier_info(self):
         self.assertFalse(self.product.get_main_supplier_info())

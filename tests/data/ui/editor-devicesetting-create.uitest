@@ -16,6 +16,7 @@ GtkDialog(main_dialog.toplevel): title='Add Device', hidden
           GtkLabel(label6): 'Brand:'
           ProxyComboBox(brand_combo):
             item: 'Choose...'
+            item: 'Micheletti'
             item: 'Toledo', selected
           GtkLabel(label8): 'Model:'
           ProxyComboBox(model_combo):

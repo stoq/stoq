@@ -292,6 +292,14 @@ _details = [
         _(u'The default delivery service in the system.'),
         u'service.Service'),
 
+    ParameterDetails(
+        u'DEFAULT_SCALE_TOKEN_PRODUCT',
+        _(u'Sales'),
+        _(u'Default Scale Token Product'),
+        _(u'Default product that will be automatically added to a sale token '
+          'when the sale token is read'),
+        u'product.Product', initial=None),
+
     # XXX This parameter is POS-specific. How to deal with that
     # in a better way?
     ParameterDetails(
