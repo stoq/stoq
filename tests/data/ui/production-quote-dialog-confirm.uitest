@@ -7,7 +7,7 @@ GtkBox(toplevel, orientation=vertical):
     column: title='Description'
     column: title='Responsible'
     column: title='Opened'
-    row: True, 333, u'production', u'SalesPerson', datetime.today()
+    row: True, 333, 'production', 'SalesPerson', datetime.today()
   GtkBox(hbox1, orientation=horizontal):
     GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
       GtkButton(select_all, expand=True, fill=True): 'gtk-select-all', insensitive
@@ -26,13 +26,13 @@ model: PurchaseOrder<3>
   expected_freight: <currency $ 0>
   expected_pay_date: datetime.today()
   expected_receival_date: datetime.today()
-  freight_type: u'fob'
-  notes: u''
+  freight_type: 'fob'
+  notes: ''
   open_date: datetime.today()
   quote_deadline: None
   receival_date: None
-  salesperson_name: u''
-  status: u'quoting'
+  salesperson_name: ''
+  status: 'quoting'
   surcharge_value: <currency $ 0>
 
 model: PurchaseItem<4>

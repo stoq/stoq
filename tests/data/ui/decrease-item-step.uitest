@@ -30,7 +30,7 @@ GtkDialog(toplevel): title='Manual Stock Decrease', hidden
                   column: title='Category', expand
                   column: title='Quantity'
                   column: title='Unit'
-                  row: u'', u'Description', u'', Decimal('1.000'), u''
+                  row: '', 'Description', '', Decimal('1.000'), ''
                 SummaryLabel(step.summary, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total quantity:</b>'
                   GtkLabel(): '<b>1</b>'

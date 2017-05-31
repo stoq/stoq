@@ -24,7 +24,7 @@ GtkDialog(main_dialog.toplevel): title='Add Taxes and Tax rates', hidden
         GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
 
 model: SellableTaxConstant<1>
-  description: u'random tax'
+  description: 'random tax'
   tax_type: 45
   tax_value: Decimal('20.00')
 

@@ -13,7 +13,7 @@ GtkDialog(toplevel): title='Receive Quote Wizard', hidden
             column: title='Quantity'
             column: title='Ordered'
             column: title='Cost'
-            row: True, u'Description', u'Supplier', Decimal('8.000'), Decimal('0'), <currency $125>
+            row: True, 'Description', 'Supplier', Decimal('8.000'), Decimal('0'), <currency $125>
           GtkButtonBox(step.hbuttonbox1, orientation=horizontal, fill=True):
             GtkButton(step.select_all_button, expand=True, fill=True): '_Select All'
             GtkButton(step.unselect_all_button, expand=True, fill=True): '_Unselect All'
@@ -41,13 +41,13 @@ model: PurchaseOrder<3>
   expected_freight: <currency $ 0>
   expected_pay_date: datetime.today()
   expected_receival_date: datetime.today()
-  freight_type: u'fob'
-  notes: u''
+  freight_type: 'fob'
+  notes: ''
   open_date: datetime.datetime(2012, 1, 1, 0, 0)
   quote_deadline: None
   receival_date: None
-  salesperson_name: u''
-  status: u'cancelled'
+  salesperson_name: ''
+  status: 'cancelled'
   surcharge_value: <currency $ 0>
   transporter_id: NoneType<2>
 

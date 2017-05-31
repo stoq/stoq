@@ -26,7 +26,7 @@ GtkDialog(main_dialog.toplevel): title='Production Details', hidden
                 column: title='Quantity'
                 column: title='Produced'
                 column: title='Lost'
-                row: u'Composed product', u'', Decimal('10.000'), Decimal('1.000'), Decimal('0.000')
+                row: 'Composed product', '', Decimal('10.000'), Decimal('1.000'), Decimal('0.000')
               GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
                 GtkButton(produce_button): 'Add Produced', insensitive
             GtkBox(materials_vbox, orientation=vertical):
@@ -40,8 +40,8 @@ GtkDialog(main_dialog.toplevel): title='Production Details', hidden
                 column: title='Lost'
                 column: title='To Purchase', hidden
                 column: title='To Make', hidden
-                row: u'Component 1', u'', u'', Decimal('10.000'), Decimal('10.000'), Decimal('1.000'), Decimal('0.000'), Decimal('0.000'), Decimal('0.000')
-                row: u'Component 2', u'', u'', Decimal('10.000'), Decimal('10.000'), Decimal('1.000'), Decimal('0.000'), Decimal('0.000'), Decimal('0.000')
+                row: 'Component 1', '', '', Decimal('10.000'), Decimal('10.000'), Decimal('1.000'), Decimal('0.000'), Decimal('0.000'), Decimal('0.000')
+                row: 'Component 2', '', '', Decimal('10.000'), Decimal('10.000'), Decimal('1.000'), Decimal('0.000'), Decimal('0.000'), Decimal('0.000')
               GtkButtonBox(hbuttonbox3, orientation=horizontal, fill=True):
                 GtkButton(lost_button): 'Lost Material', insensitive
                 GtkButton(allocate_button): 'Allocate More', insensitive

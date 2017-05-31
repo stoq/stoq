@@ -25,7 +25,7 @@ GtkDialog(main_dialog.toplevel): title='Product History', hidden
                 column: title='Quantity'
                 column: title='Cost'
                 column: title='Unit'
-                row: 222, u'1', datetime.datetime(2013, 1, 27, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), 111, u'Supplier', 222, Decimal('8.000'), <currency $125>, None
+                row: 222, '1', datetime.datetime(2013, 1, 27, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), 111, 'Supplier', 222, Decimal('8.000'), <currency $125>, None
               SummaryLabel(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>8.0</b>'
@@ -38,7 +38,7 @@ GtkDialog(main_dialog.toplevel): title='Product History', hidden
                 column: title='Client', expand
                 column: title='Sold'
                 column: title='Unit'
-                row: 123, u'1', datetime.datetime(2013, 1, 27, 0, 0), datetime.today(), None, Decimal('3.000'), None
+                row: 123, '1', datetime.datetime(2013, 1, 27, 0, 0), datetime.today(), None, Decimal('3.000'), None
               SummaryLabel(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>3.000</b>'
@@ -52,8 +52,8 @@ GtkDialog(main_dialog.toplevel): title='Product History', hidden
                 column: title='Destination', expand
                 column: title='Responsible', expand
                 column: title='Transfered'
-                row: 55, u'1', datetime.datetime(2013, 1, 27, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), u'Moda Stoq', u'Dest shop', u'Ipswich', Decimal('2.000')
-                row: 66, u'1', datetime.datetime(2013, 1, 27, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), u'Dest shop', u'Moda Stoq', u'Ipswich', Decimal('1.000')
+                row: 55, '1', datetime.datetime(2013, 1, 27, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), 'Moda Stoq', 'Dest shop', 'Ipswich', Decimal('2.000')
+                row: 66, '1', datetime.datetime(2013, 1, 27, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), 'Dest shop', 'Moda Stoq', 'Ipswich', Decimal('1.000')
               SummaryLabel(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>3.0</b>'
@@ -70,7 +70,7 @@ GtkDialog(main_dialog.toplevel): title='Product History', hidden
                 column: title='Loaned'
                 column: title='Sold'
                 column: title='Returned'
-                row: 33, u'1', datetime.datetime(2013, 1, 27, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), u'', None, u'Description', None, Decimal('2.000'), Decimal('0.000'), Decimal('0.000')
+                row: 33, '1', datetime.datetime(2013, 1, 27, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), '', None, 'Description', None, Decimal('2.000'), Decimal('0.000'), Decimal('0.000')
               SummaryLabel(fill=True): hidden
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>2.0</b>'
@@ -83,7 +83,7 @@ GtkDialog(main_dialog.toplevel): title='Product History', hidden
                 column: title='Removed By', expand
                 column: title='Quantity'
                 column: title='Unit'
-                row: 4, u'1', datetime.datetime(2013, 1, 27, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), u'SalesPerson', Decimal('1.000'), None
+                row: 4, '1', datetime.datetime(2013, 1, 27, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), 'SalesPerson', Decimal('1.000'), None
               SummaryLabel(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>1.000</b>'
@@ -113,7 +113,7 @@ GtkDialog(main_dialog.toplevel): title='Product History', hidden
                 column: title='Batch', expand
                 column: title='Batch Date'
                 column: title='Quantity'
-                row: u'1', datetime.datetime(2013, 1, 27, 0, 0), Decimal('1.000')
+                row: '1', datetime.datetime(2013, 1, 27, 0, 0), Decimal('1.000')
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

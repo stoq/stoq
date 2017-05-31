@@ -44,7 +44,7 @@ GtkDialog(toplevel): title='Till Search', hidden
             column: title='Final'
             column: title='Opened by', expand
             column: title='Closed by', expand
-            row: datetime.date(2014, 1, 1), datetime.date(2014, 1, 1), <currency $66.43>, <currency $12366.43>, u'individual', u'Administrator'
+            row: datetime.date(2014, 1, 1), datetime.date(2014, 1, 1), <currency $66.43>, <currency $12366.43>, 'individual', 'Administrator'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):

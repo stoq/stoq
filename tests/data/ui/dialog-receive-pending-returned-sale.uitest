@@ -27,7 +27,7 @@ GtkBox(details_vbox, orientation=vertical):
         column: title='Qty returned'
         column: title='Price'
         column: title='Total'
-        row: u'', u'Description', Decimal('1.000'), <currency $100>, Decimal('100.000')
+        row: '', 'Description', Decimal('1.000'), <currency $100>, Decimal('100.000')
     GtkBox(hbox1, orientation=horizontal):
       GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
         ProxyTextView(reason): invalid

@@ -22,7 +22,7 @@ GtkDialog(toplevel): title='Supplier Search', hidden
             column: title='Phone Number'
             column: title='DBA'
             column: title='CNPJ'
-            row: u'Eric S. Raymond', u'', u'River Roupas', u'90.117.749/7654-80'
+            row: 'Eric S. Raymond', '', 'River Roupas', '90.117.749/7654-80'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):

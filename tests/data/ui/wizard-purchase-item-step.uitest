@@ -33,7 +33,7 @@ GtkDialog(toplevel): title='New Order', hidden
                   column: title='Unit'
                   column: title='Cost'
                   column: title='Total'
-                  row: u'', u'Description', u'', Decimal('1.000'), datetime.datetime(2010, 1, 4, 0, 0), u'', <currency $125>, <currency $125>
+                  row: '', 'Description', '', Decimal('1.000'), datetime.datetime(2010, 1, 4, 0, 0), '', <currency $125>, <currency $125>
                 SummaryLabel(step.summary, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
                   GtkLabel(): '<b>$125.00</b>'

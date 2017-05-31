@@ -9,7 +9,7 @@ GtkDialog(toplevel): title='Invoice Layouts', hidden
             ObjectList(expand=True, fill=True):
               column: title='Description', expand
               column: title='Size'
-              row: u'Standard Invoice', (80, 60)
+              row: 'Standard Invoice', (80, 60)
             GtkBox(orientation=vertical, fill=True, padding=6):
               GtkButton(fill=True): 'gtk-add'
               GtkButton(fill=True): 'gtk-remove', insensitive

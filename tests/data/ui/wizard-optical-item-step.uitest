@@ -37,12 +37,12 @@ GtkDialog(toplevel): title='Sale with work order', hidden
                   column: title='Sale Price'
                   column: title='Discount'
                   column: title='Total'
-                  row: u'', u'12345680', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
-                  row: u'', u'12345678', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
-                  row: u'', u'12345679', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
-                  row: u'', u'12345681', u'Description', u'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
-                  row: u'', u'666', u'Package', u'Patient', Decimal('1.000'), <currency $10>, <currency $ 0>, 0, <currency $ 0>
-                    row: u'', u'', u'Component', u'Patient', Decimal('5.000'), <currency $10>, <currency $2>, Decimal('80.0'), <currency $10>
+                  row: '', '12345680', 'Description', 'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
+                  row: '', '12345678', 'Description', 'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
+                  row: '', '12345679', 'Description', 'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
+                  row: '', '12345681', 'Description', 'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
+                  row: '', '666', 'Package', 'Patient', Decimal('1.000'), <currency $10>, <currency $ 0>, 0, <currency $ 0>
+                    row: '', '', 'Component', 'Patient', Decimal('5.000'), <currency $10>, <currency $2>, Decimal('80.0'), <currency $10>
                 SummaryLabel(step.summary, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
                   GtkLabel(): '<b>$50.00</b>'
@@ -80,7 +80,7 @@ model: Sale<1>
   paid: False
   return_date: None
   service_invoice_number: None
-  status: u'quote'
+  status: 'quote'
   surcharge_value: <currency $ 0>
   total_amount: <currency $ 0>
 
@@ -88,15 +88,15 @@ model: Client<2>
   salary: <currency $ 0>
   credit_limit: <currency $ 0>
   days_late: 0
-  status: u'solvent'
+  status: 'solvent'
 
 model: Invoice<3>
   cnf: None
   invoice_number: None
-  invoice_type: u'out'
+  invoice_type: 'out'
   key: None
   mode: None
-  operation_nature: u'Sale'
+  operation_nature: 'Sale'
   series: None
 
 model: SaleItem<4>

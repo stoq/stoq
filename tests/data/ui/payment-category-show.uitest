@@ -11,7 +11,7 @@ GtkDialog(toplevel): title='Payment categories', hidden
               column: title='Type'
               column: title='Color'
               column: title='Color'
-              row: u'category', u'payable', u'#ff0000', u'#ff0000'
+              row: 'category', 'payable', '#ff0000', '#ff0000'
             GtkBox(orientation=vertical, fill=True, padding=6):
               GtkButton(fill=True): 'gtk-add'
               GtkButton(fill=True): 'gtk-remove', insensitive

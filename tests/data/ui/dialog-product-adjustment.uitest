@@ -27,7 +27,7 @@ GtkDialog(main_dialog.toplevel): title='Products Adjustment', hidden
             column: title='Counted'
             column: title='Diff'
             column: title='Actual'
-            row: False, u'', u'Description', None, u'No tax', Decimal('5.000'), None, None, Decimal('10.000')
+            row: False, '', 'Description', None, 'No tax', Decimal('5.000'), None, None, Decimal('10.000')
           GtkButtonBox(hbuttonbox1, orientation=horizontal):
             GtkButton(adjust_button): '_Adjust', insensitive
             GtkButton(adjust_all_button): 'Adjust All'

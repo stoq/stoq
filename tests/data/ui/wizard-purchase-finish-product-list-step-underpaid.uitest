@@ -13,8 +13,8 @@ GtkDialog(toplevel): title='Purchase Finish', hidden
             column: title='Unit'
             column: title='Cost'
             column: title='Total'
-            row: u'Prod 1', Decimal('1.000'), Decimal('1.000'), None, <currency $125>, Decimal('125.00000000000')
-            row: u'Prod 2', Decimal('5.000'), Decimal('1.000'), None, <currency $125>, Decimal('125.00000000000')
+            row: 'Prod 1', Decimal('1.000'), Decimal('1.000'), None, <currency $125>, Decimal('125.00000000000')
+            row: 'Prod 2', Decimal('5.000'), Decimal('1.000'), None, <currency $125>, Decimal('125.00000000000')
           SummaryLabel(step.summary, fill=True):
             GtkLabel(expand=True, fill=True, padding=6): 'Total:'
             GtkLabel(): '<b>$250.00</b>'

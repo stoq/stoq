@@ -17,7 +17,7 @@ GtkDialog(toplevel): title='New Production', hidden
                 column: title='In Stock'
                 column: title='To Purchase'
                 column: title='To Make'
-                row: u'', u'', u'Description', u'', Decimal('1.000000'), Decimal('0'), Decimal('1.000000'), Decimal('0.000')
+                row: '', '', 'Description', '', Decimal('1.000000'), Decimal('0'), Decimal('1.000000'), Decimal('0.000')
               GtkBox(hbox1, orientation=horizontal):
                 GtkButton(edit_button): 'gtk-edit', insensitive
                 ProxyCheckButton(start_production_check, expand=True, fill=True): 'Start Production even if there are missing components'
@@ -34,58 +34,58 @@ GtkDialog(toplevel): title='New Production', hidden
 model: ProductionOrder<1>
   cancel_date: None
   close_date: None
-  description: u'Testing production wizard.'
+  description: 'Testing production wizard.'
   expected_start_date: None
   open_date: datetime.today()
   start_date: None
-  status: u'opened'
+  status: 'opened'
 
 model: ProductComponent<2>
   component_id: Product<4>
-  design_reference: u''
+  design_reference: ''
   price: <currency $ 0>
   product_id: Product<3>
   quantity: Decimal('1.000')
 
 model: Product<3>
-  brand: u''
+  brand: ''
   consignment: False
   depth: Decimal('0')
   ex_tipi: None
-  family: u''
+  family: ''
   genero: None
   height: Decimal('0')
   internal_use: False
   is_composed: False
   is_grid: False
   is_package: False
-  location: u''
+  location: ''
   manage_stock: True
-  model: u''
+  model: ''
   ncm: None
-  part_number: u''
+  part_number: ''
   production_time: 1
   weight: Decimal('0')
   width: Decimal('0')
   yield_quantity: Decimal('1.000')
 
 model: Product<4>
-  brand: u''
+  brand: ''
   consignment: False
   depth: Decimal('0')
   ex_tipi: None
-  family: u''
+  family: ''
   genero: None
   height: Decimal('0')
   internal_use: False
   is_composed: False
   is_grid: False
   is_package: False
-  location: u''
+  location: ''
   manage_stock: True
-  model: u''
+  model: ''
   ncm: None
-  part_number: u''
+  part_number: ''
   production_time: 1
   weight: Decimal('0')
   width: Decimal('0')

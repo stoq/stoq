@@ -25,7 +25,7 @@ GtkDialog(main_dialog.toplevel): title='Payments Editor', hidden
                     column: title='Status'
                     column: title='Value'
                     column: title='Due date'
-                    row: u'1/1 Check for sale 09431', u'Preview', <currency $50>, datetime.datetime(2001, 1, 1, 0, 0)
+                    row: '1/1 Check for sale 09431', 'Preview', <currency $50>, datetime.datetime(2001, 1, 1, 0, 0)
                 GtkBox(vbox3, orientation=vertical, fill=True):
                   GtkButton(remove_button): 'gtk-remove', insensitive
                   GtkLabel(label2, expand=True, fill=True):

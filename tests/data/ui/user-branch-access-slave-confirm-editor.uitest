@@ -169,8 +169,8 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "individual"', hidden
 
 model: LoginUser<1>
   is_active: True
-  pw_hash: u'5f4dcc3b5aa765d61d8327deb882cf99'
-  username: u'username'
+  pw_hash: '5f4dcc3b5aa765d61d8327deb882cf99'
+  username: 'username'
 
 model: Branch<2>
   acronym: None

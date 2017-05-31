@@ -83,7 +83,7 @@ model: Payment<2>
   base_value: <currency $100>
   bill_received: False
   cancel_date: None
-  description: u'1/2 Payment name'
+  description: '1/2 Payment name'
   discount: <currency $ 0>
   due_date: datetime.datetime(2015, 1, 1, 0, 0)
   group_id: PaymentGroup<1>
@@ -92,16 +92,16 @@ model: Payment<2>
   paid_date: None
   paid_value: None
   payment_number: None
-  payment_type: u'out'
+  payment_type: 'out'
   penalty: <currency $ 0>
-  status: u'pending'
+  status: 'pending'
   value: <currency $100>
 
 model: Payment<3>
   base_value: <currency $100>
   bill_received: False
   cancel_date: None
-  description: u'2/2 Payment name'
+  description: '2/2 Payment name'
   discount: <currency $ 0>
   due_date: datetime.datetime(2015, 1, 8, 0, 0)
   group_id: PaymentGroup<1>
@@ -110,8 +110,8 @@ model: Payment<3>
   paid_date: None
   paid_value: None
   payment_number: None
-  payment_type: u'out'
+  payment_type: 'out'
   penalty: <currency $ 0>
-  status: u'pending'
+  status: 'pending'
   value: <currency $100>
 

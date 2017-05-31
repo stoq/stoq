@@ -19,8 +19,8 @@ GtkDialog(toplevel): title='Employee Role Search', hidden
                 stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Role', expand
-            row: u'Manager'
-            row: u'Salesperson'
+            row: 'Manager'
+            row: 'Salesperson'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):

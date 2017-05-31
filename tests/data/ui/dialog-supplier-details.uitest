@@ -21,7 +21,7 @@ GtkDialog(main_dialog.toplevel): title='Supplier Details', hidden
                 column: title='Date'
                 column: title='Status'
                 column: title='Total'
-                row: 123, datetime.datetime(2012, 1, 1, 0, 0), u'Quoting', Decimal('1000.00000000000')
+                row: 123, datetime.datetime(2012, 1, 1, 0, 0), 'Quoting', Decimal('1000.00000000000')
               SummaryLabel(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>$1000.00</b>'
@@ -30,7 +30,7 @@ GtkDialog(main_dialog.toplevel): title='Supplier Details', hidden
               column: title='Description', expand
               column: title='Total quantity'
               column: title='Total value'
-              row: u'', u'Description', u'8.000 ', Decimal('1000.000')
+              row: '', 'Description', '8.000 ', Decimal('1000.000')
             ObjectList(payments_list):
               column: title='Payment #'
               column: title='Type'
@@ -39,7 +39,7 @@ GtkDialog(main_dialog.toplevel): title='Supplier Details', hidden
               column: title='Status'
               column: title='Value'
               column: title='Days Late'
-              row: 999, u'Money', u'1/1 Money for order 00123', datetime.datetime(2012, 1, 1, 0, 0), u'Paid', <currency $1000>, 0
+              row: 999, 'Money', '1/1 Money for order 00123', datetime.datetime(2012, 1, 1, 0, 0), 'Paid', <currency $1000>, 0
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

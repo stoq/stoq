@@ -188,7 +188,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                     column: title='Ref.'
                     column: title='Production Cost'
                     column: title='Total'
-                    row: u'4567', Decimal('1.000'), u'', u'Description', u'', u'', <currency $125>, Decimal('125.00')
+                    row: '4567', Decimal('1.000'), '', 'Description', '', '', <currency $125>, Decimal('125.00')
                   SummaryLabel(component_label, fill=True):
                     GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                     GtkLabel(): '<b>$125.00</b>'

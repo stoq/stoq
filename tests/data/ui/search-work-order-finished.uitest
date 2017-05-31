@@ -26,7 +26,7 @@ GtkDialog(toplevel): title='Search for work orders', hidden
             column: title='Approval date', hidden
             column: title='Finish date'
             column: title='Total'
-            row: 123, u'Finished', u'Description - ', u'Client', datetime.datetime(2014, 1, 1, 0, 0), datetime.datetime(2014, 1, 1, 0, 0), datetime.datetime(2014, 1, 1, 0, 0), Decimal('10.00000')
+            row: 123, 'Finished', 'Description - ', 'Client', datetime.datetime(2014, 1, 1, 0, 0), datetime.datetime(2014, 1, 1, 0, 0), datetime.datetime(2014, 1, 1, 0, 0), Decimal('10.00000')
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):

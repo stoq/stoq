@@ -37,7 +37,7 @@ GtkDialog(toplevel): title='Payments to Receive Search', hidden
             column: title='Drawee'
             column: title='Due Date'
             column: title='Value'
-            row: 123456, u'Test payment', None, datetime.today(), <currency $10>
+            row: 123456, 'Test payment', None, datetime.today(), <currency $10>
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True): slave SearchDialogButtonSlave is attached

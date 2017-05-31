@@ -47,7 +47,7 @@ GtkDialog(toplevel): title='Production History Search', hidden
             column: title='Consumed'
             column: title='Manualy Decreased'
             column: title='Lost'
-            row: u'2', u'Botas', None, None, None, None, None, None, Decimal('3.000')
+            row: '2', 'Botas', None, None, None, None, None, None, Decimal('3.000')
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal): hidden

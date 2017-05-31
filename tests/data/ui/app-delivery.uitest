@@ -130,8 +130,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Deliveries', hidden
                 column: title='Pack date', hidden
                 column: title='Send date'
                 column: title='Receive date', hidden
-                row: 666, u'Waiting', None, None, u'Moda Stoq', None, datetime.datetime(2017, 1, 1, 0, 0), None, None, None, None, None
-                row: 667, u'Waiting', None, None, u'Moda Stoq', None, datetime.datetime(2017, 1, 1, 0, 0), None, None, None, None, None
+                row: 666, 'Waiting', None, None, 'Moda Stoq', None, datetime.datetime(2017, 1, 1, 0, 0), None, None, None, None, None
+                row: 667, 'Waiting', None, None, 'Moda Stoq', None, datetime.datetime(2017, 1, 1, 0, 0), None, None, None, None, None
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkBox(orientation=horizontal):

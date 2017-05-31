@@ -17,7 +17,7 @@ GtkBox(toplevel, orientation=vertical):
         column: title='Stock cost'
         column: title='Qty'
         column: title='Total'
-        row: datetime.today(), u'Administrator', u'Description', u'Sold in sale 01234', <currency $10.50>, Decimal('5.000'), <currency $52.50>
+        row: datetime.today(), 'Administrator', 'Description', 'Sold in sale 01234', <currency $10.50>, Decimal('5.000'), <currency $52.50>
       SummaryLabel(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
         GtkLabel(): '<b>$52.50</b>'
@@ -45,7 +45,7 @@ GtkBox(toplevel, orientation=vertical):
         column: title='Open date', hidden
         column: title='Confirm date'
         column: title='Total'
-        row: 1234, u'', u'Moda Stoq', datetime.today(), None, <currency $100>
+        row: 1234, '', 'Moda Stoq', datetime.today(), None, <currency $100>
       SummaryLabel(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
         GtkLabel(): '<b>$100.00</b>'
@@ -55,4 +55,4 @@ GtkBox(toplevel, orientation=vertical):
         column: title='Date'
         column: title='Branch', expand
         column: title='Removed By'
-        row: 5678, datetime.today(), u'Moda Stoq', u'SalesPerson'
+        row: 5678, datetime.today(), 'Moda Stoq', 'SalesPerson'

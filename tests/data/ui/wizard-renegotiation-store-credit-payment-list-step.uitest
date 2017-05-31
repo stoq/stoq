@@ -16,7 +16,7 @@ GtkDialog(toplevel): title='Payments Renegotiation Wizard', hidden
             column: title='Due date'
             column: title='Status'
             column: title='Value'
-            row: 333, u'Test payment', datetime.today(), u'Cancelled', <currency $10>
+            row: 333, 'Test payment', datetime.today(), 'Cancelled', <currency $10>
           GtkBox(step.hbox1, orientation=horizontal, fill=True):
             GtkEventBox(step.cash_change_holder, expand=True, fill=True): slave CashChangeSlave is attached
               GtkBox(toplevel, orientation=vertical):

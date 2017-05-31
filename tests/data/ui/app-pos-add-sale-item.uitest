@@ -126,7 +126,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                 column: title='Price'
                 column: title='Quantity'
                 column: title='Total'
-                row: u'', u'Description', u'', <currency $10>, u'1 ', Decimal('10.00')
+                row: '', 'Description', '', <currency $10>, '1 ', Decimal('10.00')
               GtkBox(details_box, orientation=vertical):
                 ProxyLabel(details_lbl, fill=True): '<b>Description</b>\n1 x $10.00'
                 GtkAspectFrame(aspectframe1):

@@ -3,9 +3,9 @@ ListContainer(listcontainer):
   ObjectList(expand=True, fill=True):
     column: title='Description', expand
     column: title='Monthly cost', expand
-    row: u'Cielo', None
-    row: u'Default', None
-    row: u'Santander', None
+    row: 'Cielo', None
+    row: 'Default', None
+    row: 'Santander', None
   GtkBox(orientation=vertical, fill=True, padding=6):
     GtkButton(fill=True): 'gtk-add'
     GtkButton(fill=True): 'gtk-remove', insensitive

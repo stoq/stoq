@@ -138,19 +138,19 @@ model: Transporter<1>
   person_id: Person<2>
 
 model: Person<2>
-  email: u''
-  fax_number: u''
-  mobile_number: u''
-  name: u'transporter name'
-  notes: u''
-  phone_number: u''
+  email: ''
+  fax_number: ''
+  mobile_number: ''
+  name: 'transporter name'
+  notes: ''
+  phone_number: ''
 
 model: Address<3>
-  complement: u''
-  district: u'district'
+  complement: ''
+  district: 'district'
   is_main_address: True
   person_id: Person<2>
-  postal_code: u''
-  street: u'street'
+  postal_code: ''
+  street: 'street'
   streetnumber: 123
 

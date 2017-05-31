@@ -14,7 +14,7 @@ GtkDialog(toplevel): title='Purchase Finish', hidden
             column: title='Status'
             column: title='Value'
             column: title='Paid value'
-            row: 33333, u'purchase payment description', datetime.today(), None, u'Preview', <currency $750>, None
+            row: 33333, 'purchase payment description', datetime.today(), None, 'Preview', <currency $750>, None
           GtkTable(step.table1, fill=True):
             GtkLabel(step.label2): 'Total Received:'
             ProxyLabel(step.received_value): '<span weight="bold">$250.00</span>'

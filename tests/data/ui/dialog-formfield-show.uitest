@@ -7,13 +7,13 @@ GtkDialog(toplevel): title='Form fields', hidden
         GtkBox(orientation=horizontal):
           ObjectList(forms):
             column: title='Description', expand
-            row: u'Branch'
-            row: u'Client'
-            row: u'Employee'
-            row: u'Product'
-            row: u'Supplier'
-            row: u'Transporter'
-            row: u'User'
+            row: 'Branch'
+            row: 'Client'
+            row: 'Employee'
+            row: 'Product'
+            row: 'Supplier'
+            row: 'Transporter'
+            row: 'User'
           GtkBox(orientation=vertical, expand=True, fill=True):
             ObjectList(fields, expand=True, fill=True):
               column: title='Description', expand

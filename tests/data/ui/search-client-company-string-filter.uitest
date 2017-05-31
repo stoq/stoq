@@ -37,7 +37,7 @@ GtkDialog(toplevel): title='Client Search', hidden
             column: title='Birth Date', hidden
             column: title='Fancy Name', hidden
             column: title='Email', hidden
-            row: u'Agatha Christie', None, u'', u'', None, u'', None, None, None, u'Dummy shop', u''
+            row: 'Agatha Christie', None, '', '', None, '', None, None, None, 'Dummy shop', ''
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):

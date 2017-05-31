@@ -24,9 +24,9 @@ GtkDialog(main_dialog.toplevel): title='Add Send work orders', hidden
               column: title='Salesperson', hidden
               column: title='Open date', hidden
               column: title='Approval date'
-              row: True, 666, None, u'Waiting', u'Description - Equipment 0', None, None, u'Moda Stoq', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
-              row: True, 667, None, u'Waiting', u'Description - Equipment 1', None, None, u'Moda Stoq', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
-              row: False, 668, None, u'Waiting', u'Description - Equipment 2', None, None, u'Moda Stoq', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
+              row: True, 666, None, 'Waiting', 'Description - Equipment 0', None, None, 'Moda Stoq', 'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
+              row: True, 667, None, 'Waiting', 'Description - Equipment 1', None, None, 'Moda Stoq', 'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
+              row: False, 668, None, 'Waiting', 'Description - Equipment 2', None, None, 'Moda Stoq', 'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
           GtkBox(hbox1, orientation=horizontal):
             GtkButton(edit_btn, fill=True): 'Observations', insensitive
             GtkButton(details_btn, fill=True): 'gtk-info', insensitive

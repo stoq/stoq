@@ -13,7 +13,7 @@ GtkDialog(toplevel): title='Receive Quote Wizard', hidden
             column: title='Quantity'
             column: title='Ordered'
             column: title='Cost'
-            row: True, u'Description', u'Supplier', Decimal('8.000'), Decimal('0'), <currency $125>
+            row: True, 'Description', 'Supplier', Decimal('8.000'), Decimal('0'), <currency $125>
           GtkButtonBox(step.hbuttonbox1, orientation=horizontal, fill=True):
             GtkButton(step.select_all_button, expand=True, fill=True): '_Select All'
             GtkButton(step.unselect_all_button, expand=True, fill=True): '_Unselect All'

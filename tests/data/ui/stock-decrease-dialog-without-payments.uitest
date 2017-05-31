@@ -23,7 +23,7 @@ GtkBox(details_vbox, orientation=vertical):
         column: title='Batch'
         column: title='Qty'
         column: title='Cost'
-        row: u'', u'Description', None, Decimal('1.000'), <currency $100>
+        row: '', 'Description', None, Decimal('1.000'), <currency $100>
       SummaryLabel(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total cost:</b>'
         GtkLabel(): '<b>$ 0.00</b>'

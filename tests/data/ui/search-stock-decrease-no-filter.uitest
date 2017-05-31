@@ -46,8 +46,8 @@ GtkDialog(toplevel): title='Manual Stock Decrease Search', hidden
             column: title='Items removed'
             column: title='CFOP', expand
             column: title='Reason'
-            row: 54287, datetime.datetime(2012, 1, 1, 0, 0), u'Moda Stoq', u'SalesPerson', u'John', Decimal('1.000'), u'test', u'Defective product'
-            row: 74268, datetime.datetime(2012, 2, 2, 0, 0), u'Moda Stoq', u'SalesPerson', u'John', Decimal('100.000'), u'test', u'Item was stolen'
+            row: 54287, datetime.datetime(2012, 1, 1, 0, 0), 'Moda Stoq', 'SalesPerson', 'John', Decimal('1.000'), 'test', 'Defective product'
+            row: 74268, datetime.datetime(2012, 2, 2, 0, 0), 'Moda Stoq', 'SalesPerson', 'John', Decimal('100.000'), 'test', 'Item was stolen'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):

@@ -21,7 +21,7 @@ GtkDialog(toplevel): title='Search for Units', hidden
             column: title='Description'
             column: title='System'
             column: title='Fraction'
-            row: u'Kg', 20, True
+            row: 'Kg', 20, True
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):

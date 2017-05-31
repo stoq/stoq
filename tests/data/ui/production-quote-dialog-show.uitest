@@ -7,7 +7,7 @@ GtkBox(toplevel, orientation=vertical):
     column: title='Description'
     column: title='Responsible'
     column: title='Opened'
-    row: True, 333, u'production', u'SalesPerson', datetime.today()
+    row: True, 333, 'production', 'SalesPerson', datetime.today()
   GtkBox(hbox1, orientation=horizontal):
     GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
       GtkButton(select_all, expand=True, fill=True): 'gtk-select-all', insensitive

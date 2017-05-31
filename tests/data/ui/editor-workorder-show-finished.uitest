@@ -108,8 +108,8 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                             column: title='Quantity'
                             column: title='Consumed quantity'
                             column: title='Total'
-                            row: u'', u'', u'Product A', <currency $99>, Decimal('2.000'), Decimal('0.000'), <currency $198>
-                            row: u'', u'', u'Product B', <currency $5>, Decimal('100.000'), Decimal('0.000'), <currency $500>
+                            row: '', '', 'Product A', <currency $99>, Decimal('2.000'), Decimal('0.000'), <currency $198>
+                            row: '', '', 'Product B', <currency $5>, Decimal('100.000'), Decimal('0.000'), <currency $500>
                           SummaryLabel(summary, fill=True):
                             GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                             GtkLabel(): '<b>$698.00</b>'
@@ -131,10 +131,10 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                     column: title='Old value', hidden
                     column: title='New value'
                     column: title='Notes'
-                    row: datetime.datetime(2013, 3, 1, 0, 0), u'Administrator', u'Approved', u'No', u'Yes', None
-                    row: datetime.datetime(2013, 3, 2, 0, 0), u'Administrator', u'Status', u'Opened', u'Waiting', None
-                    row: datetime.datetime(2013, 3, 3, 0, 0), u'Administrator', u'Status', u'Waiting', u'In progress', None
-                    row: datetime.datetime(2013, 3, 4, 0, 0), u'Administrator', u'Status', u'In progress', u'Finished', None
+                    row: datetime.datetime(2013, 3, 1, 0, 0), 'Administrator', 'Approved', 'No', 'Yes', None
+                    row: datetime.datetime(2013, 3, 2, 0, 0), 'Administrator', 'Status', 'Opened', 'Waiting', None
+                    row: datetime.datetime(2013, 3, 3, 0, 0), 'Administrator', 'Status', 'Waiting', 'In progress', None
+                    row: datetime.datetime(2013, 3, 4, 0, 0), 'Administrator', 'Status', 'In progress', 'Finished', None
                   GtkBox(hbox1, orientation=horizontal, fill=True):
                     GtkButton(details_btn, fill=True): 'gtk-info', insensitive
       GtkBox(orientation=horizontal, fill=True):

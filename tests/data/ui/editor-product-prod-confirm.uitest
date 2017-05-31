@@ -188,7 +188,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                     column: title='Ref.'
                     column: title='Production Cost'
                     column: title='Total'
-                    row: u'4567', Decimal('1.000'), u'', u'Description', u'', u'', <currency $125>, Decimal('125.00')
+                    row: '4567', Decimal('1.000'), '', 'Description', '', '', <currency $125>, Decimal('125.00')
                   SummaryLabel(component_label, fill=True):
                     GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                     GtkLabel(): '<b>$125.00</b>'
@@ -238,22 +238,22 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
         GtkButton(main_dialog.help_button, padding=6): 'gtk-help'
 
 model: Product<1>
-  brand: u''
+  brand: ''
   consignment: False
   depth: Decimal('0')
   ex_tipi: None
-  family: u''
+  family: ''
   genero: None
   height: Decimal('0')
   internal_use: False
   is_composed: False
   is_grid: False
   is_package: False
-  location: u''
+  location: ''
   manage_stock: True
-  model: u''
+  model: ''
   ncm: None
-  part_number: u''
+  part_number: ''
   production_time: 1
   weight: Decimal('0')
   width: Decimal('0')

@@ -28,7 +28,7 @@ GtkDialog(main_dialog.toplevel): title='Purchase Details', hidden
                 column: title='Status'
                 column: title='Value'
                 column: title='Paid value'
-                row: 999, u'1/1 Money for order 00123', datetime.datetime(2012, 1, 1, 0, 0), None, u'Preview', <currency $1000>, None
+                row: 999, '1/1 Money for order 00123', datetime.datetime(2012, 1, 1, 0, 0), None, 'Preview', <currency $1000>, None
               GtkTable(table4, fill=True):
                 GtkLabel(label8): 'Discount:'
                 ProxyLabel(total_discount): '<span >$ 0.00</span>'
@@ -54,7 +54,7 @@ GtkDialog(main_dialog.toplevel): title='Purchase Details', hidden
                 column: title='Qty'
                 column: title='Cost'
                 column: title='Total'
-                row: u'Description', Decimal('8.000'), <currency $125>, Decimal('1000.00000000000')
+                row: 'Description', Decimal('8.000'), <currency $125>, Decimal('1000.00000000000')
               SummaryLabel(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total</b>'
                 GtkLabel(): '<b>$1000.00</b>'
@@ -65,7 +65,7 @@ GtkDialog(main_dialog.toplevel): title='Purchase Details', hidden
                 column: title='Cost'
                 column: title='Total'
                 column: title='Current Stock'
-                row: u'Description', Decimal('0.000'), <currency $125>, Decimal('0E-11'), None
+                row: 'Description', Decimal('0.000'), <currency $125>, Decimal('0E-11'), None
               GtkTable(table2, pack-end):
                 ProxyLabel(kiwilabel2): 'Discount:'
                 ProxyLabel(total_discounts): '<span >$ 0.00</span>'

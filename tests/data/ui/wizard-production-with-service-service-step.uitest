@@ -31,7 +31,7 @@ GtkDialog(toplevel): title='New Production', hidden
                   column: title='Quantity'
                   column: title='Unit'
                   column: title='Cost'
-                  row: u'', u'', u'Description', Decimal('1.000'), u'', <currency $ 0>
+                  row: '', '', 'Description', Decimal('1.000'), '', <currency $ 0>
                 SummaryLabel(step.summary, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                   GtkLabel(): '<b>1</b>'

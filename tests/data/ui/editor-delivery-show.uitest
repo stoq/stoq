@@ -57,8 +57,8 @@ GtkDialog(main_dialog.toplevel): title='Delivery editor', hidden
               ObjectList(delivery_items):
                 column: title='Products to deliver', expand
                 column: title='Quantity'
-                row: u'Delivery item 1', Decimal('1.000')
-                row: u'Delivery item 2', Decimal('1.000')
+                row: 'Delivery item 1', Decimal('1.000')
+                row: 'Delivery item 2', Decimal('1.000')
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

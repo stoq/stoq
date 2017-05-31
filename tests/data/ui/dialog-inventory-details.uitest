@@ -33,7 +33,7 @@ GtkDialog(main_dialog.toplevel): title='Inventory Details', hidden
                   column: title='Adjusted'
                   column: title='Cost', hidden
                   column: title='Price', hidden
-                  row: u'', u'Description', u'', Decimal('5.000'), None, None, False, <currency $125>, <currency $10>
+                  row: '', 'Description', '', Decimal('5.000'), None, None, False, <currency $125>, <currency $10>
           GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
             GtkButton(info_button): 'gtk-info', insensitive
             GtkButton(export_button): 'Export'

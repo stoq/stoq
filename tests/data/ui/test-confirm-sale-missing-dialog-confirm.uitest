@@ -38,7 +38,7 @@ model: Sale<2>
   paid: False
   return_date: None
   service_invoice_number: None
-  status: u'ordered'
+  status: 'ordered'
   surcharge_value: <currency $ 0>
   total_amount: <currency $ 0>
 
@@ -54,22 +54,22 @@ model: SaleItem<3>
   sale_id: Sale<2>
 
 model: Product<4>
-  brand: u''
+  brand: ''
   consignment: False
   depth: Decimal('0')
   ex_tipi: None
-  family: u''
+  family: ''
   genero: None
   height: Decimal('0')
   internal_use: False
   is_composed: False
   is_grid: False
   is_package: False
-  location: u''
+  location: ''
   manage_stock: True
-  model: u''
+  model: ''
   ncm: None
-  part_number: u''
+  part_number: ''
   production_time: 1
   weight: Decimal('0')
   width: Decimal('0')
@@ -78,7 +78,7 @@ model: Product<4>
 model: Invoice<5>
   cnf: None
   invoice_number: None
-  invoice_type: u'out'
+  invoice_type: 'out'
   key: None
   mode: None
   operation_nature: None

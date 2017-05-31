@@ -47,7 +47,7 @@ GtkDialog(toplevel): title='Brand Search', hidden
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Brand', expand
             column: title='Quantity'
-            row: u'brand', Decimal('4.000')
+            row: 'brand', Decimal('4.000')
           SummaryLabel(_summary_label):
             GtkLabel(expand=True, fill=True, padding=6): 'Total:'
             GtkLabel(): '<b>4.0</b>'

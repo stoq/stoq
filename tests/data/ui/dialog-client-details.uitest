@@ -23,7 +23,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 column: title='Salesperson', expand
                 column: title='Status'
                 column: title='Total'
-                row: 123, None, datetime.today(), u'SalesPerson', u'Opened', <currency $200>
+                row: 123, None, datetime.today(), 'SalesPerson', 'Opened', <currency $200>
               SummaryLabel(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>$200.00</b>'
@@ -50,13 +50,13 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 column: title='Sale date'
                 column: title='Value'
                 column: title='Total value'
-                row: u'', u'Normal', Decimal('1.000'), datetime.today(), <currency $100>, Decimal('100.00000')
+                row: '', 'Normal', Decimal('1.000'), datetime.today(), <currency $100>, Decimal('100.00000')
             stoqlib+gui+dialogs+clientdetails+ServicesTab():
               ObjectTree(expand=True, fill=True):
                 column: title='Code'
                 column: title='Description', expand
                 column: title='Estimated fix date'
-                row: u'', u'Service', datetime.today()
+                row: '', 'Service', datetime.today()
             stoqlib+gui+dialogs+clientdetails+WorkOrdersTab():
               ObjectTree(expand=True, fill=True):
                 column: title='WO #'
@@ -77,7 +77,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 column: title='Status'
                 column: title='Value'
                 column: title='Days Late'
-                row: 999, u'Money', u'1/1 Money for sale 00123', datetime.today(), None, u'Preview', <currency $200>, 0
+                row: 999, 'Money', '1/1 Money for sale 00123', datetime.today(), None, 'Preview', <currency $200>, 0
               GtkButtonBox(orientation=horizontal, pack-end):
                 GtkButton(expand=True, fill=True): 'Payment details', insensitive
             stoqlib+gui+dialogs+clientdetails+CreditAccountsTab():
@@ -94,7 +94,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 column: title='Date'
                 column: title='Description', expand
                 column: title='Attendant', expand
-                row: datetime.datetime(2011, 1, 1, 0, 0), u'Test call', u'individual'
+                row: datetime.datetime(2011, 1, 1, 0, 0), 'Test call', 'individual'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

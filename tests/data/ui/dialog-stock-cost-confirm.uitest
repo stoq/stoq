@@ -7,16 +7,16 @@ GtkBox(toplevel, orientation=vertical):
         column: title='Code'
         column: title='Description', expand
         column: title='Stock Cost'
-        row: u'01', u'Bermuda Sarja', Decimal('70.00000000')
-        row: u'02', u'Shorts com Costuras', Decimal('139.00000000')
-        row: u'03', u'Camiseta Tinturada Xcuba Comp', Decimal('56.00000000')
-        row: u'04', u'Chinelo de Dedo', Decimal('43.00000000')
-        row: u'05', u'Cal\xe7a Jeans com Bolso Traseiro', Decimal('101.00000000')
-        row: u'06', u'Cal\xe7a Brigilda', Decimal('325.00000000')
-        row: u'07', u'Casaco Vilan', Decimal('401.00000000')
-        row: u'08', u'Blusa Frente-\xdanica com Pregas', Decimal('153.00000000')
-        row: u'09', u'Blusa Balon\xea com Bordado nas Costas', Decimal('99.00000000')
-        row: u'10', u'Vestido Vadalena', Decimal('199.00000000')
+        row: '01', 'Bermuda Sarja', Decimal('70.00000000')
+        row: '02', 'Shorts com Costuras', Decimal('139.00000000')
+        row: '03', 'Camiseta Tinturada Xcuba Comp', Decimal('56.00000000')
+        row: '04', 'Chinelo de Dedo', Decimal('43.00000000')
+        row: '05', 'Cal\xe7a Jeans com Bolso Traseiro', Decimal('101.00000000')
+        row: '06', 'Cal\xe7a Brigilda', Decimal('325.00000000')
+        row: '07', 'Casaco Vilan', Decimal('401.00000000')
+        row: '08', 'Blusa Frente-\xdanica com Pregas', Decimal('153.00000000')
+        row: '09', 'Blusa Balon\xea com Bordado nas Costas', Decimal('99.00000000')
+        row: '10', 'Vestido Vadalena', Decimal('199.00000000')
       GtkBox(orientation=vertical, fill=True):
         GtkButton(fill=True): 'gtk-add', hidden
         GtkButton(fill=True): 'gtk-remove', hidden

@@ -25,7 +25,7 @@ GtkDialog(toplevel): title='Closing In Consignment', hidden
                     column: title='Status'
                     column: title='Value'
                     column: title='Due date'
-                    row: u'1/1 Money for order 00333', u'To Pay', <currency $125>, datetime.datetime(2012, 10, 10, 0, 0)
+                    row: '1/1 Money for order 00333', 'To Pay', <currency $125>, datetime.datetime(2012, 10, 10, 0, 0)
                 GtkBox(vbox3, orientation=vertical, fill=True):
                   GtkButton(remove_button): 'gtk-remove', insensitive
                   GtkLabel(label2, expand=True, fill=True):
@@ -57,13 +57,13 @@ model: PurchaseOrder<1>
   expected_freight: <currency $ 0>
   expected_pay_date: datetime.today()
   expected_receival_date: datetime.datetime(2012, 2, 2, 0, 0)
-  freight_type: u'fob'
-  notes: u''
+  freight_type: 'fob'
+  notes: ''
   open_date: datetime.datetime(2012, 1, 1, 0, 0)
   quote_deadline: None
   receival_date: None
-  salesperson_name: u''
-  status: u'consigned'
+  salesperson_name: ''
+  status: 'consigned'
   surcharge_value: <currency $ 0>
 
 model: PurchaseItem<2>

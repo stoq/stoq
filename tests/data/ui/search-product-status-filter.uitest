@@ -46,7 +46,7 @@ GtkDialog(toplevel): title='Product Search', hidden
             column: title='Cost'
             column: title='Price'
             column: title='Stock'
-            row: u'1', u'', None, u'Luvas', None, u'', None, None, u'', u'available', u'Rawlings', u'', True, <currency $125>, Decimal('10.00'), Decimal('1.000')
+            row: '1', '', None, 'Luvas', None, '', None, None, '', 'available', 'Rawlings', '', True, <currency $125>, Decimal('10.00'), Decimal('1.000')
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):

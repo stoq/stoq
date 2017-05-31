@@ -15,7 +15,7 @@ GtkDialog(toplevel): title='Payments Renegotiation Wizard', hidden
             column: title='Due date'
             column: title='Status'
             column: title='Value'
-            row: 333, u'Test payment', datetime.today(), u'Cancelled', <currency $10>
+            row: 333, 'Test payment', datetime.today(), 'Cancelled', <currency $10>
           GtkBox(step.hbox1, orientation=horizontal, fill=True):
             GtkEventBox(step.cash_change_holder, expand=True, fill=True): slave CashChangeSlave is attached
               GtkBox(toplevel, orientation=vertical):
@@ -73,7 +73,7 @@ model: Payment<3>
   base_value: <currency $10>
   bill_received: False
   cancel_date: datetime.today()
-  description: u'Test payment'
+  description: 'Test payment'
   discount: <currency $ 0>
   due_date: datetime.today()
   group_id: PaymentGroup<2>
@@ -82,9 +82,9 @@ model: Payment<3>
   paid_date: None
   paid_value: None
   payment_number: None
-  payment_type: u'out'
+  payment_type: 'out'
   penalty: <currency $ 0>
-  status: u'cancelled'
+  status: 'cancelled'
   value: <currency $10>
 
 model: Sale<4>
@@ -100,14 +100,14 @@ model: Sale<4>
   paid: False
   return_date: None
   service_invoice_number: None
-  status: u'renegotiated'
+  status: 'renegotiated'
   surcharge_value: <currency $ 0>
   total_amount: <currency $ 0>
 
 model: Invoice<5>
   cnf: None
   invoice_number: None
-  invoice_type: u'out'
+  invoice_type: 'out'
   key: None
   mode: None
   operation_nature: None

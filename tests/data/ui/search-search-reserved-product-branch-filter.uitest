@@ -42,7 +42,7 @@ GtkDialog(toplevel): title='Unconfirmed Sale Items Search', hidden
             column: title='WO Status', hidden
             column: title='Estimated finish', hidden
             column: title='WO Finish date', hidden
-            row: 99, u'Quoting', u'', None, u'The Funniest Joke in this Code', None, u'SalesPerson', None, datetime.datetime(2013, 12, 11, 0, 0), <currency $100>, Decimal('41.000'), Decimal('1.000'), Decimal('4100.00000'), None, '', None, None
+            row: 99, 'Quoting', '', None, 'The Funniest Joke in this Code', None, 'SalesPerson', None, datetime.datetime(2013, 12, 11, 0, 0), <currency $100>, Decimal('41.000'), Decimal('1.000'), Decimal('4100.00000'), None, '', None, None
       GtkBox(orientation=horizontal, fill=True):
         GtkLabel(expand=True, fill=True):
         GtkLabel(quantity_label): 'Quantity: 41'

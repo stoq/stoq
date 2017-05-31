@@ -211,12 +211,12 @@ model: Employee<1>
   admission_date: None
   branch_id: Branch<2>
   dependent_person_number: None
-  education_level: u''
+  education_level: ''
   expire_vacation: None
   is_active: True
-  registry_number: u''
+  registry_number: ''
   salary: <currency $50>
-  status: u'normal'
+  status: 'normal'
 
 model: Branch<2>
   acronym: None

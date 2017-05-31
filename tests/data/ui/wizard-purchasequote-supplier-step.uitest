@@ -10,7 +10,7 @@ GtkDialog(toplevel): title='New Quote', hidden
             column: title=' '
             column: title='Supplier', expand
             column: title='Supplied/Total'
-            row: True, u'Supplier', u'1/1'
+            row: True, 'Supplier', '1/1'
           GtkBox(step.hbox1, orientation=horizontal, fill=True):
             GtkButtonBox(step.hbuttonbox1, orientation=horizontal, fill=True):
               GtkButton(step.print_button, fill=True): 'gtk-print'

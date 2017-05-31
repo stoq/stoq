@@ -7,14 +7,14 @@ GtkDialog(toplevel): title='Payment Method Settings', hidden
         ObjectList(klist):
           column: title='Payment Method', expand
           column: title='Active'
-          row: u'Bill', True
-          row: u'Card', True
-          row: u'Check', True
-          row: u'Credit', True
-          row: u'Deposit', True
-          row: u'Money', True
-          row: u'Multiple', True
-          row: u'Store Credit', True
+          row: 'Bill', True
+          row: 'Card', True
+          row: 'Check', True
+          row: 'Credit', True
+          row: 'Deposit', True
+          row: 'Money', True
+          row: 'Multiple', True
+          row: 'Store Credit', True
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):

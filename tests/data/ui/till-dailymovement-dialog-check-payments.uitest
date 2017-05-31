@@ -30,16 +30,16 @@ GtkBox(toplevel, orientation=vertical):
         column: title='Client', expand
         column: title='Branch', hidden
         column: title='Value'
-        row: 1, u'Deivis Alexandre Junior', u'Vitalina Claudino', u'Moda Stoq', '$436.00'
-          row: None, u'Money', '', None, '$436.00 (1x)'
-        row: 2, u'Deivis Alexandre Junior', u'Alessandra Almeida Itaber\xe1', u'Moda Stoq', '$706.00'
-          row: None, u'Check', '', None, '$706.00 (1x)'
-        row: 3, u'Deivis Alexandre Junior', u'Luis Sergio da Silva Marin', u'Moda Stoq', '$873.00'
-          row: None, u'Bill', '', None, '$873.00 (1x)'
-        row: 1234, u'SalesPerson', 'Not Specified', u'Moda Stoq', '$10.00'
-          row: None, u'Check', u'Bank: 1 / Agency: 1234-23 / Account: 12345-23 / Numbers: 1, 2', None, '$10.00 (2x)'
-        row: 7894, u'SalesPerson', 'Not Specified', u'Moda Stoq', '$10.00'
-          row: None, u'Check', u'Agency: 4561-12 / Account: 45678-89 / Numbers: 1, 3', None, '$10.00 (3x)'
+        row: 1, 'Deivis Alexandre Junior', 'Vitalina Claudino', 'Moda Stoq', '$436.00'
+          row: None, 'Money', '', None, '$436.00 (1x)'
+        row: 2, 'Deivis Alexandre Junior', 'Alessandra Almeida Itaber\xe1', 'Moda Stoq', '$706.00'
+          row: None, 'Check', '', None, '$706.00 (1x)'
+        row: 3, 'Deivis Alexandre Junior', 'Luis Sergio da Silva Marin', 'Moda Stoq', '$873.00'
+          row: None, 'Bill', '', None, '$873.00 (1x)'
+        row: 1234, 'SalesPerson', 'Not Specified', 'Moda Stoq', '$10.00'
+          row: None, 'Check', 'Bank: 1 / Agency: 1234-23 / Account: 12345-23 / Numbers: 1, 2', None, '$10.00 (2x)'
+        row: 7894, 'SalesPerson', 'Not Specified', 'Moda Stoq', '$10.00'
+          row: None, 'Check', 'Agency: 4561-12 / Account: 45678-89 / Numbers: 1, 3', None, '$10.00 (3x)'
     GtkBox(vbox4, orientation=vertical):
       ObjectList(inpayments_list, expand=True, fill=True):
         column: title='Payment #'
@@ -56,8 +56,8 @@ GtkBox(toplevel, orientation=vertical):
         column: title='Notes'
         column: title='Supplier'
         column: title='Value'
-        row: 1, u'Closed', u'Administrator', u'Moda Stoq', u'', u'Cia de Roupas S\xe3o Carlos', <currency $7930>
-          row: 1, None, None, None, u'Money', None, None
+        row: 1, 'Closed', 'Administrator', 'Moda Stoq', '', 'Cia de Roupas S\xe3o Carlos', <currency $7930>
+          row: 1, None, None, None, 'Money', None, None
     GtkBox(vbox3, orientation=vertical):
       ObjectList(outpayments_list, expand=True, fill=True):
         column: title='Payment #'
@@ -97,9 +97,9 @@ GtkBox(toplevel, orientation=vertical):
           column: title='Payment Method', expand
           column: title='Income Total'
           column: title='Outgoing Total'
-          row: u'Bill', Decimal('873.00'), 0
-          row: u'Check', Decimal('726.00'), 0
-          row: u'Money', Decimal('436.00'), Decimal('7930.00')
+          row: 'Bill', Decimal('873.00'), 0
+          row: 'Check', Decimal('726.00'), 0
+          row: 'Money', Decimal('436.00'), Decimal('7930.00')
         GtkTable(table1, fill=True):
           GtkLabel(label10): 'Subtotal:'
           ProxyLabel(in_subtotal): '<span >$2035.00</span>'

@@ -25,9 +25,9 @@ GtkDialog(toplevel): title='Return Sale Order', hidden
                     column: title='Status'
                     column: title='Value'
                     column: title='Due date'
-                    row: u'1/3 Check for sale 01234', u'To Pay', <currency $100>, datetime.datetime(2012, 1, 1, 0, 0)
-                    row: u'2/3 Check for sale 01234', u'To Pay', <currency $100>, datetime.datetime(2012, 1, 2, 0, 0)
-                    row: u'3/3 Check for sale 01234', u'To Pay', <currency $100>, datetime.datetime(2012, 1, 3, 0, 0)
+                    row: '1/3 Check for sale 01234', 'To Pay', <currency $100>, datetime.datetime(2012, 1, 1, 0, 0)
+                    row: '2/3 Check for sale 01234', 'To Pay', <currency $100>, datetime.datetime(2012, 1, 2, 0, 0)
+                    row: '3/3 Check for sale 01234', 'To Pay', <currency $100>, datetime.datetime(2012, 1, 3, 0, 0)
                 GtkBox(vbox3, orientation=vertical, fill=True):
                   GtkButton(remove_button): 'gtk-remove', insensitive
                   GtkLabel(label2, expand=True, fill=True):

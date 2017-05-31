@@ -28,7 +28,7 @@ GtkDialog(toplevel): title='Clients with Credit', hidden
             column: title='Received'
             column: title='Spent'
             column: title='Available'
-            row: u'With Credit', u'', u'', None, None, u'', None, Decimal('100.00'), Decimal('25.00'), Decimal('75.00')
+            row: 'With Credit', '', '', None, None, '', None, Decimal('100.00'), Decimal('25.00'), Decimal('75.00')
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):

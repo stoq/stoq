@@ -12,7 +12,7 @@ GtkDialog(toplevel): title='Receive work orders', hidden
               column: title='Source', expand
               column: title='Send date'
               column: title='Quantity'
-              row: u'', u'Dummy shop', datetime.datetime(2013, 1, 2, 0, 0), 10L
+              row: '', 'Dummy shop', datetime.datetime(2013, 1, 2, 0, 0), 10L
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
         GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):

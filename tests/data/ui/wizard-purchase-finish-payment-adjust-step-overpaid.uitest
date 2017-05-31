@@ -37,7 +37,7 @@ model: Payment<2>
   base_value: <currency $ 0>
   bill_received: False
   cancel_date: None
-  description: u'description'
+  description: 'description'
   discount: <currency $ 0>
   due_date: datetime.today()
   group_id: PaymentGroup<1>
@@ -46,9 +46,9 @@ model: Payment<2>
   paid_date: None
   paid_value: None
   payment_number: None
-  payment_type: u'in'
+  payment_type: 'in'
   penalty: <currency $ 0>
-  status: u'pending'
+  status: 'pending'
   value: <currency $ 0>
 
 model: PurchaseOrder<3>
@@ -58,14 +58,14 @@ model: PurchaseOrder<3>
   expected_freight: <currency $ 0>
   expected_pay_date: datetime.today()
   expected_receival_date: datetime.today()
-  freight_type: u'fob'
+  freight_type: 'fob'
   group_id: PaymentGroup<1>
-  notes: u''
+  notes: ''
   open_date: datetime.today()
   quote_deadline: None
   receival_date: None
-  salesperson_name: u''
-  status: u'closed'
+  salesperson_name: ''
+  status: 'closed'
   surcharge_value: <currency $ 0>
 
 model: PurchaseItem<4>

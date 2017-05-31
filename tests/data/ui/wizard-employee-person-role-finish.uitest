@@ -207,28 +207,28 @@ GtkDialog(toplevel): title='New Employee', hidden
 model: Employee<1>
   admission_date: None
   dependent_person_number: None
-  education_level: u''
+  education_level: ''
   expire_vacation: None
   is_active: True
   person_id: Person<2>
-  registry_number: u''
+  registry_number: ''
   salary: <currency $555>
-  status: u'normal'
+  status: 'normal'
 
 model: Person<2>
-  email: u''
-  fax_number: u''
-  mobile_number: u''
-  name: u'new employee name'
-  notes: u''
-  phone_number: u''
+  email: ''
+  fax_number: ''
+  mobile_number: ''
+  name: 'new employee name'
+  notes: ''
+  phone_number: ''
 
 model: Address<3>
-  complement: u''
-  district: u'district'
+  complement: ''
+  district: 'district'
   is_main_address: True
   person_id: Person<2>
-  postal_code: u''
-  street: u'street'
+  postal_code: ''
+  street: 'street'
   streetnumber: 123
 

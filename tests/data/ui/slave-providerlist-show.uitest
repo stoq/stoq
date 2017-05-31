@@ -3,10 +3,10 @@ ListContainer(listcontainer):
   ObjectList(expand=True, fill=True):
     column: title='Name', expand
     column: title='Max Installments'
-    row: u'AMEX', 1
-    row: u'MASTER', 1
-    row: u'VISA', 1
-    row: u'Velec', 1
+    row: 'AMEX', 1
+    row: 'MASTER', 1
+    row: 'VISA', 1
+    row: 'Velec', 1
   GtkBox(orientation=vertical, fill=True, padding=6):
     GtkButton(fill=True): 'gtk-add'
     GtkButton(fill=True): 'gtk-remove', insensitive

@@ -53,10 +53,10 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Person"', hidden
         GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive
 
 model: Person<1>
-  email: u''
-  fax_number: u'32118271'
-  mobile_number: u''
-  name: u'Stoq Roupas e Acess\xf3rios Ltda'
-  notes: u''
-  phone_number: u'48763983'
+  email: ''
+  fax_number: '32118271'
+  mobile_number: ''
+  name: 'Stoq Roupas e Acess\xf3rios Ltda'
+  notes: ''
+  phone_number: '48763983'
 

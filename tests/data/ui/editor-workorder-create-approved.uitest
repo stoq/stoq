@@ -129,9 +129,9 @@ GtkDialog(main_dialog.toplevel): title='Add Work order', hidden
                     column: title='Old value', hidden
                     column: title='New value'
                     column: title='Notes'
-                    row: datetime.datetime(2013, 3, 1, 0, 0), u'Administrator', u'Approved', u'No', u'Yes', None
-                    row: datetime.datetime(2013, 3, 2, 0, 0), u'Administrator', u'Status', u'Opened', u'Waiting', None
-                    row: datetime.datetime(2013, 3, 3, 0, 0), u'Administrator', u'Status', u'Waiting', u'In progress', None
+                    row: datetime.datetime(2013, 3, 1, 0, 0), 'Administrator', 'Approved', 'No', 'Yes', None
+                    row: datetime.datetime(2013, 3, 2, 0, 0), 'Administrator', 'Status', 'Opened', 'Waiting', None
+                    row: datetime.datetime(2013, 3, 3, 0, 0), 'Administrator', 'Status', 'Waiting', 'In progress', None
                   GtkBox(hbox1, orientation=horizontal, fill=True):
                     GtkButton(details_btn, fill=True): 'gtk-info', insensitive
       GtkBox(orientation=horizontal, fill=True):

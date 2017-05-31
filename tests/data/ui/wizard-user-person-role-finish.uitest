@@ -172,23 +172,23 @@ GtkDialog(toplevel): title='New User', hidden
 model: LoginUser<1>
   is_active: True
   person_id: Person<2>
-  pw_hash: u'3858f62230ac3c915f300c664312c63f'
-  username: u'username'
+  pw_hash: '3858f62230ac3c915f300c664312c63f'
+  username: 'username'
 
 model: Person<2>
-  email: u''
-  fax_number: u''
-  mobile_number: u''
-  name: u'user name'
-  notes: u''
-  phone_number: u''
+  email: ''
+  fax_number: ''
+  mobile_number: ''
+  name: 'user name'
+  notes: ''
+  phone_number: ''
 
 model: Address<3>
-  complement: u''
-  district: u'district'
+  complement: ''
+  district: 'district'
   is_main_address: True
   person_id: Person<2>
-  postal_code: u''
-  street: u'street'
+  postal_code: ''
+  street: 'street'
   streetnumber: 123
 

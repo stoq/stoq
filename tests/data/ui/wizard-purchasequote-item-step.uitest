@@ -28,7 +28,7 @@ GtkDialog(toplevel): title='New Quote', hidden
                   column: title='Description', expand
                   column: title='Quantity'
                   column: title='Unit'
-                  row: u'Description', Decimal('1.000'), u''
+                  row: 'Description', Decimal('1.000'), ''
               GtkBox(hbox1, orientation=horizontal, fill=True):
                 GtkBox(button_box, orientation=horizontal):
                   GtkButton(add_button): hidden

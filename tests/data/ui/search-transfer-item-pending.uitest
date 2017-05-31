@@ -48,7 +48,7 @@ GtkDialog(toplevel): title='Transfer Item Search', hidden
             column: title='Destination'
             column: title='Status', hidden
             column: title='Open date'
-            row: 75168, None, u'Description', Decimal('5.000'), u'Stoq Elite Fashion', u'Moda Stoq', u'Sent', datetime.datetime(2012, 1, 1, 0, 0)
+            row: 75168, None, 'Description', Decimal('5.000'), 'Stoq Elite Fashion', 'Moda Stoq', 'Sent', datetime.datetime(2012, 1, 1, 0, 0)
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):

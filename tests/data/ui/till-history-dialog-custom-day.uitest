@@ -37,7 +37,7 @@ GtkDialog(toplevel): title='Till history', hidden
             column: title='Time'
             column: title='Description', expand
             column: title='Value'
-            row: 1234, datetime.datetime(2011, 1, 1, 0, 0), datetime.time(0, 0), u'desc', <currency $123>
+            row: 1234, datetime.datetime(2011, 1, 1, 0, 0), datetime.time(0, 0), 'desc', <currency $123>
           SummaryLabel(_summary_label):
             GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
             GtkLabel(): '<b>$123.00</b>'

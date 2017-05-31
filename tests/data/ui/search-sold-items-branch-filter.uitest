@@ -44,7 +44,7 @@ GtkDialog(toplevel): title='Sold Items by Branch', hidden
             column: title='Branch'
             column: title='Quantity'
             column: title='Total'
-            row: u'1', u'Luvas', None, u'Moda Stoq', Decimal('1.000'), Decimal('100.00000')
+            row: '1', 'Luvas', None, 'Moda Stoq', Decimal('1.000'), Decimal('100.00000')
       GtkBox(orientation=horizontal, fill=True):
         GtkLabel(expand=True, fill=True):
         GtkLabel(items_label): 'Sales: 1'

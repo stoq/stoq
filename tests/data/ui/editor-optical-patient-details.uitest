@@ -15,7 +15,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Client"', hidden
                   ObjectList(expand=True, fill=True):
                     column: title='Date'
                     column: title='Responsible', expand
-                    row: datetime.datetime(2012, 9, 1, 0, 0), u'Administrator'
+                    row: datetime.datetime(2012, 9, 1, 0, 0), 'Administrator'
                   GtkBox(orientation=vertical, fill=True, padding=6):
                     GtkButton(fill=True): 'gtk-add'
                     GtkButton(fill=True): 'gtk-remove', hidden, insensitive
@@ -26,7 +26,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Client"', hidden
                   ObjectList(expand=True, fill=True):
                     column: title='Date'
                     column: title='Responsible', expand
-                    row: datetime.datetime(2012, 9, 1, 0, 0), u'Administrator'
+                    row: datetime.datetime(2012, 9, 1, 0, 0), 'Administrator'
                   GtkBox(orientation=vertical, fill=True, padding=6):
                     GtkButton(fill=True): 'gtk-add'
                     GtkButton(fill=True): 'gtk-remove', hidden, insensitive
@@ -37,7 +37,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Client"', hidden
                   ObjectList(expand=True, fill=True):
                     column: title='Date'
                     column: title='Responsible', expand
-                    row: datetime.datetime(2012, 9, 1, 0, 0), u'Administrator'
+                    row: datetime.datetime(2012, 9, 1, 0, 0), 'Administrator'
                   GtkBox(orientation=vertical, fill=True, padding=6):
                     GtkButton(fill=True): 'gtk-add'
                     GtkButton(fill=True): 'gtk-remove', hidden, insensitive
@@ -48,7 +48,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Client"', hidden
                   ObjectList(expand=True, fill=True):
                     column: title='Date'
                     column: title='Responsible', expand
-                    row: datetime.datetime(2012, 9, 1, 0, 0), u'Administrator'
+                    row: datetime.datetime(2012, 9, 1, 0, 0), 'Administrator'
                   GtkBox(orientation=vertical, fill=True, padding=6):
                     GtkButton(fill=True): 'gtk-add'
                     GtkButton(fill=True): 'gtk-remove', hidden, insensitive

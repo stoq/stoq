@@ -22,28 +22,28 @@ GtkDialog(toplevel): title='Sellable Category Search', hidden
             column: title='Suggested Markup (%)'
             column: title='Commission (%)'
             column: title='Installments Commission (%)'
-            row: u'Bermudas', Decimal('36.00'), Decimal('15.00'), Decimal('28.00')
-              row: u'Bermudas Sarja', Decimal('15.00'), Decimal('15.00'), Decimal('28.00')
-              row: u'Bermudas Shorts', Decimal('15.00'), Decimal('15.00'), Decimal('28.00')
-            row: u'Blusas', Decimal('45.00'), Decimal('23.00'), Decimal('25.00')
-              row: u'Blusas Algod\xe3o', Decimal('52.00'), Decimal('23.00'), Decimal('25.00')
-              row: u'Blusas Poliester', Decimal('52.00'), Decimal('23.00'), Decimal('25.00')
-            row: u'Cal\xe7ados', Decimal('35.00'), Decimal('10.00'), Decimal('23.00')
-              row: u'Chinelos', Decimal('45.00'), Decimal('10.00'), Decimal('23.00')
-            row: u'Cal\xe7as', Decimal('32.00'), Decimal('27.00'), Decimal('12.00')
-              row: u'Cal\xe7as Jeans', Decimal('52.00'), Decimal('27.00'), Decimal('12.00')
-              row: u'Cal\xe7as Poliester', Decimal('52.00'), Decimal('27.00'), Decimal('12.00')
-            row: u'Camisetas', Decimal('43.00'), Decimal('10.00'), Decimal('12.00')
-              row: u'Tinturada', Decimal('33.00'), Decimal('10.00'), Decimal('12.00')
-            row: u'Casacos', Decimal('35.00'), Decimal('25.00'), Decimal('35.00')
-              row: u'Algod\xe3o', Decimal('55.00'), Decimal('25.00'), Decimal('35.00')
-            row: u'Category 1', Decimal('0.00'), None, None
-              row: u'Category 2', Decimal('0.00'), None, None
-              row: u'Category 3', Decimal('0.00'), None, None
-                row: u'Category 4', Decimal('0.00'), None, None
-            row: u'Category 5', Decimal('0.00'), None, None
-            row: u'Vestido', Decimal('26.00'), Decimal('25.00'), Decimal('15.00')
-              row: u'Viscose', Decimal('58.00'), Decimal('25.00'), Decimal('15.00')
+            row: 'Bermudas', Decimal('36.00'), Decimal('15.00'), Decimal('28.00')
+              row: 'Bermudas Sarja', Decimal('15.00'), Decimal('15.00'), Decimal('28.00')
+              row: 'Bermudas Shorts', Decimal('15.00'), Decimal('15.00'), Decimal('28.00')
+            row: 'Blusas', Decimal('45.00'), Decimal('23.00'), Decimal('25.00')
+              row: 'Blusas Algod\xe3o', Decimal('52.00'), Decimal('23.00'), Decimal('25.00')
+              row: 'Blusas Poliester', Decimal('52.00'), Decimal('23.00'), Decimal('25.00')
+            row: 'Cal\xe7ados', Decimal('35.00'), Decimal('10.00'), Decimal('23.00')
+              row: 'Chinelos', Decimal('45.00'), Decimal('10.00'), Decimal('23.00')
+            row: 'Cal\xe7as', Decimal('32.00'), Decimal('27.00'), Decimal('12.00')
+              row: 'Cal\xe7as Jeans', Decimal('52.00'), Decimal('27.00'), Decimal('12.00')
+              row: 'Cal\xe7as Poliester', Decimal('52.00'), Decimal('27.00'), Decimal('12.00')
+            row: 'Camisetas', Decimal('43.00'), Decimal('10.00'), Decimal('12.00')
+              row: 'Tinturada', Decimal('33.00'), Decimal('10.00'), Decimal('12.00')
+            row: 'Casacos', Decimal('35.00'), Decimal('25.00'), Decimal('35.00')
+              row: 'Algod\xe3o', Decimal('55.00'), Decimal('25.00'), Decimal('35.00')
+            row: 'Category 1', Decimal('0.00'), None, None
+              row: 'Category 2', Decimal('0.00'), None, None
+              row: 'Category 3', Decimal('0.00'), None, None
+                row: 'Category 4', Decimal('0.00'), None, None
+            row: 'Category 5', Decimal('0.00'), None, None
+            row: 'Vestido', Decimal('26.00'), Decimal('25.00'), Decimal('15.00')
+              row: 'Viscose', Decimal('58.00'), Decimal('25.00'), Decimal('15.00')
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):

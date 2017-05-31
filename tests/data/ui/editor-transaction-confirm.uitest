@@ -48,15 +48,15 @@ GtkDialog(main_dialog.toplevel): title='Add transaction', hidden
         GtkButton(): 'Show Payment', insensitive
 
 model: AccountTransaction<1>
-  code: u'15'
+  code: '15'
   date: datetime.today()
-  description: u'description'
-  operation_type: u'out'
+  description: 'description'
+  operation_type: 'out'
   source_account_id: Account<2>
   value: <currency $150>
 
 model: Account<2>
-  account_type: u'cash'
+  account_type: 'cash'
   code: None
-  description: u'Test Account'
+  description: 'Test Account'
 

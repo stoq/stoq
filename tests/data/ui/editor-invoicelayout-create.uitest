@@ -37,7 +37,7 @@ GtkDialog(main_dialog.toplevel): title='Add Invoice Layouts', hidden
                 row: 'Branch', 'Company fancy name', 34
                 row: 'Branch', 'Company name', 34
                 row: 'Branch', 'Company postal code', 8
-                row: 'Branch', u'INSCR_ESTADUAL_SUBSTITUTO_TRIB', 4
+                row: 'Branch', 'INSCR_ESTADUAL_SUBSTITUTO_TRIB', 4
                 row: 'Branch', 'State registry number', 14
                 row: 'Client', 'Client Address', 34
                 row: 'Client', "Client's city", 34
@@ -51,13 +51,13 @@ GtkDialog(main_dialog.toplevel): title='Add Invoice Layouts', hidden
                 row: 'Client', 'Client state abbreviation', 2
                 row: 'Client', 'Clients state registry number or document number', 14
                 row: 'Invoice', 'Incoming invoice', 1
-                row: 'Invoice', u'Invoice number', 6
+                row: 'Invoice', 'Invoice number', 6
                 row: 'Invoice', 'Invoice Type', 10
                 row: 'Invoice', 'Creation date', 10
                 row: 'Invoice', 'Creation time', 8
                 row: 'Invoice', 'Emission date', 10
                 row: 'Invoice', 'Outgoing invoice', 1
-                row: 'Other', u'CFOP', 4
+                row: 'Other', 'CFOP', 4
                 row: 'Other', 'Free text', 10
                 row: 'Payment', 'Payment due dates', 1
                 row: 'Payment', 'Number of payments', 4
@@ -71,12 +71,12 @@ GtkDialog(main_dialog.toplevel): title='Add Invoice Layouts', hidden
                 row: 'Product', 'Product item price', 5
                 row: 'Product', 'Product item quantity', 5
                 row: 'Product', 'Product item total (price * quantity)', 7
-                row: 'Product', u'VALOR_TOTAL_PRODUTOS', 1
-                row: 'Sale', u'ADDITIONAL_SALE_NOTES', -1
-                row: 'Sale', u'SALESPERSON_NAME', 1
-                row: 'Sale', u'SALE_NUMBER', 1
+                row: 'Product', 'VALOR_TOTAL_PRODUTOS', 1
+                row: 'Sale', 'ADDITIONAL_SALE_NOTES', -1
+                row: 'Sale', 'SALESPERSON_NAME', 1
+                row: 'Sale', 'SALE_NUMBER', 1
                 row: 'Sale', 'Sale token code', 8
-                row: 'Sale', u'VALOR_TOTAL_NOTA', 1
+                row: 'Sale', 'VALOR_TOTAL_NOTA', 1
                 row: 'Service', 'Service item code', 5
                 row: 'Service', 'Service item code / description', 35
                 row: 'Service', 'Service item unit', 2
@@ -85,15 +85,15 @@ GtkDialog(main_dialog.toplevel): title='Add Invoice Layouts', hidden
                 row: 'Service', 'Service item quantity', 5
                 row: 'Service', 'Service item tax', 2
                 row: 'Service', 'Service item total (price * quantity)', 7
-                row: 'Service', u'VALOR_TOTAL_SERVICOS', 1
-                row: 'Tax', u'BASE_DE_CALCULO_ICMS', 1
-                row: 'Tax', u'BASE_DE_CALCULO_ICMS_SUBST', 1
-                row: 'Tax', u'BASE_DE_CALCULO_ISS', 1
+                row: 'Service', 'VALOR_TOTAL_SERVICOS', 1
+                row: 'Tax', 'BASE_DE_CALCULO_ICMS', 1
+                row: 'Tax', 'BASE_DE_CALCULO_ICMS_SUBST', 1
+                row: 'Tax', 'BASE_DE_CALCULO_ISS', 1
                 row: 'Tax', 'Product item tax', 2
-                row: 'Tax', u'VALOR_ICMS', 1
-                row: 'Tax', u'VALOR_ICMS_SUBST', 1
-                row: 'Tax', u'VALOR_IPI', 1
-                row: 'Tax', u'VALOR_ISS', 1
+                row: 'Tax', 'VALOR_ICMS', 1
+                row: 'Tax', 'VALOR_ICMS_SUBST', 1
+                row: 'Tax', 'VALOR_IPI', 1
+                row: 'Tax', 'VALOR_ISS', 1
             GtkScrolledWindow(sw):
               stoqlib+gui+editors+invoiceeditor+InvoiceGrid(grid):
       GtkBox(orientation=horizontal, fill=True):

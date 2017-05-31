@@ -85,7 +85,7 @@ GtkDialog(main_dialog.toplevel): title='Confirm payment', hidden
             column: title='Paid date'
             column: title='Value'
             column: title='Paid value'
-            row: 12345, u'payment description', datetime.today(), None, <currency $10>, <currency $10>
+            row: 12345, 'payment description', datetime.today(), None, <currency $10>, <currency $10>
           GtkButtonBox(hbuttonbox1, orientation=horizontal):
             GtkButton(details_button):
       GtkBox(orientation=horizontal, fill=True):

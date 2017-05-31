@@ -25,9 +25,9 @@ GtkDialog(main_dialog.toplevel): title='Add Send work orders', hidden
               column: title='Salesperson', hidden
               column: title='Open date', hidden
               column: title='Approval date'
-              row: True, 672, None, u'Finished', u'Description - Equipment 6', None, None, u'Dummy shop', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
-              row: True, 673, None, u'Finished', u'Description - Equipment 7', None, None, u'Dummy shop', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
-              row: False, 674, None, u'Finished', u'Description - Equipment 8', None, None, u'Dummy shop', u'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
+              row: True, 672, None, 'Finished', 'Description - Equipment 6', None, None, 'Dummy shop', 'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
+              row: True, 673, None, 'Finished', 'Description - Equipment 7', None, None, 'Dummy shop', 'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
+              row: False, 674, None, 'Finished', 'Description - Equipment 8', None, None, 'Dummy shop', 'Client', None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 0, 0)
           GtkBox(hbox1, orientation=horizontal):
             GtkButton(edit_btn, fill=True): 'Observations', insensitive
             GtkButton(details_btn, fill=True): 'gtk-info', insensitive

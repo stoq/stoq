@@ -29,9 +29,9 @@ GtkDialog(toplevel): title='Service Search', hidden
             column: title='Description', expand
             column: title='Cost'
             column: title='Price'
-            row: u'', u'', u'My Delivery', <currency $ 0>, <currency $10>
-            row: u'1', u'', u'Delivery', <currency $ 0>, <currency $25>
-            row: u'2', u'', u'Painting', <currency $ 0>, <currency $12>
+            row: '', '', 'My Delivery', <currency $ 0>, <currency $10>
+            row: '1', '', 'Delivery', <currency $ 0>, <currency $25>
+            row: '2', '', 'Painting', <currency $ 0>, <currency $12>
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):

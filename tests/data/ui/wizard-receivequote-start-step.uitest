@@ -39,7 +39,7 @@ GtkDialog(toplevel): title='Receive Quote Wizard', hidden
                 column: title='Supplier'
                 column: title='Open date'
                 column: title='Deadline'
-                row: 12345, 67890, u'Supplier', datetime.datetime(2012, 1, 1, 0, 0), None
+                row: 12345, 67890, 'Supplier', datetime.datetime(2012, 1, 1, 0, 0), None
           GtkButtonBox(step.hbuttonbox1, orientation=horizontal, fill=True):
             GtkButton(step.edit_button, expand=True, fill=True): 'gtk-edit'
             GtkButton(step.remove_button, expand=True, fill=True): 'gtk-remove'

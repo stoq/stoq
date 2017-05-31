@@ -692,6 +692,9 @@ class GUITest(DomainTest):
 
         text = _UUID_RE.sub("uuid.uuid()", text)
 
+        # FIXME: This can be removed once we migrate to python3
+        text = text.replace("u'", "'")
+
         if os.environ.get('STOQ_USE_GI', '') == '3.0':
             # These are internal changes of GtkDialog which we
             # don't want to see.

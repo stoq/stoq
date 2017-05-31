@@ -35,7 +35,7 @@ GtkDialog(toplevel): title='Calls Search', hidden
             column: title='Date'
             column: title='Description', expand
             column: title='Attendant', expand
-            row: datetime.datetime(2011, 1, 1, 0, 0), u'Test call', u'individual'
+            row: datetime.datetime(2011, 1, 1, 0, 0), 'Test call', 'individual'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):

@@ -7,20 +7,20 @@ GtkDialog(toplevel): title='Keyboard shortcuts', hidden
         GtkBox(orientation=horizontal):
           ObjectList(categories):
             column: title='Label', expand
-            row: u'Accounts Payable'
-            row: u'Accounts Receivable'
-            row: u'Administrative'
-            row: u'Calendar'
-            row: u'Financial'
+            row: 'Accounts Payable'
+            row: 'Accounts Receivable'
+            row: 'Administrative'
+            row: 'Calendar'
+            row: 'Financial'
             row: 'General'
-            row: u'Inventory'
-            row: u'Point of Sales'
-            row: u'Production'
-            row: u'Purchase'
-            row: u'Sales'
-            row: u'Services'
-            row: u'Stock'
-            row: u'Till'
+            row: 'Inventory'
+            row: 'Point of Sales'
+            row: 'Production'
+            row: 'Purchase'
+            row: 'Sales'
+            row: 'Services'
+            row: 'Stock'
+            row: 'Till'
           GtkBox(orientation=vertical, expand=True, fill=True):
             ObjectList(shortcuts, expand=True, fill=True):
               column: title='Description', expand

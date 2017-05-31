@@ -9,8 +9,8 @@ GtkBox(toplevel, orientation=vertical):
         column: title='Quantity'
         column: title='Cost'
         column: title='Total'
-        row: u'', u'Description', u'1.000', <currency $125>, <currency $125>
-          row: u'', u'Description', u'1.000', <currency $125>, <currency $125>
+        row: '', 'Description', '1.000', <currency $125>, <currency $125>
+          row: '', 'Description', '1.000', <currency $125>, <currency $125>
       SummaryLabel(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
         GtkLabel(): '<b>$250.00</b>'

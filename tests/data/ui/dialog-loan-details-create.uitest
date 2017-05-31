@@ -22,4 +22,4 @@ GtkBox(details_vbox, orientation=vertical):
         column: title='Sold'
         column: title='Returned'
         column: title='Price'
-        row: u'', u'Description', Decimal('1.000'), Decimal('0.000'), Decimal('0.000'), <currency $10>
+        row: '', 'Description', Decimal('1.000'), Decimal('0.000'), Decimal('0.000'), <currency $10>

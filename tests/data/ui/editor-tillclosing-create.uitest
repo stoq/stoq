@@ -14,7 +14,7 @@ GtkDialog(main_dialog.toplevel): title='Closing Opened Till', hidden
             ObjectList(day_history, expand=True, fill=True):
               column: title='Description'
               column: title='Amount'
-              row: u'Initial Amount', <currency $ 0>
+              row: 'Initial Amount', <currency $ 0>
             SummaryLabel(fill=True):
               GtkLabel(expand=True, fill=True, padding=6): '<b>Total balance:</b>'
               GtkLabel(): '$ 0.00'

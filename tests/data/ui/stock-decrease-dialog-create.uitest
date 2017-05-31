@@ -22,7 +22,7 @@ GtkBox(details_vbox, orientation=vertical):
         column: title='Description', expand
         column: title='Batch'
         column: title='Qty'
-        row: u'', u'Description', None, Decimal('1.000')
+        row: '', 'Description', None, Decimal('1.000')
     GtkBox(hbox1, orientation=horizontal):
       GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
         ProxyTextView(reason):
@@ -35,6 +35,6 @@ GtkBox(details_vbox, orientation=vertical):
         column: title='Paid date'
         column: title='Value'
         column: title='Paid value'
-        row: 7777, u'Money', u'1/1 Money for stock decrease 08888', datetime.today(), None, <currency $100>, None
+        row: 7777, 'Money', '1/1 Money for stock decrease 08888', datetime.today(), None, <currency $100>, None
   GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
     GtkButton(print_button): 'gtk-print'
