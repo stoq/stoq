@@ -84,7 +84,7 @@ params = [
           u'This template cannot have more than 2 line, and each line more '
           u'than 50 characters, and you have to break it manually using the characters '
           u'"\\n" or (enter key) or the fiscal printer may not print it correctly.'),
-        unicode, multiline=True, initial=u'', wrap=False),
+        str, multiline=True, initial=u'', wrap=False),
 
     ParameterDetails(
         u'ENABLE_DOCUMENT_ON_INVOICE',
@@ -107,7 +107,7 @@ params = [
         _(u'ECF'),
         _(u'Cat 52 destination directory'),
         _(u'Where the file generated after a Z-reduction should be saved.'),
-        unicode, initial=u'~/.stoq/cat52', editor='directory-chooser'),
+        str, initial=u'~/.stoq/cat52', editor='directory-chooser'),
 ]
 
 

@@ -58,7 +58,7 @@ class TestTillHistory(GUITest):
         number = 0
         for payment in payments:
             number += 1
-            payment.payment_number = unicode(number)
+            payment.payment_number = str(number)
             bank = payment.check_data.bank_account
             bank.bank_number = 1
             bank.bank_branch = u'1234-23'
@@ -76,7 +76,7 @@ class TestTillHistory(GUITest):
         number = 0
         for payment in payments:
             number += 1
-            payment.payment_number = unicode(number)
+            payment.payment_number = str(number)
             bank = payment.check_data.bank_account
             bank.bank_number = None
             bank.bank_branch = u'4561-12'

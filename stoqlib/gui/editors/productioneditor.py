@@ -78,7 +78,7 @@ class ProductionItemEditor(BaseEditor):
             self.location_content.hide()
 
     def setup_editor_widgets(self):
-        self.identifier.set_text(unicode(self.model.order.identifier))
+        self.identifier.set_text(str(self.model.order.identifier))
         self.quantity.set_adjustment(
             Gtk.Adjustment(lower=0, upper=self.get_max_quantity(), step_incr=1))
 

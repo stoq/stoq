@@ -146,7 +146,7 @@ class ExampleCreator(object):
             'WorkOrderPackage': self.create_workorder_package,
             'WorkPermitData': self.create_work_permit_data,
         }
-        if isinstance(model_type, basestring):
+        if isinstance(model_type, str):
             model_name = model_type
         else:
             model_name = model_type.__name__
@@ -195,13 +195,13 @@ class ExampleCreator(object):
             self._role = role
         return role
 
-    def create_employee(self, name=u"SalesPerson", person=None):
+    def create_employee(self, name=u"SalesPerson", person=None, role=None):
         from stoqlib.domain.person import Employee, Individual, Person
         if person is None:
             person = Person(name=name, store=self.store)
             Individual(person=person, store=self.store)
         return Employee(person=person,
-                        role=self.create_employee_role(),
+                        role=role or self.create_employee_role(),
                         store=self.store)
 
     def create_sales_person(self, person=None, name=u'SalesPerson'):
@@ -937,7 +937,7 @@ class ExampleCreator(object):
         from stoqlib.domain.payment.card import CreditProvider
         return CreditProvider(store=self.store,
                               short_name=short_name,
-                              open_contract_date=localdate(2006, 01, 01))
+                              open_contract_date=localdate(2006, 1, 1))
 
     def create_card_device(self, description=u'Cielo'):
         from stoqlib.domain.payment.card import CardPaymentDevice

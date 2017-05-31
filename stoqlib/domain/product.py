@@ -82,6 +82,7 @@ stock_items are unique:
 
 # pylint: enable=E1101
 
+import collections
 from decimal import Decimal
 
 from kiwi.currency import currency
@@ -206,14 +207,14 @@ class Product(Domain):
     TYPE_GRID = 4
     TYPE_PACKAGE = 5
 
-    product_types = {
-        TYPE_COMMON: _("Regular product"),
-        TYPE_BATCH: _("Product with batch control"),
-        TYPE_WITHOUT_STOCK: _("Product without stock control"),
-        TYPE_CONSIGNED: _("Consigned product"),
-        TYPE_GRID: _("Grid product"),
-        TYPE_PACKAGE: _("Package product"),
-    }
+    product_types = collections.OrderedDict([
+        (TYPE_COMMON, _("Regular product")),
+        (TYPE_BATCH, _("Product with batch control")),
+        (TYPE_WITHOUT_STOCK, _("Product without stock control")),
+        (TYPE_CONSIGNED, _("Consigned product")),
+        (TYPE_GRID, _("Grid product")),
+        (TYPE_PACKAGE, _("Package product")),
+    ])
 
     #: |sellable| for this product
     sellable = Reference('id', 'Sellable.id')
@@ -1784,7 +1785,7 @@ class StockTransactionHistory(Domain):
             return self.types[self.type]
 
         object_parent = self.get_object_parent()
-        number = unicode(object_parent.identifier)
+        number = str(object_parent.identifier)
 
         return self.types[self.type] % number
 
@@ -1821,10 +1822,10 @@ class ProductQualityTest(Domain):
     TYPE_BOOLEAN = u'boolean'
     TYPE_DECIMAL = u'decimal'
 
-    types = {
-        TYPE_BOOLEAN: _(u'Boolean'),
-        TYPE_DECIMAL: _(u'Decimal'),
-    }
+    types = collections.OrderedDict([
+        (TYPE_BOOLEAN, _(u'Boolean')),
+        (TYPE_DECIMAL, _(u'Decimal')),
+    ])
 
     product_id = IdCol()
     product = Reference(product_id, 'Product.id')
@@ -1859,7 +1860,7 @@ class ProductQualityTest(Domain):
         return Decimal(a), Decimal(b)
 
     def set_boolean_value(self, value):
-        self.success_value = unicode(value)
+        self.success_value = str(value)
 
     def set_range_value(self, min_value, max_value):
         self.success_value = u'%s - %s' % (min_value, max_value)

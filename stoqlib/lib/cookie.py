@@ -52,7 +52,7 @@ class Base64CookieFile(object):
 
         data = cookiedata.split(":", 1)
         try:
-            return (unicode(data[0]), unicode(binascii.a2b_base64(data[1])))
+            return (str(data[0]), binascii.a2b_base64(data[1]).decode())
         except binascii.Error:
             raise CookieError("invalid format")
 
@@ -75,7 +75,8 @@ class Base64CookieFile(object):
 
         # obfuscate password to avoid it being easily identified when
         # editing file on screen. this is *NOT* encryption!
-        fd.write("%s:%s" % (username, binascii.b2a_base64(password or '')))
+        fd.write("%s:%s" % (
+            username, binascii.b2a_base64((password or '').encode()).decode()))
         fd.close()
 
         log.info("Saved cookie %s" % self._filename)

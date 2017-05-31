@@ -30,6 +30,8 @@
 #        avoid confusing it with stoqlib.domain.events.
 #        Another possiblity would be to move events out of domain.
 
+import collections
+
 from storm.store import AutoReload
 
 from stoqlib.database.properties import DateTimeCol, IntCol, UnicodeCol, EnumCol
@@ -71,13 +73,13 @@ class Event(ORMObject):
     #: |payment| events
     TYPE_PAYMENT = u'payment'
 
-    types = {
-        TYPE_SYSTEM: _(u'System'),
-        TYPE_USER: _(u'User'),
-        TYPE_ORDER: _(u'Order'),
-        TYPE_SALE: _(u'Sale'),
-        TYPE_PAYMENT: _(u'Payment'),
-    }
+    types = collections.OrderedDict([
+        (TYPE_SYSTEM, _(u'System')),
+        (TYPE_USER, _(u'User')),
+        (TYPE_ORDER, _(u'Order')),
+        (TYPE_SALE, _(u'Sale')),
+        (TYPE_PAYMENT, _(u'Payment')),
+    ])
 
     id = IntCol(primary=True, default=AutoReload)
 

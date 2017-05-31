@@ -49,7 +49,7 @@ def get_logo_data(store):
     else:
         data = environ.get_resource_string('stoq', 'pixmaps', 'stoq_logo_bgwhite.png')
 
-    return 'data:image/png;base64,' + base64.b64encode(data)
+    return 'data:image/png;base64,' + base64.b64encode(data).decode()
 
 
 def get_header_data():

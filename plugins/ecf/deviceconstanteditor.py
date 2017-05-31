@@ -46,7 +46,7 @@ _HEX_REGEXP = re.compile("[0-9a-fA-F]{1,2}")
 
 
 def dec2hex(dec):
-    return "".join([data.encode("hex") for data in dec])
+    return ''.join(data.encode().hex() for data in dec)
 
 
 def hex2dec(hex):
@@ -54,7 +54,7 @@ def hex2dec(hex):
     import string
     dec = ""
     for data in _HEX_REGEXP.findall(hex):
-        data = data.zfill(2).decode("hex")
+        data = bytes.fromhex(data.zfill(2)).decode()
         if not data in string.printable:
             data = UNKNOWN_CHARACTER
         dec += data

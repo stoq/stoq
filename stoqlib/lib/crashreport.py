@@ -152,7 +152,7 @@ def collect_report():
     for i, trace in enumerate(_tracebacks):
         t = ''.join(traceback.format_exception(*trace))
         # Eliminate duplicates:
-        md5sum = hashlib.md5(t).hexdigest()
+        md5sum = hashlib.md5(t.encode()).hexdigest()
         report_['tracebacks'][md5sum] = t
 
     if info and info.get('log'):

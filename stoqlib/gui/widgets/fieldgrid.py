@@ -269,8 +269,7 @@ class FieldGrid(Gtk.Layout):
 
         mask = (Gdk.EventMask.BUTTON_RELEASE_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK |
                 Gdk.EventMask.POINTER_MOTION_MASK)
-        grab = Gdk.pointer_grab(self.get_window(), False, mask, None, None,
-                                long(time))
+        grab = Gdk.pointer_grab(self.get_window(), False, mask, None, None, time)
         if grab != Gdk.GrabStatus.SUCCESS:
             raise AssertionError("grab failed")
 
@@ -308,7 +307,7 @@ class FieldGrid(Gtk.Layout):
         if not self._moving_field:
             return
 
-        Gdk.pointer_ungrab(long(time))
+        Gdk.pointer_ungrab(time)
         self._moving_field = None
 
     def _get_coords(self, x, y):

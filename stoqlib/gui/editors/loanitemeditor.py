@@ -58,7 +58,7 @@ class LoanItemEditor(BaseEditor):
         self._calc = CalculatorPopup(self.price,
                                      CalculatorPopup.MODE_SUB)
 
-        self.sale.set_text(unicode(self.model.loan.identifier))
+        self.sale.set_text(str(self.model.loan.identifier))
         self.description.set_text(self.model.sellable.get_description())
         self.original_price.update(self.model.price)
         for widget in [self.quantity, self.price]:

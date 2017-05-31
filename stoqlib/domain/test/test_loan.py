@@ -219,6 +219,10 @@ class TestLoan(DomainTest):
         loan.set_items_discount(5)
         self.assertEqual(loan.get_total_amount(), 19)
 
+        # 5% of discount
+        loan.set_items_discount(decimal.Decimal('5.27'))
+        self.assertEqual(loan.get_total_amount(), decimal.Decimal('18.95'))
+
     # NF-e operations
 
     def test_comments(self):

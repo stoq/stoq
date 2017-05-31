@@ -65,26 +65,26 @@ class PluginDescription(object):
                 filename = [f for f in egg.namelist()
                             if f.endswith('plugin')][0]
                 plugin_file = egg.open(filename)
-                config.readfp(plugin_file)
+                config.read_string(plugin_file.read().decode())
         else:
             plugin_path = os.path.dirname(os.path.dirname(filename))
             self.plugin_path = plugin_path
             config.read(filename)
 
-        self.name = unicode(os.path.basename(filename).split('.')[0])
+        self.name = os.path.basename(filename).split('.')[0]
         self.entry = config.get('Plugin', 'Module')
         self.filename = filename
 
         if config.has_option('Plugin', 'Dependencies'):
             self.dependencies = [
-                unicode(dependency.strip()) for dependency in
+                dependency.strip() for dependency in
                 config.get('Plugin', 'Dependencies').split(',')]
         else:
             self.dependencies = []
 
         if config.has_option('Plugin', 'Replaces'):
             self.replaces = [
-                unicode(replace.strip()) for replace in
+                replace.strip() for replace in
                 config.get('Plugin', 'Replaces').split(',')]
         else:
             self.replaces = []
@@ -272,7 +272,7 @@ class PluginManager(object):
                     if egg.testzip() is not None:
                         raise BadZipfile
 
-                md5sum = unicode(hashlib.md5(f.getvalue()).hexdigest())
+                md5sum = hashlib.md5(f.getvalue()).hexdigest()
                 with new_store() as store:
                     existing_egg = store.find(PluginEgg,
                                               plugin_name=plugin_name).one()

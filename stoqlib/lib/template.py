@@ -40,7 +40,7 @@ def render_template(filename, **ns):
                             default_filters=['h'])
     tmpl = lookup.get_template(filename)
 
-    return tmpl.render(**ns)
+    return tmpl.render(**ns).decode()
 
 
 def render_template_string(template, **ns):

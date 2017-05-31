@@ -36,6 +36,7 @@ the financial application to efficiently display a ledger.
 
 # pylint: enable=E1101
 
+import collections
 import datetime
 
 from kiwi.currency import currency
@@ -151,15 +152,15 @@ class Account(Domain):
     #: Equity, like unbalanced
     TYPE_EQUITY = u'equity'
 
-    account_labels = {
-        TYPE_BANK: (_(u"Deposit"), _(u"Withdrawal")),
-        TYPE_CASH: (_(u"Receive"), _(u"Spend")),
-        TYPE_ASSET: (_(u"Increase"), _(u"Decrease")),
-        TYPE_CREDIT: (_(u"Payment"), _(u"Charge")),
-        TYPE_INCOME: (_(u"Income"), _(u"Charge"),),
-        TYPE_EXPENSE: (_(u"Rebate"), _(u"Expense")),
-        TYPE_EQUITY: (_(u"Increase"), _(u"Decrease")),
-    }
+    account_labels = collections.OrderedDict([
+        (TYPE_BANK, (_(u"Deposit"), _(u"Withdrawal"))),
+        (TYPE_CASH, (_(u"Receive"), _(u"Spend"))),
+        (TYPE_ASSET, (_(u"Increase"), _(u"Decrease"))),
+        (TYPE_CREDIT, (_(u"Payment"), _(u"Charge"))),
+        (TYPE_INCOME, (_(u"Income"), _(u"Charge"),)),
+        (TYPE_EXPENSE, (_(u"Rebate"), _(u"Expense"))),
+        (TYPE_EQUITY, (_(u"Increase"), _(u"Decrease"))),
+    ])
 
     account_type_descriptions = [
         (_(u"Bank"), TYPE_BANK),
@@ -488,7 +489,7 @@ class AccountTransaction(Domain):
             destination = (destination_account or
                            payment.method.destination_account)
 
-        code = code if code is not None else unicode(payment.identifier)
+        code = code if code is not None else str(payment.identifier)
         return cls(source_account=source,
                    account=destination,
                    value=value,

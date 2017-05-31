@@ -99,8 +99,8 @@ class ShellDatabaseConnection(object):
         if not os.path.exists(filename):
             return
 
-        data = open(filename).read()
-        return binascii.a2b_base64(data)
+        with open(filename, 'rb') as f:
+            return binascii.a2b_base64(f.read())
 
     def _try_connect(self):
         from stoqlib.lib.message import error
@@ -484,7 +484,7 @@ class Shell(object):
         if appname is None:
             appname = u'launcher'
         shell_window = self.create_window()
-        app = shell_window.run_application(unicode(appname))
+        app = shell_window.run_application(str(appname))
         shell_window.show()
 
         if action_name is not None:

@@ -35,6 +35,7 @@ or a |service|.
 
 # pylint: enable=E1101
 
+import collections
 from decimal import Decimal
 
 from kiwi.currency import currency
@@ -132,12 +133,12 @@ class SellableTaxConstant(Domain):
     #: the percentage value of the tax
     tax_value = PercentCol(default=None)
 
-    _mapping = {
-        int(TaxType.NONE): u'TAX_NONE',                      # Não tributado - ICMS
-        int(TaxType.EXEMPTION): u'TAX_EXEMPTION',            # Isento - ICMS
-        int(TaxType.SUBSTITUTION): u'TAX_SUBSTITUTION',      # Substituição tributária - ICMS
-        int(TaxType.SERVICE): u'TAX_SERVICE',                # ISS
-    }
+    _mapping = collections.OrderedDict([
+        (int(TaxType.NONE), u'TAX_NONE'),                      # Não tributado - ICMS
+        (int(TaxType.EXEMPTION), u'TAX_EXEMPTION'),            # Isento - ICMS
+        (int(TaxType.SUBSTITUTION), u'TAX_SUBSTITUTION'),      # Substituição tributária - ICMS
+        (int(TaxType.SERVICE), u'TAX_SERVICE'),                # ISS
+    ])
 
     def get_value(self):
         """
@@ -390,8 +391,10 @@ class Sellable(Domain):
     #: but it should not be possible to create a |purchase|/|sale| with it
     STATUS_CLOSED = u'closed'
 
-    statuses = {STATUS_AVAILABLE: _(u'Available'),
-                STATUS_CLOSED: _(u'Closed')}
+    statuses = collections.OrderedDict([
+        (STATUS_AVAILABLE, _(u'Available')),
+        (STATUS_CLOSED, _(u'Closed')),
+    ])
 
     #: a code used internally by the shop to reference this sellable.
     #: It is usually not printed and displayed to |clients|, barcode is for that.
@@ -720,7 +723,7 @@ class Sellable(Domain):
         else:
             info = self
 
-        return max(user_discount, info.max_discount)
+        return Decimal(max(user_discount, info.max_discount))
 
     def check_code_exists(self, code):
         """Check if there is another sellable with the same code.

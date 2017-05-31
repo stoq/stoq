@@ -63,23 +63,19 @@ class TestSelect(DomainTest):
     def setUpClass(cls):
         DomainTest.setUpClass()
         RECREATE_SQL = """
-        DROP TABLE IF EXISTS dung;
-        DROP TABLE IF EXISTS dong;
-        DROP TABLE IF EXISTS ding;
-
-        CREATE TABLE ding (
+        CREATE TABLE IF NOT EXISTS ding (
             id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
             te_id bigint UNIQUE REFERENCES transaction_entry(id),
             int_field integer default 0,
             str_field text default ''
         );
-        CREATE TABLE dong (
+        CREATE TABLE IF NOT EXISTS dong (
             id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
             te_id bigint UNIQUE REFERENCES transaction_entry(id),
             bool_field boolean default false,
             ding_id uuid REFERENCES ding(id) ON UPDATE CASCADE
         );
-        CREATE TABLE dung (
+        CREATE TABLE IF NOT EXISTS dung (
             id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
             identifier SERIAL NOT NULL,
             te_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -110,7 +106,7 @@ class TestSelect(DomainTest):
     def test_validate_attr(self):
         with self.assertRaisesRegexp(
                 TypeError,
-                ("expected_type <type 'object'> needs to be a "
+                ("expected_type <class 'object'> needs to be a "
                  "<class 'storm.properties.Property'> subclass")):
             Ding.validate_attr(Ding.str_field, expected_type=object)
 
@@ -217,7 +213,7 @@ class TestSelect(DomainTest):
             warning.assert_called_once_with(
                 "more than one result found when trying to "
                 "check_unique_tuple_exists on table 'Ding' for values: "
-                "u'str_field => XXX'")
+                "'str_field => XXX'")
 
     def test_check_unique_tuple_exists(self):
         ding_1 = Ding(store=self.store, str_field=u'Ding_1', int_field=1)
@@ -257,7 +253,7 @@ class TestSelect(DomainTest):
             warning.assert_called_once_with(
                 "more than one result found when trying to "
                 "check_unique_tuple_exists on table 'Ding' for values: "
-                "u'int_field => 1, str_field => XXX'")
+                "'int_field => 1, str_field => XXX'")
 
     def test_can_remove(self):
         ding = Ding(store=self.store)

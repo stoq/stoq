@@ -644,7 +644,7 @@ class TestPurchaseOrderView(DomainTest):
         postresults = PurchaseOrderView.post_search_callback(sresults)
         self.assertEqual(postresults[0], ('count', 'sum'))
         self.assertEqual(self.store.execute(postresults[1]).get_one(),
-                         (2L, Decimal('9930.000')))
+                         (2, Decimal('9930.000')))
 
     def test_get_sub_total(self):
         order = self.create_purchase_order()
@@ -675,17 +675,17 @@ class TestPurchaseOrderView(DomainTest):
     def test_find_confirmed(self):
         item = self.create_purchase_order_item()
         item.order.status = item.order.ORDER_CONFIRMED
-        item.order.expected_receival_date = localdate(2013, 07, 15)
-        due_date = localdate(2013, 07, 14), localdate(2013, 07, 16)
+        item.order.expected_receival_date = localdate(2013, 7, 15)
+        due_date = localdate(2013, 7, 14), localdate(2013, 7, 16)
         result = self.store.find(PurchaseOrderView, id=item.order.id).one()
         found = result.find_confirmed(store=self.store, due_date=due_date).count()
         self.assertEquals(found, 1)
 
-        due_date = localdate(2013, 07, 15)
+        due_date = localdate(2013, 7, 15)
         found = result.find_confirmed(store=self.store,
                                       due_date=due_date).count()
         self.assertEquals(found, 1)
-        due_date = localdate(2025, 07, 15)
+        due_date = localdate(2025, 7, 15)
         found = result.find_confirmed(store=self.store,
                                       due_date=due_date).count()
         self.assertEquals(found, 0)

@@ -90,7 +90,7 @@ class TestParameterSearch(GUITest):
 
     def test_get_parameter_data_path_parameter(self):
         parameter = ParameterDetails(u'FOO', 'section', 'short_desc',
-                                     'long_desc', unicode,
+                                     'long_desc', str,
                                      initial=u'~/.stoq/cat52',
                                      editor='directory-chooser')
         sysparam.register_param(parameter)

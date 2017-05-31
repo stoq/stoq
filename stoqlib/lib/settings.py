@@ -37,9 +37,7 @@ log = logging.getLogger(__name__)
 def _decode_list(data):
     rv = []
     for item in data:
-        if isinstance(item, unicode):
-            item = item.encode('utf-8')
-        elif isinstance(item, list):
+        if isinstance(item, list):
             item = _decode_list(item)
         elif isinstance(item, dict):
             item = _decode_dict(item)
@@ -50,11 +48,7 @@ def _decode_list(data):
 def _decode_dict(data):
     rv = {}
     for key, value in data.items():
-        if isinstance(key, unicode):
-            key = key.encode('utf-8')
-        if isinstance(value, unicode):
-            value = value.encode('utf-8')
-        elif isinstance(value, list):
+        if isinstance(value, list):
             value = _decode_list(value)
         elif isinstance(value, dict):
             value = _decode_dict(value)
@@ -74,8 +68,7 @@ def _encode_object(obj):
 
 
 def _fix_name(name):
-    name = name.replace('_', '-')
-    return name.encode('utf-8')
+    return name.replace('_', '-')
 
 
 class UserSettings(object):
@@ -109,7 +102,9 @@ class UserSettings(object):
     def flush(self):
         data = json.dumps(self._root,
                           indent=2,
-                          sort_keys=True,
+                          # FIXME python3: Sorting is failing because we
+                          # have some None values in the dict
+                          # sort_keys=True,
                           default=_encode_object)
         self._write(data)
 

@@ -12,12 +12,12 @@ GtkDialog(toplevel): title='Delivery Search', hidden
                   GtkLabel(): 'With status:'
                   ProxyComboBox(padding=6):
                     item: 'Any', selected
-                    item: 'Received'
                     item: 'Waiting'
-                    item: 'Sent'
-                    item: 'Picked'
                     item: 'Cancelled'
+                    item: 'Picked'
                     item: 'Packed'
+                    item: 'Sent'
+                    item: 'Received'
                 StringSearchFilter(_primary_filter):
                   GtkLabel(): 'Search:'
                   ProxyComboBox(padding=6): hidden

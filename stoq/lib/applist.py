@@ -76,7 +76,7 @@ def get_application_names():
 
     @returns: application names
     """
-    return list(_APPLICATIONS.keys())
+    return sorted(_APPLICATIONS.keys())
 
 
 def get_application_icon(appname):
@@ -112,7 +112,7 @@ class ApplicationDescriptions:
 
     def get_descriptions(self):
         app_desc = []
-        for name, (label, description) in _APPLICATIONS.items():
+        for name, (label, description) in sorted(_APPLICATIONS.items()):
             icon = get_application_icon(name)
             app_desc.append((name, _(label),
                              icon, _(description)))

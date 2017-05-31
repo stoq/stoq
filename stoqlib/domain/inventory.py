@@ -25,6 +25,7 @@
 
 # pylint: enable=E1101
 
+import collections
 from decimal import Decimal
 
 from storm.expr import And, Eq, Cast, Join, LeftJoin, Or, Coalesce
@@ -243,9 +244,11 @@ class Inventory(Domain):
     #: The inventory process was cancelled, eg never finished
     STATUS_CANCELLED = u'cancelled'
 
-    statuses = {STATUS_OPEN: _(u'Opened'),
-                STATUS_CLOSED: _(u'Closed'),
-                STATUS_CANCELLED: _(u'Cancelled')}
+    statuses = collections.OrderedDict([
+        (STATUS_OPEN, _(u'Opened')),
+        (STATUS_CLOSED, _(u'Closed')),
+        (STATUS_CANCELLED, _(u'Cancelled')),
+    ])
 
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`Domain.id` when displaying a numerical representation of this object to

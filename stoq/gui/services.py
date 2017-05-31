@@ -25,7 +25,9 @@
 """Main gui definition for services application"""
 
 import datetime
-import urllib
+import urllib.request
+import urllib.parse
+import urllib.error
 
 from gi.repository import Gtk, GdkPixbuf, Pango
 from kiwi.currency import currency
@@ -166,7 +168,7 @@ class WorkOrderResultKanbanView(KanbanView):
             # FIXME: Figure out a better way of rendering
             work_order_view.markup = '<b>%s</b>\n%s\n%s' % (
                 description,
-                unicode(api.escape(work_order_view.client_name)),
+                str(api.escape(work_order_view.client_name)),
                 work_order_view.open_date.strftime('%x'))
 
             column.append_item(work_order_view)
@@ -376,7 +378,7 @@ class ServicesApp(ShellApp):
                              u"could be found.") % (
                     '<b>%s</b>' % (value, ), )
                 url = u"<a href='new_order?%s'>%s</a>" % (
-                    urllib.quote(value.encode('utf-8')),
+                    urllib.parse.quote(value),
                     api.escape(_(u"create a new work order")), )
                 url_msg = _(u"Would you like to %s ?") % (url, )
 
@@ -821,7 +823,7 @@ class ServicesApp(ShellApp):
             return
 
         if '?' in uri:
-            category_name = unicode(urllib.unquote(uri.split('?', 1)[1]))
+            category_name = str(urllib.parse.unquote(uri.split('?', 1)[1]))
             category = self.store.find(WorkOrderCategory,
                                        name=category_name).one()
         else:

@@ -149,7 +149,7 @@ def register_codec():
         for c in text:
             key = ord(c)
             try:
-                ret += unichr(decoding_map[key])
+                ret += chr(decoding_map[key])
             except KeyError:
                 handler = codecs.lookup_error('replace')
                 return handler(uerr)

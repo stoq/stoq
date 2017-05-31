@@ -23,10 +23,10 @@
 ##
 
 import errno
-import httplib
+import http.client
 import logging
 import os
-import urlparse
+import urllib.parse
 
 from nss import io
 from nss import nss
@@ -48,12 +48,12 @@ def nss_setup(certdb, password_callback=None, certificate_callback=None):
     _certificate_callback = certificate_callback
 
 
-class _NssHTTPConnection(httplib.HTTPConnection):
+class _NssHTTPConnection(http.client.HTTPConnection):
 
     default_port = 443
 
     def __init__(self, host, port, strict=None, timeout=3, **kwargs):
-        httplib.HTTPConnection.__init__(
+        http.client.HTTPConnection.__init__(
             self, host, port, strict=strict, timeout=timeout, **kwargs)
 
         log.info('%s init %s', self.__class__.__name__, host)
@@ -226,7 +226,7 @@ class NssSession(object):
         return self.request('POST', url, data=data, headers=headers)
 
     def request(self, method, url, data=None, headers=None):
-        parsed = urlparse.urlparse(url)
+        parsed = urllib.parse.urlparse(url)
         port = parsed.port
         if not port:
             port = self.SCHEME_PORT_MAP[parsed.scheme]
@@ -254,8 +254,8 @@ if __name__ == '__main__':
     if not os.path.exists(firefoxdir):
         raise AssertionError
 
-    import ConfigParser
-    cfg = ConfigParser.ConfigParser()
+    import configparser
+    cfg = configparser.ConfigParser()
     cfg.read(os.path.join(firefoxdir, 'profiles.ini'))
     nss_setup(os.path.join(firefoxdir, cfg.get('Profile0', 'Path')))
 

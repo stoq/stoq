@@ -142,7 +142,7 @@ class TestSaleQuoteItemSlave(GUITest):
         slave = editor.item_slave
         upper = slave.reserved.get_adjustment().get_upper()
         self.assertEquals(upper, 1)
-        self.assertEquals(unicode(slave.reserved.emit('validate', 2)),
+        self.assertEquals(str(slave.reserved.emit('validate', 2)),
                           "Not enough stock to reserve.")
 
         slave.quantity.update(3)
@@ -166,7 +166,7 @@ class TestSaleQuoteItemSlave(GUITest):
 
         editor = SaleQuoteItemEditor(self.store, sale_item)
         slave = editor.item_slave
-        self.assertEquals(unicode(slave.reserved.emit('validate', 3)),
+        self.assertEquals(str(slave.reserved.emit('validate', 3)),
                           "One or more components for this package doesn't have "
                           "enough of stock to reserve")
         self.assertSensitive(slave, ['reserved', 'quantity'])

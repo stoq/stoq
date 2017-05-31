@@ -88,8 +88,8 @@ class XLSExporter(object):
         else:
             if isinstance(data, datetime.date):
                 data = data.strftime('%Y-%m-%d')
-            elif isinstance(data, str):
-                data = unicode(data, 'utf-8')
+            elif isinstance(data, bytes):
+                data = data.decode()
 
         self._ws.write(self._current_column, i, data, style)
 
@@ -105,7 +105,7 @@ class XLSExporter(object):
         for i, column_type in enumerate(column_types):
             if column_type in (datetime.datetime, datetime.date):
                 style = self._style_date
-            elif column_type in [int, long, float, currency]:
+            elif column_type in [int, float, currency]:
                 style = self._style_number
             else:
                 style = self._style_general

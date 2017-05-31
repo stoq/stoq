@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import collections
 import decimal
 import logging
 
@@ -67,42 +68,42 @@ log = logging.getLogger(__name__)
 
 
 class ProductSearchExtention(SearchExtension):
-    spec_attributes = dict(
-        gf_glass_type=OpticalProduct.gf_glass_type,
-        gf_size=OpticalProduct.gf_size,
-        gf_lens_type=OpticalProduct.gf_lens_type,
-        gf_color=OpticalProduct.gf_color,
-        gl_photosensitive=OpticalProduct.gl_photosensitive,
-        gl_anti_glare=OpticalProduct.gl_anti_glare,
-        gl_refraction_index=OpticalProduct.gl_refraction_index,
-        gl_classification=OpticalProduct.gl_classification,
-        gl_addition=OpticalProduct.gl_addition,
-        gl_diameter=OpticalProduct.gl_diameter,
-        gl_height=OpticalProduct.gl_height,
-        gl_availability=OpticalProduct.gl_availability,
-        cl_degree=OpticalProduct.cl_degree,
-        cl_classification=OpticalProduct.cl_classification,
-        cl_lens_type=OpticalProduct.cl_lens_type,
-        cl_discard=OpticalProduct.cl_discard,
-        cl_addition=OpticalProduct.cl_addition,
-        cl_cylindrical=OpticalProduct.cl_cylindrical,
-        cl_axis=OpticalProduct.cl_axis,
-        cl_color=OpticalProduct.cl_color,
-        cl_curvature=OpticalProduct.cl_curvature,
-    )
+    spec_attributes = collections.OrderedDict([
+        ('gf_glass_type', OpticalProduct.gf_glass_type),
+        ('gf_size', OpticalProduct.gf_size),
+        ('gf_lens_type', OpticalProduct.gf_lens_type),
+        ('gf_color', OpticalProduct.gf_color),
+        ('gl_photosensitive', OpticalProduct.gl_photosensitive),
+        ('gl_anti_glare', OpticalProduct.gl_anti_glare),
+        ('gl_refraction_index', OpticalProduct.gl_refraction_index),
+        ('gl_classification', OpticalProduct.gl_classification),
+        ('gl_addition', OpticalProduct.gl_addition),
+        ('gl_diameter', OpticalProduct.gl_diameter),
+        ('gl_height', OpticalProduct.gl_height),
+        ('gl_availability', OpticalProduct.gl_availability),
+        ('cl_degree', OpticalProduct.cl_degree),
+        ('cl_classification', OpticalProduct.cl_classification),
+        ('cl_lens_type', OpticalProduct.cl_lens_type),
+        ('cl_discard', OpticalProduct.cl_discard),
+        ('cl_addition', OpticalProduct.cl_addition),
+        ('cl_cylindrical', OpticalProduct.cl_cylindrical),
+        ('cl_axis', OpticalProduct.cl_axis),
+        ('cl_color', OpticalProduct.cl_color),
+        ('cl_curvature', OpticalProduct.cl_curvature),
+    ])
     spec_joins = [
         LeftJoin(OpticalProduct, OpticalProduct.product_id == Product.id)
     ]
 
     def get_columns(self):
-        info_cols = {
-            _('Frame'): [
+        info_cols = collections.OrderedDict([
+            (_('Frame'), [
                 ('gf_glass_type', _('Glass Type'), str, False),
                 ('gf_size', _('Size'), str, False),
                 ('gf_lens_type', _('Lens Type'), str, False),
                 ('gf_color', _('Color'), str, False),
-            ],
-            _('Glass Lenses'): [
+            ]),
+            (_('Glass Lenses'), [
                 ('gl_photosensitive', _('Photosensitive'), str, False),
                 ('gl_anti_glare', _('Anti Glare'), str, False),
                 ('gl_refraction_index', _('Refraction Index'), decimal.Decimal,
@@ -112,8 +113,8 @@ class ProductSearchExtention(SearchExtension):
                 ('gl_diameter', _('Diameter'), str, False),
                 ('gl_height', _('Height'), str, False),
                 ('gl_availability', _('Availability'), str, False),
-            ],
-            _('Contact Lenses'): [
+            ]),
+            (_('Contact Lenses'), [
                 ('cl_degree', _('Degree'), decimal.Decimal, False),
                 ('cl_classification', _('Classification'), str, False),
                 ('cl_lens_type', _('Lens Type'), str, False),
@@ -123,8 +124,8 @@ class ProductSearchExtention(SearchExtension):
                 ('cl_axis', _('Axis'), decimal.Decimal, False),
                 ('cl_color', _('Color'), str, False),
                 ('cl_curvature', _('Curvature'), str, False),
-            ],
-        }
+            ]),
+        ])
 
         columns = []
         for label, columns_list in info_cols.items():

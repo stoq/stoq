@@ -203,7 +203,7 @@ class StoqlibSintegraGenerator(object):
                                 receiving_order.discount_value) / items_total)
 
         state_registry = self._get_state_registry(receiving_order)
-        for tax_value, items in sellable_per_constant.items():
+        for tax_value, items in sorted(sellable_per_constant.items()):
             item_total = sum(item.get_total() for item in items)
             item_total *= extra_percental
             total_ipi = sum(item.receiving_order.ipi_total for item in items)

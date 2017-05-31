@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import collections
+
 from storm.expr import And, Eq
 
 from stoqlib.database.properties import EnumCol, BLOBCol, UnicodeCol, BoolCol
@@ -36,10 +38,10 @@ class Certificate(Domain):
     TYPE_PKCS11 = u'pkcs11'
     TYPE_PKCS12 = u'pkcs12'
 
-    types_str = {
-        TYPE_PKCS11: _("A3: Smartcard"),
-        TYPE_PKCS12: _("A1: Digital certificate"),
-    }
+    types_str = collections.OrderedDict([
+        (TYPE_PKCS11, _("A3: Smartcard")),
+        (TYPE_PKCS12, _("A1: Digital certificate")),
+    ])
 
     #: The type of the certificate
     type = EnumCol(allow_none=False, default=TYPE_PKCS12)
@@ -61,7 +63,7 @@ class Certificate(Domain):
     @property
     def password(self):
         po = PasswordObfuscator()
-        po.hashed_password = self._password and self._password.encode('utf-8')
+        po.hashed_password = self._password and self._password
         return po
 
     @password.setter

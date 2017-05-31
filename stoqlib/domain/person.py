@@ -225,8 +225,10 @@ class CreditCheckHistory(Domain):
     #: if a client does not have debt
     STATUS_NOT_INCLUDED = u'not-included'
 
-    statuses = {STATUS_INCLUDED: _(u'Included'),
-                STATUS_NOT_INCLUDED: _(u'Not included')}
+    statuses = collections.OrderedDict([
+        (STATUS_INCLUDED, _(u'Included')),
+        (STATUS_NOT_INCLUDED, _(u'Not included')),
+    ])
 
     #: when this check was created
     creation_date = DateTimeCol(default_factory=localnow)
@@ -583,9 +585,11 @@ class Individual(Domain):
     GENDER_MALE = u'male'
     GENDER_FEMALE = u'female'
 
-    genders = {GENDER_MALE: _(u'Male'),
-               GENDER_FEMALE: _(u'Female'),
-               None: _(u'None')}
+    genders = collections.OrderedDict([
+        (GENDER_MALE, _(u'Male')),
+        (GENDER_FEMALE, _(u'Female')),
+        (None, _(u'None')),
+    ])
 
     person_id = IdCol()
 
@@ -1201,9 +1205,11 @@ class Supplier(Domain):
     STATUS_INACTIVE = u'inactive'
     STATUS_BLOCKED = u'blocked'
 
-    statuses = {STATUS_ACTIVE: _(u'Active'),
-                STATUS_INACTIVE: _(u'Inactive'),
-                STATUS_BLOCKED: _(u'Blocked')}
+    statuses = collections.OrderedDict([
+        (STATUS_ACTIVE, _(u'Active')),
+        (STATUS_INACTIVE, _(u'Inactive')),
+        (STATUS_BLOCKED, _(u'Blocked')),
+    ])
 
     person_id = IdCol()
 
@@ -1342,10 +1348,12 @@ class Employee(Domain):
     STATUS_VACATION = u'vacation'
     STATUS_OFF = u'off'
 
-    statuses = {STATUS_NORMAL: _(u'Normal'),
-                STATUS_AWAY: _(u'Away'),
-                STATUS_VACATION: _(u'Vacation'),
-                STATUS_OFF: _(u'Off')}
+    statuses = collections.OrderedDict([
+        (STATUS_NORMAL, _(u'Normal')),
+        (STATUS_AWAY, _(u'Away')),
+        (STATUS_VACATION, _(u'Vacation')),
+        (STATUS_OFF, _(u'Off')),
+    ])
 
     #: normal/away/vacation/off
     status = EnumCol(allow_none=False, default=STATUS_NORMAL)
@@ -1456,8 +1464,10 @@ class LoginUser(Domain):
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
 
-    statuses = {STATUS_ACTIVE: _(u'Active'),
-                STATUS_INACTIVE: _(u'Inactive')}
+    statuses = collections.OrderedDict([
+        (STATUS_ACTIVE, _(u'Active')),
+        (STATUS_INACTIVE, _(u'Inactive')),
+    ])
 
     person_id = IdCol()
 
@@ -1531,9 +1541,8 @@ class LoginUser(Domain):
     def hash(cls, password):
         """:returns: the hash of a password.
         """
-        assert isinstance(password, unicode)
-
-        return unicode(hashlib.md5(password).hexdigest())
+        assert isinstance(password, str)
+        return hashlib.md5(password.encode()).hexdigest()
 
     @classmethod
     def authenticate(cls, store, username, pw_hash, current_branch):
@@ -1628,8 +1637,10 @@ class Branch(Domain):
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
 
-    statuses = {STATUS_ACTIVE: _(u'Active'),
-                STATUS_INACTIVE: _(u'Inactive')}
+    statuses = collections.OrderedDict([
+        (STATUS_ACTIVE, _(u'Active')),
+        (STATUS_INACTIVE, _(u'Inactive')),
+    ])
 
     person_id = IdCol()
 
@@ -1781,16 +1792,15 @@ class SalesPerson(Domain):
      COMMISSION_BY_SELLABLE_CATEGORY,
      COMMISSION_BY_SALE_TOTAL) = range(7)
 
-    comission_types = {COMMISSION_GLOBAL: _(u'Globally'),
-                       COMMISSION_BY_SALESPERSON: _(u'By Salesperson'),
-                       COMMISSION_BY_SELLABLE: _(u'By Sellable'),
-                       COMMISSION_BY_PAYMENT_METHOD: _(u'By Payment Method'),
-                       COMMISSION_BY_BASE_SELLABLE_CATEGORY: _(u'By Base '
-                                                               u'Sellable '
-                                                               u'Category'),
-                       COMMISSION_BY_SELLABLE_CATEGORY: _(u'By Sellable '
-                                                          u'Category'),
-                       COMMISSION_BY_SALE_TOTAL: _(u'By Sale Total')}
+    comission_types = collections.OrderedDict([
+        (COMMISSION_GLOBAL, _('Globally')),
+        (COMMISSION_BY_SALESPERSON, _('By Salesperson')),
+        (COMMISSION_BY_SELLABLE, _('By Sellable')),
+        (COMMISSION_BY_PAYMENT_METHOD, _('By Payment Method')),
+        (COMMISSION_BY_BASE_SELLABLE_CATEGORY, _('By Base Sellable Category')),
+        (COMMISSION_BY_SELLABLE_CATEGORY, _('By Sellable Category')),
+        (COMMISSION_BY_SALE_TOTAL, _('By Sale Total')),
+    ])
 
     person_id = IdCol()
 

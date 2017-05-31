@@ -58,7 +58,7 @@ class TestBillPaymentSlaves(GUITest):
         order.identifier = 12345
 
         slave = BillMethodSlave(wizard, None, self.store, order, method,
-                                Decimal(200), localdate(2012, 01, 01).date())
+                                Decimal(200), localdate(2012, 1, 1).date())
         self.check_slave(slave, 'slave-bill-method-1-installments')
 
         slave.installments_number.update(2)
@@ -76,7 +76,7 @@ class TestBillPaymentSlaves(GUITest):
                                 Decimal(200), today)
         self.assertValid(slave, ['first_duedate'])
 
-        slave.first_duedate.update(datetime.date(2012, 01, 01))
+        slave.first_duedate.update(datetime.date(2012, 1, 1))
         self.assertInvalid(slave, ['first_duedate'])
 
 
@@ -172,7 +172,7 @@ class TestCardPaymentSlaves(GUITest):
         method = PaymentMethod.get_by_name(self.store, u'card')
         slave = CardMethodSlave(wizard, None, self.store, sale, method)
         slave.auth_number.update(1234567)
-        self.assertEquals(unicode(slave.auth_number.emit("validate", 1234567)),
+        self.assertEquals(str(slave.auth_number.emit("validate", 1234567)),
                           "Authorization number must have 6 digits or less.")
         self.assertNotSensitive(wizard, ['next_button'])
         slave.auth_number.update(123456)
@@ -205,7 +205,7 @@ class TestMultipleMethodSlave(GUITest):
         slave = MultipleMethodSlave(wizard, None, self.store, sale)
 
         self.assertEquals(slave.value.read(), 10)
-        self.assertEquals(unicode(slave.value.emit("validate", 0)),
+        self.assertEquals(str(slave.value.emit("validate", 0)),
                           u"You must provide a payment value.")
         self.assertNotSensitive(slave, ['add_button'])
 
@@ -227,7 +227,7 @@ class TestMultipleMethodSlave(GUITest):
                 break
         self.assertEquals(slave.value.read(), 10)
         self.assertSensitive(slave, ['add_button'])
-        self.assertEquals(unicode(slave.value.emit("validate", 30)),
+        self.assertEquals(str(slave.value.emit("validate", 30)),
                           u"Client does not have enough credit. Client store credit: 20.0.")
         self.assertNotSensitive(slave, ['add_button'])
         slave.value.update(10)

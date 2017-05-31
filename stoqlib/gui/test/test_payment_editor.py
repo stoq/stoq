@@ -130,10 +130,10 @@ class TestPaymentEditor(GUITest):
 
     def test_value_validation(self):
         editor = InPaymentEditor(self.store)
-        self.assertEquals(unicode(editor.value.emit('validate', None)),
+        self.assertEquals(str(editor.value.emit('validate', None)),
                           u"The value must be greater than zero.")
 
-        self.assertEquals(unicode(editor.value.emit('validate', -1)),
+        self.assertEquals(str(editor.value.emit('validate', -1)),
                           u"The value must be greater than zero.")
         self.assertFalse(editor.value.emit('validate', 10))
 

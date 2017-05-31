@@ -57,9 +57,9 @@ _ = stoqlib_gettext
 
 class _PrinterModel(object):
     def __init__(self, brand, printer_class):
-        self.brand = unicode(brand)
-        self.model = unicode(printer_class.__name__)
-        self.model_name = unicode(printer_class.model_name)
+        self.brand = str(brand)
+        self.model = str(printer_class.__name__)
+        self.model_name = str(printer_class.model_name)
         self.printer_class = printer_class
 
     def get_description(self):
@@ -236,7 +236,7 @@ class ECFEditor(BaseEditor):
         self.device_name.prefill(values)
 
     def _populate_ecf_printer(self, status):
-        serial = unicode(status.printer.get_serial())
+        serial = str(status.printer.get_serial())
         if self.store.find(ECFPrinter, device_serial=serial):
             status.stop()
             status.get_port().close()
@@ -313,7 +313,7 @@ class ECFEditor(BaseEditor):
             if payment_enum in payment_methods:
                 continue
             DeviceConstant(constant_enum=int(payment_enum),
-                           constant_name=unicode(constant_name),
+                           constant_name=str(constant_name),
                            constant_type=DeviceConstant.TYPE_PAYMENT,
                            constant_value=None,
                            device_value=device_value,

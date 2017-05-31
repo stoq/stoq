@@ -751,7 +751,7 @@ class StringSearchFilter(SearchFilter):
     def get_state(self):
         option = self.mode.get_selected_data()
         return StringQueryState(filter=self,
-                                text=unicode(self.entry.get_text()),
+                                text=str(self.entry.get_text()),
                                 mode=option and option.mode)
 
     def set_state(self, text, mode=None):

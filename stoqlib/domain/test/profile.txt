@@ -38,10 +38,10 @@ value for attribute has_permission is False.
 
 Check if everything was properly saved into database.
 
-    >>> prof_number = long(prof_number + 1)
+    >>> prof_number = prof_number + 1
     >>> store.find(UserProfile).count() == prof_number
     True
-    >>> settings_number = long(settings_number + 1)
+    >>> settings_number = settings_number + 1
     >>> store.find(ProfileSettings).count() == settings_number
     True
 
@@ -53,7 +53,7 @@ There is an approach to deal with this requirement.
 
 Is everything properly saved ?
 
-    >>> settings_number = long(settings_number + 1)
+    >>> settings_number = settings_number + 1
     >>> store.find(ProfileSettings).count() == settings_number
     True
 

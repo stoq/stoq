@@ -152,11 +152,11 @@ class SellableMassEditorDialog(MassEditorSearch):
         # TODO: Add: status, max_discount
         default_fields = [
             # Sellable fields
-            AccessorField(_('Code'), 'sellable', 'code', unicode, unique=True),
-            AccessorField(_('Barcode'), 'sellable', 'barcode', unicode, unique=True),
+            AccessorField(_('Code'), 'sellable', 'code', str, unique=True),
+            AccessorField(_('Barcode'), 'sellable', 'barcode', str, unique=True),
             ReferenceField(_('Category'), 'sellable', 'category',
                            SellableCategory, 'description'),
-            AccessorField(_('Description'), 'sellable', 'description', unicode),
+            AccessorField(_('Description'), 'sellable', 'description', str),
             ReferenceField(_('Unit'), 'sellable', 'unit',
                            SellableUnit, 'description', visible=False),
             ReferenceField(_('C.F.O.P.'), 'sellable', 'default_sale_cfop',
@@ -175,11 +175,11 @@ class SellableMassEditorDialog(MassEditorSearch):
                           datetime.date),
 
             # Product Fields
-            AccessorField(_('NCM'), 'product', 'ncm', unicode, visible=False),
-            AccessorField(_('Location'), 'product', 'location', unicode, visible=False),
-            AccessorField(_('Brand'), 'product', 'brand', unicode, visible=False),
-            AccessorField(_('Family'), 'product', 'family', unicode, visible=False),
-            AccessorField(_('Model'), 'product', 'model', unicode, visible=False),
+            AccessorField(_('NCM'), 'product', 'ncm', str, visible=False),
+            AccessorField(_('Location'), 'product', 'location', str, visible=False),
+            AccessorField(_('Brand'), 'product', 'brand', str, visible=False),
+            AccessorField(_('Family'), 'product', 'family', str, visible=False),
+            AccessorField(_('Model'), 'product', 'model', str, visible=False),
             AccessorField(_('Width'), 'product', 'width', decimal.Decimal, visible=False),
             AccessorField(_('Height'), 'product', 'height', decimal.Decimal, visible=False),
             AccessorField(_('Depth'), 'product', 'depth', decimal.Decimal, visible=False),

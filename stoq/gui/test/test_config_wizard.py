@@ -241,7 +241,7 @@ class TestFirstTimeConfigWizard(GUITest):
         with tempfile.NamedTemporaryFile() as f:
             os.environ[u'PGPASSFILE'] = f.name
             self.click(wizard.next_button)
-            data = f.read()
+            data = f.read().decode()
         self.assertEquals(data,
                           (u'remotehost:12345:postgres:username:password\n'
                            u'remotehost:12345:dbname:username:password\n'))

@@ -66,7 +66,7 @@ params = [
         u'NFE_FISCO_INFORMATION',
         _(u'NF-e'),
         _(u'Additional Information for the Fisco'),
-        _(u'Additional information to add to the NF-e for the Fisco'), unicode,
+        _(u'Additional information to add to the NF-e for the Fisco'), str,
         initial=(u'Documento emitido por ME ou EPP optante pelo SIMPLES '
                  u'NACIONAL. Não gera Direito a Crédito Fiscal de ICMS e de '
                  u'ISS. Conforme Lei Complementar 123 de 14/12/2006.'),

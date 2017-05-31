@@ -196,7 +196,7 @@ class ImageSlave(BaseEditorSlave):
 
         pb = GdkPixbuf.Pixbuf.new_from_file(filename)
         self.image_model.image = _pixbuf_converter.as_string(pb)
-        self.image_model.filename = unicode(os.path.basename(filename))
+        self.image_model.filename = str(os.path.basename(filename))
 
         if self._sellable:
             for image in self._sellable.images:

@@ -65,7 +65,7 @@ def _create_transaction(store, till_entry):
                        source_account_id=source_account,
                        account_id=dest_account,
                        value=abs(till_entry.value),
-                       code=unicode(till_entry.identifier),
+                       code=str(till_entry.identifier),
                        date=TransactionTimestamp(),
                        store=store,
                        payment=till_entry.payment,

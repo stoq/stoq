@@ -26,6 +26,7 @@ The base :class:`Domain` class for Stoq.
 
 """
 
+import collections
 import logging
 import warnings
 
@@ -171,13 +172,13 @@ class Domain(ORMObject):
 
     def serialize(self):
         """Returns the object as a dictionary"""
-        dictionary = {}
+        dictionary = collections.OrderedDict()
         for cls in self.__class__.__mro__:
             for key, value in cls.__dict__.items():
                 if isinstance(value, Property):
                     attribute = getattr(self, key)
                     # Handle Identifier Columns as string instead of int
-                    if type(attribute) == Identifier:
+                    if isinstance(attribute, Identifier):
                         attribute = str(attribute)
                     dictionary[key] = attribute
         return dictionary
@@ -286,7 +287,7 @@ class Domain(ORMObject):
         for attr, value, in values.items():
             self.__class__.validate_attr(attr)
 
-            if not isinstance(value, unicode) or case_sensitive:
+            if not isinstance(value, str) or case_sensitive:
                 clauses.append(attr == value)
             else:
                 clauses.append(Like(attr, value, case_sensitive=False))

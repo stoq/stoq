@@ -42,7 +42,7 @@ from stoqlib.lib.pluginmanager import (PluginError, register_plugin,
                                        PluginManager, get_plugin_manager,
                                        PluginDescription)
 
-plugin_desc = """
+plugin_desc = """\
 [Plugin]
 Module=testplugin
 Version=1
@@ -92,7 +92,7 @@ class TestPluginDescription(DomainTest):
         ZipFile.return_value = mock.MagicMock()
         egg = ZipFile.return_value.__enter__.return_value
         egg.namelist.return_value = ['test.plugin']
-        egg.open.return_value = io.BytesIO(plugin_desc)
+        egg.open.return_value = io.BytesIO(plugin_desc.encode())
 
         desc = PluginDescription('tmpfile', is_egg=True)
 
@@ -145,13 +145,13 @@ class TestPluginManager(DomainTest):
             get_default_store.return_value = self.store
 
             PluginEgg(store=self.store, plugin_name=u'foobar',
-                      egg_content='lorem',
+                      egg_content=b'lorem',
                       egg_md5sum=u'e194544df936c31ebf9b4c2d4a6ef213')
             PluginEgg(store=self.store, plugin_name=u'foo',
-                      egg_content='ipsum',
+                      egg_content=b'ipsum',
                       egg_md5sum=u'2b3bd636ec90eb39c3c171dd831b8c30')
             PluginEgg(store=self.store, plugin_name=u'bar',
-                      egg_content='lorem ipsum',
+                      egg_content=b'lorem ipsum',
                       egg_md5sum=u'5f084b7281515082703bd903708c977a')
 
             self._manager._create_eggs_cache()
@@ -226,7 +226,7 @@ class TestPluginManager(DomainTest):
                 mock.patch.object(self._manager, '_reload')) as (commit, close, r):
             response = mock.Mock()
             response.status_code = 200
-            response.content = 'foo bar baz'
+            response.content = b'foo bar baz'
             res = mock.Mock()
             res.get_response.return_value = response
             download_plugin.return_value = res
@@ -251,7 +251,7 @@ class TestPluginManager(DomainTest):
             response.status_code = 200
             with io.BytesIO() as f:
                 with zipfile.ZipFile(f, 'w') as zf:
-                    zf.writestr('/foo/bar.egg', 'foo bar baz')
+                    zf.writestr('/foo/bar.egg', b'foo bar baz')
                 zip_content = f.getvalue()
                 response.content = zip_content
             res = mock.Mock()

@@ -28,7 +28,7 @@
 def _increment(value):
     # Make sure the new value is at least the same size the old one was.
     # For example, this will make '009' become '010' instead of just '10'
-    return unicode(int(value) + 1).zfill(len(value))
+    return str(int(value) + 1).zfill(len(value))
 
 
 def next_value_for(value):
@@ -37,15 +37,15 @@ def next_value_for(value):
     For instance 4 -> 5, 99 -> 100, A83 -> A84 etc::
 
       >>> next_value_for(u'999')
-      u'1000'
+      '1000'
       >>> next_value_for(u'1')
-      u'2'
+      '2'
       >>> next_value_for(u'abc')
-      u'abd'
+      'abd'
       >>> next_value_for(u'XYZ')
-      u'XZ0'
+      'XZ0'
       >>> next_value_for(u'AB00099')
-      u'AB00100'
+      'AB00100'
 
     :param unicode value:
     :returns:
@@ -96,11 +96,11 @@ def max_value_for(values):
     will be in that format. For instance::
 
         >>> max_value_for([u'1', u'2'])
-        u'2'
+        '2'
         >>> max_value_for([u'99', u'100'])
-        u'100'
+        '100'
         >>> max_value_for([u'99', u'0001'])
-        u'0099'
+        '0099'
 
     :param values: a sequence of strings
     :returns: the greatest string on the sequence

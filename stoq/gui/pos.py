@@ -559,7 +559,7 @@ class PosApp(ShellApp):
 
         if not text:
             raise StoqlibError("_get_sellable_and_batch needs a barcode")
-        text = unicode(text)
+        text = str(text)
 
         fmt = api.sysparam.get_int('SCALE_BARCODE_FORMAT')
 
@@ -1093,7 +1093,7 @@ class PosApp(ShellApp):
     def _set_token(self, token_code):
         branch = api.get_current_branch(self.store)
         self._token = self.store.find(SaleToken,
-                                      code=unicode(token_code),
+                                      code=str(token_code),
                                       branch=branch).one()
         if self._token is None:
             warning(_("There's no token registered with the "

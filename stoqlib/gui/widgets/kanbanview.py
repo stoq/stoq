@@ -58,7 +58,7 @@ class CellRendererTextBox(Gtk.CellRendererText):
         else:
             state = Gtk.StateType.NORMAL
 
-        if type(drawable) == Gdk.Pixmap:
+        if isinstance(drawable, Gdk.Pixmap):
             cr = drawable.cairo_create()
             cr.set_source_color(widget.style.bg[Gtk.StateType.SELECTED])
             cr.paint()

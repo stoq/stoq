@@ -52,10 +52,6 @@ class safe_str(str):
     pass
 
 
-class safe_unicode(unicode):
-    pass
-
-
 class StoqAPI(object):
     def get_default_store(self):
         return get_default_store()
@@ -197,10 +193,10 @@ class StoqAPI(object):
         if string is None:
             string = ''
 
-        if isinstance(string, (safe_str, safe_unicode)):
+        if isinstance(string, safe_str):
             return string
 
-        return unicode(GLib.markup_escape_text(string))
+        return str(GLib.markup_escape_text(string))
 
     def prepare_test(self):
         """Prepares to run a standalone test.

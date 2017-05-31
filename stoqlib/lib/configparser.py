@@ -24,7 +24,7 @@
 """Routines for parsing the configuration file"""
 
 import binascii
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 import os
 
 from stoqlib.lib.interfaces import IStoqConfig
@@ -126,7 +126,7 @@ class StoqConfig:
             if not os.path.exists(configdir):
                 try:
                     os.makedirs(configdir)
-                    os.chmod(configdir, 0700)
+                    os.chmod(configdir, 0o700)
                 except OSError as e:
                     if e.errno == 13:
                         raise FilePermissionError(
@@ -142,7 +142,7 @@ class StoqConfig:
 
         # obfuscate password to avoid it being easily identified when
         # editing file on screen. this is *NOT* encryption!
-        fd.write(binascii.b2a_base64(password))
+        fd.write(binascii.b2a_base64(password.encode()))
         fd.close()
 
     def get_settings(self):

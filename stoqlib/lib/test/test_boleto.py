@@ -22,6 +22,7 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import collections
 import datetime
 from decimal import Decimal
 import mock
@@ -73,7 +74,7 @@ class TestBillReport(DomainTest):
         for key, value in kwargs.items():
             BillOption(store=self.store,
                        bank_account=bank_account,
-                       option=unicode(key),
+                       option=str(key),
                        value=value)
         api.sysparam.set_string(self.store, 'BILL_INSTRUCTIONS',
                                 u'Primeia linha da instrução')
@@ -102,7 +103,7 @@ class TestBillReport(DomainTest):
 
     @mock.patch('stoqlib.lib.boleto.localtoday')
     def _render_bill_to_html(self, sale, localtoday):
-        localtoday.return_value = datetime.date(2011, 05, 30)
+        localtoday.return_value = datetime.date(2011, 5, 30)
         report = BillReport(self._filename, list(sale.payments))
         report.add_payments()
         report.save()
@@ -193,10 +194,10 @@ class TestBank(BankInfo):
 
     campo_livre = '0' * 25
 
-    options = dict(
-        opcao_teste=BILL_OPTION_CUSTOM,
-        segunda_opcao=BILL_OPTION_CUSTOM,
-    )
+    options = collections.OrderedDict([
+        ('opcao_teste', BILL_OPTION_CUSTOM),
+        ('segunda_opcao', BILL_OPTION_CUSTOM),
+    ])
 
 
 class TestBankInfo(DomainTest):

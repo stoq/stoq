@@ -572,7 +572,7 @@ class BasePISSlave(BaseTaxSlave):
             (u'49 - Outras Operações de Saída', 49),
             (u'50 - Com Direito a Crédito - Vinculada Exclusivamente a Receita'
              u'Tributada no Mercado Interno', 50),
-            (u'51 - Operação com Direito a Crédito – Vinculada Exclusivamente a'
+            (u'51 - Operação com Direito a Crédito - Vinculada Exclusivamente a'
              u'Receita Não Tributada no Mercado Interno', 51),
             (u'52 - Operação com Direito a Crédito - Vinculada Exclusivamente a'
              u'Receita de Exportação', 52),
@@ -773,7 +773,7 @@ class BaseCOFINSSlave(BaseTaxSlave):
             (u'49 - Outras Operações de Saída', 49),
             (u'50 - Com Direito a Crédito - Vinculada Exclusivamente a Receita'
              u'Tributada no Mercado Interno', 50),
-            (u'51 - Operação com Direito a Crédito – Vinculada Exclusivamente a'
+            (u'51 - Operação com Direito a Crédito - Vinculada Exclusivamente a'
              u'Receita Não Tributada no Mercado Interno', 51),
             (u'52 - Operação com Direito a Crédito - Vinculada Exclusivamente a'
              u'Receita de Exportação', 52),

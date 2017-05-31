@@ -323,7 +323,7 @@ def pretty_date(time=False, asdays=False):
     '''
 
     now = datetime.datetime.now()
-    if type(time) is int:
+    if isinstance(time, int):
         time = datetime.datetime.fromtimestamp(time)
     elif not time:
         time = now

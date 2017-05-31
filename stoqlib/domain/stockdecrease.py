@@ -25,6 +25,7 @@
 
 # pylint: enable=E1101
 
+import collections
 from decimal import Decimal
 
 from kiwi.currency import currency
@@ -182,7 +183,7 @@ class StockDecreaseItem(Domain):
         unit = self.sellable.unit_description
         if unit:
             return u"%s %s" % (self.quantity, unit)
-        return unicode(self.quantity)
+        return str(self.quantity)
 
     def get_description(self):
         return self.sellable.get_description()
@@ -209,9 +210,11 @@ class StockDecrease(Domain):
     #: Stock Decrease is cancelled and all items have been returned to stock.
     STATUS_CANCELLED = u'cancelled'
 
-    statuses = {STATUS_INITIAL: _(u'Opened'),
-                STATUS_CONFIRMED: _(u'Confirmed'),
-                STATUS_CANCELLED: _(u'Cancelled')}
+    statuses = collections.OrderedDict([
+        (STATUS_INITIAL, _(u'Opened')),
+        (STATUS_CONFIRMED, _(u'Confirmed')),
+        (STATUS_CANCELLED, _(u'Cancelled')),
+    ])
 
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`Domain.id` when displaying a numerical representation of this object to

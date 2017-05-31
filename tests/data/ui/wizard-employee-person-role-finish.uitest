@@ -88,10 +88,10 @@ GtkDialog(toplevel): title='New Employee', hidden
                       GtkBox(orientation=horizontal, expand=True, fill=True):
                         GtkLabel(expand=True, fill=True): 'Employee Status:'
                         ProxyComboBox(expand=True, fill=True):
-                          item: 'Away'
-                          item: 'Off'
-                          item: 'Vacation'
                           item: 'Normal', selected
+                          item: 'Away'
+                          item: 'Vacation'
+                          item: 'Off'
                         ProxyLabel(expand=True, fill=True):
                       GtkHSeparator(fill=True):
                   GtkEventBox(fill=True):

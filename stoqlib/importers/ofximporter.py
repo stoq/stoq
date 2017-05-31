@@ -30,7 +30,7 @@ OFX importing
 import datetime
 import decimal
 import logging
-import sgmllib
+import html.parser
 
 from storm.expr import And
 
@@ -43,9 +43,9 @@ from stoqlib.lib.parameters import sysparam
 log = logging.getLogger(__name__)
 
 
-class OFXTagParser(sgmllib.SGMLParser):
+class OFXTagParser(html.parser.HTMLParser):
     def __init__(self):
-        sgmllib.SGMLParser.__init__(self)
+        super().__init__()
 
         self.transactions = []
         self.fi = None
@@ -59,7 +59,7 @@ class OFXTagParser(sgmllib.SGMLParser):
         self._tag = None
         self._tags = {}
 
-    def unknown_starttag(self, tag, attrs):
+    def handle_starttag(self, tag, attrs):
         self._tag = tag
 
         if tag == u'stmttrn':
@@ -71,7 +71,7 @@ class OFXTagParser(sgmllib.SGMLParser):
         elif tag == u'accttype':
             self._is_account_type = True
 
-    def unknown_endtag(self, tag):
+    def handle_endtag(self, tag):
         if tag == u'stmttrn':
             self._is_statement = False
             self.transactions.append(self._tags)
@@ -140,7 +140,7 @@ class OFXImporter(Importer):
         return number
 
     def _parse_string(self, data):
-        return unicode(data, self._headers['CHARSET'])
+        return data
 
     def _parse_date(self, data):
         # BB Juridica: 20110207
@@ -160,10 +160,10 @@ class OFXImporter(Importer):
 
     def before_start(self, store):
         account = store.find(Account,
-                             code=unicode(self.tp.account_id)).one()
+                             code=str(self.tp.account_id)).one()
         if account is None:
             account = Account(description=self.get_account_id(),
-                              code=unicode(self.tp.account_id),
+                              code=str(self.tp.account_id),
                               account_type=Account.TYPE_BANK,
                               parent=sysparam.get_object(store, 'BANKS_ACCOUNT'),
                               store=store)
@@ -247,7 +247,7 @@ class OFXImporter(Importer):
         if self.tp.fi:
             return u'%s - %s' % (self.tp.fi['org'],
                                  self.tp.account_type)
-        return unicode(self.tp.account_type)
+        return str(self.tp.account_type)
 
 if __name__ == '__main__':  # pragma nocover
     import sys

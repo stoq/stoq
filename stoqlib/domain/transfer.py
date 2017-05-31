@@ -25,6 +25,7 @@
 
 # pylint: enable=E1101
 
+import collections
 from decimal import Decimal
 
 from kiwi.currency import currency
@@ -211,10 +212,12 @@ class TransferOrder(Domain):
     STATUS_RECEIVED = u'received'
     STATUS_CANCELLED = u'cancelled'
 
-    statuses = {STATUS_PENDING: _(u'Pending'),
-                STATUS_SENT: _(u'Sent'),
-                STATUS_RECEIVED: _(u'Received'),
-                STATUS_CANCELLED: _(u'Cancelled')}
+    statuses = collections.OrderedDict([
+        (STATUS_PENDING, _(u'Pending')),
+        (STATUS_SENT, _(u'Sent')),
+        (STATUS_RECEIVED, _(u'Received')),
+        (STATUS_CANCELLED, _(u'Cancelled')),
+    ])
 
     status = EnumCol(default=STATUS_PENDING)
 

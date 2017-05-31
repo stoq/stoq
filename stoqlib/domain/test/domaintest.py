@@ -25,9 +25,11 @@
 
 import contextlib
 import datetime
+import functools
 from decimal import Decimal
 import os
 
+from kiwi.python import cmp
 import mock
 import unittest
 
@@ -93,7 +95,7 @@ class FakeDatabaseSettings:
 
     def get_command_line_arguments(self):
         return ['-d', self.dbname,
-                '-p', unicode(self.port),
+                '-p', str(self.port),
                 '-u', self.username,
                 '-w', self.password]
 
@@ -113,6 +115,8 @@ class ReadOnlyStore(StoqlibStore):
         # creates an additional database connection
         self.real_store = real_store
         self.retval = False
+
+    __hash__ = StoqlibStore.__hash__
 
     # Store
 
@@ -213,8 +217,8 @@ class DomainTest(unittest.TestCase, ExampleCreator):
         """
         base_dir = os.path.dirname(os.path.dirname(stoqlib.__file__))
         plugins_dir = os.path.join(base_dir, 'plugins')
-        return set(unicode(d) for d in os.listdir(plugins_dir) if
-                   not d.startswith('__init__'))
+        return set(str(d) for d in os.listdir(plugins_dir) if
+                   not d.startswith('__init__') and not d.startswith('__pycache__'))
 
     @contextlib.contextmanager
     def count_tracer(self):
@@ -245,16 +249,16 @@ class DomainTest(unittest.TestCase, ExampleCreator):
         from stoqlib.lib.parameters import sysparam
         old_values = {}
         for param, value in kwargs.items():
-            if type(value) is bool:
+            if isinstance(value, bool):
                 old_values[param] = sysparam.get_bool(param)
                 sysparam.set_bool(self.store, param, value)
-            elif type(value) is int:
+            elif isinstance(value, int):
                 old_values[param] = sysparam.get_int(param)
                 sysparam.set_int(self.store, param, value)
             elif isinstance(value, Domain) or value is None:
                 old_values[param] = sysparam.get_object(self.store, param)
                 sysparam.set_object(self.store, param, value)
-            elif isinstance(value, basestring):
+            elif isinstance(value, str):
                 old_values[param] = sysparam.get_string(param)
                 sysparam.set_string(self.store, param, value)
             elif isinstance(value, Decimal):
@@ -266,13 +270,13 @@ class DomainTest(unittest.TestCase, ExampleCreator):
             yield
         finally:
             for param, value in old_values.items():
-                if type(value) is bool:
+                if isinstance(value, bool):
                     sysparam.set_bool(self.store, param, value)
-                elif type(value) is int:
+                elif isinstance(value, int):
                     sysparam.set_int(self.store, param, value)
                 elif isinstance(value, Domain) or value is None:
                     sysparam.set_object(self.store, param, value)
-                elif isinstance(value, basestring):
+                elif isinstance(value, str):
                     sysparam.set_string(self.store, param, value)
                 elif isinstance(value, Decimal):
                     sysparam.set_decimal(self.store, param, value)
@@ -285,9 +289,12 @@ class DomainTest(unittest.TestCase, ExampleCreator):
                   sale.invoice]
         models.extend(sale.payments)
         branch = get_current_branch(self.store)
+
+        def _cmp(a, b):
+            return cmp(a.sellable.description, b.sellable.description)
+
         for item in sorted(sale.get_items(),
-                           cmp=lambda a, b: cmp(a.sellable.description,
-                                                b.sellable.description)):
+                           key=functools.cmp_to_key(_cmp)):
             models.append(item.sellable)
             stock_item = item.sellable.product_storable.get_stock_item(
                 branch, batch=item.batch)

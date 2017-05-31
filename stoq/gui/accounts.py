@@ -24,7 +24,9 @@
 """
 Base class for sharing code between accounts payable and receivable."""
 
-import urllib
+import urllib.request
+import urllib.parse
+import urllib.error
 
 from dateutil.relativedelta import relativedelta
 
@@ -98,12 +100,12 @@ class BaseAccountWindow(ShellApp):
                 else:
                     msg = _("No payments to pay found.")
             elif v.startswith('category:'):
-                category = v.split(':')[1].encode('utf-8')
+                category = v.split(':')[1]
 
                 not_found = _("No payments in the <b>%s</b> category were found.") % (
                     api.escape(category), )
                 payment_url = '<a href="new_payment?%s">%s</a>?' % (
-                    urllib.quote(category),
+                    urllib.parse.quote(category),
                     _("create a new payment"))
                 msg = "%s\n\n%s" % (
                     not_found,
@@ -299,7 +301,7 @@ class BaseAccountWindow(ShellApp):
     def on_results__activate_link(self, results, uri):
         if uri.startswith('new_payment'):
             if '?' in uri:
-                category = urllib.unquote(uri.split('?', 1)[1])
+                category = urllib.parse.unquote(uri.split('?', 1)[1])
             else:
                 category = None
             self.add_payment(category=category)

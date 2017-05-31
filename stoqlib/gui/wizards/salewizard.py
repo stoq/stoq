@@ -553,7 +553,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             return
 
         person = Person.get_by_document(self.store,
-                                        unicode(self.wizard._current_document))
+                                        str(self.wizard._current_document))
         if not person:
             return
 

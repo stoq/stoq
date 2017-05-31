@@ -74,7 +74,7 @@ class TestWorkOrderPackage(DomainTest):
         workorder.current_branch = self.create_branch()
         with self.assertRaisesRegexp(
                 ValueError,
-                "The order <WorkOrder u'[0-9a-f-]+'> is not in the source branch"):
+                "The order <WorkOrder '[0-9a-f-]+'> is not in the source branch"):
             package.add_order(workorder)
 
         workorder.current_branch = package.source_branch
@@ -85,8 +85,8 @@ class TestWorkOrderPackage(DomainTest):
 
         with self.assertRaisesRegexp(
                 ValueError,
-                ("The order <WorkOrder u'[0-9a-f-]+'> is already on "
-                 "the package <WorkOrderPackage u'[0-9a-f-]+'>")):
+                ("The order <WorkOrder '[0-9a-f-]+'> is already on "
+                 "the package <WorkOrderPackage '[0-9a-f-]+'>")):
             package.add_order(workorder)
 
     def test_can_send(self):
@@ -120,8 +120,8 @@ class TestWorkOrderPackage(DomainTest):
             gcb.return_value = self.create_branch()
             with self.assertRaisesRegexp(
                     ValueError,
-                    ("This package's source branch is <Branch u'[0-9a-f-]+'> "
-                     "and you are in <Branch u'[0-9a-f-]+'>. It's not possible "
+                    ("This package's source branch is <Branch '[0-9a-f-]+'> "
+                     "and you are in <Branch '[0-9a-f-]+'>. It's not possible "
                      "to send a package outside the source branch")):
                 package.send()
 
@@ -163,8 +163,8 @@ class TestWorkOrderPackage(DomainTest):
             gcb.return_value = self.create_branch()
             with self.assertRaisesRegexp(
                     ValueError,
-                    ("This package's destination branch is <Branch u'[0-9a-f-]+'> "
-                     "and you are in <Branch u'[0-9a-f-]+'>. It's not possible "
+                    ("This package's destination branch is <Branch '[0-9a-f-]+'> "
+                     "and you are in <Branch '[0-9a-f-]+'>. It's not possible "
                      "to receive a package outside the destination branch")):
                 package.receive()
 

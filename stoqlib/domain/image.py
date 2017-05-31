@@ -92,7 +92,7 @@ class Image(Domain):
     #
 
     def get_base64_encoded(self):
-        return base64.b64encode(self.image)
+        return base64.b64encode(self.image).decode()
 
     #
     #  IDescribable implementation

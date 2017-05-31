@@ -35,7 +35,7 @@ need to send in a branch and a name:
     >>> station
     <BranchStation ...>
     >>> station.name
-    u'comp'
+    'comp'
 
 We can now query for the station:
 
@@ -45,7 +45,7 @@ We can now query for the station:
 
     >>> station = results[0]
     >>> station.name
-    u'comp'
+    'comp'
     >>> station.branch == branch
     True
 
@@ -54,7 +54,7 @@ We cannot create a new branch with the same name in the same branch:
     >>> BranchStation.create(store, branch=branch, name=u"comp")
     Traceback (most recent call last):
         ...
-    StoqlibError: There is already a station registered as `comp'.
+    stoqlib.exceptions.StoqlibError: There is already a station registered as `comp'.
 
 Fetching a station
 ==================
@@ -102,7 +102,7 @@ Branch name
 We can get the name of the branch from the station by calling get_branch_name():
 
     >>> station.get_branch_name()
-    u'Dummy shop'
+    'Dummy shop'
 
 
     Finally close the stire we used in the test

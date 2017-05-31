@@ -33,7 +33,7 @@ import json
 import requests
 import threading
 
-_requests_version = requests.__version__.split('.')
+_requests_version = tuple(map(int, requests.__version__.split('.')))
 
 
 class AsyncRequest(threading.Thread):

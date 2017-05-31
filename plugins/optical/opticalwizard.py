@@ -85,7 +85,7 @@ class OpticalWorkOrderStep(WorkOrderQuoteWorkOrderStep):
         return OpticalItemStep(self.wizard, self, self.store, self.model)
 
     def get_work_order_slave(self, work_order):
-        desc = unicode(string.ascii_uppercase[self._current_work_order])
+        desc = str(string.ascii_uppercase[self._current_work_order])
         self._current_work_order += 1
         return WorkOrderOpticalSlave(self.store, work_order,
                                      show_finish_date=True,

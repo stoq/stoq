@@ -167,7 +167,7 @@ class StoqCommandHandler:
         set_default_store(None)
 
         try:
-            initialize_system(password=unicode(options.password),
+            initialize_system(password=str(options.password),
                               force=options.force, empty=options.empty)
         except ValueError as e:
             # Database server is missing pg_trgm
@@ -184,10 +184,10 @@ class StoqCommandHandler:
             self._register_station()
 
         if options.pre_plugins:
-            self._register_plugins(unicode(options.pre_plugins).split(','))
+            self._register_plugins(str(options.pre_plugins).split(','))
 
         if options.plugins:
-            self._enable_plugins(unicode(options.plugins).split(','))
+            self._enable_plugins(str(options.plugins).split(','))
 
         if options.demo:
             self._enable_demo()
@@ -446,7 +446,7 @@ class StoqCommandHandler:
         self._provide_app_info()
         self._setup_logging()
 
-        self._enable_plugins([unicode(plugin_name)])
+        self._enable_plugins([str(plugin_name)])
 
     def cmd_update_plugins(self, options):
         """Update plugins on Stoq"""
@@ -547,10 +547,8 @@ def main(args):
     cmd = args[0]
     args = args[1:]
 
-    # FIXME: Set the default encoding to utf-8 just like pygtk used to do.
-    # This probably will not be necessary in python3
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
+    from stoqlib.lib.environment import configure_locale
+    configure_locale()
 
     # import library or else externals won't be on sys.path
     from stoqlib.lib.kiwilibrary import library

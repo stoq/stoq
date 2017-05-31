@@ -12,10 +12,10 @@ GtkDialog(toplevel): title='Employee Search', hidden
                   GtkLabel(): 'Show employees with status'
                   ProxyComboBox(padding=6):
                     item: 'Any', selected
-                    item: 'Away'
-                    item: 'Off'
-                    item: 'Vacation'
                     item: 'Normal'
+                    item: 'Away'
+                    item: 'Vacation'
+                    item: 'Off'
                 StringSearchFilter(_primary_filter):
                   GtkLabel(): 'Search:'
                   ProxyComboBox(padding=6): hidden
@@ -30,7 +30,7 @@ GtkDialog(toplevel): title='Employee Search', hidden
             column: title='Role'
             column: title='Registry Number'
             column: title='Status'
-            row: u"John 'maddog' Hall", 'Role', None, 'Normal'
+            row: "John 'maddog' Hall", 'Role', None, 'Normal'
             row: 'Linus Torvalds', 'Role', None, 'Normal'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached

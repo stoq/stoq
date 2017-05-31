@@ -96,7 +96,7 @@ def orm_get_unittest_value(klass, test, tables_dict, name, column):
     elif isinstance(column, Reference):
         if name == 'te':
             return None
-        if isinstance(column._remote_key, basestring):
+        if isinstance(column._remote_key, str):
             cls = tables_dict[column._remote_key.split('.')[0]]
         else:
             cls = column._remote_key[0].cls

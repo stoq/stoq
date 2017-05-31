@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import codecs
 import datetime
 from hashlib import md5
 import operator
@@ -386,7 +387,7 @@ class CATFile(object):
         for register in self._registers:
             data += register.get_string()
 
-        md5sum = md5(data).hexdigest()
+        md5sum = md5(data.encode()).hexdigest()
         ead = "EAD%s\r\n" % md5sum
 
         fp.write(data.encode('latin1'))
@@ -460,13 +461,11 @@ class CATRegister(object):
             re_value = int(str_value.replace('.', ''))
 
             arg = '%0*d' % (length, re_value)
-        elif argtype == basestring:
-            # Accept normal strings, which are assumed to be UTF-8
-            if type(value) == str:
-                value = unicode(value, 'utf-8')
-
+        elif argtype == str:
             # Convert to latscii
-            value = value.encode('ascii', 'replacelatscii')
+            value = codecs.encode(value, 'ascii', 'replacelatscii')
+            if isinstance(value, bytes):
+                value = ''.join(chr(i) for i in value)
 
             arg = '%-*s' % (length, value)
             # Chop strings which are too long
@@ -494,22 +493,22 @@ class CATRegisterE00(CATRegister):
 
     register_type = "E00"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
         ('user_number', 2, number),
-        ('ecf_type', 7, basestring),
-        ('ecf_brand', 20, basestring),
-        ('ecf_model', 20, basestring),
+        ('ecf_type', 7, str),
+        ('ecf_brand', 20, str),
+        ('ecf_model', 20, str),
         ('coo', 6, number),
         ('software_number', 2, number),
         ('cnpj', 14, number),
         ('ie', 14, number),
         ('im', 14, number),
-        ('soft_house', 40, basestring),
-        ('soft_name', 40, basestring),
-        ('soft_version', 10, basestring),
-        ('line01', 42, basestring),
-        ('line02', 42, basestring),
+        ('soft_house', 40, str),
+        ('soft_name', 40, str),
+        ('soft_version', 10, str),
+        ('line01', 42, str),
+        ('line02', 42, str),
     ]
 
 
@@ -518,23 +517,23 @@ class CATRegisterE01(CATRegister):
     """
     register_type = "E01"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_type', 7, basestring),
-        ('ecf_brand', 20, basestring),
-        ('ecf_model', 20, basestring),
-        ('ecf_sb_version', 10, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_type', 7, str),
+        ('ecf_brand', 20, str),
+        ('ecf_model', 20, str),
+        ('ecf_sb_version', 10, str),
         ('ecf_sb_date', 8, datetime.date),
         ('ecf_sb_hour', 6, datetime.time),
         ('ecf_number', 3, number),
         ('user_cnpj', 14, number),
-        ('command', 3, basestring),
+        ('command', 3, str),
         ('initial_crz', 6, number),
         ('final_crz', 6, number),
         ('initial_date', 8, datetime.date),
         ('final_date', 8, datetime.date),
-        ('library_version', 8, basestring),
-        ('cotepe', 15, basestring),
+        ('library_version', 8, str),
+        ('cotepe', 15, str),
     ]
 
 
@@ -543,16 +542,16 @@ class CATRegisterE02(CATRegister):
     """
     register_type = "E02"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('user_cnpj', 14, number),
         # XXX: This should be number, but acording to cat52, it is
         # string ?!?
         ('user_ie', 14, number),
 
-        ('user_name', 40, basestring),
-        ('user_address', 120, basestring),
+        ('user_name', 40, str),
+        ('user_address', 120, str),
         ('register_date', 8, datetime.date),
         ('register_hour', 6, datetime.time),
         ('cro', 6, number),
@@ -566,14 +565,14 @@ class CATRegisterE03(CATRegister):
     """
     register_type = "E03"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('provider_number', 2, number),
         ('register_date', 8, datetime.date),
         ('register_hour', 6, datetime.time),
         ('provider_cnpj', 14, number),
-        ('provider_ie', 14, basestring),
+        ('provider_ie', 14, str),
         ('total', 18, number)
     ]
 
@@ -583,14 +582,14 @@ class CATRegisterE04(CATRegister):
     """
     register_type = "E04"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('user_number', 2, number),
         ('register_date', 8, datetime.date),
         ('register_hour', 6, datetime.time),
         ('user_cnpj', 14, number),
-        ('user_ie', 14, basestring),
+        ('user_ie', 14, str),
         ('cro', 6, number),
         ('gt', 18, number)
     ]
@@ -601,22 +600,22 @@ class CATRegisterE05(CATRegister):
     """
     register_type = "E05"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('user_cnpj', 14, number),
         ('register_date', 8, datetime.date),
         ('register_hour', 6, datetime.time),
-        ('c0', 1, basestring),
-        ('c1', 1, basestring),
-        ('c2', 1, basestring),
-        ('c3', 1, basestring),
-        ('c4', 1, basestring),
-        ('c5', 1, basestring),
-        ('c6', 1, basestring),
-        ('c7', 1, basestring),
-        ('c8', 1, basestring),
-        ('c9', 1, basestring),
+        ('c0', 1, str),
+        ('c1', 1, str),
+        ('c2', 1, str),
+        ('c3', 1, str),
+        ('c4', 1, str),
+        ('c5', 1, str),
+        ('c6', 1, str),
+        ('c7', 1, str),
+        ('c8', 1, str),
+        ('c9', 1, str),
     ]
 
 
@@ -625,13 +624,13 @@ class CATRegisterE06(CATRegister):
     """
     register_type = "E06"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('user_cnpj', 14, number),
         ('register_date', 8, datetime.date),
         ('register_hour', 6, datetime.time),
-        ('currency_symbol', 4, basestring)
+        ('currency_symbol', 4, str)
     ]
 
 
@@ -640,10 +639,10 @@ class CATRegisterE07(CATRegister):
     """
     register_type = "E07"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
-        ('software_version', 10, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
+        ('software_version', 10, str),
         ('register_date', 8, datetime.date)
     ]
 
@@ -653,11 +652,11 @@ class CATRegisterE08(CATRegister):
     """
     register_type = "E08"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('user_cnpj', 14, number),
-        ('mfd_number', 20, basestring)
+        ('mfd_number', 20, str)
     ]
 
 
@@ -666,9 +665,9 @@ class CATRegisterE09(CATRegister):
     """
     register_type = "E09"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('cro', 6, number),
         ('register_date', 8, datetime.date),
         ('register_hour', 6, datetime.time),
@@ -682,9 +681,9 @@ class CATRegisterE10(CATRegister):
     """
     register_type = "E10"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('cfd', 6, number),
         ('emission_date', 8, datetime.date),
         ('initial_coo', 6, number),
@@ -698,9 +697,9 @@ class CATRegisterE11(CATRegister):
     """
     register_type = "E11"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('crz', 6, number),
         ('cro', 6, number),
         ('coo', 6, number),
@@ -724,9 +723,9 @@ class CATRegisterE12(CATRegister):
     """
     register_type = "E12"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('user_number', 2, number),
         ('crz', 6, number),
         ('coo', 6, number),
@@ -744,12 +743,12 @@ class CATRegisterE13(CATRegister):
     """
     register_type = "E13"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('user_number', 2, number),
         ('crz', 6, number),
-        ('partial_totalizer', 7, basestring),   # See table 6.5.1.2
+        ('partial_totalizer', 7, str),   # See table 6.5.1.2
         ('value', 13, number),                  # currency
     ]
 
@@ -759,18 +758,18 @@ class CATRegisterE14(CATRegister):
     """
     register_type = "E14"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('user_number', 2, number),
         ('document_counter', 6, number),        # See documentation
         ('coo', 6, number),
         ('emission_start', 8, datetime.date),
         ('subtotal', 14, number),               # currency
         ('discount', 13, number),               # $ or %
-        ('discount_type', 1, basestring),       # V = $ / P = %
+        ('discount_type', 1, str),       # V = $ / P = %
         ('surcharge', 13, number),
-        ('surcharge_type', 1, basestring),      # V = $ / P = %
+        ('surcharge_type', 1, str),      # V = $ / P = %
         # Total after discount and surcharge
         ('total', 14, number),
         # If the document was canceled
@@ -781,8 +780,8 @@ class CATRegisterE14(CATRegister):
         # and surchage were applied:
         # 'D' if discount came first or 'A'
         # otherwise
-        ('discount_surcharge_order', 1, basestring),
-        ('client_name', 40, basestring),
+        ('discount_surcharge_order', 1, str),
+        ('client_name', 40, str),
         # cpf or cnpj, depending on the client
         ('client_cpf_cnpj', 14, number),
     ]
@@ -793,26 +792,26 @@ class CATRegisterE15(CATRegister):
     """
     register_type = "E15"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('user_number', 2, number),
         ('coo', 6, number),
         ('document_counter', 6, number),        # See documentation
 
         ('item_number', 3, number),
-        ('item_code', 14, basestring),
-        ('item_description', 100, basestring),
+        ('item_code', 14, str),
+        ('item_description', 100, str),
         ('item_amount', 7, number),
-        ('item_unit', 3, basestring),
+        ('item_unit', 3, str),
         ('item_unitary_value', 8, number),
         ('item_discount', 8, number),
         ('item_surcharge', 8, number),
         ('item_total', 14, number),
         # See table 6.5.1.2. !!!
-        ('item_partial_totalizer', 7, basestring),
+        ('item_partial_totalizer', 7, str),
         # S - yes / N - no / P - partial
-        ('item_canceled', 1, basestring),
+        ('item_canceled', 1, str),
         # Only if partial cancelment
         ('item_canceled_amount', 7, number),
         # idem
@@ -820,7 +819,7 @@ class CATRegisterE15(CATRegister):
         # currency
         ('item_canceled_surcharge', 13, number),
         # A - round / T - trunc
-        ('round_or_trunc', 1, basestring),
+        ('round_or_trunc', 1, str),
         # Number of decimal precision for the amount
         ('amount_decimal_precision', 1, number),
         # Number of decimal precision for the unitary
@@ -834,16 +833,16 @@ class CATRegisterE16(CATRegister):
     """
     register_type = "E16"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('user_number', 2, number),
         ('coo', 6, number),
         ('gnf', 6, number),        # See documentation
         ('grg', 6, number),
         ('cdc', 4, number),
         ('crz', 6, number),
-        ('denomination', 2, basestring),  # See table
+        ('denomination', 2, str),  # See table
         ('emission_date', 8, datetime.date),
         ('emission_hour', 6, datetime.time),
     ]
@@ -854,12 +853,12 @@ class CATRegisterE17(CATRegister):
     """
     register_type = "E17"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('user_number', 2, number),
         ('crz', 6, number),
-        ('non_fiscal_totalizer', 15, basestring),
+        ('non_fiscal_totalizer', 15, str),
         ('value', 13, number),
     ]
 
@@ -869,12 +868,12 @@ class CATRegisterE18(CATRegister):
     """
     register_type = "E18"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('user_number', 2, number),
         ('crz', 6, number),
-        ('description', 15, basestring),
+        ('description', 15, str),
         ('value', 13, number)
     ]
 
@@ -884,23 +883,23 @@ class CATRegisterE19(CATRegister):
     """
     register_type = "E19"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('user_number', 2, number),
         ('coo', 6, number),
         ('gnf', 6, number),
         ('emission_start', 8, datetime.date),
         ('subtotal', 14, number),
         ('subtotal_discount', 13, number),
-        ('discount_type', 1, basestring),
+        ('discount_type', 1, str),
         ('subtotal_surcharge', 13, number),
-        ('surcharge_type', 1, basestring),
+        ('surcharge_type', 1, str),
         ('total', 14, number),
         ('canceled', 1, bool),
         ('surcharge_canceled', 13, number),
-        ('discount_surcharge_order', 1, basestring),
-        ('client_name', 40, basestring),
+        ('discount_surcharge_order', 1, str),
+        ('client_name', 40, str),
         ('client_cpf_cnpj', 14, number)
     ]
 
@@ -910,19 +909,19 @@ class CATRegisterE20(CATRegister):
     """
     register_type = "E20"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('user_number', 2, number),
         ('coo', 6, number),
         ('gnf', 6, number),
         ('item_number', 3, number),
-        ('denomination', 15, basestring),
+        ('denomination', 15, str),
         ('value', 13, number),
         ('item_discount', 13, number),
         ('item_surcharge', 13, number),
         ('total', 13, number),
-        ('canceled', 1, basestring),
+        ('canceled', 1, str),
         ('item_canceled_surcharge', 13, number)
     ]
 
@@ -932,19 +931,19 @@ class CATRegisterE21(CATRegister):
     """
     register_type = "E21"
     register_fields = [
-        ('serial_number', 20, basestring),
-        ('additional_mf', 1, basestring),
-        ('ecf_model', 20, basestring),
+        ('serial_number', 20, str),
+        ('additional_mf', 1, str),
+        ('ecf_model', 20, str),
         ('user_number', 2, number),
         ('coo', 6, number),
         # ccf
         ('document_counter', 6, number),
         # See documentation - not appliable to stoq right now.
         ('gnf', 6, number),
-        ('payment_method', 15, basestring),
+        ('payment_method', 15, str),
         ('value', 13, number),
         # S/N/P
-        ('returned', 1, basestring),
+        ('returned', 1, str),
         ('returned_value', 13, number),
     ]
 
@@ -954,5 +953,5 @@ class CATRegisterEAD(CATRegister):
     """
     register_type = "EAD"
     register_fields = [
-        ('digital_signature', 256, basestring)
+        ('digital_signature', 256, str)
     ]

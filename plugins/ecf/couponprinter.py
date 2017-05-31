@@ -240,7 +240,7 @@ class CouponPrinter(object):
         day = FiscalDayHistory(store=store,
                                emission_date=data.opening_date,
                                station=station,
-                               serial=unicode(data.serial),
+                               serial=str(data.serial),
                                # 1 -> 001, FIXME: should fix stoqdrivers
                                serial_id=int(data.serial_id),
                                coupon_start=coupon_start,
@@ -253,8 +253,8 @@ class CouponPrinter(object):
 
         for code, value, type in data.taxes:
             FiscalDayTax(fiscal_day_history=day,
-                         code=unicode(code), value=value,
-                         type=unicode(type), store=store)
+                         code=str(code), value=value,
+                         type=str(type), store=store)
         store.commit(close=True)
 
     def get_printer(self):
@@ -340,7 +340,7 @@ class Coupon(object):
 
         try:
             item_id = self._driver.add_item(code, description, base_price,
-                                            tax_constant.device_value,
+                                            tax_constant.device_value.decode(),
                                             item.quantity, unit,
                                             unit_desc=unit_desc,
                                             discount=discount_value)

@@ -87,7 +87,7 @@ def autoreload_object(obj, obj_store=False):
 
 class StoqlibResultSet(ResultSet):
     # FIXME: Remove. See bug 4985
-    def __nonzero__(self):
+    def __bool__(self):
         warnings.warn("use self.is_empty()", DeprecationWarning, stacklevel=2)
         return not self.is_empty()
 
@@ -119,7 +119,7 @@ class StoqlibResultSet(ResultSet):
         instance._store = self._store
         identifiers = []
         for attr, value in zip(self._viewable.cls_attributes, values):
-            if type(value) is Identifier:
+            if isinstance(value, Identifier):
                 identifiers.append(value)
             setattr(instance, attr, value)
         branch = getattr(instance, 'branch', None)
@@ -337,7 +337,7 @@ class StoqlibStore(Store):
         res = self.execute(
             SQL("SELECT COUNT(relname) FROM pg_class WHERE relname = ?",
                 # FIXME: Figure out why this is not comming as unicode
-                (unicode(table_name), )))
+                (str(table_name), )))
         return res.get_one()[0]
 
     def list_references(self, column):
@@ -355,8 +355,8 @@ class StoqlibStore(Store):
           for CASCADE
         - delete: The same as update.
         """
-        table_name = unicode(column.cls.__storm_table__)
-        column_name = unicode(column.name)
+        table_name = str(column.cls.__storm_table__)
+        column_name = str(column.name)
         query = """
             SELECT DISTINCT
                 src_pg_class.relname AS srctable,
@@ -400,6 +400,8 @@ class StoqlibStore(Store):
         # mogrify is only available in psycopg2
         stmt = cursor.mogrify(query, args)
         cursor.close()
+        if isinstance(stmt, bytes):
+            stmt = stmt.decode()
         return stmt
 
     def maybe_remove(self, obj):
@@ -738,7 +740,7 @@ def set_current_branch_station(store, station_name):
     if station_name is None:
         station_name = get_hostname()
 
-    station_name = unicode(station_name)
+    station_name = str(station_name)
     from stoqlib.domain.station import BranchStation
     station = store.find(BranchStation, name=station_name).one()
     if station is None:

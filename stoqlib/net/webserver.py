@@ -22,10 +22,9 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import BaseHTTPServer
-import SimpleHTTPServer
+import http.server
 import os
-import urlparse
+import urllib.parse
 
 from kiwi.environ import environ
 
@@ -37,16 +36,16 @@ resources = {
 }
 
 
-class _RequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+class _RequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
-        path = urlparse.urlparse(self.path)
+        path = urllib.parse.urlparse(self.path)
         realpath = path.path
-        args = urlparse.parse_qs(path.query)
+        args = urllib.parse.parse_qs(path.query)
 
         if realpath.startswith('/static'):
             # This will call translate_path bellow
-            return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
+            return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
         for name, resource in resources.items():
             if realpath.startswith(name):
@@ -66,7 +65,7 @@ class _RequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         self.send_header('Content-Type', 'application/json')
         self.send_header('Content-Length', str(len(response)))
         self.end_headers()
-        self.wfile.write(response)
+        self.wfile.write(response.encode())
 
     #
     #  SimpleHTTPServer.SimpleHTTPRequestHandler
@@ -76,7 +75,7 @@ class _RequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         # SimpleHTTPRequestHandler calls this to translate the url path
         # into a filesystem path. It will always start with os.getcwd(),
         # which means we just need to replace it with the _static path
-        translated = SimpleHTTPServer.SimpleHTTPRequestHandler.translate_path(
+        translated = http.server.SimpleHTTPRequestHandler.translate_path(
             # /static is just the endpoing name, the real path doesn't have it
             self, path.replace('/static', ''))
         return translated.replace(os.getcwd(), _static)
@@ -87,5 +86,5 @@ class _RequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 
 def run_server(port):
-    server = BaseHTTPServer.HTTPServer(('localhost', port), _RequestHandler)
+    server = http.server.HTTPServer(('localhost', port), _RequestHandler)
     server.serve_forever()

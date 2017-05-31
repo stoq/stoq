@@ -83,9 +83,9 @@ class BaseTag(etree.ElementBase):
             return
 
         if cdata and value is not None:
-            value = etree.CDATA(unicode(value))
+            value = etree.CDATA(str(value))
         elif value is not None:
-            value = escape(strip_accents(unicode(value).strip()))
+            value = escape(strip_accents(str(value).strip()))
 
         if hasattr(self, 'NAMESPACE'):
             tag = etree.SubElement(self, '{%s}%s' % (self.NAMESPACE, tag))
@@ -219,7 +219,7 @@ class CryptographySigner(object):
         key = load_pem_private_key(private_key, password=None, backend=default_backend())
 
         cert = crypto.dump_certificate(crypto.FILETYPE_PEM, pkcs12.get_certificate())
-        cert = '\n'.join(cert.split('\n')[1:-2])
+        cert = b'\n'.join(cert.split(b'\n')[1:-2])
 
         return key, cert
 
@@ -240,7 +240,7 @@ class CryptographySigner(object):
         # Keep signature value compatible with xmlsec signer for testing purposes.
         signature = format_base64(signature)
 
-        return digest, signature, cert
+        return digest, signature, cert.decode()
 
 
 class PyKCS11Signer(object):
@@ -269,8 +269,6 @@ class PyKCS11Signer(object):
         retry = False
         for i in range(3):
             password = password_callback(self._label, retry=retry)
-            if isinstance(password, unicode):
-                password = password.encode('utf-8')
             try:
                 session.login(str(password))
             except PyKCS11.PyKCS11Error:
@@ -363,8 +361,10 @@ def get_c14n(node):
 def get_digest(node):
     sha1 = hashlib.sha1()
     sha1.update(get_c14n(node))
-    return base64.b64encode(sha1.digest())
+    return base64.b64encode(sha1.digest()).decode()
 
 
 def format_base64(string):
+    if isinstance(string, bytes):
+        string = string.decode()
     return '\n'.join(string[i:i + 64] for i in range(0, len(string), 64))

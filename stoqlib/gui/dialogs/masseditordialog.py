@@ -220,9 +220,9 @@ class ReplaceOperation(Operation):
     label = _('Replace')
 
     def setup(self, other_fields):
-        self.one_entry = self.add_entry(unicode)
+        self.one_entry = self.add_entry(str)
         self.add_label(_('by'))
-        self.other_entry = self.add_entry(unicode)
+        self.other_entry = self.add_entry(str)
 
     def get_new_value(self, item):
         old_value = self._field.get_value(item)
@@ -330,7 +330,7 @@ class UnicodeEditor(Editor):
         ReplaceOperation,
         SetValueOperation,
     ]
-    data_type = unicode
+    data_type = str
 
 
 class ObjectEditor(Editor):
@@ -446,11 +446,11 @@ class AccessorField(Field):
     def get_column(self, spec):
         # SearchColumn expects str instead of unicode and objects are rendered
         # as strings
-        data_type = {unicode: str, object: str}.get(self.data_type, self.data_type)
+        data_type = {object: str}.get(self.data_type, self.data_type)
 
         # FIXME Dont let the user edit unique fields for now, since that needs
         # better handling
-        editable = self.data_type in [unicode, int, Decimal, currency,
+        editable = self.data_type in [str, int, Decimal, currency,
                                       datetime.date] and not self.unique
 
         # XXX: All columns use a non existing attr, but since we have a
@@ -496,7 +496,7 @@ class MassEditorWidget(Gtk.HBox):
     _editors = {
         currency: DecimalEditor,
         Decimal: DecimalEditor,
-        unicode: UnicodeEditor,
+        str: UnicodeEditor,
         datetime.date: DateEditor,
         object: ObjectEditor,
     }
@@ -644,7 +644,7 @@ class MassEditorSearch(SearchDialog):
         for field in self._fields:
             col = field.get_column(self.search_spec)
             columns.append(col)
-            if field.data_type is unicode and isinstance(col, SearchColumn):
+            if field.data_type is str and isinstance(col, SearchColumn):
                 text_columns.append(col.search_attribute)
 
         self.text_field_columns = text_columns
@@ -711,6 +711,6 @@ class MassEditorSearch(SearchDialog):
         # from there after the user has edited.
         value = obj.non_existing_attr
         # Kiwi is setting as string, not unicode
-        if field.data_type is unicode:
-            value = unicode(value)
+        if field.data_type is str:
+            value = str(value)
         field.set_new_value(obj, value)

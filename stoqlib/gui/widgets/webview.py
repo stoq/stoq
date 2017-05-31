@@ -24,7 +24,7 @@
 
 import logging
 import json
-import urlparse
+import urllib.parse
 
 from gi.repository import Gtk, WebKit
 
@@ -45,8 +45,8 @@ USER_AGENT = ("Mozilla/5.0 (X11; Linux x86_64) "
 
 
 def register_scheme(scheme):
-    for method in [s for s in dir(urlparse) if s.startswith('uses_')]:
-        getattr(urlparse, method).append(scheme)
+    for method in [s for s in dir(urllib.parse) if s.startswith('uses_')]:
+        getattr(urllib.parse, method).append(scheme)
 register_scheme('stoq')
 
 
@@ -194,7 +194,7 @@ class WebView(Gtk.ScrolledWindow):
         self.web_open_uri(kwargs)
 
     def _parse_stoq_uri(self, uri):
-        result = urlparse.urlparse(uri)
+        result = urllib.parse.urlparse(uri)
         kwargs = {}
         for arg in result.query.split(','):
             k, v = arg.split('=', 1)

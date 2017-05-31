@@ -49,13 +49,13 @@ clean:
 check: clean check-source
 	@echo "Running $(TEST_MODULES) unittests"
 	@rm -f .noseids
-	@python runtests.py --failed $(TEST_MODULES)
+	@python3 runtests.py --failed $(TEST_MODULES)
 
 check-failed: clean
-	python runtests.py --failed $(TEST_MODULES)
+	python3 runtests.py --failed $(TEST_MODULES)
 
 coverage: clean check-source-all
-	python runtests.py \
+	python3 runtests.py \
 	    --with-xcoverage \
 	    --with-xunit \
 	    --cover-package=stoq,stoqlib,plugins \
@@ -67,13 +67,13 @@ coverage: clean check-source-all
 
 jenkins: check-source-all
 	unset STOQLIB_TEST_QUICK && \
-	VERSION=`python -c "from stoq import version; print version"` && \
+	VERSION=`python3 -c "from stoq import version; print version"` && \
 	rm -fr jenkins-test && \
-	python setup.py -q sdist -d jenkins-test && \
+	python3 setup.py -q sdist -d jenkins-test && \
 	cd jenkins-test && \
 	tar xfz stoq-$$VERSION.tar.gz && \
 	cd stoq-$$VERSION && \
-	python runtests.py \
+	python3 runtests.py \
 	    --with-xcoverage \
 	    --with-xunit \
 	    --cover-package=stoq,stoqlib,plugins \

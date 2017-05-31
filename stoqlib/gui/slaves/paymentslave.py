@@ -332,7 +332,7 @@ class PaymentListSlave(GladeSlaveDelegate):
         # the payment it is converted to unicode. Shouldn't it be int
         # on domain?
         if payment_number is not None:
-            payment_number = unicode(payment_number)
+            payment_number = str(payment_number)
 
         payment = _TemporaryPaymentData(description,
                                         value,

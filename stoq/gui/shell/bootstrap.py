@@ -53,6 +53,7 @@ class ShellBootstrap(object):
 
     def __init__(self, options, initial):
         self._initial = initial
+        self._locale_error = None
         self._log_filename = None
         self._options = options
         self.entered_main = False
@@ -91,11 +92,6 @@ class ShellBootstrap(object):
         assert not 'gobject' in sys.modules
         assert not 'gtk' in sys.modules
 
-        # FIXME: Set the default encoding to utf-8 just like pygtk used to do.
-        # This probably will not be necessary in python3
-        reload(sys)
-        sys.setdefaultencoding('utf-8')
-
         from gi.repository import GObject
         GObject.threads_init()
 
@@ -104,10 +100,9 @@ class ShellBootstrap(object):
         set_initial()
 
     def _set_user_locale(self):
+        from stoqlib.lib.environment import configure_locale
         from stoqlib.lib.settings import get_settings
         from stoqlib.lib.translation import stoqlib_gettext as _
-
-        self._locale_error = None
 
         # We only support pt_BR in Windows and we need to set LC_ALL
         # or we might run in some problems in case it is not set.
@@ -121,20 +116,13 @@ class ShellBootstrap(object):
 
         settings = get_settings()
         lang = settings.get('user-locale', None)
-        if not lang:
-            return
-
-        lang += '.UTF-8'
         try:
-            locale.setlocale(locale.LC_ALL, lang)
+            configure_locale(lang)
         except locale.Error as err:
             msg = _("Could not set locale to %s. Make sure that you have "
                     "the packages for this locale installed.") % lang[:-6]
             self._locale_error = (msg, err)
             log.warning(msg)
-        else:
-            os.environ['LC_ALL'] = lang
-            os.environ['LANGUAGE'] = lang
 
     def _setup_autoreload(self):
         if not self._options.autoreload:

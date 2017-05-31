@@ -34,6 +34,7 @@ Certain changes to a payment is saved in :class:`PaymentChangeHistory`
 
 # pylint: enable=E1101
 
+import collections
 import logging
 
 from kiwi.currency import currency
@@ -134,12 +135,14 @@ class Payment(Domain):
     #: the group was cancelled.
     STATUS_CANCELLED = u'cancelled'
 
-    statuses = {STATUS_PREVIEW: _(u'Preview'),
-                STATUS_PENDING: _(u'To Pay'),
-                STATUS_PAID: _(u'Paid'),
-                STATUS_REVIEWING: _(u'Reviewing'),
-                STATUS_CONFIRMED: _(u'Confirmed'),
-                STATUS_CANCELLED: _(u'Cancelled')}
+    statuses = collections.OrderedDict([
+        (STATUS_PREVIEW, _(u'Preview')),
+        (STATUS_PENDING, _(u'To Pay')),
+        (STATUS_PAID, _(u'Paid')),
+        (STATUS_REVIEWING, _(u'Reviewing')),
+        (STATUS_CONFIRMED, _(u'Confirmed')),
+        (STATUS_CANCELLED, _(u'Cancelled')),
+    ])
 
     #: type of payment :obj:`.TYPE_IN` or :obj:`.TYPE_OUT`
     payment_type = EnumCol(allow_none=False, default=TYPE_IN)

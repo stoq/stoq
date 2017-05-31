@@ -98,7 +98,7 @@ class _BaseSaleSearch(SearchDialog):
                              data_type=Decimal, width=60,
                              format_func=format_quantity),
                 SearchColumn('total', title=_('Total'), data_type=currency,
-                             width=90)]
+                             search_attribute='_total', width=90)]
 
 
 class SaleWithToolbarSearch(_BaseSaleSearch):

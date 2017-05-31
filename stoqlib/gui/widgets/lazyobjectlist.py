@@ -175,7 +175,7 @@ class LazyObjectModel(GenericTreeModel, Gtk.TreeSortable):
             index = self.get_user_data(key)
         elif isinstance(key, Gtk.TreePath):
             index = self.get_user_data(self.get_iter(key))
-        elif isinstance(key, (basestring, int)):
+        elif isinstance(key, (str, int)):
             index = int(key)
         elif isinstance(key, tuple):
             index = key[0]

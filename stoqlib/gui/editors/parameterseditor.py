@@ -83,7 +83,7 @@ class SystemParameterEditor(BaseEditor):
             if detail.type is bool:
                 value = int(value)
             if value is not None:
-                value = unicode(value)
+                value = str(value)
             model = ParameterData(store=store,
                                   field_name=detail.key,
                                   field_value=value)
@@ -102,7 +102,7 @@ class SystemParameterEditor(BaseEditor):
         if not self.sensitive:
             sc = widget.get_style_context()
             sc.add_class('visualmode')
-        widget.data_type = unicode
+        widget.data_type = str
         widget.model_attribute = "field_value"
         self.proxy.add_widget("field_value", widget)
         if box is None:
@@ -146,7 +146,7 @@ class SystemParameterEditor(BaseEditor):
                       Gtk.PolicyType.AUTOMATIC)
         widget = ProxyTextView()
         widget.props.sensitive = self.sensitive
-        widget.data_type = unicode
+        widget.data_type = str
         widget.model_attribute = "field_value"
         if self.detail.wrap:
             widget.set_wrap_mode(Gtk.WrapMode.WORD)
@@ -197,7 +197,7 @@ class SystemParameterEditor(BaseEditor):
         widget = ProxyComboEntry()
         widget.props.sensitive = self.sensitive
         widget.model_attribute = "field_value"
-        widget.data_type = unicode
+        widget.data_type = str
 
         detail = sysparam.get_detail_by_name(self.model.field_name)
         is_mandatory = not detail.allow_none
@@ -214,7 +214,7 @@ class SystemParameterEditor(BaseEditor):
                     self.store, Payment.TYPE_IN, False)
             else:
                 result = self.store.find(field_type)
-            data = [(res.get_description(), unicode(res.id)) for res in result]
+            data = [(res.get_description(), str(res.id)) for res in result]
         widget.prefill(data)
         self.proxy.add_widget("field_value", widget)
         self.container.add(widget)
@@ -244,9 +244,9 @@ class SystemParameterEditor(BaseEditor):
         widget = ProxyComboBox()
         widget.props.sensitive = self.sensitive
         widget.model_attribute = "field_value"
-        widget.data_type = unicode
+        widget.data_type = str
 
-        data = [(value, unicode(key))
+        data = [(value, str(key))
                 for key, value in self.detail.options.items()]
         widget.prefill(data)
         self.proxy.add_widget("field_value", widget)
@@ -284,7 +284,7 @@ class SystemParameterEditor(BaseEditor):
                 self._setup_spin_entry_slave()
             else:
                 self._setup_entry_slave()
-        elif issubclass(field_type, basestring):
+        elif issubclass(field_type, str):
             if self.detail.multiline:
                 self._setup_text_view_slave()
             elif self.detail.combo_data:
@@ -314,7 +314,7 @@ class SystemParameterEditor(BaseEditor):
     #
 
     def _on_image_slave__image_changed(self, slave, image):
-        self.model.field_value = image and unicode(image.id)
+        self.model.field_value = image and str(image.id)
 
     def _on_entry__validate(self, widget, value):
         if not value:
@@ -332,7 +332,7 @@ class SystemParameterEditor(BaseEditor):
         self.refresh_ok(int(value))
 
     def _on_yes_radio__toggled(self, widget):
-        self.model.field_value = unicode(int(widget.get_active()))
+        self.model.field_value = str(int(widget.get_active()))
 
     def _on_spin__value_changed(self, widget):
         data_type = self.detail.get_parameter_type()
@@ -342,7 +342,7 @@ class SystemParameterEditor(BaseEditor):
         else:
             value = widget.read()
 
-        self.model.field_value = unicode(value)
+        self.model.field_value = str(value)
 
     def _on_filechooser_button__selection_changed(self, widget):
         filename = widget.get_filename()

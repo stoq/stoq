@@ -29,6 +29,8 @@ Note that this whole module is Brazil-specific.
 
 # pylint: enable=E1101
 
+import collections
+
 from storm.expr import LeftJoin, Join, Or
 from storm.references import Reference
 from zope.interface import implementer
@@ -240,10 +242,10 @@ class Invoice(Domain):
     NFE_MODE = u'nfe'
     NFCE_MODE = u'nfce'
 
-    MODES = {
-        55: NFE_MODE,
-        65: NFCE_MODE
-    }
+    MODES = collections.OrderedDict([
+        (55, NFE_MODE),
+        (65, NFCE_MODE),
+    ])
 
     MODE_NAMES = {
         NFE_MODE: _('NF-e'),

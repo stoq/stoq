@@ -59,7 +59,7 @@ And use it like a regular table with storm:
 
     >>> store = api.new_store()
     >>> for v in store.find(ClientView).order_by(Person.name):
-    ...     print v.name, v.salary
+    ...     print(v.name, v.salary)
     Alessandra Almeida Itaberá 0.00
     Franciso Elisio de Lima Junior 0.00
     Luis Sergio da Silva Marin 0.00
@@ -109,7 +109,7 @@ Now we can create this viewable:
 
     >>> store = api.new_store()
     >>> for v in store.find(ClientSalesView).order_by(Person.name):
-    ...     print v.name, v.total_sales, v.total_value
+    ...     print(v.name, v.total_sales, v.total_value)
     Alessandra Almeida Itaberá 1 706.00
     Franciso Elisio de Lima Junior 0 None
     Luis Sergio da Silva Marin 1 873.00

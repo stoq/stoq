@@ -410,7 +410,7 @@ class ReceivingOrder(Domain):
 
     @property
     def cfop_code(self):
-        return self.cfop.code.encode()
+        return self.cfop.code
 
     @property
     def transporter_name(self):

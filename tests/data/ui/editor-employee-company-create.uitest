@@ -100,10 +100,10 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                           GtkBox(hbox1, orientation=horizontal, expand=True, fill=True):
                             GtkLabel(label1, expand=True, fill=True): 'Employee Status:'
                             ProxyComboBox(statuses_combo, expand=True, fill=True):
-                              item: 'Away'
-                              item: 'Off'
-                              item: 'Vacation'
                               item: 'Normal', selected
+                              item: 'Away'
+                              item: 'Vacation'
+                              item: 'Off'
                             ProxyLabel(kiwilabel1, expand=True, fill=True):
                           GtkHSeparator(hseparator1, fill=True):
                       GtkEventBox(details_holder, fill=True): slave _IndividualDetailsSlave is attached

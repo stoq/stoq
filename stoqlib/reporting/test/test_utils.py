@@ -37,7 +37,7 @@ _ = stoqlib_gettext
 class TestUtils(DomainTest):
     def test_get_logo_data(self):
         image = self.create_image()
-        image.image = 'foobar'
+        image.image = b'foobar'
         sysparam.set_object(self.store, 'CUSTOM_LOGO_FOR_REPORTS', image)
         data = get_logo_data(self.store)
         self.assertEquals(data, 'data:image/png;base64,Zm9vYmFy')

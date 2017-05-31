@@ -227,15 +227,16 @@ class TillDailyMovementDialog(BaseEditor):
                                          client=client,
                                          branch=p.branch_name,
                                          value=get_formatted_price(total))
-                sale_payments = self.sales.setdefault(sale, {})
+                sale_payments = self.sales.setdefault(sale,
+                                                      collections.OrderedDict())
                 details = ''
                 method_desc = p.method.get_description()
                 if p.check_data:
                     account = p.check_data.bank_account
-                    numbers = [payment.payment_number for payment in p.sale.payments
-                               if bool(payment.payment_number)]
+                    numbers = sorted(
+                        payment.payment_number for payment
+                        in p.sale.payments if bool(payment.payment_number))
                     # Ensure that the check numbers are ordered
-                    numbers.sort()
                     parts = []
                     if account.bank_number:
                         parts.append(_(u'Bank: %s') % account.bank_number)

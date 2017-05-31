@@ -51,12 +51,6 @@ _ = stoqlib_gettext
 
 
 def _get_equal_clause(table, value):
-    # FIXME: Never versions of Psycopg2 treats str as bytes,
-    # We should do the same and enable:
-    #   from __future__ import unicode_literals
-    # and start to convert all APIs to use unicode instead of str.
-    if isinstance(value, str):
-        value = unicode(value, 'utf-8')
     return (StoqNormalizeString(table) ==
             StoqNormalizeString(value))
 

@@ -75,13 +75,23 @@ class TestMain(unittest.TestCase):
     def test_shell_bootstrap(self):
         options = mock.Mock()
         bootstrap = ShellBootstrap(options=options, initial=True)
+        mocks = []
         # This will fail since testsuit already setup it
-        mocked = mock.patch.object(bootstrap, '_setup_gobject', new=lambda: None)
-        mocked.start()
+        mocks.append(
+            mock.patch.object(bootstrap, '_setup_gobject', new=lambda: None))
+        # This will change the locale of all the tests that come after it,
+        # making a lot of them fail
+        mocks.append(
+            mock.patch.object(bootstrap, '_set_user_locale', new=lambda: None))
+
+        for mocked in mocks:
+            mocked.start()
+
         try:
             bootstrap.bootstrap()
         finally:
-            mocked.stop()
+            for mocked in mocks:
+                mocked.stop()
 
     @mock.patch('stoq.gui.shell.bootstrap.boot_shell')
     def test_main(self, boot_shell):

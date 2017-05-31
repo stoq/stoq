@@ -25,6 +25,7 @@
 
 """Translation utilities for stoqlib"""
 
+import functools
 import gettext as gettext_
 import locale
 
@@ -43,18 +44,11 @@ def dgettext(domain, message):
     if message == "":
         return message
 
-    is_unicode = False
-    if type(message) == unicode:
-        message = str(message)
-        is_unicode = True
-    retval = gettext_.dgettext(domain, message)
-    if is_unicode:
-        retval = unicode(retval, 'utf-8')
-    return retval
+    return gettext_.dgettext(domain, message)
 
 
 def gettext(message):
-    return unicode(gettext_.gettext(message), 'utf-8')
+    return gettext_.gettext(message)
 
 
 def N_(message):
@@ -66,6 +60,9 @@ def locale_sorted(iterable, cmp=None, key=None, reverse=False):
         raise TypeError("cmp is not supported")
 
     def cmp_func(a, b):
-        return locale.strcoll(a.encode('utf-8'),
-                              b.encode('utf-8'))
-    return sorted(iterable, cmp_func, key, reverse)
+        if key is not None:
+            a = key(a)
+            b = key(b)
+        return locale.strcoll(a, b)
+
+    return sorted(iterable, key=functools.cmp_to_key(cmp_func), reverse=reverse)

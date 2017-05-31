@@ -16,20 +16,20 @@ GtkDialog(main_dialog.toplevel): title='Change Payment Status', hidden
           GtkBox(status_box, orientation=horizontal, fill=True):
             ProxyLabel(kiwilabel2, fill=True): 'Status:'
             ProxyComboBox(status_combo, fill=True): insensitive
-              item: 'Confirmed'
-              item: 'Paid', selected
-              item: 'Reviewing'
-              item: 'Cancelled'
               item: 'Preview'
               item: 'To Pay'
+              item: 'Paid', selected
+              item: 'Reviewing'
+              item: 'Confirmed'
+              item: 'Cancelled'
             ProxyLabel(status_lbl2, fill=True): 'Change to:'
             ProxyComboBox(target_status_combo, fill=True): insensitive
-              item: 'Confirmed'
-              item: 'Paid'
-              item: 'Reviewing'
-              item: 'Cancelled'
               item: 'Preview'
               item: 'To Pay', selected
+              item: 'Paid'
+              item: 'Reviewing'
+              item: 'Confirmed'
+              item: 'Cancelled'
           GtkBox(hbox2, orientation=horizontal, fill=True):
             ProxyLabel(kiwilabel5, fill=True): 'Reason:'
             GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):

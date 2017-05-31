@@ -105,7 +105,7 @@ class OpenProductionOrderStep(WizardEditorStep):
         self._setup_widgets()
         self.proxy = self.add_proxy(
             self.model, OpenProductionOrderStep.proxy_widgets)
-        self.proxy.update('identifier', unicode(self.model.identifier))
+        self.proxy.update('identifier', str(self.model.identifier))
         # suggests a responsible for the production order
         if not self.model.responsible:
             self.responsible.select_item_by_position(0)

@@ -153,7 +153,7 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
         sale = self.create_sale()
         method = PaymentMethod.get_by_name(self.store, self.method_type)
         desc = method.describe_payment(sale.group)
-        self.failUnless(isinstance(desc, unicode))
+        self.failUnless(isinstance(desc, str))
         self.failUnless(method.description in desc)
 
         self.assertRaises(AssertionError, method.describe_payment, sale.group, 0)

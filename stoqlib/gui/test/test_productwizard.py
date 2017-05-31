@@ -202,7 +202,7 @@ class TestProducCreateWizard(GUITest):
         self.assertEquals(grid_slave.add_product_button.get_sensitive(), False)
 
         # One combo not filled with an valid option
-        combo = grid_slave._widgets.values()[0]
+        combo = list(grid_slave._widgets.values())[0]
         # Position 0 (zero) is empty
         combo.select_item_by_position(0)
         self.assertEquals(grid_slave.add_product_button.get_sensitive(), False)

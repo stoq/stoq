@@ -168,6 +168,8 @@ class ProductFullStockView(Viewable):
     group_by = [id, product_id, storable_id, category_description,
                 manufacturer, tax_description, unit, image_id]
 
+    __hash__ = Viewable.__hash__
+
     def __eq__(self, other):
         hvs = list(self.highjacked.values())
         # Viewable's __eq__ would only consider equal objects of the same

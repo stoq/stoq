@@ -81,7 +81,7 @@ class DeviceSettingsEditor(BaseEditor):
 
     def setup_device_port_combo(self):
         items = [(_("Choose..."), None)]
-        items.extend([(unicode(device.device_name), unicode(device.device_name))
+        items.extend([(str(device.device_name), str(device.device_name))
                       for device in self._device_manager.get_serial_devices()])
         items.extend(self._get_usb_devices())
 
@@ -158,7 +158,7 @@ class DeviceSettingsEditor(BaseEditor):
             return
         items = [(_("Choose..."), None)]
         supported_brands = self._get_supported_brands()
-        items.extend([(brand.capitalize(), unicode(brand))
+        items.extend([(brand.capitalize(), str(brand))
                       for brand in supported_brands])
         self.brand_combo.prefill(items)
 
@@ -170,7 +170,7 @@ class DeviceSettingsEditor(BaseEditor):
             return
         supported_models = self._get_supported_models()
         items = [(_("Choose..."), None)]
-        items.extend([(obj.model_name, unicode(obj.__name__))
+        items.extend([(obj.model_name, str(obj.__name__))
                       for obj in supported_models])
         self.model_combo.prefill(items)
 

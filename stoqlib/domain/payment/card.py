@@ -324,17 +324,17 @@ class CreditCardData(Domain):
         (TYPE_DEBIT_PRE_DATED, _(u'Debit Card Pre-dated')),
     ])
 
-    short_desc = {
-        TYPE_CREDIT: _(u'Credit'),
-        TYPE_DEBIT: _(u'Debit'),
-        # translators: This is 'Credit Card Installments Store, but should be
+    short_desc = collections.OrderedDict([
+        (TYPE_CREDIT, _(u'Credit')),
+        (TYPE_DEBIT, _(u'Debit')),
+        # translators, This is 'Credit Card Installments Store, but should be
         # abbreviated to fit a small space
-        TYPE_CREDIT_INSTALLMENTS_STORE: _(u'Credit Inst. Store'),
-        # translators: This is 'Credit Card Installments Provider, but should be
+        (TYPE_CREDIT_INSTALLMENTS_STORE, _(u'Credit Inst. Store')),
+        # translators, This is 'Credit Card Installments Provider, but should be
         # abbreviated to fit a small space
-        TYPE_CREDIT_INSTALLMENTS_PROVIDER: _(u'Credit Inst. Provider'),
-        TYPE_DEBIT_PRE_DATED: _(u'Debit Pre-dated'),
-    }
+        (TYPE_CREDIT_INSTALLMENTS_PROVIDER, _(u'Credit Inst. Provider')),
+        (TYPE_DEBIT_PRE_DATED, _(u'Debit Pre-dated')),
+    ])
 
     payment_id = IdCol()
 

@@ -37,7 +37,7 @@ def get_hostname():
     name = os.environ.get('LTSP_CLIENT_HOSTNAME', None)
     if name is None:
         name = socket.gethostname()
-    return unicode(name)
+    return str(name)
 
 
 def get_random_port():

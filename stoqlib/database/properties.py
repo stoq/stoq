@@ -48,9 +48,6 @@ class Identifier(int):
     def __str__(self):
         return '%s%05d' % (self.prefix, self)
 
-    def __unicode__(self):
-        return unicode(str(self))
-
 
 class _IdentifierVariable(IntVariable):
     def parse_get(self, value, to_db):
@@ -78,8 +75,6 @@ class IdentifierCol(Int):
         666
         >>> str(p.identifier)
         '00666'
-        >>> unicode(p.identifier)
-        u'00666'
         >>>
         >>> store.rollback(close=True)
 
@@ -130,8 +125,6 @@ class EnumVariable(Variable):
         return value
 
     def parse_get(self, value, to_db):
-        if isinstance(value, str):
-            value = unicode(value)
         return value
 
 
@@ -141,6 +134,8 @@ class EnumCol(SimpleProperty):
 
 class MyDateTimeVariable(DateTimeVariable, DateVariable):
     def parse_set(self, value, from_db):
+        # We need to use type here because in py3 datetime is a subclass of
+        # date, meaning that it would be considered too and loose its time
         if type(value) is datetime.date:
             warnings.warn("Using datetime.date is deprecated, pass in "
                           "datetime.datetime instead", stacklevel=4)
@@ -166,7 +161,7 @@ class UUIDVariable(Variable):
         #      raise TypeError("Expected UUID, found %r: %r"
         #                      % (type(value), value))
 
-        return unicode(value)
+        return str(value)
 
 
 class UUIDCol(SimpleProperty):
@@ -176,12 +171,17 @@ class UUIDCol(SimpleProperty):
 class XmlVariable(EncodedValueVariable):
 
     def _loads(self, value):
+        if isinstance(value, str):
+            value = value.encode()
         return etree.fromstring(value)
 
     def _dumps(self, value):
         if value is None:
             return None
-        return unicode(etree.tostring(value, encoding='unicode'))
+        string = etree.tostring(value, encoding='unicode')
+        if isinstance(string, bytes):  # pragma: nocover
+            string = string.decode()
+        return string
 
 
 class XmlCol(SimpleProperty):

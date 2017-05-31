@@ -60,7 +60,7 @@ def is_date_in_interval(date, start_date, end_date):
 
 
 def validate_phone_number(phone_number):
-    if not isinstance(phone_number, basestring):
+    if not isinstance(phone_number, str):
         return False
 
     phone_number = raw_phone_number(phone_number)
@@ -82,7 +82,7 @@ def validate_postal_code(postal_code):
 
 def validate_area_code(code):
     """Validates Brazilian area codes"""
-    if isinstance(code, basestring):
+    if isinstance(code, str):
         try:
             code = converter.from_string(int, code)
         except ValidationError:
@@ -106,7 +106,7 @@ def validate_cpf(cpf):
     # FIXME: use modulo11 from algorithms.py
 
     # With the first 9 digits, we calculate the last two digits (verifiers)
-    new = map(int, cpf)[:9]
+    new = list(map(int, cpf))[:9]
 
     while len(new) < 11:
         s = sum([(len(new) + 1 - i) * v for i, v in enumerate(new)]) % 11
@@ -138,7 +138,7 @@ def validate_cnpj(cnpj):
     # FIXME: use modulo11 from algorithms.py
 
     # With the first 12 digts, we calculate the last 2 digits (verifiers)
-    new = map(int, cnpj)[:12]
+    new = list(map(int, cnpj))[:12]
 
     verification_base = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
 
@@ -164,7 +164,7 @@ def validate_cfop(cfop):
 
     Valid C.F.O.P. format: '9.999', where 9 is any digit in 0-9.
     """
-    if not isinstance(cfop, basestring):
+    if not isinstance(cfop, str):
         return False
 
     if not '.' in cfop:
@@ -184,7 +184,7 @@ def validate_cfop(cfop):
 
 
 def _validate_type(type_, value):
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         try:
             # Just converting to see if any errors are raised.
             converter.from_string(type_, value)
@@ -226,7 +226,7 @@ def validate_percentage(value):
     Works for int, float, Decimal and basestring (if it
     can be converted to Decimal).
     """
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         try:
             value = converter.from_string(Decimal, value)
         except ValidationError:

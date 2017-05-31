@@ -23,6 +23,7 @@
 ##
 """ Parameters and system data for applications"""
 
+import collections
 from decimal import Decimal
 from uuid import uuid4
 import logging
@@ -96,7 +97,7 @@ class ParameterDetails(object):
     #
 
     def get_parameter_type(self):
-        if isinstance(self.type, basestring):
+        if isinstance(self.type, str):
             return namedAny('stoqlib.domain.' + self.type)
         else:
             return self.type
@@ -311,7 +312,7 @@ _details = [
         _(u'Default city'),
         _(u'When adding a new address for a certain person we will always '
           u'suggest this city.'),
-        unicode, initial=u'São Carlos',
+        str, initial=u'São Carlos',
         validator=ParameterDetails.validate_city),
 
     ParameterDetails(
@@ -320,7 +321,7 @@ _details = [
         _(u'Default state'),
         _(u'When adding a new address for a certain person we will always '
           u'suggest this state.'),
-        unicode, initial=u'SP', validator=ParameterDetails.validate_state),
+        str, initial=u'SP', validator=ParameterDetails.validate_state),
 
     ParameterDetails(
         u'COUNTRY_SUGGESTED',
@@ -329,7 +330,7 @@ _details = [
         _(u'When adding a new address for a certain person we will always '
           u'suggest this country.'),
         # FIXME: When fixing bug 5100, change this to BR
-        unicode, initial=u'Brazil', combo_data=get_countries),
+        str, initial=u'Brazil', combo_data=get_countries),
 
     ParameterDetails(
         u'ALLOW_REGISTER_NEW_LOCATIONS',
@@ -475,7 +476,7 @@ _details = [
         _(u'Default operation nature'),
         _(u'When adding a new sale quote, we will always suggest '
           u'this operation nature'),
-        unicode, initial=_(u'Sale')),
+        str, initial=_(u'Sale')),
 
     ParameterDetails(
         u'ASK_SALES_CFOP',
@@ -644,7 +645,7 @@ _details = [
         _(u'Glabels template file'),
         _(u'The glabels file that will be used to print the labels. Check the '
           u'documentation to see how to setup this file.'),
-        unicode, initial=u"", editor='file-chooser'),
+        str, initial=u"", editor='file-chooser'),
 
     ParameterDetails(
         u'COST_PRECISION_DIGITS',
@@ -744,7 +745,7 @@ _details = [
           u'$INTEREST: The calculated interest based on the parameter aliquot\n'
           u'$DISCOUNT: The calculated discount based on the parameter aliquot\n'
           u'$INVOICE_NUMBER: The sale invoice number\n'),
-        unicode, multiline=True, initial=u""),
+        str, multiline=True, initial=u""),
 
     ParameterDetails(
         u'BILL_INTEREST',
@@ -783,7 +784,7 @@ _details = [
         _(u'When printing booklets, include the first 4 lines of these on it. '
           u'This usually includes instructions on how to pay the booklet and '
           u'the validity and the terms.'),
-        unicode, multiline=True,
+        str, multiline=True,
         initial=_(u"Payable at any branch on presentation of this booklet")),
 
     ParameterDetails(
@@ -838,7 +839,7 @@ _details = [
         _(u'Notice that will be added to the loan report'),
         _(u'This notice will be added to the loan receipt and can be used to '
           'warn the client that he is responsible for the items he is loaning'),
-        unicode, multiline=True, initial=DEFAULT_LOAN_NOTICE),
+        str, multiline=True, initial=DEFAULT_LOAN_NOTICE),
 
     ParameterDetails(
         u'PRINT_SALE_DETAILS_ON_POS',
@@ -877,7 +878,7 @@ _details = [
         _(u'Defect detected template for work orders'),
         _(u'A template to be used to fill the "Defect detected" field when '
           u'creating a new work order.'),
-        unicode, multiline=True, initial=u""),
+        str, multiline=True, initial=u""),
 
     ParameterDetails(
         u'WORK_ORDER_NOTICE',
@@ -885,7 +886,7 @@ _details = [
         _(u'Notice that will be added to the work order report'),
         _(u'This notice will be added to the work order receipt and can be used to '
           'warn the client about warranties and limitations'),
-        unicode, multiline=True, initial=u''),
+        str, multiline=True, initial=u''),
 
     ParameterDetails(
         u'AUTOMATIC_LOGOUT',
@@ -929,7 +930,7 @@ _details = [
           u'and stoq link. It will be added on ping requests, tef requests and '
           u'feedbacks data sent to stoq api and on the stoq statistics data sent '
           u'to stoq link lite.'),
-        unicode, initial=unicode(uuid4().get_hex()))
+        str, initial=uuid4().hex)
 ]
 
 
@@ -940,7 +941,7 @@ class ParameterAccess(object):
 
     def __init__(self):
         # Mapping of details, name -> ParameterDetail
-        self._details = {}
+        self._details = collections.OrderedDict()
         for detail in _details:
             self.register_param(detail)
 
@@ -1043,9 +1044,9 @@ class ParameterAccess(object):
 
     def _set_param_internal(self, store, param_name, value, expected_type):
         self._verify_detail(param_name, expected_type)
-        param = ParameterData.get_or_create(store, field_name=unicode(param_name))
+        param = ParameterData.get_or_create(store, field_name=str(param_name))
 
-        if value is not None and not type(value) is expected_type:
+        if value is not None and not isinstance(value, expected_type):
             raise TypeError("%s must be a %s, not %r" % (
                 param_name, expected_type, type(value).__name__))
 
@@ -1053,7 +1054,7 @@ class ParameterAccess(object):
         if expected_type is bool:
             value = int(value)
 
-        param.field_value = unicode(value)
+        param.field_value = str(value)
         self.set_value_generic(param_name, param.field_value)
 
     def _set_default_value(self, store, param_name):
@@ -1073,7 +1074,7 @@ class ParameterAccess(object):
         if detail.type is bool:
             value = int(value)
         if value is not None:
-            value = unicode(value)
+            value = str(value)
 
         data = ParameterData(store=store,
                              field_name=param_name,
@@ -1140,9 +1141,9 @@ class ParameterAccess(object):
                 return expected_type(value)
             except ValueError:
                 return expected_type(detail.initial)
-        elif isinstance(expected_type, basestring):
+        elif isinstance(expected_type, str):
             field_type = detail.get_parameter_type()
-            return store.get(field_type, unicode(value))
+            return store.get(field_type, str(value))
 
         return value
 
@@ -1218,7 +1219,7 @@ class ParameterAccess(object):
         :param value: the value to set
         :type value: unicode
         """
-        self._set_param_internal(store, param_name, unicode(value or ''), unicode)
+        self._set_param_internal(store, param_name, str(value or ''), str)
 
     def get_string(self, param_name):
         """
@@ -1228,7 +1229,7 @@ class ParameterAccess(object):
         :returns: the database value
         :rtype: unicode
         """
-        return self.get(param_name, unicode)
+        return self.get(param_name, str)
 
     def set_object(self, store, param_name, value):
         """
@@ -1250,9 +1251,9 @@ class ParameterAccess(object):
                 param_name, field_type.__name__,
                 type(value).__name__))
 
-        param = ParameterData.get_or_create(store, field_name=unicode(param_name))
+        param = ParameterData.get_or_create(store, field_name=str(param_name))
         if value is not None:
-            value = unicode(value.id)
+            value = str(value.id)
         param.field_value = value
         param.is_editable = detail.is_editable
         self._values[param_name] = value

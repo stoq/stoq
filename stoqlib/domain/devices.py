@@ -27,6 +27,8 @@ Domain classes related to stoqdrivers package.
 
 # pylint: enable=E1101
 
+import collections
+
 from stoqdrivers.printers.cheque import ChequePrinter
 from stoqdrivers.printers.nonfiscal import NonFiscalPrinter
 from stoqdrivers.scales.scales import Scale
@@ -78,9 +80,11 @@ class DeviceSettings(Domain):
      NON_FISCAL_PRINTER_DEVICE,
      CHEQUE_PRINTER_DEVICE) = range(1, 4)
 
-    device_types = {SCALE_DEVICE: _(u'Scale'),
-                    NON_FISCAL_PRINTER_DEVICE: _(u'Non Fiscal Printer'),
-                    CHEQUE_PRINTER_DEVICE: _(u'Cheque Printer')}
+    device_types = collections.OrderedDict([
+        (SCALE_DEVICE, _(u'Scale')),
+        (NON_FISCAL_PRINTER_DEVICE, _(u'Non Fiscal Printer')),
+        (CHEQUE_PRINTER_DEVICE, _(u'Cheque Printer')),
+    ])
 
     #
     # Domain

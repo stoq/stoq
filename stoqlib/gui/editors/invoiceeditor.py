@@ -125,7 +125,7 @@ class InvoiceLayoutEditor(BaseEditor):
         self._print_preview()
 
     def on_text__changed(self, widget):
-        text = unicode(widget.get_text())
+        text = str(widget.get_text())
 
         self._selected_field.model.content = text
         self._selected_field.update_label(text)

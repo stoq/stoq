@@ -63,7 +63,7 @@ class TestSelect(DomainTest):
           <heading>Reminder</heading>
           <body>Wake Up!</body>
         </note>
-        """.strip())
+        """.strip().encode())
 
         # Write the XML into the database
         self.store.add(xml_table)

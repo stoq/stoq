@@ -35,7 +35,7 @@ class TestImage(DomainTest):
 
     def test_base64Encode(self):
         image = self.create_image()
-        image.image = 'teste'
+        image.image = b'teste'
 
         # the second argument is the string 'teste' with base64 encoding
         self.assertEquals(image.get_base64_encoded(), 'dGVzdGU=')

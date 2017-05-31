@@ -32,6 +32,7 @@ set of :class:`LoanItem`.
 
 # pylint: enable=E1101
 
+import collections
 from decimal import Decimal
 
 from kiwi.currency import currency
@@ -229,7 +230,7 @@ class LoanItem(Domain):
         :param decimal.Decimal discount: the discount to be applied
             as a percentage, e.g. 10.0, 22.5
         """
-        self.price = quantize(self.base_price * (1 - discount / 100))
+        self.price = quantize(self.base_price * (1 - Decimal(discount) / 100))
 
 
 @implementer(IContainer)
@@ -265,9 +266,11 @@ class Loan(Domain):
 
     # FIXME: This is missing a few states,
     #        STATUS_LOANED: stock is completely synchronized
-    statuses = {STATUS_OPEN: _(u'Opened'),
-                STATUS_CLOSED: _(u'Closed'),
-                STATUS_CANCELLED: _(u'Cancelled')}
+    statuses = collections.OrderedDict([
+        (STATUS_OPEN, _(u'Opened')),
+        (STATUS_CLOSED, _(u'Closed')),
+        (STATUS_CANCELLED, _(u'Cancelled')),
+    ])
 
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`Domain.id` when displaying a numerical representation of this object to

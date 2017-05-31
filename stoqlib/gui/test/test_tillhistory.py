@@ -40,7 +40,7 @@ class TestTillHistory(GUITest):
     def test_date_search(self):
         entry = TillEntry(identifier=1234,
                           description=u'desc',
-                          date=localdate(2011, 01, 01).date(),
+                          date=localdate(2011, 1, 1).date(),
                           value=Decimal(123.0),
                           till=self.create_till(),
                           payment=None,

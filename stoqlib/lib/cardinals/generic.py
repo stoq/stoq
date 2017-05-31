@@ -224,7 +224,7 @@ def p_100s(n):
     elif t % 10 != 0:
         # there is a units digit
         # print something like 'thirty-four'
-        out += " %s-%s" % (nnames[t / 10 * 10], nnames[t % 10])
+        out += " %s-%s" % (nnames[t // 10 * 10], nnames[t % 10])
     else:
-        out += " %s" % nnames[t / 10 * 10]
+        out += " %s" % nnames[t // 10 * 10]
     return out

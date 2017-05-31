@@ -39,11 +39,6 @@ log = logging.getLogger(__name__)
 @implementer(ISystemNotifier)
 class DefaultSystemNotifier:
     def message(self, name, short, description):
-        if isinstance(short, unicode):
-            short = short.encode('utf-8')
-        if isinstance(description, unicode):
-            description = description.encode('utf-8')
-
         if description:
             print('%s: [%s] %s' % (name, short, description))
         else:

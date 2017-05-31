@@ -36,10 +36,10 @@ GtkDialog(main_dialog.toplevel): title='Add Delivery', hidden
                 GtkBox(orientation=horizontal):
                 ProxyLabel(freight_type_lbl): 'Freight type:'
                 ProxyComboBox(freight_type):
-                  item: 'Third party'
                   item: 'No freight'
-                  item: 'FOB'
                   item: 'CIF', selected
+                  item: 'FOB'
+                  item: 'Third party'
                 GtkBox(orientation=horizontal):
                 ProxyLabel(volumes_quantity_lbl): 'Volumes quantity:'
                 ProxyEntry(volumes_quantity): '1'

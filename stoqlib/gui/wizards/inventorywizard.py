@@ -96,7 +96,7 @@ class _InventoryBatchSelectionDialog(BatchSelectionDialog):
         # counted. That makes sense though, but we should find a way to
         # validate the batch properly (since storable/batch_number should
         # be unique)
-        batch_number = unicode(entry.get_text())
+        batch_number = str(entry.get_text())
         if not batch_number:
             return
 
@@ -221,7 +221,7 @@ class InventoryCountItemStep(SellableItemStep):
         assert item is not None
 
         if batch is not None:
-            assert isinstance(batch, basestring)
+            assert isinstance(batch, str)
             item.add_or_update_batch(batch, quantity)
         else:
             item.quantity += quantity
@@ -256,7 +256,7 @@ class InventoryCountItemStep(SellableItemStep):
         for barcode, quantity in self.wizard.imported_count.items():
             if not quantity:
                 continue
-            sellable = self.store.find(Sellable, barcode=unicode(barcode)).one()
+            sellable = self.store.find(Sellable, barcode=str(barcode)).one()
             storable = sellable.product.storable
             item = self.model.add_storable(storable, 0)
             tmp_item = _TemporaryInventoryItem(sellable, storable, quantity)

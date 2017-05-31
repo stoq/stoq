@@ -100,18 +100,18 @@ def read_registry_key(root, key, value):
     if platform.system() != 'Windows':
         return None
     import exceptions
-    import _winreg
+    import winreg
 
     if root == 'HKCC':
-        root = _winreg.HKEY_CURRENT_USER
+        root = winreg.HKEY_CURRENT_USER
     elif root == 'HKLM':
-        root = _winreg.HKEY_LOCAL_MACHINE
+        root = winreg.HKEY_LOCAL_MACHINE
     else:
         raise ValueError(root)
 
     try:
-        k = _winreg.OpenKey(root, key)
-        reg_value, key_type = _winreg.QueryValueEx(k, value)
+        k = winreg.OpenKey(root, key)
+        reg_value, key_type = winreg.QueryValueEx(k, value)
     except exceptions.WindowsError:
         # log.info('Error while reading %s/%s/%s: %r' % (root, k, value, e))
         return None

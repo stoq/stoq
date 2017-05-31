@@ -451,7 +451,8 @@ class SearchDialog(BasicDialog):
 
     def create_provider_filter(self, label=None):
         from stoqlib.domain.payment.card import CreditProvider
-        providers = CreditProvider.get_card_providers(self.store)
+        providers = CreditProvider.get_card_providers(
+            self.store).order_by(CreditProvider.short_name)
         items = [(p.short_name, p) for p in providers]
         items.insert(0, (_("Any"), None))
 

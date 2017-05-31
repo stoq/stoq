@@ -24,6 +24,7 @@
 
 # pylint: enable=E1101
 
+import collections
 from decimal import Decimal
 
 from storm.info import get_cls_info
@@ -235,10 +236,12 @@ class ProductTaxTemplate(Domain):
 
     __storm_table__ = 'product_tax_template'
 
-    types = {TYPE_ICMS: u"ICMS",
-             TYPE_IPI: u"IPI",
-             TYPE_PIS: u"PIS",
-             TYPE_COFINS: u"COFINS"}
+    types = collections.OrderedDict([
+        (TYPE_ICMS, u"ICMS"),
+        (TYPE_IPI, u"IPI"),
+        (TYPE_PIS, u"PIS"),
+        (TYPE_COFINS, u"COFINS"),
+    ])
 
     type_map = {TYPE_ICMS: ProductIcmsTemplate,
                 TYPE_IPI: ProductIpiTemplate,

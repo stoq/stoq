@@ -525,7 +525,7 @@ class QueryEntryGadget(object):
         return False
 
     def _on_entry__changed(self, entry):
-        value = unicode(entry.get_text())
+        value = str(entry.get_text())
         self.set_value(None)
         if len(value) >= self.MIN_KEY_LENGTH:
             if self._source_id is not None:
@@ -562,7 +562,7 @@ class QueryEntryGadget(object):
             self._run_search()
 
     def _on_popup__create_item(self, popup):
-        obj = self._run_editor(description=unicode(self.entry.get_text()))
+        obj = self._run_editor(description=str(self.entry.get_text()))
         self.set_value(obj)
 
     def _on_edit_button__clicked(self, entry):

@@ -31,6 +31,8 @@ Such as storing the kind of credit card or associate a check with a bank account
 
 # pylint: enable=E1101
 
+import collections
+
 from kiwi.component import get_utility, provide_utility
 from stoqdrivers.enum import PaymentMethodType
 from zope.interface import implementer
@@ -280,13 +282,15 @@ class CardPaymentOperation(object):
     description = _(u'Card')
     max_installments = 12
 
-    CARD_METHOD_CONSTANTS = {
-        CreditCardData.TYPE_CREDIT: PaymentMethodType.CREDIT_CARD,
-        CreditCardData.TYPE_DEBIT: PaymentMethodType.DEBIT_CARD,
-        CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE: PaymentMethodType.CREDIT_CARD,
-        CreditCardData.TYPE_CREDIT_INSTALLMENTS_PROVIDER: PaymentMethodType.CREDIT_CARD,
-        CreditCardData.TYPE_DEBIT_PRE_DATED: PaymentMethodType.DEBIT_CARD,
-    }
+    CARD_METHOD_CONSTANTS = collections.OrderedDict([
+        (CreditCardData.TYPE_CREDIT, PaymentMethodType.CREDIT_CARD),
+        (CreditCardData.TYPE_DEBIT, PaymentMethodType.DEBIT_CARD),
+        (CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE,
+         PaymentMethodType.CREDIT_CARD),
+        (CreditCardData.TYPE_CREDIT_INSTALLMENTS_PROVIDER,
+         PaymentMethodType.CREDIT_CARD),
+        (CreditCardData.TYPE_DEBIT_PRE_DATED, PaymentMethodType.DEBIT_CARD),
+    ])
 
     #
     # IPaymentOperation

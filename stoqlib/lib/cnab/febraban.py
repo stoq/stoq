@@ -403,7 +403,7 @@ class BatchTrailer(Record):
     def cobranca_simples_qtd(self):
         # 4 = FileHeader + BatchHeader + BatchTrailer + FileTrailer
         # 3 = number of details / payment
-        return (len(self.cnab.records) - 4) / 3
+        return (len(self.cnab.records) - 4) // 3
 
 
 class FileTrailer(Record):

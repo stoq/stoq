@@ -102,12 +102,12 @@ GtkWindow(toplevel): title='[Moda Stoq] - Deliveries', hidden
                       GtkLabel(): 'Show'
                       ProxyComboBox(padding=6):
                         item: 'All Deliveries', selected
-                        item: 'Received'
                         item: 'Waiting'
-                        item: 'Sent'
-                        item: 'Picked'
                         item: 'Cancelled'
+                        item: 'Picked'
                         item: 'Packed'
+                        item: 'Sent'
+                        item: 'Received'
                     StringSearchFilter(_primary_filter):
                       GtkLabel(): 'matching:'
                       ProxyComboBox(padding=6): hidden

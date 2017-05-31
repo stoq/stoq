@@ -439,8 +439,10 @@ class BankBanrisul(BankInfo):
     description = 'Banrisul'
     bank_number = 41
     logo = 'logo_banrisul.jpg'
-    options = {u'agencia': BILL_OPTION_BANK_BRANCH,
-               u'conta': BILL_OPTION_BANK_BRANCH}
+    options = collections.OrderedDict([
+        ('agencia', BILL_OPTION_BANK_BRANCH),
+        ('conta', BILL_OPTION_BANK_BRANCH),
+    ])
 
     nosso_numero = custom_property('nosso_numero', 8)
     conta = custom_property('conta', 6)
@@ -462,11 +464,13 @@ class BankBradesco(BankInfo):
     bank_number = 237
     logo = "logo_bancobradesco.jpg"
 
-    options = {u'carteira': BILL_OPTION_CUSTOM,
-               u'convenio': BILL_OPTION_CUSTOM,
-               u'identificacao_produto': BILL_OPTION_CUSTOM,
-               u'agencia': BILL_OPTION_BANK_BRANCH,
-               u'conta': BILL_OPTION_BANK_BRANCH}
+    options = collections.OrderedDict([
+        ('carteira', BILL_OPTION_CUSTOM),
+        ('convenio', BILL_OPTION_CUSTOM),
+        ('identificacao_produto', BILL_OPTION_CUSTOM),
+        ('agencia', BILL_OPTION_BANK_BRANCH),
+        ('conta', BILL_OPTION_BANK_BRANCH),
+    ])
 
     validate_field_func = 'modulo11'
     validate_field_dv = '0'
@@ -514,9 +518,11 @@ class BankBB(BankInfo):
     bank_number = 1
     bank_name = 'BANCO DO BRASIL'
     logo = 'logo_bb.gif'
-    options = {u'convenio': BILL_OPTION_CUSTOM,
-               u'agencia': BILL_OPTION_BANK_BRANCH,
-               u'conta': BILL_OPTION_BANK_BRANCH}
+    options = collections.OrderedDict([
+        ('convenio', BILL_OPTION_CUSTOM),
+        ('agencia', BILL_OPTION_BANK_BRANCH),
+        ('conta', BILL_OPTION_BANK_BRANCH),
+    ])
 
     validate_field_func = 'modulo11'
     validate_field_dv = 'x'
@@ -629,11 +635,13 @@ class BankCaixa(BankInfo):
     bank_number = 104
     cnab_class = CaixaCnab
     logo = 'logo_bancocaixa.jpg'
-    options = {u'carteira': BILL_OPTION_CUSTOM,
-               u'agencia': BILL_OPTION_BANK_BRANCH,
-               u'codigo_beneficiario': BILL_OPTION_CUSTOM,
-               u'codigo_convenio': BILL_OPTION_CUSTOM,
-               u'conta': BILL_OPTION_BANK_BRANCH}
+    options = collections.OrderedDict([
+        ('carteira', BILL_OPTION_CUSTOM),
+        ('agencia', BILL_OPTION_BANK_BRANCH),
+        ('codigo_beneficiario', BILL_OPTION_CUSTOM),
+        ('codigo_convenio', BILL_OPTION_CUSTOM),
+        ('conta', BILL_OPTION_BANK_BRANCH),
+    ])
 
     inicio_nosso_numero = '80'
 
@@ -742,9 +750,11 @@ class BankReal(BankInfo):
     description = 'Banco Real'
     bank_number = 356
     logo = 'logo_bancoreal.jpg'
-    options = {u'carteira': BILL_OPTION_CUSTOM,
-               u'agencia': BILL_OPTION_BANK_BRANCH,
-               u'conta': BILL_OPTION_BANK_BRANCH}
+    options = collections.OrderedDict([
+        ('carteira', BILL_OPTION_CUSTOM),
+        ('agencia', BILL_OPTION_BANK_BRANCH),
+        ('conta', BILL_OPTION_BANK_BRANCH),
+    ])
 
     @property
     def agencia_conta(self):
@@ -774,10 +784,12 @@ class BankSantander(BankInfo):
     bank_number = 33
     cnab_class = SantanderCnab
     logo = 'logo_santander.jpg'
-    options = {u'carteira': BILL_OPTION_CUSTOM,
-               u'codigo_transmissao': BILL_OPTION_CUSTOM,
-               u'agencia': BILL_OPTION_BANK_BRANCH,
-               u'conta': BILL_OPTION_BANK_BRANCH}
+    options = collections.OrderedDict([
+        ('carteira', BILL_OPTION_CUSTOM),
+        ('codigo_transmissao', BILL_OPTION_CUSTOM),
+        ('agencia', BILL_OPTION_BANK_BRANCH),
+        ('conta', BILL_OPTION_BANK_BRANCH),
+    ])
 
     # Numero fixo na posição 5
     fixo = '9'

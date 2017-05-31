@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import collections
 import datetime
 import os
 import threading
@@ -68,6 +69,8 @@ class ResourceStatus(GObject.GObject):
         self.status = self.STATUS_OK
         self.reason = None
         self.reason_long = None
+
+    __hash__ = GObject.GObject.__hash__
 
     def __eq__(self, other):
         if type(self) != type(other):
@@ -134,7 +137,7 @@ class ResourceStatusManager(GObject.GObject):
 
         self._lock = threading.Lock()
         self.running_action = None
-        self.resources = {}
+        self.resources = collections.OrderedDict()
         GLib.timeout_add_seconds(self.REFRESH_TIMEOUT,
                                  self.refresh_and_notify)
 

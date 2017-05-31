@@ -2692,7 +2692,7 @@ class TestSaleView(DomainTest):
         postresults = SaleView.post_search_callback(sresults)
         self.assertEqual(postresults[0], ('count', 'sum'))
         self.assertEqual(self.store.execute(postresults[1]).get_one(),
-                         (1L, Decimal("10")))
+                         (1, Decimal("10")))
 
     def test_find_by_branch(self):
         sale = self.create_sale()

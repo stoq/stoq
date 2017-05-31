@@ -52,7 +52,8 @@ class XLSExporterTest(DomainTest):
 
         try:
             temp_file = ofx.save()
-            data = open(temp_file.name).read()
+            with open(temp_file.name, 'rb') as f:
+                data = f.read()
 
             # We should use xlrd to 're-open' the spreadsheet and parse its content.
             self.assertTrue(len(data) > 0)

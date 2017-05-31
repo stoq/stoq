@@ -154,7 +154,7 @@ class CertificateManager(object):
 
         md5sum_file = os.path.join(certdb_path, 'cert.md5sum')
         data = (certificate.content +
-                (self._password.hashed_password or u'').encode('utf-8'))
+                (self._password.hashed_password or b''))
         md5sum = hashlib.md5(data).hexdigest()
 
         if os.path.isfile(md5sum_file):

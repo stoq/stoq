@@ -21,6 +21,7 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br> ##
 
+import contextlib
 import doctest
 import os
 import re
@@ -176,14 +177,16 @@ class Stoq(Plugin):
     def begin(self):
         # The tests require that the environment is currently set to en_US, to avoid
         # translated strings and use the default date/number/currency formatting
-        os.environ['LC_ALL'] = 'en_US.UTF-8'
-        os.environ['LANG'] = 'en_US.UTF-8'
-        os.environ['LANGUAGE'] = 'en_US.UTF-8'
+        from stoqlib.lib.environment import configure_locale
+        configure_locale('en_US')
 
-        # Set the default encoding to utf-8 just like pygtk used to do.
-        # Maybe this will not be necessary in python3
-        reload(sys)
-        sys.setdefaultencoding('utf-8')
+        # FIXME python3:
+        # This is to make our usage of contextlib.nested compatible for now
+        @contextlib.contextmanager
+        def _nested(*ctxs):
+            with contextlib.ExitStack() as stack:
+                yield tuple(stack.enter_context(ctx) for ctx in ctxs)
+        contextlib.nested = _nested
 
         # If we import tests.base before Cover.setup() in the coverage plugin
         # is called the statistics will skip the modules imported by tests.base

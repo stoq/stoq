@@ -114,7 +114,7 @@ class StartNewLoanStep(WizardEditorStep):
         self.create_transporter.hide()
 
         # removed_by widget
-        self.removed_by = ProxyEntry(unicode)
+        self.removed_by = ProxyEntry(str)
         self.removed_by.model_attribute = 'removed_by'
         if 'removed_by' not in self.proxy_widgets:
             self.proxy_widgets.append('removed_by')

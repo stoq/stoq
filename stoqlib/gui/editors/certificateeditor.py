@@ -109,7 +109,7 @@ class CertificateEditor(BaseEditor):
         if filename:
             with open(filename, 'rb') as f:
                 self.model.content = f.read()
-                self.model.name = unicode(os.path.basename(filename))
+                self.model.name = str(os.path.basename(filename))
 
             self.proxy.update('name')
 

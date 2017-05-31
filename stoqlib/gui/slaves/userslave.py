@@ -187,7 +187,7 @@ class PasswordEditor(BaseEditor):
     def validate_confirm(self):
         if not self._needs_password_confirmation():
             return True
-        pw_hash = hashlib.md5(self.model.current_password).hexdigest()
+        pw_hash = hashlib.md5(self.model.current_password.encode()).hexdigest()
         if pw_hash != self.old_password:
             msg = _(u"Password doesn't match with the stored one")
             self.current_password.set_invalid(msg)

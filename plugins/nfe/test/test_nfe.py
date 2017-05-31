@@ -84,10 +84,10 @@ class TestNfeGenerator(DomainTest):
         output = os.path.join(basedir, "nfe-output.txt")
         if not os.path.isfile(expected):
             with open(expected, 'wb') as fp:
-                fp.write(strip_accents(generator._as_txt()))
+                fp.write(strip_accents(generator._as_txt()).encode())
             return
         with open(output, 'wb') as fp:
-            fp.write(strip_accents(generator._as_txt()))
+            fp.write(strip_accents(generator._as_txt()).encode())
 
         # Diff and compare
         diff = diff_files(expected, output)

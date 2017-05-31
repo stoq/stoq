@@ -96,13 +96,13 @@ class ParameterSearch(BaseEditor):
             return quantize(data)
         elif detail.key == u'COUNTRY_SUGGESTED':
             return dgettext("iso_3166", data)
-        elif isinstance(data, unicode):
+        elif isinstance(data, str):
             # FIXME: workaround to handle locale specific data
             return _(data)
 
         if data is None:
             return ''
-        return unicode(data)
+        return str(data)
 
     def _edit_item(self, item):
         store = api.new_store()

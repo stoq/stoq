@@ -64,4 +64,4 @@ def write_pg_pass(dbname, address, port, username, password):
     with open(pgpass, 'w') as fd:
         fd.write('\n'.join(lines))
         fd.write('\n')
-    os.chmod(pgpass, 0600)
+    os.chmod(pgpass, 0o600)

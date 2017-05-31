@@ -52,11 +52,11 @@ class TestBooklet(ReportTest):
 
     def test_booklet_with_sale_pdf(self):
         due_dates = [
-            datetime.datetime(2012, 01, 05),
-            datetime.datetime(2012, 02, 05),
-            datetime.datetime(2012, 03, 05),
-            datetime.datetime(2012, 04, 05),
-            datetime.datetime(2012, 05, 05),
+            datetime.datetime(2012, 1, 5),
+            datetime.datetime(2012, 2, 5),
+            datetime.datetime(2012, 3, 5),
+            datetime.datetime(2012, 4, 5),
+            datetime.datetime(2012, 5, 5),
         ]
         items = [
             (u"Batata", 2, decimal.Decimal('10')),
@@ -96,7 +96,7 @@ class TestBooklet(ReportTest):
         method.max_installments = 12
         group = self.create_payment_group()
         payment = self.create_payment(payment_type=Payment.TYPE_IN,
-                                      date=datetime.datetime(2012, 03, 03),
+                                      date=datetime.datetime(2012, 3, 3),
                                       value=decimal.Decimal('10.5'),
                                       method=method)
         payment.group = group

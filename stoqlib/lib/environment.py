@@ -24,6 +24,7 @@
 
 """ Environment variables """
 
+import locale
 import os
 
 
@@ -33,3 +34,17 @@ def is_developer_mode():
 
     from stoqlib.lib.kiwilibrary import library
     return library.uninstalled
+
+
+def configure_locale(lang=None):
+    if lang is None:
+        lang = locale.getlocale()[0] or locale.getdefaultlocale()[0] or 'en_US'
+
+    lang += '.UTF-8'
+    os.environ['LC_ALL'] = lang
+    os.environ['LANG'] = lang
+    os.environ['LANGUAGE'] = lang
+    # This will reset the locale to the ones defined in the environment
+    locale.setlocale(locale.LC_ALL, '')
+
+    locale.getpreferredencoding(True)

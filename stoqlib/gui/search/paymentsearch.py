@@ -139,7 +139,8 @@ class CardPaymentSearch(SearchEditor):
         return values
 
     def _get_device_values(self):
-        devices = CardPaymentDevice.get_devices(self.store)
+        devices = CardPaymentDevice.get_devices(self.store).order_by(
+            CardPaymentDevice.description)
         # This is used in a int filter, so we must use the id
         values = [(d.description, d.id) for d in devices]
         values.insert(0, (_("Any"), None))

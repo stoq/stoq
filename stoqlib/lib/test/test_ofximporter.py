@@ -20,7 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 
-from cStringIO import StringIO
+from io import StringIO
 from decimal import Decimal
 import operator
 

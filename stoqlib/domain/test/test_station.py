@@ -53,7 +53,7 @@ class TestBranchStation(DomainTest):
 
     def test_get_station(self):
         with self.assertRaisesRegexp(
-            TypeError, ur"BranchStation.get_station\(\) requires a Branch"):
+            TypeError, r"BranchStation.get_station\(\) requires a Branch"):
             BranchStation.get_station(self.store, None, None)
 
     def test_activate(self):

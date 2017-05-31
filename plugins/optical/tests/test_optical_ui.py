@@ -221,7 +221,7 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         product = self.create_product()
         work_order = self.create_workorder()
         work_order.identifier = 666
-        work_order.open_date = localdate(2014, 01, 31)
+        work_order.open_date = localdate(2014, 1, 31)
         work_order.sellable = product.sellable
 
         app = self.create_app(ServicesApp, u'services')

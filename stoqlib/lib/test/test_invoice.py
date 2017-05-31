@@ -44,7 +44,7 @@ def compare_invoice_file(invoice, basename):
     for n, page in enumerate(invoice.generate_pages()):
         fp.write('-- PAGE %d - START ----\n' % (n + 1, ))
         for line in page:
-            fp.write(line.tostring())
+            fp.write(line.tounicode())
         fp.write('-- PAGE %d - END ----\n' % (n + 1, ))
     fp.close()
     expected = get_tests_datadir(expected)
@@ -67,7 +67,7 @@ class InvoiceTest(DomainTest):
         if code:
             sellable.code = code
         sellable.tax_constant = SellableTaxConstant(
-            description=unicode(tax),
+            description=str(tax),
             tax_type=int(TaxType.CUSTOM),
             tax_value=tax,
             store=self.store)
@@ -79,7 +79,7 @@ class InvoiceTest(DomainTest):
         sale = self.create_sale()
         for i in range(10):
             price = 50 + i
-            code = unicode(1000 + i)
+            code = str(1000 + i)
             self._add_product(sale, tax=18, price=price, code=code)
 
         sale.order()
@@ -103,7 +103,7 @@ class InvoiceTest(DomainTest):
         sale = self.create_sale()
         for i in range(10):
             price = 50 + i
-            code = unicode(1000 + i)
+            code = str(1000 + i)
             self._add_product(sale, tax=18, price=price, code=code)
 
         sale.order()
@@ -127,7 +127,7 @@ class InvoiceTest(DomainTest):
         sale = self.create_sale()
         for i in range(10):
             price = 50 + i
-            code = unicode(1000 + i)
+            code = str(1000 + i)
             self._add_product(sale, tax=18, price=price, code=code)
         sale.order()
         self._add_payments(sale)

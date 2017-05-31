@@ -25,7 +25,7 @@
 """Stoq server utilities"""
 
 import socket
-import xmlrpclib
+import xmlrpc.client
 
 from stoqlib.api import api
 from stoqlib.database.settings import db_settings
@@ -72,7 +72,7 @@ class ServerProxy(object):
         try:
             proxy = self._get_proxy()
             return getattr(proxy, method)(*args)
-        except xmlrpclib.Fault as e:
+        except xmlrpc.client.Fault as e:
             raise ServerError(e.faultString, e.faultCode)
         except socket.error as e:
             raise ServerError(str(e))
@@ -107,7 +107,7 @@ class ServerProxy(object):
                              "WHERE application_name LIKE ? AND "
                              "      datname = ? "
                              "LIMIT 1")
-                    params = [u'stoqserver%', unicode(db_settings.dbname)]
+                    params = [u'stoqserver%', str(db_settings.dbname)]
                     res = store.execute(query, params=params).get_one()
 
                 if res:
@@ -133,7 +133,7 @@ class ServerProxy(object):
 
             default_timeout = socket.getdefaulttimeout()
             socket.setdefaulttimeout(self._timeout)
-            self._proxy = xmlrpclib.ServerProxy(url, allow_none=True)
+            self._proxy = xmlrpc.client.ServerProxy(url, allow_none=True)
             socket.setdefaulttimeout(default_timeout)
 
         try:

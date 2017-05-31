@@ -111,10 +111,10 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
         assert not slave.le_near_pd.emit("validate", 0)
 
         res = slave.le_near_pd.emit("validate", -100)
-        assert unicode(res) == u'Value is out of range'
+        assert str(res) == u'Value is out of range'
 
         res = slave.le_near_pd.emit("validate", Decimal("30.05"))
-        assert unicode(res) == u'Value must be multiple of 0.1'
+        assert str(res) == u'Value must be multiple of 0.1'
 
         for widget_name, minv, maxv, prec, step_inc, page_inc in [
             ('le_distance_spherical', -30, 30, 2, Decimal('0.25'), 1),
@@ -150,13 +150,13 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
             self.assertFalse(widget.emit("validate", maxv - 1))
 
             res = widget.emit("validate", maxv + step_inc)
-            self.assertEquals(unicode(res), u'Value is out of range')
+            self.assertEquals(str(res), u'Value is out of range')
 
             res = widget.emit("validate", minv - step_inc)
-            self.assertEquals(unicode(res), u'Value is out of range')
+            self.assertEquals(str(res), u'Value is out of range')
 
             res = widget.emit("validate", minv + (step_inc / Decimal("2.0")))
-            self.assertEquals(unicode(res),
+            self.assertEquals(str(res),
                               u'Value must be multiple of %s' % (step_inc, ))
 
     def test_validate_frame_field(self):
@@ -177,13 +177,13 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
             self.assertFalse(widget.emit("validate", maxv - 1))
 
             res = widget.emit("validate", maxv + step_inc)
-            self.assertEquals(unicode(res), u'Value is out of range')
+            self.assertEquals(str(res), u'Value is out of range')
 
             res = widget.emit("validate", minv - step_inc)
-            self.assertEquals(unicode(res), u'Value is out of range')
+            self.assertEquals(str(res), u'Value is out of range')
 
             res = widget.emit("validate", minv + (step_inc / 2))
-            self.assertEquals(unicode(res),
+            self.assertEquals(str(res),
                               u'Value must be multiple of %s' % (step_inc, ))
 
     def test_lens_types(self):
@@ -213,7 +213,7 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
         slave = WorkOrderOpticalSlave(self.store, workorder)
         #localtoday_.return_value = localdate(2014, 1, 1)
         res = slave.estimated_finish.emit("validate", localdate(2015, 4, 1))
-        self.assertEquals(unicode(res),
+        self.assertEquals(str(res),
                           u'Estimated finish date cannot be in the past.')
         # Can be edited without changing the estimated_finish
         res2 = slave.estimated_finish.emit("validate", localdate(2015, 4, 2))

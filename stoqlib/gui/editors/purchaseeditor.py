@@ -66,7 +66,7 @@ class PurchaseItemEditor(BaseEditor):
             self.expected_receival_date.set_sensitive(False)
 
     def _setup_widgets(self):
-        self.order.set_text(unicode(self.model.order.identifier))
+        self.order.set_text(str(self.model.order.identifier))
         for widget in [self.quantity, self.cost, self.quantity_sold,
                        self.quantity_returned]:
             widget.set_adjustment(Gtk.Adjustment(lower=0, upper=MAX_INT,

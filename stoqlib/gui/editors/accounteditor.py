@@ -166,8 +166,8 @@ class AccountEditor(BaseEditor):
             bank_account = BankAccount(account=self.model,
                                        store=self.store)
         # FIXME: Who sets this to a str?
-        bank_account.bank_account = unicode(self.bank_model.bank_account)
-        bank_account.bank_branch = unicode(self.bank_model.bank_branch)
+        bank_account.bank_account = str(self.bank_model.bank_account)
+        bank_account.bank_branch = str(self.bank_model.bank_branch)
         if self._bank_number is not None:
             bank_account.bank_number = self.bank_model.bank_number
 
@@ -175,7 +175,7 @@ class AccountEditor(BaseEditor):
 
     def _save_bank_bill_options(self, bank_account):
         for option, entry in self._option_fields.items():
-            value = unicode(entry.get_text())
+            value = str(entry.get_text())
             bill_option = self.store.find(BillOption,
                                           bank_account=bank_account,
                                           option=option).one()
@@ -279,8 +279,8 @@ class AccountEditor(BaseEditor):
         if not self.model.bank:
             return
 
-        self.bank_model.bank_branch = self.model.bank.bank_branch.encode('utf-8')
-        self.bank_model.bank_account = self.model.bank.bank_account.encode('utf-8')
+        self.bank_model.bank_branch = self.model.bank.bank_branch
+        self.bank_model.bank_account = self.model.bank.bank_account
         self.bank_proxy.update('bank_branch')
         self.bank_proxy.update('bank_account')
 

@@ -71,7 +71,7 @@ def load_taxes_csv():
 
     filename = environ.get_resource_filename('stoq', 'csv', 'ibpt_tables',
                                              'TabelaIBPTax%s.csv' % state)
-    csv_file = (csv.reader(open(filename, "r"), delimiter=';'))
+    csv_file = (csv.reader(open(filename, "r", encoding='latin1'), delimiter=';'))
 
     for (ncm, ex, tipo, descricao, nacionalfederal, importadosfederal,
          estadual, municipal, vigenciainicio, vigenciafim, chave,

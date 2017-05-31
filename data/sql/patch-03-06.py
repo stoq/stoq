@@ -1,4 +1,4 @@
-import StringIO
+import io
 
 from PIL import Image as PIL_Image
 from storm.references import Reference
@@ -106,11 +106,11 @@ def apply_patch(store):
             # updating the schema or image is invalid.
             update_parameter(store, u'CUSTOM_LOGO_FOR_REPORTS', u'')
         else:
-            f = StringIO.StringIO()
+            f = io.StringIO()
             image.save(f, 'png')
             image_domain = Image(store=store,
                                  image=f.getvalue())
             update_parameter(store,
                              u'CUSTOM_LOGO_FOR_REPORTS',
-                             unicode(image_domain.id))
+                             str(image_domain.id))
             f.close()

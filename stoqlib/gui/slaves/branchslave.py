@@ -45,7 +45,7 @@ class BranchDetailsSlave(BaseEditorSlave):
 
     crt_options = (
         ('1 - Simples Nacional', 1),
-        ('2 - Simples Nacional – excesso de sublimite da receita bruta', 2),
+        ('2 - Simples Nacional - excesso de sublimite da receita bruta', 2),
         ('3 - Regime Normal', 3),
     )
 

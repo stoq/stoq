@@ -60,7 +60,7 @@ class _BasePaymentChangeDialog(BaseEditor):
 
     def _get_identifier(self):
         if self._order:
-            return unicode(self._order.identifier)
+            return str(self._order.identifier)
         else:
             return self._payment.description
 

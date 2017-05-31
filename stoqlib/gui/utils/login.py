@@ -114,8 +114,8 @@ class LoginDialog(GladeDelegate, RunnableView):
             widget.set_sensitive(sensitive)
 
     def _do_login(self):
-        username = unicode(self.username.get_text().strip())
-        password = unicode(self.password.get_text().strip())
+        username = str(self.username.get_text().strip())
+        password = str(self.password.get_text().strip())
         password = LoginUser.hash(password)
         self.retval = username, password
         self.set_field_sensitivity(False)
@@ -144,8 +144,8 @@ class LoginHelper:
         self._force_username = username
 
     def _check_user(self, username, pw_hash):
-        username = unicode(username)
-        pw_hash = unicode(pw_hash)
+        username = str(username)
+        pw_hash = str(pw_hash)
         # This function is really just a post-validation item.
         default_store = api.get_default_store()
         current_branch = api.get_current_branch(default_store)

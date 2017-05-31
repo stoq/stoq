@@ -669,7 +669,6 @@ class SellableItemSlave(BaseEditorSlave):
         barcode = self.barcode.get_text()
         if not barcode:
             return None, None
-        barcode = unicode(barcode, 'utf-8')
 
         sellable, batch = self._find_sellable_and_batch(barcode)
 
@@ -710,7 +709,7 @@ class SellableItemSlave(BaseEditorSlave):
         if not sellable:
             if self.add_sellable_on_barcode_activate:
                 return
-            search_str = unicode(self.barcode.get_text())
+            search_str = str(self.barcode.get_text())
             self._run_advanced_search(search_str)
             return
 

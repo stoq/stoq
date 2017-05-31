@@ -39,7 +39,7 @@ Commission is initially set to 0:
     True
 
     >>> sellable.get_description()
-    u'Sellable'
+    'Sellable'
 
 
     >>> product = Product(sellable=sellable, store=store)

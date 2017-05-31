@@ -222,7 +222,7 @@ class TestAccessorField(GUITest):
     def test_accessor(self):
         sellable = self.create_sellable(price=10)
         sellable.product.ncm = u'123'
-        field = AccessorField('Test', 'product', 'ncm', unicode)
+        field = AccessorField('Test', 'product', 'ncm', str)
 
         self.assertEqual(field.get_value(sellable), '123')
         field.set_new_value(sellable, u'456')
@@ -288,7 +288,7 @@ class TestMassEditor(GUITest):
         sellable.code = u'123'
         sellable.category = self.create_sellable_category(u'Categoria')
 
-        field = AccessorField('Test', None, 'code', unicode)
+        field = AccessorField('Test', None, 'code', str)
         self.assertEqual(field.format_func(sellable), '123')
         sellable.code = None
         self.assertEqual(field.format_func(sellable), '')
@@ -303,7 +303,7 @@ class TestMassEditor(GUITest):
     @mock.patch('stoqlib.gui.dialogs.masseditordialog.warning')
     def test_confirm_invalid(self, warning, yesno):
         price_field = AccessorField('Test', None, 'base_price', Decimal)
-        desc_field = AccessorField('Test', None, 'description', unicode)
+        desc_field = AccessorField('Test', None, 'description', str)
         sellable = self.create_sellable(price=10)
         search = self._create_search([price_field, desc_field], [sellable])
 

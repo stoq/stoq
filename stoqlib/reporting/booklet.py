@@ -69,7 +69,7 @@ class BookletReport(HTMLReport):
             emission_location = emission_address.city_location
 
             if sale:
-                order_identifier = unicode(sale.identifier)
+                order_identifier = str(sale.identifier)
                 total_value = sale.get_total_sale_amount()
             else:
                 # Support non-sale booklets
@@ -78,7 +78,7 @@ class BookletReport(HTMLReport):
 
             booklet = Settable(
                 order_identifier=order_identifier,
-                payment_number=unicode(payment.identifier),
+                payment_number=str(payment.identifier),
                 installment=self._format_installment(payment.installment_number,
                                                      n_total_inst),
                 emission_date=datetime.date.today(),
@@ -160,7 +160,7 @@ class BookletReport(HTMLReport):
 
     def adjust_for_test(self):
         for booklet_data in self.booklets_data:
-            booklet_data.emission_date = datetime.date(2012, 01, 01)
+            booklet_data.emission_date = datetime.date(2012, 1, 1)
 
 
 def test():  # pragma nocover

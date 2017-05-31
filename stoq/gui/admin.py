@@ -143,7 +143,7 @@ class Tasks(object):
         @param pixbuf: a pixbuf or stock-id/icon-name for the item
         @param cb: callback
         """
-        if type(pixbuf) == str:
+        if isinstance(pixbuf, str):
             stock_id = pixbuf
             try:
                 pixbuf = self.theme.load_icon(pixbuf, 32, 0)

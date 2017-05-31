@@ -539,12 +539,12 @@ class BoletoPDF(object):
         self.pdfCanvas.drawString(
             ((30 + 20 + 20) * mm) + self.space,
             y + self.space,
-            boletoDados.quantidade)
+            boletoDados.quantidade or '')
         valor = self._format_value(boletoDados.valor)
         self.pdfCanvas.drawString(
             ((30 + 20 + 20 + 20 + 20) * mm) + self.space,
             y + self.space,
-            valor)
+            valor or '')
         valorDocumento = self._format_value(boletoDados.payment.value)
         self.pdfCanvas.drawRightString(
             self.width - 2 * self.space,

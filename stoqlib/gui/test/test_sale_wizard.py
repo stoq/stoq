@@ -410,7 +410,7 @@ class TestConfirmSaleWizard(GUITest):
         # checks if a client with late payments can buy with store credit
         self._select_method(u'store_credit')
         self.assertEquals(
-            unicode(step.client.emit('validate', sale.client)),
+            str(step.client.emit('validate', sale.client)),
             u'It is not possible to sell with store credit for clients with '
             'late payments.')
         # self.assertFalse(wizard.next_button.props.sensitive)
@@ -431,13 +431,13 @@ class TestConfirmSaleWizard(GUITest):
 
         self._select_method(u'store_credit')
         self.assertEquals(
-            unicode(step.client.emit('validate', sale.client)),
+            str(step.client.emit('validate', sale.client)),
             u'It is not possible to sell for clients with late payments.')
         self.assertEquals(run_dialog.call_count, 0)
 
         self._select_method('check')
         self.assertEquals(
-            unicode(step.client.emit('validate', sale.client)),
+            str(step.client.emit('validate', sale.client)),
             u'It is not possible to sell for clients with late payments.')
 
         self._select_method(u'store_credit')

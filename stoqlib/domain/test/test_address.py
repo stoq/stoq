@@ -23,8 +23,6 @@
 ##
 __tests__ = 'stoqlib/domain/address.py'
 
-import decimal
-
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.parameters import sysparam
@@ -93,11 +91,6 @@ class TestCityLocation(DomainTest):
         location = CityLocation.get_or_create(self.store, u'City ABC',
                                               u'SP', u'Brazil')
         self.assertEquals(location, loc4)
-
-        for city, state, country in [(u'Sao', u'SP', 'Brazil'),
-                                     (u'carlos', decimal.Decimal(8), u'Brazil')]:
-            with self.assertRaises(TypeError):
-                CityLocation.get_or_create(self.store, city, state, country)
 
     def test_get_cities_by(self):
         location = CityLocation.get_or_create(self.store, u'Sao Carlos',

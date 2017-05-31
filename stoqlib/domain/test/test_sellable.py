@@ -637,8 +637,8 @@ class TestSellable(DomainTest):
         results_with_closed = self.store.find(ProductFullWithClosedStockView)
         results_only_closed = self.store.find(ProductClosedStockView)
 
-        self.assertEqual(len(list(results_not_closed)), count_not_closed + 1L)
-        self.assertEqual(len(list(results_with_closed)), count_with_closed + 1L)
+        self.assertEqual(len(list(results_not_closed)), count_not_closed + 1)
+        self.assertEqual(len(list(results_with_closed)), count_with_closed + 1)
         self.assertEqual(len(list(results_only_closed)), count_only_closed)
         ids = [result.id for result in results_not_closed]
         self.failIf(sellable.id not in ids)
@@ -658,8 +658,8 @@ class TestSellable(DomainTest):
         self.assertEquals(sellable.status, Sellable.STATUS_CLOSED)
         self.assertTrue(sellable.is_closed())
         self.assertEqual(len(list(results_not_closed)), count_not_closed)
-        self.assertEqual(len(list(results_with_closed)), count_with_closed + 1L)
-        self.assertEqual(len(list(results_only_closed)), count_only_closed + 1L)
+        self.assertEqual(len(list(results_with_closed)), count_with_closed + 1)
+        self.assertEqual(len(list(results_only_closed)), count_only_closed + 1)
         ids = [result.id for result in results_not_closed]
         self.failIf(sellable.id in ids)
         ids = [result.id for result in results_with_closed]

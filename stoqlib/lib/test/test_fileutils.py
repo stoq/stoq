@@ -36,10 +36,10 @@ class TestFileUtils(unittest.TestCase):
     def test_md5sum_for_filename(self):
         # Test with a known md5sum
         with tempfile.NamedTemporaryFile() as f:
-            f.write('foobar')
+            f.write(b'foobar')
             f.flush()
 
-            md5sum = subprocess.check_output(['md5sum', f.name]).split(' ')[0]
+            md5sum = subprocess.check_output(['md5sum', f.name]).split(b' ')[0].decode()
             # Make sure the md5sum tool is really working
             self.assertEqual(md5sum, '3858f62230ac3c915f300c664312c63f')
             self.assertEquals(md5sum_for_filename(f.name), md5sum)
@@ -47,8 +47,8 @@ class TestFileUtils(unittest.TestCase):
         # Test with a random md5sum in a large file
         with tempfile.NamedTemporaryFile() as f:
             for x in range(1000000):
-                f.write(random.choice(string.printable))
+                f.write(random.choice(string.printable).encode())
             f.flush()
 
-            md5sum = subprocess.check_output(['md5sum', f.name]).split(' ')[0]
+            md5sum = subprocess.check_output(['md5sum', f.name]).split(b' ')[0].decode()
             self.assertEquals(md5sum_for_filename(f.name), md5sum)

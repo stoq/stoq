@@ -90,6 +90,8 @@ class ORMObject(SQLObjectBase):
             if value is not None:
                 setattr(self, attr, value)
 
+    __hash__ = SQLObjectBase.__hash__
+
     def __eq__(self, other):
         if type(self) is not type(other):
             return False

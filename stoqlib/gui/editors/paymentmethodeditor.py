@@ -226,7 +226,8 @@ class CardOperationCostEditor(BaseEditor):
         BaseEditor.__init__(self, store, model)
 
     def create_model(self, store):
-        provider = CreditProvider.get_card_providers(store).any()
+        provider = CreditProvider.get_card_providers(
+            self.store).order_by(CreditProvider.short_name).first()
         real_model = CardOperationCost(provider=provider, device=self.device,
                                        store=self.store)
         return _TemporaryOperationCost(real_model)
@@ -234,7 +235,8 @@ class CardOperationCostEditor(BaseEditor):
     def _setup_widgets(self):
         # Set a default provider, otherwise, if the user does not change the
         # combo, the provider may not be set (bug in kiwi)
-        providers = CreditProvider.get_card_providers(self.store)
+        providers = CreditProvider.get_card_providers(
+            self.store).order_by(CreditProvider.short_name)
         self.provider.prefill(api.for_combo(providers))
 
         types = [(value, key) for key, value in CreditCardData.types.items()]

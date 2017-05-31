@@ -26,6 +26,7 @@
 
 # pylint: enable=E1101
 
+import collections
 import logging
 
 from kiwi.currency import currency
@@ -84,9 +85,11 @@ class Till(Domain):
     #: financial operations can be done in this store.
     STATUS_CLOSED = u'closed'
 
-    statuses = {STATUS_PENDING: _(u'Pending'),
-                STATUS_OPEN: _(u'Opened'),
-                STATUS_CLOSED: _(u'Closed')}
+    statuses = collections.OrderedDict([
+        (STATUS_PENDING, _(u'Pending')),
+        (STATUS_OPEN, _(u'Opened')),
+        (STATUS_CLOSED, _(u'Closed')),
+    ])
 
     status = EnumCol(default=STATUS_PENDING)
 

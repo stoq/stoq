@@ -9,7 +9,7 @@ import inspect
 import time
 import functools
 import logging
-import Queue
+import queue
 import sys
 import threading
 import traceback
@@ -149,7 +149,7 @@ def threaded(original):
     @functools.wraps(original)
     def _run_thread_task(*args, **kwargs):
         from gi.repository import Gtk
-        q = Queue.Queue()
+        q = queue.Queue()
 
         # Wrap the actual function inside a try/except so that we can return the
         # exception to the main thread, for it to be reraised
@@ -174,7 +174,7 @@ def threaded(original):
 
         try:
             retval = q.get_nowait()
-        except Queue.Empty:  # pragma no cover (how do I test this?)
+        except queue.Empty:  # pragma no cover (how do I test this?)
             return None
 
         if isinstance(retval, Exception):

@@ -38,7 +38,7 @@ class TestSalesPersonSalesSearch(GUITest):
         sale1.order()
         self.add_payments(sale1, method_type=u'check')
         sale1.confirm()
-        sale1.confirm_date = localdate(2011, 01, 01).date()
+        sale1.confirm_date = localdate(2011, 1, 1).date()
         sale1.salesperson.person.name = u'salesperson1'
 
         # 3 items in sale for first salesperson
@@ -77,7 +77,7 @@ class TestSalesPersonSalesSearch(GUITest):
             sale1.order()
             self.add_payments(sale1, method_type=u'check')
             sale1.confirm()
-            sale1.confirm_date = localdate(2011, 01, 01).date()
+            sale1.confirm_date = localdate(2011, 1, 1).date()
             sale1.salesperson.person.name = u'salesperson1'
 
             # And another one on a second branch

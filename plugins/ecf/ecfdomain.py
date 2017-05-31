@@ -107,11 +107,15 @@ class ECFPrinter(Domain):
             else:
                 continue
 
+            device_value = constants.get_value(constant, None)
+            if isinstance(device_value, str):
+                device_value = device_value.encode()
+
             DeviceConstant(constant_type=constant_type,
-                           constant_name=unicode(describe_constant(constant)),
+                           constant_name=str(describe_constant(constant)),
                            constant_value=constant_value,
                            constant_enum=int(constant),
-                           device_value=constants.get_value(constant, None),
+                           device_value=constants.get_value(constant, None).encode(),
                            printer=self,
                            store=store)
 
@@ -123,10 +127,10 @@ class ECFPrinter(Domain):
             else:
                 constant_name = describe_constant(constant)
             DeviceConstant(constant_type=DeviceConstant.TYPE_TAX,
-                           constant_name=unicode(constant_name),
+                           constant_name=str(constant_name),
                            constant_value=value,
                            constant_enum=int(constant),
-                           device_value=device_value,
+                           device_value=device_value.encode(),
                            printer=self,
                            store=store)
 

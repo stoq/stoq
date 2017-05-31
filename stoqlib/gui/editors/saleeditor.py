@@ -96,7 +96,7 @@ class SaleQuoteItemSlave(BaseEditorSlave):
     def _setup_widgets(self):
         self._calc = CalculatorPopup(self.price, CalculatorPopup.MODE_SUB)
 
-        self.sale.set_text(unicode(self.model.sale.identifier))
+        self.sale.set_text(str(self.model.sale.identifier))
         self.description.set_text(self.model.sellable.get_description())
         self.original_price.update(self.model.base_price)
 

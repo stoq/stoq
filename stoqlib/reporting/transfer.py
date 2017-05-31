@@ -57,7 +57,7 @@ class TransferOrderReceipt(HTMLReport):
                     order=self.order, total=total, is_cancelled=is_cancelled)
 
     def adjust_for_test(self):
-        date = datetime.date(2012, 01, 01)
+        date = datetime.date(2012, 1, 1)
         self.order.open_date = date
         self.order.receival_date = date
         self.order.identifier = 50

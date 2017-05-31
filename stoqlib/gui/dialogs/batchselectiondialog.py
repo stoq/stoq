@@ -289,7 +289,7 @@ class BatchSelectionDialog(BaseEditor):
     def _create_entry(self, mandatory=False):
         entry = ProxyEntry()
 
-        entry.data_type = unicode
+        entry.data_type = str
         # Set as empty or kiwi will return ValueUnset on entry.read()
         # and we would have to take that in consideration everywhere here
         entry.update(u'')
@@ -594,7 +594,7 @@ class BatchIncreaseSelectionDialog(BatchSelectionDialog):
         _used_batches_mapper[(self.store, self.model.id)] = used
 
     def get_batch_item(self, batch):
-        if isinstance(batch, basestring):
+        if isinstance(batch, str):
             return batch
         if batch is not None:
             return batch.batch_number
@@ -604,7 +604,7 @@ class BatchIncreaseSelectionDialog(BatchSelectionDialog):
         return self._get_next_batch_number()
 
     def validate_entry(self, entry):
-        batch_number = unicode(entry.get_text())
+        batch_number = str(entry.get_text())
         if not batch_number:
             return
 

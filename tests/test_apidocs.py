@@ -24,7 +24,7 @@
 
 import glob
 import os
-import StringIO
+import io
 import unittest
 from xml.etree import ElementTree
 
@@ -84,7 +84,7 @@ class TestAPIDoc(unittest.TestCase):
             rst_data,
             settings_overrides={
                 'input_encoding': 'utf-8',
-                'warning_stream': StringIO.StringIO()})
+                'warning_stream': io.StringIO()})
 
         # Convert to an XML string
         xml = doc.asdom().toxml()

@@ -208,7 +208,9 @@ class TestEmployeeEditor(_BasePersonEditorTest):
         self.check_editor(editor, 'editor-employee-company-create')
 
     def test_update_status(self):
-        employee = self.create_employee()
+        employee = self.create_employee(
+            role=api.sysparam.get_object(self.store,
+                                         'DEFAULT_SALESPERSON_ROLE'))
         sales_person = self.create_sales_person()
         employee.person.sales_person = sales_person
         sales_person.is_active = False

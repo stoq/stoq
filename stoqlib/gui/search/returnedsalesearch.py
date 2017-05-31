@@ -85,7 +85,8 @@ class ReturnedSaleSearch(SearchDialog):
     def get_columns(self):
         # TODO: Add status column
         return [IdentifierColumn('identifier', title=_(u"Item #")),
-                IdentifierColumn('sale_identifier', _('Sale #')),
+                IdentifierColumn('sale_identifier', _('Sale #'), data_type=str,
+                                 search_attribute='sale_identifier_str'),
                 SearchColumn('status_str', _('Status'),
                              data_type=str, search_attribute='status',
                              valid_values=self._get_status_values()),
@@ -129,7 +130,8 @@ class PendingReturnedSaleSearch(ReturnedSaleSearch):
 
     def get_columns(self):
         return [IdentifierColumn('identifier', title=_(u"Returned #")),
-                IdentifierColumn('sale_identifier', _('Sale #')),
+                IdentifierColumn('sale_identifier', _('Sale #'), data_type=str,
+                                 search_attribute='sale_identifier_str'),
                 SearchColumn('client_name', _('Client'), expand=True,
                              data_type=str),
                 SearchColumn('return_date', _('Return Date'),

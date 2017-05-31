@@ -30,7 +30,7 @@ import datetime
 import math
 import os.path
 import random
-import StringIO
+import io
 from xml.etree import ElementTree
 from xml.sax.saxutils import escape
 
@@ -65,7 +65,7 @@ def nfe_tostring(element):
     # all the NF-e specification and its not supported by the xml.etree module
     # of the standard python library. See http://www.w3.org/TR/xml-c14n for
     # details.
-    xml = StringIO.StringIO()
+    xml = io.StringIO()
     tree.write_c14n(xml)
 
     xml_str = xml.getvalue()
@@ -145,11 +145,10 @@ class NFeGenerator(object):
         # ignore the NFe prefix
         name = "%s-nfe.txt" % data_id[3:]
         filename = os.path.join(location, name)
-        fp = open(filename, 'wb')
-        # we need to remove the accentuation to avoid import errors from
-        # external applications.
-        fp.write(strip_accents(self._as_txt()))
-        fp.close()
+        with open(filename, 'wb') as f:
+            # we need to remove the accentuation to avoid import errors from
+            # external applications.
+            f.write(strip_accents(self._as_txt()).encode())
 
     #
     # Private API
@@ -256,7 +255,7 @@ class NFeGenerator(object):
         key += cdv
 
         # Save key and cnf in Invoice table.
-        invoice.save_nfe_info(unicode(cnf), unicode(key))
+        invoice.save_nfe_info(str(cnf), str(key))
 
         nfe_identification.set_attr('cDV', cdv)
         self._nfe_identification = nfe_identification
@@ -397,7 +396,7 @@ class NFeGenerator(object):
         comments = self._order.comments
         # The SEFAZ software, do not accepts '\n' in the additional information field.
         fisco_info = fisco_info.replace('\n', ' ')
-        if isinstance(comments, basestring):
+        if isinstance(comments, str):
             notes = comments.replace('\n', ' ')
         else:
             notes = ' / '.join(c.comment.replace('\n', ' ') for c in self._order.comments)
@@ -1639,7 +1638,7 @@ class NFePISOutr(BaseNFeXMLGroup):
             49 - Outras Operações de Saída
             50 - Com Direito a Crédito - Vinculada Exclusivamente a Receita
                  Tributada no Mercado Interno
-            51 - Operação com Direito a Crédito – Vinculada Exclusivamente a
+            51 - Operação com Direito a Crédito - Vinculada Exclusivamente a
                  Receita Não Tributada no Mercado Interno
             52 - Operação com Direito a Crédito - Vinculada Exclusivamente a
                  Receita de Exportação
@@ -1790,7 +1789,7 @@ class NFeCOFINSOutr(NFeCOFINSAliq):
             49 - Outras Operações de Saída
             50 - Com Direito a Crédito - Vinculada Exclusivamente a Receita
                  Tributada no Mercado Interno
-            51 - Operação com Direito a Crédito – Vinculada Exclusivamente a
+            51 - Operação com Direito a Crédito - Vinculada Exclusivamente a
                  Receita Não Tributada no Mercado Interno
             52 - Operação com Direito a Crédito - Vinculada Exclusivamente a
                  Receita de Exportação

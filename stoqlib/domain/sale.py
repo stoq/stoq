@@ -562,17 +562,21 @@ class Delivery(Domain):
     #: No freight: There's no freight
     FREIGHT_TYPE_NONE = None
 
-    statuses = {STATUS_INITIAL: _(u"Waiting"),
-                STATUS_CANCELLED: _(u"Cancelled"),
-                STATUS_PICKED: _(u"Picked"),
-                STATUS_PACKED: _(u"Packed"),
-                STATUS_SENT: _(u"Sent"),
-                STATUS_RECEIVED: _(u"Received")}
+    statuses = collections.OrderedDict([
+        (STATUS_INITIAL, _(u"Waiting")),
+        (STATUS_CANCELLED, _(u"Cancelled")),
+        (STATUS_PICKED, _(u"Picked")),
+        (STATUS_PACKED, _(u"Packed")),
+        (STATUS_SENT, _(u"Sent")),
+        (STATUS_RECEIVED, _(u"Received")),
+    ])
 
-    freights = {FREIGHT_TYPE_NONE: _(u"No freight"),
-                FREIGHT_TYPE_CIF: _(u"CIF"),
-                FREIGHT_TYPE_FOB: _(u"FOB"),
-                FREIGHT_TYPE_3RDPARTY: _(u"Third party")}
+    freights = collections.OrderedDict([
+        (FREIGHT_TYPE_NONE, _(u"No freight")),
+        (FREIGHT_TYPE_CIF, _(u"CIF")),
+        (FREIGHT_TYPE_FOB, _(u"FOB")),
+        (FREIGHT_TYPE_3RDPARTY, _(u"Third party")),
+    ])
 
     #: the delivery status
     status = EnumCol(allow_none=False, default=STATUS_INITIAL)
@@ -2086,8 +2090,10 @@ class SaleToken(Domain):
     STATUS_AVAILABLE = u'available'
     STATUS_OCCUPIED = u'occupied'
 
-    statuses = {STATUS_AVAILABLE: _(u'Available'),
-                STATUS_OCCUPIED: _(u'Occupied')}
+    statuses = collections.OrderedDict([
+        (STATUS_AVAILABLE, _(u'Available')),
+        (STATUS_OCCUPIED, _(u'Occupied')),
+    ])
 
     #: the status of the sale_token
     status = EnumCol(allow_none=False, default=STATUS_AVAILABLE)

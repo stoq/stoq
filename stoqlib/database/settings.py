@@ -32,7 +32,9 @@ import re
 import socket
 import sys
 import time
-import urllib
+import urllib.request
+import urllib.parse
+import urllib.error
 
 from storm.database import create_database
 from storm.uri import URI
@@ -64,56 +66,6 @@ _REQUIRED_EXTENSIONS = [
 DB_NAME_RE = re.compile('^[a-zA-Z0-9_]+$')
 
 
-def _fix_storm():  # pragma nocover
-    # FIXME: This is a workaround for this bug: https://bugs.launchpad.net/storm/+bug/1170063
-    # We are monkey-patching storm using the patch proposed there.
-    # Remove when the bug is fixed.
-    import psycopg2
-    # psycopg2 version comes as '2.5.3 (dt dec mx pq3 ext)' (both in debian and
-    # ubuntu). If that's not the case somehow, we will simply abort.
-    try:
-        psycopg2_version = psycopg2.__version__[:5]
-        psycopg2_version = tuple(psycopg2_version.split('.'))
-    except Exception:
-        return
-
-    # We only need to apply this if psycopg2 version is >= 2.5
-    if psycopg2_version < (2, 5):
-        return
-
-    from storm.exceptions import (Error, Warning, InternalError,
-                                  ProgrammingError, IntegrityError, DataError,
-                                  NotSupportedError, InterfaceError,
-                                  # Make pyflakes happy
-                                  DatabaseError as _DatabaseError,
-                                  OperationalError as _OperationalError)
-
-    def install_exceptions(module):
-        for exception in (Error, Warning, _DatabaseError, InternalError,
-                          _OperationalError, ProgrammingError, IntegrityError,
-                          DataError, NotSupportedError, InterfaceError):
-            module_exception = getattr(module, exception.__name__, None)
-            if module_exception is not None:
-                try:
-                    module_exception.__bases__ += (exception,)
-                except TypeError:
-                    # Since PsycoPG >= 2.5 psycopg2.Error is built-in
-                    tmp_exception = module_exception
-
-                    class PsycoPG25Error(tmp_exception):
-                        """We can not patch built-in types
-                        """
-
-                    setattr(module, module_exception.__name__, PsycoPG25Error)
-                    module_exception = getattr(module, exception.__name__)
-                    module_exception.__bases__ += (exception,)
-
-    import storm.exceptions
-    storm.exceptions.install_exceptions = install_exceptions
-
-_fix_storm()
-
-
 def validate_database_name(dbname):
     """Verifies that a database name does not contain any invalid characters.
 
@@ -125,7 +77,7 @@ def validate_database_name(dbname):
 
 def _database_exists(store, dbname):
     q = 'SELECT COUNT(*) FROM pg_database WHERE datname = %s'
-    res = store.execute(q, (unicode(dbname), ))
+    res = store.execute(q, (str(dbname), ))
     value = res.get_one()[0]
     return value
 
@@ -292,7 +244,7 @@ class DatabaseSettings(object):
             if filter_password:
                 password += '*****'
             else:
-                password += urllib.quote_plus(self.password)
+                password += urllib.parse.quote_plus(self.password)
         else:
             password = ""
         authority = '%s%s@%s:%s' % (
@@ -581,7 +533,9 @@ class DatabaseSettings(object):
             args.extend(self.get_tool_args())
             args.extend(['-n', '-q'])
 
-            kwargs = {}
+            # In here we really want to communicate with bytes or else
+            # some commands may fail
+            kwargs = {'universal_newlines': False}
             if _system == 'Windows':
                 # Hide the console window
                 # For some reason XP doesn't like interacting with
@@ -611,27 +565,28 @@ class DatabaseSettings(object):
                            stderr=PIPE,
                            **kwargs)
 
-            proc.stdin.write('BEGIN TRANSACTION;')
+            proc.stdin.write(b'BEGIN TRANSACTION;')
             if lock_database:
                 store = self.create_store()
                 lock_query = store.get_lock_database_query()
-                proc.stdin.write(lock_query)
+                proc.stdin.write(lock_query.encode())
                 store.close()
 
             if read_from_pipe:
                 # We don't want to see notices on the output, skip them,
                 # this will make all reported line numbers offset by 1
-                proc.stdin.write("SET SESSION client_min_messages TO 'warning';")
+                proc.stdin.write(b"SET SESSION client_min_messages TO 'warning';")
 
-                data = open(filename).read()
+                with open(filename, 'rb') as f:
+                    data = f.read()
                 # Rename serial into bigserial, for 64-bit id columns
-                data = data.replace('id serial', 'id bigserial')
-                data += '\nCOMMIT;'
+                data = data.replace(b'id serial', b'id bigserial')
+                data += b'\nCOMMIT;'
             else:
                 data = None
             stdout, stderr = proc.communicate(data)
             if read_from_pipe and stderr:
-                raise SQLError(stderr[:-1])
+                raise SQLError(stderr[:-1].decode())
             return proc.returncode
         else:
             raise NotImplementedError(self.rdbms)
@@ -786,7 +741,7 @@ class DatabaseSettings(object):
                 return
 
             # Client version
-            kwargs = {}
+            kwargs = {'universal_newlines': True}
             args = ['psql']
             if _system == 'Windows':
                 # FIXME: figure out why this isn't working

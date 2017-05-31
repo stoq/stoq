@@ -337,8 +337,9 @@ class SaleSellableSearch(SellableSearch):
             return
 
         sellable = sellable_view.sellable
+        quantity = self._quantity or 0
         if (sellable.product_storable and
-                self._quantity > self._get_available_stock(sellable_view)):
+                quantity > self._get_available_stock(sellable_view)):
             self.ok_button.set_sensitive(False)
         else:
             self.ok_button.set_sensitive(True)

@@ -26,7 +26,7 @@ Kiwi integration for Stoq/Storm
 
 import re
 import threading
-import Queue
+import queue
 
 from gi.repository import GLib, GObject
 from kiwi.python import Settable
@@ -242,7 +242,7 @@ class AsyncQueryOperation(GObject.GObject):
         self._async_conn = async_conn
 
         # This is postgres specific, see storm/databases/postgres.py
-        self._statement = stmt.encode('utf-8')
+        self._statement = stmt
         self._parameters = tuple(Connection.to_database(state.parameters))
 
         trace("connection_raw_execute", self._conn,
@@ -299,7 +299,7 @@ class _OperationExecuter(threading.Thread):
         super(_OperationExecuter, self).__init__()
 
         self._conn = psycopg2.connect(db_settings.get_store_dsn())
-        self._queue = Queue.Queue()
+        self._queue = queue.Queue()
 
     @classmethod
     def get_instance(cls):

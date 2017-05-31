@@ -69,16 +69,16 @@ def get_ncm_cest_map():
 
             # Add the CEST and the NCM key
             _ncm_cest_map.setdefault(ncm, [])
-            _ncm_cest_map[ncm].append(unicode(cest))
+            _ncm_cest_map[ncm].append(str(cest))
     return _ncm_cest_map
 
 
 def get_cest_from_ncm(ncm):
     """Returns the CEST(s) related to a given NCM"""
     # Just making sure ncm will be a string
-    ncm = unicode(ncm)
+    ncm = str(ncm)
     ncm_cest_map = get_ncm_cest_map()
-    for length in xrange(len(ncm), 0, -1):
+    for length in range(len(ncm), 0, -1):
         # Example:
         #
         # Try to find CESTs for NCM 22011456

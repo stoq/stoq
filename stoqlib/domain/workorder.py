@@ -1119,7 +1119,12 @@ class WorkOrder(Domain):
 
         old_index = status_order.index(self.status)
         new_index = status_order.index(new_status)
-        direction = cmp(new_index, old_index)
+        if new_index == old_index:
+            direction = 0
+        elif new_index < old_index:
+            direction = -1
+        elif new_index > old_index:
+            direction = 1
 
         next_status = self.status
         while True:

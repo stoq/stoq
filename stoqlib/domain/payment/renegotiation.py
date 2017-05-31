@@ -25,6 +25,8 @@
 
 # pylint: enable=E1101
 
+import collections
+
 from kiwi.currency import currency
 from storm.references import Reference
 from zope.interface import implementer
@@ -57,9 +59,11 @@ class PaymentRenegotiation(Domain):
      STATUS_PAID,
      STATUS_RENEGOTIATED) = range(3)
 
-    statuses = {STATUS_CONFIRMED: _(u'Confirmed'),
-                STATUS_PAID: _(u'Paid'),
-                STATUS_RENEGOTIATED: _(u'Renegotiated')}
+    statuses = collections.OrderedDict([
+        (STATUS_CONFIRMED, _(u'Confirmed')),
+        (STATUS_PAID, _(u'Paid')),
+        (STATUS_RENEGOTIATED, _(u'Renegotiated')),
+    ])
 
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`Domain.id` when displaying a numerical representation of this object to

@@ -1426,11 +1426,11 @@ class TestStorableBatch(DomainTest):
 
         # Increase or decrease stock requires the batch information
         self.assertRaises(ValueError, storable.increase_stock,
-                          StockTransactionHistory.TYPE_STOCK_DECREASE, branch,
-                          0, None)
+                          0, branch,
+                          StockTransactionHistory.TYPE_STOCK_DECREASE, None)
         self.assertRaises(ValueError, storable.decrease_stock,
-                          StockTransactionHistory.TYPE_STOCK_DECREASE, branch,
-                          0, None)
+                          0, branch,
+                          StockTransactionHistory.TYPE_STOCK_DECREASE, None)
 
     def test_sale_add_sellable(self):
         storable = self.create_storable(is_batch=True)

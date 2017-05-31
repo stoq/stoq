@@ -27,6 +27,7 @@
 
 import fnmatch
 import logging
+import functools
 import os
 import re
 import shutil
@@ -54,6 +55,7 @@ log = logging.getLogger(__name__)
 create_log = logging.getLogger('stoqlib.database.create')
 
 
+@functools.total_ordering
 class Patch(object):
     """A Database Patch
 
@@ -78,8 +80,13 @@ class Patch(object):
         self.level = int(base_parts[2])
         self._migration = migration
 
-    def __cmp__(self, other):
-        return cmp(self.get_version(), other.get_version())
+    __hash__ = object.__hash__
+
+    def __eq__(self, other):
+        return self.get_version() == other.get_version()
+
+    def __lt__(self, other):
+        return self.get_version() < other.get_version()
 
     def apply(self, store):
         """Apply the patch

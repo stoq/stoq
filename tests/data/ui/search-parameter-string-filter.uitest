@@ -9,8 +9,8 @@ GtkBox(vbox1, orientation=vertical):
     column: title='Group'
     column: title='Parameter', expand
     column: title='Current value'
+    row: 'Accounts', 'Parent bank account', 'Banks'
     row: 'Accounts', 'Parent till account', 'Tills'
     row: 'Accounts', 'Imbalance account', 'Imbalance'
-    row: 'Accounts', 'Parent bank account', 'Banks'
   GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
     GtkButton(edit_button): 'gtk-edit', insensitive

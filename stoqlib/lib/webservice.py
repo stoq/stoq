@@ -123,7 +123,7 @@ class WebService(object):
             'stoq_phone_number': person.phone_number,
             'stoq_email': person.email,
             'stoq_street': address.street,
-            'stoq_number': unicode(address.streetnumber or ''),
+            'stoq_number': str(address.streetnumber or ''),
             'stoq_district': address.district,
             'stoq_complement': address.complement,
             'stoq_postal_code': address.postal_code,

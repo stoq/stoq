@@ -58,7 +58,7 @@ class InvoicePage(object):
 
         for lines in range(height):
             self._data.append(
-                array.array('c', (' ' * width) + '\n'))
+                array.array('u', (' ' * width) + '\n'))
         self.width = width
         self.height = height
 
@@ -66,9 +66,9 @@ class InvoicePage(object):
         return iter(self._data)
 
     def _put(self, x, y, width, data):
-        if type(data) != str:
+        if not isinstance(data, str):
             raise AssertionError(type(data))
-        output = array.array('c', data.upper())
+        output = array.array('u', data.upper())
         if y > len(self._data):
             raise ValueError(
                 "maximum invoice layout is %d, got %d" % (self.height, y))
@@ -98,7 +98,7 @@ class InvoicePage(object):
         self._put(x, y, width, data)
 
     def _add_string(self, x, y, width, data):
-        if type(data) == unicode:
+        if isinstance(data, str):
             data = str(data)
         if data is None:
             data = ''
@@ -130,7 +130,7 @@ class InvoicePage(object):
             self._add_decimal(x, y, width, data)
         elif data_type == int:
             self._add_integer(x, y, width, data)
-        elif type(data_type) == list:
+        elif isinstance(data_type, list):
             self._add_list(data_type, x, y, width, height, data)
         else:
             raise AssertionError(
@@ -310,7 +310,7 @@ class _Invoice(object):
             return
         for page in self.generate_pages():
             for line in page:
-                printer.send(line.tostring())
+                printer.send(line.tounicode())
             printer.form_feed()
         printer.done()
 
@@ -513,7 +513,7 @@ class SaleNumberField(InvoiceFieldDescription):
     length = 1
 
     def fetch(self, width, height):
-        return unicode(self.sale.identifier)
+        return str(self.sale.identifier)
 
 
 @_register_invoice_field

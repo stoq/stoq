@@ -38,7 +38,7 @@ class SettingsTest(unittest.TestCase):
 
     def test_encode_object(self):
         self.assertEquals(_encode_object(Decimal('0.99')), '0.99')
-        self.assertEquals(_encode_object(datetime.date(2016, 02, 07)),
+        self.assertEquals(_encode_object(datetime.date(2016, 2, 7)),
                           '2016-02-07')
-        self.assertEquals(_encode_object(datetime.datetime(2016, 02, 07, 19, 45, 30)),
+        self.assertEquals(_encode_object(datetime.datetime(2016, 2, 7, 19, 45, 30)),
                           '2016-02-07T19:45:30')

@@ -527,7 +527,7 @@ class ShellWindow(GladeDelegate):
             with open(devpath) as f:
                 return f.read()
 
-        return environ.get_resource_string('stoq', domain, name)
+        return environ.get_resource_string('stoq', domain, name).decode()
 
     def _update_toolbar_style(self):
         toolbar = self.uimanager.get_widget('/toolbar')
@@ -828,6 +828,7 @@ class ShellWindow(GladeDelegate):
             raise ValueError(action_type)
         if filename is not None:
             ui_string = environ.get_resource_string('stoq', 'uixml', filename)
+            ui_string = ui_string.decode()
         ui_id = self.uimanager.add_ui_from_string(ui_string)
 
         self.action_permissions.update(self.common_action_permissions)

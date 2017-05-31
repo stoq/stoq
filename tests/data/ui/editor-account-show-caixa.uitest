@@ -56,11 +56,11 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Account"', hidden
           ProxyEntry(bank_branch): '', mandatory
           GtkLabel(): 'Account:'
           ProxyEntry(bank_account): '', mandatory
-          GtkLabel(): '<i>Codigo convenio</i>:'
+          GtkLabel(): '<i>Carteira</i>:'
           ProxyEntry(option0): ''
           GtkLabel(): '<i>Codigo beneficiario</i>:'
           ProxyEntry(option1): ''
-          GtkLabel(): '<i>Carteira</i>:'
+          GtkLabel(): '<i>Codigo convenio</i>:'
           ProxyEntry(option2): ''
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):

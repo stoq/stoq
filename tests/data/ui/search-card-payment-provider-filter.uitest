@@ -28,8 +28,8 @@ GtkDialog(toplevel): title='Card Payment Search', hidden
                 ProxyComboBox(padding=6):
                   item: 'Any', selected
                   item: 'AMEX'
-                  item: 'VISA'
                   item: 'MASTER'
+                  item: 'VISA'
           SearchResultListView(results, expand=True, fill=True):
             column: title='Payment #'
             column: title='Description', expand

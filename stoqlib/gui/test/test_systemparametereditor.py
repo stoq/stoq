@@ -79,7 +79,7 @@ class TestSystemParameterEditor(GUITest):
 
     def test_unwrapped_text_view_entry(self):
         detail = ParameterDetails(u'FOO', 'section', 'short_desc', 'long_desc',
-                                  unicode, multiline=True, initial=u'bar',
+                                  str, multiline=True, initial=u'bar',
                                   wrap=False)
         sysparam.register_param(detail)
         editor = SystemParameterEditor(self.store, detail)
@@ -103,7 +103,7 @@ class TestSystemParameterEditor(GUITest):
 
     def test_filechooser(self):
         detail = ParameterDetails(u'FOO', 'section', 'short_desc', 'long_desc',
-                                  unicode, editor='directory-chooser')
+                                  str, editor='directory-chooser')
         sysparam.register_param(detail)
         editor = SystemParameterEditor(self.store, detail)
         self.check_editor(editor, 'editor-systemparameter-file-chooser')

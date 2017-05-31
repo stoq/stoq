@@ -635,7 +635,8 @@ class InstallPostgresStep(BaseWizardStep):
         p = subprocess.Popen(
             [sys.executable, packageinstaller,
              'postgresql', 'postgresql-contrib', 'stoq-server'],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            universal_newlines=True)
         stdout, stderr = p.communicate()
 
         self.wizard.enable_back()

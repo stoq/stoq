@@ -75,7 +75,7 @@ class Devhelp2Builder(StandaloneHTMLBuilder):
                     write_toc(subnode, item)
             elif isinstance(node, nodes.reference):
                 parent.attrib['link'] = node['refuri']
-                parent.attrib['name'] = node.astext().encode('utf-8')
+                parent.attrib['name'] = node.astext()
 
         def istoctree(node):
             return isinstance(node, addnodes.compact_paragraph) and \

@@ -39,7 +39,7 @@ class Note(object):
         self.notes = notes
 
     def __eq__(self, other):
-        if type(self) != type(other):
+        if not isinstance(self, type(other)):
             return False
         return self.notes == other.notes
 

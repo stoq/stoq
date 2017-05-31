@@ -45,6 +45,6 @@ for filename, lines in modified_files.items():
             untested.append((filename, line, data))
 
 for filename, line, data in sorted(untested):
-    print '%s:%s:%s' % (filename, line, data)
-print '-' * 80
-print len(untested), 'untested lines'
+    print('%s:%s:%s' % (filename, line, data))
+print('-' * 80)
+print(len(untested), 'untested lines')
