@@ -43,6 +43,8 @@ from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.payment.category import PaymentCategory
+from stoqlib.domain.payment.card import CreditCardData
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.domain.till import Till
@@ -50,8 +52,8 @@ from stoqlib.exceptions import TillError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.paymenteditor import InPaymentEditor
 from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
-from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
-from stoqlib.gui.search.paymentsearch import CardPaymentSearch
+from stoqlib.gui.search.paymentsearch import (CardPaymentSearch,
+                                              InPaymentBillCheckSearch)
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.slaves.paymentconfirmslave import SalePaymentConfirmSlave
@@ -194,6 +196,14 @@ class ReceivableApp(BaseAccountWindow):
                 Column('color', title=_('Description'), width=20,
                        data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf,
                        column='description'),
+                SearchColumn('method_description', title=_('Payment Method'),
+                             data_type=str, search_attribute='method_id',
+                             valid_values=self._get_payment_methods(),
+                             width=100, visible=False),
+                SearchColumn('card_type', title=_('Card Type'),
+                             format_func=self._format_card_type, data_type=str,
+                             valid_values=self._get_card_types(),
+                             width=100, visible=False),
                 Column('comments_number', title=_(u'Comments'),
                        visible=False),
                 SearchColumn('drawee', title=_('Drawee'), data_type=str,
@@ -236,6 +246,21 @@ class ReceivableApp(BaseAccountWindow):
     #
     # Private
     #
+
+    def _format_card_type(self, card_type):
+        return CreditCardData.short_desc.get(card_type, u'')
+
+    def _get_payment_methods(self):
+        methods = PaymentMethod.get_active_methods(self.store)
+        values = [(i.get_description(), i.id) for i in methods]
+        values.insert(0, (_("Any"), None))
+        return values
+
+    def _get_card_types(self):
+        """Return a list of card types"""
+        values = [(v, k) for k, v in CreditCardData.short_desc.items()]
+        values.insert(0, (_("Any"), None))
+        return values
 
     def _update_widgets(self):
         selected = self.results.get_selected_rows()

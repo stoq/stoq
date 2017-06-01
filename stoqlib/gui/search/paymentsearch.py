@@ -166,6 +166,10 @@ class CardPaymentSearch(SearchEditor):
         return [IdentifierColumn('identifier', title=_('Payment #'), sorted=True),
                 SearchColumn('description', title=_(u'Description'),
                              data_type=str, expand=True),
+                SearchColumn('card_type', title=_('Card Type'),
+                             format_func=self._format_card_type,
+                             valid_values=self._get_card_types(),
+                             width=100, visible=False),
                 SearchColumn('drawee_name', title=_(u'Drawee'), data_type=str,
                              expand=True),
                 SearchColumn('device_name', title=_(u'Card Device'),
@@ -202,6 +206,18 @@ class CardPaymentSearch(SearchEditor):
     #
     # Private
     #
+
+    def _format_card_type(self, card_type):
+        if card_type:
+            return CreditCardData.short_desc.get(card_type, u'')
+
+        return ''
+
+    def _get_card_types(self):
+        """Return a list of card types"""
+        values = [(v, k) for k, v in CreditCardData.short_desc.items()]
+        values.insert(0, (_("Any"), None))
+        return values
 
     def _show_details(self, receivable_view):
         if receivable_view.sale_id is not None:
