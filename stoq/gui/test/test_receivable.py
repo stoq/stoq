@@ -27,6 +27,7 @@ import contextlib
 import mock
 from stoqlib.domain.account import Account
 from stoqlib.domain.payment.method import CheckData, PaymentMethod
+from stoqlib.domain.payment.card import CreditCardData
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.lib.dateutils import datetime, localdatetime, localtoday
 from stoqlib.gui.dialogs.paymentchangedialog import PaymentDueDateChangeDialog
@@ -319,3 +320,11 @@ class TestReceivable(BaseGUITest):
 
         self.activate(app.ChangeDueDate)
         change_due_date.assert_called_once_with(olist[-1], sale)
+
+    def test_format_card_type(self):
+        app = self.create_app(ReceivableApp, u'receivable')
+        # We run this test with a private method because .uitest files do not apply
+        # the format_func argument to itself - e.g. the card type column for None will
+        # show None instead of the empty string shown at the UI.
+        self.assertEquals(app._format_card_type(CreditCardData.TYPE_CREDIT), u'Credit')
+        self.assertEquals(app._format_card_type(None), u'')

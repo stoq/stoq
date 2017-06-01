@@ -33,6 +33,7 @@ GtkDialog(toplevel): title='Card Payment Search', hidden
           SearchResultListView(results, expand=True, fill=True):
             column: title='Payment #'
             column: title='Description', expand
+            column: title='Card Type', hidden
             column: title='Drawee', expand
             column: title='Card Device', hidden
             column: title='Provider'
@@ -45,7 +46,7 @@ GtkDialog(toplevel): title='Card Payment Search', hidden
             column: title='% Fee', hidden
             column: title='Fee'
             column: title='Authorization', hidden
-            row: 55555, 'Test payment', 'Dane Cook', 'Cielo', 'VISA', datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), None, 'Preview', <currency $10>, <currency $0>, Decimal('0.00'), <currency $0>, None
+            row: 55555, 'Test payment', 'credit', 'Dane Cook', 'Cielo', 'VISA', datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), None, 'Preview', <currency $10>, <currency $0>, Decimal('0.00'), <currency $0>, None
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):

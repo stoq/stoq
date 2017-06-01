@@ -74,6 +74,7 @@ class BasePaymentView(Viewable):
     branch = Branch
 
     card_data = CreditCardData
+    card_type = CreditCardData.card_type
     check_data = CheckData
 
     # Payment

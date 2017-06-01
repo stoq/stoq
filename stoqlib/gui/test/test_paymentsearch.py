@@ -26,7 +26,7 @@ import datetime
 
 import mock
 
-from stoqlib.domain.payment.card import CreditProvider
+from stoqlib.domain.payment.card import CreditProvider, CreditCardData
 from stoqlib.domain.sale import SaleView
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
@@ -123,3 +123,8 @@ class TestPaymentSearch(GUITest):
         print_report.assert_called_once_with(CardPaymentReport, search.results,
                                              list(search.results),
                                              filters=search.search.get_search_filters())
+
+    def test_format_card_type(self):
+        search = CardPaymentSearch(self.store)
+        self.assertEquals(search._format_card_type(CreditCardData.TYPE_CREDIT), u'Credit')
+        self.assertEquals(search._format_card_type(None), u'')
