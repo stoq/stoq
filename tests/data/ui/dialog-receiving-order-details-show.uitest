@@ -9,17 +9,17 @@ GtkBox(vbox1, orientation=vertical):
         column: title='Quantity'
         column: title='Cost'
         column: title='Total'
-        row: '', 'Description', '8.000', <currency $125>, <currency $1000>
+        row: '', 'Description', '8.000', <currency $125>, <currency $1,000>
       SummaryLabel(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
-        GtkLabel(): '<b>$1000.00</b>'
+        GtkLabel(): '<b>$1,000.00</b>'
     GtkEventBox(details_holder): slave ReceivingInvoiceSlave is attached
       GtkBox(vbox1, orientation=vertical):
         GtkTable(table, fill=True):
           GtkLabel(label10): 'Branch:'
           ProxyLabel(branch): '<span >Moda Stoq</span>'
           ProxyLabel(kiwilabel4): 'Products Total ($CURRENCY):'
-          ProxyLabel(products_total): '<span >$1000.00</span>'
+          ProxyLabel(products_total): '<span >$1,000.00</span>'
           ProxyLabel(purchase_supplier_label): 'Supplier:'
           ProxyLabel(supplier_label): '<span >Supplier</span>'
           ProxyLabel(kiwilabel54): 'Freight ($CURRENCY):'
@@ -56,7 +56,7 @@ GtkBox(vbox1, orientation=vertical):
             item: 'CIF - Freight value is unknown'
             item: 'CIF - Freight value highlighted on invoice'
           ProxyLabel(kiwilabel11): 'Invoice Total ($CURRENCY):'
-          ProxyLabel(total): '<span weight="bold">$1000.00</span>'
+          ProxyLabel(total): '<span weight="bold">$1,000.00</span>'
           GtkButtonBox(notes_box, orientation=horizontal):
             GtkButton(observations_button): 'Observations...', hidden
     GtkScrolledWindow(scrolledwindow1):

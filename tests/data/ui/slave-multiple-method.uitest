@@ -27,10 +27,10 @@ GtkBox(vbox1, orientation=vertical):
         GtkLabel(label12): 'Total:'
         ProxyLabel(total_value): '<span weight="bold">$10.00</span>'
         GtkLabel(label11): 'Paid:'
-        ProxyLabel(received_value): '<span weight="bold">$ 0.00</span>'
+        ProxyLabel(received_value): '<span weight="bold">$0.00</span>'
         GtkHSeparator(hseparator1):
         GtkHSeparator(hseparator2):
         GtkLabel(missing): 'Missing:'
         ProxyLabel(missing_value): '<span weight="bold">$10.00</span>'
         GtkLabel(change): 'Change:'
-        ProxyLabel(change_value): '<span weight="bold">$ 0.00</span>'
+        ProxyLabel(change_value): '<span weight="bold">$0.00</span>'

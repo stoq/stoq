@@ -14,13 +14,13 @@ GtkDialog(main_dialog.toplevel): title='Closing Opened Till', hidden
             ObjectList(day_history, expand=True, fill=True):
               column: title='Description'
               column: title='Amount'
-              row: 'Initial Amount', <currency $ 0>
+              row: 'Initial Amount', <currency $0>
             SummaryLabel(fill=True):
               GtkLabel(expand=True, fill=True, padding=6): '<b>Total balance:</b>'
-              GtkLabel(): '$ 0.00'
+              GtkLabel(): '$0.00'
           GtkTable(table1, fill=True):
             GtkLabel(label18): 'Float Remaining:'
-            ProxyLabel(balance): '<span >$ 0.00</span>'
+            ProxyLabel(balance): '<span >$0.00</span>'
             ProxyLabel(label17): 'Amount Removed ($CURRENCY):'
             ProxyEntry(value): '0.00'
             GtkLabel(label1): 'Observations:'

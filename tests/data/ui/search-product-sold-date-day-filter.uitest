@@ -46,7 +46,7 @@ GtkDialog(toplevel): title='Products Sold Search', hidden
       GtkBox(orientation=horizontal, fill=True):
         GtkLabel(expand=True, fill=True):
         GtkLabel(quantity_label): 'Total quantity: 0'
-        GtkLabel(total_sold_label): 'Total sold: $ 0.00'
+        GtkLabel(total_sold_label): 'Total sold: $0.00'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal): hidden

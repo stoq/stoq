@@ -174,11 +174,11 @@ class Stoq(Plugin):
     name = "stoq"
 
     def begin(self):
-        # The tests require that the environment is currently set to C, to avoid
+        # The tests require that the environment is currently set to en_US, to avoid
         # translated strings and use the default date/number/currency formatting
-        os.environ['LC_ALL'] = 'C'
-        os.environ['LANG'] = 'C'
-        os.environ['LANGUAGE'] = 'C'
+        os.environ['LC_ALL'] = 'en_US.UTF-8'
+        os.environ['LANG'] = 'en_US.UTF-8'
+        os.environ['LANGUAGE'] = 'en_US.UTF-8'
 
         # Set the default encoding to utf-8 just like pygtk used to do.
         # Maybe this will not be necessary in python3

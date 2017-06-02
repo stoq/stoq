@@ -37,9 +37,9 @@ GtkDialog(main_dialog.toplevel): title='Payments Editor', hidden
                     GtkHSeparator(hseparator1):
                     GtkHSeparator(hseparator2):
                     GtkLabel(missing): 'Difference:'
-                    ProxyLabel(missing_value): '<span weight="bold">$ 0.00</span>'
+                    ProxyLabel(missing_value): '<span weight="bold">$0.00</span>'
                     GtkLabel(change): 'Change:'
-                    ProxyLabel(change_value): '<span weight="bold">$ 0.00</span>'
+                    ProxyLabel(change_value): '<span weight="bold">$0.00</span>'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

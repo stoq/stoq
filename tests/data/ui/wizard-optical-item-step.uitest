@@ -41,7 +41,7 @@ GtkDialog(toplevel): title='Sale with work order', hidden
                   row: '', '12345678', 'Description', 'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
                   row: '', '12345679', 'Description', 'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
                   row: '', '12345681', 'Description', 'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
-                  row: '', '666', 'Package', 'Patient', Decimal('1.000'), <currency $10>, <currency $ 0>, 0, <currency $ 0>
+                  row: '', '666', 'Package', 'Patient', Decimal('1.000'), <currency $10>, <currency $0>, 0, <currency $0>
                     row: '', '', 'Component', 'Patient', Decimal('5.000'), <currency $10>, <currency $2>, Decimal('80.0'), <currency $10>
                 SummaryLabel(step.summary, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
@@ -73,7 +73,7 @@ model: Sale<1>
   client_id: Client<2>
   close_date: None
   confirm_date: None
-  discount_value: <currency $ 0>
+  discount_value: <currency $0>
   expire_date: None
   invoice_id: Invoice<3>
   open_date: datetime.today()
@@ -81,12 +81,12 @@ model: Sale<1>
   return_date: None
   service_invoice_number: None
   status: 'quote'
-  surcharge_value: <currency $ 0>
-  total_amount: <currency $ 0>
+  surcharge_value: <currency $0>
+  total_amount: <currency $0>
 
 model: Client<2>
-  salary: <currency $ 0>
-  credit_limit: <currency $ 0>
+  salary: <currency $0>
+  credit_limit: <currency $0>
   days_late: 0
   status: 'solvent'
 
@@ -149,7 +149,7 @@ model: SaleItem<8>
   completion_date: None
   estimated_fix_date: datetime.today()
   notes: None
-  price: <currency $ 0>
+  price: <currency $0>
   quantity: Decimal('1.000')
   quantity_decreased: Decimal('0.000')
   sale_id: Sale<1>

@@ -47,7 +47,7 @@ GtkDialog(toplevel): title='Unconfirmed Sale Items Search', hidden
         GtkLabel(expand=True, fill=True):
         GtkLabel(quantity_label): 'Quantity: 41'
         GtkLabel(reserved_label): 'Delivered: 1'
-        GtkLabel(total_label): 'Total: $4100.00'
+        GtkLabel(total_label): 'Total: $4,100.00'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):

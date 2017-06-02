@@ -35,13 +35,13 @@ GtkDialog(toplevel): title='New Sale Quote', hidden
                     GtkLabel(label12): 'Total:'
                     ProxyLabel(total_value): '<span weight="bold">$20.00</span>'
                     GtkLabel(label11): 'Paid:'
-                    ProxyLabel(received_value): '<span weight="bold">$ 0.00</span>'
+                    ProxyLabel(received_value): '<span weight="bold">$0.00</span>'
                     GtkHSeparator(hseparator1):
                     GtkHSeparator(hseparator2):
                     GtkLabel(missing): 'Missing:'
                     ProxyLabel(missing_value): '<span weight="bold">$20.00</span>'
                     GtkLabel(change): 'Change:'
-                    ProxyLabel(change_value): '<span weight="bold">$ 0.00</span>'
+                    ProxyLabel(change_value): '<span weight="bold">$0.00</span>'
       ProxyLabel(notification_lbl, fill=True):
       GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
         GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):

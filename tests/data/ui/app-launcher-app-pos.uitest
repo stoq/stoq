@@ -145,7 +145,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                     GtkButton(): insensitive
                     GtkButton(): insensitive
                     GtkButton(): insensitive
-                ProxyLabel(expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $ 0.00</span>'
+                ProxyLabel(expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $0.00</span>'
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkBox(orientation=horizontal):

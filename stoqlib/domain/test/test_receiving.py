@@ -416,7 +416,7 @@ class TestReceivingOrder(DomainTest):
     def test_get_receival_date_str(self):
         order = self.create_receiving_order()
         order.receival_date = localdate(2010, 1, 1)
-        self.assertEquals(order.receival_date_str, u'01/01/10')
+        self.assertEquals(order.receival_date_str, u'01/01/2010')
 
     def test_guess_freight_type(self):
         order = self.create_receiving_order()

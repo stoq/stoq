@@ -23,7 +23,7 @@ GtkDialog(toplevel): title='Payments Renegotiation Wizard', hidden
                   ProxyLabel(kiwilabel1): 'Received: ($CURRENCY)'
                   ProxyEntry(received_value): '$10.00'
                   ProxyLabel(kiwilabel2): 'Change:'
-                  ProxyLabel(change_value_lbl): '<span weight="bold">$ 0.00</span>'
+                  ProxyLabel(change_value_lbl): '<span weight="bold">$0.00</span>'
                   ProxyCheckButton(credit_checkbutton): 'Create credit for future sales', hidden
             GtkTable(step.table1, expand=True, fill=True):
               GtkLabel(step.label2): 'Subtotal:'
@@ -59,11 +59,11 @@ GtkDialog(toplevel): title='Payments Renegotiation Wizard', hidden
 
 model: PaymentRenegotiation<1>
   close_date: None
-  discount_value: <currency $ 0>
+  discount_value: <currency $0>
   notes: None
   open_date: datetime.today()
   status: 0
-  surcharge_value: <currency $ 0>
+  surcharge_value: <currency $0>
   total: <currency $10>
 
 model: PaymentGroup<2>
@@ -74,16 +74,16 @@ model: Payment<3>
   bill_received: False
   cancel_date: datetime.today()
   description: 'Test payment'
-  discount: <currency $ 0>
+  discount: <currency $0>
   due_date: datetime.today()
   group_id: PaymentGroup<2>
-  interest: <currency $ 0>
+  interest: <currency $0>
   open_date: datetime.today()
   paid_date: None
   paid_value: None
   payment_number: None
   payment_type: 'out'
-  penalty: <currency $ 0>
+  penalty: <currency $0>
   status: 'cancelled'
   value: <currency $10>
 
@@ -92,7 +92,7 @@ model: Sale<4>
   cancel_reason: None
   close_date: datetime.today()
   confirm_date: None
-  discount_value: <currency $ 0>
+  discount_value: <currency $0>
   expire_date: None
   group_id: PaymentGroup<2>
   invoice_id: Invoice<5>
@@ -101,8 +101,8 @@ model: Sale<4>
   return_date: None
   service_invoice_number: None
   status: 'renegotiated'
-  surcharge_value: <currency $ 0>
-  total_amount: <currency $ 0>
+  surcharge_value: <currency $0>
+  total_amount: <currency $0>
 
 model: Invoice<5>
   cnf: None

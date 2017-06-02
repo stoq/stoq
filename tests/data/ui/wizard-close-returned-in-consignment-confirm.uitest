@@ -30,15 +30,15 @@ GtkDialog(toplevel): title='Closing In Consignment', hidden
                   GtkLabel(label2, expand=True, fill=True):
                   GtkTable(footer_table, fill=True):
                     GtkLabel(label12): 'Total:'
-                    ProxyLabel(total_value): '<span weight="bold">$ 0.00</span>'
+                    ProxyLabel(total_value): '<span weight="bold">$0.00</span>'
                     GtkLabel(label11): 'Paid:'
-                    ProxyLabel(received_value): '<span weight="bold">$ 0.00</span>'
+                    ProxyLabel(received_value): '<span weight="bold">$0.00</span>'
                     GtkHSeparator(hseparator1):
                     GtkHSeparator(hseparator2):
                     GtkLabel(missing): 'Difference:'
-                    ProxyLabel(missing_value): '<span weight="bold">$ 0.00</span>'
+                    ProxyLabel(missing_value): '<span weight="bold">$0.00</span>'
                     GtkLabel(change): 'Change:'
-                    ProxyLabel(change_value): '<span weight="bold">$ 0.00</span>'
+                    ProxyLabel(change_value): '<span weight="bold">$0.00</span>'
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
         GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
@@ -52,8 +52,8 @@ GtkDialog(toplevel): title='Closing In Consignment', hidden
 model: PurchaseOrder<1>
   confirm_date: datetime.today()
   consigned: False
-  discount_value: <currency $ 0>
-  expected_freight: <currency $ 0>
+  discount_value: <currency $0>
+  expected_freight: <currency $0>
   expected_pay_date: datetime.today()
   expected_receival_date: datetime.datetime(2012, 2, 2, 0, 0)
   freight_type: 'fob'
@@ -63,7 +63,7 @@ model: PurchaseOrder<1>
   receival_date: None
   salesperson_name: ''
   status: 'closed'
-  surcharge_value: <currency $ 0>
+  surcharge_value: <currency $0>
 
 model: PurchaseItem<2>
   base_cost: <currency $125>
@@ -77,5 +77,5 @@ model: PurchaseItem<2>
 
 model: ProductStockItem<3>
   quantity: Decimal('0.000')
-  stock_cost: <currency $ 0>
+  stock_cost: <currency $0>
 

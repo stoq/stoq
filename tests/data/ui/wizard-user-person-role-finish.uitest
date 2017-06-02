@@ -145,9 +145,9 @@ GtkDialog(toplevel): title='New User', hidden
                     GtkBox(orientation=horizontal, fill=True):
                       GtkLabel(fill=True): 'Branch:'
                       ProxyComboEntry(expand=True, fill=True): invalid
+                        item: 'branch', selected
                         item: 'Moda Stoq'
                         item: 'Stoq Elite Fashion'
-                        item: 'branch', selected
                       GtkButton(fill=True): 'gtk-add'
                     GtkBox(orientation=vertical, expand=True, fill=True):
                       ListContainer(expand=True, fill=True):

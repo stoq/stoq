@@ -41,7 +41,7 @@ GtkDialog(toplevel): title='Sale Checkout', hidden
               ProxyLabel(step.kiwilabel1): 'Already paid:'
               ProxyLabel(step.total_paid_lbl): '<span >$100.00</span>'
               ProxyLabel(step.kiwilabel5): 'Total:'
-              ProxyLabel(step.total_lbl): '<span >$ 0.00</span>'
+              ProxyLabel(step.total_lbl): '<span >$0.00</span>'
             GtkLabel(step.label3, expand=True, fill=True):
             GtkButtonBox(step.hbuttonbox1, orientation=horizontal, pack-end):
               GtkButton(step.observations_button, pack-end): 'Observations...'
@@ -50,9 +50,9 @@ GtkDialog(toplevel): title='Sale Checkout', hidden
               GtkBox(vbox1, orientation=vertical):
                 GtkTable(table1, padding=6):
                   ProxyLabel(kiwilabel1): 'Received: ($CURRENCY)'
-                  ProxyEntry(received_value): '$ 0.00', insensitive
+                  ProxyEntry(received_value): '$0.00', insensitive
                   ProxyLabel(kiwilabel2): 'Change:'
-                  ProxyLabel(change_value_lbl): '<span weight="bold">$ 0.00</span>'
+                  ProxyLabel(change_value_lbl): '<span weight="bold">$0.00</span>'
                   ProxyCheckButton(credit_checkbutton): 'Create credit for future sales', hidden
             GtkExpander(step.subtotal_expander, expand=True, fill=True): hidden
               GtkEventBox(step.discount_surcharge_slave): slave SaleDiscountSlave is attached
@@ -98,7 +98,7 @@ model: Sale<1>
   cancel_reason: None
   close_date: None
   confirm_date: None
-  discount_value: <currency $ 0>
+  discount_value: <currency $0>
   expire_date: None
   group_id: PaymentGroup<2>
   invoice_id: Invoice<3>
@@ -107,8 +107,8 @@ model: Sale<1>
   return_date: None
   service_invoice_number: None
   status: 'ordered'
-  surcharge_value: <currency $ 0>
-  total_amount: <currency $ 0>
+  surcharge_value: <currency $0>
+  total_amount: <currency $0>
 
 model: PaymentGroup<2>
 
@@ -126,16 +126,16 @@ model: Payment<4>
   bill_received: False
   cancel_date: None
   description: '1/1 Check for sale'
-  discount: <currency $ 0>
+  discount: <currency $0>
   due_date: datetime.datetime(2013, 1, 1, 0, 0)
   group_id: PaymentGroup<2>
-  interest: <currency $ 0>
+  interest: <currency $0>
   open_date: datetime.today()
   paid_date: datetime.datetime(2013, 1, 2, 0, 0)
   paid_value: <currency $50>
   payment_number: None
   payment_type: 'in'
-  penalty: <currency $ 0>
+  penalty: <currency $0>
   status: 'paid'
   value: <currency $50>
 
@@ -144,16 +144,16 @@ model: Payment<5>
   bill_received: False
   cancel_date: None
   description: '1/1 Check for sale 12345'
-  discount: <currency $ 0>
+  discount: <currency $0>
   due_date: datetime.datetime(2013, 1, 1, 0, 0)
   group_id: PaymentGroup<2>
-  interest: <currency $ 0>
+  interest: <currency $0>
   open_date: datetime.today()
   paid_date: None
   paid_value: None
   payment_number: None
   payment_type: 'in'
-  penalty: <currency $ 0>
+  penalty: <currency $0>
   status: 'pending'
   value: <currency $50>
 
@@ -161,24 +161,24 @@ model: Sellable<6>
   barcode: ''
   base_price: <currency $100>
   code: ''
-  commission: <currency $ 0>
+  commission: <currency $0>
   cost: <currency $125>
   cost_last_updated: datetime.today()
   description: 'Description'
   max_discount: Decimal('0')
   notes: ''
   on_sale_end_date: None
-  on_sale_price: <currency $ 0>
+  on_sale_price: <currency $0>
   on_sale_start_date: None
   price_last_updated: datetime.today()
   status: 'available'
 
 model: ProductStockItem<7>
   quantity: Decimal('100.000')
-  stock_cost: <currency $ 0>
+  stock_cost: <currency $0>
 
 model: SaleItem<8>
-  average_cost: <currency $ 0>
+  average_cost: <currency $0>
   base_price: <currency $100>
   completion_date: None
   estimated_fix_date: datetime.today()

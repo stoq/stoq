@@ -143,7 +143,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
               GtkBox(orientation=horizontal): hidden
                 ProxyLabel(expand=True, fill=True): '<span size="xx-large" weight="bold"><span weight="bold" size="xx-large">Till closed</span></span>'
                 GtkBox(orientation=vertical, expand=True, fill=True):
-                  ProxyLabel(expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $ 0.00</span>'
+                  ProxyLabel(expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $0.00</span>'
                   ProxyLabel(expand=True, fill=True): hidden
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden

@@ -111,7 +111,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                             column: title='Total'
                           SummaryLabel(summary, fill=True):
                             GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
-                            GtkLabel(): '<b>$ 0.00</b>'
+                            GtkLabel(): '<b>$0.00</b>'
                         GtkBox(hbox1, orientation=horizontal, fill=True):
                           GtkBox(button_box, orientation=horizontal):
                             GtkButton(add_button): hidden

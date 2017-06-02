@@ -169,7 +169,7 @@ GtkDialog(main_dialog.toplevel): title='Details of Product', hidden
                         column: title='Lead time'
                         column: title='Minimum Purchase'
                         column: title='Cost'
-                        row: 'Supplier', '', '1 Day', Decimal('1.000'), <currency $ 0>
+                        row: 'Supplier', '', '1 Day', Decimal('1.000'), <currency $0>
                       GtkBox(orientation=horizontal, fill=True):
                         GtkButton(fill=True): 'gtk-add', hidden
                         GtkButton(fill=True): 'gtk-remove', hidden, insensitive

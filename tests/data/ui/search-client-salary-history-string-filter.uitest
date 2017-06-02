@@ -21,8 +21,8 @@ GtkDialog(toplevel): title='Salary History Search', hidden
             column: title='Date'
             column: title='Salary'
             column: title='User', expand
-            row: datetime.datetime(2012, 1, 1, 0, 0), <currency $1000>, 'Administrator'
-            row: datetime.datetime(2012, 3, 3, 0, 0), <currency $3000>, 'Administrator'
+            row: datetime.datetime(2012, 1, 1, 0, 0), <currency $1,000>, 'Administrator'
+            row: datetime.datetime(2012, 3, 3, 0, 0), <currency $3,000>, 'Administrator'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):

@@ -19,7 +19,7 @@ GtkDialog(toplevel): title='Purchase Finish', hidden
             GtkLabel(step.label2): 'Total Received:'
             ProxyLabel(step.received_value): '<span weight="bold">$250.00</span>'
             GtkLabel(step.label3): 'Total Paid:'
-            ProxyLabel(step.paid_value): '<span weight="bold">$ 0.00</span>'
+            ProxyLabel(step.paid_value): '<span weight="bold">$0.00</span>'
             GtkLabel(step.missing_label): 'Missing:'
             ProxyLabel(step.missing_value): '<span weight="bold">$250.00</span>'
       ProxyLabel(notification_lbl, fill=True): hidden

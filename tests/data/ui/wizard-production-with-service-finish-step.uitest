@@ -48,7 +48,7 @@ model: Service<2>
 model: ProductComponent<3>
   component_id: Product<5>
   design_reference: ''
-  price: <currency $ 0>
+  price: <currency $0>
   product_id: Product<4>
   quantity: Decimal('1.000')
 

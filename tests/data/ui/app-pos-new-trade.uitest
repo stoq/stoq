@@ -153,7 +153,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                     GtkButton(delivery_button): insensitive
                     GtkButton(edit_item_button): insensitive
                     GtkButton(remove_item_button): insensitive
-                ProxyLabel(order_total_label, expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $ 0.00</span>'
+                ProxyLabel(order_total_label, expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $0.00</span>'
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkBox(orientation=horizontal):

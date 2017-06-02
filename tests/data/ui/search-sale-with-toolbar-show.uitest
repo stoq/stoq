@@ -46,7 +46,7 @@ GtkDialog(toplevel): title='Search for Sales', hidden
             row: 1, datetime.datetime(2008, 1, 1, 0, 0), 'Vitalina Claudino', 'Deivis Alexandre Junior', Decimal('3.000'), <currency $436>
           SummaryLabel(summary_label):
             GtkLabel(expand=True, fill=True, padding=6): 'Total:'
-            GtkLabel(): '<b>$2015.00</b>'
+            GtkLabel(): '<b>$2,015.00</b>'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SaleListToolbar is attached
           GtkAlignment(toplevel):

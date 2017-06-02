@@ -19,9 +19,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "individual"', hidden
                           GtkLabel(profile_lbl): 'Profile:'
                           ProxyComboBox(profile):
                             item: 'Administrator'
+                            item: 'assistant', selected
                             item: 'Manager'
                             item: 'Salesperson'
-                            item: 'assistant', selected
                           ProxyLabel(role_lbl): 'Role:'
                           ProxyComboBox(role):
                             item: 'No Role', selected
@@ -143,9 +143,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "individual"', hidden
                         GtkBox(hbox1, orientation=horizontal, fill=True):
                           GtkLabel(model_name_label, fill=True): 'Branch:'
                           ProxyComboEntry(target_combo, expand=True, fill=True): invalid
+                            item: 'branch', selected
                             item: 'Moda Stoq'
                             item: 'Stoq Elite Fashion'
-                            item: 'branch', selected
                           GtkButton(add_button, fill=True): 'gtk-add'
                         GtkBox(model_vbox, orientation=vertical, expand=True, fill=True):
                           ListContainer(relations_list, expand=True, fill=True):

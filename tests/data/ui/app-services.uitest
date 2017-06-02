@@ -174,7 +174,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Services', hidden
             GtkVSeparator():
         SummaryLabel(summary_label):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
-          GtkLabel(): '<b>$ 0.00</b>'
+          GtkLabel(): '<b>$0.00</b>'
         StatusButton(pack-end):
 
 popup: ServicesSelection

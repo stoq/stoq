@@ -22,8 +22,8 @@ model: Quotation<2>
 model: PurchaseOrder<3>
   confirm_date: None
   consigned: False
-  discount_value: <currency $ 0>
-  expected_freight: <currency $ 0>
+  discount_value: <currency $0>
+  expected_freight: <currency $0>
   expected_pay_date: datetime.today()
   expected_receival_date: datetime.today()
   freight_type: 'fob'
@@ -33,7 +33,7 @@ model: PurchaseOrder<3>
   receival_date: None
   salesperson_name: ''
   status: 'quoting'
-  surcharge_value: <currency $ 0>
+  surcharge_value: <currency $0>
 
 model: PurchaseItem<4>
   base_cost: <currency $125>

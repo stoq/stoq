@@ -49,7 +49,7 @@ GtkDialog(toplevel): title='Sold Items by Branch', hidden
         GtkLabel(items_label): 'Sales: 0'
         GtkLabel(quantity_label): 'Quantity: 0'
         GtkLabel(items_per_sale_label): 'Items per sale: 0'
-        GtkLabel(total_label): 'Total: $ 0.00'
+        GtkLabel(total_label): 'Total: $0.00'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):

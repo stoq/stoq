@@ -283,7 +283,7 @@
  "stoqlib/lib/introspection.py": 94.12,
  "stoqlib/lib/invoice.py": 87.93,
  "stoqlib/lib/kiwilibrary.py": 90.00,
- "stoqlib/lib/latscii.py": 82.35,
+ "stoqlib/lib/latscii.py": 76.47,
  "stoqlib/lib/message.py": 46.94,
  "stoqlib/lib/osutils.py": 38.83,
  "stoqlib/lib/parameters.py": 79.93,

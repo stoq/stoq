@@ -49,7 +49,7 @@ GtkDialog(toplevel): title='Purchase Finish', hidden
                       row: 'finish description', date.today(), <currency $250>
                     GtkBox(hbox1, orientation=horizontal):
                       ProxyLabel(difference_status_label, expand=True, fill=True): '<span >Difference</span>'
-                      ProxyLabel(difference_label, fill=True): '<span >$ 0.00</span>'
+                      ProxyLabel(difference_label, fill=True): '<span >$0.00</span>'
                     GtkBox(hbox2, orientation=horizontal):
                       ProxyLabel(total_status_label, expand=True, fill=True): 'Total:'
                       ProxyLabel(total_label, fill=True): '<span >$250.00</span>'
@@ -68,8 +68,8 @@ model: PaymentGroup<1>
 model: PurchaseOrder<2>
   confirm_date: None
   consigned: False
-  discount_value: <currency $ 0>
-  expected_freight: <currency $ 0>
+  discount_value: <currency $0>
+  expected_freight: <currency $0>
   expected_pay_date: datetime.today()
   expected_receival_date: datetime.today()
   freight_type: 'fob'
@@ -80,23 +80,23 @@ model: PurchaseOrder<2>
   receival_date: None
   salesperson_name: ''
   status: 'closed'
-  surcharge_value: <currency $ 0>
+  surcharge_value: <currency $0>
 
 model: Payment<3>
   base_value: <currency $250>
   bill_received: False
   cancel_date: None
   description: 'finish description'
-  discount: <currency $ 0>
+  discount: <currency $0>
   due_date: datetime.today()
   group_id: PaymentGroup<1>
-  interest: <currency $ 0>
+  interest: <currency $0>
   open_date: datetime.today()
   paid_date: None
   paid_value: None
   payment_number: None
   payment_type: 'out'
-  penalty: <currency $ 0>
+  penalty: <currency $0>
   status: 'pending'
   value: <currency $250>
 

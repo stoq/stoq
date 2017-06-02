@@ -11,7 +11,7 @@ GtkDialog(main_dialog.toplevel): title='Supplier Details', hidden
             GtkLabel(label3): 'Status:'
             ProxyLabel(status): '<span >Active</span>'
             GtkLabel(label2): 'Last Purchase Date:'
-            ProxyLabel(last_purchase_date): '<span >01/01/12</span>'
+            ProxyLabel(last_purchase_date): '<span >01/01/2012</span>'
             GtkBox(hbox1, orientation=horizontal):
               GtkButton(further_details_button, fill=True): 'Further Details'
           GtkNotebook(notebook2, expand=True, fill=True):
@@ -24,7 +24,7 @@ GtkDialog(main_dialog.toplevel): title='Supplier Details', hidden
                 row: 123, datetime.datetime(2012, 1, 1, 0, 0), 'Quoting', Decimal('1000.00000000000')
               SummaryLabel(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
-                GtkLabel(): '<b>$1000.00</b>'
+                GtkLabel(): '<b>$1,000.00</b>'
             ObjectList(product_list):
               column: title='Code'
               column: title='Description', expand
@@ -39,7 +39,7 @@ GtkDialog(main_dialog.toplevel): title='Supplier Details', hidden
               column: title='Status'
               column: title='Value'
               column: title='Days Late'
-              row: 999, 'Money', '1/1 Money for order 00123', datetime.datetime(2012, 1, 1, 0, 0), 'Paid', <currency $1000>, 0
+              row: 999, 'Money', '1/1 Money for order 00123', datetime.datetime(2012, 1, 1, 0, 0), 'Paid', <currency $1,000>, 0
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

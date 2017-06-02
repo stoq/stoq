@@ -10,7 +10,7 @@ GtkDialog(main_dialog.toplevel): title='Reverse Payment', hidden
               GtkLabel(date_lbl): 'Date:'
               ProxyLabel(date): '<span >YYYY-MM-DD</span>'
               GtkLabel(label5): 'Balance:'
-              ProxyLabel(balance): '<span >$ 0.00</span>'
+              ProxyLabel(balance): '<span >$0.00</span>'
               ProxyLabel(cash_amount_lbl): 'Cash Amount ($CURRENCY):'
               ProxyEntry(value): '0.00', mandatory
           GtkTable(table2, expand=True, fill=True):

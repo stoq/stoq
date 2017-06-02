@@ -17,9 +17,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Call to John"', hidden
             item: 'Administrator'
             item: 'Cleusa Blanc Ferreira Norbiato'
             item: 'Deivis Alexandre Junior'
+            item: 'individual', selected
             item: 'Maria Aparecida Ardana'
             item: 'Osvaldo Denadai Marin'
-            item: 'individual', selected
           GtkLabel(label3): 'Description:'
           ProxyEntry(description): 'Test call'
           GtkLabel(label4): 'Message:'

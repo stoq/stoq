@@ -41,7 +41,7 @@ GtkDialog(toplevel): title='Sale Checkout', hidden
               ProxyLabel(step.kiwilabel3): 'Subtotal:'
               ProxyLabel(step.subtotal_lbl): '<span >$10.00</span>'
               ProxyLabel(step.kiwilabel1): 'Already paid:'
-              ProxyLabel(step.total_paid_lbl): '<span >$ 0.00</span>'
+              ProxyLabel(step.total_paid_lbl): '<span >$0.00</span>'
               ProxyLabel(step.kiwilabel5): 'Total:'
               ProxyLabel(step.total_lbl): '<span >$10.00</span>'
             GtkLabel(step.label3, expand=True, fill=True):
@@ -54,7 +54,7 @@ GtkDialog(toplevel): title='Sale Checkout', hidden
                   ProxyLabel(kiwilabel1): 'Received: ($CURRENCY)'
                   ProxyEntry(received_value): '$10.00'
                   ProxyLabel(kiwilabel2): 'Change:'
-                  ProxyLabel(change_value_lbl): '<span weight="bold">$ 0.00</span>'
+                  ProxyLabel(change_value_lbl): '<span weight="bold">$0.00</span>'
                   ProxyCheckButton(credit_checkbutton): 'Create credit for future sales', hidden
             GtkExpander(step.subtotal_expander, expand=True, fill=True):
               GtkEventBox(step.discount_surcharge_slave): slave SaleDiscountSlave is attached

@@ -37,9 +37,9 @@ GtkDialog(toplevel): title='Closing In Consignment', hidden
                     GtkHSeparator(hseparator1):
                     GtkHSeparator(hseparator2):
                     GtkLabel(missing): 'Difference:'
-                    ProxyLabel(missing_value): '<span weight="bold">$ 0.00</span>'
+                    ProxyLabel(missing_value): '<span weight="bold">$0.00</span>'
                     GtkLabel(change): 'Change:'
-                    ProxyLabel(change_value): '<span weight="bold">$ 0.00</span>'
+                    ProxyLabel(change_value): '<span weight="bold">$0.00</span>'
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
         GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):

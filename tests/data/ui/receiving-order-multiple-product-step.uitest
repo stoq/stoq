@@ -21,7 +21,7 @@ GtkDialog(toplevel): title='Receive Purchase Order', hidden
             GtkBox(step.hbox1, orientation=horizontal, fill=True):
               GtkButton(step.edit_btn): 'gtk-edit', insensitive
               GtkLabel(step.label1, expand=True, fill=True): 'Total Received:'
-              ProxyLabel(step.total_received, fill=True): '<span >$1500.00</span>'
+              ProxyLabel(step.total_received, fill=True): '<span >$1,500.00</span>'
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
         GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):

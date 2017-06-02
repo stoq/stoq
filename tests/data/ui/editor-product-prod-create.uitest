@@ -189,7 +189,7 @@ GtkDialog(main_dialog.toplevel): title='Add Product', hidden
                     column: title='Total'
                   SummaryLabel(component_label, fill=True):
                     GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
-                    GtkLabel(): '<b>$ 0.00</b>'
+                    GtkLabel(): '<b>$0.00</b>'
                 GtkBox(hbox3, orientation=horizontal, fill=True):
                   GtkButton(remove_button): 'gtk-remove', insensitive
                   GtkButton(edit_button): 'gtk-edit', insensitive

@@ -450,7 +450,7 @@ class TestClient(_PersonFacetTest, DomainTest):
 
         items = Client.get_active_items(self.store)
         self.assertEquals(len(items), 5)
-        self.assertEquals(items[4][0], u'fancy (Company)')
+        self.assertEquals(items[1][0], u'fancy (Company)')
 
     def test_get_status_string(self):
         client = self.create_client()
@@ -1069,7 +1069,7 @@ class TestBranch(_PersonFacetTest, DomainTest):
 
         items = Branch.get_active_items(self.store)
         self.assertEquals(len(items), 3)
-        self.assertEquals(items[2][0], u'fancy')
+        self.assertEquals(items[0][0], u'fancy')
 
     def test_set_acronym(self):
         branch = self.create_branch()

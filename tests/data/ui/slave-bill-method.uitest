@@ -33,7 +33,7 @@ GtkFrame(toplevel):
           row: '1/1 Bill for order 12345', None, date.today(), <currency $200>
         GtkBox(hbox1, orientation=horizontal):
           ProxyLabel(difference_status_label, expand=True, fill=True): '<span >Difference</span>'
-          ProxyLabel(difference_label, fill=True): '<span >$ 0.00</span>'
+          ProxyLabel(difference_label, fill=True): '<span >$0.00</span>'
         GtkBox(hbox2, orientation=horizontal):
           ProxyLabel(total_status_label, expand=True, fill=True): 'Total:'
           ProxyLabel(total_label, fill=True): '<span >$200.00</span>'

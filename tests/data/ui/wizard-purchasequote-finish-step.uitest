@@ -30,8 +30,8 @@ GtkDialog(toplevel): title='New Quote', hidden
 model: PurchaseOrder<1>
   confirm_date: None
   consigned: False
-  discount_value: <currency $ 0>
-  expected_freight: <currency $ 0>
+  discount_value: <currency $0>
+  expected_freight: <currency $0>
   expected_pay_date: datetime.today()
   expected_receival_date: datetime.today()
   freight_type: 'fob'
@@ -41,5 +41,5 @@ model: PurchaseOrder<1>
   receival_date: None
   salesperson_name: ''
   status: 'quoting'
-  surcharge_value: <currency $ 0>
+  surcharge_value: <currency $0>
 

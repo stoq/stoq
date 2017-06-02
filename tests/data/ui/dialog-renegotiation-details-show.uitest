@@ -22,16 +22,16 @@ GtkBox(vbox1, orientation=vertical):
           column: title='Description', expand
           column: title='Open date'
           column: title='Total'
-          row: 'Renegotiation 00444', datetime.today(), <currency $ 0>
+          row: 'Renegotiation 00444', datetime.today(), <currency $0>
       GtkTable(table2, fill=True):
         GtkLabel(label4): 'Subtotal:'
-        ProxyLabel(subtotal_lbl): '<span >$ 0.00</span>'
+        ProxyLabel(subtotal_lbl): '<span >$0.00</span>'
         GtkLabel(label8): 'Discount:'
-        ProxyLabel(discount_lbl): '<span >$ 0.00</span>'
+        ProxyLabel(discount_lbl): '<span >$0.00</span>'
         GtkLabel(label7): 'Surcharge:'
-        ProxyLabel(surcharge_lbl): '<span >$ 0.00</span>'
+        ProxyLabel(surcharge_lbl): '<span >$0.00</span>'
         GtkLabel(label3): 'Total:'
-        ProxyLabel(total_lbl): '<span >$ 0.00</span>'
+        ProxyLabel(total_lbl): '<span >$0.00</span>'
     GtkBox(payments_vbox, orientation=vertical):
       ObjectList(payments_list, expand=True, fill=True):
         column: title='Payment #'
@@ -44,7 +44,7 @@ GtkBox(vbox1, orientation=vertical):
         column: title='Paid value'
       SummaryLabel(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
-        GtkLabel(): '<b>$ 0.00</b>'
+        GtkLabel(): '<b>$0.00</b>'
     GtkBox(vbox3, orientation=vertical):
       ObjectList(payments_info_list, expand=True, fill=True):
         column: title='When'

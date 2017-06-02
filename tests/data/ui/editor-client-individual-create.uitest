@@ -134,13 +134,13 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                               ProxyLabel(kiwilabel1): 'Credit Limit ($CURRENCY):'
                               ProxyEntry(credit_limit): '0.00'
                               GtkLabel(label2): 'Available Credit:'
-                              ProxyLabel(remaining_store_credit): '<span >$ 0.00</span>'
+                              ProxyLabel(remaining_store_credit): '<span >$0.00</span>'
                           GtkLabel(label3): '<b>Store Credit</b>'
                         GtkFrame(frame1, expand=True, fill=True):
                           GtkAlignment(alignment1):
                             GtkTable(table1):
                               GtkLabel(label5): 'Available:'
-                              ProxyLabel(credit_account_balance): '<span >$ 0.00</span>'
+                              ProxyLabel(credit_account_balance): '<span >$0.00</span>'
                               GtkButton(credit_transactions_button):
                               GtkButton(print_credit_letter): 'gtk-print'
                           GtkLabel(label6): '<b>Credit</b>'

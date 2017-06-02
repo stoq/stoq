@@ -39,7 +39,7 @@ GtkDialog(toplevel): title='Till history', hidden
             column: title='Value'
           SummaryLabel(summary_label):
             GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
-            GtkLabel(): '<b>$ 0.00</b>'
+            GtkLabel(): '<b>$0.00</b>'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):

@@ -21,7 +21,7 @@ GtkDialog(toplevel): title='Search for cost centers', hidden
             column: title='Name', expand
             column: title='Budget'
             column: title='Active'
-            row: 'Cost Center', <currency $ 0>, True
+            row: 'Cost Center', <currency $0>, True
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):

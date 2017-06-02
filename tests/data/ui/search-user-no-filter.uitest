@@ -22,11 +22,11 @@ GtkDialog(toplevel): title='User Search', hidden
             column: title='Profile'
             column: title='Name', expand
             column: title='Status'
-            row: 'Bart', 'assistant', 'individual', 'Active'
-            row: 'Homer', 'assistant', 'individual', 'Active'
             row: 'admin', 'Administrator', 'Administrator', 'Active'
+            row: 'Bart', 'assistant', 'individual', 'Active'
             row: 'elias', 'Salesperson', 'Deivis Alexandre Junior', 'Active'
             row: 'gigi', 'Manager', 'Osvaldo Denadai Marin', 'Active'
+            row: 'Homer', 'assistant', 'individual', 'Active'
             row: 'r9madrid', 'Salesperson', 'Maria Aparecida Ardana', 'Active'
             row: 'regi', 'Salesperson', 'Cleusa Blanc Ferreira Norbiato', 'Active'
       GtkBox(orientation=horizontal, fill=True):

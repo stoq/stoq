@@ -165,7 +165,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Purchase', hidden
             GtkVSeparator():
         SummaryLabel(summary_label):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Orders total:</b>'
-          GtkLabel(): '<b>$7930.00</b>'
+          GtkLabel(): '<b>$7,930.00</b>'
         StatusButton(pack-end):
 
 popup: PurchaseSelection

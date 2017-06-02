@@ -37,8 +37,8 @@ GtkDialog(toplevel): title='Item search', hidden
             row: '07', '9586249534513', 'Algod\xe3o', 'Casaco Vilan', '', None, '', Decimal('503.00'), Decimal('3.000')
             row: '04', '2692149835416', 'Chinelos', 'Chinelo de Dedo', '', None, '', Decimal('79.00'), Decimal('3.000')
             row: '13', '1568749622849', None, 'Confec\xe7\xe3o Personalizada', None, None, None, Decimal('150.00'), Decimal('0')
-            row: '12', '3569587451214', None, 'Lavagem Roupa', None, None, None, Decimal('35.00'), Decimal('0')
             row: '14', '1569854136511', None, 'Lavagem a Seco', None, None, None, Decimal('55.00'), Decimal('0')
+            row: '12', '3569587451214', None, 'Lavagem Roupa', None, None, None, Decimal('35.00'), Decimal('0')
             row: '02', '6234564656756', 'Bermudas Shorts', 'Shorts com Costuras', '', None, '', Decimal('198.00'), Decimal('3.000')
             row: '10', '1598756984265', 'Viscose', 'Vestido Vadalena', '', None, '', Decimal('383.00'), Decimal('4.000')
       GtkBox(orientation=horizontal, fill=True):

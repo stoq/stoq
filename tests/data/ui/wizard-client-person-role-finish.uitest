@@ -132,13 +132,13 @@ GtkDialog(toplevel): title='New Client', hidden
                           ProxyLabel(): 'Credit Limit ($CURRENCY):'
                           ProxyEntry(): '0.00'
                           GtkLabel(): 'Available Credit:'
-                          ProxyLabel(): '<span >$ 0.00</span>'
+                          ProxyLabel(): '<span >$0.00</span>'
                       GtkLabel(): '<b>Store Credit</b>'
                     GtkFrame(expand=True, fill=True):
                       GtkAlignment():
                         GtkTable():
                           GtkLabel(): 'Available:'
-                          ProxyLabel(): '<span >$ 0.00</span>'
+                          ProxyLabel(): '<span >$0.00</span>'
                           GtkButton():
                           GtkButton(): 'gtk-print'
                       GtkLabel(): '<b>Credit</b>'
@@ -154,8 +154,8 @@ GtkDialog(toplevel): title='New Client', hidden
       GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
 
 model: Client<1>
-  salary: <currency $ 0>
-  credit_limit: <currency $ 0>
+  salary: <currency $0>
+  credit_limit: <currency $0>
   days_late: 0
   person_id: Person<2>
   status: 'solvent'

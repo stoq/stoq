@@ -11,7 +11,7 @@ GtkDialog(main_dialog.toplevel): title='Inventory Details', hidden
             GtkLabel(label14): 'Invoice Number:'
             ProxyLabel(invoice_number): '<span ></span>'
             GtkLabel(label1): 'Open Date:'
-            ProxyLabel(open_date): '<span >12/01/10</span>'
+            ProxyLabel(open_date): '<span >12/01/2010</span>'
             GtkLabel(label5): 'Branch:'
             ProxyLabel(branch_name): '<span >Moda Stoq</span>'
             GtkLabel(label6): 'Status:'

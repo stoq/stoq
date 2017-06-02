@@ -27,7 +27,7 @@ GtkDialog(toplevel): title='New Sale Quote', hidden
                 GtkLabel(step.expire_label): 'Expire:'
                 ProxyDateEntry(step.expire_date): None
                 GtkLabel(step.client_credit_lbl): 'Client Credit:'
-                GtkLabel(step.client_credit): '$ 0.00'
+                GtkLabel(step.client_credit): '$0.00'
                 GtkLabel(step.cfop_lbl): 'C.F.O.P.:', hidden
                 ProxyComboEntry(step.cfop): hidden
                 GtkButton(step.create_cfop): hidden

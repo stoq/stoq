@@ -43,7 +43,7 @@ model: ProductionOrder<1>
 model: ProductComponent<2>
   component_id: Product<4>
   design_reference: ''
-  price: <currency $ 0>
+  price: <currency $0>
   product_id: Product<3>
   quantity: Decimal('1.000')
 

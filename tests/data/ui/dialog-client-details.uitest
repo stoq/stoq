@@ -88,7 +88,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 column: title='Value'
               SummaryLabel(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Balance:</b>'
-                GtkLabel(): '<b>$ 0.00</b>'
+                GtkLabel(): '<b>$0.00</b>'
             stoqlib+gui+dialogs+clientdetails+CallsTab():
               ObjectTree(expand=True, fill=True):
                 column: title='Date'

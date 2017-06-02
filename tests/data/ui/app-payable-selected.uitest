@@ -130,7 +130,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts payable', hidden
                 column: title='Value'
                 column: title='Paid'
                 column: title='Category', hidden
-                row: 1, '1/1 Money for order 00001', None, None, 'Cia de Roupas S\xe3o Carlos', datetime.datetime(2008, 1, 1, 0, 0), None, 'To Pay', <currency $7930>, None, None
+                row: 1, '1/1 Money for order 00001', None, None, 'Cia de Roupas S\xe3o Carlos', datetime.datetime(2008, 1, 1, 0, 0), None, 'To Pay', <currency $7,930>, None, None
                 row: 67890, '1/1 Money for order 12345', None, None, 'Supplier', datetime.datetime(2012, 1, 1, 0, 0), None, 'To Pay', <currency $125>, None, None
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
@@ -145,7 +145,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts payable', hidden
             GtkVSeparator():
         LazySummaryLabel(summary_label):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Total</b>'
-          GtkLabel(): '<b>$8055.00</b>'
+          GtkLabel(): '<b>$8,055.00</b>'
         StatusButton(pack-end):
 
 popup: PayableSelection

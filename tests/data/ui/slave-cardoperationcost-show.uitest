@@ -6,7 +6,7 @@ ListContainer(toplevel):
     column: title='Days'
     column: title='Fee'
     column: title='Fare'
-    row: 'Velec Credit', '', 30, Decimal('0'), <currency $ 0>
+    row: 'Velec Credit', '', 30, Decimal('0'), <currency $0>
   GtkBox(orientation=vertical, fill=True, padding=6):
     GtkButton(fill=True): 'gtk-add'
     GtkButton(fill=True): 'gtk-remove', insensitive

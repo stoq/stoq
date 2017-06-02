@@ -31,7 +31,7 @@ model: Sale<2>
   cancel_reason: None
   close_date: None
   confirm_date: None
-  discount_value: <currency $ 0>
+  discount_value: <currency $0>
   expire_date: None
   invoice_id: Invoice<5>
   open_date: datetime.today()
@@ -39,11 +39,11 @@ model: Sale<2>
   return_date: None
   service_invoice_number: None
   status: 'ordered'
-  surcharge_value: <currency $ 0>
-  total_amount: <currency $ 0>
+  surcharge_value: <currency $0>
+  total_amount: <currency $0>
 
 model: SaleItem<3>
-  average_cost: <currency $ 0>
+  average_cost: <currency $0>
   base_price: <currency $10>
   completion_date: None
   estimated_fix_date: datetime.today()

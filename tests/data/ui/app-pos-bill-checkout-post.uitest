@@ -145,7 +145,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                     GtkButton(delivery_button): insensitive
                     GtkButton(edit_item_button): insensitive
                     GtkButton(remove_item_button): insensitive
-                ProxyLabel(order_total_label, expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $ 0.00</span>'
+                ProxyLabel(order_total_label, expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $0.00</span>'
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkBox(orientation=horizontal):
@@ -164,7 +164,7 @@ model: Sale<1>
   cancel_reason: None
   close_date: None
   confirm_date: datetime.today()
-  discount_value: <currency $ 0>
+  discount_value: <currency $0>
   expire_date: None
   group_id: PaymentGroup<2>
   invoice_id: Invoice<3>
@@ -173,7 +173,7 @@ model: Sale<1>
   return_date: None
   service_invoice_number: None
   status: 'confirmed'
-  surcharge_value: <currency $ 0>
+  surcharge_value: <currency $0>
   total_amount: <currency $383>
 
 model: PaymentGroup<2>
@@ -192,16 +192,16 @@ model: Payment<4>
   bill_received: False
   cancel_date: None
   description: '1/1 Bill for sale'
-  discount: <currency $ 0>
+  discount: <currency $0>
   due_date: datetime.today()
   group_id: PaymentGroup<2>
-  interest: <currency $ 0>
+  interest: <currency $0>
   open_date: datetime.today()
   paid_date: None
   paid_value: None
   payment_number: None
   payment_type: 'in'
-  penalty: <currency $ 0>
+  penalty: <currency $0>
   status: 'pending'
   value: <currency $383>
 
@@ -216,7 +216,7 @@ model: Sellable<5>
   max_discount: Decimal('0.00')
   notes: ''
   on_sale_end_date: None
-  on_sale_price: <currency $ 0>
+  on_sale_price: <currency $0>
   on_sale_start_date: None
   price_last_updated: datetime.today()
   status: 'available'

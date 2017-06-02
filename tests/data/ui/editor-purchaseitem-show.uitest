@@ -21,7 +21,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Purchase Item"', hidden
             GtkLabel(expected_lbl): 'Expected receival:'
             ProxyDateEntry(expected_receival_date): None, mandatory
             GtkLabel(total_lbl): 'Total:'
-            ProxyLabel(total): '<span >$1500.00</span>'
+            ProxyLabel(total): '<span >$1,500.00</span>'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

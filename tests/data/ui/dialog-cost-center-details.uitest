@@ -6,7 +6,7 @@ GtkBox(vbox1, orientation=vertical):
     GtkLabel(label3): 'Description:'
     ProxyLabel(description_lbl): '<span ></span>'
     GtkLabel(label2): 'Budget:'
-    ProxyLabel(budget_lbl): '<span >$ 0.00</span>'
+    ProxyLabel(budget_lbl): '<span >$0.00</span>'
   GtkNotebook(details_notebook, expand=True, fill=True):
     GtkBox(stock_transactions_vbox, orientation=vertical):
       ObjectList(stock_transactions_list, expand=True, fill=True):
@@ -33,10 +33,10 @@ GtkBox(vbox1, orientation=vertical):
         column: title='Paid value'
       SummaryLabel(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
-        GtkLabel(): '<b>$ 0.00</b>'
+        GtkLabel(): '<b>$0.00</b>'
       SummaryLabel(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total paid:</b>'
-        GtkLabel(): '<b>$ 0.00</b>'
+        GtkLabel(): '<b>$0.00</b>'
     GtkBox(sales_vbox, orientation=vertical):
       ObjectList(sales_list, expand=True, fill=True):
         column: title='Sale #'

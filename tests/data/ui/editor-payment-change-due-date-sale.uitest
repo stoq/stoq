@@ -11,7 +11,7 @@ GtkDialog(main_dialog.toplevel): title='Change payment due date', hidden
             ProxyLabel(client_supplier_lbl): 'Client:'
             ProxyLabel(name_lbl): '<span >Client</span>'
           GtkBox(due_date_box, orientation=horizontal, fill=True):
-            ProxyLabel(due_date_lbl, fill=True): '<span >Set current due date (01/01/01) to:</span>'
+            ProxyLabel(due_date_lbl, fill=True): '<span >Set current due date (01/01/2001) to:</span>'
             ProxyDateEntry(due_date, fill=True): None, mandatory
           GtkBox(status_box, orientation=horizontal, fill=True): hidden
             ProxyLabel(kiwilabel2, fill=True): 'Status:'

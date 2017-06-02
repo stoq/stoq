@@ -17,7 +17,7 @@ GtkDialog(toplevel): title='Purchase Finish', hidden
             row: 'Prod 2', Decimal('5.000'), Decimal('0.000'), None, <currency $125>, Decimal('0E-11')
           SummaryLabel(step.summary, fill=True):
             GtkLabel(expand=True, fill=True, padding=6): 'Total:'
-            GtkLabel(): '<b>$ 0.00</b>'
+            GtkLabel(): '<b>$0.00</b>'
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
         GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):

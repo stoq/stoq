@@ -7,7 +7,7 @@ GtkDialog(main_dialog.toplevel): title='Till Opening', hidden
         GtkBox(vbox1, orientation=vertical):
           GtkTable(table1, fill=True):
             GtkLabel(label1): 'Balance:'
-            ProxyLabel(balance): '<span >$ 0.00</span>'
+            ProxyLabel(balance): '<span >$0.00</span>'
             ProxyLabel(label2): 'Cash to add ($CURRENCY):'
             ProxyEntry(value): '0.00'
       GtkBox(orientation=horizontal, fill=True):

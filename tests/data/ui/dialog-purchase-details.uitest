@@ -7,7 +7,7 @@ GtkDialog(main_dialog.toplevel): title='Purchase Details', hidden
         GtkBox(vbox1, orientation=vertical):
           GtkTable(table1, fill=True):
             GtkLabel(label1): 'Open Date:'
-            ProxyLabel(open_date): '<span >01/01/12</span>'
+            ProxyLabel(open_date): '<span >01/01/2012</span>'
             GtkLabel(label5): 'Order Number:'
             ProxyLabel(identifier): '<span >00123</span>'
             GtkLabel(label2): 'Supplier:'
@@ -28,18 +28,18 @@ GtkDialog(main_dialog.toplevel): title='Purchase Details', hidden
                 column: title='Status'
                 column: title='Value'
                 column: title='Paid value'
-                row: 999, '1/1 Money for order 00123', datetime.datetime(2012, 1, 1, 0, 0), None, 'Preview', <currency $1000>, None
+                row: 999, '1/1 Money for order 00123', datetime.datetime(2012, 1, 1, 0, 0), None, 'Preview', <currency $1,000>, None
               GtkTable(table4, fill=True):
                 GtkLabel(label8): 'Discount:'
-                ProxyLabel(total_discount): '<span >$ 0.00</span>'
+                ProxyLabel(total_discount): '<span >$0.00</span>'
                 GtkLabel(label4): 'Penalty:'
-                ProxyLabel(total_penalty): '<span >$ 0.00</span>'
+                ProxyLabel(total_penalty): '<span >$0.00</span>'
                 ProxyLabel(kiwilabel16): 'Total Paid:'
-                ProxyLabel(total_paid): '<span >$ 0.00</span>'
+                ProxyLabel(total_paid): '<span >$0.00</span>'
                 GtkLabel(label7): 'Interest:'
-                ProxyLabel(total_interest): '<span >$ 0.00</span>'
+                ProxyLabel(total_interest): '<span >$0.00</span>'
                 GtkLabel(label10): 'Total:'
-                ProxyLabel(total_value): '<span >$1000.00</span>'
+                ProxyLabel(total_value): '<span >$1,000.00</span>'
             GtkBox(hbox2, orientation=horizontal):
               ObjectList(payments_info_list, expand=True, fill=True):
                 column: title='When'
@@ -57,7 +57,7 @@ GtkDialog(main_dialog.toplevel): title='Purchase Details', hidden
                 row: 'Description', Decimal('8.000'), <currency $125>, Decimal('1000.00000000000')
               SummaryLabel(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total</b>'
-                GtkLabel(): '<b>$1000.00</b>'
+                GtkLabel(): '<b>$1,000.00</b>'
             GtkBox(received_vbox, orientation=vertical):
               ObjectList(received_items, expand=True, fill=True):
                 column: title='Description', expand
@@ -68,13 +68,13 @@ GtkDialog(main_dialog.toplevel): title='Purchase Details', hidden
                 row: 'Description', Decimal('0.000'), <currency $125>, Decimal('0E-11'), None
               GtkTable(table2, pack-end):
                 ProxyLabel(kiwilabel2): 'Discount:'
-                ProxyLabel(total_discounts): '<span >$ 0.00</span>'
+                ProxyLabel(total_discounts): '<span >$0.00</span>'
                 ProxyLabel(kiwilabel6): 'Subtotal:'
-                ProxyLabel(receiving_subtotal): '<span >$ 0.00</span>'
+                ProxyLabel(receiving_subtotal): '<span >$0.00</span>'
                 ProxyLabel(kiwilabel4): 'Surcharge:'
-                ProxyLabel(total_surcharges): '<span >$ 0.00</span>'
+                ProxyLabel(total_surcharges): '<span >$0.00</span>'
                 ProxyLabel(kiwilabel8): 'Total:'
-                ProxyLabel(receiving_total): '<span >$ 0.00</span>'
+                ProxyLabel(receiving_total): '<span >$0.00</span>'
             GtkBox(additional_info_vbox, orientation=vertical):
               GtkTable(table3, fill=True):
                 ProxyLabel(kiwilabel10): 'Salesperson:'
@@ -87,11 +87,11 @@ GtkDialog(main_dialog.toplevel): title='Purchase Details', hidden
                 ProxyLabel(kiwilabel9): 'Agreed Freight Type:'
                 ProxyLabel(freight_type): '<span >FOB</span>'
                 ProxyLabel(kiwilabel11): 'Expected Freight Value:'
-                ProxyLabel(expected_freight): '<span >$ 0.00</span>'
+                ProxyLabel(expected_freight): '<span >$0.00</span>'
                 ProxyLabel(received_freight_type_label): 'Received Freight Type:', hidden
                 ProxyLabel(received_freight_type): '<span ></span>', hidden
                 ProxyLabel(received_freight_label): 'Received Freight Value:', hidden
-                ProxyLabel(received_freight): '<span >$ 0.00</span>', hidden
+                ProxyLabel(received_freight): '<span >$0.00</span>', hidden
             GtkBox(vbox2, orientation=vertical):
               GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
                 ProxyTextView(notes):

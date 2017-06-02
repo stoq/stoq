@@ -40,7 +40,7 @@ GtkDialog(toplevel): title='Sale Checkout', hidden
                       row: '1/1 Deposit for sale 12345', None, date.today(), <currency $10>
                     GtkBox(hbox1, orientation=horizontal):
                       ProxyLabel(difference_status_label, expand=True, fill=True): '<span >Difference</span>'
-                      ProxyLabel(difference_label, fill=True): '<span >$ 0.00</span>'
+                      ProxyLabel(difference_label, fill=True): '<span >$0.00</span>'
                     GtkBox(hbox2, orientation=horizontal):
                       ProxyLabel(total_status_label, expand=True, fill=True): 'Total:'
                       ProxyLabel(total_label, fill=True): '<span >$10.00</span>'
@@ -60,7 +60,7 @@ model: Sale<1>
   cancel_reason: None
   close_date: None
   confirm_date: None
-  discount_value: <currency $ 0>
+  discount_value: <currency $0>
   expire_date: None
   group_id: PaymentGroup<2>
   invoice_id: Invoice<3>
@@ -69,8 +69,8 @@ model: Sale<1>
   return_date: None
   service_invoice_number: None
   status: 'ordered'
-  surcharge_value: <currency $ 0>
-  total_amount: <currency $ 0>
+  surcharge_value: <currency $0>
+  total_amount: <currency $0>
 
 model: PaymentGroup<2>
 
@@ -88,16 +88,16 @@ model: Payment<4>
   bill_received: False
   cancel_date: None
   description: '1/1 Deposit for sale'
-  discount: <currency $ 0>
+  discount: <currency $0>
   due_date: datetime.today()
   group_id: PaymentGroup<2>
-  interest: <currency $ 0>
+  interest: <currency $0>
   open_date: datetime.today()
   paid_date: None
   paid_value: None
   payment_number: None
   payment_type: 'in'
-  penalty: <currency $ 0>
+  penalty: <currency $0>
   status: 'preview'
   value: <currency $10>
 
@@ -105,24 +105,24 @@ model: Sellable<5>
   barcode: ''
   base_price: <currency $10>
   code: ''
-  commission: <currency $ 0>
+  commission: <currency $0>
   cost: <currency $125>
   cost_last_updated: datetime.today()
   description: 'Description'
   max_discount: Decimal('0')
   notes: ''
   on_sale_end_date: None
-  on_sale_price: <currency $ 0>
+  on_sale_price: <currency $0>
   on_sale_start_date: None
   price_last_updated: datetime.today()
   status: 'available'
 
 model: ProductStockItem<6>
   quantity: Decimal('100.000')
-  stock_cost: <currency $ 0>
+  stock_cost: <currency $0>
 
 model: SaleItem<7>
-  average_cost: <currency $ 0>
+  average_cost: <currency $0>
   base_price: <currency $10>
   completion_date: None
   estimated_fix_date: datetime.today()

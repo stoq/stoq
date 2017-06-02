@@ -29,7 +29,7 @@ GtkBox(toplevel, orientation=vertical):
         column: title='Total Cost'
       SummaryLabel(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
-        GtkLabel(): '<b>$ 0.00</b>'
+        GtkLabel(): '<b>$0.00</b>'
     GtkBox(hbox1, orientation=horizontal):
       GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
         ProxyTextView(comments):

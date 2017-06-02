@@ -31,7 +31,7 @@ GtkDialog(toplevel): title='Sale with work order', hidden
                 GtkLabel(step.expire_label): 'Expire'
                 ProxyDateEntry(step.expire_date): None
                 GtkLabel(step.client_credit_lbl): 'Client Credit:'
-                GtkLabel(step.client_credit): '$ 0.00'
+                GtkLabel(step.client_credit): '$0.00'
                 GtkLabel(step.wo_categories_lbl): 'W.O. Category:'
                 ProxyComboBox(step.wo_categories):
                   item: 'No category', selected

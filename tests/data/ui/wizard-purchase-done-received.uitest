@@ -64,8 +64,8 @@ GtkDialog(toplevel): title='New Order', hidden
 model: PurchaseOrder<1>
   confirm_date: datetime.today()
   consigned: False
-  discount_value: <currency $ 0>
-  expected_freight: <currency $ 0>
+  discount_value: <currency $0>
+  expected_freight: <currency $0>
   expected_pay_date: datetime.today()
   expected_receival_date: datetime.datetime(2010, 1, 4, 0, 0)
   freight_type: 'fob'
@@ -76,7 +76,7 @@ model: PurchaseOrder<1>
   receival_date: None
   salesperson_name: ''
   status: 'closed'
-  surcharge_value: <currency $ 0>
+  surcharge_value: <currency $0>
 
 model: PurchaseItem<2>
   base_cost: <currency $125>
@@ -93,16 +93,16 @@ model: Payment<3>
   bill_received: False
   cancel_date: None
   description: '1/1 Bill for order 12345'
-  discount: <currency $ 0>
+  discount: <currency $0>
   due_date: datetime.today()
   group_id: PaymentGroup<4>
-  interest: <currency $ 0>
+  interest: <currency $0>
   open_date: datetime.today()
   paid_date: None
   paid_value: None
   payment_number: None
   payment_type: 'out'
-  penalty: <currency $ 0>
+  penalty: <currency $0>
   status: 'pending'
   value: <currency $125>
 
@@ -110,19 +110,19 @@ model: PaymentGroup<4>
 
 model: ReceivingOrder<5>
   confirm_date: None
-  discount_value: <currency $ 0>
-  expense_value: <currency $ 0>
-  freight_total: <currency $ 0>
+  discount_value: <currency $0>
+  expense_value: <currency $0>
+  freight_total: <currency $0>
   freight_type: 'fob-installments'
-  icms_total: <currency $ 0>
+  icms_total: <currency $0>
   invoice_number: 67890
   invoice_total: <currency $125>
-  ipi_total: <currency $ 0>
+  ipi_total: <currency $0>
   notes: ''
   receival_date: datetime.today()
-  secure_value: <currency $ 0>
+  secure_value: <currency $0>
   status: 'pending'
-  surcharge_value: <currency $ 0>
+  surcharge_value: <currency $0>
 
 model: ReceivingOrderItem<6>
   cost: <currency $125>
