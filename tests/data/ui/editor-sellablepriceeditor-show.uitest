@@ -4,7 +4,7 @@ GtkDialog(main_dialog.toplevel): title='Price settings', hidden
     GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave SellablePriceEditor is attached
-        GtkBox(toplevel, orientation=vertical):
+        GtkBox(vbox1, orientation=vertical):
           GtkTable(table2, fill=True):
             GtkLabel(label1): 'Base Cost:'
             ProxyLabel(cost): '<span >$125.00</span>'
@@ -18,7 +18,7 @@ GtkDialog(main_dialog.toplevel): title='Price settings', hidden
             GtkLabel(label12): '%'
           GtkHSeparator(hseparator2, fill=True):
           GtkEventBox(on_sale_holder, fill=True): slave OnSaleInfoSlave is attached
-            GtkBox(toplevel, orientation=vertical):
+            GtkBox(vbox1, orientation=vertical):
               ProxyLabel(kiwilabel1, fill=True): '<u>Currently on Sale:</u>'
               GtkTable(table1, fill=True):
                 ProxyLabel(price_label): 'Price ($CURRENCY):'
@@ -29,7 +29,7 @@ GtkDialog(main_dialog.toplevel): title='Price settings', hidden
                 ProxyLabel(kiwilabel4): 'To:'
                 ProxyDateEntry(on_sale_end_date): None
           GtkEventBox(on_commission_data_holder, expand=True, fill=True): slave CommissionSlave is attached
-            GtkBox(toplevel, orientation=vertical):
+            GtkBox(vbox1, orientation=vertical):
               ProxyCheckButton(commission_check_btn, padding=5): ' No Commission', active
               GtkTable(table1, fill=True):
                 GtkLabel(label1): 'Direct sale commission:'
@@ -46,6 +46,6 @@ GtkDialog(main_dialog.toplevel): title='Price settings', hidden
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(main_dialog.action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
         GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

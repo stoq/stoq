@@ -1,5 +1,5 @@
 dialog: RenegotiationDetailsDialog
-GtkBox(toplevel, orientation=vertical):
+GtkBox(vbox1, orientation=vertical):
   GtkTable(table1, fill=True):
     GtkLabel(label9): '<b>Renegotiation Number:</b>'
     ProxyLabel(identifier): '<span >00333</span>'

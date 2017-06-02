@@ -1,5 +1,5 @@
 search: ParameterSearch
-GtkBox(toplevel, orientation=vertical):
+GtkBox(vbox1, orientation=vertical):
   GtkBox(hbox1, orientation=horizontal, fill=True):
     GtkLabel(label8, fill=True): 'Filter:'
     GtkEntry(entry, expand=True, fill=True): 'city default'

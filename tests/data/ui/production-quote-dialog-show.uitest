@@ -1,5 +1,5 @@
 dialog: ProductionQuoteDialog
-GtkBox(toplevel, orientation=vertical):
+GtkBox(vbox1, orientation=vertical):
   GtkLabel(label1): '<b>Select the orders to generate a quote group for purchase:</b>'
   ObjectList(productions, expand=True, fill=True, padding=6):
     column: title=' '

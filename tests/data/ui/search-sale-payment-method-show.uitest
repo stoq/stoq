@@ -36,7 +36,7 @@ GtkDialog(toplevel): title='Search for Sales by Payment Method', hidden
                   item: 'Online'
                   item: 'Store Credit'
                   item: 'Trade'
-          SearchResultListView(result_view, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Sale #'
             column: title='Date Started'
             column: title='Client', expand
@@ -47,12 +47,12 @@ GtkDialog(toplevel): title='Search for Sales by Payment Method', hidden
             row: 3, datetime.datetime(2008, 9, 1, 0, 0), 'Luis Sergio da Silva Marin', 'Moda Stoq', 'Deivis Alexandre Junior', Decimal('3.000'), <currency $873>
             row: 2, datetime.datetime(2008, 6, 1, 0, 0), 'Alessandra Almeida Itaber\xe1', 'Moda Stoq', 'Deivis Alexandre Junior', Decimal('3.000'), <currency $706>
             row: 1, datetime.datetime(2008, 1, 1, 0, 0), 'Vitalina Claudino', 'Moda Stoq', 'Deivis Alexandre Junior', Decimal('3.000'), <currency $436>
-          SummaryLabel(_summary_label):
+          SummaryLabel(summary_label):
             GtkLabel(expand=True, fill=True, padding=6): 'Total:'
             GtkLabel(): '<b>$2015.00</b>'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SaleListToolbar is attached
-          GtkAlignment(alignment1):
+          GtkAlignment(toplevel):
             GtkButtonBox(hbuttonbox1, orientation=horizontal):
               GtkButton(return_sale_button, expand=True, fill=True): insensitive
               GtkButton(edit_button, expand=True, fill=True): insensitive
@@ -62,6 +62,6 @@ GtkDialog(toplevel): title='Search for Sales by Payment Method', hidden
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
         GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive

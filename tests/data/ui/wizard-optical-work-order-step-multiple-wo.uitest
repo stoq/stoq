@@ -4,10 +4,10 @@ GtkDialog(toplevel): title='Sale with work order', hidden
     GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave OpticalWorkOrderStep is attached
-        GtkBox(step.toplevel, orientation=vertical):
+        GtkBox(step.vbox1, orientation=vertical):
           GtkNotebook(step.work_orders_nb, expand=True, fill=True):
             GtkEventBox(): slave WorkOrderOpticalSlave is attached
-              GtkBox(toplevel, orientation=vertical):
+              GtkBox(vbox1, orientation=vertical):
                 GtkTable(table1, fill=True):
                   GtkLabel(label3): 'Medic:'
                   ProxyComboEntry(medic_combo): mandatory
@@ -99,7 +99,7 @@ GtkDialog(toplevel): title='Sale with work order', hidden
                           item: 'Closed ring'
                           item: 'Nylon String'
             GtkEventBox(): slave WorkOrderOpticalSlave is attached
-              GtkBox(toplevel, orientation=vertical):
+              GtkBox(vbox1, orientation=vertical):
                 GtkTable(table1, fill=True):
                   GtkLabel(label3): 'Medic:'
                   ProxyComboEntry(medic_combo): mandatory
@@ -191,7 +191,7 @@ GtkDialog(toplevel): title='Sale with work order', hidden
                           item: 'Closed ring'
                           item: 'Nylon String'
             GtkEventBox(): slave WorkOrderOpticalSlave is attached
-              GtkBox(toplevel, orientation=vertical):
+              GtkBox(vbox1, orientation=vertical):
                 GtkTable(table1, fill=True):
                   GtkLabel(label3): 'Medic:'
                   ProxyComboEntry(medic_combo): mandatory

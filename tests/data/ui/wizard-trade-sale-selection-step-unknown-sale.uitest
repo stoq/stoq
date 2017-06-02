@@ -4,7 +4,7 @@ GtkDialog(toplevel): title='Trade Sale Order', hidden
     GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave SaleReturnSelectionStep is attached
-        GtkBox(step.toplevel, orientation=vertical):
+        GtkBox(step.vbox1, orientation=vertical):
           GtkEventBox(step.place_holder, expand=True, fill=True):
             GtkBox(_main_vbox, orientation=vertical):
               GtkBox(vbox, orientation=vertical, expand=True, fill=True):
@@ -40,7 +40,7 @@ GtkDialog(toplevel): title='Trade Sale Order', hidden
                             item: 'Cancelled'
                             item: 'Returned'
                             item: 'Renegotiated'
-                    SearchResultListView(result_view, expand=True, fill=True): insensitive
+                    SearchResultListView(results, expand=True, fill=True): insensitive
                       column: title='Sale #'
                       column: title='Date Started'
                       column: title='Client', expand
@@ -55,14 +55,14 @@ GtkDialog(toplevel): title='Trade Sale Order', hidden
                   GtkEventBox(print_holder, expand=True, fill=True):
                   GtkEventBox(notice, fill=True):
                   GtkEventBox(details_holder, padding=6, pack-end): slave _SearchDialogDetailsSlave is attached
-                    GtkBox(toplevel, orientation=vertical):
+                    GtkBox(vbox1, orientation=vertical):
                       GtkBox(hbox1, orientation=horizontal, fill=True):
                         GtkLabel(label3, expand=True, fill=True):
                         GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
                           GtkButton(details_button, expand=True, fill=True):
                           GtkButton(print_button, expand=True, fill=True): 'gtk-print', hidden
               GtkBox(orientation=horizontal, fill=True, pack-end):
-                GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+                GtkButtonBox(action_area, orientation=horizontal, fill=True, pack-end):
                   GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
                   GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
           GtkCheckButton(step.unknown_sale_check, fill=True): 'The sale is not listed here', active

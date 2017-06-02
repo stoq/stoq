@@ -6,7 +6,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Stock decrease item"', 
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave StockDecreaseItemEditor is attached
         GtkNotebook(toplevel):
           GtkEventBox(item-holder): slave StockDecreaseItemSlave is attached
-            GtkBox(toplevel, orientation=vertical):
+            GtkBox(vbox1, orientation=vertical):
               GtkTable(table1):
                 GtkLabel(label2): 'Description:'
                 ProxyLabel(description):
@@ -17,7 +17,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Stock decrease item"', 
                 GtkLabel(label4): 'Quantity:'
                 ProxySpinButton(quantity): '1.00'
           GtkEventBox(): slave InvoiceItemIcmsSlave is attached
-            GtkTable(table1):
+            GtkTable(toplevel):
               GtkLabel(template_label): 'Template:'
               ProxyComboBox(template):
                 item: None, selected
@@ -109,7 +109,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Stock decrease item"', 
               GtkLabel(v_cred_icms_sn_label): 'Valor ICMS SN:'
               ProxyEntry(v_cred_icms_sn): '', insensitive
           GtkEventBox(): slave InvoiceItemIpiSlave is attached
-            GtkBox(toplevel, orientation=vertical):
+            GtkBox(vbox1, orientation=vertical):
               GtkTable(table1, fill=True):
                 GtkLabel(template_label): 'Template:'
                 ProxyComboBox(template):
@@ -156,7 +156,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Stock decrease item"', 
                 GtkLabel(v_ipi_label): 'Valor do IPI'
                 ProxyEntry(v_ipi): '0.00', ineditable, insensitive
           GtkEventBox(): slave InvoiceItemPisSlave is attached
-            GtkBox(toplevel, orientation=vertical):
+            GtkBox(vbox1, orientation=vertical):
               GtkTable(table1, fill=True):
                 GtkLabel(template_label): 'Template:'
                 ProxyComboBox(template):
@@ -205,7 +205,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Stock decrease item"', 
                 GtkLabel(v_pis_label): 'Valor do PIS:'
                 ProxyEntry(v_pis): '0.00', insensitive
           GtkEventBox(): slave InvoiceItemCofinsSlave is attached
-            GtkBox(toplevel, orientation=vertical):
+            GtkBox(vbox1, orientation=vertical):
               GtkTable(table1, fill=True):
                 GtkLabel(template_label): 'Template:'
                 ProxyComboBox(template):
@@ -259,6 +259,6 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Stock decrease item"', 
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(main_dialog.action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
         GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

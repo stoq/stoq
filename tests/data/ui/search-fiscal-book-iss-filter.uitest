@@ -29,7 +29,7 @@ GtkDialog(toplevel): title='Search for fiscal entries', hidden
                     item: 'Does Not Contain'
                   GtkEntry(search_entry, padding=6): ''
                 stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
-          SearchResultListView(result_view, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Date'
             column: title='Invoice'
             column: title='C.F.O.P.'
@@ -41,7 +41,7 @@ GtkDialog(toplevel): title='Search for fiscal entries', hidden
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
         GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
         GtkButton(edit_button, padding=6): 'Edit', insensitive

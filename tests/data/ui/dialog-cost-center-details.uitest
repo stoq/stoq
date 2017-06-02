@@ -1,5 +1,5 @@
 dialog: CostCenterDialog
-GtkBox(toplevel, orientation=vertical):
+GtkBox(vbox1, orientation=vertical):
   GtkTable(table1, fill=True, padding=5):
     GtkLabel(label1): 'Name:'
     ProxyLabel(name_lbl): '<span >Cost Center</span>'

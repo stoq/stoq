@@ -4,7 +4,7 @@ GtkDialog(toplevel): title='Sale with work order', hidden
     GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave OpticalStartSaleQuoteStep is attached
-        GtkBox(step.toplevel, orientation=vertical):
+        GtkBox(step.vbox1, orientation=vertical):
           GtkBox(step.hbox1, orientation=horizontal, fill=True):
             GtkBox(step.vbox3, orientation=vertical, expand=True, fill=True):
               GtkTable(step.table3, fill=True):

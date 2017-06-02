@@ -1,5 +1,5 @@
 slave: SelectPaymentMethodSlave
-GtkBox(toplevel, orientation=vertical):
+GtkBox(vbox1, orientation=vertical):
   GtkFrame(frame1, expand=True, fill=True):
     GtkBox(methods_box, orientation=horizontal):
       GtkRadioButton(padding=6): 'Money', active

@@ -4,7 +4,7 @@ GtkDialog(toplevel): title='New Branch', hidden
     GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave PersonRoleTypeStep is attached
-        GtkBox(step.toplevel, orientation=vertical):
+        GtkBox(step.vbox1, orientation=vertical):
           ProxyLabel(step.person_role_label, fill=True): '<span size="large" weight="bold">Adding a branch</span>'
           GtkTable(step.table1, fill=True, padding=6):
             ProxyLabel(step.kiwilabel2):

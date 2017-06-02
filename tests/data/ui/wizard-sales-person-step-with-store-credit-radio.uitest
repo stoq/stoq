@@ -4,7 +4,7 @@ GtkDialog(toplevel): title='Sale Checkout', hidden
     GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave SalesPersonStep is attached
-        GtkBox(step.toplevel, orientation=vertical):
+        GtkBox(step.vbox1, orientation=vertical):
           GtkTable(step.data_table, fill=True):
             ProxyLabel(step.salesperson_lbl): 'Salesperson:'
             ProxyComboEntry(step.salesperson): insensitive
@@ -47,7 +47,7 @@ GtkDialog(toplevel): title='Sale Checkout', hidden
               GtkButton(step.observations_button, pack-end): 'Observations...'
           GtkBox(step.total_box, orientation=horizontal, expand=True, fill=True):
             GtkEventBox(step.cash_change_holder, expand=True, fill=True): slave CashChangeSlave is attached
-              GtkBox(toplevel, orientation=vertical):
+              GtkBox(vbox1, orientation=vertical):
                 GtkTable(table1, padding=6):
                   ProxyLabel(kiwilabel1): 'Received: ($CURRENCY)'
                   ProxyEntry(received_value): '$100.00'
@@ -56,7 +56,7 @@ GtkDialog(toplevel): title='Sale Checkout', hidden
                   ProxyCheckButton(credit_checkbutton): 'Create credit for future sales', hidden
             GtkExpander(step.subtotal_expander, expand=True, fill=True):
               GtkEventBox(step.discount_surcharge_slave): slave SaleDiscountSlave is attached
-                GtkBox(toplevel, orientation=vertical):
+                GtkBox(vbox1, orientation=vertical):
                   GtkBox(hbox6, orientation=horizontal, fill=True):
                     ProxyLabel(kiwilabel9, fill=True): 'Discount:'
                   GtkTable(table1, fill=True):
@@ -70,7 +70,7 @@ GtkDialog(toplevel): title='Sale Checkout', hidden
                       GtkLabel(label4, expand=True, fill=True):
               GtkLabel(step.label2): 'Order Details'
           GtkEventBox(step.select_method_holder, fill=True, pack-end): slave SelectPaymentMethodSlave is attached
-            GtkBox(toplevel, orientation=vertical):
+            GtkBox(vbox1, orientation=vertical):
               GtkFrame(frame1, expand=True, fill=True):
                 GtkBox(methods_box, orientation=horizontal):
                   GtkRadioButton(padding=6): 'Money', active

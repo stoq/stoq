@@ -23,7 +23,6 @@
 ##
 
 import datetime
-import inspect
 import os
 import re
 import sys
@@ -32,7 +31,7 @@ import traceback
 from gi.repository import Gtk, GObject
 from kiwi.interfaces import IValidatableProxyWidget
 from kiwi.ui.objectlist import ObjectList, ObjectTree
-from kiwi.ui.views import SignalProxyObject, SlaveView
+from kiwi.ui.views import SlaveView
 from kiwi.ui.widgets.combo import ProxyComboBox, ProxyComboEntry
 from kiwi.ui.widgets.entry import ProxyDateEntry
 from storm.info import get_cls_info
@@ -72,18 +71,16 @@ class GUIDumper(object):
         self.failures = []
 
     def _add_namespace(self, obj, prefix=''):
-        for attr, value in obj.__dict__.items():
+        for attr in dir(obj):
             try:
-                self._items[hash(value)] = prefix + attr
+                value = getattr(obj, attr)
+            except RuntimeError:
+                # This happens in 3 tests when attr is bin
+                continue
+            try:
+                self._items[value] = prefix + attr
             except TypeError:
                 continue
-
-        for cls in inspect.getmro(obj.__class__):
-            for attr, value in cls.__dict__.items():
-                if isinstance(value, SignalProxyObject):
-                    instance_value = getattr(obj, attr, None)
-                    if instance_value is not None:
-                        self._items[hash(instance_value)] = prefix + attr
 
         if isinstance(obj, SlaveView):
             for name, slave in obj.slaves.items():
@@ -181,7 +178,7 @@ class GUIDumper(object):
         extra = extra or []
 
         line_props = []
-        name = self._items.get(hash(widget), '')
+        name = self._items.get(widget, '')
         if name:
             line_props.append(name)
 
@@ -209,7 +206,7 @@ class GUIDumper(object):
             props.append('unfocusable')
             fmt = "%s %s is not focusable"
             self.failures.append(fmt % (g_name,
-                                        self._items.get(hash(widget),
+                                        self._items.get(widget,
                                                         '???')))
 
         if IValidatableProxyWidget.providedBy(widget):
@@ -713,6 +710,7 @@ class GUITest(DomainTest):
                 'GtkBox(_main_vbox',
                 'GtkVBox(_main_vbox')
             text = text.replace('stoq+lib+gicompat+', 'Gtk')
+
         filename = self._get_ui_filename(ui_test_name)
         if not os.path.exists(filename):
             with open(filename, 'w') as f:

@@ -122,7 +122,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
                         item: 'Does Not Contain', selected
                       GtkEntry(search_entry, padding=6): ''
                     stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
-              SearchResultListView(result_view, expand=True, fill=True):
+              SearchResultListView(results, expand=True, fill=True):
                 column: title='Payment #'
                 column: title='Description', expand
                 column: title='Description'
@@ -149,7 +149,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        SummaryLabel(_summary_label):
+        SummaryLabel(summary_label):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Total</b>'
           GtkLabel(): '<b>$2025.00</b>'
         StatusButton(pack-end):

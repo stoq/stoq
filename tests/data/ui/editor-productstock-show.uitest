@@ -4,10 +4,10 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
     GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave ProductStockEditor is attached
-        GtkNotebook(notebook):
+        GtkNotebook(toplevel):
           GtkBox(vbox1, orientation=vertical):
             GtkEventBox(information_holder, fill=True): slave ProductInformationSlave is attached
-              GtkAlignment(alignment2):
+              GtkAlignment(toplevel):
                 GtkBox(vbox1, orientation=vertical):
                   GtkFrame(general_frame, fill=True):
                     GtkAlignment(alignment1):
@@ -63,7 +63,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
               GtkFrame(frame1, expand=True, fill=True, padding=6):
                 GtkAlignment(alignment1):
                   GtkEventBox(details_holder): slave SellableDetailsSlave is attached
-                    GtkBox(toplevel, orientation=vertical):
+                    GtkBox(vbox1, orientation=vertical):
                       GtkTable(table1, expand=True, fill=True):
                         GtkLabel(notes_lbl): 'Details:'
                         GtkScrolledWindow(scrolledwindow1):
@@ -80,6 +80,6 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(main_dialog.action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
         GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

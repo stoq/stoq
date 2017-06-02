@@ -1,5 +1,5 @@
 slave: ProductComponentSlave
-GtkBox(toplevel, orientation=vertical):
+GtkBox(vbox1, orientation=vertical):
   GtkBox(production_time_box, orientation=horizontal, fill=True):
     GtkLabel(label2, fill=True): 'Production time:'
     ProxySpinButton(production_time, fill=True): '1'

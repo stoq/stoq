@@ -79,13 +79,13 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                 GtkLabel(on_sale_lbl):
                 ProxyLabel(requires_weighing_label): '<span size="small"></span>'
                 GtkEventBox(slave_holder): slave SellableDetailsSlave is attached
-                  GtkBox(toplevel, orientation=vertical):
+                  GtkBox(vbox1, orientation=vertical):
                     GtkTable(table1, expand=True, fill=True):
                       GtkLabel(notes_lbl): 'Details:'
                       GtkScrolledWindow(scrolledwindow1):
                         ProxyTextView(notes):
             GtkEventBox(): slave ProductInformationSlave is attached
-              GtkAlignment(alignment2):
+              GtkAlignment(toplevel):
                 GtkBox(vbox1, orientation=vertical):
                   GtkFrame(general_frame, fill=True):
                     GtkAlignment(alignment1):
@@ -143,7 +143,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                   GtkViewport(viewport):
                     GtkTable(images_table):
             GtkEventBox(): slave CategoryPriceSlave is attached
-              GtkBox(toplevel, orientation=vertical):
+              GtkBox(vbox1, orientation=vertical):
                 GtkBox(hbox1, orientation=horizontal, fill=True):
                   GtkLabel(model_name_label, fill=True): 'Category:'
                   ProxyComboEntry(target_combo, expand=True, fill=True): invalid
@@ -160,7 +160,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                         GtkButton(fill=True): 'gtk-remove', insensitive
                         GtkButton(fill=True): 'gtk-edit', insensitive
             GtkEventBox(): slave ProductSupplierSlave is attached
-              GtkBox(toplevel, orientation=vertical):
+              GtkBox(vbox1, orientation=vertical):
                 GtkBox(hbox1, orientation=horizontal, fill=True):
                   GtkLabel(model_name_label, fill=True): 'Supplier:'
                   ProxyComboEntry(target_combo, expand=True, fill=True): invalid
@@ -200,7 +200,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                     item: None, selected
                     item: 'cofins'
             GtkEventBox(): slave ProductGridSlave is attached
-              GtkAlignment(grid_tab_alignment):
+              GtkAlignment(toplevel):
                 GtkBox(vbox1, orientation=vertical):
                   GtkBox(hbox1, orientation=horizontal, fill=True):
                     GtkTable(attr_table, expand=True, fill=True):
@@ -215,7 +215,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(main_dialog.action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(): 'gtk-delete'
         GtkButton(_print_labels_btn): 'gtk-print', insensitive
         GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'

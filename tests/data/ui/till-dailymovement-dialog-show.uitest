@@ -1,5 +1,5 @@
 dialog: TillDailyMovementDialog
-GtkBox(toplevel, orientation=vertical):
+GtkBox(vbox1, orientation=vertical):
   GtkBox(vbox2, orientation=vertical, fill=True):
     GtkBox(hbox2, orientation=horizontal, fill=True):
       GtkLabel(label9, fill=True): 'Branch:'

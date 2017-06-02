@@ -1,5 +1,5 @@
 slave: _GridOptionsSlave
-ListContainer(listcontainer):
+ListContainer(toplevel):
   ObjectList(expand=True, fill=True):
     column: title='Description', expand
     column: title='Active'

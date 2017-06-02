@@ -1,5 +1,5 @@
 dialog: InitialStockDialog
-GtkBox(toplevel, orientation=vertical):
+GtkBox(vbox1, orientation=vertical):
   GtkAlignment(alignment1, fill=True):
     GtkBox(hbox1, orientation=horizontal):
       GtkLabel(label1, fill=True): 'Branch:'
@@ -7,7 +7,7 @@ GtkBox(toplevel, orientation=vertical):
         item: 'Moda Stoq', selected
         item: 'Stoq Elite Fashion'
   GtkEventBox(on_slave_holder, expand=True, fill=True): slave ListSlave is attached
-    ListContainer(listcontainer):
+    ListContainer(toplevel):
       ObjectList(storables, expand=True, fill=True):
         column: title='Code'
         column: title='Barcode'

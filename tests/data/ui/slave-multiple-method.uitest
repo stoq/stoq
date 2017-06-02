@@ -1,5 +1,5 @@
 slave: MultipleMethodSlave
-GtkBox(toplevel, orientation=vertical):
+GtkBox(vbox1, orientation=vertical):
   GtkBox(hbox1, orientation=horizontal, fill=True):
     GtkLabel(label1): '<b>Method:</b>'
     GtkBox(methods_box, orientation=horizontal, expand=True, fill=True):

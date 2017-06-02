@@ -4,7 +4,7 @@ GtkDialog(main_dialog.toplevel): title='Duplicate Person Search', hidden
     GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave PersonMergeDialog is attached
-        GtkBox(toplevel, orientation=vertical):
+        GtkBox(vbox1, orientation=vertical):
           GtkBox(vbox2, orientation=vertical, expand=True, fill=True):
             GtkBox(hbox1, orientation=horizontal, fill=True):
               GtkLabel(label1, fill=True): 'Search Method:'
@@ -35,6 +35,6 @@ GtkDialog(main_dialog.toplevel): title='Duplicate Person Search', hidden
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(main_dialog.action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
         GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden

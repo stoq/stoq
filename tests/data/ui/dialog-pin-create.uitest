@@ -4,7 +4,7 @@ GtkDialog(main_dialog.toplevel): title='Connect to Stoq.link', hidden
     GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave PinDialog is attached
-        GtkBox(toplevel, orientation=vertical):
+        GtkBox(vbox1, orientation=vertical):
           GtkLabel(stoq_link_url_label, fill=True): 'This will connect your Stoq installation to <a href="https://stoq.link?source=stoqpin&amp;hash=8e0c75ef763144eb9c0f39a8efa01452">Stoq.Link</a>.\nEnter the <b>PIN</b> received from it bellow:'
           GtkBox(hbox1, orientation=horizontal, fill=True):
             GtkLabel(label2, expand=True, fill=True):
@@ -18,6 +18,6 @@ GtkDialog(main_dialog.toplevel): title='Connect to Stoq.link', hidden
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(main_dialog.action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
         GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive

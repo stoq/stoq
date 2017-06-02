@@ -4,7 +4,7 @@ GtkDialog(main_dialog.toplevel): title="Edit 'Booklet instructions ' Parameter",
     GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave SystemParameterEditor is attached
-        GtkTable(table1):
+        GtkTable(toplevel):
           GtkLabel(label1): 'Group:'
           ProxyLabel(parameter_group): 'Sales'
           GtkLabel(label2): 'Parameter Name:'
@@ -21,7 +21,7 @@ GtkDialog(main_dialog.toplevel): title="Edit 'Booklet instructions ' Parameter",
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(main_dialog.action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
         GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
         GtkButton(main_dialog.help_button, padding=6): 'gtk-help'

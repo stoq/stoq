@@ -1,5 +1,5 @@
 dialog: ReturnedSaleUndoDialog
-GtkBox(details_vbox, orientation=vertical):
+GtkBox(toplevel, orientation=vertical):
   GtkLabel(label5, fill=True): 'This will undo the returned sale. Are you sure?'
   GtkLabel(label1, fill=True): 'Reason:'
   GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):

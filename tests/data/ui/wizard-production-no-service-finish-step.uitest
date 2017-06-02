@@ -4,9 +4,9 @@ GtkDialog(toplevel): title='New Production', hidden
     GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave FinishOpenProductionOrderStep is attached
-        GtkBox(step.toplevel, orientation=vertical):
+        GtkBox(step.vbox1, orientation=vertical):
           GtkEventBox(step.place_holder, expand=True, fill=True): slave ProductionMaterialListSlave is attached
-            GtkBox(toplevel, orientation=vertical):
+            GtkBox(vbox1, orientation=vertical):
               GtkLabel(label1, fill=True): '<b>Listing all the components needed by the production:</b>'
               ObjectList(materials, expand=True, fill=True):
                 column: title='Code'

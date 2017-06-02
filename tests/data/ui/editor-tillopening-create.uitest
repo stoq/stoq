@@ -4,7 +4,7 @@ GtkDialog(main_dialog.toplevel): title='Till Opening', hidden
     GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave TillOpeningEditor is attached
-        GtkBox(toplevel, orientation=vertical):
+        GtkBox(vbox1, orientation=vertical):
           GtkTable(table1, fill=True):
             GtkLabel(label1): 'Balance:'
             ProxyLabel(balance): '<span >$ 0.00</span>'
@@ -16,7 +16,7 @@ GtkDialog(main_dialog.toplevel): title='Till Opening', hidden
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(main_dialog.action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
         GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
         GtkButton(main_dialog.help_button, padding=6): 'gtk-help'

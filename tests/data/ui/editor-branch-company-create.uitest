@@ -6,9 +6,9 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave BranchEditor is attached
         GtkBox(toplevel, orientation=horizontal):
           GtkEventBox(main_holder, expand=True, fill=True): slave CompanyEditorTemplate is attached
-            GtkBox(hbox1, orientation=horizontal):
+            GtkBox(toplevel, orientation=horizontal):
               GtkEventBox(main_holder, expand=True, fill=True): slave _PersonEditorTemplate is attached
-                GtkBox(toplevel, orientation=vertical):
+                GtkBox(vbox1, orientation=vertical):
                   GtkNotebook(person_notebook, expand=True, fill=True):
                     GtkBox(identification_tab, orientation=vertical):
                       GtkTable(table1, fill=True):
@@ -29,7 +29,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                         GtkButton(calls_button, fill=True): 'Calls...'
                       GtkHSeparator(hseparator1, fill=True):
                       GtkEventBox(address_holder, fill=True): slave AddressSlave is attached
-                        GtkTable(table2):
+                        GtkTable(toplevel):
                           GtkLabel(address_lbl): 'Street:'
                           ProxyEntry(street): '', mandatory
                           GtkBox(hbox2, orientation=horizontal):
@@ -60,7 +60,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                         GtkEventBox(individual_holder):
                       GtkFrame(company_frame, fill=True):
                         GtkEventBox(company_holder): slave CompanyDocumentsSlave is attached
-                          GtkTable(table1):
+                          GtkTable(toplevel):
                             GtkLabel(label1): 'Doing business as:'
                             ProxyEntry(fancy_name): ''
                             GtkLabel(cnpj_lbl): 'CNPJ:'
@@ -71,7 +71,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                             ProxyEntry(city_registry): ''
                     GtkBox(details_tab, orientation=vertical):
                       GtkEventBox(person_status_holder, fill=True): slave BranchDetailsSlave is attached
-                        GtkTable(table1):
+                        GtkTable(toplevel):
                           GtkLabel(label4): 'Manager:'
                           ProxyComboEntry(manager):
                             item: 'Administrator'
@@ -92,7 +92,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                           ProxyCheckButton(can_execute_foreign_work_orders): 'Can execute work orders from other branches'
                       GtkEventBox(details_holder, fill=True):
                       GtkEventBox(note_holder, expand=True, fill=True): slave NoteSlave is attached
-                        GtkBox(toplevel, orientation=vertical):
+                        GtkBox(vbox1, orientation=vertical):
                           GtkLabel(message_label, fill=True): hidden
                           GtkLabel(observations_label, fill=True): 'Observations:'
                           GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
@@ -103,7 +103,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(main_dialog.action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
         GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive
         GtkButton(main_dialog.help_button, padding=6): 'gtk-help'

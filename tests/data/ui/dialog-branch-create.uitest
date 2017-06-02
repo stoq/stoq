@@ -4,7 +4,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Person"', hidden
     GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave BranchDialog is attached
-        GtkBox(toplevel, orientation=vertical):
+        GtkBox(vbox1, orientation=vertical):
           GtkLabel(label2, fill=True): 'Company Details'
           GtkHSeparator(hseparator1, fill=True):
           GtkTable(table1, fill=True):
@@ -20,7 +20,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Person"', hidden
             ProxyEntry(fax_number): '32118271'
           GtkFrame(frame1, fill=True):
             GtkEventBox(address_holder): slave AddressSlave is attached
-              GtkTable(table2):
+              GtkTable(toplevel):
                 GtkLabel(address_lbl): 'Street:'
                 ProxyEntry(street): 'Avendia S\xc3\xa3o Carlos'
                 GtkBox(hbox2, orientation=horizontal):
@@ -48,7 +48,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Person"', hidden
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(main_dialog.action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
         GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive
 

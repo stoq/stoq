@@ -1,5 +1,5 @@
 slave: ProviderListSlave
-ListContainer(listcontainer):
+ListContainer(toplevel):
   ObjectList(expand=True, fill=True):
     column: title='Name', expand
     column: title='Max Installments'

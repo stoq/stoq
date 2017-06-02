@@ -4,9 +4,9 @@ GtkDialog(toplevel): title='Sale Checkout', hidden
     GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave PaymentMethodStep is attached
-        GtkBox(step.toplevel, orientation=vertical):
+        GtkBox(step.vbox1, orientation=vertical):
           GtkEventBox(step.place_holder, expand=True, fill=True): slave CardMethodSlave is attached
-            GtkBox(toplevel, orientation=vertical):
+            GtkBox(vbox1, orientation=vertical):
               GtkFrame(frame1, fill=True):
                 GtkTable(table1):
                   GtkLabel(label5): 'Credit Provider:'

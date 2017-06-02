@@ -4,7 +4,7 @@ GtkDialog(toplevel): title='Receive Quote Wizard', hidden
     GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave QuoteGroupSelectionStep is attached
-        GtkBox(step.toplevel, orientation=vertical):
+        GtkBox(step.vbox1, orientation=vertical):
           GtkEventBox(step.search_group_holder, expand=True, fill=True): slave SearchSlave is attached
             GtkBox(vbox, orientation=vertical):
               GtkBox(orientation=horizontal, fill=True, padding=6):
@@ -33,7 +33,7 @@ GtkDialog(toplevel): title='Receive Quote Wizard', hidden
                     ProxyDateEntry(padding=6): None, insensitive
                     GtkLabel(): 'To:', insensitive
                     ProxyDateEntry(padding=6): None, insensitive
-              SearchResultListView(result_view, expand=True, fill=True):
+              SearchResultListView(results, expand=True, fill=True):
                 column: title='Quote #'
                 column: title='Group #'
                 column: title='Supplier'

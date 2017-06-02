@@ -1,5 +1,5 @@
 slave: CardMethodSlave
-GtkBox(toplevel, orientation=vertical):
+GtkBox(vbox1, orientation=vertical):
   GtkFrame(frame1, fill=True):
     GtkTable(table1):
       GtkLabel(label5): 'Credit Provider:'

@@ -4,7 +4,7 @@ GtkDialog(toplevel): title='Closing In Consignment', hidden
     GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave ConsignmentSelectionStep is attached
-        GtkBox(step.toplevel, orientation=vertical):
+        GtkBox(step.vbox1, orientation=vertical):
           GtkEventBox(step.searchbar_holder, expand=True, fill=True): slave SearchSlave is attached
             GtkBox(vbox, orientation=vertical):
               GtkBox(orientation=horizontal, fill=True, padding=6):
@@ -19,7 +19,7 @@ GtkDialog(toplevel): title='Closing In Consignment', hidden
                         item: 'Does Not Contain'
                       GtkEntry(search_entry, padding=6): ''
                     stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
-              SearchResultListView(result_view, expand=True, fill=True):
+              SearchResultListView(results, expand=True, fill=True):
                 column: title='Purchase #'
                 column: title='Date Started'
                 column: title='Expected Receival', hidden

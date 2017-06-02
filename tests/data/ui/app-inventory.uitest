@@ -106,7 +106,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
                         item: 'Does Not Contain'
                       GtkEntry(search_entry, padding=6): '', hidden
                     stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
-              SearchResultListView(result_view, expand=True, fill=True):
+              SearchResultListView(results, expand=True, fill=True):
                 column: title='Inventory #'
                 column: title='Status'
                 column: title='Branch', expand

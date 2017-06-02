@@ -1,8 +1,8 @@
 dialog: StockCostDialog
-GtkBox(toplevel, orientation=vertical):
+GtkBox(vbox1, orientation=vertical):
   GtkLabel(branch_label, fill=True): 'Fixing stock cost for products in <b>Moda Stoq</b>'
   GtkEventBox(on_slave_holder, expand=True, fill=True): slave ListSlave is attached
-    ListContainer(listcontainer):
+    ListContainer(toplevel):
       ObjectList(expand=True, fill=True):
         column: title='Code'
         column: title='Description', expand

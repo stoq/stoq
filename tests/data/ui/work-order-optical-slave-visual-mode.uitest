@@ -1,5 +1,5 @@
 slave: WorkOrderOpticalSlave
-GtkBox(toplevel, orientation=vertical):
+GtkBox(vbox1, orientation=vertical):
   GtkTable(table1, fill=True):
     GtkLabel(label3): 'Medic:'
     ProxyComboEntry(medic_combo): insensitive

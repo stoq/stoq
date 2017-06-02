@@ -4,7 +4,7 @@ GtkDialog(toplevel): title='Receive Quote Wizard', hidden
     GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave QuoteGroupItemsSelectionStep is attached
-        GtkBox(step.toplevel, orientation=vertical):
+        GtkBox(step.vbox1, orientation=vertical):
           GtkLabel(step.header_label, fill=True): 'Select one or more quoted items to compose an order:'
           ObjectList(step.quoted_items, expand=True, fill=True):
             column: title=' '

@@ -1,5 +1,5 @@
 dialog: ReturnedSaleDialog
-GtkBox(details_vbox, orientation=vertical):
+GtkBox(toplevel, orientation=vertical):
   GtkTable(table1, fill=True):
     GtkLabel(label4): 'Returned Sale:'
     ProxyLabel(identifier): '<span >00666</span>'

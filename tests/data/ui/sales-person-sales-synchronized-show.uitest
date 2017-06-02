@@ -38,13 +38,13 @@ GtkDialog(toplevel): title='Salesperson Total Sales', hidden
                 ProxyDateEntry(padding=6): datetime.date(2010, 12, 31), invalid
                 GtkLabel(): 'To:'
                 ProxyDateEntry(padding=6): datetime.date(2011, 1, 1), invalid
-          SearchResultListView(result_view, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Name', expand
             column: title='Sold items'
             column: title='Total sales'
             column: title='Total amount'
             row: 'salesperson1', Decimal('1.000'), 1L, Decimal('10.00')
-          SummaryLabel(_summary_label):
+          SummaryLabel(summary_label):
             GtkLabel(expand=True, fill=True, padding=6): 'Total:'
             GtkLabel(): '<b>$10.00</b>'
       GtkBox(orientation=horizontal, fill=True):
@@ -53,6 +53,6 @@ GtkDialog(toplevel): title='Salesperson Total Sales', hidden
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
         GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive

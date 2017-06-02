@@ -4,7 +4,7 @@ GtkDialog(toplevel): title='New Order', hidden
     GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave StartPurchaseStep is attached
-        GtkBox(step.toplevel, orientation=vertical):
+        GtkBox(step.vbox1, orientation=vertical):
           GtkTable(step.table, fill=True):
             ProxyLabel(step.kiwilabel1): 'Open Date:'
             GtkBox(step.hbox3, orientation=horizontal):

@@ -4,7 +4,7 @@ GtkDialog(toplevel): title='Payments Renegotiation Wizard', hidden
     GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave PaymentRenegotiationPaymentListStep is attached
-        GtkBox(step.toplevel, orientation=vertical):
+        GtkBox(step.vbox1, orientation=vertical):
           GtkTable(step.table2, fill=True):
             GtkLabel(step.label6): 'Client:'
             ProxyComboEntry(step.client): insensitive
@@ -19,7 +19,7 @@ GtkDialog(toplevel): title='Payments Renegotiation Wizard', hidden
             row: 333, 'Test payment', datetime.today(), 'Cancelled', <currency $10>
           GtkBox(step.hbox1, orientation=horizontal, fill=True):
             GtkEventBox(step.cash_change_holder, expand=True, fill=True): slave CashChangeSlave is attached
-              GtkBox(toplevel, orientation=vertical):
+              GtkBox(vbox1, orientation=vertical):
                 GtkTable(table1, padding=6):
                   ProxyLabel(kiwilabel1): 'Received: ($CURRENCY)'
                   ProxyEntry(received_value): '$10.00'
@@ -36,7 +36,7 @@ GtkDialog(toplevel): title='Payments Renegotiation Wizard', hidden
               GtkLabel(step.label5): 'Total:'
               ProxyEntry(step.total): '10.00', insensitive
           GtkEventBox(step.select_method_holder, fill=True): slave SelectPaymentMethodSlave is attached
-            GtkBox(toplevel, orientation=vertical):
+            GtkBox(vbox1, orientation=vertical):
               GtkFrame(frame1, expand=True, fill=True):
                 GtkBox(methods_box, orientation=horizontal):
                   GtkRadioButton(padding=6): 'Money'

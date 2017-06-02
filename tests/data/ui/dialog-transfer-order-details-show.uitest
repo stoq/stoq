@@ -1,5 +1,5 @@
 dialog: TransferOrderDetailsDialog
-GtkBox(details_vbox, orientation=vertical):
+GtkBox(toplevel, orientation=vertical):
   GtkTable(table1, fill=True, padding=6):
     GtkLabel(label1): 'Status:'
     GtkLabel(status): 'Pending'

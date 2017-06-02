@@ -25,7 +25,7 @@ GtkDialog(toplevel): title='Purchase Receiving Search', hidden
                     item: 'Does Not Contain'
                   GtkEntry(search_entry, padding=6): 'dom'
                 stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
-          SearchResultListView(result_view, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Purchase #'
             column: title='Receival date'
             column: title='Supplier', expand
@@ -39,13 +39,13 @@ GtkDialog(toplevel): title='Purchase Receiving Search', hidden
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end): slave _SearchDialogDetailsSlave is attached
-          GtkBox(toplevel, orientation=vertical):
+          GtkBox(vbox1, orientation=vertical):
             GtkBox(hbox1, orientation=horizontal, fill=True):
               GtkLabel(label3, expand=True, fill=True):
               GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
                 GtkButton(details_button, expand=True, fill=True): insensitive
                 GtkButton(print_button, expand=True, fill=True): 'gtk-print'
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
         GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive

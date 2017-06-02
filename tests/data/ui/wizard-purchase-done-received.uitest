@@ -4,9 +4,9 @@ GtkDialog(toplevel): title='New Order', hidden
     GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave ReceivingInvoiceStep is attached
-        GtkBox(step.toplevel, orientation=vertical):
+        GtkBox(step.vbox1, orientation=vertical):
           GtkEventBox(step.place_holder, expand=True, fill=True): slave ReceivingInvoiceSlave is attached
-            GtkBox(toplevel, orientation=vertical):
+            GtkBox(vbox1, orientation=vertical):
               GtkTable(table, fill=True):
                 GtkLabel(label10): 'Branch:'
                 ProxyLabel(branch): '<span >Moda Stoq</span>'

@@ -21,6 +21,6 @@ GtkDialog(toplevel): title='Payment categories', hidden
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
         GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

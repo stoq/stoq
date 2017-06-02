@@ -22,7 +22,7 @@ GtkDialog(toplevel): title='New Order', hidden
             GtkLabel(step.stock_quantity_lbl): 'Stock:', hidden
             ProxyLabel(step.stock_quantity): '<span >0.0</span>', hidden
           GtkEventBox(step.list_holder, expand=True, fill=True): slave AdditionListSlave is attached
-            GtkBox(toplevel, orientation=vertical):
+            GtkBox(vbox1, orientation=vertical):
               GtkBox(list_vbox, orientation=vertical, expand=True, fill=True):
                 ObjectTree(klist, expand=True, fill=True):
                   column: title='Code'

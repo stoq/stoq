@@ -18,7 +18,7 @@ GtkDialog(toplevel): title='System Status', hidden
                   GtkButton(expand=True, fill=True): 'Backup now'
                   GtkButton(expand=True, fill=True): 'Configure'
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
         GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
         GtkButton(_refresh_btn, expand=True, fill=True, padding=6): 'gtk-refresh'

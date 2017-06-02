@@ -152,7 +152,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
                         item: 'Does Not Contain', selected
                       GtkEntry(search_entry, padding=6): ''
                     stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
-              SearchResultListView(result_view, expand=True, fill=True):
+              SearchResultListView(results, expand=True, fill=True):
                 column: title='Sale #'
                 column: title='Coupon #', hidden
                 column: title='Paid', hidden
@@ -183,7 +183,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        SummaryLabel(_summary_label):
+        SummaryLabel(summary_label):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
           GtkLabel(): '<b>$2015.00</b>'
         StatusButton(pack-end):

@@ -66,7 +66,7 @@ GtkDialog(toplevel): title='', hidden
                     item: 'Vestido'
                     item: 'Viscose'
             GtkButton(): 'gtk-apply'
-          SearchResultListView(result_view, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Code'
             column: title='Barcode'
             column: title='Category'
@@ -112,6 +112,6 @@ GtkDialog(toplevel): title='', hidden
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
         GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

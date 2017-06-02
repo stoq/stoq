@@ -1,5 +1,5 @@
 dialog: StockDecreaseDetailsDialog
-GtkBox(details_vbox, orientation=vertical):
+GtkBox(toplevel, orientation=vertical):
   GtkTable(table1, fill=True, padding=6):
     ProxyLabel(kiwilabel4): 'Identifier:'
     ProxyLabel(identifier): '<span >08888</span>'

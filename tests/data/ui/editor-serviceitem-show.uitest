@@ -4,7 +4,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Description"', hidden
     GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave ServiceItemEditor is attached
-        GtkBox(toplevel, orientation=vertical):
+        GtkBox(vbox2, orientation=vertical):
           ProxyLabel(sellable_description, fill=True): '<span weight="bold">Description</span>'
           GtkAlignment(alignment1, fill=True):
             GtkBox(hbox4, orientation=horizontal):
@@ -22,6 +22,6 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Description"', hidden
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(main_dialog.action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
         GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'

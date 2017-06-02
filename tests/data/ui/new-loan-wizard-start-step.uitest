@@ -4,7 +4,7 @@ GtkDialog(toplevel): title='New Loan Wizard', hidden
     GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave StartNewLoanStep is attached
-        GtkBox(step.toplevel, orientation=vertical):
+        GtkBox(step.vbox1, orientation=vertical):
           GtkTable(step.data_table, fill=True):
             ProxyLabel(step.salesperson_lbl): '<span >Responsible:</span>'
             ProxyComboEntry(step.salesperson): insensitive

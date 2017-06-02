@@ -1,5 +1,5 @@
 slave: CheckMethodSlave
-GtkFrame(frame1):
+GtkFrame(toplevel):
   GtkBox(vbox1, orientation=vertical):
     GtkTable(table1, fill=True):
       GtkBox(hbox1, orientation=horizontal):
@@ -24,7 +24,7 @@ GtkFrame(frame1):
         GtkLabel(bank_label1, expand=True, fill=True, padding=6): 'First Number:'
         ProxyEntry(bank_first_check_number, expand=True, padding=6): '', mandatory
     GtkEventBox(slave_holder, expand=True, fill=True): slave PaymentListSlave is attached
-      GtkBox(toplevel, orientation=vertical):
+      GtkBox(vbox1, orientation=vertical):
         ObjectList(payment_list, expand=True, fill=True):
           column: title='Description', expand
           column: title='Bank ID'

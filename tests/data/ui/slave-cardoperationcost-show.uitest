@@ -1,5 +1,5 @@
 slave: CardOperationCostListSlave
-ListContainer(listcontainer):
+ListContainer(toplevel):
   ObjectList(expand=True, fill=True):
     column: title='Description', expand
     column: title='Installments'

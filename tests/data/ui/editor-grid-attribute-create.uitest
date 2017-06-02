@@ -4,7 +4,7 @@ GtkDialog(main_dialog.toplevel): title='Add Grid Attribute', hidden
     GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave GridAttributeEditor is attached
-        GtkBox(toplevel, orientation=vertical):
+        GtkBox(vbox1, orientation=vertical):
           GtkEventBox(): slave BasicForm is attached
             GtkAlignment(toplevel):
               GtkTable():
@@ -20,7 +20,7 @@ GtkDialog(main_dialog.toplevel): title='Add Grid Attribute', hidden
                 ProxyCheckButton(is_active): 'Is active', active, insensitive
                 GtkBox(orientation=horizontal):
           GtkEventBox(options_holder, expand=True, fill=True): slave _GridOptionsSlave is attached
-            ListContainer(listcontainer):
+            ListContainer(toplevel):
               ObjectList(expand=True, fill=True):
                 column: title='Description', expand
                 column: title='Active'
@@ -35,6 +35,6 @@ GtkDialog(main_dialog.toplevel): title='Add Grid Attribute', hidden
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(main_dialog.action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
         GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive

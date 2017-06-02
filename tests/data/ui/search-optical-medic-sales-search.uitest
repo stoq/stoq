@@ -37,7 +37,7 @@ GtkDialog(toplevel): title='Sold Items by medic', hidden
                 ProxyDateEntry(padding=6): None, insensitive
                 GtkLabel(): 'To:', insensitive
                 ProxyDateEntry(padding=6): None, insensitive
-          SearchResultListView(result_view, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Sale #'
             column: title='Open date', hidden
             column: title='Confirm date', hidden
@@ -54,7 +54,7 @@ GtkDialog(toplevel): title='Sold Items by medic', hidden
             column: title='Qty'
             column: title='Total'
             row: 99413, datetime.today(), datetime.today(), '', None, 'Moda Stoq', 'Description', None, 'Medic', '1234', False, '', None, Decimal('1.000'), Decimal('10.00000')
-          SummaryLabel(_summary_label):
+          SummaryLabel(summary_label):
             GtkLabel(expand=True, fill=True, padding=6): 'Total:'
             GtkLabel(): '<b>$10.00</b>'
       GtkBox(orientation=horizontal, fill=True):
@@ -63,7 +63,7 @@ GtkDialog(toplevel): title='Sold Items by medic', hidden
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
         GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok', hidden, insensitive
         GtkButton(csv_button, padding=6): 'Export to spreadsheet...'

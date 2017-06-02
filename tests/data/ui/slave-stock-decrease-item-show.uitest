@@ -1,5 +1,5 @@
 slave: StockDecreaseItemSlave
-GtkBox(toplevel, orientation=vertical):
+GtkBox(vbox1, orientation=vertical):
   GtkTable(table1):
     GtkLabel(label2): 'Description:'
     ProxyLabel(description):

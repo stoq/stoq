@@ -117,7 +117,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Deliveries', hidden
                         item: 'Does Not Contain'
                       GtkEntry(search_entry, padding=6): ''
                     stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
-              SearchResultListView(result_view, expand=True, fill=True):
+              SearchResultListView(results, expand=True, fill=True):
                 column: title='Sale #'
                 column: title='Status'
                 column: title='Client', expand
@@ -143,7 +143,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Deliveries', hidden
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        LazySummaryLabel(_summary_label):
+        LazySummaryLabel(summary_label):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Number of deliveries:</b>'
           GtkLabel(): '<b>2</b>'
         StatusButton(pack-end):

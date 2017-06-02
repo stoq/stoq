@@ -1,5 +1,5 @@
 dialog: BatchSelectionDialog
-GtkAlignment(alignment1):
+GtkAlignment(toplevel):
   GtkBox(vbox1, orientation=vertical):
     GtkBox(hbox1, orientation=horizontal, fill=True):
       GtkLabel(label1, fill=True): 'Product:'
@@ -16,7 +16,7 @@ GtkAlignment(alignment1):
             ProxySpinButton(_spin_2): '7'
             ProxyEntry(_entry_3): '3'
             ProxySpinButton(_spin_3): '8'
-            ProxyEntry(_entry_4): ''
+            ProxyEntry(_last_entry): ''
             ProxySpinButton(_spin_4): '0', insensitive
     GtkExpander(existing_batches_expander, fill=True):
       ObjectList(existing_batches):

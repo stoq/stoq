@@ -6,7 +6,7 @@ GtkDialog(toplevel): title='New Order', hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave PurchasePaymentStep is attached
         GtkBox(step.toplevel, orientation=vertical):
           GtkEventBox(step.method_select_holder, fill=True): slave SelectPaymentMethodSlave is attached
-            GtkBox(toplevel, orientation=vertical):
+            GtkBox(vbox1, orientation=vertical):
               GtkFrame(frame1, expand=True, fill=True):
                 GtkBox(methods_box, orientation=horizontal):
                   GtkRadioButton(padding=6): 'Money'
@@ -16,7 +16,7 @@ GtkDialog(toplevel): title='New Order', hidden
                   GtkRadioButton(padding=6): 'No payments'
                 GtkLabel(): 'Payment method:'
           GtkEventBox(step.method_slave_holder, expand=True, fill=True): slave BillMethodSlave is attached
-            GtkFrame(frame1):
+            GtkFrame(toplevel):
               GtkBox(vbox1, orientation=vertical):
                 GtkTable(table1, fill=True):
                   GtkBox(hbox1, orientation=horizontal):
@@ -41,7 +41,7 @@ GtkDialog(toplevel): title='New Order', hidden
                     GtkLabel(bank_label1, expand=True, fill=True, padding=6): 'First Number:'
                     ProxyEntry(bank_first_check_number, expand=True, padding=6): '12'
                 GtkEventBox(slave_holder, expand=True, fill=True): slave PaymentListSlave is attached
-                  GtkBox(toplevel, orientation=vertical):
+                  GtkBox(vbox1, orientation=vertical):
                     ObjectList(payment_list, expand=True, fill=True):
                       column: title='Description', expand
                       column: title='Number'

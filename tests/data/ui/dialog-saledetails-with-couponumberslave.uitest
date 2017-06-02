@@ -1,5 +1,5 @@
 dialog: SaleDetailsDialog
-GtkBox(toplevel, orientation=vertical):
+GtkBox(vbox1, orientation=vertical):
   GtkTable(table1, fill=True):
     GtkLabel(label9): '<b>Sale Number:</b>'
     ProxyLabel(identifier): '<span >01001</span>'

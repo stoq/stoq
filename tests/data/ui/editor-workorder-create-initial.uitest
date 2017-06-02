@@ -4,7 +4,7 @@ GtkDialog(main_dialog.toplevel): title='Add Work order', hidden
     GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave WorkOrderEditor is attached
-        GtkBox(toplevel, orientation=vertical):
+        GtkBox(vbox1, orientation=vertical):
           GtkAlignment(alignment1, fill=True):
             GtkTable(table1):
               GtkLabel(label4): 'Work order:'
@@ -38,7 +38,7 @@ GtkDialog(main_dialog.toplevel): title='Add Work order', hidden
               ProxyEntry(description): 'Test equipment'
           GtkNotebook(slaves_notebook, expand=True, fill=True):
             GtkEventBox(opening_holder): slave WorkOrderOpeningSlave is attached
-              GtkBox(toplevel, orientation=vertical):
+              GtkBox(vbox2, orientation=vertical):
                 GtkBox(hbox7, orientation=horizontal, fill=True):
                   GtkLabel(label6, fill=True): 'Opening date:'
                   ProxyDateEntry(open_date, expand=True, fill=True): datetime.today(), insensitive
@@ -46,7 +46,7 @@ GtkDialog(main_dialog.toplevel): title='Add Work order', hidden
                 GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
                   ProxyTextView(defect_reported):
             GtkEventBox(quote_holder): slave WorkOrderQuoteSlave is attached
-              GtkBox(toplevel, orientation=vertical):
+              GtkBox(vbox3, orientation=vertical):
                 GtkTable(table2, fill=True):
                   GtkLabel(description_lbl): 'Equipment:', hidden
                   ProxyEntry(description): '', hidden
@@ -69,7 +69,7 @@ GtkDialog(main_dialog.toplevel): title='Add Work order', hidden
                 GtkScrolledWindow(scrolledwindow2, expand=True, fill=True):
                   ProxyTextView(defect_detected):
             GtkEventBox(execution_holder): slave WorkOrderExecutionSlave is attached, insensitive
-              GtkBox(toplevel, orientation=vertical):
+              GtkBox(vbox4, orientation=vertical):
                 GtkTable(table3, fill=True):
                   GtkLabel(label17): 'Execution responsible:'
                   ProxyComboEntry(execution_responsible):
@@ -98,7 +98,7 @@ GtkDialog(main_dialog.toplevel): title='Add Work order', hidden
                       GtkLabel(stock_quantity_lbl): 'Stock:', hidden
                       ProxyLabel(stock_quantity): '<span >0.0</span>', hidden
                     GtkEventBox(list_holder, expand=True, fill=True): slave AdditionListSlave is attached
-                      GtkBox(toplevel, orientation=vertical):
+                      GtkBox(vbox1, orientation=vertical):
                         GtkBox(list_vbox, orientation=vertical, expand=True, fill=True):
                           ObjectTree(klist, expand=True, fill=True):
                             column: title='Code', hidden
@@ -137,7 +137,7 @@ GtkDialog(main_dialog.toplevel): title='Add Work order', hidden
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
     GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(main_dialog.action_area, orientation=horizontal, fill=True, pack-end):
         GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
         GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
         GtkButton(main_dialog.help_button, padding=6): 'gtk-help'

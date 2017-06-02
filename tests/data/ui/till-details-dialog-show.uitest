@@ -1,5 +1,5 @@
 dialog: TillDetailsDialog
-GtkBox(toplevel, orientation=vertical):
+GtkBox(vbox1, orientation=vertical):
   GtkTable(table1, fill=True):
     GtkLabel(label1): 'Open Date:'
     ProxyLabel(opening_date): '<span >05/06/14</span>'

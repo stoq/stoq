@@ -1,5 +1,5 @@
 slave: UserBranchAccessSlave
-GtkBox(toplevel, orientation=vertical):
+GtkBox(vbox1, orientation=vertical):
   GtkBox(hbox1, orientation=horizontal, fill=True):
     GtkLabel(model_name_label, fill=True): 'Branch:'
     ProxyComboEntry(target_combo, expand=True, fill=True): invalid
