@@ -46,6 +46,7 @@ GtkBox(vbox1, orientation=vertical):
     row: 'Purchase', 'Default Receiving C.F.O.P.', '1.102 Compra para Comercializacao'
     row: 'Purchase', 'Default Purchase Return C.F.O.P.', '5.202 Devolução de compra para comercialização'
     row: 'Purchase', 'Automatic update of products cost when making a new purchase.', 'No'
+    row: 'Receivable', 'Show full time of the sale on receivable payments', 'No'
     row: 'Sales', 'Default salesperson role', 'Salesperson'
     row: 'Sales', 'Delivery service', 'Delivery'
     row: 'Sales', 'Show POS application in Fullscreen', 'No'

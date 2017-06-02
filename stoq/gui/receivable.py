@@ -60,6 +60,7 @@ from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
 from stoqlib.lib.boleto import get_bank_info_by_number
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.message import warning
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.payment import ReceivablePaymentReport
 from stoqlib.reporting.paymentsreceipt import InPaymentReceipt
@@ -179,10 +180,16 @@ class ReceivableApp(BaseAccountWindow):
         self.create_main_filter()
 
     def get_columns(self):
+        if sysparam.get_bool('SHOW_FULL_DATETIME_ON_RECEIVABLE'):
+            get_date = datetime.datetime
+        else:
+            get_date = datetime.date
         return [IdentifierColumn('identifier', title=_('Payment #')),
                 SearchColumn('description', title=_('Description'),
                              data_type=str, ellipsize=Pango.EllipsizeMode.END,
                              expand=True, pack_end=True),
+                SearchColumn('sale_open_date', title=_('Sale date'),
+                             data_type=get_date, width=100),
                 Column('color', title=_('Description'), width=20,
                        data_type=GdkPixbuf.Pixbuf, format_func=render_pixbuf,
                        column='description'),

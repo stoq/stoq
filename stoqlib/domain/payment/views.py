@@ -107,6 +107,7 @@ class BasePaymentView(Viewable):
 
     # Sale
     sale_id = Sale.id
+    sale_open_date = Sale.open_date
 
     # Purchase
     purchase_id = PurchaseOrder.id
