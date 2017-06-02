@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
-##
-## Copyright (C) 2005-2013 Async Open Source
-##
-## This program is free software; you can redistribute it and/or
-## modify it under the terms of the GNU Lesser General Public License
-## as published by the Free Software Foundation; either version 2
-## of the License, or (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU Lesser General Public License for more details.
-##
-## You should have received a copy of the GNU Lesser General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., or visit: http://www.gnu.org/.
-##
-##
-## Author(s): Stoq Team <stoq-devel@async.com.br>
-##
+#
+# Copyright (C) 2005-2013 Async Open Source
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., or visit: http://www.gnu.org/.
+#
+#
+# Author(s): Stoq Team <stoq-devel@async.com.br>
+#
 """ Parameters and system data for applications"""
 
 from decimal import Decimal
@@ -63,6 +63,7 @@ def _credit_limit_salary_changed(new_value, store):
 
 
 class ParameterDetails(object):
+
     def __init__(self, key, group, short_desc, long_desc, type,
                  initial=None, options=None, combo_data=None, range=None,
                  multiline=False, validator=None,
@@ -952,7 +953,15 @@ _details = [
           u'and stoq link. It will be added on ping requests, tef requests and '
           u'feedbacks data sent to stoq api and on the stoq statistics data sent '
           u'to stoq link lite.'),
-        unicode, initial=unicode(uuid4().get_hex()))
+        unicode, initial=unicode(uuid4().get_hex())),
+
+    ParameterDetails(
+        u'SHOW_FULL_DATETIME_ON_RECEIVABLE',
+        _(u'Receivable'),
+        _(u'Show full time of the sale on receivable payments'),
+        _(u'Beyond date, display exactly the hour and minute of the sale on the '
+          u'receivable payments list.'),
+        bool, initial=False),
 ]
 
 

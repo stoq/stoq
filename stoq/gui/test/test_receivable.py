@@ -28,7 +28,7 @@ import mock
 from stoqlib.domain.account import Account
 from stoqlib.domain.payment.method import CheckData, PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.lib.dateutils import localdatetime, localtoday
+from stoqlib.lib.dateutils import datetime, localdatetime, localtoday
 from stoqlib.gui.dialogs.paymentchangedialog import PaymentDueDateChangeDialog
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.editors.paymenteditor import InPaymentEditor
@@ -119,10 +119,12 @@ class TestReceivable(BaseGUITest):
 
     def create_receivable_sale(self):
         sale = self.create_sale()
+        sale.open_date = datetime.datetime(2013, 1, 1)
         sale.identifier = 12345
         self.add_product(sale)
         sale.order()
-        payment = self.add_payments(sale, method_type=u'bill')[0]
+        payment = self.add_payments(sale, method_type=u'bill',
+                                    date=datetime.datetime(2013, 1, 1))[0]
         payment.identifier = 67890
         sale.confirm()
         payment.due_date = localdatetime(2012, 1, 1)
