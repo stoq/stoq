@@ -37,7 +37,7 @@
                         <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Salesperson:</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                         <property name="model_attribute">salesperson_lbl</property>
                       </object>
                       <packing>
@@ -115,7 +115,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                         <property name="model_attribute">operation_nature</property>
                       </object>
                       <packing>

@@ -128,7 +128,7 @@
                         <property name="secondary_icon_activatable">True</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                         <property name="model_attribute">code</property>
                       </object>
                       <packing>
@@ -147,7 +147,7 @@
                         <property name="secondary_icon_activatable">True</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                         <property name="model_attribute">barcode</property>
                       </object>
                       <packing>
@@ -183,7 +183,7 @@
                         <property name="secondary_icon_sensitive">True</property>
                         <property name="secondary_icon_tooltip_text" translatable="yes">This field is mandatory</property>
                         <property name="secondary_icon_tooltip_markup" translatable="yes">This field is mandatory</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">description</property>
                       </object>
@@ -516,7 +516,7 @@
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="use_markup">True</property>
-                        <property name="data_type">str</property>
+                        <property name="data_type">bytes</property>
                         <property name="model_attribute">status_str</property>
                       </object>
                       <packing>
@@ -545,7 +545,7 @@
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="use_markup">True</property>
-                        <property name="data_type">str</property>
+                        <property name="data_type">bytes</property>
                         <property name="model_attribute">product_type_str</property>
                       </object>
                       <packing>

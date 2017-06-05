@@ -175,7 +175,7 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -195,7 +195,7 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -214,7 +214,7 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -233,7 +233,7 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -252,7 +252,7 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
@@ -271,7 +271,7 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
@@ -290,7 +290,7 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
@@ -309,7 +309,7 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
@@ -353,7 +353,7 @@
                   <object class="ProxyTextView" id="notes">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="data_type">unicode</property>
+                    <property name="data_type">str</property>
                   </object>
                 </child>
               </object>

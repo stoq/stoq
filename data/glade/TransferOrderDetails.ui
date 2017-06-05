@@ -77,7 +77,7 @@
                 <property name="can_focus">True</property>
                 <property name="xalign">0</property>
                 <property name="use_markup">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">destination_responsible_name</property>
               </object>
               <packing>
@@ -108,7 +108,7 @@
                 <property name="can_focus">True</property>
                 <property name="xalign">0</property>
                 <property name="use_markup">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">source_responsible_name</property>
               </object>
               <packing>
@@ -139,7 +139,7 @@
                 <property name="can_focus">True</property>
                 <property name="xalign">0</property>
                 <property name="use_markup">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">source_branch_name</property>
               </object>
               <packing>
@@ -172,7 +172,7 @@
                 <property name="can_focus">True</property>
                 <property name="xalign">0</property>
                 <property name="use_markup">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">destination_branch_name</property>
               </object>
               <packing>
@@ -188,7 +188,7 @@
                 <property name="can_focus">True</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Receival date:</property>
-                <property name="data_type">str</property>
+                <property name="data_type">bytes</property>
                 <property name="model_attribute">kiwilabel2</property>
               </object>
               <packing>
@@ -363,7 +363,7 @@
                         <property name="can_focus">True</property>
                         <property name="editable">False</property>
                         <property name="cursor_visible">False</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                         <property name="model_attribute">comments</property>
                       </object>
                     </child>

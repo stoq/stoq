@@ -60,7 +60,7 @@
               <object class="ProxyLabel" id="identifier">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">identifier</property>
               </object>
               <packing>
@@ -88,7 +88,7 @@
               <object class="ProxyLabel" id="responsible_name">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">responsible_name</property>
               </object>
               <packing>
@@ -132,7 +132,7 @@
                     <property name="visible">True</property>
                     <property name="xalign">0</property>
                     <property name="use_markup">True</property>
-                    <property name="data_type">unicode</property>
+                    <property name="data_type">str</property>
                     <property name="model_attribute">client_name</property>
                   </object>
                   <packing>
@@ -176,7 +176,7 @@
                     <property name="visible">True</property>
                     <property name="xalign">0</property>
                     <property name="use_markup">True</property>
-                    <property name="data_type">unicode</property>
+                    <property name="data_type">str</property>
                     <property name="model_attribute">status_name</property>
                   </object>
                   <packing>
@@ -502,7 +502,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="editable">False</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                         <property name="model_attribute">notes</property>
                       </object>
                     </child>

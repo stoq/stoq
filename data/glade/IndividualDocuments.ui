@@ -44,7 +44,7 @@ Local:</property>
         <child>
           <object class="ProxyEntry" id="cpf">
             <property name="visible">True</property>
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">cpf</property>
           </object>
           <packing>
@@ -55,7 +55,7 @@ Local:</property>
         <child>
           <object class="ProxyEntry" id="rg_expedition_local">
             <property name="visible">True</property>
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">rg_expedition_local</property>
           </object>
           <packing>
@@ -98,7 +98,7 @@ Date:</property>
         <child>
           <object class="ProxyEntry" id="rg_number">
             <property name="visible">True</property>
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">rg_number</property>
           </object>
           <packing>

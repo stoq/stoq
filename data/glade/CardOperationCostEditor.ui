@@ -48,7 +48,7 @@
         <child>
           <object class="ProxyComboBox" id="card_type">
             <property name="visible">True</property>
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">card_type</property>
           </object>
           <packing>

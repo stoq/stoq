@@ -182,7 +182,7 @@
                 <property name="secondary_icon_sensitive">True</property>
                 <property name="secondary_icon_tooltip_text" translatable="yes">This field is mandatory</property>
                 <property name="secondary_icon_tooltip_markup" translatable="yes">This field is mandatory</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="mandatory">True</property>
                 <property name="model_attribute">description</property>
               </object>
@@ -221,7 +221,7 @@
               <object class="ProxyTextView" id="defect_detected">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">defect_detected</property>
               </object>
             </child>

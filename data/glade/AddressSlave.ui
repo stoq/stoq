@@ -94,7 +94,7 @@
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">street</property>
           </object>
@@ -149,7 +149,7 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">postal_code</property>
               </object>
               <packing>
@@ -174,7 +174,7 @@
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">complement</property>
           </object>
           <packing>
@@ -192,7 +192,7 @@
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">state</property>
           </object>
@@ -256,7 +256,7 @@
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">district</property>
           </object>
@@ -275,7 +275,7 @@
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">city</property>
           </object>
@@ -290,7 +290,7 @@
         <child>
           <object class="ProxyComboEntry" id="country">
             <property name="visible">True</property>
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">country</property>
           </object>
           <packing>

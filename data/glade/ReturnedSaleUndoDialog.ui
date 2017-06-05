@@ -52,7 +52,7 @@
               <object class="ProxyTextView" id="undo_reason">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">cancel_reason</property>
               </object>
             </child>

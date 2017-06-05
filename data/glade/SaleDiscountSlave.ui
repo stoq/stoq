@@ -14,7 +14,7 @@
             <property name="visible">True</property>
             <child>
               <object class="ProxyLabel" id="kiwilabel9">
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="label" translatable="yes">Discount:</property>
                 <property name="model_attribute">kiwilabel9</property>
                 <property name="visible">True</property>
@@ -78,7 +78,7 @@
                 </child>
                 <child>
                   <object class="ProxyLabel" id="kiwilabel1">
-                    <property name="data_type">unicode</property>
+                    <property name="data_type">str</property>
                     <property name="label" translatable="yes">%</property>
                     <property name="model_attribute"/>
                     <property name="visible">True</property>

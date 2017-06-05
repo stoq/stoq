@@ -29,7 +29,7 @@
                 <property name="can_focus">True</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Salesperson:</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">salesperson_lbl</property>
               </object>
               <packing>
@@ -344,7 +344,7 @@
                     <property name="can_focus">True</property>
                     <property name="xalign">0</property>
                     <property name="label" translatable="yes">Subtotal:</property>
-                    <property name="data_type">unicode</property>
+                    <property name="data_type">str</property>
                     <property name="model_attribute">kiwilabel3</property>
                   </object>
                 </child>
@@ -369,7 +369,7 @@
                     <property name="can_focus">True</property>
                     <property name="xalign">0</property>
                     <property name="label" translatable="yes">Total:</property>
-                    <property name="data_type">unicode</property>
+                    <property name="data_type">str</property>
                     <property name="model_attribute">kiwilabel5</property>
                   </object>
                   <packing>
@@ -401,7 +401,7 @@
                     <property name="can_focus">True</property>
                     <property name="xalign">0</property>
                     <property name="label" translatable="yes">Already paid:</property>
-                    <property name="data_type">unicode</property>
+                    <property name="data_type">str</property>
                     <property name="model_attribute">kiwilabel1</property>
                   </object>
                   <packing>

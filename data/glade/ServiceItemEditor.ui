@@ -10,7 +10,7 @@
         <property name="visible">True</property>
         <child>
           <object class="ProxyLabel" id="sellable_description">
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">sellable.description</property>
             <property name="visible">True</property>
             <property name="xalign">0.0</property>
@@ -106,7 +106,7 @@
             <property name="vscrollbar_policy">automatic</property>
             <child>
               <object class="ProxyTextView" id="notes">
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">notes</property>
                 <property name="visible">True</property>
               </object>

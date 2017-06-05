@@ -80,7 +80,7 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="mandatory">True</property>
                 <property name="model_attribute">name</property>
               </object>
@@ -100,7 +100,7 @@
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
                 <property name="mask">00.000.000/0000-00</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="mandatory">True</property>
                 <property name="model_attribute">cnpj</property>
               </object>
@@ -137,7 +137,7 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">fax_number</property>
               </object>
               <packing>
@@ -171,7 +171,7 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">state_registry</property>
               </object>
               <packing>
@@ -209,7 +209,7 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">phone_number</property>
               </object>
               <packing>

@@ -219,7 +219,7 @@
                         <property name="ypad">4</property>
                         <property name="justify">right</property>
                         <property name="ellipsize">middle</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                         <property name="model_attribute">description</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>

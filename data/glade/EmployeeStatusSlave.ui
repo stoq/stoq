@@ -30,7 +30,7 @@
             <child>
               <object class="ProxyComboBox" id="statuses_combo">
                 <property name="visible">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">status</property>
               </object>
               <packing>
@@ -42,7 +42,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel1">
                 <property name="visible">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
               </object>
               <packing>
                 <property name="expand">True</property>

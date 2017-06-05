@@ -91,7 +91,7 @@
           <object class="ProxyComboBox" id="brand_combo">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">brand</property>
           </object>
           <packing>
@@ -106,7 +106,7 @@
           <object class="ProxyComboBox" id="device_combo">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">device_name</property>
           </object>
           <packing>
@@ -164,7 +164,7 @@
           <object class="ProxyComboBox" id="model_combo">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">model</property>
           </object>
           <packing>

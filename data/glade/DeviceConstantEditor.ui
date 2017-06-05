@@ -71,7 +71,7 @@
         </child>
         <child>
           <object class="ProxyLabel" id="constant_type_description">
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">constant_type_description</property>
             <property name="visible">True</property>
             <property name="xalign">0.0</property>
@@ -83,7 +83,7 @@
         </child>
         <child>
           <object class="ProxyEntry" id="constant_name">
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">constant_name</property>
             <property name="visible">True</property>
           </object>
@@ -112,7 +112,7 @@
         </child>
         <child>
           <object class="ProxyEntry" id="device_value">
-            <property name="data_type">str</property>
+            <property name="data_type">bytes</property>
             <property name="model_attribute">device_value</property>
             <property name="visible">True</property>
           </object>
@@ -126,7 +126,7 @@
         </child>
         <child>
           <object class="ProxyEntry" id="device_value_hex">
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">device_value_hex</property>
             <property name="visible">True</property>
           </object>

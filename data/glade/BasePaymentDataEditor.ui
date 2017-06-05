@@ -20,7 +20,7 @@
             <property name="visible">True</property>
             <child>
               <object class="ProxyLabel" id="kiwilabel1">
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="label" translatable="yes">Due date:</property>
                 <property name="model_attribute">kiwilabel1</property>
                 <property name="visible">True</property>
@@ -29,7 +29,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel2">
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="label" translatable="yes" comments="Do not translate $CURRENCY">Value ($CURRENCY):</property>
                 <property name="model_attribute">kiwilabel2</property>
                 <property name="visible">True</property>
@@ -42,7 +42,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel3">
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="label" translatable="yes">Number:</property>
                 <property name="model_attribute">kiwilabel3</property>
                 <property name="visible">True</property>
@@ -84,7 +84,7 @@
             </child>
             <child>
               <object class="ProxyEntry" id="payment_number">
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">payment_number</property>
                 <property name="visible">True</property>
                 <property name="width_chars">10</property>

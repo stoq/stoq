@@ -190,7 +190,7 @@
                         <property name="can_focus">True</property>
                         <property name="wrap_mode">word-char</property>
                         <property name="justification">fill</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                         <property name="model_attribute">observations</property>
                       </object>
                     </child>

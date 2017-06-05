@@ -44,7 +44,7 @@
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
             <property name="secondary_icon_sensitive">True</property>
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">name</property>
           </object>
@@ -71,7 +71,7 @@
         <child>
           <object class="ProxyComboBox" id="tax_type">
             <property name="visible">True</property>
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">tax_type</property>
           </object>
           <packing>

@@ -120,7 +120,7 @@ tributável:</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
                 <property name="mask">00.000.000/0000-00</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">cnpj_prod</property>
               </object>
               <packing>
@@ -157,7 +157,7 @@ tributável:</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="active">0</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">calculo</property>
               </object>
               <packing>
@@ -308,7 +308,7 @@ legal do ipi:</property>
                 <property name="secondary_icon_activatable">True</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">cl_enq</property>
               </object>
               <packing>
@@ -328,7 +328,7 @@ legal do ipi:</property>
                 <property name="secondary_icon_activatable">True</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">c_selo</property>
               </object>
               <packing>
@@ -348,7 +348,7 @@ legal do ipi:</property>
                 <property name="secondary_icon_activatable">True</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">c_enq</property>
               </object>
               <packing>

@@ -14,7 +14,7 @@
         <property name="visible">True</property>
         <child>
           <object class="ProxyLabel" id="kiwilabel1">
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="label" translatable="yes">Transporter Status:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -22,7 +22,7 @@
         </child>
         <child>
           <object class="ProxyLabel" id="kiwilabel2">
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="label" translatable="yes">Open Contract Date:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -89,7 +89,7 @@
         </child>
         <child>
           <object class="ProxyLabel" id="kiwilabel3">
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="label" translatable="yes">Freight:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -117,7 +117,7 @@
         </child>
         <child>
           <object class="ProxyLabel" id="kiwilabel4">
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="label" translatable="yes">%</property>
             <property name="visible">True</property>
             <property name="xalign">0.0</property>

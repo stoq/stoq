@@ -105,7 +105,7 @@
                             <property name="secondary_icon_activatable">True</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                             <property name="model_attribute">registry_number</property>
                           </object>
                           <packing>
@@ -232,7 +232,7 @@
                             <property name="secondary_icon_activatable">True</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                             <property name="model_attribute">number</property>
                           </object>
                           <packing>
@@ -251,7 +251,7 @@
                             <property name="secondary_icon_activatable">True</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                             <property name="model_attribute">series_number</property>
                           </object>
                           <packing>
@@ -372,7 +372,7 @@
                             <property name="secondary_icon_activatable">True</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                             <property name="model_attribute">bank_branch</property>
                           </object>
                           <packing>
@@ -393,7 +393,7 @@
                             <property name="secondary_icon_activatable">True</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                             <property name="model_attribute">bank_account</property>
                           </object>
                           <packing>
@@ -494,7 +494,7 @@
                             <property name="secondary_icon_activatable">True</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                             <property name="model_attribute">pis_number</property>
                           </object>
                           <packing>
@@ -528,7 +528,7 @@
                             <property name="secondary_icon_activatable">True</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                             <property name="model_attribute">pis_bank</property>
                           </object>
                           <packing>
@@ -622,7 +622,7 @@ Number:</property>
                             <property name="secondary_icon_activatable">True</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                             <property name="model_attribute">education_level</property>
                           </object>
                           <packing>

@@ -117,7 +117,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -137,7 +137,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">2</property>
@@ -157,7 +157,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -177,7 +177,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">2</property>
@@ -197,7 +197,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -217,7 +217,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">2</property>
@@ -252,7 +252,7 @@
                 <child>
                   <object class="ProxyComboBox" id="dominant_eye">
                     <property name="visible">True</property>
-                    <property name="data_type">unicode</property>
+                    <property name="data_type">str</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -289,7 +289,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="accepts_tab">False</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                             <property name="model_attribute">notes</property>
                           </object>
                         </child>
@@ -497,7 +497,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -517,7 +517,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">2</property>
@@ -537,7 +537,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -557,7 +557,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">2</property>
@@ -577,7 +577,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -597,7 +597,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">2</property>
@@ -617,7 +617,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -637,7 +637,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">2</property>
@@ -657,7 +657,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -677,7 +677,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">2</property>
@@ -697,7 +697,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">2</property>
@@ -717,7 +717,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -737,7 +737,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -757,7 +757,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">2</property>
@@ -777,7 +777,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">2</property>
@@ -797,7 +797,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -817,7 +817,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -837,7 +837,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">2</property>
@@ -857,7 +857,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -877,7 +877,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="left_attach">2</property>

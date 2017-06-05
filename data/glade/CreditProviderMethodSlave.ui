@@ -27,7 +27,7 @@
                     <property name="visible">True</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Card Device:</property>
-                    <property name="data_type">unicode</property>
+                    <property name="data_type">str</property>
                   </object>
                   <packing>
                     <property name="top_attach">1</property>
@@ -40,7 +40,7 @@
                     <property name="visible">True</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Payment Type:</property>
-                    <property name="data_type">unicode</property>
+                    <property name="data_type">str</property>
                   </object>
                   <packing>
                     <property name="top_attach">2</property>
@@ -53,7 +53,7 @@
                     <property name="visible">True</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Number of Installments:</property>
-                    <property name="data_type">unicode</property>
+                    <property name="data_type">str</property>
                   </object>
                   <packing>
                     <property name="top_attach">3</property>
@@ -205,7 +205,7 @@
                     <property name="visible">True</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Authorization Number:</property>
-                    <property name="data_type">unicode</property>
+                    <property name="data_type">str</property>
                   </object>
                   <packing>
                     <property name="top_attach">4</property>

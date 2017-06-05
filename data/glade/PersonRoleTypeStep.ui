@@ -15,7 +15,7 @@
           <object class="ProxyLabel" id="person_role_label">
             <property name="visible">True</property>
             <property name="label" translatable="yes">What kind of client are you adding ?</property>
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -32,13 +32,13 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel2">
                 <property name="visible">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
               </object>
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel3">
                 <property name="visible">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
               </object>
               <packing>
                 <property name="top_attach">1</property>
@@ -101,7 +101,7 @@
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">CPF:</property>
                 <property name="justify">center</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -119,7 +119,7 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">person_document</property>
               </object>
               <packing>

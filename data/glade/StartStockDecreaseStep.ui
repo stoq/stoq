@@ -196,7 +196,7 @@
               <object class="ProxyTextView" id="reason">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="mandatory">True</property>
                 <property name="model_attribute">reason</property>
               </object>
@@ -228,7 +228,7 @@
           <object class="ProxyComboEntry" id="person">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">person_id</property>
           </object>
           <packing>

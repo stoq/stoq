@@ -27,7 +27,7 @@
             <child>
               <object class="ProxyComboBox" id="user_type">
                 <property name="visible">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">user_type</property>
               </object>
               <packing>
@@ -119,7 +119,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -137,7 +137,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -205,7 +205,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -223,7 +223,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -281,7 +281,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -363,7 +363,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -381,7 +381,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                             <property name="model_attribute">hours_per_day_usage</property>
                           </object>
                           <packing>
@@ -450,7 +450,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                             <property name="model_attribute">previous_brand</property>
                           </object>
                           <packing>
@@ -469,7 +469,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -537,7 +537,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                             <property name="model_attribute">previous_feeling</property>
                           </object>
                           <packing>
@@ -556,7 +556,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                             <property name="model_attribute">cornea_issues</property>
                           </object>
                           <packing>
@@ -612,7 +612,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -691,7 +691,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -709,7 +709,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                             <property name="model_attribute">cornea_issues</property>
                           </object>
                           <packing>
@@ -778,7 +778,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -796,7 +796,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                             <property name="model_attribute">hours_per_day_usage</property>
                           </object>
                           <packing>
@@ -865,7 +865,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                             <property name="model_attribute">previous_brand</property>
                           </object>
                           <packing>
@@ -884,7 +884,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -952,7 +952,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                             <property name="model_attribute">previous_feeling</property>
                           </object>
                           <packing>
@@ -971,7 +971,7 @@
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
                             <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -1062,7 +1062,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -1080,7 +1080,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -1149,7 +1149,7 @@ in the eyes recently?</property>
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -1167,7 +1167,7 @@ in the eyes recently?</property>
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -1235,7 +1235,7 @@ in the eyes recently?</property>
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -1253,7 +1253,7 @@ in the eyes recently?</property>
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -1321,7 +1321,7 @@ in the eyes recently?</property>
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -1339,7 +1339,7 @@ in the eyes recently?</property>
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -1414,7 +1414,7 @@ in the eyes recently?</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
-                    <property name="data_type">unicode</property>
+                    <property name="data_type">str</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -1446,7 +1446,7 @@ air-conditioning/dust/chemical products??</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
-                    <property name="data_type">unicode</property>
+                    <property name="data_type">str</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -1491,7 +1491,7 @@ air-conditioning/dust/chemical products??</property>
                           <object class="ProxyTextView" id="history_notes">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="data_type">unicode</property>
+                            <property name="data_type">str</property>
                           </object>
                         </child>
                       </object>

@@ -32,7 +32,7 @@
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Installments:</property>
                         <property name="justify">right</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                         <property name="model_attribute">installments_number_lbl</property>
                       </object>
                       <packing>
@@ -70,7 +70,7 @@
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Start at:</property>
                         <property name="justify">right</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                         <property name="model_attribute">first_duedate_lbl</property>
                       </object>
                       <packing>
@@ -100,7 +100,7 @@
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">With intervals of:</property>
                         <property name="justify">right</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                         <property name="model_attribute">intervals_lbl</property>
                       </object>
                       <packing>
@@ -214,7 +214,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -247,7 +247,7 @@
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">unicode</property>
+                        <property name="data_type">str</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>

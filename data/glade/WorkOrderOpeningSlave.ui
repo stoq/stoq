@@ -68,7 +68,7 @@
               <object class="ProxyTextView" id="defect_reported">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">defect_reported</property>
               </object>
             </child>

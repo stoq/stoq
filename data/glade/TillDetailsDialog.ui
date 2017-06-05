@@ -88,7 +88,7 @@
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="use_markup">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">responsible_open_name</property>
               </object>
               <packing>
@@ -147,7 +147,7 @@
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="use_markup">True</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="model_attribute">responsible_close_name</property>
               </object>
               <packing>
@@ -232,7 +232,7 @@
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="editable">False</property>
-                    <property name="data_type">unicode</property>
+                    <property name="data_type">str</property>
                     <property name="data_value">observations</property>
                   </object>
                 </child>

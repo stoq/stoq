@@ -87,7 +87,7 @@
                 <property name="secondary_icon_sensitive">True</property>
                 <property name="secondary_icon_tooltip_text" translatable="yes">This field is mandatory</property>
                 <property name="secondary_icon_tooltip_markup" translatable="yes">This field is mandatory</property>
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="mandatory">True</property>
                 <property name="model_attribute">username</property>
               </object>

@@ -120,7 +120,7 @@
         </child>
         <child>
           <object class="ProxyEntry" id="author">
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="is_focus">True</property>
             <property name="model_attribute">author</property>
             <property name="visible">True</property>
@@ -133,7 +133,7 @@
         </child>
         <child>
           <object class="ProxyEntry" id="series">
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">series</property>
             <property name="visible">True</property>
           </object>
@@ -147,7 +147,7 @@
         </child>
         <child>
           <object class="ProxyEntry" id="subject">
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">subject</property>
             <property name="visible">True</property>
           </object>
@@ -161,7 +161,7 @@
         </child>
         <child>
           <object class="ProxyEntry" id="isbn">
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">isbn</property>
             <property name="visible">True</property>
           </object>
@@ -192,7 +192,7 @@
         </child>
         <child>
           <object class="ProxyEntry" id="decorative_finish">
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="is_focus">True</property>
             <property name="model_attribute">decorative_finish</property>
             <property name="visible">True</property>
@@ -213,7 +213,7 @@
             <property name="vscrollbar_policy">automatic</property>
             <child>
               <object class="ProxyTextView" id="synopsis">
-                <property name="data_type">unicode</property>
+                <property name="data_type">str</property>
                 <property name="is_focus">True</property>
                 <property name="model_attribute">synopsis</property>
                 <property name="pixels_below_lines">3</property>
@@ -316,7 +316,7 @@
         </child>
         <child>
           <object class="ProxyEntry" id="edition">
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">edition</property>
             <property name="visible">True</property>
           </object>
@@ -330,7 +330,7 @@
         </child>
         <child>
           <object class="ProxyEntry" id="language">
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">language</property>
             <property name="visible">True</property>
           </object>
