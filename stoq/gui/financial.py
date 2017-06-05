@@ -228,10 +228,10 @@ class TransactionPage(object):
         else:
             color_func = lambda x: x < 0
         return [Column('date', title=_("Date"), data_type=datetime.date, sorted=True),
-                Column('code', title=_("Code"), data_type=unicode),
+                Column('code', title=_("Code"), data_type=str),
                 Column('description', title=_("Description"),
-                       data_type=unicode, expand=True),
-                Column('account', title=_("Account"), data_type=unicode),
+                       data_type=str, expand=True),
+                Column('account', title=_("Account"), data_type=str),
                 Column('value',
                        title=self.model.account.get_type_label(out=False),
                        data_type=currency,
@@ -247,7 +247,8 @@ class TransactionPage(object):
     def _get_payment_columns(self):
         return [SearchColumn('due_date', title=_("Due date"), data_type=datetime.date, sorted=True),
                 IdentifierColumn('identifier', title=_("Payment #")),
-                SearchColumn('description', title=_("Description"), data_type=unicode, expand=True),
+                SearchColumn('description', title=_("Description"),
+                             data_type=str, expand=True),
                 SearchColumn('value', title=_("Value"),
                              data_type=currency)]
 

@@ -136,7 +136,7 @@ class RenegotiationDetailsDialog(BaseEditor):
 
     def _get_items_columns(self):
         return [Column('description', _("Description"), sorted=True,
-                       data_type=unicode, expand=True),
+                       data_type=str, expand=True),
                 Column('open_date', _("Open date"), data_type=datetime.date,
                        width=90),
                 Column('total_amount', _("Total"), data_type=currency, width=100)]

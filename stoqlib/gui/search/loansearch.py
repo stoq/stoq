@@ -144,10 +144,10 @@ class LoanSearch(SearchDialog):
                 Column('expire_date', _('Expire date'),
                        data_type=datetime.date, width=100),
                 Column('branch_name', _('Branch'),
-                       data_type=unicode, expand=True),
+                       data_type=str, expand=True),
                 Column('client_name', _('Client'),
-                       data_type=unicode, width=120),
-                Column('removed_by', _('Removed by'), data_type=unicode,
+                       data_type=str, width=120),
+                Column('removed_by', _('Removed by'), data_type=str,
                        width=120),
                 ]
 

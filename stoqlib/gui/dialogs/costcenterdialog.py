@@ -85,9 +85,9 @@ class CostCenterDialog(BaseEditor):
     def _get_sales_columns(self):
         return [IdentifierColumn('identifier', title=_('Sale #'), sorted=True),
                 Column('client_name', title=_('Client'),
-                       data_type=unicode, expand=True),
+                       data_type=str, expand=True),
                 Column('branch_name', title=_('Branch'),
-                       data_type=unicode, visible=False),
+                       data_type=str, visible=False),
                 Column('open_date', title=_('Open date'), width=120,
                        data_type=datetime.date, justify=Gtk.Justification.RIGHT,
                        visible=False),
@@ -102,9 +102,9 @@ class CostCenterDialog(BaseEditor):
                 Column('confirm_date', _('Date'),
                        data_type=datetime.date, width=100),
                 Column('branch_name', _('Branch'),
-                       data_type=unicode, expand=True),
+                       data_type=str, expand=True),
                 Column('removed_by_name', _('Removed By'),
-                       data_type=unicode, width=120)]
+                       data_type=str, width=120)]
 
     def _setup_columns(self):
         self.payments_list.set_columns(self._get_payments_columns())

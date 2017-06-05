@@ -352,7 +352,7 @@ class PosApp(ShellApp):
                        visible=False),
                 Column('price', title=_('Price'), data_type=currency,
                        width=110, justify=Gtk.Justification.RIGHT),
-                Column('quantity_unit', title=_('Quantity'), data_type=unicode,
+                Column('quantity_unit', title=_('Quantity'), data_type=str,
                        width=110, justify=Gtk.Justification.RIGHT),
                 Column('total', title=_('Total'), data_type=currency,
                        justify=Gtk.Justification.RIGHT, width=100)]
