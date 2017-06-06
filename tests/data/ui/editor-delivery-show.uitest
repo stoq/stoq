@@ -22,7 +22,7 @@ GtkDialog(main_dialog.toplevel): title='Delivery editor', hidden
                   ProxyLabel(transporter_id_lbl): 'Transporter:'
                   ProxyComboEntry(transporter_id):
                     item: 'John', selected
-                    item: 'Jos\xc3\xa9 Carlos de Carvalho'
+                    item: 'José Carlos de Carvalho'
                   GtkBox(orientation=horizontal):
                     GtkButton(transporter_id_add_button):
                     GtkButton(transporter_id_edit_button):

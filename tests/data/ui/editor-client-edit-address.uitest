@@ -106,7 +106,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Franciso Elisio de Lima
                             GtkLabel(label5): "Father's Name:"
                             ProxyEntry(father_name): ''
                             GtkLabel(label3): 'Birth City:'
-                            ProxyEntry(city): 'S\xc3\xa3o Carlos'
+                            ProxyEntry(city): 'São Carlos'
                             GtkLabel(marital_status_lbl): 'Marital Status:'
                             ProxyComboBox(marital_status):
                               item: 'Single', selected
@@ -197,7 +197,7 @@ GtkBox(vbox1, orientation=vertical):
       GtkLabel(complement_lbl): 'Complement:'
       ProxyEntry(complement): ''
       GtkLabel(city_lbl): 'City:'
-      ProxyEntry(city): 'S\xc3\xa3o Carlos'
+      ProxyEntry(city): 'São Carlos'
       GtkLabel(state_lbl): 'State:'
       ProxyEntry(state): 'SP'
       GtkLabel(country_lbl): 'Country:'

@@ -48,7 +48,7 @@ GtkDialog(toplevel): title='Trade Sale Order', hidden
                       column: title='Items'
                       column: title='Total'
                       row: 3, datetime.datetime(2008, 9, 1, 0, 0), 'Luis Sergio da Silva Marin', 'Deivis Alexandre Junior', Decimal('3.000'), <currency $873>
-                      row: 2, datetime.datetime(2008, 6, 1, 0, 0), 'Alessandra Almeida Itaber\xe1', 'Deivis Alexandre Junior', Decimal('3.000'), <currency $706>
+                      row: 2, datetime.datetime(2008, 6, 1, 0, 0), 'Alessandra Almeida Itaberá', 'Deivis Alexandre Junior', Decimal('3.000'), <currency $706>
                       row: 1, datetime.datetime(2008, 1, 1, 0, 0), 'Vitalina Claudino', 'Deivis Alexandre Junior', Decimal('3.000'), <currency $436>
                 GtkBox(orientation=horizontal, fill=True):
                   GtkEventBox(extra_holder, expand=True, fill=True, padding=6):

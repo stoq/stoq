@@ -42,7 +42,7 @@ GtkDialog(toplevel): title='New Medic', hidden
                       GtkLabel(): 'Complement:'
                       ProxyEntry(): ''
                       GtkLabel(): 'City:'
-                      ProxyEntry(): 'S\xc3\xa3o Carlos'
+                      ProxyEntry(): 'São Carlos'
                       GtkLabel(): 'State:'
                       ProxyEntry(): 'SP'
                       GtkLabel(): 'Country:'
@@ -92,7 +92,7 @@ GtkDialog(toplevel): title='New Medic', hidden
                         GtkLabel(): "Father's Name:"
                         ProxyEntry(): ''
                         GtkLabel(): 'Birth City:'
-                        ProxyEntry(): 'S\xc3\xa3o Carlos'
+                        ProxyEntry(): 'São Carlos'
                         GtkLabel(): 'Marital Status:'
                         ProxyComboBox():
                           item: 'Single', selected

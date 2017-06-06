@@ -151,7 +151,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Purchase', hidden
                 column: title='Ordered'
                 column: title='Received'
                 column: title='Total'
-                row: 1, 'Closed', datetime.datetime(2012, 1, 1, 0, 0), 'Cia de Roupas S\xe3o Carlos', Decimal('50.000'), Decimal('50.000'), Decimal('7930.00000000000')
+                row: 1, 'Closed', datetime.datetime(2012, 1, 1, 0, 0), 'Cia de Roupas São Carlos', Decimal('50.000'), Decimal('50.000'), Decimal('7930.00000000000')
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkBox(orientation=horizontal):

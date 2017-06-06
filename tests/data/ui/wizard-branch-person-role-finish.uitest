@@ -42,7 +42,7 @@ GtkDialog(toplevel): title='New Branch', hidden
                       GtkLabel(): 'Complement:'
                       ProxyEntry(): ''
                       GtkLabel(): 'City:'
-                      ProxyEntry(): 'S\xc3\xa3o Carlos'
+                      ProxyEntry(): 'São Carlos'
                       GtkLabel(): 'State:'
                       ProxyEntry(): 'SP'
                       GtkLabel(): 'Country:'
@@ -82,7 +82,7 @@ GtkDialog(toplevel): title='New Branch', hidden
                       GtkLabel(): 'Tax Policy:'
                       ProxyComboBox():
                         item: '1 - Simples Nacional', selected
-                        item: '2 - Simples Nacional \xe2\x80\x93 excesso de sublimite da receita bruta'
+                        item: '2 - Simples Nacional - excesso de sublimite da receita bruta'
                         item: '3 - Regime Normal'
                       GtkLabel(): 'Branch status:'
                       ProxyRadioButton(): 'Active', active

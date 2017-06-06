@@ -29,12 +29,12 @@ GtkDialog(toplevel): title='Item search', hidden
             column: title='Minimum Qty', hidden
             column: title='In Stock'
             row: '01', '2368694135945', 'Bermudas Sarja', 'Bermuda Sarja', '', None, '', Decimal('149.00'), Decimal('0.000'), Decimal('3.000')
-            row: '09', '5892458629421', 'Blusas Poliester', 'Blusa Balon\xea com Bordado nas Costas', '', None, '', Decimal('150.00'), Decimal('0.000'), Decimal('3.000')
-            row: '08', '7826592136954', 'Blusas Algod\xe3o', 'Blusa Frente-\xdanica com Pregas', '', None, '', Decimal('220.00'), Decimal('0.000'), Decimal('3.000')
-            row: '06', '8596458216412', 'Cal\xe7as Poliester', 'Cal\xe7a Brigilda', '', None, '', Decimal('438.00'), Decimal('0.000'), Decimal('3.000')
-            row: '05', '1595843695465', 'Cal\xe7as Jeans', 'Cal\xe7a Jeans com Bolso Traseiro', '', None, '', Decimal('189.00'), Decimal('0.000'), Decimal('3.000')
+            row: '09', '5892458629421', 'Blusas Poliester', 'Blusa Balonê com Bordado nas Costas', '', None, '', Decimal('150.00'), Decimal('0.000'), Decimal('3.000')
+            row: '08', '7826592136954', 'Blusas Algodão', 'Blusa Frente-Única com Pregas', '', None, '', Decimal('220.00'), Decimal('0.000'), Decimal('3.000')
+            row: '06', '8596458216412', 'Calças Poliester', 'Calça Brigilda', '', None, '', Decimal('438.00'), Decimal('0.000'), Decimal('3.000')
+            row: '05', '1595843695465', 'Calças Jeans', 'Calça Jeans com Bolso Traseiro', '', None, '', Decimal('189.00'), Decimal('0.000'), Decimal('3.000')
             row: '03', '6985413595971', 'Tinturada', 'Camiseta Tinturada Xcuba Comp', '', None, '', Decimal('89.00'), Decimal('0.000'), Decimal('3.000')
-            row: '07', '9586249534513', 'Algod\xe3o', 'Casaco Vilan', '', None, '', Decimal('503.00'), Decimal('0.000'), Decimal('3.000')
+            row: '07', '9586249534513', 'Algodão', 'Casaco Vilan', '', None, '', Decimal('503.00'), Decimal('0.000'), Decimal('3.000')
             row: '04', '2692149835416', 'Chinelos', 'Chinelo de Dedo', '', None, '', Decimal('79.00'), Decimal('0.000'), Decimal('3.000')
             row: '02', '6234564656756', 'Bermudas Shorts', 'Shorts com Costuras', '', None, '', Decimal('198.00'), Decimal('0.000'), Decimal('3.000')
             row: '10', '1598756984265', 'Viscose', 'Vestido Vadalena', '', None, '', Decimal('383.00'), Decimal('0.000'), Decimal('4.000')

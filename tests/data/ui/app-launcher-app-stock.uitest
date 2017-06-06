@@ -149,11 +149,11 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stock', hidden
                 row: '02', '6234564656756', 'Bermudas Shorts', 'Shorts com Costuras', None, '', '', '', Decimal('3.000'), False
                 row: '03', '6985413595971', 'Tinturada', 'Camiseta Tinturada Xcuba Comp', None, '', '', '', Decimal('3.000'), False
                 row: '04', '2692149835416', 'Chinelos', 'Chinelo de Dedo', None, '', '', '', Decimal('3.000'), False
-                row: '05', '1595843695465', 'Cal\xe7as Jeans', 'Cal\xe7a Jeans com Bolso Traseiro', None, '', '', '', Decimal('3.000'), False
-                row: '06', '8596458216412', 'Cal\xe7as Poliester', 'Cal\xe7a Brigilda', None, '', '', '', Decimal('3.000'), False
-                row: '07', '9586249534513', 'Algod\xe3o', 'Casaco Vilan', None, '', '', '', Decimal('3.000'), False
-                row: '08', '7826592136954', 'Blusas Algod\xe3o', 'Blusa Frente-\xdanica com Pregas', None, '', '', '', Decimal('3.000'), False
-                row: '09', '5892458629421', 'Blusas Poliester', 'Blusa Balon\xea com Bordado nas Costas', None, '', '', '', Decimal('3.000'), False
+                row: '05', '1595843695465', 'Calças Jeans', 'Calça Jeans com Bolso Traseiro', None, '', '', '', Decimal('3.000'), False
+                row: '06', '8596458216412', 'Calças Poliester', 'Calça Brigilda', None, '', '', '', Decimal('3.000'), False
+                row: '07', '9586249534513', 'Algodão', 'Casaco Vilan', None, '', '', '', Decimal('3.000'), False
+                row: '08', '7826592136954', 'Blusas Algodão', 'Blusa Frente-Única com Pregas', None, '', '', '', Decimal('3.000'), False
+                row: '09', '5892458629421', 'Blusas Poliester', 'Blusa Balonê com Bordado nas Costas', None, '', '', '', Decimal('3.000'), False
                 row: '10', '1598756984265', 'Viscose', 'Vestido Vadalena', None, '', '', '', Decimal('4.000'), False
           GtkBox(orientation=horizontal):
     ShellStatusbar():

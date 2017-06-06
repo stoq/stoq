@@ -44,7 +44,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                           GtkLabel(complement_lbl): 'Complement:'
                           ProxyEntry(complement): ''
                           GtkLabel(city_lbl): 'City:'
-                          ProxyEntry(city): 'S\xc3\xa3o Carlos'
+                          ProxyEntry(city): 'São Carlos'
                           GtkLabel(state_lbl): 'State:'
                           ProxyEntry(state): 'SP'
                           GtkLabel(country_lbl): 'Country:'
@@ -84,7 +84,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                           GtkLabel(label2): 'Tax Policy:'
                           ProxyComboBox(crt):
                             item: '1 - Simples Nacional', selected
-                            item: '2 - Simples Nacional \xe2\x80\x93 excesso de sublimite da receita bruta'
+                            item: '2 - Simples Nacional - excesso de sublimite da receita bruta'
                             item: '3 - Regime Normal'
                           GtkLabel(label1): 'Branch status:'
                           ProxyRadioButton(active_check): 'Active', active

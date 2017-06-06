@@ -21,7 +21,7 @@ GtkDialog(main_dialog.toplevel): title='Add Product', hidden
                   item: ''
                   item: '5.102 Venda de Mercadoria Adquirida'
                   item: '5.202 Devolucao'
-                  item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado'
+                  item: '5.949 Outra saída de mercadoria ou prestação de serviço não especificado'
                 GtkLabel(category_lbl): 'Category:'
                 GtkBox(hbox1, orientation=horizontal):
                   ProxyComboEntry(category_combo, expand=True, fill=True): insensitive
@@ -110,7 +110,7 @@ GtkDialog(main_dialog.toplevel): title='Add Product', hidden
                         ProxyEntry(ncm): ''
                         GtkLabel(ex_tipi_lbl): 'EX TIPI:'
                         ProxyEntry(ex_tipi): ''
-                        GtkLabel(genero_lbl): 'G\xc3\xaanero:'
+                        GtkLabel(genero_lbl): 'Gênero:'
                         ProxyEntry(genero): ''
                     GtkLabel(label6): '<b>Mercosul Details</b>'
             GtkEventBox(): slave ImageGallerySlave is attached
@@ -140,7 +140,7 @@ GtkDialog(main_dialog.toplevel): title='Add Product', hidden
                 GtkBox(hbox1, orientation=horizontal, fill=True):
                   GtkLabel(model_name_label, fill=True): 'Supplier:'
                   ProxyComboEntry(target_combo, expand=True, fill=True): invalid
-                    item: 'Cia de Roupas S\xc3\xa3o Carlos', selected
+                    item: 'Cia de Roupas São Carlos', selected
                   GtkButton(add_button, fill=True): 'gtk-add'
                 GtkBox(model_vbox, orientation=vertical, expand=True, fill=True):
                   ListContainer(relations_list, expand=True, fill=True):

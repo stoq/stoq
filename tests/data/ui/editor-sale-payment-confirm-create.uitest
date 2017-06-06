@@ -43,7 +43,7 @@ GtkDialog(main_dialog.toplevel): title='Confirm payment', hidden
                   item: 'Expenses:Aluguel'
                   item: 'Expenses:Impostos'
                   item: 'Expenses:Luz'
-                  item: 'Expenses:Sal\xc3\xa1rios'
+                  item: 'Expenses:Salários'
                   item: 'Expenses:Telefonia'
                   item: 'Imbalance', selected
                   item: 'Income'
@@ -60,7 +60,7 @@ GtkDialog(main_dialog.toplevel): title='Confirm payment', hidden
                   item: 'Expenses:Aluguel'
                   item: 'Expenses:Impostos'
                   item: 'Expenses:Luz'
-                  item: 'Expenses:Sal\xc3\xa1rios'
+                  item: 'Expenses:Salários'
                   item: 'Expenses:Telefonia'
                   item: 'Imbalance', selected
                   item: 'Income'

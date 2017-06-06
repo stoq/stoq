@@ -9,7 +9,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Person"', hidden
           GtkHSeparator(hseparator1, fill=True):
           GtkTable(table1, fill=True):
             GtkLabel(label8): 'Company Name:'
-            ProxyEntry(name): 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
+            ProxyEntry(name): 'Stoq Roupas e Acessórios Ltda'
             GtkLabel(cnpj_lbl): 'CNPJ'
             ProxyEntry(cnpj): '  .   .   /    -  ', mandatory
             GtkLabel(label9): 'Phone Number:'
@@ -22,7 +22,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Person"', hidden
             GtkEventBox(address_holder): slave AddressSlave is attached
               GtkTable(toplevel):
                 GtkLabel(address_lbl): 'Street:'
-                ProxyEntry(street): 'Avendia S\xc3\xa3o Carlos'
+                ProxyEntry(street): 'Avendia São Carlos'
                 GtkBox(hbox2, orientation=horizontal):
                   GtkLabel(label8, expand=True, fill=True):
                   ProxyCheckButton(streetnumber_check, fill=True): 'Number:', active
@@ -35,7 +35,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Person"', hidden
                 GtkLabel(complement_lbl): 'Complement:'
                 ProxyEntry(complement): ''
                 GtkLabel(city_lbl): 'City:'
-                ProxyEntry(city): 'S\xc3\xa3o Carlos'
+                ProxyEntry(city): 'São Carlos'
                 GtkLabel(state_lbl): 'State:'
                 ProxyEntry(state): 'SP'
                 GtkLabel(country_lbl): 'Country:'
@@ -56,7 +56,7 @@ model: Person<1>
   email: ''
   fax_number: '32118271'
   mobile_number: ''
-  name: 'Stoq Roupas e Acess\xf3rios Ltda'
+  name: 'Stoq Roupas e Acessórios Ltda'
   notes: ''
   phone_number: '48763983'
 

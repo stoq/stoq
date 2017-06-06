@@ -32,7 +32,7 @@ GtkBox(vbox1, orientation=vertical):
         column: title='Value'
         row: 1, 'Deivis Alexandre Junior', 'Vitalina Claudino', 'Moda Stoq', '$436.00'
           row: None, 'Money', '', None, '$436.00 (1x)'
-        row: 2, 'Deivis Alexandre Junior', 'Alessandra Almeida Itaber\xe1', 'Moda Stoq', '$706.00'
+        row: 2, 'Deivis Alexandre Junior', 'Alessandra Almeida Itaberá', 'Moda Stoq', '$706.00'
           row: None, 'Check', '', None, '$706.00 (1x)'
         row: 3, 'Deivis Alexandre Junior', 'Luis Sergio da Silva Marin', 'Moda Stoq', '$873.00'
           row: None, 'Bill', '', None, '$873.00 (1x)'
@@ -52,7 +52,7 @@ GtkBox(vbox1, orientation=vertical):
         column: title='Notes'
         column: title='Supplier'
         column: title='Value'
-        row: 1, 'Closed', 'Administrator', 'Moda Stoq', '', 'Cia de Roupas S\xe3o Carlos', <currency $7,930>
+        row: 1, 'Closed', 'Administrator', 'Moda Stoq', '', 'Cia de Roupas São Carlos', <currency $7,930>
           row: 1, None, None, None, 'Money', None, None
     GtkBox(vbox3, orientation=vertical):
       ObjectList(outpayments_list, expand=True, fill=True):

@@ -688,6 +688,32 @@ class GUITest(DomainTest):
             'datetime.today()')
 
         text = _UUID_RE.sub("uuid.uuid()", text)
+        special = {
+            '\\xc3\\xad': u'í',
+            '\\xc3\\xa7': u'ç',
+            '\\xc3\\xa3': u'ã',
+            '\\xc3\\xa9': u'é',
+            '\\xc3\\xaa': u'ê',
+            '\\xc3\\xba': u'ú',
+            '\\xc3\\xb4': u'ô',
+            '\\xc3\\xa1': u'á',
+            '\\xc3\\xb3': u'ó',
+            '\\xc3\\x9a': u'Ú',
+            '\\xc3\\xb5': u'õ',
+            '\\xe2\\x80\\x93': u'-',
+
+            '\\xe1': u'á',
+            '\\xed': u'í',
+            '\\xe7': u'ç',
+            '\\xe3': u'ã',
+            '\\xea': u'ê',
+            '\\xe9': u'é',
+            '\\xda': u'Ú',
+            '\\xf3': u'ó',
+            '\\xf4': u'ô',
+        }
+        for key, value in special.items():
+            text = text.replace(key, value)
 
         # FIXME: This can be removed once we migrate to python3
         text = text.replace("u'", "'")

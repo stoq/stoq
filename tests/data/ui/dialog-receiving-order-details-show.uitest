@@ -42,7 +42,7 @@ GtkBox(vbox1, orientation=vertical):
           ProxyEntry(discount_value): '0.00', ineditable, insensitive
           GtkLabel(label2): 'Transporter:'
           ProxyComboEntry(transporter): insensitive
-            item: 'Jos\xc3\xa9 Carlos de Carvalho'
+            item: 'José Carlos de Carvalho'
           ProxyLabel(kiwilabel2): 'Secure ($CURRENCY):'
           ProxyEntry(secure_value): '0.00', ineditable, insensitive
           GtkLabel(label4): 'Responsible:'

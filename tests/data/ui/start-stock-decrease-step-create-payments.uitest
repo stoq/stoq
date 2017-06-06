@@ -11,7 +11,7 @@ GtkDialog(toplevel): title='Manual Stock Decrease', hidden
           ProxyComboEntry(step.cfop):
             item: '5.102 Venda de Mercadoria Adquirida'
             item: '5.202 Devolucao'
-            item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado', selected
+            item: '5.949 Outra saída de mercadoria ou prestação de serviço não especificado', selected
           GtkLabel(step.label4): 'Branch:'
           ProxyComboEntry(step.branch):
             item: 'Moda Stoq', selected
@@ -19,17 +19,17 @@ GtkDialog(toplevel): title='Manual Stock Decrease', hidden
           GtkLabel(step.label6): 'Send To:'
           ProxyComboEntry(step.person):
             item: 'Administrator'
-            item: 'Alessandra Almeida Itaber\xc3\xa1'
-            item: 'Cia de Roupas S\xc3\xa3o Carlos (Cia de Roupas S\xc3\xa3o Carlos)'
+            item: 'Alessandra Almeida Itaberá'
+            item: 'Cia de Roupas São Carlos (Cia de Roupas São Carlos)'
             item: 'Cleusa Blanc Ferreira Norbiato'
             item: 'Deivis Alexandre Junior'
             item: 'Franciso Elisio de Lima Junior'
-            item: 'Jos\xc3\xa9 Carlos de Carvalho (Jos\xc3\xa9 Carlos de Carvalho)'
+            item: 'José Carlos de Carvalho (José Carlos de Carvalho)'
             item: 'Luis Sergio da Silva Marin'
             item: 'Maria Aparecida Ardana'
             item: 'Osvaldo Denadai Marin'
-            item: 'Stoq Elite Fashion (Stoq Com\xc3\xa9rcio Ltda ME)'
-            item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
+            item: 'Stoq Elite Fashion (Stoq Comércio Ltda ME)'
+            item: 'Stoq Roupas e Acessórios Ltda'
             item: 'Vitalina Claudino'
           GtkLabel(step.label3): 'Removed By:'
           ProxyComboEntry(step.removed_by):

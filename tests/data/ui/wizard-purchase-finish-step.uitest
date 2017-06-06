@@ -11,7 +11,7 @@ GtkDialog(toplevel): title='New Order', hidden
             GtkLabel(step.label2): 'Transporter:'
             GtkBox(step.hbox2, orientation=horizontal):
               ProxyComboEntry(step.transporter, expand=True, fill=True):
-                item: 'Jos\xc3\xa9 Carlos de Carvalho'
+                item: 'José Carlos de Carvalho'
               GtkButton(step.add_transporter, fill=True):
               GtkButton(step.edit_transporter):
             GtkLabel(step.label3): 'Expected Receival Date:'

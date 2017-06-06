@@ -42,7 +42,7 @@ GtkDialog(toplevel): title='New Employee', hidden
                       GtkLabel(): 'Complement:'
                       ProxyEntry(): ''
                       GtkLabel(): 'City:'
-                      ProxyEntry(): 'S\xc3\xa3o Carlos'
+                      ProxyEntry(): 'São Carlos'
                       GtkLabel(): 'State:'
                       ProxyEntry(): 'SP'
                       GtkLabel(): 'Country:'
@@ -61,7 +61,7 @@ GtkDialog(toplevel): title='New Employee', hidden
                         item: 'Gerente'
                         item: 'Role', selected
                         item: 'Salesperson'
-                        item: 'Secret\xc3\xa1rio'
+                        item: 'Secretário'
                         item: 'System Administrator'
                       GtkButtonBox(orientation=horizontal):
                         GtkButton(expand=True, fill=True): 'A_dd/Edit Role...'
@@ -117,7 +117,7 @@ GtkDialog(toplevel): title='New Employee', hidden
                         GtkLabel(): "Father's Name:"
                         ProxyEntry(): ''
                         GtkLabel(): 'Birth City:'
-                        ProxyEntry(): 'S\xc3\xa3o Carlos'
+                        ProxyEntry(): 'São Carlos'
                         GtkLabel(): 'Marital Status:'
                         ProxyComboBox():
                           item: 'Single', selected

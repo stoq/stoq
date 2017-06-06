@@ -26,17 +26,17 @@ GtkDialog(toplevel): title='Sellable Category Search', hidden
               row: 'Bermudas Sarja', Decimal('15.00'), Decimal('15.00'), Decimal('28.00')
               row: 'Bermudas Shorts', Decimal('15.00'), Decimal('15.00'), Decimal('28.00')
             row: 'Blusas', Decimal('45.00'), Decimal('23.00'), Decimal('25.00')
-              row: 'Blusas Algod\xe3o', Decimal('52.00'), Decimal('23.00'), Decimal('25.00')
+              row: 'Blusas Algodão', Decimal('52.00'), Decimal('23.00'), Decimal('25.00')
               row: 'Blusas Poliester', Decimal('52.00'), Decimal('23.00'), Decimal('25.00')
-            row: 'Cal\xe7ados', Decimal('35.00'), Decimal('10.00'), Decimal('23.00')
+            row: 'Calçados', Decimal('35.00'), Decimal('10.00'), Decimal('23.00')
               row: 'Chinelos', Decimal('45.00'), Decimal('10.00'), Decimal('23.00')
-            row: 'Cal\xe7as', Decimal('32.00'), Decimal('27.00'), Decimal('12.00')
-              row: 'Cal\xe7as Jeans', Decimal('52.00'), Decimal('27.00'), Decimal('12.00')
-              row: 'Cal\xe7as Poliester', Decimal('52.00'), Decimal('27.00'), Decimal('12.00')
+            row: 'Calças', Decimal('32.00'), Decimal('27.00'), Decimal('12.00')
+              row: 'Calças Jeans', Decimal('52.00'), Decimal('27.00'), Decimal('12.00')
+              row: 'Calças Poliester', Decimal('52.00'), Decimal('27.00'), Decimal('12.00')
             row: 'Camisetas', Decimal('43.00'), Decimal('10.00'), Decimal('12.00')
               row: 'Tinturada', Decimal('33.00'), Decimal('10.00'), Decimal('12.00')
             row: 'Casacos', Decimal('35.00'), Decimal('25.00'), Decimal('35.00')
-              row: 'Algod\xe3o', Decimal('55.00'), Decimal('25.00'), Decimal('35.00')
+              row: 'Algodão', Decimal('55.00'), Decimal('25.00'), Decimal('35.00')
             row: 'Category 1', Decimal('0.00'), None, None
               row: 'Category 2', Decimal('0.00'), None, None
               row: 'Category 3', Decimal('0.00'), None, None

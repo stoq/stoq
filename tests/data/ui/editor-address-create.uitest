@@ -21,7 +21,7 @@ GtkDialog(main_dialog.toplevel): title='Add Address', hidden
               GtkLabel(complement_lbl): 'Complement:'
               ProxyEntry(complement): ''
               GtkLabel(city_lbl): 'City:'
-              ProxyEntry(city): 'S\xc3\xa3o Carlos'
+              ProxyEntry(city): 'São Carlos'
               GtkLabel(state_lbl): 'State:'
               ProxyEntry(state): 'SP'
               GtkLabel(country_lbl): 'Country:'

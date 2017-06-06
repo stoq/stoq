@@ -18,7 +18,7 @@ GtkDialog(toplevel): title='New Order', hidden
             ProxyLabel(step.kiwilabel2): 'Supplier:'
             GtkBox(step.hbox4, orientation=horizontal):
               ProxyComboEntry(step.supplier, expand=True, fill=True):
-                item: 'Cia de Roupas S\xc3\xa3o Carlos', selected
+                item: 'Cia de Roupas São Carlos', selected
               GtkBox(step.supplier_buttons, orientation=horizontal, fill=True):
                 GtkButton(step.add_supplier, fill=True):
                 GtkButton(step.edit_supplier, fill=True):

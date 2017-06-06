@@ -9,7 +9,7 @@ GtkDialog(main_dialog.toplevel): title='Add client credit check history for Clie
             GtkTable():
               ProxyLabel(client_id_lbl): 'Client:'
               ProxyComboEntry(client_id): insensitive
-                item: 'Alessandra Almeida Itaber\xc3\xa1'
+                item: 'Alessandra Almeida Itaberá'
                 item: 'Client', selected
                 item: 'Franciso Elisio de Lima Junior'
                 item: 'Luis Sergio da Silva Marin'

@@ -9,6 +9,6 @@ GtkBox(vbox1, orientation=vertical):
     column: title='Group'
     column: title='Parameter', expand
     column: title='Current value'
-    row: 'General', 'Default city', 'S\xe3o Carlos'
+    row: 'General', 'Default city', 'São Carlos'
   GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
     GtkButton(edit_button): 'gtk-edit', insensitive

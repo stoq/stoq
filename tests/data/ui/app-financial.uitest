@@ -106,7 +106,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
                   row: 'Aluguel', None, Decimal('1700.00')
                   row: 'Impostos', None, Decimal('9678.30')
                   row: 'Luz', None, Decimal('258.66')
-                  row: 'Sal\xe1rios', None, Decimal('9195.24')
+                  row: 'Salários', None, Decimal('9195.24')
                   row: 'Telefonia', None, Decimal('232.30')
                 row: 'Imbalance', None, Decimal('0.00')
                 row: 'Income', None, Decimal('-45752.82')

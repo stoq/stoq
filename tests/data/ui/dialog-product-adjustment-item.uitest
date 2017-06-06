@@ -27,7 +27,7 @@ GtkDialog(main_dialog.toplevel): title='Product Adjustment', hidden
                 item: '1.102 Compra para Comercializacao'
                 item: '5.102 Venda de Mercadoria Adquirida'
                 item: '5.202 Devolucao'
-                item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado'
+                item: '5.949 Outra saída de mercadoria ou prestação de serviço não especificado'
               GtkBox(orientation=horizontal):
                 GtkButton(cfop_data_add_button):
                 GtkButton(cfop_data_edit_button): insensitive

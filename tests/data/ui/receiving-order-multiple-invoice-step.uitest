@@ -33,7 +33,7 @@ GtkDialog(toplevel): title='Receive Purchase Order', hidden
                 ProxyEntry(discount_value): '0.00'
                 GtkLabel(label2): 'Transporter:'
                 ProxyComboEntry(transporter):
-                  item: 'Jos\xc3\xa9 Carlos de Carvalho'
+                  item: 'José Carlos de Carvalho'
                 ProxyLabel(kiwilabel2): 'Secure ($CURRENCY):'
                 ProxyEntry(secure_value): '0.00'
                 GtkLabel(label4): 'Responsible:'

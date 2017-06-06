@@ -1,5 +1,5 @@
 editor: BranchEditor
-GtkDialog(main_dialog.toplevel): title='Edit Details of "Stoq Roupas e Acess\xc3\xb3rios Ltda"', hidden
+GtkDialog(main_dialog.toplevel): title='Edit Details of "Stoq Roupas e Acessórios Ltda"', hidden
   GtkBox(main_dialog._main_vbox, orientation=vertical):
     GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -13,7 +13,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Stoq Roupas e Acess\xc3
                     GtkBox(identification_tab, orientation=vertical):
                       GtkTable(table1, fill=True):
                         GtkLabel(name_lbl): 'Name:'
-                        ProxyEntry(name): 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
+                        ProxyEntry(name): 'Stoq Roupas e Acessórios Ltda'
                         GtkLabel(phone_number_lbl): 'Phone Number:'
                         ProxyEntry(phone_number): '48763983'
                         GtkLabel(email_lbl): 'E-mail:'
@@ -31,7 +31,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Stoq Roupas e Acess\xc3
                       GtkEventBox(address_holder, fill=True): slave AddressSlave is attached
                         GtkTable(toplevel):
                           GtkLabel(address_lbl): 'Street:'
-                          ProxyEntry(street): 'Avendia S\xc3\xa3o Carlos'
+                          ProxyEntry(street): 'Avendia São Carlos'
                           GtkBox(hbox2, orientation=horizontal):
                             GtkLabel(label8, expand=True, fill=True):
                             ProxyCheckButton(streetnumber_check, fill=True): 'Number:', active
@@ -44,7 +44,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Stoq Roupas e Acess\xc3
                           GtkLabel(complement_lbl): 'Complement:'
                           ProxyEntry(complement): ''
                           GtkLabel(city_lbl): 'City:'
-                          ProxyEntry(city): 'S\xc3\xa3o Carlos'
+                          ProxyEntry(city): 'São Carlos'
                           GtkLabel(state_lbl): 'State:'
                           ProxyEntry(state): 'SP'
                           GtkLabel(country_lbl): 'Country:'
@@ -84,7 +84,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Stoq Roupas e Acess\xc3
                           GtkLabel(label2): 'Tax Policy:'
                           ProxyComboBox(crt):
                             item: '1 - Simples Nacional', selected
-                            item: '2 - Simples Nacional \xe2\x80\x93 excesso de sublimite da receita bruta'
+                            item: '2 - Simples Nacional - excesso de sublimite da receita bruta'
                             item: '3 - Regime Normal'
                           GtkLabel(label1): 'Branch status:', insensitive
                           ProxyRadioButton(active_check): 'Active', active, insensitive

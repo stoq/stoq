@@ -32,8 +32,8 @@ GtkDialog(toplevel): title='Branch Search', hidden
             column: title='Status'
             row: 'Dante', 'Dante shop', None, '12345678', None, 'Active'
             row: 'Las Vegas', 'Las Vegas shop', None, '12345678', None, 'Active'
-            row: 'Stoq Com\xe9rcio Ltda ME', 'Stoq Elite Fashion', None, '33227766', None, 'Active'
-            row: 'Stoq Roupas e Acess\xf3rios Ltda', 'Moda Stoq', None, '48763983', None, 'Active'
+            row: 'Stoq Comércio Ltda ME', 'Stoq Elite Fashion', None, '33227766', None, 'Active'
+            row: 'Stoq Roupas e Acessórios Ltda', 'Moda Stoq', None, '48763983', None, 'Active'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):

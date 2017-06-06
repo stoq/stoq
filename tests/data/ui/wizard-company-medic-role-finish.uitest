@@ -42,7 +42,7 @@ GtkDialog(toplevel): title='New Medic', hidden
                       GtkLabel(): 'Complement:'
                       ProxyEntry(): ''
                       GtkLabel(): 'City:'
-                      ProxyEntry(): 'S\xc3\xa3o Carlos'
+                      ProxyEntry(): 'São Carlos'
                       GtkLabel(): 'State:'
                       ProxyEntry(): 'SP'
                       GtkLabel(): 'Country:'

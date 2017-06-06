@@ -24,7 +24,7 @@ GtkDialog(toplevel): title='Sale Checkout', hidden
             ProxyDateEntry(step.expire_date): None, hidden
             GtkLabel(step.transporter_lbl): 'Transporter:'
             ProxyComboEntry(step.transporter):
-              item: 'Jos\xc3\xa9 Carlos de Carvalho'
+              item: 'José Carlos de Carvalho'
             GtkButton(step.create_transporter):
             GtkLabel(step.client_category_lbl): 'Client Category:', hidden
             ProxyComboBox(step.client_category): hidden

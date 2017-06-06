@@ -27,8 +27,8 @@ GtkDialog(toplevel): title='Item search', hidden
             column: title='Model', hidden
             column: title='Price'
             column: title='In Stock'
-            row: '06', '8596458216412', 'Cal\xe7as Poliester', 'Cal\xe7a Brigilda', '', None, '', Decimal('438.00'), Decimal('3.000')
-            row: '05', '1595843695465', 'Cal\xe7as Jeans', 'Cal\xe7a Jeans com Bolso Traseiro', '', None, '', Decimal('189.00'), Decimal('3.000')
+            row: '06', '8596458216412', 'Calças Poliester', 'Calça Brigilda', '', None, '', Decimal('438.00'), Decimal('3.000')
+            row: '05', '1595843695465', 'Calças Jeans', 'Calça Jeans com Bolso Traseiro', '', None, '', Decimal('189.00'), Decimal('3.000')
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal): hidden

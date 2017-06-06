@@ -26,7 +26,7 @@ GtkDialog(main_dialog.toplevel): title="Edit 'Parent bank account' Parameter", h
               item: 'Saldos Iniciais'
               item: 'Aluguel'
               item: 'Luz'
-              item: 'Sal\xc3\xa1rios'
+              item: 'Salários'
               item: 'Telefonia'
               item: 'Impostos'
       GtkBox(orientation=horizontal, fill=True):

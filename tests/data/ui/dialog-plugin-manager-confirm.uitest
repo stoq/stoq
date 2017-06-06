@@ -12,7 +12,7 @@ GtkDialog(toplevel): title='Plugin Manager', hidden
           row: False, 'stoq-plugin', '<b>Bike Shop</b>\nUse Stoq in a bike shop'
           row: False, 'stoq-plugin', '<b>Books</b>\nUse Stoq in a Bookshop'
           row: True, 'stoq-plugin', '<b>ECF Fiscal Printer</b>\nCoupon Fiscal Emission (ECF) support'
-          row: True, 'stoq-plugin', '<b>Nota Fiscal Eletr\xf4nica</b>\nPermits emission of NF-e (Nota Fiscal Eletr\xf4nica)'
+          row: True, 'stoq-plugin', '<b>Nota Fiscal Eletrônica</b>\nPermits emission of NF-e (Nota Fiscal Eletrônica)'
           row: True, 'stoq-plugin', '<b>Optical Plugin</b>\nUse Stoq in optical stores'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):

@@ -45,7 +45,7 @@ GtkDialog(toplevel): title='Search for Sales by Payment Method', hidden
             column: title='Items'
             column: title='Total'
             row: 3, datetime.datetime(2008, 9, 1, 0, 0), 'Luis Sergio da Silva Marin', 'Moda Stoq', 'Deivis Alexandre Junior', Decimal('3.000'), <currency $873>
-            row: 2, datetime.datetime(2008, 6, 1, 0, 0), 'Alessandra Almeida Itaber\xe1', 'Moda Stoq', 'Deivis Alexandre Junior', Decimal('3.000'), <currency $706>
+            row: 2, datetime.datetime(2008, 6, 1, 0, 0), 'Alessandra Almeida Itaberá', 'Moda Stoq', 'Deivis Alexandre Junior', Decimal('3.000'), <currency $706>
             row: 1, datetime.datetime(2008, 1, 1, 0, 0), 'Vitalina Claudino', 'Moda Stoq', 'Deivis Alexandre Junior', Decimal('3.000'), <currency $436>
           SummaryLabel(summary_label):
             GtkLabel(expand=True, fill=True, padding=6): 'Total:'

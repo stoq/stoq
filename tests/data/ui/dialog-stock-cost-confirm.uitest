@@ -11,11 +11,11 @@ GtkBox(vbox1, orientation=vertical):
         row: '02', 'Shorts com Costuras', Decimal('139.00000000')
         row: '03', 'Camiseta Tinturada Xcuba Comp', Decimal('56.00000000')
         row: '04', 'Chinelo de Dedo', Decimal('43.00000000')
-        row: '05', 'Cal\xe7a Jeans com Bolso Traseiro', Decimal('101.00000000')
-        row: '06', 'Cal\xe7a Brigilda', Decimal('325.00000000')
+        row: '05', 'Calça Jeans com Bolso Traseiro', Decimal('101.00000000')
+        row: '06', 'Calça Brigilda', Decimal('325.00000000')
         row: '07', 'Casaco Vilan', Decimal('401.00000000')
-        row: '08', 'Blusa Frente-\xdanica com Pregas', Decimal('153.00000000')
-        row: '09', 'Blusa Balon\xea com Bordado nas Costas', Decimal('99.00000000')
+        row: '08', 'Blusa Frente-Única com Pregas', Decimal('153.00000000')
+        row: '09', 'Blusa Balonê com Bordado nas Costas', Decimal('99.00000000')
         row: '10', 'Vestido Vadalena', Decimal('199.00000000')
       GtkBox(orientation=vertical, fill=True):
         GtkButton(fill=True): 'gtk-add', hidden

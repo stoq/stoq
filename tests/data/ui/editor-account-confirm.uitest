@@ -33,7 +33,7 @@ GtkDialog(main_dialog.toplevel): title='Add Account', hidden
                 row: 'Aluguel'
                 row: 'Impostos'
                 row: 'Luz'
-                row: 'Sal\xe1rios'
+                row: 'Salários'
                 row: 'Telefonia'
               row: 'Imbalance'
               row: 'Income'
