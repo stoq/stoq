@@ -112,6 +112,8 @@ GtkDialog(main_dialog.toplevel): title='Add Product', hidden
                         ProxyEntry(ex_tipi): ''
                         GtkLabel(genero_lbl): 'Gênero:'
                         ProxyEntry(genero): ''
+                        GtkLabel(ex_tipi_lbl1): 'CEST:'
+                        ProxyEntry(cest): ''
                     GtkLabel(label6): '<b>Mercosul Details</b>'
             GtkEventBox(): slave ImageGallerySlave is attached
               GtkAlignment(toplevel):

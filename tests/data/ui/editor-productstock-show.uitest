@@ -58,6 +58,8 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                         ProxyEntry(ex_tipi): ''
                         GtkLabel(genero_lbl): 'Gênero:'
                         ProxyEntry(genero): ''
+                        GtkLabel(ex_tipi_lbl1): 'CEST:'
+                        ProxyEntry(cest): ''
                     GtkLabel(label6): '<b>Mercosul Details</b>'
             GtkBox(hbox1, orientation=horizontal, expand=True, fill=True):
               GtkFrame(frame1, expand=True, fill=True, padding=6):
