@@ -494,8 +494,8 @@ class ProductEditor(SellableEditor):
                     product=model,
                     supplier=supplier_info.supplier)
         else:
-            sellable.tax_constant_id = sysparam.get_object_id(
-                'DEFAULT_PRODUCT_TAX_CONSTANT')
+            sellable.tax_constant = sysparam.get_object(self.store,
+                                                        'DEFAULT_PRODUCT_TAX_CONSTANT')
             sellable.unit_id = sysparam.get_object_id('SUGGESTED_UNIT')
 
         return model
