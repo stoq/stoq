@@ -25,6 +25,7 @@
 from stoqlib.domain.sale import SaleView
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.test.uitestutils import GUITest
+from stoqlib.lib.dateutils import localdate
 
 from ecf.couponnumberslave import CouponNumberSlave
 
@@ -41,6 +42,7 @@ class TestCouponNumberSlave(GUITest):
     def test_attach_slave(self):
         sale = self.create_sale()
         sale.identifier = 1001
+        sale.open_date = localdate(2012, 12, 21)
         # SaleDetailsDialog needs a SaleView model
         model = self.store.find(SaleView, id=sale.id).one()
         dialog = SaleDetailsDialog(self.store, model)

@@ -11,7 +11,7 @@ GtkVBox(toplevel):
             ProxyLabel(coupon_id): '<span >0</span>'
             GtkHBox():
     GtkLabel(label1): 'Open Date:'
-    ProxyLabel(open_date_lbl): '<span >YYYY-MM-DD</span>'
+    ProxyLabel(open_date_lbl): '<span >Fri Dec 21 00:00 2012</span>'
     GtkLabel(label5): 'Client:'
     GtkHBox(hbox1):
       ProxyLabel(client_lbl, expand=True, fill=True): '<span ></span>'

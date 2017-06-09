@@ -10,7 +10,7 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
             ProxyLabel(identifier): '<span >00123</span>'
             GtkEventBox(coupon_number_holder):
             GtkLabel(label1): 'Open Date:'
-            ProxyLabel(open_date_lbl): '<span >12/01/10</span>'
+            ProxyLabel(open_date_lbl): '<span >Wed Dec  1 00:00 2010</span>'
             GtkLabel(label5): 'Client:'
             GtkHBox(hbox1):
               ProxyLabel(client_lbl, expand=True, fill=True): '<span >Client</span>'
