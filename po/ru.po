@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-23 02:10-0300\n"
-"PO-Revision-Date: 2017-05-23 05:10+0000\n"
+"POT-Creation-Date: 2017-06-09 02:10-0300\n"
+"PO-Revision-Date: 2017-06-09 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Russian (http://www.transifex.com/async/stoq/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -50,7 +50,7 @@ msgstr ""
 msgid "Source:"
 msgstr ""
 
-#: ../data/glade/AccountTransactionEditor.ui.h:2 ../stoq/gui/financial.py:364
+#: ../data/glade/AccountTransactionEditor.ui.h:2 ../stoq/gui/financial.py:365
 msgid "Add a new account"
 msgstr ""
 
@@ -1832,7 +1832,7 @@ msgid "Same street"
 msgstr ""
 
 #: ../data/glade/PersonMergeDialog.ui.h:5
-#: ../stoqlib/gui/dialogs/personmergedialog.py:323
+#: ../stoqlib/gui/dialogs/personmergedialog.py:324
 msgid "Merge"
 msgstr ""
 
@@ -2039,6 +2039,10 @@ msgid "EX TIPI:"
 msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:21
+msgid "CEST:"
+msgstr ""
+
+#: ../data/glade/ProductInformationSlave.ui.h:22
 msgid "<b>Mercosul Details</b>"
 msgstr ""
 
@@ -3258,7 +3262,7 @@ msgstr ""
 msgid "payable"
 msgstr ""
 
-#: ../data/glade/financial.ui.h:2 ../stoq/gui/financial.py:448
+#: ../data/glade/financial.ui.h:2 ../stoq/gui/financial.py:449
 #: ../stoqlib/lib/parameters.py:670 ../stoqlib/lib/parameters.py:677
 #: ../stoqlib/lib/parameters.py:684
 msgid "Accounts"
@@ -3518,7 +3522,7 @@ msgstr ""
 #: ../data/template/optical/saledetails.html:93
 #: ../data/template/payment_flow_history/history-table.html:45
 #: ../data/template/till/purchases.html:15 ../data/template/till/sales.html:9
-#: ../plugins/ecf/deviceconstanteditor.py:134 ../stoq/gui/financial.py:251
+#: ../plugins/ecf/deviceconstanteditor.py:134 ../stoq/gui/financial.py:252
 #: ../stoq/gui/payable.py:187 ../stoq/gui/receivable.py:201
 #: ../stoqlib/gui/dialogs/clientdetails.py:270
 #: ../stoqlib/gui/dialogs/clientdetails.py:361
@@ -3652,7 +3656,7 @@ msgstr ""
 #: ../data/template/workorder/quote.html:35
 #: ../plugins/books/publishersearch.py:74
 #: ../plugins/ecf/deviceconstanteditor.py:133 ../stoqlib/domain/uiform.py:110
-#: ../stoqlib/gui/dialogs/personmergedialog.py:299
+#: ../stoqlib/gui/dialogs/personmergedialog.py:300
 #: ../stoqlib/gui/editors/clientcategoryeditor.py:52
 #: ../stoqlib/gui/editors/costcentereditor.py:47
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:59
@@ -3678,7 +3682,7 @@ msgstr ""
 #: ../data/template/bikeshop/quote.html:38
 #: ../data/template/optical/opticaldetails.html:27
 #: ../data/template/workorder/quote.html:37
-#: ../stoqlib/gui/dialogs/personmergedialog.py:302
+#: ../stoqlib/gui/dialogs/personmergedialog.py:303
 #: ../stoqlib/gui/search/personsearch.py:412
 #: ../stoqlib/gui/search/personsearch.py:462
 #: ../stoqlib/gui/search/salesearch.py:313
@@ -3695,7 +3699,7 @@ msgstr ""
 #: ../data/template/optical/opticaldetails.html:24
 #: ../data/template/workorder/quote.html:43
 #: ../stoqlib/gui/dialogs/addressdialog.py:37
-#: ../stoqlib/gui/dialogs/personmergedialog.py:306
+#: ../stoqlib/gui/dialogs/personmergedialog.py:307
 #: ../stoqlib/gui/editors/accounteditor.py:353
 #: ../stoqlib/gui/editors/accounteditor.py:354
 #: ../stoqlib/gui/editors/addresseditor.py:36
@@ -3887,7 +3891,7 @@ msgstr ""
 #: ../stoqlib/gui/slaves/productslave.py:461
 #: ../stoqlib/gui/slaves/productslave.py:757
 #: ../stoqlib/gui/slaves/workorderslave.py:256
-#: ../stoqlib/gui/widgets/accounttree.py:74
+#: ../stoqlib/gui/widgets/accounttree.py:75
 #: ../stoqlib/gui/wizards/consignmentwizard.py:146
 #: ../stoqlib/gui/wizards/inventorywizard.py:291
 #: ../stoqlib/gui/wizards/loanwizard.py:342
@@ -4151,7 +4155,7 @@ msgstr ""
 #: ../stoqlib/gui/slaves/productslave.py:473
 #: ../stoqlib/gui/slaves/productslave.py:765
 #: ../stoqlib/gui/slaves/workorderslave.py:269
-#: ../stoqlib/gui/widgets/accounttree.py:85
+#: ../stoqlib/gui/widgets/accounttree.py:86
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:88
 #: ../stoqlib/gui/wizards/purchasewizard.py:314
 #: ../stoqlib/gui/wizards/receivingwizard.py:274
@@ -4195,7 +4199,7 @@ msgid "Sales Person"
 msgstr ""
 
 #: ../data/template/optical/opticaldetails.html:31
-#: ../stoqlib/gui/dialogs/personmergedialog.py:304
+#: ../stoqlib/gui/dialogs/personmergedialog.py:305
 #: ../stoqlib/gui/widgets/queryentry.py:610
 msgid "Mobile"
 msgstr ""
@@ -5419,14 +5423,14 @@ msgid "Document:"
 msgstr ""
 
 #: ../plugins/ecf/glade/PaulistaInvoice.ui.h:3
-#: ../stoqlib/gui/dialogs/personmergedialog.py:300
+#: ../stoqlib/gui/dialogs/personmergedialog.py:301
 #: ../stoqlib/gui/search/personsearch.py:420
 #: ../stoqlib/gui/search/personsearch.py:468
 msgid "CPF"
 msgstr ""
 
 #: ../plugins/ecf/glade/PaulistaInvoice.ui.h:4
-#: ../stoqlib/gui/dialogs/personmergedialog.py:301
+#: ../stoqlib/gui/dialogs/personmergedialog.py:302
 #: ../stoqlib/gui/search/personsearch.py:422
 #: ../stoqlib/gui/search/personsearch.py:470
 msgid "CNPJ"
@@ -7203,7 +7207,7 @@ msgstr ""
 
 #. Delivery
 #. Order
-#: ../stoq/gui/delivery.py:86 ../stoq/gui/financial.py:368
+#: ../stoq/gui/delivery.py:86 ../stoq/gui/financial.py:369
 #: ../stoq/gui/purchase.py:153 ../stoq/gui/sales.py:203
 #: ../stoq/gui/services.py:255 ../stoq/gui/stock.py:140
 msgid "Edit..."
@@ -7384,7 +7388,7 @@ msgstr ""
 msgid "All Deliveries"
 msgstr ""
 
-#: ../stoq/gui/financial.py:234 ../stoq/gui/financial.py:349
+#: ../stoq/gui/financial.py:234 ../stoq/gui/financial.py:350
 #: ../stoqlib/gui/editors/accounteditor.py:76
 msgid "Account"
 msgstr ""
@@ -7409,59 +7413,59 @@ msgstr ""
 msgid "Payment #"
 msgstr ""
 
-#: ../stoq/gui/financial.py:329 ../stoq/lib/applist.py:42
+#: ../stoq/gui/financial.py:330 ../stoq/lib/applist.py:42
 msgid "Financial"
 msgstr ""
 
-#: ../stoq/gui/financial.py:348
+#: ../stoq/gui/financial.py:349
 msgid "Transaction"
 msgstr ""
 
-#: ../stoq/gui/financial.py:350
+#: ../stoq/gui/financial.py:351
 msgid "Import..."
 msgstr ""
 
-#: ../stoq/gui/financial.py:351
+#: ../stoq/gui/financial.py:352
 msgid "Import a GnuCash or OFX file"
 msgstr ""
 
-#: ../stoq/gui/financial.py:353
+#: ../stoq/gui/financial.py:354
 msgid "Payment methods"
 msgstr ""
 
-#: ../stoq/gui/financial.py:355
+#: ../stoq/gui/financial.py:356
 msgid "Select accounts for the payment methods on the system"
 msgstr ""
 
-#: ../stoq/gui/financial.py:356 ../stoq/gui/financial.py:359
+#: ../stoq/gui/financial.py:357 ../stoq/gui/financial.py:360
 msgid "Delete..."
 msgstr ""
 
-#: ../stoq/gui/financial.py:358
+#: ../stoq/gui/financial.py:359
 msgid "Delete the selected account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:361
+#: ../stoq/gui/financial.py:362
 msgid "Delete the selected transaction"
 msgstr ""
 
-#: ../stoq/gui/financial.py:362
+#: ../stoq/gui/financial.py:363
 msgid "Account..."
 msgstr ""
 
-#: ../stoq/gui/financial.py:365
+#: ../stoq/gui/financial.py:366
 msgid "Transaction..."
 msgstr ""
 
-#: ../stoq/gui/financial.py:367
+#: ../stoq/gui/financial.py:368
 msgid "Add a new transaction"
 msgstr ""
 
-#: ../stoq/gui/financial.py:373
+#: ../stoq/gui/financial.py:374
 msgid "Financial help"
 msgstr ""
 
-#: ../stoq/gui/financial.py:374 ../stoq/gui/payable.py:130
+#: ../stoq/gui/financial.py:375 ../stoq/gui/payable.py:130
 #: ../stoq/gui/production.py:121 ../stoq/gui/purchase.py:176
 #: ../stoq/gui/sales.py:222 ../stoq/gui/services.py:293
 #: ../stoq/gui/stock.py:158 ../stoqlib/gui/search/fiscalsearch.py:144
@@ -7469,69 +7473,69 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: ../stoq/gui/financial.py:375 ../stoq/gui/financial.py:376
+#: ../stoq/gui/financial.py:376 ../stoq/gui/financial.py:377
 #: ../stoqlib/gui/editors/sellableeditor.py:483
 msgid "Delete"
 msgstr ""
 
-#: ../stoq/gui/financial.py:438
+#: ../stoq/gui/financial.py:439
 msgid "Edit the selected account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:441
+#: ../stoq/gui/financial.py:442
 msgid "Edit the selected transaction"
 msgstr ""
 
-#: ../stoq/gui/financial.py:443
+#: ../stoq/gui/financial.py:444
 msgid "Print a report of these transactions"
 msgstr ""
 
-#: ../stoq/gui/financial.py:581
+#: ../stoq/gui/financial.py:582
 msgid "All supported formats"
 msgstr ""
 
-#: ../stoq/gui/financial.py:588
+#: ../stoq/gui/financial.py:589
 msgid "Open Financial Exchange (OFX)"
 msgstr ""
 
-#: ../stoq/gui/financial.py:593
+#: ../stoq/gui/financial.py:594
 msgid "GNUCash xml format"
 msgstr ""
 
-#: ../stoq/gui/financial.py:711
+#: ../stoq/gui/financial.py:712
 msgid ""
 "This account is used in at least one payment method.\n"
 "To be able to delete it the payment methods needs to bere-configured first"
 msgstr ""
 
-#: ../stoq/gui/financial.py:714 ../stoqlib/gui/utils/keybindings.py:91
+#: ../stoq/gui/financial.py:715 ../stoqlib/gui/utils/keybindings.py:91
 #: ../stoqlib/gui/utils/keybindings.py:125
 msgid "Configure payment methods"
 msgstr ""
 
-#: ../stoq/gui/financial.py:714 ../stoq/gui/financial.py:720
+#: ../stoq/gui/financial.py:715 ../stoq/gui/financial.py:721
 msgid "Keep account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:718
+#: ../stoq/gui/financial.py:719
 #, python-format
 msgid "Are you sure you want to remove account \"%s\" ?"
 msgstr ""
 
-#: ../stoq/gui/financial.py:720
+#: ../stoq/gui/financial.py:721
 msgid "Remove account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:739
+#: ../stoq/gui/financial.py:740
 #, python-format
 msgid "Are you sure you want to remove transaction \"%s\" ?"
 msgstr ""
 
-#: ../stoq/gui/financial.py:742
+#: ../stoq/gui/financial.py:743
 msgid "Remove transaction"
 msgstr ""
 
-#: ../stoq/gui/financial.py:742
+#: ../stoq/gui/financial.py:743
 msgid "Keep transaction"
 msgstr ""
 
@@ -9876,7 +9880,7 @@ msgid "Perform services like maintenance, installation or repair."
 msgstr ""
 
 #. Tabs cache requires unique ids
-#: ../stoq/lib/applist.py:50 ../stoqlib/gui/widgets/accounttree.py:167
+#: ../stoq/lib/applist.py:50 ../stoqlib/gui/widgets/accounttree.py:168
 msgid "Accounts Payable"
 msgstr ""
 
@@ -9896,7 +9900,7 @@ msgstr ""
 msgid "Create purchase orders and quotes"
 msgstr ""
 
-#: ../stoq/lib/applist.py:59 ../stoqlib/gui/widgets/accounttree.py:173
+#: ../stoq/lib/applist.py:59 ../stoqlib/gui/widgets/accounttree.py:174
 msgid "Accounts Receivable"
 msgstr ""
 
@@ -10694,136 +10698,136 @@ msgstr ""
 msgid "Package product"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:950 ../stoqlib/reporting/purchase.py:62
+#: ../stoqlib/domain/product.py:953 ../stoqlib/reporting/purchase.py:62
 #: ../stoqlib/reporting/purchase.py:88
 #, python-format
 msgid "%s (%s)"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1220 ../stoqlib/domain/product.py:1262
+#: ../stoqlib/domain/product.py:1223 ../stoqlib/domain/product.py:1265
 msgid "quantity must be a positive number"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1269
+#: ../stoqlib/domain/product.py:1272
 msgid "Quantity to decrease is greater than the available stock."
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1592
-#, python-format
-msgid "Adjustment for inventory %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1593
-#, python-format
-msgid "Returned from loan %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1594
-#, python-format
-msgid "Loaned for loan %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1595
 #, python-format
-msgid "Allocated for production %s"
+msgid "Adjustment for inventory %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1596 ../stoqlib/domain/product.py:1597
+#: ../stoqlib/domain/product.py:1596
 #, python-format
-msgid "Produced in production %s"
+msgid "Returned from loan %s"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1597
+#, python-format
+msgid "Loaned for loan %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1598
 #, python-format
-msgid "Returned remaining from production %s"
+msgid "Allocated for production %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1600
+#: ../stoqlib/domain/product.py:1599 ../stoqlib/domain/product.py:1600
 #, python-format
-msgid "Received for receiving order %s"
+msgid "Produced in production %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1601
 #, python-format
-msgid "Returned sale %s"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1602
-#, python-format
-msgid "Undone the returned sale %s"
+msgid "Returned remaining from production %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1603
 #, python-format
-msgid "Returned from canceled sale %s"
+msgid "Received for receiving order %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1604
 #, python-format
-msgid "Sold in sale %s"
+msgid "Returned sale %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1605
 #, python-format
-msgid "Product removal for stock decrease %s"
+msgid "Undone the returned sale %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1606
 #, python-format
-msgid "Transfered from branch in transfer order %s"
+msgid "Returned from canceled sale %s"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1607
+#, python-format
+msgid "Sold in sale %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1608
 #, python-format
-msgid "Transfered to this branch in transfer order %s"
+msgid "Product removal for stock decrease %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1610
-msgid "Registred initial stock"
+#: ../stoqlib/domain/product.py:1609
+#, python-format
+msgid "Transfered from branch in transfer order %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1611
-msgid "Imported from previous version"
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1612
 #, python-format
-msgid "Consigned product returned %s."
+msgid "Transfered to this branch in transfer order %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1613
-#, python-format
-msgid "Used on work order %s."
+msgid "Registred initial stock"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1614
-#, python-format
-msgid "Returned to stock on work order %s."
+msgid "Imported from previous version"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1615
 #, python-format
-msgid "Reserved for sale %s."
+msgid "Consigned product returned %s."
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1616
 #, python-format
-msgid "Reserved quantity for sale %s returned to stock."
+msgid "Used on work order %s."
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1617
+#, python-format
+msgid "Returned to stock on work order %s."
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1618
-msgid "Quantity manually adjusted"
+#, python-format
+msgid "Reserved for sale %s."
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1619
+#, python-format
+msgid "Reserved quantity for sale %s returned to stock."
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1621
+msgid "Quantity manually adjusted"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1622
 msgid "Stock cost updated with no change on the stock"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1822
+#: ../stoqlib/domain/product.py:1825
 msgid "Boolean"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1823
+#: ../stoqlib/domain/product.py:1826
 msgid "Decimal"
 msgstr ""
 
@@ -11225,12 +11229,12 @@ msgid "Phone number"
 msgstr ""
 
 #: ../stoqlib/domain/uiform.py:113
-#: ../stoqlib/gui/dialogs/personmergedialog.py:307
+#: ../stoqlib/gui/dialogs/personmergedialog.py:308
 msgid "Fax"
 msgstr ""
 
 #: ../stoqlib/domain/uiform.py:114
-#: ../stoqlib/gui/dialogs/personmergedialog.py:309
+#: ../stoqlib/gui/dialogs/personmergedialog.py:310
 #: ../stoqlib/gui/search/personsearch.py:225
 #: ../stoqlib/gui/search/personsearch.py:410
 #: ../stoqlib/gui/search/personsearch.py:460
@@ -12143,46 +12147,46 @@ msgstr ""
 msgid "Payment Method Settings"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/personmergedialog.py:168
+#: ../stoqlib/gui/dialogs/personmergedialog.py:169
 #, python-format
 msgid " (%s duplicates)"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/personmergedialog.py:194
+#: ../stoqlib/gui/dialogs/personmergedialog.py:195
 msgid "Duplicate Person Search"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/personmergedialog.py:200
+#: ../stoqlib/gui/dialogs/personmergedialog.py:201
 msgid "Identical name"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/personmergedialog.py:201
+#: ../stoqlib/gui/dialogs/personmergedialog.py:202
 msgid "First and last name"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/personmergedialog.py:202
+#: ../stoqlib/gui/dialogs/personmergedialog.py:203
 msgid "First name"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/personmergedialog.py:220
+#: ../stoqlib/gui/dialogs/personmergedialog.py:221
 msgid "Merging duplicate"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/personmergedialog.py:252
+#: ../stoqlib/gui/dialogs/personmergedialog.py:253
 msgid "Searching duplicates"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/personmergedialog.py:283
+#: ../stoqlib/gui/dialogs/personmergedialog.py:284
 #, python-format
 msgid "Found %s persons in a total of %s duplicate registers"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/personmergedialog.py:321
+#: ../stoqlib/gui/dialogs/personmergedialog.py:322
 #, python-format
 msgid "This will merge %s persons into 1. Are you sure?"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/personmergedialog.py:323
+#: ../stoqlib/gui/dialogs/personmergedialog.py:324
 msgid "Don't merge"
 msgstr ""
 
@@ -16380,7 +16384,7 @@ msgid ""
 "It was not possible to print the labels. The template file was not found."
 msgstr ""
 
-#: ../stoqlib/gui/widgets/accounttree.py:70
+#: ../stoqlib/gui/widgets/accounttree.py:71
 msgid "Account name"
 msgstr ""
 
