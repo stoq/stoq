@@ -265,6 +265,12 @@ for plugin_dir in os.listdir(plugins_topdir):
 
 
 def main(args, extra_plugins=None):
+    # FIXME: readline is segfaulting when the tests run inside a xvfb
+    # environment. Changing it to gnureadline seems to normalize it
+    if os.environ.get('PATCH_READLINE', '0') == '1':
+        import gnureadline
+        sys.modules['readline'] = gnureadline
+
     if '--sql' in args:
         args.remove('--sql')
         from stoqlib.database.debug import enable
