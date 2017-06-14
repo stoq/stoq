@@ -17,6 +17,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 import os
+import platform
 import string
 import sys
 
@@ -36,8 +37,11 @@ if hasattr(sys, 'frozen'):
         sys.path.insert(0, os.path.join(root, name))
 
     # Allow .pyd files to be imported from egg files
-    import zipextimporter
-    zipextimporter.install()
+    from zipextimporter import ZipExtensionImporter
+    # zipextimporter.install would do an insert(0, ZipExtensionImporter)
+    # and that would cause it to try to import all eggs and fail
+    sys.path_hooks.append(ZipExtensionImporter)
+    sys.path_importer_cache.clear()
 
     # Also add it to the OS PATH, so that the libraries are correclty found.
     os.environ['PATH'] = root + os.pathsep + os.environ['PATH']
@@ -83,7 +87,6 @@ else:
 
 
 # We only support portuguese locale on Windows for now
-import platform
 if platform.system() == 'Windows':
     import errno
     import locale

@@ -146,7 +146,7 @@ class ShellBootstrap(object):
         from kiwi.log import set_log_file
         self._stream = set_log_file(self._log_filename, 'stoq*')
 
-        if hasattr(os, 'symlink'):
+        if platform.system() != 'Windows':
             link_file = os.path.join(stoqdir, 'stoq.log')
             if os.path.exists(link_file):
                 os.unlink(link_file)
