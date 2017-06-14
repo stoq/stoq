@@ -24,8 +24,6 @@
 ##
 """ Listing and importing applications """
 
-import platform
-
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 N_ = lambda s: s
@@ -66,9 +64,6 @@ _APPLICATIONS = {
     u'till': (N_(u"Till"),
               N_(u"Control tills and their workflow.")),
 }
-
-if platform.system() == u'Windows':
-    del _APPLICATIONS[u'calendar']
 
 
 def get_application_names():
