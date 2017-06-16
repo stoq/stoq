@@ -137,6 +137,14 @@ slaves Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`serviceslave` Module
+--------------------------
+
+.. automodule:: stoqlib.gui.slaves.serviceslave
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`supplierslave` Module
 ---------------------------
 

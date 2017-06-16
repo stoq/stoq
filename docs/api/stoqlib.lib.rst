@@ -329,6 +329,14 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`services` Module
+----------------------
+
+.. automodule:: stoqlib.lib.services
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`session` Module
 ---------------------
 
