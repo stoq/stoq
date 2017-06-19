@@ -52,9 +52,9 @@ class _NssHTTPConnection(http.client.HTTPConnection):
 
     default_port = 443
 
-    def __init__(self, host, port, strict=None, timeout=3, **kwargs):
+    def __init__(self, host, port, timeout=3, **kwargs):
         http.client.HTTPConnection.__init__(
-            self, host, port, strict=strict, timeout=timeout, **kwargs)
+            self, host, port, timeout=timeout, **kwargs)
 
         log.info('%s init %s', self.__class__.__name__, host)
         self.sock = None
