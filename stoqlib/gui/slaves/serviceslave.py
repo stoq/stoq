@@ -32,7 +32,7 @@ from stoqlib.lib.services import SERVICE_LIST
 class ServiceFiscalSlave(BaseEditorSlave):
     gladefile = 'ServiceFiscalSlave'
     model_type = Service
-    proxy_widgets = ['service_list_combo', 'p_iss']
+    proxy_widgets = ['service_list_combo', 'p_iss', 'city_taxation_code']
 
     def setup_proxies(self):
         self.service_list_combo.prefill([("{} - {}".format(
