@@ -60,6 +60,7 @@ class CrashReportDialog(object):
                                       type=Gtk.MessageType.WARNING)
 
         self._dialog.set_details_label(_("Details ..."))
+        self._dialog.set_resizable(True)
         primary_fmt = _('We\'r sorry to inform you that an error occurred while '
                         'running %s. Please help us improving Stoq by sending a '
                         'automatically generated report about the incident.\n'
@@ -90,7 +91,7 @@ class CrashReportDialog(object):
 
         view = Gtk.TextView()
         sw.add(view)
-        view.set_size_request(500, 350)
+        sw.set_size_request(500, 350)
         view.show()
         self._details_buffer = view.get_buffer()
 
@@ -101,7 +102,7 @@ class CrashReportDialog(object):
         # a height of 0 when being displayed.
         sw.set_property('overlay_scrolling', False)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        self._dialog.main_vbox.pack_start(sw, False, False, 6)
+        self._dialog.main_vbox.pack_start(sw, True, True, 6)
         sw.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         sw.show()
 
