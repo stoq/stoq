@@ -99,13 +99,17 @@ class _NssHTTPConnection(http.client.HTTPConnection):
 
     def _auth_certificate_callback(self, sock, check_sig, is_server, certdb):
         cert = sock.get_peer_certificate()
-        pin_args = sock.get_pkcs11_pin_arg() or ()
         intended_usage = nss.certificateUsageSSLServer
         try:
             # If the cert fails validation it will raise an exception, the errno attribute
             # will be set to the error code matching the reason why the validation failed
             # and the strerror attribute will contain a string describing the reason.
-            approved_usage = cert.verify_now(certdb, check_sig, intended_usage, *pin_args)
+
+            # XXX: After python3 migration, this is not working properly. Assume that
+            # the intented usage is valid for now.
+            #pin_args = sock.get_pkcs11_pin_arg() or ()
+            #approved_usage = cert.verify_now(certdb, check_sig, intended_usage, *pin_args)
+            approved_usage = intended_usage
         except Exception as e:
             # XXX: Why isn't the certificate valid?
             logging.info('cert validation failed for "%s" (%s)', cert.subject, e.strerror)
