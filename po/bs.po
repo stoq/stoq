@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-20 02:10-0300\n"
-"PO-Revision-Date: 2017-06-20 05:10+0000\n"
+"POT-Creation-Date: 2017-06-21 02:10-0300\n"
+"PO-Revision-Date: 2017-06-21 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Bosnian (http://www.transifex.com/async/stoq/language/bs/)\n"
 "MIME-Version: 1.0\n"
@@ -2721,7 +2721,7 @@ msgid "Add a new transporter"
 msgstr ""
 
 #: ../data/glade/SalesPersonStep.ui.h:11
-#: ../data/glade/ServiceFiscalSlave.ui.h:3
+#: ../data/glade/ServiceFiscalSlave.ui.h:4
 msgid "0.00"
 msgstr ""
 
@@ -2820,6 +2820,10 @@ msgid "Service List Item:"
 msgstr ""
 
 #: ../data/glade/ServiceFiscalSlave.ui.h:2
+msgid "City Taxation Code:"
+msgstr ""
+
+#: ../data/glade/ServiceFiscalSlave.ui.h:3
 msgid "ISS Aliquot:"
 msgstr ""
 
