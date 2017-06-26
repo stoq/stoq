@@ -44,7 +44,7 @@ MAKO_REQUIRED = (0, 2, 5)
 PIL_REQUIRED = (1, 1, 5)
 PYCAIRO_REQUIRED = (1, 8, 2)
 PYPOPPLER_REQUIRED = (0, 12, 1)
-PSQL_REQUIRED = (8, 4)
+PSQL_REQUIRED = (9, 6)
 PSYCOPG_REQUIRED = (2, 0, 9)
 PYGTKWEBKIT_REQUIRED = (1, 1, 7)
 PYINOTIFY_REQUIRED = (0, 9, 2)
@@ -53,7 +53,7 @@ PYSERIAL_REQUIRED = (2, 1)
 REPORTLAB_REQUIRED = (2, 4)
 STORM_REQUIRED = (0, 19)
 STOQDRIVERS_REQUIRED = (1, 3)
-WEASYPRINT_REQUIRED = (0, 15)
+WEASYPRINT_REQUIRED = (0, 34)
 XLWT_REQUIRED = (0, 7, 2)
 ZOPE_INTERFACE_REQUIRED = (3, 0)
 
@@ -253,6 +253,9 @@ class DependencyChecker(object):
                           version=version)
 
     def _check_psql(self, version):
+        if 'WINEPREFIX' in os.environ:
+            return
+
         executable = 'psql'
         paths = os.environ['PATH'].split(os.pathsep)
         if platform.system() == 'Windows':

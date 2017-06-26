@@ -23,8 +23,6 @@
 import os
 import platform
 
-import weasyprint
-
 from gi.repository import GdkPixbuf
 from kiwi.accessor import kgetattr
 from kiwi.environ import environ
@@ -82,6 +80,8 @@ class HTMLReport(object):
         html.flush()
 
     def render(self, stylesheet=None):
+        import weasyprint
+
         template_dir = environ.get_resource_filename('stoq', 'template')
         if platform.system() == 'Windows':
             # FIXME: Figure out why this is breaking

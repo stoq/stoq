@@ -107,7 +107,7 @@ if platform.system() == 'Windows':
         os.makedirs(logdir)
 
     # http://www.py2exe.org/index.cgi/StderrLog
-    if 'stoq-cmd' not in sys.argv[0]:
+    if 'stoq-cmd' not in sys.argv[0] and 'WINEPREFIX' not in os.environ:
         for name in ['stdout', 'stderr']:
             filename = os.path.join(logdir, name + ".log")
             try:

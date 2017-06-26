@@ -39,7 +39,7 @@ class Process(subprocess.Popen):
 
         if quiet and platform.system() == 'Windows':
             startupinfo = subprocess.STARTUPINFO()
-            startupinfo.dwFlags |= subprocess._subprocess.STARTF_USESHOWWINDOW
+            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             # Workaround for problem described here:
             # http://www.py2exe.org/index.cgi/Py2ExeSubprocessInteractions
             # http://bytes.com/topic/python/answers/634409-subprocess-handle-invalid-error
