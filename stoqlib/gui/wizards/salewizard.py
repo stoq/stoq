@@ -423,8 +423,7 @@ class ConfirmSaleBatchStep(WizardEditorStep):
         marker('running SalesPersonStep')
         self._update_sale_items()
         step = SalesPersonStep(self.wizard, self.store, self.model,
-                               self.wizard.payment_group,
-                               self.wizard.invoice_model)
+                               self.wizard.payment_group)
         marker('finished creating SalesPersonStep')
         return step
 
