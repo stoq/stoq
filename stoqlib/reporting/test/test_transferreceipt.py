@@ -53,7 +53,7 @@ class TestTransferReceipt(ReportTest):
             self.create_transfer_order_item(order)
 
         order.send()
-        order.cancel(self.create_employee())
+        order.cancel(self.create_employee(), 'Cancelled due something')
         order.cancel_date = localdatetime(2012, 12, 12)
         self._diff_expected(TransferOrderReceipt,
                             'transfer-receipt-cancelled', order)

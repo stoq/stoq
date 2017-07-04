@@ -32,7 +32,7 @@ from stoqlib.domain.person import Branch
 from stoqlib.domain.transfer import TransferOrder
 from stoqlib.gui.dialogs.transferorderdialog import TransferOrderDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.gui.editors.noteeditor import NoteEditor
+from stoqlib.gui.editors.noteeditor import NoteEditor, Note
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdatetime
 from stoqlib.lib.decorators import cached_property
@@ -109,14 +109,13 @@ class TestTransferOrderDetailsDialog(GUITest):
         dialog = TransferOrderDetailsDialog(self.store, order)
         self.assertSensitive(dialog, ['cancel_button'])
         get_plugin_manager.is_active.return_value = True
-        run_dialog.return_value = True
+        run_dialog.return_value = Note()
         with mock.patch.object(self.store, 'commit'):
             self.click(dialog.cancel_button)
             msg_text = u"This will cancel the transfer. Are you sure?"
             run_dialog.assert_called_once_with(
-                NoteEditor, dialog, order.store,
-                model=order, attr_name='cancel_reason', message_text=msg_text,
-                label_text=u"Reason", mandatory=True,
+                NoteEditor, dialog, order.store, model=None,
+                message_text=msg_text, label_text=u"Reason", mandatory=True,
                 ok_button_label=u"Cancel transfer",
                 cancel_button_label=u"Don't cancel",
                 min_length=15)
@@ -147,7 +146,7 @@ class TestTransferOrderDetailsDialog(GUITest):
         order.send()
         dialog = TransferOrderDetailsDialog(self.store, order)
         self.assertSensitive(dialog, ['cancel_button'])
-        run_dialog.return_value = True
+        run_dialog.return_value = Note()
         module = 'stoqlib.domain.events.StockOperationTryFiscalCancelEvent.emit'
         with mock.patch(module) as emit:
             with mock.patch.object(self.store, 'commit'):

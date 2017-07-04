@@ -95,7 +95,8 @@ class TestTransferOrderSearch(GUITest):
         order.open_date = localdatetime(2012, 4, 5)
         order.send()
 
-        order.cancel(responsible, cancel_date=localdatetime(2012, 4, 6))
+        order.cancel(responsible, 'Cancelled due something',
+                     cancel_date=localdatetime(2012, 4, 6))
 
     def test_search(self):
         self._create_domain()

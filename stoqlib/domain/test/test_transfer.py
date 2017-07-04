@@ -165,7 +165,7 @@ class TestTransferOrder(DomainTest):
         self.assertEquals(sour_during_qty, 0)
         self.assertEquals(dest_during_qty, 0)
 
-        order.cancel(self.create_employee())
+        order.cancel(self.create_employee(), 'Cancelled due something')
         # Checking the balance after cancel
         sour_after_qty = storable.get_balance_for_branch(order.source_branch)
         dest_after_qty = storable.get_balance_for_branch(order.destination_branch)

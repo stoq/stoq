@@ -546,7 +546,7 @@ class SalesApp(ShellApp):
 
         # Try to cancel the sale with sefaz. Don't cancel the sale if sefaz
         # reject it.
-        if StockOperationTryFiscalCancelEvent.emit(sale) is False:
+        if StockOperationTryFiscalCancelEvent.emit(sale, retval.notes) is False:
             warning(_("The cancellation was not authorized by SEFAZ. You should "
                       "do a sale return."))
             return
