@@ -452,6 +452,7 @@ class StockOperationConfirmedEvent(Event):
     transfers, stock decreases, loans and sale returns
 
     :param model: the model whose stock operation was confirmed
+    :param reason: the reason the model is being cancelled
     :param old_status: the old status of the model if the confirmation
         includes a status change
     """

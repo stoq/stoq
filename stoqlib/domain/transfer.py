@@ -409,7 +409,7 @@ class TransferOrder(Domain):
         self.destination_responsible = responsible
         self.status = self.STATUS_RECEIVED
 
-    def cancel(self, responsible, cancel_date=None):
+    def cancel(self, responsible, cancel_reason, cancel_date=None):
         """Cancel a transfer order"""
         assert self.can_cancel()
 
@@ -418,6 +418,7 @@ class TransferOrder(Domain):
 
         self.cancel_date = cancel_date or localnow()
         self.cancel_responsible_id = responsible.id
+        self.cancel_reason = cancel_reason
         self.status = self.STATUS_CANCELLED
 
     @classmethod

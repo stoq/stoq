@@ -167,23 +167,25 @@ class TransferOrderDetailsDialog(BaseEditor):
         else:
             note_min_length = 0
 
-        if not run_dialog(NoteEditor, self, self.model.store, model=self.model,
-                          attr_name='cancel_reason', message_text=msg_text,
-                          label_text=_(u"Reason"), mandatory=True,
-                          ok_button_label=_(u"Cancel transfer"),
-                          cancel_button_label=_(u"Don't cancel"),
-                          min_length=note_min_length):
+        retval = run_dialog(
+            NoteEditor, self, self.model.store, model=None,
+            message_text=msg_text, label_text=_(u"Reason"), mandatory=True,
+            ok_button_label=_(u"Cancel transfer"),
+            cancel_button_label=_(u"Don't cancel"),
+            min_length=note_min_length)
+
+        if not retval:
             return
 
         # Try to cancel the transfer fiscally with a fiscal plugin. If False is
         # returned, the cancellation failed, so we don't proceed.
-        if StockOperationTryFiscalCancelEvent.emit(self.model) is False:
+        if StockOperationTryFiscalCancelEvent.emit(self.model, retval.notes) is False:
             warning(_("The cancellation was not authorized by SEFAZ. You "
                       "should do a reverse transfer."))
             return
 
         responsible = api.get_current_user(self.store).person.employee
-        self.model.cancel(responsible)
+        self.model.cancel(responsible, unicode(retval.notes))
         self.store.commit(close=False)
         self.receival_date.set_property('model-attribute', 'cancel_date')
         self.transfer_proxy.update_many(['destination_responsible_name',
