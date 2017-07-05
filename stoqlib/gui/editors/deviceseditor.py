@@ -36,6 +36,7 @@ from stoqlib.domain.station import BranchStation
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.devicemanager import DeviceManager
 from stoqlib.lib.environment import is_developer_mode
+from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -200,17 +201,17 @@ class DeviceSettingsEditor(BaseEditor):
             return _("Add Device")
 
     def validate_confirm(self):
-        if not self.edit_mode:
-            settings = DeviceSettings.get_by_station_and_type(
-                store=api.get_default_store(),
-                station=self.model.station.id,
-                type=self.model.type)
-            if settings:
-                self.station.set_invalid(
-                    _(u"A %s already exists for station \"%s\"") % (
-                        self.model.device_type_name,
-                        self.model.station_name))
-                return False
+        settings = DeviceSettings.get_by_station_and_type(
+            store=api.get_default_store(),
+            station=self.model.station.id,
+            type=self.model.type,
+            exclude=self.model)
+        if settings and self.is_active_button.get_active():
+            warning(_(u"An active %s already exists for station \"%s\"") % (
+                    self.model.device_type_name,
+                    self.model.station_name))
+            return False
+
         return True
 
     #
@@ -223,10 +224,6 @@ class DeviceSettingsEditor(BaseEditor):
 
     def on_type_combo__changed(self, *args):
         self.update_brand_combo()
-        self.refresh_ok()
-
-    def on_brand_combo__state_changed(self, *args):
-        self.update_model_combo()
         self.refresh_ok()
 
     def on_model_combo__changed(self, *args):
