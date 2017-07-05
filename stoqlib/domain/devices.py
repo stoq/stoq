@@ -33,6 +33,7 @@ from stoqdrivers.printers.cheque import ChequePrinter
 from stoqdrivers.printers.nonfiscal import NonFiscalPrinter
 from stoqdrivers.scales.scales import Scale
 from stoqdrivers.serialbase import SerialPort, VirtualPort
+from storm.expr import And, Eq
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
@@ -144,19 +145,19 @@ class DeviceSettings(Domain):
                 and self.type in DeviceSettings.device_types)
 
     @classmethod
-    def get_by_station_and_type(cls, store, station, type):
+    def get_by_station_and_type(cls, store, station, type, exclude=None):
         """Fetch the settings for a specific station and type.
 
-        Note that one station can have only one device of a given type.
-
-        XXX: Currently, is_active is not really used. All added devices are
-        active.
+        Note that one station can have only one active device of a given type.
 
         :param store: a store
         :param station: a BranchStation instance
         :param type: device type
+        :param exclude: a device to exclude from search
         """
-        return store.find(cls, station=station, type=type).one()
+        except_id = exclude and exclude.id
+        return store.find(cls, And(cls.station == station, cls.type == type,
+                                   Eq(cls.is_active, True), cls.id != except_id)).one()
 
     @classmethod
     def get_scale_settings(cls, store):
