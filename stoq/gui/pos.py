@@ -1046,6 +1046,11 @@ class PosApp(ShellApp):
                 freight_type=self._delivery.freight_type,
                 volumes_kind=self._delivery.volumes_kind,
                 volumes_quantity=self._delivery.volumes_quantity,
+                volumes_gross_weight=self._delivery.volumes_gross_weight,
+                volumes_net_weight=self._delivery.volumes_net_weight,
+                vehicle_license_plate=self._delivery.vehicle_license_plate,
+                vehicle_state=self._delivery.vehicle_state,
+                vehicle_registration=self._delivery.vehicle_registration,
             )
         else:
             delivery = None

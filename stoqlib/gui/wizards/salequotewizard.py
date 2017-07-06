@@ -484,7 +484,13 @@ class SaleQuoteItemStep(SellableItemStep):
                 service_item=self._delivery_item,
                 freight_type=self._delivery.freight_type,
                 volumes_kind=self._delivery.volumes_kind,
-                volumes_quantity=self._delivery.volumes_quantity)
+                volumes_quantity=self._delivery.volumes_quantity,
+                volumes_gross_weight=self._delivery.volumes_gross_weight,
+                volumes_net_weight=self._delivery.volumes_net_weight,
+                vehicle_license_plate=self._delivery.vehicle_license_plate,
+                vehicle_state=self._delivery.vehicle_state,
+                vehicle_registration=self._delivery.vehicle_registration,
+            )
         elif self._delivery is None and delivery is not None:
             # No need to remove the service_item. It was already removed
             # by the AdditionListSlave

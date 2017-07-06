@@ -28,7 +28,7 @@ import decimal
 
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import (PriceField, DateField, TextField, BoolField,
-                           IntegerField, ChoiceField, EmptyField)
+                           IntegerField, ChoiceField, EmptyField, NumericField)
 from kiwi.ui.objectlist import Column, ObjectList
 
 from stoqlib.api import api
@@ -51,12 +51,16 @@ _ = stoqlib_gettext
 class CreateDeliveryModel(object):
     _savepoint_attr = ['price', 'notes', 'client', 'transporter', 'address',
                        'estimated_fix_date', 'freight_type', 'volumes_kind',
-                       'volumes_quantity']
+                       'volumes_quantity', 'volumes_gross_weight',
+                       'volumes_net_weight', 'vehicle_license_plate',
+                       'vehicle_state', 'vehicle_registration']
 
     def __init__(self, price=None, notes=None, client=None, transporter=None,
                  address=None, estimated_fix_date=None, description=None,
                  freight_type=None, volumes_kind=None, volumes_quantity=1,
-                 original_delivery=None):
+                 volumes_gross_weight=decimal.Decimal(), vehicle_state=None,
+                 vehicle_license_plate=None, vehicle_registration=None,
+                 volumes_net_weight=decimal.Decimal(), original_delivery=None):
         self.price = price
         self.notes = notes
         self.address = address or (client and client.person.address)
@@ -67,6 +71,11 @@ class CreateDeliveryModel(object):
         self.freight_type = freight_type or Delivery.FREIGHT_TYPE_CIF
         self.volumes_kind = volumes_kind or _(u'Volumes')
         self.volumes_quantity = volumes_quantity
+        self.volumes_gross_weight = volumes_gross_weight
+        self.volumes_net_weight = volumes_net_weight
+        self.vehicle_license_plate = vehicle_license_plate
+        self.vehicle_state = vehicle_state
+        self.vehicle_registration = vehicle_registration
         self.original_delivery = original_delivery
 
         self._savepoint = {}
@@ -83,6 +92,11 @@ class CreateDeliveryModel(object):
             freight_type=delivery.freight_type,
             volumes_kind=delivery.volumes_kind,
             volumes_quantity=delivery.volumes_quantity,
+            volumes_gross_weight=delivery.volumes_gross_weight,
+            volumes_net_weight=delivery.volumes_net_weight,
+            vehicle_license_plate=delivery.vehicle_license_plate,
+            vehicle_state=delivery.vehicle_state,
+            vehicle_registration=delivery.vehicle_registration,
             original_delivery=delivery)
 
     # Since CreateDeliveryModel is not a Domain, changes to it can't be
@@ -126,6 +140,7 @@ class CreateDeliveryEditor(BaseEditor):
             user.profile.check_app_permission(u'purchase'),
         ))
         freight_types = [(v, k) for k, v in Delivery.freights.items()]
+        states = [(v, v) for v in api.get_l10n_field('state').state_list]
 
         return collections.OrderedDict(
             client=PersonQueryField(_("Client"), proxy=True, mandatory=True,
@@ -141,6 +156,14 @@ class CreateDeliveryEditor(BaseEditor):
             estimated_fix_date=DateField(_("Estimated delivery date"), proxy=True),
             volumes_kind=TextField(_("Volumes kind"), proxy=True),
             volumes_quantity=IntegerField(_("Volumes quantity"), proxy=True),
+            volumes_net_weight=NumericField(_("Volumes net weight"), proxy=True,
+                                            digits=3),
+            volumes_gross_weight=NumericField(_("Volumes gross weight"),
+                                              proxy=True, digits=3),
+            vehicle_license_plate=TextField(_("Vehicle license plate"), proxy=True),
+            vehicle_state=ChoiceField(_("Vehicle state"), proxy=True, use_entry=True,
+                                      values=states),
+            vehicle_registration=TextField(_("Vehicle registration"), proxy=True),
         )
 
     def __init__(self, store, model=None, sale_items=None):
@@ -229,7 +252,13 @@ class CreateDeliveryEditor(BaseEditor):
 
     def create_model(self, store):
         price = sysparam.get_object(store, 'DELIVERY_SERVICE').sellable.price
-        return CreateDeliveryModel(price=price)
+        volumes_weight = decimal.Decimal()
+        for item in self.sale_items:
+            product = item.sellable.product
+            if product:
+                volumes_weight += product.weight * item.quantity
+        return CreateDeliveryModel(price=price, volumes_net_weight=volumes_weight,
+                                   volumes_gross_weight=volumes_weight)
 
     def setup_slaves(self):
         self.items = ObjectList(columns=self._get_sale_items_columns(),
@@ -272,6 +301,7 @@ class DeliveryEditor(BaseEditor):
             user.profile.check_app_permission(u'purchase'),
         ))
         freight_types = [(v, k) for k, v in Delivery.freights.items()]
+        states = [(v, v) for v in api.get_l10n_field('state').state_list]
 
         return collections.OrderedDict(
             client_str=TextField(_("Client"), proxy=True, editable=False),
@@ -288,6 +318,14 @@ class DeliveryEditor(BaseEditor):
                                      values=freight_types),
             volumes_kind=TextField(_("Volumes kind"), proxy=True),
             volumes_quantity=IntegerField(_("Volumes quantity"), proxy=True),
+            volumes_net_weight=NumericField(_("Volumes net weight"), proxy=True,
+                                            digits=3),
+            volumes_gross_weight=NumericField(_("Volumes gross weight"),
+                                              proxy=True, digits=3),
+            vehicle_license_plate=TextField(_("Vehicle license plate"), proxy=True),
+            vehicle_state=ChoiceField(_("Vehicle state"), proxy=True, use_entry=True,
+                                      values=states),
+            vehicle_registration=TextField(_("Vehicle registration"), proxy=True),
             is_received_check=BoolField(_("Was received by client?")),
             receive_date=DateField(_("Receive date"), mandatory=True, proxy=True),
             empty=EmptyField(),
