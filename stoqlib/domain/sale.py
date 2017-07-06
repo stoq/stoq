@@ -612,6 +612,21 @@ class Delivery(Domain):
     #: The quantity of volumes in this freight
     volumes_quantity = IntCol()
 
+    #: The gross weight of the volumes in this freight
+    volumes_gross_weight = QuantityCol()
+
+    #: The net weight of the volumes in this freight
+    volumes_net_weight = QuantityCol()
+
+    #: The transporter vehicle license plate
+    vehicle_license_plate = UnicodeCol()
+
+    #: The transporter vehicle registration state
+    vehicle_state = UnicodeCol()
+
+    #: The transporter vehicle RNTC (Registro Nacional de Transportador de Carga)
+    vehicle_registration = UnicodeCol()
+
     address_id = IdCol(default=None)
 
     #: the |address| to deliver to

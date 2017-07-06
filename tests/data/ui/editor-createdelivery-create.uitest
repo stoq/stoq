@@ -13,8 +13,8 @@ GtkDialog(main_dialog.toplevel): title='Add Delivery', hidden
                 GtkHBox():
                   GtkButton(client_add_button):
                   GtkButton(client_edit_button): insensitive
-                ProxyLabel(price_lbl): 'Delivery cost:'
-                ProxyEntry(price): '0.00'
+                ProxyLabel(volumes_quantity_lbl): 'Volumes quantity:'
+                ProxyEntry(volumes_quantity): '1'
                 GtkHBox():
                 ProxyLabel(transporter_id_lbl): 'Transporter:'
                 ProxyComboEntry(transporter_id):
@@ -22,16 +22,16 @@ GtkDialog(main_dialog.toplevel): title='Add Delivery', hidden
                 GtkHBox():
                   GtkButton(transporter_id_add_button):
                   GtkButton(transporter_id_edit_button): insensitive
-                ProxyLabel(estimated_fix_date_lbl): 'Estimated delivery date:'
-                ProxyDateEntry(estimated_fix_date): date.today()
+                ProxyLabel(volumes_net_weight_lbl): 'Volumes net weight:'
+                ProxySpinButton(volumes_net_weight): '0.000'
                 GtkHBox():
                 ProxyLabel(address_lbl): 'Address:'
                 ProxyComboEntry(address): mandatory
                 GtkHBox():
                   GtkButton(address_add_button): insensitive
                   GtkButton(address_edit_button): insensitive
-                ProxyLabel(volumes_kind_lbl): 'Volumes kind:'
-                ProxyEntry(volumes_kind): 'Volumes'
+                ProxyLabel(volumes_gross_weight_lbl): 'Volumes gross weight:'
+                ProxySpinButton(volumes_gross_weight): '0.000'
                 GtkHBox():
                 ProxyLabel(freight_type_lbl): 'Freight type:'
                 ProxyComboBox(freight_type):
@@ -40,8 +40,50 @@ GtkDialog(main_dialog.toplevel): title='Add Delivery', hidden
                   item: 'FOB'
                   item: 'CIF', selected
                 GtkHBox():
-                ProxyLabel(volumes_quantity_lbl): 'Volumes quantity:'
-                ProxyEntry(volumes_quantity): '1'
+                ProxyLabel(vehicle_license_plate_lbl): 'Vehicle license plate:'
+                ProxyEntry(vehicle_license_plate): ''
+                GtkHBox():
+                ProxyLabel(price_lbl): 'Delivery cost:'
+                ProxyEntry(price): '0.00'
+                GtkHBox():
+                ProxyLabel(vehicle_state_lbl): 'Vehicle state:'
+                ProxyComboEntry(vehicle_state):
+                  item: 'AC'
+                  item: 'AL'
+                  item: 'AM'
+                  item: 'AP'
+                  item: 'BA'
+                  item: 'CE'
+                  item: 'DF'
+                  item: 'ES'
+                  item: 'GO'
+                  item: 'MA'
+                  item: 'MG'
+                  item: 'MS'
+                  item: 'MT'
+                  item: 'PB'
+                  item: 'PE'
+                  item: 'PI'
+                  item: 'PR'
+                  item: 'RJ'
+                  item: 'RO'
+                  item: 'RN'
+                  item: 'RR'
+                  item: 'PA'
+                  item: 'RS'
+                  item: 'SE'
+                  item: 'SC'
+                  item: 'SP'
+                  item: 'TO'
+                GtkHBox():
+                ProxyLabel(estimated_fix_date_lbl): 'Estimated delivery date:'
+                ProxyDateEntry(estimated_fix_date): date.today()
+                GtkHBox():
+                ProxyLabel(vehicle_registration_lbl): 'Vehicle registration:'
+                ProxyEntry(vehicle_registration): ''
+                GtkHBox():
+                ProxyLabel(volumes_kind_lbl): 'Volumes kind:'
+                ProxyEntry(volumes_kind): 'Volumes'
                 GtkHBox():
           GtkHSeparator(hseparator1, fill=True):
           GtkLabel(label3, fill=True): 'Products to Deliver:'
