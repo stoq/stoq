@@ -696,6 +696,15 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.cash_change_slave.received_value.grab_focus()
 
         self.force_validation()
+        self.data_table.set_focus_chain([
+            self.salesperson,
+            self.invoice_number_holder,
+            self.client_gadget.box,
+            self.transporter,
+            self.create_transporter,
+            self.cfop,
+            self.create_cfop,
+        ])
         marker('Leaving post_init')
 
     def setup_slaves(self):
@@ -737,6 +746,18 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     #
     # Callbacks
     #
+
+    def key_F5(self):
+        self.salesperson.grab_focus()
+
+    def key_F6(self):
+        self.client.grab_focus()
+
+    def key_F7(self):
+        self.transporter.grab_focus()
+
+    def key_F8(self):
+        self.cash_change_slave.received_value.grab_focus()
 
     def on_client__content_changed(self, entry):
         # This gets called before setup_slaves, but we must wait until slaves
