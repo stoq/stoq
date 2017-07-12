@@ -17,12 +17,12 @@ GtkDialog(toplevel): title='Receive Purchase Order', hidden
               column: title='Cost'
               column: title='Total'
               row: u'', u'', u'Description', u'', Decimal('1.000'), Decimal('1.000'), u'', <currency $125>, <currency $125>
-              row: u'', u'', u'Package', u'', Decimal('1.000'), Decimal('1.000'), u'', <currency $125>, <currency $125>
+              row: u'', u'', u'Package', u'', Decimal('1.000'), Decimal('1.000'), u'', <currency $ 0>, <currency $ 0>
                 row: u'', u'', u'Component', u'', Decimal('1.000'), Decimal('1.000'), u'', <currency $125>, <currency $125>
             GtkHBox(step.hbox1, fill=True):
               GtkButton(step.edit_btn): 'gtk-edit', insensitive
               GtkLabel(step.label1, expand=True, fill=True): 'Total Received:'
-              ProxyLabel(step.total_received, fill=True): '<span >$375.00</span>'
+              ProxyLabel(step.total_received, fill=True): '<span >$250.00</span>'
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
