@@ -619,6 +619,13 @@ class Product(Domain):
         """
         return self.get_components().count() > 0
 
+    def get_component(self, sellable):
+        """Returns the ProductComponent of a given sellable
+        """
+        for component in self.get_components():
+            if component.component.sellable == sellable:
+                return component
+
     def get_production_cost(self):
         """Return the production cost of one unit of the product.
 
@@ -1793,6 +1800,9 @@ class StockTransactionHistory(Domain):
 class ProductComponent(Domain):
     """A |product| and it's related |component| eg other product
 
+    This maps the relationship between products, indicating what product is a component
+    of another product.
+
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/product_component.html>`__
     """
@@ -1800,12 +1810,20 @@ class ProductComponent(Domain):
     __storm_table__ = 'product_component'
 
     quantity = QuantityCol(default=Decimal(1))
+
     product_id = IdCol()
+    #: This is the main product, ie, the one that has components.
     product = Reference(product_id, 'Product.id')
+
     component_id = IdCol()
+    #: This is the product that is a component of the product above
     component = Reference(component_id, 'Product.id')
+
+    #: A design reference
     design_reference = UnicodeCol(default=u'')
-    #: The price to be used on |sale_item|
+
+    #: The price to be used on |sale_item|. This is only used for package products and
+    #: indicate the price this component has in the final package
     price = PriceCol()
 
 

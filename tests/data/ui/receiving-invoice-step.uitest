@@ -11,7 +11,7 @@ GtkDialog(toplevel): title='Receive Purchase Order', hidden
                 GtkLabel(label10): 'Branch:'
                 ProxyLabel(branch): '<span >Moda Stoq</span>'
                 ProxyLabel(kiwilabel4): 'Products Total ($CURRENCY):'
-                ProxyLabel(products_total): '<span >$375.00</span>'
+                ProxyLabel(products_total): '<span >$250.00</span>'
                 ProxyLabel(purchase_supplier_label): 'Supplier:'
                 ProxyLabel(supplier_label): '<span >Supplier</span>'
                 ProxyLabel(kiwilabel54): 'Freight ($CURRENCY):'
@@ -46,7 +46,7 @@ GtkDialog(toplevel): title='Receive Purchase Order', hidden
                   item: 'CIF - Freight value is unknown'
                   item: 'CIF - Freight value highlighted on invoice'
                 ProxyLabel(kiwilabel11): 'Invoice Total ($CURRENCY):'
-                ProxyLabel(total): '<span weight="bold">$375.00</span>'
+                ProxyLabel(total): '<span weight="bold">$250.00</span>'
                 GtkButtonBox(notes_box, orientation=horizontal):
                   GtkButton(observations_button): 'Observations...'
       ProxyLabel(notification_lbl, fill=True):

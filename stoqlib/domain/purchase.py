@@ -261,10 +261,34 @@ class PurchaseOrder(Domain):
         item.order = None
         self.store.maybe_remove(item)
 
-    def add_item(self, sellable, quantity=Decimal(1), parent=None):
+    def add_item(self, sellable, quantity=Decimal(1), parent=None, cost=None):
+        """Add a sellable to this purchase.
+
+        If the sellable is part of a package (parent is not None), then the actual cost
+        and quantity will be calculated based on how many items of this component is on
+        the package.
+
+        :param sellable: the sellable being added
+        :param quantity: How many units of this sellable we are adding
+        :param cost: The price being paid for this sellable
+        :param parent: The parent of this sellable, incase of a package
+        """
+        if cost is None:
+            cost = sellable.cost
+
+        if parent:
+            component = parent.sellable.product.get_component(sellable)
+            cost = cost / component.quantity
+            quantity = quantity * component.quantity
+        else:
+            if sellable.product.is_package:
+                # If this is a package, the cost will be calculated and updated by the
+                # compoents of the package
+                cost = Decimal('0')
+
         store = self.store
         return PurchaseItem(store=store, order=self,
-                            sellable=sellable, quantity=quantity,
+                            sellable=sellable, quantity=quantity, cost=cost,
                             parent_item=parent)
 
     #

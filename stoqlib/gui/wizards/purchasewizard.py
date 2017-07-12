@@ -25,7 +25,6 @@
 """ Purchase wizard definition """
 
 import datetime
-from decimal import Decimal
 
 from gi.repository import Gtk
 from kiwi.component import get_utility
@@ -264,17 +263,11 @@ class PurchaseItemStep(SellableItemStep):
             supplier_info = ProductSupplierInfo(product=sellable.product,
                                                 supplier=self.model.supplier,
                                                 store=self.store)
-        if parent:
-            component = self.get_component(parent, sellable)
-            quantity = quantity * component.quantity
-        else:
-            if sellable.product.is_package:
-                cost = Decimal('0')
+        if not parent:
             supplier_info.base_cost = cost
 
-        item = self.model.add_item(sellable, quantity, parent=parent)
+        item = self.model.add_item(sellable, quantity, parent=parent, cost=cost)
         self._set_expected_receival_date(item)
-        item.cost = cost
         return item
 
     def get_saved_items(self):
