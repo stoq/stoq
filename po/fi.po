@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-21 02:10-0300\n"
-"PO-Revision-Date: 2017-06-21 05:10+0000\n"
+"POT-Creation-Date: 2017-07-11 02:10-0300\n"
+"PO-Revision-Date: 2017-07-10 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Finnish (http://www.transifex.com/async/stoq/language/fi/)\n"
 "MIME-Version: 1.0\n"
@@ -341,7 +341,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/purchasewizard.py:306
 #: ../stoqlib/gui/wizards/salequotewizard.py:419
 #: ../stoqlib/gui/wizards/salereturnwizard.py:234
-#: ../stoqlib/gui/wizards/salewizard.py:445
+#: ../stoqlib/gui/wizards/salewizard.py:444
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:219
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:67
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:344
@@ -384,7 +384,7 @@ msgstr ""
 #: ../plugins/books/booksdomain.py:67 ../plugins/ecf/ecfdomain.py:220
 #: ../plugins/ecf/ecfprinterdialog.py:332
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:3
-#: ../stoqlib/domain/devices.py:183 ../stoqlib/domain/payment/method.py:123
+#: ../stoqlib/domain/devices.py:184 ../stoqlib/domain/payment/method.py:123
 #: ../stoqlib/domain/person.py:654 ../stoqlib/domain/person.py:773
 #: ../stoqlib/domain/person.py:1209 ../stoqlib/domain/person.py:1252
 #: ../stoqlib/domain/person.py:1414 ../stoqlib/domain/person.py:1468
@@ -413,7 +413,7 @@ msgstr "Aktiivinen"
 #: ../data/glade/TransporterDataSlave.ui.h:4
 #: ../data/glade/UserStatusSlave.ui.h:3 ../plugins/books/booksdomain.py:45
 #: ../plugins/books/booksdomain.py:68 ../plugins/ecf/ecfdomain.py:221
-#: ../stoqlib/domain/devices.py:184 ../stoqlib/domain/payment/method.py:124
+#: ../stoqlib/domain/devices.py:185 ../stoqlib/domain/payment/method.py:124
 #: ../stoqlib/domain/person.py:655 ../stoqlib/domain/person.py:774
 #: ../stoqlib/domain/person.py:891 ../stoqlib/domain/person.py:1210
 #: ../stoqlib/domain/person.py:1253 ../stoqlib/domain/person.py:1415
@@ -2694,7 +2694,7 @@ msgid "Operation Nature:"
 msgstr ""
 
 #: ../data/glade/SalesPersonQuoteWizardStep.ui.h:4
-#: ../data/glade/SalesPersonStep.ui.h:5
+#: ../data/glade/SalesPersonStep.ui.h:4
 msgid "Expire:"
 msgstr ""
 
@@ -2715,7 +2715,7 @@ msgstr ""
 msgid "Client Credit:"
 msgstr ""
 
-#: ../data/glade/SalesPersonStep.ui.h:4 ../stoqlib/gui/fields.py:284
+#: ../data/glade/SalesPersonStep.ui.h:5 ../stoqlib/gui/fields.py:284
 #: ../stoqlib/gui/wizards/purchasewizard.py:473
 msgid "Add a new transporter"
 msgstr ""
@@ -3498,7 +3498,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/renegotiationwizard.py:89
 #: ../stoqlib/gui/wizards/salequotewizard.py:410
 #: ../stoqlib/gui/wizards/salereturnwizard.py:217
-#: ../stoqlib/gui/wizards/salewizard.py:441
+#: ../stoqlib/gui/wizards/salewizard.py:440
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:214
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:167
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:338
@@ -3914,7 +3914,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/receivingwizard.py:257
 #: ../stoqlib/gui/wizards/salequotewizard.py:406
 #: ../stoqlib/gui/wizards/salereturnwizard.py:213
-#: ../stoqlib/gui/wizards/salewizard.py:437
+#: ../stoqlib/gui/wizards/salewizard.py:436
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:213
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:165
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:334
@@ -4084,7 +4084,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/purchasewizard.py:304
 #: ../stoqlib/gui/wizards/receivingwizard.py:263
 #: ../stoqlib/gui/wizards/salequotewizard.py:417
-#: ../stoqlib/gui/wizards/salewizard.py:443
+#: ../stoqlib/gui/wizards/salewizard.py:442
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:217
 #: ../stoqlib/net/calendarevents.py:160
 msgid "Category"
@@ -4174,7 +4174,7 @@ msgstr "Hinta"
 #: ../stoqlib/gui/wizards/receivingwizard.py:274
 #: ../stoqlib/gui/wizards/salequotewizard.py:444
 #: ../stoqlib/gui/wizards/salereturnwizard.py:237
-#: ../stoqlib/gui/wizards/salewizard.py:451
+#: ../stoqlib/gui/wizards/salewizard.py:450
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:228
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:174
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:351
@@ -4641,7 +4641,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/receivingwizard.py:259
 #: ../stoqlib/gui/wizards/salequotewizard.py:408
 #: ../stoqlib/gui/wizards/salereturnwizard.py:215
-#: ../stoqlib/gui/wizards/salewizard.py:439
+#: ../stoqlib/gui/wizards/salewizard.py:438
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:336
 msgid "Barcode"
 msgstr "Viivakoodi"
@@ -6960,7 +6960,7 @@ msgstr ""
 msgid "Done!"
 msgstr ""
 
-#: ../stoq/gui/config.py:404 ../stoqlib/gui/dialogs/crashreportdialog.py:185
+#: ../stoq/gui/config.py:404 ../stoqlib/gui/dialogs/crashreportdialog.py:186
 msgid "Sending..."
 msgstr ""
 
@@ -9149,7 +9149,7 @@ msgid "Opens up a new window"
 msgstr ""
 
 #: ../stoq/gui/shell/shellwindow.py:163
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:160
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:161
 msgid "Close"
 msgstr ""
 
@@ -10290,15 +10290,15 @@ msgstr ""
 msgid "A1: Digital certificate"
 msgstr ""
 
-#: ../stoqlib/domain/devices.py:84
+#: ../stoqlib/domain/devices.py:85
 msgid "Scale"
 msgstr ""
 
-#: ../stoqlib/domain/devices.py:85
+#: ../stoqlib/domain/devices.py:86
 msgid "Non Fiscal Printer"
 msgstr ""
 
-#: ../stoqlib/domain/devices.py:86
+#: ../stoqlib/domain/devices.py:87
 msgid "Cheque Printer"
 msgstr ""
 
@@ -11751,28 +11751,28 @@ msgstr ""
 msgid "Details ..."
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:63
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:64
 #, python-format
 msgid ""
 "We'r sorry to inform you that an error occurred while running %s. Please help us improving Stoq by sending a automatically generated report about the incident.\n"
 "Click on details to see the report text."
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:74
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:75
 msgid "No thanks"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:76
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:77
 msgid "Send report"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:157
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:158
 msgid ""
 "Thanks for submitting the crash report!\n"
 "We will use it to make Stoq a better software."
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:177
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:178
 msgid "Failed to submit bugreport"
 msgstr ""
 
@@ -13001,25 +13001,25 @@ msgstr ""
 msgid "Products to deliver"
 msgstr ""
 
-#: ../stoqlib/gui/editors/deviceseditor.py:83
-#: ../stoqlib/gui/editors/deviceseditor.py:99
-#: ../stoqlib/gui/editors/deviceseditor.py:159
-#: ../stoqlib/gui/editors/deviceseditor.py:172
+#: ../stoqlib/gui/editors/deviceseditor.py:84
+#: ../stoqlib/gui/editors/deviceseditor.py:100
+#: ../stoqlib/gui/editors/deviceseditor.py:160
+#: ../stoqlib/gui/editors/deviceseditor.py:173
 msgid "Choose..."
 msgstr ""
 
-#: ../stoqlib/gui/editors/deviceseditor.py:198
+#: ../stoqlib/gui/editors/deviceseditor.py:199
 #, python-format
 msgid "Edit Device for %s"
 msgstr ""
 
-#: ../stoqlib/gui/editors/deviceseditor.py:200
+#: ../stoqlib/gui/editors/deviceseditor.py:201
 msgid "Add Device"
 msgstr ""
 
 #: ../stoqlib/gui/editors/deviceseditor.py:210
 #, python-format
-msgid "A %s already exists for station \"%s\""
+msgid "An active %s already exists for station \"%s\""
 msgstr ""
 
 #: ../stoqlib/gui/editors/discounteditor.py:52
@@ -13158,7 +13158,7 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:194
 #: ../stoqlib/gui/slaves/receivingslave.py:207
-#: ../stoqlib/gui/wizards/salewizard.py:812 ../stoqlib/lib/invoice.py:350
+#: ../stoqlib/gui/wizards/salewizard.py:832 ../stoqlib/lib/invoice.py:350
 msgid "Invoice number must be between 1 and 999999999"
 msgstr ""
 
@@ -15478,7 +15478,7 @@ msgid ""
 msgstr ""
 
 #: ../stoqlib/gui/slaves/paymentconfirmslave.py:573
-#: ../stoqlib/gui/wizards/salewizard.py:602
+#: ../stoqlib/gui/wizards/salewizard.py:601
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:106
 msgid "No cost center."
 msgstr ""
@@ -16898,35 +16898,35 @@ msgstr ""
 msgid "You need active credit providers to use the card payment method."
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:447
+#: ../stoqlib/gui/wizards/salewizard.py:446
 msgid "Adjusted qty"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:449
+#: ../stoqlib/gui/wizards/salewizard.py:448
 msgid "price"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:796
+#: ../stoqlib/gui/wizards/salewizard.py:816
 msgid "Sale observations"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:817 ../stoqlib/lib/invoice.py:353
+#: ../stoqlib/gui/wizards/salewizard.py:837 ../stoqlib/lib/invoice.py:353
 msgid "Invoice number already used."
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:833
+#: ../stoqlib/gui/wizards/salewizard.py:853
 msgid "Sale Checkout"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:921
+#: ../stoqlib/gui/wizards/salewizard.py:941
 msgid "Do you want to print this sale's details?"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:922
+#: ../stoqlib/gui/wizards/salewizard.py:942
 msgid "Print Details"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:922
+#: ../stoqlib/gui/wizards/salewizard.py:942
 msgid "Don't Print"
 msgstr ""
 
