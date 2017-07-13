@@ -246,24 +246,22 @@ class CryptographySigner(object):
 class PyKCS11Signer(object):
 
     def __init__(self):
-        self._pkcs11 = None
         self._cert_label = None
         self._cert = None
         self._slot = None
         self._label = None
 
     def get_signature(self, xml, cert, password_callback, certificate_callback):
-        if self._pkcs11 is None:
-            self._pkcs11 = PyKCS11.PyKCS11Lib()
-            self._pkcs11.load(cert)
+        _pkcs11 = PyKCS11.PyKCS11Lib()
+        _pkcs11.load(cert)
 
         if self._slot is None:
-            self._slot = self._pkcs11.getSlotList()[0]
+            self._slot = _pkcs11.getSlotList()[0]
         if self._label is None:
-            info = self._pkcs11.getTokenInfo(self._slot)
+            info = _pkcs11.getTokenInfo(self._slot)
             self._label = info.label.strip()
 
-        session = self._pkcs11.openSession(
+        session = _pkcs11.openSession(
             self._slot, PyKCS11.CKF_SERIAL_SESSION | PyKCS11.CKF_RW_SESSION)
 
         retry = False
@@ -324,6 +322,12 @@ class PyKCS11Signer(object):
         # we would cause problems when usig NssSession again
         session.logout()
         session.closeSession()
+
+        # Some certificates don't play well with nss if they are not properly unloaded.
+        # PyKCS11 only unloads the library if it gets deleted, so that why we are
+        # forcing it here. Unfortunately, this adds around 10 seconds per emission
+        # process.
+        del _pkcs11
 
         return digest, format_base64(signature), format_base64(self._cert)
 
