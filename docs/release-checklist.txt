@@ -1,4 +1,5 @@
 Update files:
+  * update translations
   * debian/control
   * debian/changelog
   * docs/manual/pt_BR/changelog.page
