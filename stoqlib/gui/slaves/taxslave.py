@@ -63,7 +63,15 @@ class BaseTaxSlave(BaseEditorSlave):
     def _setup_widgets(self):
         for name, options in self.field_options.items():
             widget = getattr(self, name)
-            widget.prefill(options)
+            # set_size_request is not working, so as a workaround, lets truncate
+            # the length of the options...
+            new_options = []
+            for (key, value) in options:
+                if isinstance(key, str) and len(key) > 70:
+                    new_options.append((key[:70] + '...', value))
+                else:
+                    new_options.append((key, value))
+            widget.prefill(new_options)
             widget.set_size_request(220, -1)
 
         for name in self.percentage_widgets:
