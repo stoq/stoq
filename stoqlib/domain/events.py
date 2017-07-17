@@ -452,7 +452,6 @@ class StockOperationConfirmedEvent(Event):
     transfers, stock decreases, loans and sale returns
 
     :param model: the model whose stock operation was confirmed
-    :param reason: the reason the model is being cancelled
     :param old_status: the old status of the model if the confirmation
         includes a status change
     """
@@ -464,6 +463,7 @@ class StockOperationTryFiscalCancelEvent(Event):
     This event is emitted to try to cancel a operation with sefaz.
 
     :param operation: the operation to be tried to cancel
+    :param reason: the reason the model is being cancelled
     :return: ``True`` if the cancellation is successfull, `False` otherwise.
     """
 
