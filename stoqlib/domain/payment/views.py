@@ -44,7 +44,7 @@ from stoqlib.domain.payment.method import CheckData, PaymentMethod
 from stoqlib.domain.payment.operation import get_payment_operation
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
-from stoqlib.domain.person import Person, Branch
+from stoqlib.domain.person import Person, Branch, Company
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.dateutils import localtoday
@@ -202,7 +202,10 @@ class BasePaymentView(Viewable):
 
 
 class InPaymentView(BasePaymentView):
+    DraweeCompany = ClassAlias(Company, 'drawee_company')
+
     drawee = Person.name
+    drawee_fancy_name = DraweeCompany.fancy_name
     person_id = Person.id
     renegotiated_id = PaymentGroup.renegotiation_id
     renegotiation_id = PaymentRenegotiation.id
@@ -215,6 +218,7 @@ class InPaymentView(BasePaymentView):
     tables = BasePaymentView.tables[:]
     tables.extend([
         LeftJoin(Person, PaymentGroup.payer_id == Person.id),
+        LeftJoin(DraweeCompany, DraweeCompany.person_id == Person.id),
         LeftJoin(PaymentRenegotiation,
                  PaymentRenegotiation.group_id == PaymentGroup.id),
     ])

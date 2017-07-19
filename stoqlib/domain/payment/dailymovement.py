@@ -50,17 +50,18 @@ class DailyInPaymentView(InPaymentView):
     SalesPersonPerson = ClassAlias(Person, 'salesperson_person')
     ClientPerson = ClassAlias(Person, 'client_person')
     PersonBranch = ClassAlias(Person, 'person_branch')
+    BranchCompany = ClassAlias(Company, 'branch_company')
 
     salesperson_name = SalesPersonPerson.name
     client_name = ClientPerson.name
-    branch_name = Coalesce(NullIf(Company.fancy_name, u''), PersonBranch.name)
+    branch_name = Coalesce(NullIf(BranchCompany.fancy_name, u''), PersonBranch.name)
 
     sale_subtotal = Field('_sale_items', 'subtotal')
 
     tables = InPaymentView.tables[:]
     tables.extend([
         Join(PersonBranch, Branch.person_id == PersonBranch.id),
-        Join(Company, Branch.person_id == Company.person_id),
+        Join(BranchCompany, Branch.person_id == BranchCompany.person_id),
         LeftJoin(SalesPerson, Sale.salesperson_id == SalesPerson.id),
         LeftJoin(SalesPersonPerson,
                  SalesPerson.person_id == SalesPersonPerson.id),
