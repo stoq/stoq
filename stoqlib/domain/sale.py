@@ -2329,6 +2329,8 @@ class SaleView(Viewable):
     Person_Branch = ClassAlias(Person, 'person_branch')
     Person_Client = ClassAlias(Person, 'person_client')
     Person_SalesPerson = ClassAlias(Person, 'person_sales_person')
+    Company_Branch = ClassAlias(Company, 'company_branch')
+    Company_Client = ClassAlias(Company, 'company_client')
 
     #: the |sale| of the view
     sale = Sale
@@ -2411,8 +2413,11 @@ class SaleView(Viewable):
     #: the |sale| client name
     client_name = Coalesce(Person_Client.name, u'')
 
+    #: the |sale| client fancy name
+    client_fancy_name = Company_Client.fancy_name
+
     #: name of the |branch| this |sale| was sold
-    branch_name = Coalesce(NullIf(Company.fancy_name, u''), Person_Branch.name)
+    branch_name = Coalesce(NullIf(Company_Branch.fancy_name, u''), Person_Branch.name)
 
     # Summaries
     v_ipi = Coalesce(Field('_sale_item', 'v_ipi'), 0)
@@ -2436,8 +2441,9 @@ class SaleView(Viewable):
         LeftJoin(Invoice, Sale.invoice_id == Invoice.id),
 
         LeftJoin(Person_Branch, Branch.person_id == Person_Branch.id),
-        LeftJoin(Company, Company.person_id == Person_Branch.id),
+        LeftJoin(Company_Branch, Company_Branch.person_id == Person_Branch.id),
         LeftJoin(Person_Client, Client.person_id == Person_Client.id),
+        LeftJoin(Company_Client, Company_Client.person_id == Person_Client.id),
         LeftJoin(Person_SalesPerson, SalesPerson.person_id == Person_SalesPerson.id),
 
         LeftJoin(SaleToken, SaleToken.sale_id == Sale.id),

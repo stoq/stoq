@@ -169,12 +169,13 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
                 column: title='Expire date', hidden
                 column: title='Status', hidden
                 column: title='Client', expand
+                column: title='Client fancy name', hidden, expand
                 column: title='Salesperson'
                 column: title='Items'
                 column: title='Total'
-                row: 1, 1001, True, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 4, 5, 0, 0), datetime.datetime(2012, 2, 3, 0, 0), None, None, None, 'Confirmed', 'Vitalina Claudino', 'Deivis Alexandre Junior', Decimal('3.000'), <currency $436>
-                row: 2, 1002, False, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 4, 5, 0, 0), datetime.datetime(2012, 2, 3, 0, 0), None, None, None, 'Confirmed', 'Alessandra Almeida Itaberá', 'Deivis Alexandre Junior', Decimal('3.000'), <currency $706>
-                row: 3, 1003, False, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 4, 5, 0, 0), datetime.datetime(2012, 2, 3, 0, 0), None, None, None, 'Confirmed', 'Luis Sergio da Silva Marin', 'Deivis Alexandre Junior', Decimal('3.000'), <currency $873>
+                row: 1, 1001, True, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 4, 5, 0, 0), datetime.datetime(2012, 2, 3, 0, 0), None, None, None, 'Confirmed', 'Vitalina Claudino', None, 'Deivis Alexandre Junior', Decimal('3.000'), <currency $436>
+                row: 2, 1002, False, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 4, 5, 0, 0), datetime.datetime(2012, 2, 3, 0, 0), None, None, None, 'Confirmed', 'Alessandra Almeida Itaberá', None, 'Deivis Alexandre Junior', Decimal('3.000'), <currency $706>
+                row: 3, 1003, False, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 4, 5, 0, 0), datetime.datetime(2012, 2, 3, 0, 0), None, None, None, 'Confirmed', 'Luis Sergio da Silva Marin', None, 'Deivis Alexandre Junior', Decimal('3.000'), <currency $873>
           GtkBox(list_vbox, orientation=vertical, fill=True):
           GtkEventBox(list_toolbar_holder, fill=True):
     ShellStatusbar():
