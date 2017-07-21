@@ -519,7 +519,8 @@ class DatabaseSettings(object):
 
         # Insignificant amount of data in the database. Safe to drop
         result = store.execute("SELECT COUNT(*) FROM transaction_entry")
-        entries = result.get_one()
+        # XXX get_one() still returns a tuple
+        entries = result.get_one()[0]
         result.close()
         store.close()
         if entries < _ENTRIES_DELETE_THRESHOLD:
