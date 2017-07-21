@@ -134,7 +134,7 @@ class StoqConfig:
                     raise
 
         try:
-            fd = open(datafile, "w")
+            fd = open(datafile, "wb")
         except OSError as e:
             if e.errno == 13:
                 raise FilePermissionError("%s is not writable" % datafile)
