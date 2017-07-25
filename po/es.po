@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-15 02:10-0300\n"
-"PO-Revision-Date: 2017-07-15 05:10+0000\n"
+"POT-Creation-Date: 2017-07-24 02:10-0300\n"
+"PO-Revision-Date: 2017-07-24 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Spanish (http://www.transifex.com/async/stoq/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -1372,7 +1372,7 @@ msgstr "Responsable:"
 #: ../data/glade/LoanDetails.ui.h:7
 #: ../data/glade/ProductionDetailsDialog.ui.h:8
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:10
-#: ../data/glade/SaleDetailsDialog.ui.h:12 ../stoq/gui/sales.py:323
+#: ../data/glade/SaleDetailsDialog.ui.h:12 ../stoq/gui/sales.py:326
 #: ../stoqlib/gui/search/salesearch.py:97
 #: ../stoqlib/gui/search/transfersearch.py:149
 #: ../stoqlib/reporting/sale.py:156
@@ -2580,7 +2580,7 @@ msgstr ""
 #: ../data/glade/ReturnedSalesDetails.ui.h:11
 #: ../data/glade/StockDecreaseDetails.ui.h:9
 #: ../data/template/return_sale/return_sale-items.html:8
-#: ../stoq/gui/sales.py:538 ../stoq/gui/services.py:99
+#: ../stoq/gui/sales.py:541 ../stoq/gui/services.py:99
 #: ../stoq/gui/services.py:773 ../stoqlib/gui/dialogs/clientdetails.py:231
 #: ../stoqlib/gui/dialogs/inventorydetails.py:94
 #: ../stoqlib/gui/dialogs/inventorydetails.py:132
@@ -3512,7 +3512,7 @@ msgstr "Descripción"
 #: ../data/template/booklet/receipt.html:27
 #: ../data/template/payment_flow_history/history-table.html:47
 #: ../stoq/gui/financial.py:248 ../stoq/gui/payable.py:178
-#: ../stoq/gui/receivable.py:193 ../stoqlib/gui/dialogs/clientdetails.py:355
+#: ../stoq/gui/receivable.py:196 ../stoqlib/gui/dialogs/clientdetails.py:355
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:74
 #: ../stoqlib/gui/dialogs/purchasedetails.py:201
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:122
@@ -3536,7 +3536,7 @@ msgstr "Fecha de vencimiento"
 #: ../data/template/payment_flow_history/history-table.html:45
 #: ../data/template/till/purchases.html:15 ../data/template/till/sales.html:9
 #: ../plugins/ecf/deviceconstanteditor.py:134 ../stoq/gui/financial.py:252
-#: ../stoq/gui/payable.py:187 ../stoq/gui/receivable.py:201
+#: ../stoq/gui/payable.py:187 ../stoq/gui/receivable.py:204
 #: ../stoqlib/gui/dialogs/clientdetails.py:270
 #: ../stoqlib/gui/dialogs/clientdetails.py:361
 #: ../stoqlib/gui/dialogs/clientdetails.py:411
@@ -4045,7 +4045,7 @@ msgstr ""
 #: ../data/template/purchase/purchase-items.html:6
 #: ../data/template/quote/quote-items.html:6
 #: ../plugins/books/bookssearch.py:81 ../plugins/optical/medicssearch.py:125
-#: ../stoq/gui/payable.py:191 ../stoq/gui/receivable.py:206
+#: ../stoq/gui/payable.py:191 ../stoq/gui/receivable.py:209
 #: ../stoq/gui/services.py:415 ../stoq/gui/stock.py:258
 #: ../stoqlib/domain/uiform.py:133
 #: ../stoqlib/gui/dialogs/clientcategorydialog.py:45
@@ -4143,7 +4143,7 @@ msgstr "Precio"
 #: ../data/template/workorder/workorder-items.html:9
 #: ../plugins/optical/medicssearch.py:142 ../stoq/gui/accounts.py:75
 #: ../stoq/gui/financial.py:243 ../stoq/gui/pos.py:357
-#: ../stoq/gui/purchase.py:278 ../stoq/gui/sales.py:326
+#: ../stoq/gui/purchase.py:278 ../stoq/gui/sales.py:329
 #: ../stoq/gui/services.py:447 ../stoq/gui/till.py:241
 #: ../stoqlib/gui/dialogs/clientdetails.py:194
 #: ../stoqlib/gui/dialogs/clientdetails.py:235
@@ -4305,7 +4305,7 @@ msgid "Last balance"
 msgstr ""
 
 #: ../data/template/payment_flow_history/history-table.html:9
-#: ../stoq/gui/receivable.py:420
+#: ../stoq/gui/receivable.py:423
 msgid "To receive"
 msgstr "A cobrar"
 
@@ -4315,7 +4315,7 @@ msgid "To pay"
 msgstr "Por pagar"
 
 #: ../data/template/payment_flow_history/history-table.html:12
-#: ../stoq/gui/payable.py:189 ../stoq/gui/receivable.py:203
+#: ../stoq/gui/payable.py:189 ../stoq/gui/receivable.py:206
 #: ../stoq/gui/sales.py:296 ../stoqlib/domain/payment/payment.py:141
 #: ../stoqlib/domain/payment/renegotiation.py:64
 msgid "Paid"
@@ -4335,9 +4335,9 @@ msgstr ""
 #: ../data/template/transfer/transfer.html:24 ../stoq/gui/delivery.py:203
 #: ../stoq/gui/inventory.py:156 ../stoq/gui/payable.py:183
 #: ../stoq/gui/production.py:171 ../stoq/gui/purchase.py:261
-#: ../stoq/gui/receivable.py:197 ../stoq/gui/sales.py:287
+#: ../stoq/gui/receivable.py:200 ../stoq/gui/sales.py:287
 #: ../stoq/gui/services.py:412 ../stoq/gui/till.py:221
-#: ../stoqlib/domain/payment/views.py:424 ../stoqlib/domain/workorder.py:1181
+#: ../stoqlib/domain/payment/views.py:428 ../stoqlib/domain/workorder.py:1181
 #: ../stoqlib/gui/dialogs/clientdetails.py:192
 #: ../stoqlib/gui/dialogs/clientdetails.py:359
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:79
@@ -4378,7 +4378,7 @@ msgid "Paid/Received"
 msgstr ""
 
 #: ../data/template/payment_flow_history/history-table.html:48
-#: ../stoq/gui/payable.py:181 ../stoq/gui/receivable.py:195
+#: ../stoq/gui/payable.py:181 ../stoq/gui/receivable.py:198
 #: ../stoqlib/gui/dialogs/clientdetails.py:357
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:77
 #: ../stoqlib/gui/dialogs/purchasedetails.py:203
@@ -4999,7 +4999,7 @@ msgstr "editoriales"
 #: ../plugins/books/publishersearch.py:63 ../stoq/gui/delivery.py:326
 #: ../stoq/gui/inventory.py:175 ../stoq/gui/payable.py:390
 #: ../stoq/gui/production.py:217 ../stoq/gui/purchase.py:428
-#: ../stoq/gui/receivable.py:249 ../stoq/gui/sales.py:420
+#: ../stoq/gui/receivable.py:252 ../stoq/gui/sales.py:423
 #: ../stoq/gui/services.py:521 ../stoq/gui/till.py:276 ../stoqlib/api.py:186
 #: ../stoqlib/gui/search/deliverysearch.py:60
 #: ../stoqlib/gui/search/deliverysearch.py:65
@@ -7353,7 +7353,7 @@ msgstr ""
 #: ../stoq/gui/delivery.py:247 ../stoq/gui/inventory.py:226
 #: ../stoq/gui/pos.py:956 ../stoq/gui/pos.py:1484
 #: ../stoq/gui/production.py:262 ../stoq/gui/purchase.py:415
-#: ../stoq/gui/sales.py:540 ../stoqlib/gui/base/wizards.py:343
+#: ../stoq/gui/sales.py:543 ../stoqlib/gui/base/wizards.py:343
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:174
 #: ../stoqlib/gui/editors/baseeditor.py:452
 msgid "Don't cancel"
@@ -7811,7 +7811,7 @@ msgstr "Pagar"
 msgid "Print a report of these payments"
 msgstr "Imprimir un informe de estos pagos"
 
-#: ../stoq/gui/payable.py:190 ../stoq/gui/receivable.py:204
+#: ../stoq/gui/payable.py:190 ../stoq/gui/receivable.py:207
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:82
 #: ../stoqlib/gui/dialogs/purchasedetails.py:208
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:132
@@ -7822,11 +7822,11 @@ msgstr "Imprimir un informe de estos pagos"
 msgid "Paid value"
 msgstr "Valor pagado"
 
-#: ../stoq/gui/payable.py:192 ../stoq/gui/receivable.py:207
+#: ../stoq/gui/payable.py:192 ../stoq/gui/receivable.py:210
 msgid "Payment category"
 msgstr "Categoría de pago"
 
-#: ../stoq/gui/payable.py:202 ../stoq/gui/receivable.py:216
+#: ../stoq/gui/payable.py:202 ../stoq/gui/receivable.py:219
 msgid "Paid or due date"
 msgstr "Fecha de pago o de vencimiento"
 
@@ -7839,7 +7839,7 @@ msgstr "No se puede confirmar el pago si la compra no ha sido completamente rece
 msgid "Paid payments"
 msgstr "Pagos pagados"
 
-#: ../stoq/gui/payable.py:400 ../stoq/gui/receivable.py:421
+#: ../stoq/gui/payable.py:400 ../stoq/gui/receivable.py:424
 msgid "Late payments"
 msgstr "Pagos retrasados"
 
@@ -7928,7 +7928,7 @@ msgid ""
 msgstr "Debe terminar la venta actual antes de cambiar a otra aplicación."
 
 #: ../stoq/gui/pos.py:329 ../stoq/gui/pos.py:340 ../stoq/gui/pos.py:1292
-#: ../stoq/gui/pos.py:1329 ../stoq/gui/sales.py:539
+#: ../stoq/gui/pos.py:1329 ../stoq/gui/sales.py:542
 #: ../stoqlib/gui/slaves/saleslave.py:334
 msgid "Cancel sale"
 msgstr "Cancelar venta"
@@ -8524,19 +8524,23 @@ msgstr "Ayuda de Cuentas por cobrar"
 msgid "Print a report of this payments"
 msgstr "Imprimir un informe de este pago"
 
-#: ../stoq/gui/receivable.py:419
+#: ../stoq/gui/receivable.py:193
+msgid "Drawee fancy name"
+msgstr ""
+
+#: ../stoq/gui/receivable.py:422
 msgid "Received payments"
 msgstr "Pagos recibidos"
 
-#: ../stoq/gui/receivable.py:488
+#: ../stoq/gui/receivable.py:491
 msgid "Cannot renegotiate selected payments"
 msgstr "No se pueden renegociar los pagos seleccionados"
 
-#: ../stoq/gui/receivable.py:530
+#: ../stoq/gui/receivable.py:533
 msgid "No bill payments were selected"
 msgstr ""
 
-#: ../stoq/gui/receivable.py:543
+#: ../stoq/gui/receivable.py:546
 msgid "An error ocurred while generating the CNAB"
 msgstr ""
 
@@ -8741,9 +8745,13 @@ msgstr "Fecha de devolución"
 msgid "Expire date"
 msgstr "Fecha de vencimiento"
 
+#: ../stoq/gui/sales.py:320
+msgid "Client fancy name"
+msgstr ""
+
 #. FIXME: We need a way to set the default profile in the interface,
 #. instead of relying on the name (the user may change it)
-#: ../stoq/gui/sales.py:320 ../stoq/gui/till.py:235
+#: ../stoq/gui/sales.py:323 ../stoq/gui/till.py:235
 #: ../stoqlib/database/admin.py:345 ../stoqlib/database/admin.py:352
 #: ../stoqlib/domain/profile.py:123 ../stoqlib/domain/test/test_profile.py:51
 #: ../stoqlib/gui/dialogs/clientdetails.py:190
@@ -8757,39 +8765,39 @@ msgstr "Fecha de vencimiento"
 msgid "Salesperson"
 msgstr "Vendedor"
 
-#: ../stoq/gui/sales.py:382
+#: ../stoq/gui/sales.py:385
 msgid "There are no invoice printer configured for this station"
 msgstr "No hay impresora de recibos configurada para esta estación"
 
-#: ../stoq/gui/sales.py:425
+#: ../stoq/gui/sales.py:428
 msgid "All Sales"
 msgstr "Todas las ventas"
 
-#: ../stoq/gui/sales.py:426
+#: ../stoq/gui/sales.py:429
 msgid "Confirmed today"
 msgstr ""
 
-#: ../stoq/gui/sales.py:427
+#: ../stoq/gui/sales.py:430
 msgid "Confirmed in the last 7 days"
 msgstr ""
 
-#: ../stoq/gui/sales.py:428
+#: ../stoq/gui/sales.py:431
 msgid "Confirmed in the last 28 days"
 msgstr ""
 
-#: ../stoq/gui/sales.py:429
+#: ../stoq/gui/sales.py:432
 msgid "Expired quotes"
 msgstr ""
 
-#: ../stoq/gui/sales.py:455
+#: ../stoq/gui/sales.py:458
 msgid "You cannot create a quote with an open inventory."
 msgstr ""
 
-#: ../stoq/gui/sales.py:526
+#: ../stoq/gui/sales.py:529
 msgid "This will cancel the sale, Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/sales.py:550
+#: ../stoq/gui/sales.py:553
 msgid ""
 "The cancellation was not authorized by SEFAZ. You should do a sale return."
 msgstr ""
@@ -10216,11 +10224,11 @@ msgid ""
 "connection settings you have set and try again."
 msgstr "No se pudo conectar a la base de datos %s. El mensaje de error es «%s». Corrija los parámetros de conexión que ha establecido e inténtelo de nuevo."
 
-#: ../stoqlib/database/settings.py:773
+#: ../stoqlib/database/settings.py:774
 msgid "Problem with PostgreSQL version"
 msgstr "Problema con la versión de PostgreSQL"
 
-#: ../stoqlib/database/settings.py:774
+#: ../stoqlib/database/settings.py:775
 #, python-format
 msgid ""
 "The version of the PostgreSQL database server (%s) and the postgres client "
@@ -10547,7 +10555,7 @@ msgstr ""
 msgid "Renegotiated"
 msgstr ""
 
-#: ../stoqlib/domain/payment/views.py:422
+#: ../stoqlib/domain/payment/views.py:426
 #: ../stoqlib/gui/search/paymentreceivingsearch.py:127
 msgid "Due Date"
 msgstr ""
