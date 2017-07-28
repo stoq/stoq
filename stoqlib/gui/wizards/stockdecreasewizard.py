@@ -41,6 +41,7 @@ from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
 from stoqlib.domain.views import ProductWithStockBranchView
+from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.formatters import format_quantity, format_sellable_description
 from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam
@@ -112,6 +113,16 @@ class StartStockDecreaseStep(WizardEditorStep):
                                  Person.branch != api.get_current_branch(self.store))
         self.person.prefill(items)
 
+    def _set_receiving_order_data(self):
+        order = self.wizard.receiving_order
+        self.branch.update(order.branch)
+        cfop = sysparam.get_object(self.store, 'DEFAULT_PURCHASE_RETURN_CFOP')
+        self.cfop.update(cfop)
+        self.person.update(order.supplier.person.id)
+        for widget in (self.branch, self.person):
+            if widget.is_valid():
+                widget.set_sensitive(False)
+
     def _setup_widgets(self):
         self.confirm_date.set_sensitive(False)
         self._fill_employee_combo()
@@ -149,6 +160,8 @@ class StartStockDecreaseStep(WizardEditorStep):
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        if self.wizard.receiving_order is not None:
+            self._set_receiving_order_data()
 
     #
     # Callbacks
@@ -190,6 +203,9 @@ class DecreaseItemStep(SellableItemStep):
         self.slave.klist.connect('cell-editing-started',
                                  self._on_klist__cell_editing_started)
 
+        if self.wizard.receiving_order is not None:
+            self.hide_item_addition_toolbar()
+
         super(DecreaseItemStep, self).post_init()
 
     def get_sellable_view_query(self):
@@ -209,6 +225,15 @@ class DecreaseItemStep(SellableItemStep):
         return self.model.get_items()
 
     def get_columns(self):
+        ext_args = {}
+        is_receiving_return = bool(self.wizard.receiving_order)
+        # The quantity column will only be editable if this decrease refers to
+        # a receiving return
+        if is_receiving_return:
+            ext_args.update({
+                'spin_adjustment': gtk.Adjustment(lower=0, upper=MAX_INT,
+                                                  step_incr=1),
+                'editable': True})
         columns = [
             Column('sellable.code', title=_('Code'), data_type=str),
             Column('sellable.description', title=_('Description'),
@@ -217,7 +242,7 @@ class DecreaseItemStep(SellableItemStep):
             Column('sellable.category_description', title=_('Category'),
                    data_type=str, expand=True, searchable=True),
             Column('quantity', title=_('Quantity'), data_type=Decimal,
-                   format_func=format_quantity),
+                   format_func=format_quantity, **ext_args),
             Column('sellable.unit_description', title=_('Unit'), data_type=str,
                    width=70),
         ]
@@ -276,14 +301,20 @@ class StockDecreaseWizard(BaseWizard):
     title = _('Manual Stock Decrease')
     need_cancel_confirmation = True
 
-    def __init__(self, store):
-        model = self._create_model(store)
+    def __init__(self, store, receiving_order=None):
+        self.receiving_order = receiving_order
+        if self.receiving_order is not None:
+            self.title = _('Receiving Order Return')
 
+        model = self._create_model(store)
         first_step = StartStockDecreaseStep(store, self, model)
         BaseWizard.__init__(self, store, first_step, model)
         self.create_payments = False
 
     def _create_model(self, store):
+        if self.receiving_order:
+            return StockDecrease.create_for_receiving_order(self.receiving_order)
+
         branch = api.get_current_branch(store)
         user = api.get_current_user(store)
         employee = user.person.employee

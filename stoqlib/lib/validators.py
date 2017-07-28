@@ -28,6 +28,7 @@ import re
 
 from kiwi.datatypes import converter, ValidationError
 
+from stoqlib.lib.algorithms import modulo11
 from stoqlib.lib.formatters import raw_phone_number, raw_postal_code
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -258,3 +259,10 @@ def validate_cst(cst):
         return True
 
     return False
+
+
+def validate_invoice_key(key):
+    if len(key) != 44:
+        return False
+
+    return int(key[-1]) == modulo11(key[:-1])

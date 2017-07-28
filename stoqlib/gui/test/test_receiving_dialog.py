@@ -27,11 +27,13 @@ import mock
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.dialogs.receivingdialog import ReceivingOrderDetailsDialog
 from stoqlib.gui.test.uitestutils import GUITest
+from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
 
 
 class TestReceivingDialog(GUITest):
     def test_show(self):
-        order = self.create_receiving_order()
+        order = self.create_receiving_order(
+            invoice_key=u'43161103852995000107650010000001821299676414')
         self.create_receiving_order_item(receiving_order=order)
         dialog = ReceivingOrderDetailsDialog(self.store, order)
         dialog.invoice_slave.identifier.set_text('333')
@@ -69,3 +71,17 @@ class TestReceivingDialog(GUITest):
         warning.assert_called_once_with('It was not possible to print the '
                                         'labels. The template file was not '
                                         'found.')
+
+    @mock.patch('stoqlib.gui.dialogs.receivingdialog.run_dialog')
+    @mock.patch('stoqlib.gui.dialogs.receivingdialog.api.new_store')
+    def test_return_receiving(self, new_store, run_dialog):
+        run_dialog.return_value = True
+        new_store.return_value = self.store
+        order = self.create_receiving_order()
+        self.create_receiving_order_item(receiving_order=order)
+        dialog = ReceivingOrderDetailsDialog(self.store, order)
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
+                self.click(dialog.return_btn)
+                run_dialog.assert_called_once_with(StockDecreaseWizard, dialog,
+                                                   self.store, receiving_order=order)

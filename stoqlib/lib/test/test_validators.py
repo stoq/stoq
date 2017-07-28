@@ -33,7 +33,7 @@ from stoqlib.lib.validators import (validate_cpf, validate_cnpj,
                                     validate_decimal, validate_directory,
                                     validate_percentage, validate_cfop,
                                     validate_phone_number, validate_cst,
-                                    is_date_in_interval)
+                                    is_date_in_interval, validate_invoice_key)
 
 
 class TestValidators(DomainTest):
@@ -183,3 +183,9 @@ class TestValidators(DomainTest):
     def test_validate_cst(self):
         self.failIf(validate_cst(80))
         self.failUnless(validate_cst(9))
+
+    def test_validate_invoice_key(self):
+        self.failIf(validate_invoice_key('3' * 43))
+        self.failIf(validate_invoice_key('3' * 44))
+        self.failUnless(validate_invoice_key(
+            '43161103852995000107650010000001821299676414'))

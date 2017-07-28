@@ -1,5 +1,5 @@
 wizard: StockDecreaseWizard
-GtkDialog(toplevel): title='Manual Stock Decrease', hidden
+GtkDialog(toplevel): title='Receiving Order Return', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
@@ -10,19 +10,23 @@ GtkDialog(toplevel): title='Manual Stock Decrease', hidden
           GtkLabel(step.label5): 'Cfop:'
           ProxyComboEntry(step.cfop):
             item: '5.102 Venda de Mercadoria Adquirida'
-            item: '5.202 Devolu\xc3\xa7\xc3\xa3o de compra para comercializa\xc3\xa7\xc3\xa3o'
-            item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado', selected
+            item: '5.202 Devolu\xc3\xa7\xc3\xa3o de compra para comercializa\xc3\xa7\xc3\xa3o', selected
+            item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado'
           GtkLabel(step.label4): 'Branch:'
-          ProxyComboEntry(step.branch):
+          ProxyComboEntry(step.branch): insensitive
+            item: 'Dummy shop'
             item: 'Moda Stoq', selected
             item: 'Stoq Elite Fashion'
           GtkLabel(step.label6): 'Send To:'
-          ProxyComboEntry(step.person):
+          ProxyComboEntry(step.person): insensitive
             item: 'Administrator'
             item: 'Alessandra Almeida Itaber\xc3\xa1'
             item: 'Cia de Roupas S\xc3\xa3o Carlos (Cia de Roupas S\xc3\xa3o Carlos)'
             item: 'Cleusa Blanc Ferreira Norbiato'
+            item: 'Company Name (Supplier)'
+            item: 'Company Name (Supplier) (1)', selected
             item: 'Deivis Alexandre Junior'
+            item: 'Dummy shop (Dummy)'
             item: 'Franciso Elisio de Lima Junior'
             item: 'Jos\xc3\xa9 Carlos de Carvalho (Jos\xc3\xa9 Carlos de Carvalho)'
             item: 'Luis Sergio da Silva Marin'
@@ -40,10 +44,8 @@ GtkDialog(toplevel): title='Manual Stock Decrease', hidden
             item: 'Osvaldo Denadai Marin'
           GtkEventBox(step.invoice_number_holder):
           GtkEventBox(step.receiving_invoice_key_holder):
-          GtkLabel(step.cost_center_lbl): 'Cost Center:'
-          ProxyComboBox(step.cost_center):
-            item: 'No cost center.'
-            item: 'Cost Center', selected
+          GtkLabel(step.cost_center_lbl): 'Cost Center:', hidden
+          ProxyComboBox(step.cost_center): hidden
           ProxyCheckButton(step.create_payments): 'Create payments'
           GtkLabel(step.label2): 'Reason:'
           GtkScrolledWindow(step.scrolledwindow1):

@@ -26,28 +26,30 @@ GtkDialog(toplevel): title='Receive Purchase Order', hidden
                   GtkLabel(label1, expand=True, fill=True):
                 ProxyLabel(kiwilabel200): 'ICMS Total ($CURRENCY):'
                 ProxyEntry(icms_total): '0.00', insensitive
+                GtkLabel(label5): 'Invoice Key:'
+                ProxyEntry(invoice_key): ''
+                ProxyLabel(discount_label): 'Discount ($CURRENCY):'
+                ProxyEntry(discount_value): '0.00', insensitive
                 GtkLabel(label9): 'C.F.O.P.:'
                 ProxyComboEntry(cfop):
                   item: '1.102 Compra para Comercializacao', selected
                   item: '1.202 Devolu\xc3\xa7\xc3\xa3o de Venda de Mercadoria Adquirida'
-                ProxyLabel(discount_label): 'Discount ($CURRENCY):'
-                ProxyEntry(discount_value): '0.00', insensitive
+                ProxyLabel(kiwilabel2): 'Secure ($CURRENCY):'
+                ProxyEntry(secure_value): '0.00', insensitive
                 GtkLabel(label2): 'Transporter:'
                 ProxyComboEntry(transporter):
                   item: 'Jos\xc3\xa9 Carlos de Carvalho'
-                ProxyLabel(kiwilabel2): 'Secure ($CURRENCY):'
-                ProxyEntry(secure_value): '0.00', insensitive
-                GtkLabel(label4): 'Responsible:'
-                ProxyLabel(responsible_name): '<span >Administrator</span>'
                 ProxyLabel(kiwilabel3): 'Others Expenditures ($CURRENCY):'
                 ProxyEntry(expense_value): '0.00', insensitive
+                GtkLabel(label4): 'Responsible:'
+                ProxyLabel(responsible_name): '<span >Administrator</span>'
+                ProxyLabel(kiwilabel11): 'Invoice Total ($CURRENCY):'
+                ProxyLabel(total): '<span weight="bold">$250.00</span>'
                 GtkLabel(label3): 'Freight:'
                 ProxyComboBox(freight_combo):
                   item: 'FOB - Freight value on a new payment', selected
                   item: 'CIF - Freight value is unknown'
                   item: 'CIF - Freight value highlighted on invoice'
-                ProxyLabel(kiwilabel11): 'Invoice Total ($CURRENCY):'
-                ProxyLabel(total): '<span weight="bold">$250.00</span>'
                 GtkHButtonBox(notes_box):
                   GtkButton(observations_button): 'Observations...'
       ProxyLabel(notification_lbl, fill=True):

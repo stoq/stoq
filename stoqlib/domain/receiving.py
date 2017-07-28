@@ -43,6 +43,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import (ProductHistory, StockTransactionHistory,
                                     StorableBatch)
 from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.stockdecrease import StockDecreaseItem
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.parameters import sysparam
@@ -100,6 +101,11 @@ class ReceivingOrderItem(Domain):
         unit = self.sellable.unit
         return u"%s" % (unit and unit.description or u"")
 
+    @property
+    def returned_quantity(self):
+        return self.store.find(StockDecreaseItem, receiving_order_item=self).sum(
+            StockDecreaseItem.quantity) or Decimal('0')
+
     #
     # Accessors
     #
@@ -144,6 +150,14 @@ class ReceivingOrderItem(Domain):
                                     self.id, self.cost, batch=self.batch)
         purchase.increase_quantity_received(self.purchase_item, self.quantity)
         ProductHistory.add_received_item(store, branch, self)
+
+    def is_totally_returned(self):
+        children = self.children_items
+        if children.count():
+            return all(child.quantity == child.returned_quantity for child in
+                       children)
+
+        return self.quantity == self.returned_quantity
 
 
 class ReceivingOrder(Domain):
@@ -213,9 +227,14 @@ class ReceivingOrder(Domain):
     icms_total = PriceCol(default=0)
     ipi_total = PriceCol(default=0)
 
-    #: The number of the order that has been received.
+    #: The invoice number of the order that has been received.
     invoice_number = IntCol()
+
+    #: The invoice total value of the order received
     invoice_total = PriceCol(default=None)
+
+    #: The invoice key of the order received
+    invoice_key = UnicodeCol()
 
     cfop_id = IdCol()
     cfop = Reference(cfop_id, 'CfopData.id')
@@ -385,6 +404,9 @@ class ReceivingOrder(Domain):
     def remove_item(self, item):
         assert item.receiving_order == self
         type(item).delete(item.id, store=self.store)
+
+    def is_totally_returned(self):
+        return all(item.is_totally_returned() for item in self.get_items())
 
     #
     # Properties

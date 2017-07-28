@@ -35,6 +35,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
+from stoqlib.lib.validators import validate_invoice_key
 
 _ = stoqlib_gettext
 
@@ -54,6 +55,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                      'supplier_label',
                      'total',
                      'invoice_number',
+                     'invoice_key',
                      'icms_total',
                      'discount_value',
                      'secure_value',
@@ -113,6 +115,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         cfops = CfopData.get_for_receival(self.store)
         self.cfop.prefill(api.for_combo(cfops))
         self.table.set_focus_chain([self.invoice_hbox,
+                                    self.invoice_key,
                                     self.cfop,
                                     self.transporter,
                                     self.freight_combo,
@@ -302,3 +305,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
 
         if self.proxy is not None:
             self.proxy.update('total')
+
+    def on_invoice_key__validate(self, widget, value):
+        if value and not validate_invoice_key(value):
+            return ValidationError(_('Invalid key'))

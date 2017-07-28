@@ -38,6 +38,7 @@ from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
 from stoqlib.gui.utils.printing import print_labels
+from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
 
 _ = stoqlib_gettext
 
@@ -84,6 +85,7 @@ class ReceivingOrderDetailsDialog(BaseEditor):
         label = self.print_labels.get_children()[0]
         label = label.get_children()[0].get_children()[1]
         label.set_label(_(u'Print labels'))
+        self.return_btn.set_sensitive(not self.model.is_totally_returned())
 
     def _get_product_columns(self):
         return [Column("sellable.code", title=_("Code"), data_type=str,
@@ -121,3 +123,10 @@ class ReceivingOrderDetailsDialog(BaseEditor):
         label_data = run_dialog(SkipLabelsEditor, self, self.store)
         if label_data:
             print_labels(label_data, self.store, receiving=self.model)
+
+    def on_return_btn__clicked(self, button):
+        with api.new_store() as store:
+            receiving_order = store.fetch(self.model)
+            if run_dialog(StockDecreaseWizard, self, store,
+                          receiving_order=receiving_order):
+                self.return_btn.set_sensitive(not self.model.is_totally_returned())

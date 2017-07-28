@@ -847,7 +847,8 @@ class ExampleCreator(object):
         return CfopData(store=self.store, code=code,
                         description=u'test')
 
-    def create_receiving_order(self, purchase_order=None, branch=None, user=None):
+    def create_receiving_order(self, purchase_order=None, branch=None,
+                               user=None, invoice_key=None):
         from stoqlib.domain.receiving import ReceivingOrder
         if purchase_order is None:
             purchase_order = self.create_purchase_order()
@@ -855,6 +856,7 @@ class ExampleCreator(object):
         cfop.code = u'1.102'
         receiving = ReceivingOrder(store=self.store,
                                    invoice_number=222,
+                                   invoice_key=invoice_key,
                                    supplier=purchase_order.supplier,
                                    responsible=user or get_current_user(self.store),
                                    branch=branch or get_current_branch(self.store),
