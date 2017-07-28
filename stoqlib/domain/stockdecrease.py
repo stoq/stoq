@@ -35,6 +35,7 @@ from zope.interface import implementer
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, PriceCol,
                                          QuantityCol, IdentifierCol,
                                          IdCol, EnumCol)
+from stoqlib.database.runtime import get_current_user, get_current_branch
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import StockOperationConfirmedEvent
 from stoqlib.domain.fiscal import Invoice
@@ -44,6 +45,7 @@ from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.taxes import check_tax_info_presence
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.dateutils import localnow
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 
@@ -111,6 +113,11 @@ class StockDecreaseItem(Domain):
 
     item_discount = Decimal('0')
 
+    #: The receiving order item that this item can be related to
+    receiving_order_item_id = IdCol()
+
+    receiving_order_item = Reference(receiving_order_item_id, 'ReceivingOrderItem.id')
+
     def __init__(self, store=None, sellable=None, **kwargs):
         if sellable is None:
             raise TypeError('You must provide a sellable argument')
@@ -125,6 +132,16 @@ class StockDecreaseItem(Domain):
             self.icms_info.set_item_tax(self)
             self.pis_info.set_item_tax(self)
             self.cofins_info.set_item_tax(self)
+
+    @classmethod
+    def create_for_receiving_item(cls, stock_decrease, receiving_item):
+        cls(store=stock_decrease.store,
+            sellable=receiving_item.sellable,
+            receiving_order_item=receiving_item,
+            stock_decrease=stock_decrease,
+            quantity=receiving_item.quantity - receiving_item.returned_quantity,
+            batch=receiving_item.batch,
+            cost=receiving_item.cost)
 
     #
     # Properties
@@ -238,6 +255,9 @@ class StockDecrease(Domain):
     #: The reason stock decrease loan was cancelled
     cancel_reason = UnicodeCol()
 
+    #: The key of the invoice referenced by the stock decrease, if exists
+    referenced_invoice_key = UnicodeCol()
+
     responsible_id = IdCol()
 
     #: who should be blamed for this
@@ -288,6 +308,10 @@ class StockDecrease(Domain):
     cancel_responsible_id = IdCol()
     cancel_responsible = Reference(cancel_responsible_id, 'LoginUser.id')
 
+    #: The receiving order that the stock decrease can be related to
+    receiving_order_id = IdCol()
+    receiving_order = Reference(receiving_order_id, 'ReceivingOrder.id')
+
     def __init__(self, store=None, **kwargs):
         kwargs['invoice'] = Invoice(store=store, invoice_type=Invoice.TYPE_OUT)
         super(StockDecrease, self).__init__(store=store, **kwargs)
@@ -330,6 +354,34 @@ class StockDecrease(Domain):
     #
     # Classmethods
     #
+
+    @classmethod
+    def create_for_receiving_order(cls, receiving_order):
+        store = receiving_order.store
+        current_user = get_current_user(store)
+        employee = current_user.person.employee
+        cfop_id = sysparam.get_object_id('DEFAULT_STOCK_DECREASE_CFOP')
+        return_stock_decrease = cls(
+            store=store,
+            receiving_order=receiving_order,
+            branch=get_current_branch(store),
+            responsible=current_user,
+            removed_by=employee,
+            cfop_id=cfop_id)
+
+        for receiving_item in receiving_order.get_items(with_children=False):
+            if receiving_item.is_totally_returned():
+                # Exclude items already totally returned
+                continue
+
+            if receiving_item.children_items.count():
+                for child in receiving_item.children_items:
+                    StockDecreaseItem.create_for_receiving_item(
+                        return_stock_decrease, child)
+            else:
+                StockDecreaseItem.create_for_receiving_item(return_stock_decrease,
+                                                            receiving_item)
+        return return_stock_decrease
 
     @classmethod
     def get_status_name(cls, status):

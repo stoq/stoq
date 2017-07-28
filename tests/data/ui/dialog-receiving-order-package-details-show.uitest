@@ -1,6 +1,9 @@
 dialog: ReceivingOrderDetailsDialog
 GtkBox(vbox1, orientation=vertical):
-  GtkLabel(header_label, fill=True): 'Received in <b>YYYY-MM-DD</b> for branch <b>Moda Stoq</b>'
+  GtkBox(hbox1, orientation=horizontal, fill=True):
+    GtkLabel(header_label, fill=True): 'Received in <b>YYYY-MM-DD</b> for branch <b>Moda Stoq</b>'
+    GtkButtonBox(hbuttonbox2, orientation=horizontal, expand=True, fill=True):
+      GtkButton(return_btn, expand=True): 'Return Receiving'
   GtkNotebook(values_list, expand=True, fill=True, padding=6):
     GtkBox(products_vbox, orientation=vertical):
       ObjectTree(product_list, expand=True, fill=True):
@@ -35,30 +38,32 @@ GtkBox(vbox1, orientation=vertical):
             GtkLabel(label1, expand=True, fill=True):
           ProxyLabel(kiwilabel200): 'ICMS Total ($CURRENCY):'
           ProxyEntry(icms_total): '0.00', ineditable, insensitive
+          GtkLabel(label5): 'Invoice Key:'
+          ProxyEntry(invoice_key): '', ineditable
+          ProxyLabel(discount_label): 'Discount ($CURRENCY):'
+          ProxyEntry(discount_value): '0.00', ineditable, insensitive
           GtkLabel(label9): 'C.F.O.P.:'
           ProxyComboEntry(cfop): insensitive
             item: '1.102 Compra para Comercializacao'
             item: '1.102 test', selected
             item: '1.202 Devolução de Venda de Mercadoria Adquirida'
-          ProxyLabel(discount_label): 'Discount ($CURRENCY):'
-          ProxyEntry(discount_value): '0.00', ineditable, insensitive
+          ProxyLabel(kiwilabel2): 'Secure ($CURRENCY):'
+          ProxyEntry(secure_value): '0.00', ineditable, insensitive
           GtkLabel(label2): 'Transporter:'
           ProxyComboEntry(transporter): insensitive
             item: 'José Carlos de Carvalho'
-          ProxyLabel(kiwilabel2): 'Secure ($CURRENCY):'
-          ProxyEntry(secure_value): '0.00', ineditable, insensitive
-          GtkLabel(label4): 'Responsible:'
-          ProxyLabel(responsible_name): '<span >Administrator</span>'
           ProxyLabel(kiwilabel3): 'Others Expenditures ($CURRENCY):'
           ProxyEntry(expense_value): '0.00', ineditable, insensitive
+          GtkLabel(label4): 'Responsible:'
+          ProxyLabel(responsible_name): '<span >Administrator</span>'
+          ProxyLabel(kiwilabel11): 'Invoice Total ($CURRENCY):'
+          ProxyLabel(total): '<span weight="bold">$125.00</span>'
           GtkLabel(label3): 'Freight:'
           ProxyComboBox(freight_combo): insensitive
             item: 'FOB - Freight value on a new payment', selected
             item: 'FOB - Freight value on installments'
             item: 'CIF - Freight value is unknown'
             item: 'CIF - Freight value highlighted on invoice'
-          ProxyLabel(kiwilabel11): 'Invoice Total ($CURRENCY):'
-          ProxyLabel(total): '<span weight="bold">$125.00</span>'
           GtkButtonBox(notes_box, orientation=horizontal):
             GtkButton(observations_button): 'Observations...', hidden
     GtkScrolledWindow(scrolledwindow1):

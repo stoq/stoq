@@ -139,3 +139,46 @@ class TestStockDecreaseWizard(GUITest):
         entry = self.store.find(CostCenterEntry,
                                 cost_center=wizard.model.cost_center)
         self.assertEquals(len(list(entry)), 1)
+
+    @mock.patch('stoqlib.gui.wizards.stockdecreasewizard.yesno')
+    def test_wizard_with_receiving_order(self, yesno):
+        yesno.return_value = False
+        branch = api.get_current_branch(self.store)
+
+        # Use a package product for covering the case
+        package_product = self.create_product(is_package=True)
+
+        # Create to storables, one for being a child
+        storable = self.create_storable(stock=2, branch=branch)
+        sellable = storable.product.sellable
+        other_storable = self.create_storable(stock=1, branch=branch)
+        other_sellable = other_storable.product.sellable
+
+        order = self.create_receiving_order(branch=branch)
+        parent = self.create_receiving_order_item(receiving_order=order,
+                                                  sellable=package_product.sellable)
+        self.create_receiving_order_item(receiving_order=order, quantity=1,
+                                         sellable=sellable, parent_item=parent)
+        self.create_receiving_order_item(receiving_order=order, quantity=1,
+                                         sellable=other_sellable)
+
+        # Run the wizard
+        wizard = StockDecreaseWizard(self.store, receiving_order=order)
+        self.assertEquals(wizard.model.branch, order.branch)
+        self.assertEquals(wizard.model.person, order.supplier.person)
+        step = wizard.get_current_step()
+        step.reason.update('test')
+        self.check_wizard(wizard, 'stock-decrease-with-receiving-order')
+        self.click(wizard.next_button)
+        self.assertEquals(wizard.model.get_items().count(), 2)
+        with mock.patch.object(self.store, 'commit'):
+            self.click(wizard.next_button)
+
+        # Run the wizard with the same order again to check if there is no item
+        # left to return
+        wizard = StockDecreaseWizard(self.store, receiving_order=order)
+        step = wizard.get_current_step()
+        step.reason.update('test')
+        self.click(wizard.next_button)
+        self.assertEquals(wizard.model.get_items().count(), 0)
+        self.assertNotSensitive(wizard, ['next_button'])

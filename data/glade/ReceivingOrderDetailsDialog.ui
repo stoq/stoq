@@ -4,16 +4,56 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="ReceivingOrderDetailsDialog">
+    <property name="can_focus">False</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="border_width">6</property>
         <child>
-          <object class="GtkLabel" id="header_label">
+          <object class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
-            <property name="xalign">0</property>
-            <property name="use_markup">True</property>
-            <property name="justify">right</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkLabel" id="header_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="use_markup">True</property>
+                <property name="justify">right</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHButtonBox" id="hbuttonbox2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="layout_style">end</property>
+                <child>
+                  <object class="GtkButton" id="return_btn">
+                    <property name="label" translatable="yes">Return Receiving</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_action_appearance">False</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -28,6 +68,7 @@
             <child>
               <object class="GtkVBox" id="products_vbox">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="border_width">6</property>
                 <property name="spacing">6</property>
                 <child>
@@ -47,6 +88,7 @@
             <child type="tab">
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Received Products</property>
               </object>
               <packing>
@@ -56,6 +98,7 @@
             <child>
               <object class="GtkEventBox" id="details_holder">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="border_width">6</property>
               </object>
               <packing>
@@ -65,6 +108,7 @@
             <child type="tab">
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Receiving Details</property>
               </object>
               <packing>
@@ -97,6 +141,7 @@
             <child type="tab">
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Observations</property>
               </object>
               <packing>
@@ -115,6 +160,7 @@
         <child>
           <object class="GtkHButtonBox" id="hbuttonbox1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="spacing">6</property>
             <property name="layout_style">end</property>
             <child>
