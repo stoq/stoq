@@ -33,6 +33,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.sellableeditor import SellableEditor
+from stoqlib.gui.slaves.serviceslave import ServiceFiscalSlave
 from stoqlib.domain.service import Service
 from stoqlib.domain.sellable import (Sellable,
                                      SellableTaxConstant)
@@ -94,6 +95,9 @@ class ServiceEditor(SellableEditor):
             widget.hide()
         self.sellable_notebook.set_tab_label_text(self.sellable_tab,
                                                   _(u'Service'))
+
+        fiscal_slave = ServiceFiscalSlave(self.store, self.model, self.visual_mode)
+        self.add_extra_tab(_(u'Fiscal Details'), fiscal_slave)
 
     def create_model(self, store):
         tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, self.store)
