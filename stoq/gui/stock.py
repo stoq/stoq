@@ -30,11 +30,13 @@ from kiwi.datatypes import converter
 
 from stoqlib.api import api
 from stoqlib.enums import SearchFilterPosition
+from stoqlib.domain.image import Image
 from stoqlib.domain.person import Branch
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.domain.transfer import TransferOrder
 from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.lib.defaults import sort_sellable_code
+from stoqlib.lib.imageutils import get_thumbnail
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_ngettext, stoqlib_gettext as _
 from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
@@ -308,7 +310,17 @@ class StockApp(ShellApp):
         sellable = item and item.product.sellable
         if sellable:
             if item.has_image:
+                # XXX:Workaround for a bug caused by the image domain refactoring
+                # which left some existent thumbnail as None
                 thumbnail = sellable.image.thumbnail
+                if thumbnail is None:
+                    # Create new store to create the thumbnail
+                    with api.new_store() as new_store:
+                        image = sellable.image
+                        image = new_store.fetch(image)
+                        size = (Image.THUMBNAIL_SIZE_WIDTH, Image.THUMBNAIL_SIZE_HEIGHT)
+                        image.thumbnail = get_thumbnail(image.image, size)
+                        thumbnail = image.thumbnail
                 pixbuf = self.pixbuf_converter.from_string(thumbnail)
             else:
                 pixbuf = None

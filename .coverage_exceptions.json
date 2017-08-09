@@ -40,7 +40,7 @@
  "stoq/gui/shell/shellapp.py": 86.96,
  "stoq/gui/shell/shellwindow.py": 63.13,
  "stoq/gui/shell/statusbar.py": 87.83,
- "stoq/gui/stock.py": 76.74,
+ "stoq/gui/stock.py": 75.22,
  "stoq/gui/till.py": 81.53,
  "stoq/gui/update.py": 30.19,
  "stoq/gui/welcomedialog.py": 32.73,
