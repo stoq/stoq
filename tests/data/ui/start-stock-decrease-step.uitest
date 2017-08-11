@@ -10,7 +10,7 @@ GtkDialog(toplevel): title='Manual Stock Decrease', hidden
           GtkLabel(step.label5): 'Cfop:'
           ProxyComboEntry(step.cfop):
             item: '5.102 Venda de Mercadoria Adquirida'
-            item: '5.202 Devolucao'
+            item: '5.202 Devolução de compra para comercialização'
             item: '5.949 Outra saída de mercadoria ou prestação de serviço não especificado', selected
           GtkLabel(step.label4): 'Branch:'
           ProxyComboEntry(step.branch):

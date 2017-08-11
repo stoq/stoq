@@ -20,7 +20,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                 ProxyComboEntry(default_sale_cfop):
                   item: ''
                   item: '5.102 Venda de Mercadoria Adquirida'
-                  item: '5.202 Devolucao'
+                  item: '5.202 Devolução de compra para comercialização'
                   item: '5.949 Outra saída de mercadoria ou prestação de serviço não especificado'
                 GtkLabel(category_lbl): 'Category:'
                 GtkBox(hbox1, orientation=horizontal):

@@ -21,8 +21,9 @@ GtkDialog(toplevel): title='C.F.O.P. Search', hidden
             column: title='C.F.O.P.'
             column: title='Description', expand
             row: '1.102', '1.102 Compra para Comercializacao'
+            row: '1.202', '1.202 Devolução de Venda de Mercadoria Adquirida'
             row: '5.102', '5.102 Venda de Mercadoria Adquirida'
-            row: '5.202', '5.202 Devolucao'
+            row: '5.202', '5.202 Devolução de compra para comercialização'
             row: '5.949', '5.949 Outra saída de mercadoria ou prestação de serviço não especificado'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached

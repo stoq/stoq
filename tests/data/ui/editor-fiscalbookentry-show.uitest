@@ -9,9 +9,10 @@ GtkDialog(main_dialog.toplevel): title='Edit Fiscal Book Entry #57461', hidden
             GtkLabel(label1): 'C.F.O.P.:'
             ProxyComboEntry(cfop):
               item: '5.102 Venda de Mercadoria Adquirida'
-              item: '5.202 Devolucao'
+              item: '1.202 Devolução de Venda de Mercadoria Adquirida'
               item: '1.102 Compra para Comercializacao'
               item: '5.949 Outra saída de mercadoria ou prestação de serviço não especificado'
+              item: '5.202 Devolução de compra para comercialização'
               item: '123 test', selected
             GtkLabel(label2): 'Date:'
             ProxyDateEntry(date): date.today()

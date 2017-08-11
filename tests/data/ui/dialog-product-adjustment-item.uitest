@@ -25,8 +25,9 @@ GtkDialog(main_dialog.toplevel): title='Product Adjustment', hidden
               ProxyLabel(cfop_data_lbl): 'C.F.O.P:'
               ProxyComboEntry(cfop_data):
                 item: '1.102 Compra para Comercializacao'
+                item: '1.202 Devolução de Venda de Mercadoria Adquirida'
                 item: '5.102 Venda de Mercadoria Adquirida'
-                item: '5.202 Devolucao'
+                item: '5.202 Devolução de compra para comercialização'
                 item: '5.949 Outra saída de mercadoria ou prestação de serviço não especificado'
               GtkBox(orientation=horizontal):
                 GtkButton(cfop_data_add_button):
