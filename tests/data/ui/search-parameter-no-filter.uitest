@@ -44,6 +44,7 @@ GtkVBox(toplevel):
     row: u'Products', u'Default PIS template', ''
     row: u'Products', u'Suggest product code based on the selected category', u'No'
     row: u'Products', u'Default COFINS template', ''
+    row: u'Purchase', u'Default Purchase Return C.F.O.P.', u'5.202 Devolu\xe7\xe3o de compra para comercializa\xe7\xe3o'
     row: u'Purchase', u'Suggested supplier', u'Cia de Roupas S\xe3o Carlos'
     row: u'Purchase', u'Default Receiving C.F.O.P.', u'1.102 Compra para Comercializacao'
     row: u'Purchase', u'Suggested unit', ''
@@ -58,7 +59,7 @@ GtkVBox(toplevel):
     row: u'Sales', u'Use trade value as a discount', u'No'
     row: u'Sales', u'Default ISS tax', Decimal('18.00')
     row: u'Sales', u'Return policy on sales', u"Client's choice"
-    row: u'Sales', u'Default Return Sales C.F.O.P.', u'5.202 Devolucao'
+    row: u'Sales', u'Default Return Sales C.F.O.P.', u'1.202 Devolu\xe7\xe3o de Venda de Mercadoria Adquirida'
     row: u'Sales', u'Show POS application in Fullscreen', u'No'
     row: u'Sales', u'Allow product sale with a higher price', u'Yes'
     row: u'Sales', u'Policy for customers with late payments.', u'Allow sales'

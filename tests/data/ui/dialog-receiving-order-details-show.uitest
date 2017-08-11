@@ -38,6 +38,7 @@ GtkVBox(toplevel):
           ProxyComboEntry(cfop): insensitive
             item: '1.102 Compra para Comercializacao'
             item: '1.102 test', selected
+            item: '1.202 Devolu\xc3\xa7\xc3\xa3o de Venda de Mercadoria Adquirida'
           ProxyLabel(discount_label): 'Discount ($CURRENCY):'
           ProxyEntry(discount_value): '0.00', ineditable, insensitive
           GtkLabel(label2): 'Transporter:'

@@ -602,6 +602,14 @@ _details = [
         u'fiscal.CfopData'),
 
     ParameterDetails(
+        u'DEFAULT_PURCHASE_RETURN_CFOP',
+        _(u'Purchase'),
+        _(u'Default Purchase Return C.F.O.P.'),
+        _(u'Default C.F.O.P. (Fiscal Code of Operations) used when returning '
+          u'a purchase in the stock application.'),
+        u'fiscal.CfopData'),
+
+    ParameterDetails(
         u'DEFAULT_STOCK_DECREASE_CFOP',
         _(u'Stock'),
         _(u'Default C.F.O.P. for Stock Decreases'),
@@ -1031,8 +1039,8 @@ class ParameterAccess(object):
                                u"5.102")
         self._set_cfop_default(store,
                                u"DEFAULT_RETURN_SALES_CFOP",
-                               u"Devolucao",
-                               u"5.202")
+                               u"Devolução de Venda de Mercadoria Adquirida",
+                               u"1.202")
         self._set_cfop_default(store,
                                u"DEFAULT_RECEIVING_CFOP",
                                u"Compra para Comercializacao",
@@ -1042,6 +1050,10 @@ class ParameterAccess(object):
                                u"Outra saída de mercadoria ou "
                                u"prestação de serviço não especificado",
                                u"5.949")
+        self._set_cfop_default(store,
+                               u"DEFAULT_PURCHASE_RETURN_CFOP",
+                               u"Devolução de compra para comercialização",
+                               u"5.202")
         self._set_delivery_default(store)
         self._set_sales_person_role_default(store)
         self._set_product_tax_constant_default(store)
