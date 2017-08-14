@@ -196,6 +196,22 @@ _details = [
         bool, initial=False),
 
     ParameterDetails(
+        u'DEFAULT_PRODUCT_PIS_TEMPLATE',
+        _('Products'),
+        _('Default PIS template'),
+        _('Use this information when try to emmit a fiscal document and the '
+          'product has no configured PIS'),
+        'taxes.ProductPisTemplate'),
+
+    ParameterDetails(
+        u'DEFAULT_PRODUCT_COFINS_TEMPLATE',
+        _('Products'),
+        _('Default COFINS template'),
+        _('Use this information when try to emmit a fiscal document and the '
+          'product has no configured COFINS'),
+        'taxes.ProductCofinsTemplate'),
+
+    ParameterDetails(
         u'MAIN_COMPANY',
         _(u'General'),
         _(u'Primary company'),
