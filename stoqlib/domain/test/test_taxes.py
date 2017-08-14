@@ -282,6 +282,11 @@ class TestProductPisTemplate(DomainTest):
         self.assertEquals(pis_template.calculo, ProductPisTemplate.CALC_VALUE)
         self.assertEquals(pis_template.p_pis, 12)
 
+    def test_get_description(self):
+        template = self.create_product_tax_template(name=u'PIS', tax_type='pis')
+        pis_template = self.create_product_pis_template(tax_template=template)
+        self.assertEquals(pis_template.get_description(), u"PIS")
+
 
 class TestProductCofinsTemplate(DomainTest):
     def test_create_percentage(self):
@@ -304,6 +309,12 @@ class TestProductCofinsTemplate(DomainTest):
         self.assertEquals(cofins_template.cst, 50)
         self.assertEquals(cofins_template.calculo, calculo)
         self.assertEquals(cofins_template.p_cofins, 12)
+
+    def test_get_description(self):
+        template = self.create_product_tax_template(name=u'COFINS',
+                                                    tax_type='cofins')
+        cofins_template = self.create_product_cofins_template(tax_template=template)
+        self.assertEquals(cofins_template.get_description(), u"COFINS")
 
 
 class TestInvoiceItemIpi(DomainTest):

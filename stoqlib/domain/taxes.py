@@ -28,11 +28,13 @@ from decimal import Decimal
 
 from storm.info import get_cls_info
 from storm.references import Reference
+from zope.interface import implementer
 
 from stoqlib.database.properties import (EnumCol, UnicodeCol, QuantityCol, DateTimeCol,
                                          PriceCol, IntCol, BoolCol, PercentCol,
                                          IdCol)
 from stoqlib.domain.base import Domain
+from stoqlib.domain.interfaces import IDescribable
 from stoqlib.lib.dateutils import localtoday
 
 # SIGLAS:
@@ -209,6 +211,7 @@ class ProductIpiTemplate(BaseIPI):
     product_tax_template = Reference(product_tax_template_id, 'ProductTaxTemplate.id')
 
 
+@implementer(IDescribable)
 class ProductPisTemplate(BasePIS):
     """Template of PIS tax"""
 
@@ -217,7 +220,11 @@ class ProductPisTemplate(BasePIS):
     product_tax_template_id = IdCol()
     product_tax_template = Reference(product_tax_template_id, 'ProductTaxTemplate.id')
 
+    def get_description(self):
+        return self.product_tax_template.name
 
+
+@implementer(IDescribable)
 class ProductCofinsTemplate(BaseCOFINS):
     """Template of COFINS tax"""
 
@@ -225,6 +232,9 @@ class ProductCofinsTemplate(BaseCOFINS):
 
     product_tax_template_id = IdCol()
     product_tax_template = Reference(product_tax_template_id, 'ProductTaxTemplate.id')
+
+    def get_description(self):
+        return self.product_tax_template.name
 
 
 class ProductTaxTemplate(Domain):

@@ -197,6 +197,24 @@ class TestParameter(DomainTest):
         param = self.sparam.get_decimal('SUBSTITUTION_TAX')
         assert isinstance(param, Decimal)
 
+    def test_default_product_pis_template(self):
+        pis_template = self.create_product_pis_template()
+        param_name = 'DEFAULT_PRODUCT_PIS_TEMPLATE'
+        self.sparam.set_object(self.store, param_name, pis_template)
+
+        wrong_template = self.create_product_cofins_template()
+        with self.assertRaises(TypeError):
+            self.sparam.set_object(self.store, param_name, wrong_template)
+
+    def test_default_product_cofins_template(self):
+        cofins_template = self.create_product_cofins_template()
+        param_name = 'DEFAULT_PRODUCT_COFINS_TEMPLATE'
+        self.sparam.set_object(self.store, param_name, cofins_template)
+
+        wrong_template = self.create_product_pis_template()
+        with self.assertRaises(TypeError):
+            self.sparam.set_object(self.store, param_name, wrong_template)
+
     def test_default_area_code(self):
         param = self.sparam.get_int('DEFAULT_AREA_CODE')
         self.failUnless(isinstance(param, int), type(param))
