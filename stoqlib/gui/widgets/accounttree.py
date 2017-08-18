@@ -28,6 +28,7 @@ from kiwi.ui.objectlist import ColoredColumn, Column, ObjectTree
 from stoqlib.domain.views import Account, AccountView
 from stoqlib.gui.stockicons import (STOQ_MONEY, STOQ_PAYABLE_APP, STOQ_BILLS,
                                     STOQ_TILL_APP)
+from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -82,7 +83,7 @@ class AccountTree(ObjectTree):
                     account.account_type == Account.TYPE_INCOME):
                     return False
                 else:
-                    return account.total < 0
+                    return payment_value_colorize(account.total)
             columns.append(ColoredColumn('total', title=_("Total"), width=100,
                                          data_type=currency,
                                          color='red',

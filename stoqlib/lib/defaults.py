@@ -120,7 +120,8 @@ def payment_value_colorize(column_data):
     """A helper method for payment value columns used to set different
     colors for negative values
     """
-    return column_data < 0
+    # As column_data could be None:
+    return (column_data or 0) < 0
 
 
 #
