@@ -27,11 +27,13 @@
 from decimal import Decimal
 
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.validators import (validate_cpf, validate_cnpj,
                                     validate_area_code, validate_int,
                                     validate_decimal, validate_directory,
                                     validate_percentage, validate_cfop,
-                                    validate_phone_number, validate_invoice_key)
+                                    validate_phone_number, validate_invoice_key,
+                                    is_date_in_interval)
 
 
 class TestValidators(DomainTest):
@@ -180,3 +182,6 @@ class TestValidators(DomainTest):
         self.failIf(validate_invoice_key('3' * 44))
         self.failUnless(validate_invoice_key(
             '43161103852995000107650010000001821299676414'))
+
+    def test_is_date_in_empty_interval(self):
+        assert is_date_in_interval(localtoday(), None, None) is False
