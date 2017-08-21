@@ -41,17 +41,25 @@ POSTAL_CODE_CHAR_LEN = 8
 
 
 def is_date_in_interval(date, start_date, end_date):
-    """Check if a certain date is in an interval. The function accepts
-    None values for start_date and end_date and, in this case, return True
-    if there is no interval to check."""
+    """Check if a certain date is within a given interval
+
+    Ignores the hours on the bounding dates and accepts None values for them.
+    We choose to return False if there is no interval to check. If a sale has a value
+    for an bounding date but not the other, only the former will be considered.
+    """
+    if not start_date and not end_date:
+        return False
+
     assert isinstance(date, datetime.datetime)
+    date = date.date()
     q1 = q2 = True
     if start_date:
         assert isinstance(start_date, datetime.datetime)
-        q1 = date >= start_date
+        q1 = date >= start_date.date()
     if end_date:
         assert isinstance(end_date, datetime.datetime)
-        q2 = date <= end_date
+        q2 = date <= end_date.date()
+
     return q1 and q2
 
 #

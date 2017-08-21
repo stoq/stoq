@@ -30,7 +30,7 @@ from storm.expr import (And, Coalesce, Eq, Join, LeftJoin, Or, Sum, Select,
 from storm.info import ClassAlias
 
 from stoqlib.database.expr import (Case, Distinct, Field, NullIf,
-                                   StatementTimestamp, Concat)
+                                   StatementTimestamp, Date, Concat)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.address import Address
@@ -79,10 +79,15 @@ _StockBranchSummary = Alias(Select(
                                            ProductStockItem.storable_id == Storable.id))],
     group_by=[Storable.id, Branch.id]), '_stock_summary')
 
-_price_search = Case(condition=And(StatementTimestamp() >= Sellable.on_sale_start_date,
-                                   StatementTimestamp() <= Sellable.on_sale_end_date),
-                     result=Sellable.on_sale_price,
-                     else_=Sellable.base_price)
+_price_search = Case(
+    condition=Or(And(Date(StatementTimestamp()) >= Date(Sellable.on_sale_start_date),
+                     Date(StatementTimestamp()) <= Date(Sellable.on_sale_end_date)),
+                 And(Eq(Sellable.on_sale_start_date, None),
+                     Date(StatementTimestamp()) <= Date(Sellable.on_sale_end_date)),
+                 And(Date(StatementTimestamp()) >= Date(Sellable.on_sale_start_date),
+                     Eq(Sellable.on_sale_end_date, None))),
+    result=Sellable.on_sale_price,
+    else_=Sellable.base_price)
 
 
 class ProductFullStockView(Viewable):

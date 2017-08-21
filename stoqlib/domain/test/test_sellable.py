@@ -302,21 +302,34 @@ class TestSellable(DomainTest):
                             price=100,
                             store=self.store)
 
+        # - Sale period is undefined.
+        sellable.on_sale_start_date = None
+        sellable.on_sale_end_date = None
         self.assertEquals(sellable.price, 100)
         sellable.on_sale_price = 80
+        self.assertEquals(sellable.price, 100)
+
+        # - Sale has no start_date but has end_date in the future.
+        sellable.on_sale_start_date = None
+        sellable.on_sale_end_date = localdate(3002, 1, 1)
         self.assertEquals(sellable.price, 80)
 
-        # - Old promotion
+        # - Sale has no end_date but has start_date in the past.
+        sellable.on_sale_start_date = localdate(2001, 1, 1)
+        sellable.on_sale_end_date = None
+        self.assertEquals(sellable.price, 80)
+
+        # - Sale is in the past.
         sellable.on_sale_start_date = localdate(2001, 1, 1)
         sellable.on_sale_end_date = localdate(2002, 1, 1)
         self.assertEquals(sellable.price, 100)
 
-        # - Future promotion
+        # - Sale is in the future.
         sellable.on_sale_start_date = localdate(3001, 1, 1)
         sellable.on_sale_end_date = localdate(3002, 1, 1)
         self.assertEquals(sellable.price, 100)
 
-        # Current promotion
+        # - Sale is on (for a long time, by the way).
         sellable.on_sale_start_date = localdate(2001, 1, 1)
         sellable.on_sale_end_date = localdate(3002, 1, 1)
         self.assertEquals(sellable.price, 80)
@@ -327,29 +340,50 @@ class TestSellable(DomainTest):
                             description=u"Test",
                             price=100,
                             store=self.store)
-        sellable.on_sale_price = 80
+        sellable.on_sale_price = 100
 
-        # - Old promotion
+        # - Sale period is undefined.
+        sellable.on_sale_start_date = None
+        sellable.on_sale_end_date = None
+        sellable.price = 10
+        self.assertEquals(sellable.base_price, 10)
+        self.assertEquals(sellable.on_sale_price, 100)
+
+        # - Sale is in the past.
         sellable.on_sale_start_date = localdate(2001, 1, 1)
         sellable.on_sale_end_date = localdate(2002, 1, 1)
-        sellable.price = 10
-        self.assertEquals(sellable.base_price, 10)
-        self.assertEquals(sellable.on_sale_price, 80)
+        sellable.price = 20
+        self.assertEquals(sellable.base_price, 20)
+        self.assertEquals(sellable.on_sale_price, 100)
 
-        # - Future promotion
+        # - Sale is in the future.
         sellable.on_sale_start_date = localdate(3001, 1, 1)
         sellable.on_sale_end_date = localdate(3002, 1, 1)
-        sellable.price = 10
-        self.assertEquals(sellable.base_price, 10)
-        self.assertEquals(sellable.on_sale_price, 80)
+        sellable.price = 30
+        self.assertEquals(sellable.base_price, 30)
+        self.assertEquals(sellable.on_sale_price, 100)
 
-        # Current promotion
         sellable.price = 100
+        # - Sale has no start_date but has end_date in the future.
+        sellable.on_sale_start_date = None
+        sellable.on_sale_end_date = localdate(3002, 1, 1)
+        sellable.price = 40
+        self.assertEquals(sellable.base_price, 100)
+        self.assertEquals(sellable.on_sale_price, 40)
+
+        # - Sale has no end_date but has start_date in the past.
+        sellable.on_sale_start_date = localdate(2001, 1, 1)
+        sellable.on_sale_end_date = None
+        sellable.price = 50
+        self.assertEquals(sellable.base_price, 100)
+        self.assertEquals(sellable.on_sale_price, 50)
+
+        # - Sale is on.
         sellable.on_sale_start_date = localdate(2001, 1, 1)
         sellable.on_sale_end_date = localdate(3002, 1, 1)
-        sellable.price = 10
+        sellable.price = 60
         self.assertEquals(sellable.base_price, 100)
-        self.assertEquals(sellable.on_sale_price, 10)
+        self.assertEquals(sellable.on_sale_price, 60)
 
         sellable.price = -80
         self.assertEquals(sellable.base_price, 100)
