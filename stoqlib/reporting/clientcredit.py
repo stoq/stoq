@@ -41,8 +41,5 @@ class ClientCreditReport(HTMLReport):
         self.client = client
         HTMLReport.__init__(self, filename)
 
-    def get_subtitle(self):
-        return _(u'Credit letter for %s') % self.client.get_name()
-
     def get_generated_date(self):
         return localtoday().date()

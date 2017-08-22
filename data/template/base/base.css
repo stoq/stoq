@@ -4,9 +4,10 @@
  *  2) Default formating for html elements
  *  3) Tables formatting
  *      3.1) generic lists
- *      3.2) summary row
- *      3.3) summary table
- *      3.4) details table
+ *      3.2) package rows
+ *      3.3) summary row
+ *      3.4) summary table
+ *      3.5) details table
  */
 
 
@@ -188,7 +189,18 @@ tbody td:last-child {
     text-align: right;
 }
 
-/*      3.2 Summary row
+/*      3.2 Package rows
+ *
+ *      This should be used with <tr class="packed"> for items
+ *      which belong to a package.
+ */
+
+tr.packed td {
+    padding-left:10mm;
+    font-size: 68%;
+}
+
+/*      3.3 Summary row
  *
  *      This should be used with <tr class="summary"> when there is an extra
  *      row at the end of the table for some summaries
@@ -209,7 +221,7 @@ tr.summary td:last-child {
     border-right: 0;
 }
 
-/*      3.3) Summary table
+/*      3.4) Summary table
  *
  *      This should be used with <tbody class="summary">  for when the
  *      <table> has an extra <tbody> in the end for some long (multi-line)

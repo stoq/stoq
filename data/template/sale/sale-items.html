@@ -1,3 +1,20 @@
+  <%def name = "insert_row(item)">
+    <tr class="${'packed' if item.parent_item else ''}">
+      <td>${ item.sellable.code }</td>
+      <td>${ item.sellable.get_description() }</td>
+      <td>${ item.get_quantity_unit_string() }</td>
+      <td>${ format_price(item.price) if not item.has_children() else '' }
+        % if item.sale_discount and not item.has_children():
+          <span class="small"><br/>
+            ${ _("{discount_value} discount").format(
+                  discount_value=format_percentage(item.sale_discount))}
+          </span>
+        % endif
+      </td>
+      <td>${ format_price(item.get_total()) if not item.has_children() else '' }</td>
+    </tr>
+  </%def>
+
   <section id="items">
     <table class="list">
       <thead>
@@ -19,23 +36,12 @@
           <td></td>
         </tr>
       </tfoot>
-
       <tbody >
-        % for item in report.order.get_items():
-          <tr>
-            <td>${ item.sellable.code }</td>
-            <td>${ item.sellable.get_description() }</td>
-            <td>${ item.get_quantity_unit_string() }</td>
-            <td>${ format_price(item.price) }
-              % if item.sale_discount:
-                <span class="small"><br/>
-                  ${ _("{discount_value} discount").format(
-                        discount_value=format_percentage(item.sale_discount))}
-                </span>
-                % endif
-            </td>
-            <td>${ format_price(item.get_total()) }</td>
-          </tr>
+        % for item in report.order.get_items(with_children=False):
+          ${ insert_row(item) }
+          % for child in item.children_items:
+            ${ insert_row(child) }
+          % endfor
         % endfor
       </tbody>
 

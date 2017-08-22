@@ -538,11 +538,12 @@ class PosApp(ShellApp):
         # Making sure we are just adding the children if its a package
         if not sale_item.sellable.product.is_package:
             return
+        sale_item.price = Decimal(0)
         for child in sale_item.sellable.product.get_components():
             child_quantity = child.quantity * quantity
             temp_child = TemporarySaleItem(sellable=child.component.sellable,
                                            quantity=child_quantity,
-                                           price=Decimal('0'),
+                                           price=Decimal(child.price),
                                            parent_item=sale_item)
             sale_item.children_items.append(temp_child)
             self._update_added_item(temp_child)

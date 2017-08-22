@@ -49,6 +49,7 @@ from stoqlib.domain.views import (ProductFullStockView, SoldItemsByBranchView,
                                   PendingReturnedSalesView)
 from stoqlib.domain.workorder import WorkOrderView
 from stoqlib.gui.dialogs.tilldailymovement import TillDailyMovementDialog
+from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.paymentsreceipt import (InPaymentReceipt,
                                                OutPaymentReceipt)
@@ -510,16 +511,44 @@ class TestReport(ReportTest):
                             commissions, None)
 
     def test_sale_order_report(self):
+        # Simple sellable
         product = self.create_product(price=100)
         sellable = product.sellable
         sellable.unit = self.create_sellable_unit(description=u'UN')
         default_date = datetime.date(2007, 1, 1)
+
+        # Package sellable
+        package = self.create_product(description=u'Package', is_package=True)
+
+        first_component = self.create_product(description=u'First Component', stock=50)
+        second_component = self.create_product(description=u'Second Component',
+                                               stock=50, price=20)
+        p_first_component = self.create_product_component(product=package,
+                                                          component=first_component,
+                                                          component_quantity=2, price=15)
+        p_second_component = self.create_product_component(product=package,
+                                                           component=second_component,
+                                                           price=10)
+
+        # Sale
         sale = self.create_sale()
         sale.open_date = default_date
         # workaround to make the sale order number constant.
         sale.identifier = 9090
 
         sale.add_sellable(sellable, quantity=1)
+
+        parent = sale.add_sellable(package.sellable, quantity=2)
+        parent.price = 0
+        sale.add_sellable(first_component.sellable,
+                          quantity=parent.quantity * p_first_component.quantity,
+                          price=p_first_component.price,
+                          parent=parent)
+        sale.add_sellable(second_component.sellable,
+                          quantity=parent.quantity * p_second_component.quantity,
+                          price=p_second_component.price,
+                          parent=parent)
+
         self.create_storable(product, get_current_branch(self.store), stock=100)
         sale.order()
         self._diff_expected(SaleOrderReport, 'sale-order-report', sale)
@@ -593,13 +622,12 @@ class TestReport(ReportTest):
         self._diff_expected(CallsReport, 'calls-report',
                             search.results, list(search.results), person=person)
 
-    def test_client_credit_report(self):
+    @mock.patch('stoqlib.reporting.clientcredit.localtoday')
+    def test_client_credit_report(self, localtoday):
+        localtoday.return_value = localdate(2013, 1, 1)
         client = self.create_client()
         client.credit_limit = 100
-
-        with mock.patch.object(ClientCreditReport, 'get_generated_date') as date:
-            date.return_value = datetime.date(2013, 1, 1)
-            self._diff_expected(ClientCreditReport, 'client-credit-report', client)
+        self._diff_expected(ClientCreditReport, 'client-credit-report', client)
 
     def test_work_orders_report(self):
         from stoqlib.gui.search.workordersearch import WorkOrderSearch
