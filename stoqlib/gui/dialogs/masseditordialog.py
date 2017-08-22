@@ -357,12 +357,16 @@ class Field(object):
     This class implements basic value caching/storage for the editor
     """
 
-    def __init__(self, data_type, validator=None, unique=False, visible=True):
+    def __init__(self, data_type, validator=None, unique=False, visible=True,
+                 read_only=False, format_func=None):
         self.data_type = data_type
         self.validator = validator
         self.visible = visible
         # FIXME: Use this
         self.unique = unique
+        self.read_only = read_only
+        # An extra formatting that the column requires.
+        self._format_func = format_func
         self.new_values = {}
 
     def get_value(self, item):  # pragma nocover
@@ -379,6 +383,9 @@ class Field(object):
     def format_func(self, item, data=None):
         value = self.get_new_value(item)
         conv = converter.get_converter(self.data_type)
+        if self._format_func is not None:
+            return self._format_func(value)
+
         if value is not None:
             return conv.as_string(value)
         return ''
@@ -399,7 +406,7 @@ class Field(object):
 class AccessorField(Field):
 
     def __init__(self, label, obj_name, attribute, data_type, unique=False,
-                 validator=None, visible=True):
+                 validator=None, visible=True, read_only=False, format_func=None):
         """A field that updates a value of another object
 
         :param obj_name: the name of the object that will be updated, or None if
@@ -412,9 +419,13 @@ class AccessorField(Field):
         :param editable: If the field should be editable or not. Sometimes it is
           usefull to have fields visible that are not editable, but can be
           filterable
+        :param read_only: If this field should be used only for informational purposes
+          and filtering
+        :param format_func: A function that will be called to format the data.
         """
         super(AccessorField, self).__init__(data_type, validator=validator,
-                                            unique=unique, visible=visible)
+                                            unique=unique, visible=visible,
+                                            read_only=read_only, format_func=format_func)
         self.label = label
         self.obj_name = obj_name
         self.attribute = attribute
@@ -451,7 +462,7 @@ class AccessorField(Field):
         # FIXME Dont let the user edit unique fields for now, since that needs
         # better handling
         editable = self.data_type in [str, int, Decimal, currency,
-                                      datetime.date] and not self.unique
+                                      datetime.date] and not self.unique and not self.read_only
 
         # XXX: All columns use a non existing attr, but since we have a
         # format_func, that will handle the correct value to display.
@@ -542,7 +553,7 @@ class MassEditorWidget(Gtk.HBox):
 
         for field in self._fields:
             # Don't let the user edit unique fields for now
-            if field.unique:
+            if field.unique or field.read_only:
                 continue
             self.field_combo.append_item(field.label, field)
         self.field_combo.select_item_by_position(0)
@@ -699,8 +710,13 @@ class MassEditorSearch(SearchDialog):
     def _on_cell_data_func(self, column, renderer, item, text):
         field = column.format_func_data
         is_changed = field.is_changed(item)
-        renderer.set_property('weight-set', is_changed)
         text = field.format_func(item)
+
+        if isinstance(renderer, Gtk.CellRendererToggle):
+            renderer.set_property('active', text == 'True')
+            return text == 'True'
+
+        renderer.set_property('weight-set', is_changed)
         if is_changed:
             renderer.set_property('weight', Pango.Weight.BOLD)
         return text
