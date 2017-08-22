@@ -284,7 +284,7 @@ class ECFEditor(BaseEditor):
                            constant_name=constant_name,
                            constant_type=DeviceConstant.TYPE_TAX,
                            constant_value=value,
-                           device_value=device_value,
+                           device_value=device_value.encode(),
                            printer=model,
                            store=self.store)
 
@@ -316,7 +316,7 @@ class ECFEditor(BaseEditor):
                            constant_name=str(constant_name),
                            constant_type=DeviceConstant.TYPE_PAYMENT,
                            constant_value=None,
-                           device_value=device_value,
+                           device_value=device_value.encode(),
                            printer=model,
                            store=self.store)
             payment_methods.append(payment_enum)

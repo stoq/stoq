@@ -422,7 +422,7 @@ class Coupon(object):
             # When adding a money payment, use base_value so that the payback
             # is show correctly.
             if payment.is_of_method(u'money'):
-                self._driver.add_payment(constant.device_value,
+                self._driver.add_payment(constant.device_value.decode(),
                                          payment.base_value)
 
             # Card payments were merged above. Use that instead.
@@ -437,7 +437,7 @@ class Coupon(object):
                 del card_payments[card_data.nsu]
             # In other cases, add the real value of payment.
             else:
-                self._driver.add_payment(constant.device_value,
+                self._driver.add_payment(constant.device_value.decode(),
                                          payment.value)
 
         return True

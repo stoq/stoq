@@ -93,11 +93,11 @@ class ECFAsyncPrinterStatus(GObject.GObject):
             self._remove_timeout()
             self.emit('reply', self._reply)
             return False
-        os.write(port.fileno(), value)
+        os.write(port.fileno(), value.encode())
         return False
 
     def _fd_watch_in(self, port, condition):
-        c = port.read()
+        c = port.read().decode()
         self._reply += c
         if self.printer.status_reply_complete(self._reply):
             # We need to remove the timeout before emitting the reply,
