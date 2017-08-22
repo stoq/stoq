@@ -28,7 +28,7 @@ import mock
 import gtk
 import pango
 
-from stoqlib.domain.sellable import Sellable, SellableCategory
+from stoqlib.domain.sellable import Sellable, SellableCategory, SellableUnit
 from stoqlib.gui.dialogs.masseditordialog import (MultiplyOperation,
                                                   AddOperation, DivideOperation,
                                                   SetValueOperation,
@@ -234,10 +234,12 @@ class TestAccessorField(GUITest):
 
 class TestMassEditor(GUITest):
 
-    def _create_search(self, fields, data):
+    def _create_search(self, fields, data, spec=None):
+        if spec is None:
+            spec = Sellable
 
         class FooEditor(MassEditorSearch):
-            search_spec = Sellable
+            search_spec = spec
 
             def get_fields(self, store):
                 return fields
@@ -255,21 +257,30 @@ class TestMassEditor(GUITest):
         self.assertEqual(search.get_fields(self.store), [field])
 
     def test_cell_data_func(self):
-        field = AccessorField('Test', None, 'base_price', Decimal)
-        sellable = self.create_sellable(price=10)
-        search = self._create_search([field], [sellable])
+        field = AccessorField('Test', None, 'unit_index', Decimal)
+        bool_field = AccessorField('Test', None, 'allow_fraction', bool)
+        unit = self.create_sellable_unit()
+        unit.unit_index = 10
+
+        search = self._create_search([field, bool_field], [unit], spec=SellableUnit)
         col = search.columns[0]
 
         # Note that below we are testing the properties of the renderer, and not
         # really the value returned
         renderer = gtk.CellRendererText()
-        search._on_cell_data_func(col, renderer, sellable, '10')
+        search._on_cell_data_func(col, renderer, unit, '10')
         self.assertFalse(renderer.get_property('weight-set'))
 
-        field.set_new_value(sellable, 15)
-        search._on_cell_data_func(col, renderer, sellable, '10')
+        field.set_new_value(unit, 15)
+        search._on_cell_data_func(col, renderer, unit, '10')
         self.assertTrue(renderer.get_property('weight-set'))
         self.assertEqual(renderer.get_property('weight'), pango.WEIGHT_BOLD)
+
+        # Boolean column
+        bool_col = search.columns[1]
+        renderer = gtk.CellRendererToggle()
+        search._on_cell_data_func(bool_col, renderer, unit, None)
+        self.assertEqual(renderer.get_property('active'), True)
 
     def test_change_editor(self):
         price_field = AccessorField('Test', None, 'base_price', Decimal)
@@ -299,6 +310,15 @@ class TestMassEditor(GUITest):
         self.assertEqual(field.format_func(sellable), 'Categoria')
         sellable.category = None
         self.assertEqual(field.format_func(sellable), '')
+
+        # Accessor field with custom format func
+        def format_func(data):
+            return 'foobar'
+
+        field = AccessorField('Test', None, 'code', str, format_func=format_func)
+        self.assertEqual(field.format_func(sellable), 'foobar')
+        sellable.code = None
+        self.assertEqual(field.format_func(sellable), 'foobar')
 
     @mock.patch('stoqlib.gui.dialogs.masseditordialog.yesno')
     @mock.patch('stoqlib.gui.dialogs.masseditordialog.warning')

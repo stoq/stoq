@@ -39,6 +39,9 @@ GtkDialog(toplevel): title='', hidden
               item: 'Depth'
               item: 'Weight'
               item: 'Manufacturer'
+              item: 'Service List Item Code'
+              item: 'City Taxation Code'
+              item: 'ISS Aliquot'
               item: 'cat1 Price'
               item: 'cat2 Price'
             GtkEventBox():
@@ -73,11 +76,15 @@ GtkDialog(toplevel): title='', hidden
             column: title='Description'
             column: title='Unit', hidden
             column: title='C.F.O.P.', hidden
+            column: title='Markup'
             column: title='Cost'
             column: title='Default Price'
             column: title='On Sale Price'
             column: title='On Sale Start Date'
             column: title='On Sale End Date'
+            column: title='Need Price Update', hidden
+            column: title='Cost Last Updated', hidden
+            column: title='Price Last Updated', hidden
             column: title='NCM', hidden
             column: title='Location', hidden
             column: title='Brand', hidden
@@ -88,24 +95,27 @@ GtkDialog(toplevel): title='', hidden
             column: title='Depth', hidden
             column: title='Weight', hidden
             column: title='Manufacturer', hidden
+            column: title='Service List Item Code', hidden
+            column: title='City Taxation Code', hidden
+            column: title='ISS Aliquot', hidden
             column: title='cat1 Price'
             column: title='cat2 Price'
-            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
-            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
-            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
-            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
-            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
-            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
-            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
-            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
-            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
-            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
-            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
-            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
-            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
-            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
-            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
-            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
+            row: None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, uuid.uuid(), uuid.uuid()
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):

@@ -27,10 +27,12 @@ import decimal
 
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
-from storm.expr import LeftJoin
+from storm.expr import LeftJoin, Cast
 from stoqdrivers.enum import TaxType
 
 from stoqlib.api import api
+from stoqlib.database.viewable import Viewable
+from stoqlib.database.expr import Case
 from stoqlib.domain.sellable import (Sellable, ClientCategoryPrice,
                                      SellableUnit, SellableCategory,
                                      SellableTaxConstant)
@@ -41,7 +43,7 @@ from stoqlib.gui.dialogs.masseditordialog import (Field, MassEditorSearch,
                                                   AccessorField, ReferenceField)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import info
-from stoqlib.database.viewable import Viewable
+from stoqlib.lib.formatters import get_formatted_percentage
 from stoqlib.domain.service import Service
 from stoqlib.domain.product import Product, Storable, ProductManufacturer
 from stoqlib.domain.person import ClientCategory
@@ -131,6 +133,14 @@ class SellableView(Viewable):
 
     id = Sellable.id
 
+    markup = Case(condition=(Sellable.cost == 0),
+                  result=0,
+                  else_=(Sellable.base_price / Sellable.cost - 1) * 100)
+
+    # Be explict about the type to workaround an issue with storm
+    need_price_update = Cast(Sellable.cost_last_updated > Sellable.price_last_updated,
+                             'boolean')
+
     tables = [
         Sellable,
         LeftJoin(Service, Sellable.id == Service.id),
@@ -163,6 +173,9 @@ class SellableMassEditorDialog(MassEditorSearch):
                            CfopData, 'description', visible=False),
 
             # Sellable values
+            AccessorField(_('Markup'), None, 'markup',
+                          decimal.Decimal, read_only=True, visible=True,
+                          format_func=get_formatted_percentage),
             AccessorField(_('Cost'), 'sellable', 'cost', currency,
                           validator=validate_price),
             AccessorField(_('Default Price'), 'sellable', 'base_price', currency,
@@ -173,6 +186,14 @@ class SellableMassEditorDialog(MassEditorSearch):
                           datetime.date),
             AccessorField(_('On Sale End Date'), 'sellable', 'on_sale_end_date',
                           datetime.date),
+
+            # Cost and price update time
+            AccessorField(_('Need Price Update'), None, 'need_price_update',
+                          bool, read_only=True, visible=False),
+            AccessorField(_('Cost Last Updated'), 'sellable', 'cost_last_updated',
+                          datetime.datetime, read_only=True, visible=False),
+            AccessorField(_('Price Last Updated'), 'sellable', 'price_last_updated',
+                          datetime.datetime, read_only=True, visible=False),
 
             # Product Fields
             AccessorField(_('NCM'), 'product', 'ncm', unicode, visible=False),
@@ -187,6 +208,13 @@ class SellableMassEditorDialog(MassEditorSearch):
 
             ReferenceField(_('Manufacturer'), 'product', 'manufacturer',
                            ProductManufacturer, 'name', visible=False),
+
+            # Service Fields
+            AccessorField(_('Service List Item Code'), 'service', 'service_list_item_code',
+                          str, visible=False),
+            AccessorField(_('City Taxation Code'), 'service', 'city_taxation_code',
+                          str, visible=False),
+            AccessorField(_('ISS Aliquot'), 'service', 'p_iss', decimal.Decimal, visible=False),
         ]
 
         category_fields = []
