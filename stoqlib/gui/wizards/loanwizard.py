@@ -301,6 +301,7 @@ class LoanItemSelectionStep(SellableItemStep):
     item_table = LoanItem
     cost_editable = False
     summary_label_column = None
+    check_item_taxes = True
 
     def __init__(self, wizard, previous, store, model):
         super(LoanItemSelectionStep, self).__init__(wizard, previous,

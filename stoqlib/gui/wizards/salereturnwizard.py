@@ -179,6 +179,7 @@ class SaleReturnItemsStep(SellableItemStep):
     # This will only be used when wizard.unkown_sale is True
     batch_selection_dialog = BatchIncreaseSelectionDialog
     stock_labels_visible = False
+    check_item_taxes = True
 
     #
     #  SellableItemStep

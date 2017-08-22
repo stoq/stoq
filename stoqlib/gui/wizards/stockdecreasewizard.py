@@ -41,9 +41,10 @@ from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
 from stoqlib.domain.views import ProductWithStockBranchView
+from stoqlib.exceptions import TaxError
 from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.formatters import format_quantity, format_sellable_description
-from stoqlib.lib.message import yesno
+from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
@@ -186,6 +187,7 @@ class DecreaseItemStep(SellableItemStep):
     validate_stock = True
     batch_selection_dialog = BatchDecreaseSelectionDialog
     item_editor = StockDecreaseItemEditor
+    check_item_taxes = True
 
     #
     # SellableItemStep
@@ -341,6 +343,21 @@ class StockDecreaseWizard(BaseWizard):
         if missing:
             run_dialog(MissingItemsDialog, self, self.model, missing)
             return False
+
+        # If this wizard is for a purchase return, the items are automatically
+        # added so the tax check escaped. So we do it now.
+        if self.receiving_order is not None:
+            missing_tax_info = []
+            for item in self.model.get_items():
+                sellable = item.sellable
+                try:
+                    sellable.check_taxes_validity()
+                except TaxError:
+                    missing_tax_info.append(sellable.description)
+            if missing_tax_info:
+                warning(_("There are some items with missing tax information"),
+                        ', '.join(missing_tax_info))
+                return False
 
         invoice_ok = InvoiceSetupEvent.emit()
         if invoice_ok is False:

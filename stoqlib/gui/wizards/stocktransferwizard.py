@@ -134,6 +134,7 @@ class StockTransferItemStep(SellableItemStep):
     validate_stock = True
     cost_editable = False
     item_editor = TransferItemEditor
+    check_item_taxes = True
 
     def __init__(self, wizard, previous, store, model):
         manager = get_plugin_manager()

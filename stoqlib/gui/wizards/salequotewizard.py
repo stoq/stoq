@@ -45,12 +45,11 @@ from stoqlib.domain.sale import Delivery, Sale, SaleItem, SaleComment
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.enums import ChangeSalespersonPolicy
-from stoqlib.exceptions import TaxError
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.decorators import public
 from stoqlib.lib.formatters import (format_quantity, format_sellable_description,
                                     get_formatted_percentage)
-from stoqlib.lib.message import yesno, warning
+from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
@@ -237,6 +236,7 @@ class SaleQuoteItemStep(SellableItemStep):
     validate_price = True
     value_column = 'price'
     calculator_mode = CalculatorPopup.MODE_SUB
+    check_item_taxes = True
 
     #
     # SellableItemStep
@@ -454,16 +454,6 @@ class SaleQuoteItemStep(SellableItemStep):
             price = sellable.get_price_for_category(
                 self.model.client_category)
             self.cost.update(price)
-
-    def can_add_sellable(self, sellable):
-        try:
-            sellable.check_taxes_validity()
-        except TaxError as strerr:
-            # If the sellable icms taxes are not valid, we cannot sell it.
-            warning(str(strerr))
-            return False
-
-        return True
 
     def get_extra_discount(self, sellable):
         if not api.sysparam.get_bool('REUTILIZE_DISCOUNT'):

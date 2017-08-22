@@ -47,6 +47,7 @@ from stoqlib.domain.service import ServiceView
 from stoqlib.domain.views import (ProductFullStockItemView,
                                   ProductComponentView, SellableFullStockView,
                                   ProductFullStockView)
+from stoqlib.exceptions import TaxError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.wizards import WizardStep
@@ -57,6 +58,7 @@ from stoqlib.gui.events import WizardSellableItemStepEvent
 from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.widgets.calculator import CalculatorPopup
 from stoqlib.lib.defaults import QUANTITY_PRECISION, MAX_INT
+from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -836,6 +838,7 @@ class SellableItemSlave(BaseEditorSlave):
 # SellableItemSlave. This will need a lot of refactoring
 class SellableItemStep(SellableItemSlave, WizardStep):
     model_type = None
+    check_item_taxes = False
 
     def __init__(self, wizard, previous, store, model):
         self.wizard = wizard
@@ -867,3 +870,14 @@ class SellableItemStep(SellableItemSlave, WizardStep):
         for component in product.get_components():
             if component.component.sellable == sellable:
                 return component
+
+    def can_add_sellable(self, sellable):
+        if self.check_item_taxes:
+            try:
+                sellable.check_taxes_validity()
+            except TaxError as strerr:
+                # If the sellable taxes are not valid, we cannot add it.
+                warning(str(strerr))
+                return False
+
+        return True
