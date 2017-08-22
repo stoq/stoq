@@ -4,7 +4,10 @@
 #   https://wiki.debian.org/Python/Packaging
 #   https://wiki.debian.org/Python/LibraryStyleGuide
 
+# Pybuild run the test suit when building the package, but we don't need that
+export DEB_BUILD_OPTIONS=nocheck
+
 %:
-	dh $@ --with python2 --buildsystem=python_distutils
+	dh $@ --with python3 --buildsystem=pybuild
 
 

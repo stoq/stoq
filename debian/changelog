@@ -1,3 +1,9 @@
+stoq (3.0~beta1) xenial; urgency=medium
+
+  * Release 3.0 beta 1
+
+ -- Felipe Nehmi <felipe@async.com.br>  Fri, 13 Oct 2017 10:21:53 -0300
+
 stoq (2.1.90) trusty; urgency=low
 
   * 2.1.90 unstable release
