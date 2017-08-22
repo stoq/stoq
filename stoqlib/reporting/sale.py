@@ -43,7 +43,7 @@ class SaleOrderReport(HTMLReport):
 
     template_filename = 'sale/sale.html'
     title = _("Sale Order")
-    complete_header = False
+    complete_header = True
 
     def __init__(self, filename, order):
         self.order = order

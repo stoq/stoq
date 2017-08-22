@@ -313,7 +313,6 @@
  "stoqlib/net/webserver.py": 35.14,
  "stoqlib/reporting/boleto.py": 94.66,
  "stoqlib/reporting/booklet.py": 96.20,
- "stoqlib/reporting/clientcredit.py": 93.75,
  "stoqlib/reporting/financial.py": 90.65,
  "stoqlib/reporting/labelreport.py": 35.29,
  "stoqlib/reporting/loanreceipt.py": 97.44,

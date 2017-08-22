@@ -20,6 +20,9 @@
     <div id="title">
       % if complete_header:
       <h3>${ h_data['title'] }</h3>
+      % if subtitle:
+        <span class="subtitle">${ subtitle }</span>
+      % endif
       <div class="notes">
         % for line in h_data['lines']:
         <span>${ line }</span>
