@@ -432,7 +432,7 @@ class Coupon(object):
                 # This payment was already addded
                 if not card_data.nsu in card_payments:
                     continue
-                self._driver.add_payment(constant.device_value,
+                self._driver.add_payment(constant.device_value.decode(),
                                          card_payments[card_data.nsu])
                 del card_payments[card_data.nsu]
             # In other cases, add the real value of payment.
@@ -492,8 +492,8 @@ class Coupon(object):
         constant = self._get_payment_method_constant(payment)
         receipt_id = self._driver.get_payment_receipt_identifier(constant.constant_name)
 
-        self._driver.payment_receipt_open(receipt_id, coo, constant.device_value,
-                                          value)
+        self._driver.payment_receipt_open(receipt_id, coo,
+                                          constant.device_value.decode(), value)
         self._driver.payment_receipt_print(receipt)
         self._driver.payment_receipt_close()
 
