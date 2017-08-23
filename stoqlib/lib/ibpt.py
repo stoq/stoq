@@ -85,9 +85,10 @@ def load_taxes_csv():
 
 
 class IBPTGenerator(object):
-    def __init__(self, items):
+    def __init__(self, items, include_services=False):
         load_taxes_csv()
         self.items = items
+        self.include_services = include_services
 
     def _format_ex(self, ex_tipi):
         if not ex_tipi:
@@ -99,12 +100,18 @@ class IBPTGenerator(object):
         assert item
         sellable = item.sellable
         product = sellable.product
-        if not product:
-            return None
-        ncm = product.ncm or ''
-        ex_tipi = self._format_ex(product.ex_tipi)
+        service = sellable.service
+        if product:
+            code = product.ncm or ''
+            ex_tipi = self._format_ex(product.ex_tipi)
+        else:
+            if not self.include_services:
+                return
 
-        options = taxes_data.get(ncm, {})
+            code = '%04d' % int(service.service_list_item_code.replace('.', ''))
+            ex_tipi = ''
+
+        options = taxes_data.get(code, {})
         n_options = len(options)
         if n_options == 0:
             tax_values = TaxInfo('0', '0', '0', '', '0')
@@ -126,11 +133,11 @@ class IBPTGenerator(object):
         sellable = item.sellable
         product = sellable.product
 
-        if product.icms_template:
+        if product and product.icms_template:
             origin = product.icms_template.orig
         else:
-            # If the product does not have any fiscal information, defaults to
-            # national origin
+            # If the product does not have any fiscal information or it's a
+            # service, defaults to national origin
             origin = 0
 
         # Values (0, 3, 4, 5, 8) represent the taxes codes of brazilian origin.
@@ -171,6 +178,6 @@ class IBPTGenerator(object):
                                 source=source, key=key)
 
 
-def generate_ibpt_message(items):
-    generator = IBPTGenerator(items)
+def generate_ibpt_message(items, include_services=False):
+    generator = IBPTGenerator(items, include_services)
     return generator.get_ibpt_message()
