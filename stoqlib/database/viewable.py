@@ -292,7 +292,7 @@ class Viewable(ClassInittableObject):
             if not isinstance(i, JoinExpr):
                 if i is table:
                     return True
-            elif table in (i.left, i.right):
+            elif i.left is table or i.right is table:
                 return True
         return False
 
