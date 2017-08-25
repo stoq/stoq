@@ -25,6 +25,7 @@
 """ Purchase details dialogs """
 
 import datetime
+from decimal import Decimal
 
 from gi.repository import Gtk, Gdk, Pango
 from kiwi.currency import currency
@@ -64,6 +65,7 @@ class _TemporaryReceivingDetails:
     total_surcharges = currency(0)
     receiving_subtotal = currency(0)
     receiving_total = currency(0)
+    receiving_quantity = Decimal(0)
     received_freight = currency(0)
     received_freight_type = u''
 
@@ -78,13 +80,14 @@ class _TemporaryReceivingDetails:
         freight_types = []
 
         if orders.count():
-            discount = surcharge = freight = subtotal = total = 0
+            discount = surcharge = freight = subtotal = total = quantity = 0
             for order in orders:
                 discount += order.total_discounts
                 surcharge += order.total_surcharges
                 freight += order.freight_total
                 subtotal += order.products_total
                 total += order.total
+                quantity += order.total_quantity
 
                 # If first time used, append to the list of used types
                 if freight_type_map[order.freight_type] not in freight_types:
@@ -95,6 +98,7 @@ class _TemporaryReceivingDetails:
             self.received_freight = currency(freight)
             self.receiving_subtotal = currency(subtotal)
             self.receiving_total = currency(total)
+            self.receiving_quantity = quantity
 
             if len(freight_types) == 1:
                 self.received_freight_type = freight_names[freight_types[0]]
@@ -130,7 +134,8 @@ class PurchaseDetailsDialog(BaseEditor):
                        'total_discounts',
                        'total_surcharges',
                        'receiving_subtotal',
-                       'receiving_total')
+                       'receiving_total',
+                       'receiving_quantity')
 
     def _setup_summary_labels(self):
         order_summary_label = SummaryLabel(
