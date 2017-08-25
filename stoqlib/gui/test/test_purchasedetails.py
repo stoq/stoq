@@ -47,7 +47,11 @@ class TestPurchaseDetailsDialog(GUITest):
         order.open_date = date
 
         # Product
-        self.create_purchase_order_item(order)
+        purchase_item = self.create_purchase_order_item(order)
+
+        # New receiving
+        receiving_order = self.create_receiving_order(purchase_order=order)
+        self.create_receiving_order_item(receiving_order, purchase_item=purchase_item)
 
         # Payments
         payment = self.add_payments(order, date=date)[0]

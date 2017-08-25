@@ -25,8 +25,8 @@
 
 # pylint: enable=E1101
 
-from decimal import Decimal
 import collections
+from decimal import Decimal
 
 from kiwi.currency import currency
 from storm.expr import And, Eq
@@ -460,6 +460,11 @@ class ReceivingOrder(Domain):
             total_surcharge += self.freight_total
 
         return currency(total_surcharge)
+
+    @property
+    def total_quantity(self):
+        """Returns the sum of all received quantities"""
+        return sum(item.quantity for item in self.get_items(with_children=False))
 
     @property
     def total_discounts(self):

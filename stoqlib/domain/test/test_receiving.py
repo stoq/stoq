@@ -439,6 +439,12 @@ class TestReceivingOrder(DomainTest):
         self.assertEquals(order.guess_freight_type(),
                           ReceivingOrder.FREIGHT_CIF_UNKNOWN)
 
+    def test_total_quantity(self):
+        receiving_order = self.create_receiving_order()
+        self.create_receiving_order_item(receiving_order, quantity=3)
+        self.create_receiving_order_item(receiving_order, quantity=4)
+        self.assertEqual(receiving_order.total_quantity, Decimal('7'))
+
 
 class TestReceivingOrderItem(DomainTest):
 
