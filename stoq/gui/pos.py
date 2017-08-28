@@ -165,6 +165,16 @@ class TemporarySaleItem(object):
         return '%s %s' % (qtd_string, self.unit)
 
 
+class FakeToken():
+    """Fake token for direct sales.
+
+    When using stoq with USE_SALE_TOKEN, let the user create a direct sale by using this
+    special token (accessible using code '0').
+    """
+    description = _('Direct sale')
+    sale = None
+
+
 class PosApp(ShellApp):
 
     app_title = _('Point of Sales')
@@ -284,9 +294,6 @@ class PosApp(ShellApp):
         for widget in (self.window.Print, self.window.ExportSpreadSheet):
             widget.set_visible(False)
 
-        self._confirm_sales_on_till = (sysparam.get_bool('CONFIRM_SALES_ON_TILL') or
-                                       sysparam.get_bool('USE_SALE_TOKEN'))
-
         # Hides or shows sellable description
         self._confirm_quantity = sysparam.get_bool('CONFIRM_QTY_ON_BARCODE_ACTIVATE')
         self.sellable_description.set_visible(self._confirm_quantity)
@@ -386,6 +393,17 @@ class PosApp(ShellApp):
     #
     # Private
     #
+
+    @property
+    def _confirm_sales_on_till(self):
+        if sysparam.get_bool('CONFIRM_SALES_ON_TILL'):
+            return True
+
+        if sysparam.get_bool('USE_SALE_TOKEN') and not isinstance(self._token,
+                                                                  FakeToken):
+            return True
+
+        return False
 
     def _setup_printer(self):
         self._printer = FiscalPrinterHelper(self.store,
@@ -1054,7 +1072,7 @@ class PosApp(ShellApp):
                     group=group,
                     cfop_id=cfop_id,
                     coupon_id=None)
-        if self._token is not None:
+        if self._token is not None and not isinstance(self._token, FakeToken):
             token = store.fetch(self._token)
             token.open_token(sale)
         sale.invoice.operation_nature = nature
@@ -1121,10 +1139,14 @@ class PosApp(ShellApp):
         return sale
 
     def _set_token(self, token_code):
-        branch = api.get_current_branch(self.store)
-        self._token = self.store.find(SaleToken,
-                                      code=unicode(token_code),
-                                      branch=branch).one()
+        if token_code == '0':
+            # Let the user create a direct sale, using a fake token
+            self._token = FakeToken()
+        else:
+            branch = api.get_current_branch(self.store)
+            self._token = self.store.find(SaleToken,
+                                          code=unicode(token_code),
+                                          branch=branch).one()
         if self._token is None:
             retval = self.run_dialog(SaleTokenSearch, self.store,
                                      initial_string=token_code, hide_footer=True,
@@ -1573,7 +1595,10 @@ class PosApp(ShellApp):
         self._checkout_or_add_item()
 
     def on_sale_token__activate(self, entry):
-        self._set_token(entry.get_text())
+        text = entry.get_text()
+        if not text:
+            return
+        self._set_token(text)
 
     def after_barcode__changed(self, editable):
         self._update_buttons()
