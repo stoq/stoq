@@ -30,6 +30,7 @@ from stoqlib.api import api
 from stoqlib.domain.sellable import SellableCategory, SellableTaxConstant
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.commissionslave import CategoryCommissionSlave
+from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -117,6 +118,8 @@ class SellableCategoryEditor(BaseEditor):
 
         self.category.prefill(
             api.for_combo(categories, attr='full_description'))
+        self.suggested_markup.set_adjustment(
+            gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
 
     def _update_widgets(self):
         category_lbl = self.category.get_selected_label()
