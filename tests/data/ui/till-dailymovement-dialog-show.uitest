@@ -30,12 +30,8 @@ GtkBox(vbox1, orientation=vertical):
         column: title='Client', expand
         column: title='Branch', hidden
         column: title='Value'
-        row: 1, 'Deivis Alexandre Junior', 'Vitalina Claudino', 'Moda Stoq', '$436.00'
-          row: None, 'Money', '', None, '$436.00 (1x)'
-        row: 2, 'Deivis Alexandre Junior', 'Alessandra Almeida Itaberá', 'Moda Stoq', '$706.00'
-          row: None, 'Check', '', None, '$706.00 (1x)'
-        row: 3, 'Deivis Alexandre Junior', 'Luis Sergio da Silva Marin', 'Moda Stoq', '$873.00'
-          row: None, 'Bill', '', None, '$873.00 (1x)'
+        row: 1234, 'SalesPerson', 'Fulano de Tal', 'Moda Stoq', '$10.00'
+          row: None, 'Bill', '', None, '$10.00 (1x)'
     GtkBox(vbox4, orientation=vertical):
       ObjectList(inpayments_list, expand=True, fill=True):
         column: title='Payment #'
@@ -52,8 +48,8 @@ GtkBox(vbox1, orientation=vertical):
         column: title='Notes'
         column: title='Supplier'
         column: title='Value'
-        row: 1, 'Closed', 'Administrator', 'Moda Stoq', '', 'Cia de Roupas São Carlos', <currency $7,930>
-          row: 1, None, None, None, 'Money', None, None
+        row: 4321, 'Confirmed', 'Administrator', 'Moda Stoq', '', 'Supplier', <currency $1,000>
+          row: 43210, None, None, None, 'Money', None, None
     GtkBox(vbox3, orientation=vertical):
       ObjectList(outpayments_list, expand=True, fill=True):
         column: title='Payment #'
@@ -62,6 +58,7 @@ GtkBox(vbox1, orientation=vertical):
         column: title='Branch', hidden
         column: title='Payment Value'
         row: 9941, 'Credit', 'Test payment', 'Moda Stoq', <currency $100>
+        row: 9942, 'Money', 'Test payment', 'Moda Stoq', <currency $300>
     GtkBox(return_sales_vbox, orientation=vertical):
       ObjectTree(return_sales_list, expand=True, fill=True):
         column: title='Code #'
@@ -94,23 +91,22 @@ GtkBox(vbox1, orientation=vertical):
           column: title='Payment Method', expand
           column: title='Income Total'
           column: title='Outgoing Total'
-          row: 'Bill', Decimal('873.00'), 0
-          row: 'Check', Decimal('706.00'), 0
+          row: 'Bill', Decimal('10.00'), 0
           row: 'Credit', 0, Decimal('100.00')
-          row: 'Money', Decimal('436.00'), Decimal('7930.00')
+          row: 'Money', 0, Decimal('1300.00')
         GtkTable(table1, fill=True):
           GtkLabel(label10): 'Subtotal:'
-          ProxyLabel(in_subtotal): '<span >$2,015.00</span>'
+          ProxyLabel(in_subtotal): '<span >$10.00</span>'
           GtkLabel(label13): 'Subtotal:'
-          ProxyLabel(out_subtotal): '<span >$8,030.00</span>'
+          ProxyLabel(out_subtotal): '<span >$1,400.00</span>'
           GtkLabel(label11): 'Credit:'
           ProxyLabel(in_credit): '<span >$0.00</span>'
           GtkLabel(label14): 'Credit:'
           ProxyLabel(out_credit): '<span >$100.00</span>'
           GtkLabel(label12): 'Total Income:'
-          ProxyLabel(in_total): '<span >$2,015.00</span>'
+          ProxyLabel(in_total): '<span >$10.00</span>'
           GtkLabel(label15): 'Total Outgoing:'
-          ProxyLabel(out_total): '<span >$7,930.00</span>'
+          ProxyLabel(out_total): '<span >$1,300.00</span>'
       GtkBox(percard_vbox, orientation=vertical, expand=True, fill=True):
         ObjectList(percard_list, expand=True, fill=True):
           column: title='Provider Name', expand

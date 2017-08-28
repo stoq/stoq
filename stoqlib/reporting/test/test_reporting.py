@@ -123,6 +123,7 @@ class TestReport(ReportTest):
         out_payments = list(self.store.find(OutCheckPaymentView))
         for item in out_payments:
             item.due_date = datetime.date(2007, 1, 1)
+            item.open_date = datetime.date(2006, 1, 1)
             search.results.append(item)
 
         self._diff_expected(BillCheckPaymentReport, 'bill-check-payable-report',
@@ -135,6 +136,7 @@ class TestReport(ReportTest):
         in_payments = list(self.store.find(InCheckPaymentView))
         for item in in_payments:
             item.due_date = datetime.date(2007, 1, 1)
+            item.open_date = datetime.date(2006, 1, 1)
             search.results.append(item)
 
         self._diff_expected(BillCheckPaymentReport, 'bill-check-receivable-report',

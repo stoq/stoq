@@ -130,16 +130,17 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
                 column: title='Comments', hidden
                 column: title='Drawee'
                 column: title='Drawee fancy name', hidden
+                column: title='Open date', hidden
                 column: title='Due date'
                 column: title='Paid date'
                 column: title='Status', hidden
                 column: title='Value'
                 column: title='Paid'
                 column: title='Category', hidden
-                row: 2, '1/1 Money for sale 00001', datetime.datetime(2008, 1, 1, 0, 0), None, None, 'Vitalina Claudino', None, datetime.datetime(2008, 1, 1, 0, 0), datetime.datetime(2008, 1, 1, 0, 0), 'Paid', <currency $436>, <currency $436>, None
-                row: 3, '1/1 Check for sale 00002', datetime.datetime(2008, 6, 1, 0, 0), None, None, 'Alessandra Almeida Itaberá', None, datetime.datetime(2008, 6, 15, 0, 0), None, 'To Pay', <currency $706>, None, None
-                row: 4, '1/1 Bill for sale 00003', datetime.datetime(2008, 9, 1, 0, 0), None, None, 'Luis Sergio da Silva Marin', None, datetime.datetime(2008, 9, 15, 0, 0), None, 'To Pay', <currency $873>, None, None
-                row: 67890, '1/1 Bill for sale 12345', datetime.datetime(2013, 1, 1, 0, 0), None, None, None, None, datetime.datetime(2012, 1, 1, 0, 0), None, 'To Pay', <currency $10>, None, None
+                row: 2, '1/1 Money for sale 00001', datetime.datetime(2008, 1, 1, 0, 0), None, None, 'Vitalina Claudino', None, datetime.datetime(2008, 1, 1, 0, 0), datetime.datetime(2008, 1, 1, 0, 0), datetime.datetime(2008, 1, 1, 0, 0), 'Paid', <currency $436>, <currency $436>, None
+                row: 3, '1/1 Check for sale 00002', datetime.datetime(2008, 6, 1, 0, 0), None, None, 'Alessandra Almeida Itaberá', None, datetime.datetime(2008, 6, 1, 0, 0), datetime.datetime(2008, 6, 15, 0, 0), None, 'To Pay', <currency $706>, None, None
+                row: 4, '1/1 Bill for sale 00003', datetime.datetime(2008, 9, 1, 0, 0), None, None, 'Luis Sergio da Silva Marin', None, datetime.datetime(2008, 9, 1, 0, 0), datetime.datetime(2008, 9, 15, 0, 0), None, 'To Pay', <currency $873>, None, None
+                row: 67890, '1/1 Bill for sale 12345', datetime.datetime(2013, 1, 1, 0, 0), None, None, None, None, datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), None, 'To Pay', <currency $10>, None, None
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkBox(orientation=horizontal):

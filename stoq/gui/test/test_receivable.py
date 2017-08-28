@@ -128,7 +128,6 @@ class TestReceivable(BaseGUITest):
         payment.identifier = 67890
         sale.confirm()
         payment.due_date = localdatetime(2012, 1, 1)
-        # payment.paid_date = datetime.datetime(2012, 2, 2)
         return sale, payment
 
     def test_select(self):

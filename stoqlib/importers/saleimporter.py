@@ -81,12 +81,13 @@ class SaleImporter(CSVImporter):
         sale.order()
         method = PaymentMethod.get_by_name(store, data.payment_method)
         method.create_payment(Payment.TYPE_IN, group, branch, total_price,
-                              self.parse_date(data.due_date))
+                              due_date=self.parse_date(data.due_date))
         sale.confirm()
         # XXX: The payments are paid automatically when a sale is confirmed.
         #     So, we will change all the payment paid_date to the same date
         #     as open_date, then we can test the reports properly.
         for payment in sale.payments:
+            payment.open_date = sale.open_date
             if payment.is_paid():
                 p = store.fetch(payment)
                 p.paid_date = self.parse_date(data.open_date)
