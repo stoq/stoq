@@ -201,6 +201,8 @@ class ReceivableApp(BaseAccountWindow):
                 SearchColumn('drawee_fancy_name', title=_('Drawee fancy name'),
                              visible=False, data_type=str,
                              ellipsize=pango.ELLIPSIZE_END, width=140),
+                SearchColumn('open_date', title=_('Open date'),
+                             data_type=datetime.date, width=100, visible=False),
                 SearchColumn('due_date', title=_('Due date'),
                              data_type=datetime.date, width=100, sorted=True),
                 SearchColumn('paid_date', title=_('Paid date'),

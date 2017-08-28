@@ -84,6 +84,7 @@ class BasePaymentView(Viewable):
     due_date = Payment.due_date
     status = Payment.status
     paid_date = Payment.paid_date
+    open_date = Payment.open_date
     value = Payment.value
     paid_value = Payment.paid_value
     payment_number = Payment.payment_number
@@ -299,6 +300,7 @@ class CardPaymentView(Viewable):
     description = Payment.description
     due_date = Payment.due_date
     paid_date = Payment.paid_date
+    open_date = Payment.open_date
     status = Payment.status
     value = Payment.value
 
@@ -353,6 +355,7 @@ class _BillandCheckPaymentView(Viewable):
     identifier = Payment.identifier
     due_date = Payment.due_date
     paid_date = Payment.paid_date
+    open_date = Payment.open_date
     status = Payment.status
     value = Payment.value
     payment_number = Payment.payment_number

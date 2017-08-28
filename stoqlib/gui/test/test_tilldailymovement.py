@@ -34,12 +34,42 @@ from stoqlib.reporting.till import TillDailyMovementReport
 class TestTillHistory(GUITest):
     def test_show(self):
         dialog = TillDailyMovementDialog(self.store)
-        method = self.get_payment_method(u'credit')
-        payment = self.create_payment(value=100, method=method,
+
+        # Creating a sale to which a bill payment is attached.
+        sale = self.create_sale(client=self.create_client(name=u'Fulano de Tal'))
+        sale.identifier = 1234
+        self.add_product(sale)
+        self.add_payments(sale, method_type=u'bill')
+        sale.order()
+        sale.confirm()
+        sale.group.pay()
+
+        # Creating a purchase order to which a money payment is attached.
+        purchase = self.create_purchase_order(branch=sale.branch)
+        purchase.identifier = 4321
+        self.create_purchase_order_item(order=purchase)
+        payment = self.add_payments(purchase, method_type=u'money')[0]
+        payment.identifier = 43210
+        purchase.status = purchase.ORDER_PENDING
+        purchase.confirm()
+        purchase.group.pay()
+
+        # We create two payments whose dates are corresponding to the day of the test,
+        # s.t. the search returns both of them.
+        payment = self.create_payment(value=100, method=self.get_payment_method(u'credit'),
                                       date=datetime.datetime.now())
         payment.identifier = 9941
         payment.set_pending()
         payment.pay()
+
+        payment = self.create_payment(value=300, method=self.get_payment_method(u'money'),
+                                      date=datetime.datetime.now())
+        payment.identifier = 9942
+        payment.set_pending()
+        payment.pay()
+
+        # The search should fetch the two payments created above as well as the sale's
+        # and the purchase order's respective payment.
         self.click(dialog.search_button)
         self.check_dialog(dialog, 'till-dailymovement-dialog-show')
 

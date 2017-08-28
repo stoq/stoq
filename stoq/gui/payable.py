@@ -176,6 +176,8 @@ class PayableApp(BaseAccountWindow):
                 SearchColumn('supplier_name', title=_('Supplier'),
                              data_type=str, width=140,
                              ellipsize=pango.ELLIPSIZE_END),
+                SearchColumn('open_date', title=_('Open date'),
+                             data_type=datetime.date, width=100, visible=False),
                 SearchColumn('due_date', title=_('Due date'),
                              data_type=datetime.date, width=100,
                              sorted=True),

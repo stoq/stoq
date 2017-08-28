@@ -69,6 +69,7 @@ class PurchaseImporter(CSVImporter):
         group = PaymentGroup(store=store)
         purchase = PurchaseOrder(store=store,
                                  status=PurchaseOrder.ORDER_PENDING,
+                                 open_date=self.parse_date(data.due_date),
                                  supplier=supplier,
                                  transporter=transporter,
                                  group=group,
@@ -89,6 +90,8 @@ class PurchaseImporter(CSVImporter):
                               purchase.purchase_total,
                               self.parse_date(data.due_date))
         purchase.confirm()
+        for payment in purchase.payments:
+            payment.open_date = purchase.open_date
 
         receiving_order = ReceivingOrder(responsible=login_user,
                                          supplier=supplier,
