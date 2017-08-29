@@ -103,8 +103,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                 GtkLabel(token_lbl, expand=True, fill=True):
                 GtkImage(stoq_logo, fill=True, pack-end):
           GtkAlignment(sellable_align, fill=True):
-            GtkBox(hbox1, orientation=horizontal):
+            GtkBox(hbox1, orientation=vertical):
               ProxyLabel(sellable_description, expand=True, fill=True): hidden
+              GtkLabel(client_description, expand=True, fill=True): hidden
           GtkBox(list_vbox, orientation=vertical, expand=True, fill=True):
             GtkBox(till_status_box, orientation=vertical, expand=True, fill=True):
               GtkHSeparator(hseparator1, fill=True):
@@ -145,6 +146,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                     GtkButton(delivery_button): insensitive
                     GtkButton(edit_item_button): insensitive
                     GtkButton(remove_item_button): insensitive
+                    GtkButton(client_button):
                 ProxyLabel(order_total_label, expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $0.00</span>'
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden

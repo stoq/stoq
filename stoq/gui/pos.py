@@ -725,6 +725,9 @@ class PosApp(ShellApp):
 
         if sysparam.get_bool('USE_SALE_TOKEN'):
             has_token = bool(self._token)
+            self.set_sensitive([self.client_button], has_token)
+            self.set_sensitive([self.save_button],
+                               has_sale_items or bool(self._suggested_client))
             self.list_header_hbox.set_visible(has_token)
             self.token_box.set_visible(self._till_open and not self._token)
             self.till_status_box.set_visible(
@@ -933,6 +936,8 @@ class PosApp(ShellApp):
         self._clear_trade()
         self._reset_quantity_proxy()
         self.barcode.set_text('')
+        self.client_description.set_visible(False)
+        self.client_description.set_text('')
         self._update_widgets()
 
         # store may already been closed on checkout
@@ -1038,6 +1043,7 @@ class PosApp(ShellApp):
         nature = api.sysparam.get_string('DEFAULT_OPERATION_NATURE')
         group = PaymentGroup(store=store)
         sale = Sale(store=store,
+                    status=Sale.STATUS_QUOTE,
                     branch=branch,
                     salesperson=salesperson,
                     group=group,
@@ -1073,7 +1079,7 @@ class PosApp(ShellApp):
             )
         else:
             delivery = None
-            sale.client = self._suggested_client
+            sale.client = store.fetch(self._suggested_client)
 
         for fake_sale_item in self.sale_items:
             if fake_sale_item.parent_item:
@@ -1131,6 +1137,8 @@ class PosApp(ShellApp):
 
         if self._token and self._token.sale:
             sale = self._token.sale
+            if sale.client:
+                self.set_client(sale.client)
 
             # We need to iterate twice here because we need the delivery
             # to find the delivery_item after
@@ -1171,7 +1179,9 @@ class PosApp(ShellApp):
         :param cancel_clear: If we should cancel the sale if the checkout
             is cancelled.
         """
-        assert len(self.sale_items) >= 1
+        if not save_only:
+            # The user can save a token with just a client.
+            assert len(self.sale_items) >= 1
 
         # FIXME: We should create self._current_store when adding the first
         # item, so we can simplify a lot of code on this module by using it
@@ -1210,7 +1220,7 @@ class PosApp(ShellApp):
             sale = self._create_sale(store)
 
         if save_only:
-            if sale.status != Sale.STATUS_ORDERED:
+            if sale.status != Sale.STATUS_ORDERED and not sale.get_items().is_empty():
                 sale.order()
             store.commit()
         else:
@@ -1246,6 +1256,12 @@ class PosApp(ShellApp):
         # closed
         store.close()
         self._clear_order()
+
+    def set_client(self, client):
+        self._suggested_client = client
+        self.client_description.set_visible(True)
+        self.client_description.set_text(client.get_description())
+        self._update_widgets()
 
     def _remove_selected_item(self):
         sale_item = self.sale_items.get_selected()
@@ -1558,6 +1574,13 @@ class PosApp(ShellApp):
 
     def on_save_button__clicked(self, button):
         self.checkout(save_only=True)
+
+    def on_client_button__clicked(self, button):
+        retval = self.run_dialog(ClientSearch, self.store, hide_footer=True,
+                                 double_click_confirm=True)
+        if not retval:
+            return
+        self.set_client(retval.client)
 
     def on_edit_item_button__clicked(self, button):
         item = self.sale_items.get_selected()
