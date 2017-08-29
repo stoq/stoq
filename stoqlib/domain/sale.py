@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
-##
-## Copyright (C) 2005-2014 Async Open Source <http://www.async.com.br>
-## All rights reserved
-##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU Lesser General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU Lesser General Public License for more details.
-##
-## You should have received a copy of the GNU Lesser General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., or visit: http://www.gnu.org/.
-##
-## Author(s): Stoq Team <stoq-devel@async.com.br>
-##
+#
+# Copyright (C) 2005-2014 Async Open Source <http://www.async.com.br>
+# All rights reserved
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., or visit: http://www.gnu.org/.
+#
+# Author(s): Stoq Team <stoq-devel@async.com.br>
+#
 """
 Domain objects related to the sale process in Stoq.
 
@@ -1176,7 +1176,8 @@ class Sale(Domain):
         # If ALLOW_CANCEL_CONFIRMED_SALES is not set, we can only cancel
         # quoting sales
         if not sysparam.get_bool("ALLOW_CANCEL_CONFIRMED_SALES"):
-            return self.status == self.STATUS_QUOTE
+            return (self.status == self.STATUS_QUOTE or
+                    (self.is_external() and self.status == Sale.STATUS_ORDERED))
 
         return self.status in (Sale.STATUS_CONFIRMED, Sale.STATUS_ORDERED,
                                Sale.STATUS_QUOTE)
@@ -2757,7 +2758,7 @@ class SalesPersonSalesView(Viewable):
     total_amount = Sum(Sale.total_amount)
     total_quantity = Sum(Field('_sale_item', 'total_quantity'))
     total_sales = Count(Sale.id)
-    #paid_value = Field('_paid_sale', 'paid_value')
+    # paid_value = Field('_paid_sale', 'paid_value')
 
     group_by = [id, name]
 
@@ -2766,7 +2767,7 @@ class SalesPersonSalesView(Viewable):
         LeftJoin(Sale, Sale.salesperson_id == SalesPerson.id),
         LeftJoin(SaleItemSummary, Field('_sale_item', 'sale_id') == Sale.id),
         LeftJoin(Person, Person.id == SalesPerson.person_id),
-        #LeftJoin(PaidSale, Field('_paid_sale', 'salesperson_id') == SalesPerson.id),
+        # LeftJoin(PaidSale, Field('_paid_sale', 'salesperson_id') == SalesPerson.id),
     ]
 
     clause = Sale.status == Sale.STATUS_CONFIRMED
