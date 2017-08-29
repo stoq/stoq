@@ -1,3 +1,9 @@
+stoq (2.1~rc3) trusty; urgency=medium
+
+  * 2.1 release candidate 3
+
+ -- Felipe Nehmi <felipe@async.com.br>  Tue, 29 Aug 2017 13:59:19 -0300
+
 stoq (2.1~rc2) trusty; urgency=medium
 
   * 2.1 release candidate 2
