@@ -105,8 +105,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                 GtkLabel(token_lbl, expand=True, fill=True):
                 GtkImage(stoq_logo, fill=True, pack-end):
           GtkAlignment(sellable_align, fill=True):
-            GtkHBox(hbox1):
+            GtkVBox(hbox1):
               ProxyLabel(sellable_description, expand=True, fill=True): '<span >Vestido Vadalena</span>', hidden
+              GtkLabel(client_description, expand=True, fill=True): hidden
           GtkVBox(list_vbox, expand=True, fill=True):
             GtkVBox(till_status_box, expand=True, fill=True): hidden
               GtkHSeparator(hseparator1, fill=True):
@@ -148,6 +149,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                     GtkButton(delivery_button):
                     GtkButton(edit_item_button): insensitive
                     GtkButton(remove_item_button):
+                    GtkButton(client_button):
                 ProxyLabel(order_total_label, expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $383.00</span>'
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
