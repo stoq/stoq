@@ -1,28 +1,26 @@
 # -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
-##
-## Copyright (C) 2006-2013 Async Open Source <http://www.async.com.br>
-## All rights reserved
-##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., or visit: http://www.gnu.org/.
-##
-## Author(s): Stoq Team <stoq-devel@async.com.br>
-##
-
-__tests__ = 'stoqlib/domain/sale.py'
+#
+# Copyright (C) 2006-2013 Async Open Source <http://www.async.com.br>
+# All rights reserved
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., or visit: http://www.gnu.org/.
+#
+# Author(s): Stoq Team <stoq-devel@async.com.br>
+#
 
 import datetime
 from decimal import Decimal
@@ -56,8 +54,11 @@ from stoqlib.lib.dateutils import localdate, localdatetime, localtoday
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.parameters import sysparam
 
+__tests__ = 'stoqlib/domain/sale.py'
+
 
 class TestSale(DomainTest):
+
     def test_status_str(self):
         sale = Sale(store=self.store, branch=self.create_branch(),
                     status=Sale.STATUS_CONFIRMED)
@@ -1078,6 +1079,20 @@ class TestSale(DomainTest):
         final_quantity = storable.get_balance_for_branch(sale.branch)
         self.assertEquals(inital_quantity, final_quantity)
 
+    def test_cancel_external(self):
+        # Create a external sale order
+        sale = self.create_sale()
+        self.add_product(sale)
+        sale.order()
+
+        def callback(sale):
+            return True
+
+        SaleIsExternalEvent.connect(callback)
+        sale.cancel(u"Test sale cancellation")
+        self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
+        SaleIsExternalEvent.disconnect(callback)
+
     def test_cancel_force(self):
         sale = self.create_sale()
         sellable = self.add_product(sale)
@@ -1506,7 +1521,9 @@ class TestSale(DomainTest):
                 self.store.find(Commission, payment=p).count(), 0)
 
         sale.confirm()
-        fake = lambda p: None
+
+        def fake(p):
+            return None
 
         payments = list(sale.payments)
         # Mimic out old behaviour of only creating commissions for payments
@@ -1862,12 +1879,16 @@ class TestSale(DomainTest):
         sale = self.create_sale()
         self.assertFalse(sale.is_external())
 
-        callback = lambda sale: False
+        def callback(sale):
+            return False
+
         SaleIsExternalEvent.connect(callback)
         self.assertFalse(sale.is_external())
         SaleIsExternalEvent.disconnect(callback)
 
-        callback = lambda sale: True
+        def callback(sale):
+            return True
+
         SaleIsExternalEvent.connect(callback)
         self.assertTrue(sale.is_external())
         SaleIsExternalEvent.disconnect(callback)
@@ -1884,6 +1905,7 @@ class TestSale(DomainTest):
 
 
 class TestSaleToken(DomainTest):
+
     def test_status_str(self):
         token = self.create_sale_token(code=u'foobar')
         for status, status_str in [
@@ -1906,6 +1928,7 @@ class TestSaleToken(DomainTest):
 
 
 class TestSaleItem(DomainTest):
+
     def test__init__(self):
         with self.assertRaises(TypeError) as error:
             SaleItem()
@@ -2383,6 +2406,7 @@ class TestSaleItem(DomainTest):
 
 
 class TestDelivery(DomainTest):
+
     def test_status_str(self):
         delivery = self.create_delivery()
         self.assertEquals(delivery.status_str, u'Waiting')
@@ -2580,6 +2604,7 @@ class TestDelivery(DomainTest):
 
 
 class TestSalePaymentMethodView(DomainTest):
+
     def test_with_one_payment_method_sales(self):
         # Let's create two sales: one with money and another with bill.
         sale_money = self.create_sale()
@@ -2639,6 +2664,7 @@ class TestSalePaymentMethodView(DomainTest):
 
 
 class TestReturnedSaleView(DomainTest):
+
     def test_get_children_items(self):
         branch = self.create_branch()
         client = self.create_client()
@@ -2678,6 +2704,7 @@ class TestReturnedSaleView(DomainTest):
 
 
 class TestReturnedSaleItemsView(DomainTest):
+
     def test_new_sale(self):
         branch = self.create_branch()
         client = self.create_client(name=u'Test')
@@ -2702,6 +2729,7 @@ class TestReturnedSaleItemsView(DomainTest):
 
 
 class TestSaleView(DomainTest):
+
     def test_token_str(self):
         token = self.create_sale_token(code=u'foo')
         token.name = u'bar'
@@ -2796,6 +2824,7 @@ class TestSaleView(DomainTest):
 
 
 class TestSalesPersonSalesView(DomainTest):
+
     def test_find_by_date(self):
         sale = self.create_sale()
 
