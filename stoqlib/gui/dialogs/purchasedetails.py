@@ -176,7 +176,7 @@ class PurchaseDetailsDialog(BaseEditor):
 
     def _get_ordered_columns(self):
         return [Column('description', title=_('Description'), data_type=str,
-                       expand=True, searchable=True,
+                       expand=True, searchable=True, sorted=True,
                        ellipsize=Pango.EllipsizeMode.END),
                 QuantityColumn('quantity', title=_('Qty')),
                 Column('cost', title=_('Cost'), data_type=currency,
@@ -185,7 +185,7 @@ class PurchaseDetailsDialog(BaseEditor):
 
     def _get_received_columns(self):
         return [Column('description', title=_('Description'), data_type=str,
-                       expand=True, searchable=True,
+                       expand=True, searchable=True, sorted=True,
                        ellipsize=Pango.EllipsizeMode.END),
                 QuantityColumn('quantity_received', title=_('Qty Received')),
                 Column('cost', title=_('Cost'), data_type=currency,
