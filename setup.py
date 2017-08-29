@@ -82,6 +82,7 @@ def list_templates():
         files.append((prefix, listfiles(*(parts + ['*css']))))
     return files
 
+
 packages = listpackages('stoq')
 packages.extend(listpackages('stoqlib', exclude='stoqlib.tests'))
 
@@ -92,6 +93,7 @@ scripts = [
 data_files = [
     ('$datadir/csv', listfiles('data', 'csv', '*.csv')),
     ('$datadir/csv/ibpt_tables', listfiles('data', 'csv', 'ibpt_tables', '*.csv')),
+    ('$datadir/csv/cest', listfiles('data', 'csv', 'cest', '*.csv')),
     ('$datadir/glade', listfiles('data', 'glade', '*.ui')),
     ('$datadir/misc', listfiles('data/misc', '*.*')),
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.png')),
