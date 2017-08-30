@@ -3,7 +3,7 @@
 from gi.repository import Gtk
 
 
-if (Gtk.MAJOR_VERSION, Gtk.MINOR_VERSION) >= (3, 16):
+if (3, 16) < (Gtk.MAJOR_VERSION, Gtk.MINOR_VERSION) < (3, 22):
     row_even = 'row:even'
     row_odd = 'row:odd'
 else:
