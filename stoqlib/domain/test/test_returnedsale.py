@@ -33,6 +33,7 @@ from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.lib.dateutils import localdatetime
 
 __tests__ = 'stoqlib/domain/returnedsale.py'
 
@@ -442,38 +443,37 @@ class TestReturnedSale(DomainTest):
         self.assertEquals(returned_item.returned_sale.status,
                           ReturnedSale.STATUS_CANCELLED)
 
-    def test_guess_payment_method(self):
-        # Note that this is not testing the real return process, only the guess
-        # payment method method
-        rsale = self.create_returned_sale()
-        self.create_returned_sale_item(rsale)
+    def test_undo_with_pending_payment(self):
+        # First, we create a sale_item and relate it to a sale.
+        sale_item = self.create_sale_item()
+        sale = sale_item.sale
+        self.add_payments(sale)
+        sale.order()
+        # The sale is then completed and confirmed with its payment confirmed as well.
+        sale.confirm()
 
-        credit_method = self.get_payment_method(u'credit')
-        bill_method = self.get_payment_method(u'bill')
+        # Now, we create a return adapter to make the actual return.
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.confirm(self.create_user())
 
-        # Without payments we should have guessed 'money'
-        method = rsale._guess_payment_method()
-        self.assertEquals(method, 'money')
-
-        payment = self.create_payment(method=credit_method,
-                                      value=rsale.returned_total,
-                                      group=rsale.group)
+        # A pending payment is then made for it to be cancelled when the sale return is
+        # actually undone.
+        payment = self.create_payment(date=localdatetime(2012, 1, 1),
+                                      value=sale_item.price,
+                                      group=sale.group)
         payment.set_pending()
-        self.assertEquals(rsale._guess_payment_method(), 'credit')
 
-        # Now add another credit payment. The guessed should still be credit
-        payment = self.create_payment(method=credit_method,
-                                      value=rsale.returned_total,
-                                      group=rsale.group)
-        payment.set_pending()
-        self.assertEquals(rsale._guess_payment_method(), 'credit')
+        # There should be 2 payments at this point.
+        n_payments1 = sale.payments.count()
 
-        # If we now add a different method, the guessed type should be money
-        payment = self.create_payment(method=bill_method,
-                                      value=rsale.returned_total,
-                                      group=rsale.group)
-        payment.set_pending()
-        self.assertEquals(rsale._guess_payment_method(), 'money')
+        returned_sale.undo(reason=u'teste')
+
+        # This test evaluates if the pending payment was actually cancelled and that, at
+        # any point around the undoing of the sale return, no payments are added or
+        # removed.
+        self.assertEquals(payment.status, Payment.STATUS_CANCELLED)
+        self.assertEquals(n_payments1, 2)
+        self.assertEquals(sale.group.payments.count(), 2)
 
 
 class TestReturnedSaleItem(DomainTest):

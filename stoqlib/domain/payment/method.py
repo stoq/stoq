@@ -160,7 +160,8 @@ class PaymentMethod(Domain):
     #       factory singleton.
     def create_payment(self, payment_type, payment_group, branch, value,
                        due_date=None, description=None, base_value=None,
-                       payment_number=None, identifier=None):
+                       payment_number=None, identifier=None,
+                       ignore_max_installments=False):
         """Creates a new payment according to a payment method interface
 
         :param payment_type: the kind of payment, in or out
@@ -175,6 +176,8 @@ class PaymentMethod(Domain):
         :param description: optional, description of the payment
         :param base_value: optional
         :param payment_number: optional
+        :param ignore_max_installments: optional, defines whether max_installments should be
+          ignored.
         :returns: a :class:`payment <stoqlib.domain.payment.Payment>`
         """
         store = self.store
@@ -182,7 +185,7 @@ class PaymentMethod(Domain):
         if due_date is None:
             due_date = TransactionTimestamp()
 
-        if payment_type == Payment.TYPE_IN:
+        if not ignore_max_installments and payment_type == Payment.TYPE_IN:
             query = And(Payment.group_id == payment_group.id,
                         Payment.method_id == self.id,
                         Payment.payment_type == Payment.TYPE_IN,
