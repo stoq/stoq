@@ -747,6 +747,13 @@ _details = [
         unicode, multiline=True, initial=u""),
 
     ParameterDetails(
+        u'BILL_PAYMENT_PLACE',
+        _(u'Sales'),
+        _(u'Bill payment place'),
+        _(u'Payment place instructions to be printed on bill slip'),
+        unicode, multiline=True, initial=_(u'Payable in any bank until due date')),
+
+    ParameterDetails(
         u'BILL_INTEREST',
         _(u'Sales'),
         _(u'Bill interest aliquot'),
