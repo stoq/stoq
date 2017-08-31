@@ -81,6 +81,7 @@ GtkBox(vbox1, orientation=vertical):
     row: 'Sales', 'Default tax constant for products', 'No tax'
     row: 'Sales', 'Scale barcode format', '4 Digits Code with Price'
     row: 'Sales', 'Bill instructions ', ''
+    row: 'Sales', 'Bill payment place', 'Payable in any bank until due date'
     row: 'Sales', 'Bill interest aliquot', Decimal('0.00')
     row: 'Sales', 'Bill penalty aliquot', Decimal('0.00')
     row: 'Sales', 'Bill discount aliquot', Decimal('0.00')

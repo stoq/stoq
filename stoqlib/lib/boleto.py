@@ -111,7 +111,6 @@ class BankInfo(object):
     especie_documento = 'DM'
     especie = "R$"
     moeda = "9"
-    local_pagamento = "Pagável em qualquer banco até o vencimento"
 
     # This 2 values are usually empty in the printed bill
     quantidade = None
@@ -167,6 +166,10 @@ class BankInfo(object):
     #
     # Properties
     #
+
+    @property
+    def local_pagamento(self):
+        return sysparam.get_string('BILL_PAYMENT_PLACE')
 
     @property
     def numero_documento(self):
