@@ -53,4 +53,4 @@ GtkDialog(toplevel): title='Till history', hidden
         GtkButton(padding=6): 'Cash _Add...'
         GtkButton(padding=6): 'Cash _In...'
         GtkButton(padding=6): 'Cash _Out...'
-        GtkButton(print_button, padding=6, pack-end):
+        GtkButton(print_button, padding=6, pack-end): 'gtk-print'

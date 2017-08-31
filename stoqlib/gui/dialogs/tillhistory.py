@@ -92,7 +92,7 @@ class TillHistoryDialog(SearchDialog):
         self._add_editor_button(_('Cash _Out...'), CashOutEditor,
                                 STOQ_MONEY_REMOVE)
 
-        self.print_button = Gtk.Button(None, Gtk.STOCK_PRINT, True)
+        self.print_button = Gtk.Button.new_from_stock(Gtk.STOCK_PRINT)
         self.print_button.set_property("use-stock", True)
         self.print_button.connect('clicked', self._print_button_clicked)
         self.action_area.set_layout(Gtk.ButtonBoxStyle.START)
