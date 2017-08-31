@@ -642,19 +642,27 @@ class ReturnedSale(Domain):
         for item in self.get_items():
             item.undo()
 
-        # We now need to create a new in payment for the total amount of this
-        # returned sale.
-        method_name = self._guess_payment_method()
-        method = PaymentMethod.get_by_name(self.store, method_name)
-        description = _(u'%s return undone for sale %s') % (
-            method.description, self.sale.identifier)
-        payment = method.create_payment(Payment.TYPE_IN,
-                                        payment_group=self.group,
-                                        branch=self.branch,
-                                        value=self.returned_total,
-                                        description=description)
-        payment.set_pending()
-        payment.pay()
+        payment = self._get_cancel_candidate_payment(pending_only=True)
+        if payment:
+            # If there are pending out payments which match the returned value
+            # and those payments are all of the same method, we can just cancel any of
+            # these payments right away.
+            payment.cancel()
+        else:
+            # We now need to create a new in payment for the total amount of this
+            # returned sale.
+            payment = self._get_cancel_candidate_payment()
+            method = payment.method if payment else PaymentMethod.get_by_name(self.store, 'money')
+            description = _(u'%s return undone for sale %s') % (
+                method.description, self.sale.identifier)
+            payment = method.create_payment(Payment.TYPE_IN,
+                                            payment_group=self.group,
+                                            branch=self.branch,
+                                            value=self.returned_total,
+                                            description=description,
+                                            ignore_max_installments=True)
+            payment.set_pending()
+            payment.pay()
 
         self.status = self.STATUS_CANCELLED
         self.cancel_date = localnow()
@@ -669,35 +677,31 @@ class ReturnedSale(Domain):
     #  Private
     #
 
-    def _guess_payment_method(self):
-        """Guesses the payment method used in this returned sale.
-        """
-        value = self.returned_total
-        # Now look for the out payment, ie, the payment that we possibly created
-        # for the returned value.
-        payments = list(self.sale.payments.find(payment_type=Payment.TYPE_OUT,
-                                                value=value))
-        if len(payments) == 1:
-            # There is only one payment that matches our criteria, we can trust it
-            # is the one we are looking for.
-            method = payments[0].method.method_name
-        elif len(payments) == 0:
-            # This means that the returned sale didn't endup creating any return
-            # payment for the client. Let's just create a money payment then
-            method = u'money'
-        else:
-            # This means that we found more than one return payment for this
-            # value. This probably means that the user has returned multiple
-            # items in different returns.
-            methods = set(payment.method.method_name for payment in payments)
-            if len(methods) == 1:
-                # All returns were using the same method. Lets use that one them
-                method = methods.pop()
-            else:
-                # The previous returns used different methods, let's pick money
-                method = u'money'
+    def _get_cancel_candidate_payment(self, pending_only=False):
+        """Try to find a payment to cancel for a canceled operation
 
-        return method
+        If the user cancels or undoes an operation - e.g. undoing a returned sale -
+        we can either cancel the pending payment, or create a reversal payment for its
+        value.
+
+        :param pending_only: If True, this will consider only pending payments.
+        """
+        queries = [Payment.payment_type == Payment.TYPE_OUT,
+                   Payment.value == self.returned_total]
+        if pending_only:
+            queries.append(Payment.status == Payment.STATUS_PENDING)
+
+        # We search for the payments which are correspondent to our operation aiming to
+        # finding which payment methods are involved.
+        payments = list(self.sale.payments.find(And(*queries)))
+        methods = set(payment.method.method_name for payment in payments)
+
+        # If and only if there is only one method from all the payments found, then any of the
+        # payments can be cancelled or reversed.
+        if len(methods) == 1:
+            return payments[0]
+
+        return
 
     def _return_items(self):
         # We must have at least one item to return
