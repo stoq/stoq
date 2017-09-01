@@ -191,6 +191,22 @@ class TestSale(DomainTest):
             # But not related to the loan
             self.assertEquals(self.store.find(SaleItem, sale=sale).count(), 0)
 
+    def test_remove_delivery_item(self):
+        sale = self.create_sale()
+        # This is the delivery item
+        sale_item = self.create_sale_item(sale)
+        delivery = self.create_delivery()
+        delivery.service_item_id = sale_item.id
+
+        # This is the item that will be delivered
+        other_item = self.create_sale_item(sale)
+        delivery.add_item(other_item)
+
+        self.assertEquals(len(delivery.get_items()), 1)
+        sale.remove_item(other_item)
+        self.assertEquals(len(delivery.get_items()), 0)
+        sale.remove_item(sale_item)
+
     def test_remove_item_reserved(self):
         sale = self.create_sale()
         storable = self.create_storable(branch=sale.branch, stock=10)
@@ -2548,6 +2564,18 @@ class TestDelivery(DomainTest):
         self.assertEquals(len(delivery.get_items()), 1)
 
         delivery.remove_item(item)
+        self.assertEquals(len(delivery.get_items()), 0)
+
+    def test_remove_all_items(self):
+        delivery = self.create_delivery()
+        item_1 = self.create_sale_item()
+        delivery.add_item(item_1)
+        item_2 = self.create_sale_item()
+        delivery.add_item(item_2)
+
+        self.assertEquals(len(delivery.get_items()), 2)
+
+        delivery.remove_all_items()
         self.assertEquals(len(delivery.get_items()), 0)
 
 

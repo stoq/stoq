@@ -144,8 +144,12 @@ class SaleItem(Domain):
 
     delivery_id = IdCol(default=None)
 
-    #: |delivery| or None
+    #: The |delivery| this sale_item *is in* or None
     delivery = Reference(delivery_id, 'Delivery.id')
+
+    #: The |delivery| that this item *corresponds* to. Ie, this sale_item's sellable is
+    #: the Delivery service that was added to the sale.
+    delivery_adaptor = Reference('id', 'Delivery.service_item_id', on_remote=True)
 
     cfop_id = IdCol(default=None)
 
@@ -780,6 +784,10 @@ class Delivery(Domain):
     def remove_item(self, item):
         item.delivery = None
 
+    def remove_all_items(self):
+        for item in self.get_items():
+            self.remove_item(item)
+
     #
     #  Private
     #
@@ -1052,6 +1060,13 @@ class Sale(Domain):
     def remove_item(self, sale_item):
         if sale_item.quantity_decreased > 0:
             sale_item.return_to_stock(sale_item.quantity_decreased)
+
+        # If the item removed is the item corresponding to the delivery, we need to
+        # remove all items from the delivery, including the delivery itself
+        delivery = sale_item.delivery_adaptor
+        if delivery:
+            delivery.remove_all_items()
+            self.store.maybe_remove(delivery)
         sale_item.sale = None
         self.store.maybe_remove(sale_item)
 
@@ -2310,6 +2325,7 @@ class ReturnedSaleItemsView(Viewable):
         product = self.store.get(Product, self.sellable.product.id)
         return product.is_package
 
+
 _SaleItemSummary = Select(columns=[SaleItem.sale_id,
                                    Alias(Sum(InvoiceItemIpi.v_ipi), 'v_ipi'),
                                    Alias(Sum(SaleItem.quantity), 'total_quantity'),
@@ -2717,6 +2733,7 @@ class SoldProductsView(SoldSellableView):
         query = And(SoldProductsView.client_id == self.client_id,
                     SaleItem.id.is_in([child.id for child in self.sale_item.children_items]))
         return self.store.find(SoldProductsView, query)
+
 
 # FIXME: This needs some more work, as currently, this viewable is:
 #        * Not filtering the paiments correctly given a date.
