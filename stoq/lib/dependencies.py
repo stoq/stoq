@@ -97,9 +97,8 @@ class DependencyChecker(object):
         self._check_mako(MAKO_REQUIRED)
         if platform.system() not in ['Darwin', 'Windows']:
             self._check_pypoppler(PYPOPPLER_REQUIRED)
-
-        # This needs to be imported *after* poppler. Don't ask me why
-        self._check_weasyprint(WEASYPRINT_REQUIRED)
+            # This needs to be imported *after* poppler. Don't ask me why
+            self._check_weasyprint(WEASYPRINT_REQUIRED)
 
         # ECF
         # FIXME: makes sense to allow Stoq to run with all of these disabled.

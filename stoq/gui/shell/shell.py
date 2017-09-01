@@ -100,7 +100,7 @@ class ShellDatabaseConnection(object):
             return
 
         with open(filename, 'rb') as f:
-            return binascii.a2b_base64(f.read())
+            return binascii.a2b_base64(f.read()).decode()
 
     def _try_connect(self):
         from stoqlib.lib.message import error
