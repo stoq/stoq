@@ -274,7 +274,7 @@ class DeliveryApp(ShellApp):
         selection = self.search.get_selected_item()
         with api.new_store() as store:
             delivery = store.fetch(selection.delivery)
-            delivery.pack()
+            delivery.pack(api.get_current_user(store))
 
         self._update_view(select_item=selection)
 
@@ -287,7 +287,7 @@ class DeliveryApp(ShellApp):
         selection = self.search.get_selected_item()
         with api.new_store() as store:
             delivery = store.fetch(selection.delivery)
-            delivery.pack()
+            delivery.send(api.get_current_user(store))
 
         self._update_view(select_item=selection)
 
@@ -300,7 +300,7 @@ class DeliveryApp(ShellApp):
         selection = self.search.get_selected_item()
         with api.new_store() as store:
             delivery = store.fetch(selection.delivery)
-            delivery.pack()
+            delivery.receive()
 
         self._update_view(select_item=selection)
 
