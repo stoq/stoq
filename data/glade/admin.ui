@@ -5,7 +5,7 @@
   <object class="GtkWindow" id="admin">
     <property name="width_request">800</property>
     <property name="height_request">570</property>
-    <property name="title" translatable="yes" context="yes">launcher</property>
+    <property name="title" translatable="yes">launcher</property>
     <property name="window_position">center</property>
     <property name="destroy_with_parent">True</property>
     <child>

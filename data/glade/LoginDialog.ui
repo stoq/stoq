@@ -7,7 +7,7 @@
     <property name="width_request">280</property>
     <property name="height_request">230</property>
     <property name="can_focus">False</property>
-    <property name="title" context="yes">Access Control</property>
+    <property name="title">Access Control</property>
     <property name="window_position">center-always</property>
     <child>
       <object class="GtkVBox" id="vbox1">
@@ -64,7 +64,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="xalign">1</property>
-                        <property name="label" translatable="yes" context="yes">_Username:</property>
+                        <property name="label" translatable="yes">_Username:</property>
                         <property name="use_underline">True</property>
                       </object>
                       <packing>
@@ -77,7 +77,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="xalign">1</property>
-                        <property name="label" translatable="yes" context="yes">_Password:</property>
+                        <property name="label" translatable="yes">_Password:</property>
                         <property name="use_underline">True</property>
                       </object>
                       <packing>
