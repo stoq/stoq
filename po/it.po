@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-30 02:10-0300\n"
-"PO-Revision-Date: 2017-08-30 05:10+0000\n"
+"POT-Creation-Date: 2017-09-06 02:10-0300\n"
+"PO-Revision-Date: 2017-09-06 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Italian (http://www.transifex.com/async/stoq/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -742,7 +742,7 @@ msgstr ""
 #: ../plugins/ecf/deviceconstanteditor.py:202
 #: ../stoqlib/gui/dialogs/clientdetails.py:345
 #: ../stoqlib/lib/parameters.py:723 ../stoqlib/lib/parameters.py:731
-#: ../stoqlib/lib/parameters.py:845 ../stoqlib/lib/parameters.py:878
+#: ../stoqlib/lib/parameters.py:852 ../stoqlib/lib/parameters.py:885
 msgid "Payments"
 msgstr "Pagamenti"
 
@@ -770,10 +770,11 @@ msgstr "Pagamenti"
 #: ../stoqlib/lib/parameters.py:598 ../stoqlib/lib/parameters.py:608
 #: ../stoqlib/lib/parameters.py:618 ../stoqlib/lib/parameters.py:649
 #: ../stoqlib/lib/parameters.py:684 ../stoqlib/lib/parameters.py:759
-#: ../stoqlib/lib/parameters.py:776 ../stoqlib/lib/parameters.py:786
-#: ../stoqlib/lib/parameters.py:796 ../stoqlib/lib/parameters.py:806
-#: ../stoqlib/lib/parameters.py:870 ../stoqlib/lib/parameters.py:886
-#: ../stoqlib/lib/parameters.py:894 ../stoqlib/reporting/sale.py:127
+#: ../stoqlib/lib/parameters.py:776 ../stoqlib/lib/parameters.py:783
+#: ../stoqlib/lib/parameters.py:793 ../stoqlib/lib/parameters.py:803
+#: ../stoqlib/lib/parameters.py:813 ../stoqlib/lib/parameters.py:877
+#: ../stoqlib/lib/parameters.py:893 ../stoqlib/lib/parameters.py:901
+#: ../stoqlib/reporting/sale.py:127
 msgid "Sales"
 msgstr "Vendite"
 
@@ -3278,7 +3279,7 @@ msgstr ""
 #: ../stoq/lib/applist.py:38 ../stoqlib/gui/editors/deliveryeditor.py:70
 #: ../stoqlib/gui/editors/deliveryeditor.py:126
 #: ../stoqlib/gui/editors/deliveryeditor.py:291
-#: ../stoqlib/lib/parameters.py:1055 ../stoqlib/lib/parameters.py:1057
+#: ../stoqlib/lib/parameters.py:1062 ../stoqlib/lib/parameters.py:1064
 msgid "Delivery"
 msgstr ""
 
@@ -4253,7 +4254,7 @@ msgstr ""
 #: ../data/template/optical/workorderdetails.html:8
 #: ../plugins/optical/opticalreport.py:33 ../stoq/gui/calendar.py:290
 #: ../stoqlib/gui/editors/workordereditor.py:65
-#: ../stoqlib/lib/parameters.py:901 ../stoqlib/lib/parameters.py:909
+#: ../stoqlib/lib/parameters.py:908 ../stoqlib/lib/parameters.py:916
 #: ../stoqlib/reporting/workorder.py:43
 msgid "Work order"
 msgstr ""
@@ -4712,7 +4713,7 @@ msgstr ""
 #: ../stoq/gui/purchase.py:75 ../stoq/lib/applist.py:55
 #: ../stoqlib/lib/invoice.py:334 ../stoqlib/lib/parameters.py:252
 #: ../stoqlib/lib/parameters.py:260 ../stoqlib/lib/parameters.py:574
-#: ../stoqlib/lib/parameters.py:582 ../stoqlib/lib/parameters.py:926
+#: ../stoqlib/lib/parameters.py:582 ../stoqlib/lib/parameters.py:933
 msgid "Purchase"
 msgstr ""
 
@@ -8113,7 +8114,7 @@ msgstr ""
 #. Production
 #: ../stoq/gui/production.py:56 ../stoq/gui/production.py:81
 #: ../stoq/lib/applist.py:53 ../stoqlib/gui/dialogs/startproduction.py:35
-#: ../stoqlib/lib/parameters.py:934
+#: ../stoqlib/lib/parameters.py:941
 msgid "Production"
 msgstr ""
 
@@ -8775,7 +8776,7 @@ msgstr ""
 #: ../stoqlib/gui/search/commissionsearch.py:132
 #: ../stoqlib/gui/search/salesearch.py:95
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:129
-#: ../stoqlib/lib/parameters.py:1037 ../stoqlib/net/calendarevents.py:162
+#: ../stoqlib/lib/parameters.py:1044 ../stoqlib/net/calendarevents.py:162
 msgid "Salesperson"
 msgstr ""
 
@@ -9953,7 +9954,7 @@ msgstr ""
 msgid "Control tills and their workflow."
 msgstr ""
 
-#: ../stoq/lib/dependencies.py:132
+#: ../stoq/lib/dependencies.py:131
 #, python-format
 msgid ""
 "<b>%s</b> could not be found on your system.\n"
@@ -9963,11 +9964,11 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../stoq/lib/dependencies.py:138
+#: ../stoq/lib/dependencies.py:137
 msgid "Missing dependency"
 msgstr ""
 
-#: ../stoq/lib/dependencies.py:141
+#: ../stoq/lib/dependencies.py:140
 #, python-format
 msgid ""
 "<b>%s</b> was found on your system, but it is\n"
@@ -9977,11 +9978,11 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../stoq/lib/dependencies.py:148
+#: ../stoq/lib/dependencies.py:147
 msgid "Out-dated dependency"
 msgstr ""
 
-#: ../stoq/lib/dependencies.py:151
+#: ../stoq/lib/dependencies.py:150
 #, python-format
 msgid ""
 "<b>%s</b> was found on your system, but its version,\n"
@@ -9991,7 +9992,7 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../stoq/lib/dependencies.py:158
+#: ../stoq/lib/dependencies.py:157
 msgid "Incompatible dependency"
 msgstr ""
 
@@ -10363,8 +10364,8 @@ msgid "Invalid status %d"
 msgstr ""
 
 #. TODO: Save the operation nature in new loan table field.
-#: ../stoqlib/domain/loan.py:404 ../stoqlib/lib/parameters.py:854
-#: ../stoqlib/lib/parameters.py:862 ../stoqlib/reporting/loanreceipt.py:39
+#: ../stoqlib/domain/loan.py:404 ../stoqlib/lib/parameters.py:861
+#: ../stoqlib/lib/parameters.py:869 ../stoqlib/reporting/loanreceipt.py:39
 msgid "Loan"
 msgstr ""
 
@@ -13619,9 +13620,9 @@ msgstr ""
 #: ../stoqlib/lib/parameters.py:629 ../stoqlib/lib/parameters.py:638
 #: ../stoqlib/lib/parameters.py:657 ../stoqlib/lib/parameters.py:668
 #: ../stoqlib/lib/parameters.py:676 ../stoqlib/lib/parameters.py:716
-#: ../stoqlib/lib/parameters.py:751 ../stoqlib/lib/parameters.py:827
-#: ../stoqlib/lib/parameters.py:835 ../stoqlib/lib/parameters.py:917
-#: ../stoqlib/lib/parameters.py:943 ../stoqlib/lib/parameters.py:951
+#: ../stoqlib/lib/parameters.py:751 ../stoqlib/lib/parameters.py:834
+#: ../stoqlib/lib/parameters.py:842 ../stoqlib/lib/parameters.py:924
+#: ../stoqlib/lib/parameters.py:950 ../stoqlib/lib/parameters.py:958
 msgid "General"
 msgstr ""
 
@@ -17112,47 +17113,47 @@ msgstr ""
 msgid "Wrong value format"
 msgstr ""
 
-#: ../stoqlib/lib/boleto.py:246
+#: ../stoqlib/lib/boleto.py:249
 #, python-format
 msgid "The barcode must have 44 caracteres, found %d"
 msgstr ""
 
-#: ../stoqlib/lib/boleto.py:363
+#: ../stoqlib/lib/boleto.py:366
 msgid "The field cannot have spaces"
 msgstr ""
 
-#: ../stoqlib/lib/boleto.py:365
+#: ../stoqlib/lib/boleto.py:368
 msgid "The field cannot have dots of commas"
 msgstr ""
 
-#: ../stoqlib/lib/boleto.py:369
+#: ../stoqlib/lib/boleto.py:372
 msgid "More than one hyphen found"
 msgstr ""
 
-#: ../stoqlib/lib/boleto.py:372
+#: ../stoqlib/lib/boleto.py:375
 msgid "Verifier digit cannot be empty"
 msgstr ""
 
-#: ../stoqlib/lib/boleto.py:376
+#: ../stoqlib/lib/boleto.py:379
 msgid "Account needs to be a number"
 msgstr ""
 
-#: ../stoqlib/lib/boleto.py:395 ../stoqlib/lib/boleto.py:405
+#: ../stoqlib/lib/boleto.py:398 ../stoqlib/lib/boleto.py:408
 msgid "Invalid verifier digit"
 msgstr ""
 
-#: ../stoqlib/lib/boleto.py:401
+#: ../stoqlib/lib/boleto.py:404
 #, python-format
 msgid "Verifier digit must be a number or %s"
 msgstr ""
 
-#: ../stoqlib/lib/boleto.py:415
+#: ../stoqlib/lib/boleto.py:418
 #, python-format
 msgid "Number length must be less than %s"
 msgstr ""
 
 #. TRANSLATORS: Do not translate 'Convenio'
-#: ../stoqlib/lib/boleto.py:627
+#: ../stoqlib/lib/boleto.py:630
 msgid ""
 "Convenio length must be 6, 7 or 8. Try filing it with '0's at the left."
 msgstr ""
@@ -18422,216 +18423,228 @@ msgid ""
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:777
-msgid "Bill interest aliquot"
+msgid "Bill payment place"
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:778
+msgid "Payment place instructions to be printed on bill slip"
+msgstr ""
+
+#: ../stoqlib/lib/parameters.py:779
+msgid "Payable in any bank until due date"
+msgstr ""
+
+#: ../stoqlib/lib/parameters.py:784
+msgid "Bill interest aliquot"
+msgstr ""
+
+#: ../stoqlib/lib/parameters.py:785
 msgid ""
 "The aliquot to calculate the daily interest on the bill. See \"Bill "
 "instructions\" parameter for more information on how this is used"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:787
+#: ../stoqlib/lib/parameters.py:794
 msgid "Bill penalty aliquot"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:788
+#: ../stoqlib/lib/parameters.py:795
 msgid ""
 "The aliquot to calculate the penalty on the bill. See \"Bill instructions\" "
 "parameter for more information on how this is used"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:797
+#: ../stoqlib/lib/parameters.py:804
 msgid "Bill discount aliquot"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:798
+#: ../stoqlib/lib/parameters.py:805
 msgid ""
 "The aliquot to calculate the discount on the bill. See \"Bill instructions\""
 " parameter for more information on how this is used"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:807
+#: ../stoqlib/lib/parameters.py:814
 msgid "Booklet instructions "
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:808
+#: ../stoqlib/lib/parameters.py:815
 msgid ""
 "When printing booklets, include the first 4 lines of these on it. This "
 "usually includes instructions on how to pay the booklet and the validity and"
 " the terms."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:812
+#: ../stoqlib/lib/parameters.py:819
 msgid "Payable at any branch on presentation of this booklet"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:816
+#: ../stoqlib/lib/parameters.py:823
 msgid "Smart lists"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:817
+#: ../stoqlib/lib/parameters.py:824
 msgid "Load items intelligently from the database"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:818
+#: ../stoqlib/lib/parameters.py:825
 msgid ""
 "This is useful when you have several thousand items, but it may cause some "
 "problems as it's new and untested. If you want to preserve the old list "
 "behavior in the payable and receivable applications, disable this parameter."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:828
+#: ../stoqlib/lib/parameters.py:835
 msgid "Current branch for this database"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:829
+#: ../stoqlib/lib/parameters.py:836
 msgid ""
 "When operating with synchronized databases, this parameter will be used to "
 "restrict the data that will be sent to this database."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:836
+#: ../stoqlib/lib/parameters.py:843
 msgid "Synchronized mode operation"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:837
+#: ../stoqlib/lib/parameters.py:844
 msgid ""
 "This parameter indicates if Stoq is operating with synchronized databases. "
 "When using synchronized databases, some operations with branches different "
 "than the current one will be restriced."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:846
+#: ../stoqlib/lib/parameters.py:853
 msgid "Printing of promissory notes on booklets"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:847
+#: ../stoqlib/lib/parameters.py:854
 msgid ""
 "This parameter indicates if Stoq should print promissory notes when printing"
 " booklets for payments."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:855
+#: ../stoqlib/lib/parameters.py:862
 msgid "Printing of promissory notes on loans"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:856
+#: ../stoqlib/lib/parameters.py:863
 msgid ""
 "This parameter indicates if Stoq should print a promissory note when "
 "printing a loan receipt."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:863
+#: ../stoqlib/lib/parameters.py:870
 msgid "Notice that will be added to the loan report"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:864
+#: ../stoqlib/lib/parameters.py:871
 msgid ""
 "This notice will be added to the loan receipt and can be used to warn the "
 "client that he is responsible for the items he is loaning"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:871
+#: ../stoqlib/lib/parameters.py:878
 msgid "Printing of sale details on point of sales"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:872
+#: ../stoqlib/lib/parameters.py:879
 msgid ""
 "This parameter indicates if Stoq should print the sale detailswhen finishing"
 " a sale on point of sales."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:879
+#: ../stoqlib/lib/parameters.py:886
 msgid "Mandatory check number"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:880
+#: ../stoqlib/lib/parameters.py:887
 msgid ""
 "This parameter indicates if the check number on check payments is mandatory."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:887
+#: ../stoqlib/lib/parameters.py:894
 msgid "Allow to add payment on sale quote"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:888
+#: ../stoqlib/lib/parameters.py:895
 msgid ""
 "When enabled, the sale quote wizard will have an extra step to configure the"
 " payments for the sale."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:895
+#: ../stoqlib/lib/parameters.py:902
 msgid "Set authorization number mandatory"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:896
+#: ../stoqlib/lib/parameters.py:903
 msgid "Set the authorization number on card payments as mandatory or not."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:902
+#: ../stoqlib/lib/parameters.py:909
 msgid "Defect detected template for work orders"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:903
+#: ../stoqlib/lib/parameters.py:910
 msgid ""
 "A template to be used to fill the \"Defect detected\" field when creating a "
 "new work order."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:910
+#: ../stoqlib/lib/parameters.py:917
 msgid "Notice that will be added to the work order report"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:911
+#: ../stoqlib/lib/parameters.py:918
 msgid ""
 "This notice will be added to the work order receipt and can be used to warn "
 "the client about warranties and limitations"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:918
+#: ../stoqlib/lib/parameters.py:925
 msgid "Automatic logout after inactivity period"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:919
+#: ../stoqlib/lib/parameters.py:926
 msgid ""
 "Set the maximum time in minutes for the user to remain idle, before being automatically logout. \n"
 "Set to zero to disable the funcionality. Requires restart to take effect."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:927
+#: ../stoqlib/lib/parameters.py:934
 msgid "Automatic update of products cost when making a new purchase."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:928
+#: ../stoqlib/lib/parameters.py:935
 msgid ""
 "When a new purchase is made, it's products cost are set to the purchase's "
 "items cost."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:935
+#: ../stoqlib/lib/parameters.py:942
 msgid "Automatic update the cost of a production product"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:936
+#: ../stoqlib/lib/parameters.py:943
 msgid ""
 "When the list of components is updated or the cost of a component is "
 "updated, the cost of a production product will be automatically updated"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:944
+#: ../stoqlib/lib/parameters.py:951
 msgid "Client birthday notification"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:945
+#: ../stoqlib/lib/parameters.py:952
 msgid "Notify about clients birthdays on the current day."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:952
+#: ../stoqlib/lib/parameters.py:959
 msgid "User hash"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:953
+#: ../stoqlib/lib/parameters.py:960
 msgid ""
 "This hash value is used for integration and communication with stoq api and "
 "stoq link. It will be added on ping requests, tef requests and feedbacks "
