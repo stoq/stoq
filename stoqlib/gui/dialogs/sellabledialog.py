@@ -191,9 +191,9 @@ class SellableMassEditorDialog(MassEditorSearch):
             AccessorField(_('Need Price Update'), None, 'need_price_update',
                           bool, read_only=True, visible=False),
             AccessorField(_('Cost Last Updated'), 'sellable', 'cost_last_updated',
-                          datetime.datetime, read_only=True, visible=False),
+                          datetime.date, read_only=True, visible=False),
             AccessorField(_('Price Last Updated'), 'sellable', 'price_last_updated',
-                          datetime.datetime, read_only=True, visible=False),
+                          datetime.date, read_only=True, visible=False),
 
             # Product Fields
             AccessorField(_('NCM'), 'product', 'ncm', str, visible=False),
