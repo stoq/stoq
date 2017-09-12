@@ -168,6 +168,7 @@ class PurchaseDetailsDialog(BaseEditor):
 
         self.export_csv.set_visible(
             self.model.status == PurchaseOrder.ORDER_QUOTING)
+        self.export_received.set_visible(bool(self.model.get_receiving_orders().any()))
 
         self._setup_summary_labels()
 
@@ -224,11 +225,11 @@ class PurchaseDetailsDialog(BaseEditor):
                 Column('reason', _(u"Reason"), data_type=str,
                        ellipsize=pango.ELLIPSIZE_END)]
 
-    def _export_csv(self):
+    def _export_csv(self, object_list, name, filename_prefix):
         sse = SpreadSheetExporter()
-        sse.export(object_list=self.ordered_items,
-                   name=_('Purchase items'),
-                   filename_prefix=_('purchase-items'))
+        sse.export(object_list=object_list,
+                   name=name,
+                   filename_prefix=filename_prefix)
 
     def _print_report(self):
         if self.model.status == PurchaseOrder.ORDER_QUOTING:
@@ -253,7 +254,10 @@ class PurchaseDetailsDialog(BaseEditor):
                        PurchaseDetailsDialog.receiving_proxy)
 
     def on_export_csv__clicked(self, button):
-        self._export_csv()
+        self._export_csv(self.ordered_items, _('Purchase items'), _('purchase-items'))
+
+    def on_export_received__clicked(self, button):
+        self._export_csv(self.received_items, _('Received items'), _('received-items'))
 
     def on_print_button__clicked(self, button):
         self._print_report()
