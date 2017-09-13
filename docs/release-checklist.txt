@@ -1,12 +1,11 @@
 Update files:
-  * update translations
+  * update and compile translations
   * debian/control
   * debian/changelog
   * docs/manual/pt_BR/changelog.page
   * README
   * stoq/__init__.py
-  * stoq/setup.py
-  * stoq/setup.spec
+  * setup.py
   * stoq/lib/dependencies.py
 
 Update api/manual/schema:

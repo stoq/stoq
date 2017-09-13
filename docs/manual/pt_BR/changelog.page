@@ -29,7 +29,7 @@
   <section id="last-version">
     <title>Novidades da versão 2.1</title>
     <p>
-      Data do lançamento: 2017-05-12
+      Data do lançamento: 2017-09-13
     </p>
 
     <section>
@@ -38,6 +38,11 @@
         <item><p>Nova galeria de imagens, permitindo o registro de mais de uma imagem por produto</p></item>
         <item><p>Novo modo de visão Kanban para o aplicativo Serviços</p></item>
         <item><p>Atualização das tabelas do IBPT</p></item>
+        <item><p>Aperfeiçoamentos nos processos de emissão de NF-e/NFC-e</p></item>
+        <item><p>Suporte inicial à emissão de NFS-e (Nota Fiscal de Serviços Eletrônica)</p></item>
+        <item><p>Adaptações no aplicativo PDV para atender melhor
+                 restaurantes, bares e similares que registram vendas utilizando
+                 comandas.</p></item>
         <item><p>Diversas correções e melhorias</p></item>
       </list>
     </section>
@@ -51,7 +56,8 @@
       <p>
         Cainã D'Ajuda, Christian Robottom Reis, Eduardo Tadahiro Nishizuka,
         Felipe Henrique Bellotti Nehmi, Flavia Fernanda Rocha Moraes,
-        Gabriel Gerga, Luis Oishi, Nihey Luz Takizawa, Ronaldo Maia e Thiago Bellini.
+        Gabriel Gerga, Luis Oishi, Luiz Felipe Machado Votto,
+        Nihey Luz Takizawa, Ronaldo Maia e Thiago Bellini.
       </p>
 
       <p>
