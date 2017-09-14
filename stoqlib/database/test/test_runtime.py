@@ -28,7 +28,7 @@ import mock
 
 from stoqlib.database.exceptions import InterfaceError
 from stoqlib.database.properties import UnicodeCol
-from stoqlib.database.runtime import new_store
+from stoqlib.database.runtime import new_store, StoqlibStore
 from stoqlib.domain.base import Domain
 from stoqlib.domain.person import Person, Client, ClientView
 from stoqlib.domain.test.domaintest import DomainTest
@@ -144,8 +144,8 @@ class StoqlibStoreTest(DomainTest):
         obj.test_var = u'yyy'
         self.assertEqual(store.get_pending_count(), 1)
 
-        # Changing obj after flush should set it dirty again and thus,
-        # increase the pending count
+        # Changing obj after flush should set it dirty again increasing the pending
+        # count.
         store.flush()
         obj.test_var = u'zzz'
         self.assertEqual(store.get_pending_count(), 2)
@@ -236,6 +236,57 @@ class StoqlibStoreTest(DomainTest):
         # Test rollback to an unknown savepoint
         self.assertRaises(ValueError, self.store.rollback_to_savepoint,
                           name='Not existing savepoint')
+
+    def test_rollback_nested_savepoints_with_new_objects(self):
+        outside = WillBeCommitted(store=self.store, test_var=u'outside')
+        self.store.savepoint('first_savepoint')
+        inside = WillBeCommitted(store=self.store, test_var=u'inside_savepoint')
+        self.store.savepoint('second_savepoint')
+        inside_inside = WillBeCommitted(store=self.store, test_var=u'inside_inside_savepoint')
+
+        # All objects are on the same store, but two of them are inside savepoints.
+        self.assertEquals(StoqlibStore.of(outside), self.store)
+        self.assertEquals(StoqlibStore.of(inside), self.store)
+        self.assertEquals(StoqlibStore.of(inside_inside), self.store)
+
+        # Now rollback to the second savepoint
+        self.store.rollback_to_savepoint('second_savepoint')
+        # The event inside_inside object should not be in the store
+        self.assertIsNone(StoqlibStore.of(inside_inside))
+
+        # ... but the other two should still be.
+        self.assertEquals(StoqlibStore.of(inside), self.store)
+        self.assertEquals(StoqlibStore.of(outside), self.store)
+
+        self.store.rollback_to_savepoint('first_savepoint')
+        # The outer inside object should not be in the store
+        self.assertIsNone(StoqlibStore.of(inside))
+
+    def test_rollback_double_savepoint_with_new_objects(self):
+        outside = WillBeCommitted(store=self.store, test_var=u'outside')
+        self.store.savepoint('first_savepoint')
+        inside = WillBeCommitted(store=self.store, test_var=u'inside_savepoint')
+        self.store.savepoint('second_savepoint')
+        inside_inside = WillBeCommitted(store=self.store, test_var=u'inside_inside_savepoint')
+
+        # All objects are on the same store, but tho of them are in savepoints
+        self.assertEquals(StoqlibStore.of(outside), self.store)
+        self.assertEquals(StoqlibStore.of(inside), self.store)
+        self.assertEquals(StoqlibStore.of(inside_inside), self.store)
+
+        # Now rollback to the first savepoint
+        self.store.rollback_to_savepoint('first_savepoint')
+        # ... the two inner objects should not be in the store.
+        self.assertIsNone(StoqlibStore.of(inside))
+        self.assertIsNone(StoqlibStore.of(inside_inside))
+
+        # ... but the ouside one should still be in the store.
+        self.assertEquals(StoqlibStore.of(outside), self.store)
+
+        # It should not be possible to rollback to the second_savepoint, since that was
+        # already done when we rolled back to the first
+        with self.assertRaises(ValueError):
+            self.store.rollback_to_savepoint('second_savepoint')
 
     def test_close(self):
         store = new_store()
