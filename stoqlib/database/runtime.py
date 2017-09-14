@@ -34,7 +34,7 @@ from kiwi.component import get_utility, provide_utility
 from storm import Undef
 from storm.expr import SQL, Avg
 from storm.info import get_obj_info
-from storm.store import Store, ResultSet
+from storm.store import Store, ResultSet, PENDING_REMOVE, PENDING_ADD
 from storm.tracer import trace
 
 from stoqlib.database.exceptions import InterfaceError, OperationalError
@@ -235,7 +235,9 @@ class StoqlibStore(Store):
         """
         self._committing = False
         self._savepoints = []
-        self._pending_count = [0]
+        # When using savepoints, this stack will hold what objects were changed
+        # (created, deleted or edited) inside that savepoint.
+        self._dirties = [[]]
         self.retval = True
         self.obsolete = False
 
@@ -257,7 +259,7 @@ class StoqlibStore(Store):
     def _set_dirty(self, obj_info):
         # Store calls _set_dirty when any object inside it gets modified.
         # We use this to count if any change happened inside the actual savepoint
-        self._pending_count[-1] += 1
+        self._dirties[-1].append((obj_info, obj_info.get("pending")))
         super(StoqlibStore, self)._set_dirty(obj_info)
 
     def find(self, cls_spec, *args, **kwargs):
@@ -427,7 +429,7 @@ class StoqlibStore(Store):
         rolling back to it it will be 10 again. The same applies to a full
         rollback where this will go to 0.
         """
-        return sum(self._pending_count)
+        return sum(len(i) for i in self._dirties)
 
     @public(since="1.5.0")
     def commit(self, close=False):
@@ -450,8 +452,8 @@ class StoqlibStore(Store):
         super(StoqlibStore, self).commit()
         trace('transaction_commit', self)
 
-        self._pending_count = [0]
         self._savepoints = []
+        self._dirties = [[]]
 
         # Reload objects on all other opened stores
         for obj in touched_objs:
@@ -483,6 +485,11 @@ class StoqlibStore(Store):
         # depth error.
         self.block_implicit_flushes()
         for obj_info in self._cache.get_cached():
+            # This is an object that was in the store, but somehow got removed from it,
+            # but not from the cache (issues related with savepoints). Only emit the
+            # event if the object is still in the store.
+            if not obj_info.get('store'):
+                continue
             obj_info.event.emit("before-commited")
         self.unblock_implicit_flushes()
 
@@ -507,7 +514,7 @@ class StoqlibStore(Store):
             super(StoqlibStore, self).rollback()
             # If we rollback completely, we need to clear all savepoints
             self._savepoints = []
-            self._pending_count = [0]
+            self._dirties = [[]]
 
         # Rolling back resets the application name.
         self._setup_application_name()
@@ -573,7 +580,7 @@ class StoqlibStore(Store):
             raise ValueError("Invalid savepoint name: %r" % name)
         self.execute('SAVEPOINT %s' % name)
         self._savepoints.append(name)
-        self._pending_count.append(0)
+        self._dirties.append([])
 
     def rollback_to_savepoint(self, name):
         """Rollsback the store to a previous savepoint that was saved
@@ -590,8 +597,14 @@ class StoqlibStore(Store):
 
         self.execute('ROLLBACK TO SAVEPOINT %s' % name)
         for savepoint in reversed(self._savepoints[:]):
+            # Do the same thing that Store.rollback does
+            for obj_info, pending in self._dirties.pop():
+                if pending is PENDING_ADD:
+                    del obj_info["store"]
+                elif pending is PENDING_REMOVE:
+                    self._enable_lazy_resolving(obj_info)
+
             self._savepoints.remove(savepoint)
-            self._pending_count.pop()
             if savepoint == name:
                 break
 
