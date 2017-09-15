@@ -52,7 +52,7 @@ import subprocess
 import sys
 
 from gi.repository import Gtk, GLib, Gdk
-from kiwi.component import provide_utility
+from kiwi.component import provide_utility, get_utility
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.delegates import GladeSlaveDelegate
@@ -79,6 +79,7 @@ from stoqlib.gui.utils.logo import render_logo_pixbuf
 from stoqlib.gui.utils.openbrowser import open_browser
 from stoqlib.gui.widgets.processview import ProcessView
 from stoqlib.lib.configparser import StoqConfig
+from stoqlib.lib.interfaces import ICookieFile
 from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.message import error, warning, yesno
 from stoqlib.lib.osutils import read_registry_key
@@ -95,6 +96,10 @@ from stoq.lib.startup import setup
 
 logger = logging.getLogger(__name__)
 
+is_windows = platform.system() == 'Windows'
+
+WINDOWS_DEFAULT_USER = 'postgres'
+WINDOWS_DEFAULT_PASSWORD = 'postgres'
 
 LOGO_WIDTH = 91
 LOGO_HEIGHT = 32
@@ -131,7 +136,24 @@ class WelcomeStep(BaseWizardStep):
         self.title_label.set_bold(True)
 
     def next_step(self):
-        return DatabaseLocationStep(self.wizard, self)
+        if not is_windows:
+            return DatabaseLocationStep(self.wizard, self)
+
+        # Windows: First of all lets try to connect to the default postgres
+        # created by our installer. If we can do it, skip database location
+        # step, otherwise, go straight to PostgresAdminPasswordStep
+        settings = self.wizard.settings
+        settings.username = WINDOWS_DEFAULT_USER
+        settings.password = WINDOWS_DEFAULT_PASSWORD
+        settings.dbname = "stoq"
+        settings.address = "localhost"
+        settings.port = 5432
+        if self.wizard.try_connect(settings, warn=False):
+            self.wizard.auth_type = PASSWORD_AUTHENTICATION
+            self.wizard.write_pgpass()
+            return self.wizard.connect_for_settings(self)
+        else:
+            return PostgresAdminPasswordStep(self.wizard, self)
 
 
 class DatabaseLocationStep(BaseWizardStep):
@@ -151,7 +173,7 @@ class DatabaseLocationStep(BaseWizardStep):
         # FIXME: Allow developers to specify another database
         #        is_developer_mode() or STOQ_DATABASE_NAME
         settings.dbname = "stoq"
-        if platform.system() == 'Windows':
+        if is_windows:
             settings.address = "localhost"
             settings.username = "postgres"
             settings.port = self.wizard.get_win32_postgres_port()
@@ -282,6 +304,13 @@ class InstallationModeStep(BaseWizardStep):
 
     def next_step(self):
         self.wizard.create_examples = not self.empty_database_radio.get_active()
+        if is_windows:
+            # Lets create a user without password and set a cookie so that it
+            # auto login
+            self.wizard.options.login_username = 'admin'
+            self.wizard.login_password = u''
+            get_utility(ICookieFile).store('admin', '')
+            return CreateDatabaseStep(self.wizard, self)
         return PluginStep(self.wizard, self)
 
     def on_empty_database_radio__activate(self, radio):
@@ -297,7 +326,7 @@ class PluginStep(BaseWizardStep):
     def post_init(self):
         self.wizard.plugins = []
         self.enable_ecf.grab_focus()
-        if platform.system() == 'Windows':
+        if is_windows:
             self.enable_ecf.set_active(False)
             self.enable_ecf.set_sensitive(False)
 
@@ -340,6 +369,9 @@ class LinkStep(WizardEditorStep):
     #
 
     def _setup_widgets(self):
+        if is_windows:
+            # Make it mandatory to register on windows.
+            self.register_now.hide()
         self.image.set_from_file(
             library.get_resource_filename('stoq', 'pixmaps', 'link_step.png'))
         self.image_eventbox.add_events(Gdk.EventMask.BUTTON_PRESS_MASK |
@@ -707,11 +739,13 @@ class CreateDatabaseStep(BaseWizardStep):
 
         store.close()
 
-        # Secondly, ask the user if he really wants to create the database,
+        # Secondly, ask the user if he really wants to create the database.
+        # Do we really have to ask? The user is installing stoq anyway, he sure
+        # whats to chreate de database
         dbname = settings.dbname
-        if yesno(_(u"The specified database '%s' does not exist.\n"
-                   u"Do you want to create it?") % dbname,
-                 Gtk.ResponseType.YES, _(u"Create database"), _(u"Don't create")):
+        if is_windows or yesno(_(u"The specified database '%s' does not exist.\n"
+                                 u"Do you want to create it?") % dbname,
+                               Gtk.ResponseType.YES, _(u"Create database"), _(u"Don't create")):
             self.process_view.feed("** Creating database\r\n")
             self._launch_stoqdbadmin()
         else:
@@ -725,7 +759,7 @@ class CreateDatabaseStep(BaseWizardStep):
 
         if sys.argv[0].endswith('.egg'):
             args = [sys.executable, sys.argv[0]]
-        elif platform.system() == 'Windows':
+        elif is_windows:
             if library.uninstalled:
                 args = ['stoq.bat']
             else:
@@ -973,7 +1007,7 @@ class FirstTimeConfigWizard(BaseWizard):
 
     def check_incomplete_database(self):
         logger.info('check_incomplete_database (db_is_local=%s)' %
-                   (self.db_is_local, ))
+                    (self.db_is_local, ))
         # If we don't have postgres installed we cannot have
         # an incomplete database
         if self.db_is_local and not test_local_database():
