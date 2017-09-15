@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-12 02:10-0300\n"
-"PO-Revision-Date: 2017-09-09 05:10+0000\n"
+"POT-Creation-Date: 2017-09-14 02:10-0300\n"
+"PO-Revision-Date: 2017-09-14 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/async/stoq/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -146,7 +146,7 @@ msgstr "اح_ذف"
 #: ../data/template/till/purchases.html:14
 #: ../data/template/workorder/quote.html:53 ../stoq/gui/inventory.py:106
 #: ../stoq/gui/payable.py:131 ../stoq/gui/production.py:124
-#: ../stoq/gui/purchase.py:177 ../stoq/gui/receivable.py:152
+#: ../stoq/gui/purchase.py:177 ../stoq/gui/receivable.py:154
 #: ../stoq/gui/sales.py:224 ../stoq/gui/till.py:151
 #: ../stoqlib/gui/editors/accounteditor.py:353
 #: ../stoqlib/gui/editors/accounteditor.py:354
@@ -520,7 +520,7 @@ msgstr ""
 
 #: ../data/glade/CardOperationCostEditor.ui.h:4
 #: ../stoqlib/gui/dialogs/paymentdetails.py:87
-#: ../stoqlib/gui/dialogs/purchasedetails.py:226
+#: ../stoqlib/gui/dialogs/purchasedetails.py:227
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:154
 #: ../stoqlib/gui/dialogs/saledetails.py:293
 msgid "To"
@@ -1060,7 +1060,7 @@ msgid "Salesperson Name:"
 msgstr ""
 
 #: ../data/glade/FinishPurchaseStep.ui.h:2
-#: ../data/glade/PurchaseDetailsDialog.ui.h:20
+#: ../data/glade/PurchaseDetailsDialog.ui.h:21
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:24
 #: ../data/glade/SalesPersonStep.ui.h:3
 #: ../data/template/purchase/purchase-details.html:18
@@ -1069,13 +1069,13 @@ msgid "Transporter:"
 msgstr ""
 
 #: ../data/glade/FinishPurchaseStep.ui.h:3
-#: ../data/glade/PurchaseDetailsDialog.ui.h:23
+#: ../data/glade/PurchaseDetailsDialog.ui.h:24
 msgid "Expected Receival Date:"
 msgstr ""
 
 #. pt_BR: Observações
 #: ../data/glade/FinishPurchaseStep.ui.h:4
-#: ../data/glade/PurchaseDetailsDialog.ui.h:27
+#: ../data/glade/PurchaseDetailsDialog.ui.h:28
 #: ../data/glade/ReceivingOrderDetailsDialog.ui.h:4
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:13
 #: ../data/glade/StartQuoteStep.ui.h:5
@@ -1504,7 +1504,7 @@ msgstr ""
 #: ../data/glade/LoanItemEditor.ui.h:5
 #: ../data/glade/ProductComponentEditor.ui.h:2
 #: ../data/glade/ProductionItemEditor.ui.h:3
-#: ../data/glade/PurchaseDetailsDialog.ui.h:17
+#: ../data/glade/PurchaseDetailsDialog.ui.h:18
 #: ../data/glade/PurchaseItemEditor.ui.h:8
 #: ../data/glade/ReceivingItemEditor.ui.h:6
 #: ../data/glade/SaleQuoteItemSlave.ui.h:5
@@ -1734,7 +1734,7 @@ msgstr ""
 
 #: ../data/glade/PaymentConfirmSlave.ui.h:19 ../stoq/gui/inventory.py:78
 #: ../stoq/gui/payable.py:92 ../stoq/gui/purchase.py:156
-#: ../stoq/gui/receivable.py:105 ../stoq/gui/sales.py:206
+#: ../stoq/gui/receivable.py:107 ../stoq/gui/sales.py:206
 #: ../stoq/gui/services.py:267 ../stoq/gui/till.py:138
 #: ../stoqlib/gui/dialogs/progressbardialog.py:103
 msgid "Details..."
@@ -1762,7 +1762,7 @@ msgid "<b>The following payments will be renegotiated.</b>"
 msgstr ""
 
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:3
-#: ../data/glade/PurchaseDetailsDialog.ui.h:16
+#: ../data/glade/PurchaseDetailsDialog.ui.h:17
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:8
 #: ../data/glade/SaleDetailsDialog.ui.h:10
 #: ../data/glade/SalesPersonStep.ui.h:10
@@ -1772,7 +1772,7 @@ msgid "Subtotal:"
 msgstr ""
 
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:5
-#: ../data/glade/PurchaseDetailsDialog.ui.h:15
+#: ../data/glade/PurchaseDetailsDialog.ui.h:16
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:7
 #: ../data/glade/SaleDetailsDialog.ui.h:9
 msgid "Surcharge:"
@@ -2298,7 +2298,11 @@ msgstr ""
 msgid "Ordered"
 msgstr ""
 
-#: ../data/glade/PurchaseDetailsDialog.ui.h:18
+#: ../data/glade/PurchaseDetailsDialog.ui.h:15
+msgid "Export to spreadsheet"
+msgstr ""
+
+#: ../data/glade/PurchaseDetailsDialog.ui.h:19
 #: ../data/template/payment_flow_history/history-table.html:11
 #: ../data/template/purchase/purchase-items.html:13
 #: ../stoq/gui/purchase.py:275 ../stoqlib/domain/sale.py:575
@@ -2311,7 +2315,7 @@ msgstr ""
 msgid "Received"
 msgstr ""
 
-#: ../data/glade/PurchaseDetailsDialog.ui.h:19
+#: ../data/glade/PurchaseDetailsDialog.ui.h:20
 #: ../data/glade/SaleDetailsDialog.ui.h:3
 #: ../data/glade/SalesPersonQuoteWizardStep.ui.h:1
 #: ../data/glade/SalesPersonStep.ui.h:1
@@ -2321,28 +2325,24 @@ msgstr ""
 msgid "Salesperson:"
 msgstr ""
 
-#: ../data/glade/PurchaseDetailsDialog.ui.h:21
+#: ../data/glade/PurchaseDetailsDialog.ui.h:22
 msgid "Agreed Freight Type:"
 msgstr ""
 
-#: ../data/glade/PurchaseDetailsDialog.ui.h:22
+#: ../data/glade/PurchaseDetailsDialog.ui.h:23
 msgid "Received Freight Type:"
 msgstr ""
 
-#: ../data/glade/PurchaseDetailsDialog.ui.h:24
+#: ../data/glade/PurchaseDetailsDialog.ui.h:25
 msgid "Expected Freight Value:"
 msgstr ""
 
-#: ../data/glade/PurchaseDetailsDialog.ui.h:25
+#: ../data/glade/PurchaseDetailsDialog.ui.h:26
 msgid "Received Freight Value:"
 msgstr ""
 
-#: ../data/glade/PurchaseDetailsDialog.ui.h:26
+#: ../data/glade/PurchaseDetailsDialog.ui.h:27
 msgid "Additional Info"
-msgstr ""
-
-#: ../data/glade/PurchaseDetailsDialog.ui.h:28
-msgid "Export to spreadsheet"
 msgstr ""
 
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:1
@@ -2572,7 +2572,7 @@ msgid "Returned Sale:"
 msgstr ""
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:9
-#: ../data/glade/TransferOrderDetails.ui.h:2 ../stoq/gui/receivable.py:151
+#: ../data/glade/TransferOrderDetails.ui.h:2 ../stoq/gui/receivable.py:153
 #: ../stoq/gui/stock.py:158 ../stoq/gui/stock.py:397
 #: ../stoqlib/domain/account.py:157
 #: ../stoqlib/gui/dialogs/returnedsaledialog.py:140
@@ -2595,7 +2595,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/inventorydetails.py:142
 #: ../stoqlib/gui/dialogs/paymentdetails.py:89
 #: ../stoqlib/gui/dialogs/productstockdetails.py:292
-#: ../stoqlib/gui/dialogs/purchasedetails.py:228
+#: ../stoqlib/gui/dialogs/purchasedetails.py:229
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:156
 #: ../stoqlib/gui/dialogs/saledetails.py:295
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:172
@@ -2635,7 +2635,7 @@ msgstr ""
 #: ../data/glade/SaleDetailsDialog.ui.h:21
 #: ../data/glade/TransferOrderDetails.ui.h:11
 #: ../data/template/transfer/transfer.html:93 ../stoq/gui/payable.py:173
-#: ../stoq/gui/receivable.py:196
+#: ../stoq/gui/receivable.py:206
 msgid "Comments"
 msgstr ""
 
@@ -3445,8 +3445,8 @@ msgstr ""
 #: ../plugins/optical/medicssearch.py:128 ../stoq/gui/financial.py:232
 #: ../stoq/gui/financial.py:250 ../stoq/gui/payable.py:167
 #: ../stoq/gui/payable.py:170 ../stoq/gui/pos.py:356
-#: ../stoq/gui/production.py:173 ../stoq/gui/receivable.py:188
-#: ../stoq/gui/receivable.py:193 ../stoq/gui/stock.py:262
+#: ../stoq/gui/production.py:173 ../stoq/gui/receivable.py:190
+#: ../stoq/gui/receivable.py:195 ../stoq/gui/stock.py:262
 #: ../stoqlib/gui/dialogs/clientdetails.py:264
 #: ../stoqlib/gui/dialogs/clientdetails.py:292
 #: ../stoqlib/gui/dialogs/clientdetails.py:352
@@ -3468,9 +3468,9 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/productiondetails.py:120
 #: ../stoqlib/gui/dialogs/productionquotedialog.py:138
 #: ../stoqlib/gui/dialogs/productstockdetails.py:246
-#: ../stoqlib/gui/dialogs/purchasedetails.py:183
-#: ../stoqlib/gui/dialogs/purchasedetails.py:192
-#: ../stoqlib/gui/dialogs/purchasedetails.py:204
+#: ../stoqlib/gui/dialogs/purchasedetails.py:184
+#: ../stoqlib/gui/dialogs/purchasedetails.py:193
+#: ../stoqlib/gui/dialogs/purchasedetails.py:205
 #: ../stoqlib/gui/dialogs/quotedialog.py:91
 #: ../stoqlib/gui/dialogs/receivingdialog.py:93
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:120
@@ -3562,17 +3562,17 @@ msgstr ""
 #: ../data/template/booklet/bill.html:24
 #: ../data/template/booklet/receipt.html:27
 #: ../data/template/payment_flow_history/history-table.html:47
-#: ../stoq/gui/financial.py:248 ../stoq/gui/payable.py:178
-#: ../stoq/gui/receivable.py:203 ../stoqlib/gui/dialogs/clientdetails.py:355
+#: ../stoq/gui/financial.py:248 ../stoq/gui/payable.py:180
+#: ../stoq/gui/receivable.py:215 ../stoqlib/gui/dialogs/clientdetails.py:355
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:74
-#: ../stoqlib/gui/dialogs/purchasedetails.py:206
+#: ../stoqlib/gui/dialogs/purchasedetails.py:207
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:122
 #: ../stoqlib/gui/dialogs/saledetails.py:252
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:103
 #: ../stoqlib/gui/dialogs/supplierdetails.py:141
 #: ../stoqlib/gui/editors/paymenteditor.py:86
 #: ../stoqlib/gui/search/paymentsearch.py:82
-#: ../stoqlib/gui/search/paymentsearch.py:178
+#: ../stoqlib/gui/search/paymentsearch.py:182
 #: ../stoqlib/gui/slaves/paymentslave.py:279
 #: ../stoqlib/gui/slaves/paymentslave.py:1310
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:126
@@ -3587,13 +3587,13 @@ msgstr ""
 #: ../data/template/payment_flow_history/history-table.html:45
 #: ../data/template/till/purchases.html:15 ../data/template/till/sales.html:9
 #: ../plugins/ecf/deviceconstanteditor.py:134 ../stoq/gui/financial.py:252
-#: ../stoq/gui/payable.py:187 ../stoq/gui/receivable.py:211
+#: ../stoq/gui/payable.py:189 ../stoq/gui/receivable.py:223
 #: ../stoqlib/gui/dialogs/clientdetails.py:270
 #: ../stoqlib/gui/dialogs/clientdetails.py:361
 #: ../stoqlib/gui/dialogs/clientdetails.py:411
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:80
 #: ../stoqlib/gui/dialogs/creditdialog.py:49
-#: ../stoqlib/gui/dialogs/purchasedetails.py:210
+#: ../stoqlib/gui/dialogs/purchasedetails.py:211
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:128
 #: ../stoqlib/gui/dialogs/saledetails.py:258
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:107
@@ -3607,7 +3607,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/sellableeditor.py:79
 #: ../stoqlib/gui/search/paymentreceivingsearch.py:129
 #: ../stoqlib/gui/search/paymentsearch.py:91
-#: ../stoqlib/gui/search/paymentsearch.py:185
+#: ../stoqlib/gui/search/paymentsearch.py:191
 #: ../stoqlib/gui/search/tillsearch.py:122
 #: ../stoqlib/gui/slaves/paymentconfirmslave.py:280
 #: ../stoqlib/gui/slaves/paymentslave.py:281
@@ -3789,10 +3789,10 @@ msgstr ""
 #: ../data/template/booklet/bill.html:20
 #: ../data/template/booklet/receipt.html:17
 #: ../data/template/payment_receipt/receipt.html:8
-#: ../stoq/gui/receivable.py:198 ../stoqlib/gui/editors/accounteditor.py:353
+#: ../stoq/gui/receivable.py:208 ../stoqlib/gui/editors/accounteditor.py:353
 #: ../stoqlib/gui/search/fiscalsearch.py:124
 #: ../stoqlib/gui/search/paymentreceivingsearch.py:125
-#: ../stoqlib/gui/search/paymentsearch.py:170
+#: ../stoqlib/gui/search/paymentsearch.py:174
 msgid "Drawee"
 msgstr ""
 
@@ -3832,11 +3832,11 @@ msgstr ""
 #: ../data/template/booklet/bill.html:52
 #: ../data/template/booklet/receipt.html:34
 #: ../data/template/booklet/receipt.html:37 ../plugins/ecf/ecfdomain.py:273
-#: ../stoq/gui/payable.py:91 ../stoq/gui/receivable.py:104
+#: ../stoq/gui/payable.py:91 ../stoq/gui/receivable.py:106
 #: ../stoqlib/domain/account.py:159 ../stoqlib/domain/event.py:81
 #: ../stoqlib/gui/dialogs/clientdetails.py:345
 #: ../stoqlib/gui/dialogs/paymentdetails.py:80
-#: ../stoqlib/gui/dialogs/purchasedetails.py:220
+#: ../stoqlib/gui/dialogs/purchasedetails.py:221
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:147
 #: ../stoqlib/gui/dialogs/saledetails.py:286
 #: ../stoqlib/gui/slaves/paymentslave.py:1030 ../stoqlib/lib/invoice.py:885
@@ -4050,7 +4050,7 @@ msgstr ""
 #: ../data/template/purchase/purchase-items.html:6
 #: ../data/template/quote/quote-items.html:6
 #: ../plugins/books/bookssearch.py:81 ../plugins/optical/medicssearch.py:125
-#: ../stoq/gui/payable.py:191 ../stoq/gui/receivable.py:216
+#: ../stoq/gui/payable.py:193 ../stoq/gui/receivable.py:228
 #: ../stoq/gui/services.py:415 ../stoq/gui/stock.py:260
 #: ../stoqlib/domain/uiform.py:133
 #: ../stoqlib/gui/dialogs/clientcategorydialog.py:45
@@ -4156,8 +4156,8 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:66
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:97
 #: ../stoqlib/gui/dialogs/purchasedetails.py:144
-#: ../stoqlib/gui/dialogs/purchasedetails.py:189
-#: ../stoqlib/gui/dialogs/purchasedetails.py:198
+#: ../stoqlib/gui/dialogs/purchasedetails.py:190
+#: ../stoqlib/gui/dialogs/purchasedetails.py:199
 #: ../stoqlib/gui/dialogs/receivingdialog.py:101
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:142
 #: ../stoqlib/gui/dialogs/returnedsaledialog.py:101
@@ -4233,7 +4233,7 @@ msgstr ""
 #: ../plugins/optical/medicssearch.py:140
 #: ../stoqlib/gui/dialogs/clientdetails.py:234
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:65
-#: ../stoqlib/gui/dialogs/purchasedetails.py:186
+#: ../stoqlib/gui/dialogs/purchasedetails.py:187
 #: ../stoqlib/gui/dialogs/saledetails.py:274
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:120
 #: ../stoqlib/gui/search/productsearch.py:558
@@ -4310,17 +4310,17 @@ msgid "Last balance"
 msgstr ""
 
 #: ../data/template/payment_flow_history/history-table.html:9
-#: ../stoq/gui/receivable.py:430
+#: ../stoq/gui/receivable.py:457
 msgid "To receive"
 msgstr ""
 
 #: ../data/template/payment_flow_history/history-table.html:10
-#: ../stoq/gui/payable.py:399
+#: ../stoq/gui/payable.py:401
 msgid "To pay"
 msgstr ""
 
 #: ../data/template/payment_flow_history/history-table.html:12
-#: ../stoq/gui/payable.py:189 ../stoq/gui/receivable.py:213
+#: ../stoq/gui/payable.py:191 ../stoq/gui/receivable.py:225
 #: ../stoq/gui/sales.py:296 ../stoqlib/domain/payment/payment.py:141
 #: ../stoqlib/domain/payment/renegotiation.py:64
 msgid "Paid"
@@ -4338,15 +4338,15 @@ msgstr ""
 #: ../data/template/production/production-details.html:13
 #: ../data/template/till/purchases.html:7
 #: ../data/template/transfer/transfer.html:24 ../stoq/gui/delivery.py:203
-#: ../stoq/gui/inventory.py:156 ../stoq/gui/payable.py:183
+#: ../stoq/gui/inventory.py:156 ../stoq/gui/payable.py:185
 #: ../stoq/gui/production.py:171 ../stoq/gui/purchase.py:261
-#: ../stoq/gui/receivable.py:207 ../stoq/gui/sales.py:287
+#: ../stoq/gui/receivable.py:219 ../stoq/gui/sales.py:287
 #: ../stoq/gui/services.py:412 ../stoq/gui/till.py:221
-#: ../stoqlib/domain/payment/views.py:429 ../stoqlib/domain/workorder.py:1181
+#: ../stoqlib/domain/payment/views.py:433 ../stoqlib/domain/workorder.py:1181
 #: ../stoqlib/gui/dialogs/clientdetails.py:192
 #: ../stoqlib/gui/dialogs/clientdetails.py:359
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:79
-#: ../stoqlib/gui/dialogs/purchasedetails.py:209
+#: ../stoqlib/gui/dialogs/purchasedetails.py:210
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:127
 #: ../stoqlib/gui/dialogs/saledetails.py:257
 #: ../stoqlib/gui/dialogs/supplierdetails.py:119
@@ -4357,7 +4357,7 @@ msgstr ""
 #: ../stoqlib/gui/search/creditcheckhistorysearch.py:83
 #: ../stoqlib/gui/search/deliverysearch.py:90
 #: ../stoqlib/gui/search/paymentsearch.py:88
-#: ../stoqlib/gui/search/paymentsearch.py:182
+#: ../stoqlib/gui/search/paymentsearch.py:188
 #: ../stoqlib/gui/search/personsearch.py:116
 #: ../stoqlib/gui/search/personsearch.py:321
 #: ../stoqlib/gui/search/personsearch.py:358
@@ -4383,15 +4383,15 @@ msgid "Paid/Received"
 msgstr ""
 
 #: ../data/template/payment_flow_history/history-table.html:48
-#: ../stoq/gui/payable.py:181 ../stoq/gui/receivable.py:205
+#: ../stoq/gui/payable.py:183 ../stoq/gui/receivable.py:217
 #: ../stoqlib/gui/dialogs/clientdetails.py:357
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:77
-#: ../stoqlib/gui/dialogs/purchasedetails.py:208
+#: ../stoqlib/gui/dialogs/purchasedetails.py:209
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:125
 #: ../stoqlib/gui/dialogs/saledetails.py:255
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:105
-#: ../stoqlib/gui/search/paymentsearch.py:85
-#: ../stoqlib/gui/search/paymentsearch.py:180
+#: ../stoqlib/gui/search/paymentsearch.py:86
+#: ../stoqlib/gui/search/paymentsearch.py:186
 #: ../stoqlib/gui/slaves/paymentconfirmslave.py:279
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:129
 msgid "Paid date"
@@ -4504,8 +4504,8 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/inventorydetails.py:100
 #: ../stoqlib/gui/dialogs/productstockdetails.py:193
 #: ../stoqlib/gui/dialogs/productstockdetails.py:283
-#: ../stoqlib/gui/dialogs/purchasedetails.py:187
-#: ../stoqlib/gui/dialogs/purchasedetails.py:196
+#: ../stoqlib/gui/dialogs/purchasedetails.py:188
+#: ../stoqlib/gui/dialogs/purchasedetails.py:197
 #: ../stoqlib/gui/dialogs/quotedialog.py:95
 #: ../stoqlib/gui/dialogs/receivingdialog.py:98
 #: ../stoqlib/gui/dialogs/sellabledialog.py:179
@@ -4732,7 +4732,7 @@ msgstr ""
 msgid "Per Payment Method"
 msgstr ""
 
-#: ../data/template/till/summary.html:6
+#: ../data/template/till/summary.html:6 ../stoq/gui/receivable.py:198
 #: ../stoqlib/gui/dialogs/paymentmethod.py:84
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:152
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:91
@@ -4802,6 +4802,7 @@ msgstr ""
 
 #: ../data/template/transfer/transfer.html:28
 #: ../plugins/optical/medicssearch.py:120 ../stoq/gui/delivery.py:215
+#: ../stoq/gui/payable.py:178 ../stoq/gui/receivable.py:213
 #: ../stoq/gui/sales.py:298 ../stoq/gui/services.py:437
 #: ../stoqlib/gui/dialogs/clientdetails.py:316
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:91
@@ -4812,6 +4813,8 @@ msgstr ""
 #: ../stoqlib/gui/search/deliverysearch.py:104
 #: ../stoqlib/gui/search/loansearch.py:75
 #: ../stoqlib/gui/search/loansearch.py:142
+#: ../stoqlib/gui/search/paymentsearch.py:84
+#: ../stoqlib/gui/search/paymentsearch.py:184
 #: ../stoqlib/gui/search/transfersearch.py:140
 #: ../stoqlib/gui/search/transfersearch.py:188
 #: ../stoqlib/gui/search/workordersearch.py:69
@@ -5001,9 +5004,10 @@ msgid "publishers"
 msgstr ""
 
 #: ../plugins/books/publishersearch.py:63 ../stoq/gui/delivery.py:326
-#: ../stoq/gui/inventory.py:175 ../stoq/gui/payable.py:390
+#: ../stoq/gui/inventory.py:175 ../stoq/gui/payable.py:392
 #: ../stoq/gui/production.py:217 ../stoq/gui/purchase.py:428
-#: ../stoq/gui/receivable.py:259 ../stoq/gui/sales.py:423
+#: ../stoq/gui/receivable.py:255 ../stoq/gui/receivable.py:261
+#: ../stoq/gui/receivable.py:286 ../stoq/gui/sales.py:423
 #: ../stoq/gui/services.py:521 ../stoq/gui/till.py:276 ../stoqlib/api.py:186
 #: ../stoqlib/gui/search/deliverysearch.py:60
 #: ../stoqlib/gui/search/deliverysearch.py:65
@@ -5012,6 +5016,7 @@ msgstr ""
 #: ../stoqlib/gui/search/paymentsearch.py:69
 #: ../stoqlib/gui/search/paymentsearch.py:138
 #: ../stoqlib/gui/search/paymentsearch.py:146
+#: ../stoqlib/gui/search/paymentsearch.py:220
 #: ../stoqlib/gui/search/personsearch.py:93
 #: ../stoqlib/gui/search/personsearch.py:99
 #: ../stoqlib/gui/search/personsearch.py:189
@@ -6647,7 +6652,7 @@ msgstr ""
 
 #. Search
 #: ../stoq/gui/admin.py:392 ../stoq/gui/payable.py:118
-#: ../stoq/gui/receivable.py:137
+#: ../stoq/gui/receivable.py:139
 msgid "Payment categories..."
 msgstr ""
 
@@ -6862,7 +6867,7 @@ msgid "Show accounts payable in the list"
 msgstr ""
 
 #. TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
-#: ../stoq/gui/calendar.py:309 ../stoq/gui/receivable.py:77
+#: ../stoq/gui/calendar.py:309 ../stoq/gui/receivable.py:79
 msgid "Accounts receivable"
 msgstr ""
 
@@ -7192,7 +7197,7 @@ msgstr ""
 
 #: ../stoq/gui/delivery.py:57 ../stoq/gui/payable.py:68
 #: ../stoq/gui/production.py:59 ../stoq/gui/purchase.py:78
-#: ../stoq/gui/receivable.py:80 ../stoq/gui/sales.py:106
+#: ../stoq/gui/receivable.py:82 ../stoq/gui/sales.py:106
 #: ../stoq/gui/services.py:207 ../stoq/gui/till.py:83
 #: ../stoqlib/gui/search/personsearch.py:169
 #: ../stoqlib/gui/search/personsearch.py:245
@@ -7412,11 +7417,11 @@ msgstr ""
 
 #. TODO: Adicionar filtro por card_type
 #: ../stoq/gui/financial.py:249 ../stoq/gui/payable.py:166
-#: ../stoq/gui/receivable.py:187 ../stoqlib/gui/dialogs/clientdetails.py:349
+#: ../stoq/gui/receivable.py:189 ../stoqlib/gui/dialogs/clientdetails.py:349
 #: ../stoqlib/gui/dialogs/clientdetails.py:406
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:69
 #: ../stoqlib/gui/dialogs/creditdialog.py:44
-#: ../stoqlib/gui/dialogs/purchasedetails.py:203
+#: ../stoqlib/gui/dialogs/purchasedetails.py:204
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:117
 #: ../stoqlib/gui/dialogs/saledetails.py:247
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:98
@@ -7712,7 +7717,7 @@ msgstr ""
 msgid "Create a new account payable"
 msgstr ""
 
-#: ../stoq/gui/payable.py:86 ../stoq/gui/receivable.py:98
+#: ../stoq/gui/payable.py:86 ../stoq/gui/receivable.py:100
 msgid "Payment _flow history..."
 msgstr ""
 
@@ -7721,7 +7726,7 @@ msgstr ""
 msgid "Show a report of payment expected to receive grouped by day"
 msgstr ""
 
-#: ../stoq/gui/payable.py:94 ../stoq/gui/receivable.py:107
+#: ../stoq/gui/payable.py:94 ../stoq/gui/receivable.py:109
 #: ../stoqlib/gui/utils/keybindings.py:183
 #: ../stoqlib/gui/utils/keybindings.py:315
 msgid "Show details for the selected payment"
@@ -7735,71 +7740,71 @@ msgstr ""
 msgid "Pay the order associated with the selected payment"
 msgstr ""
 
-#: ../stoq/gui/payable.py:98 ../stoq/gui/receivable.py:123
+#: ../stoq/gui/payable.py:98 ../stoq/gui/receivable.py:125
 msgid "Edit installments..."
 msgstr ""
 
-#: ../stoq/gui/payable.py:100 ../stoq/gui/receivable.py:125
+#: ../stoq/gui/payable.py:100 ../stoq/gui/receivable.py:127
 #: ../stoqlib/gui/utils/keybindings.py:187
 #: ../stoqlib/gui/utils/keybindings.py:327
 msgid "Edit the selected payment installments"
 msgstr ""
 
-#: ../stoq/gui/payable.py:103 ../stoq/gui/receivable.py:113
+#: ../stoq/gui/payable.py:103 ../stoq/gui/receivable.py:115
 #: ../stoqlib/gui/utils/keybindings.py:189
 #: ../stoqlib/gui/utils/keybindings.py:319
 msgid "Cancel the selected payment"
 msgstr ""
 
-#: ../stoq/gui/payable.py:104 ../stoq/gui/receivable.py:114
+#: ../stoq/gui/payable.py:104 ../stoq/gui/receivable.py:116
 msgid "Set as not paid..."
 msgstr ""
 
-#: ../stoq/gui/payable.py:106 ../stoq/gui/receivable.py:116
+#: ../stoq/gui/payable.py:106 ../stoq/gui/receivable.py:118
 #: ../stoqlib/gui/utils/keybindings.py:191
 #: ../stoqlib/gui/utils/keybindings.py:321
 msgid "Mark the selected payment as not paid"
 msgstr ""
 
-#: ../stoq/gui/payable.py:107 ../stoq/gui/receivable.py:117
+#: ../stoq/gui/payable.py:107 ../stoq/gui/receivable.py:119
 msgid "Change due date..."
 msgstr ""
 
-#: ../stoq/gui/payable.py:109 ../stoq/gui/receivable.py:119
+#: ../stoq/gui/payable.py:109 ../stoq/gui/receivable.py:121
 msgid "Change the due date of the selected payment"
 msgstr ""
 
-#: ../stoq/gui/payable.py:110 ../stoq/gui/receivable.py:126
+#: ../stoq/gui/payable.py:110 ../stoq/gui/receivable.py:128
 msgid "Comments..."
 msgstr ""
 
-#: ../stoq/gui/payable.py:112 ../stoq/gui/receivable.py:128
+#: ../stoq/gui/payable.py:112 ../stoq/gui/receivable.py:130
 #: ../stoqlib/gui/utils/keybindings.py:195
 #: ../stoqlib/gui/utils/keybindings.py:329
 msgid "Add comments to the selected payment"
 msgstr ""
 
-#: ../stoq/gui/payable.py:113 ../stoq/gui/receivable.py:132
+#: ../stoq/gui/payable.py:113 ../stoq/gui/receivable.py:134
 msgid "Print _receipt..."
 msgstr ""
 
-#: ../stoq/gui/payable.py:115 ../stoq/gui/receivable.py:134
+#: ../stoq/gui/payable.py:115 ../stoq/gui/receivable.py:136
 #: ../stoqlib/gui/utils/keybindings.py:197
 #: ../stoqlib/gui/utils/keybindings.py:333
 msgid "Print a receipt for the selected payment"
 msgstr ""
 
-#: ../stoq/gui/payable.py:120 ../stoq/gui/receivable.py:139
+#: ../stoq/gui/payable.py:120 ../stoq/gui/receivable.py:141
 #: ../stoqlib/gui/utils/keybindings.py:199
 #: ../stoqlib/gui/utils/keybindings.py:335
 msgid "Search for payment categories"
 msgstr ""
 
-#: ../stoq/gui/payable.py:121 ../stoq/gui/receivable.py:140
+#: ../stoq/gui/payable.py:121 ../stoq/gui/receivable.py:142
 msgid "Bills and checks..."
 msgstr ""
 
-#: ../stoq/gui/payable.py:123 ../stoq/gui/receivable.py:142
+#: ../stoq/gui/payable.py:123 ../stoq/gui/receivable.py:144
 msgid "Search for bills and checks"
 msgstr ""
 
@@ -7815,9 +7820,9 @@ msgstr ""
 msgid "Print a report of these payments"
 msgstr ""
 
-#: ../stoq/gui/payable.py:190 ../stoq/gui/receivable.py:214
+#: ../stoq/gui/payable.py:192 ../stoq/gui/receivable.py:226
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:82
-#: ../stoqlib/gui/dialogs/purchasedetails.py:213
+#: ../stoqlib/gui/dialogs/purchasedetails.py:214
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:132
 #: ../stoqlib/gui/dialogs/saledetails.py:262
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:109
@@ -7826,24 +7831,24 @@ msgstr ""
 msgid "Paid value"
 msgstr ""
 
-#: ../stoq/gui/payable.py:192 ../stoq/gui/receivable.py:217
+#: ../stoq/gui/payable.py:194 ../stoq/gui/receivable.py:229
 msgid "Payment category"
 msgstr ""
 
-#: ../stoq/gui/payable.py:202 ../stoq/gui/receivable.py:226
+#: ../stoq/gui/payable.py:204 ../stoq/gui/receivable.py:238
 msgid "Paid or due date"
 msgstr ""
 
-#: ../stoq/gui/payable.py:292
+#: ../stoq/gui/payable.py:294
 msgid ""
 "Can't confirm the payment if the purchase is not completely received yet."
 msgstr ""
 
-#: ../stoq/gui/payable.py:398
+#: ../stoq/gui/payable.py:400
 msgid "Paid payments"
 msgstr ""
 
-#: ../stoq/gui/payable.py:400 ../stoq/gui/receivable.py:431
+#: ../stoq/gui/payable.py:402 ../stoq/gui/receivable.py:458
 msgid "Late payments"
 msgstr ""
 
@@ -8475,84 +8480,88 @@ msgid "File saved in %s"
 msgstr ""
 
 #. File
-#: ../stoq/gui/receivable.py:94
+#: ../stoq/gui/receivable.py:96
 msgid "Account receivable..."
 msgstr ""
 
-#: ../stoq/gui/receivable.py:96 ../stoqlib/gui/utils/keybindings.py:311
+#: ../stoq/gui/receivable.py:98 ../stoqlib/gui/utils/keybindings.py:311
 msgid "Create a new account receivable"
 msgstr ""
 
-#: ../stoq/gui/receivable.py:100
+#: ../stoq/gui/receivable.py:102
 msgid "Export bills..."
 msgstr ""
 
-#: ../stoq/gui/receivable.py:108
+#: ../stoq/gui/receivable.py:110
 msgid "Receive..."
 msgstr ""
 
-#: ../stoq/gui/receivable.py:110
+#: ../stoq/gui/receivable.py:112
 msgid "Receive the selected payments"
 msgstr ""
 
-#: ../stoq/gui/receivable.py:111
+#: ../stoq/gui/receivable.py:113
 msgid "Cancel payment..."
 msgstr ""
 
-#: ../stoq/gui/receivable.py:120
+#: ../stoq/gui/receivable.py:122
 msgid "Renegotiate..."
 msgstr ""
 
-#: ../stoq/gui/receivable.py:122
+#: ../stoq/gui/receivable.py:124
 msgid "Renegotiate the selected payments"
 msgstr ""
 
-#: ../stoq/gui/receivable.py:129
+#: ../stoq/gui/receivable.py:131
 msgid "Print document..."
 msgstr ""
 
-#: ../stoq/gui/receivable.py:131 ../stoqlib/gui/utils/keybindings.py:331
+#: ../stoq/gui/receivable.py:133 ../stoqlib/gui/utils/keybindings.py:331
 msgid "Print a bill for the selected payment"
 msgstr ""
 
-#: ../stoq/gui/receivable.py:143 ../stoq/gui/till.py:113
+#: ../stoq/gui/receivable.py:145 ../stoq/gui/till.py:113
 msgid "Card payments..."
 msgstr ""
 
-#: ../stoq/gui/receivable.py:145 ../stoq/gui/till.py:114
+#: ../stoq/gui/receivable.py:147 ../stoq/gui/till.py:114
 #: ../stoqlib/gui/utils/keybindings.py:339
 msgid "Search for card payments"
 msgstr ""
 
-#: ../stoq/gui/receivable.py:149
+#: ../stoq/gui/receivable.py:151
 msgid "Accounts receivable help"
 msgstr ""
 
-#: ../stoq/gui/receivable.py:158
+#: ../stoq/gui/receivable.py:160
 msgid "Print a report of this payments"
 msgstr ""
 
-#: ../stoq/gui/receivable.py:191 ../stoqlib/gui/dialogs/clientdetails.py:268
+#: ../stoq/gui/receivable.py:193 ../stoqlib/gui/dialogs/clientdetails.py:268
 msgid "Sale date"
 msgstr ""
 
-#: ../stoq/gui/receivable.py:200
+#: ../stoq/gui/receivable.py:202 ../stoqlib/gui/search/paymentsearch.py:170
+msgid "Card Type"
+msgstr ""
+
+#: ../stoq/gui/receivable.py:210
 msgid "Drawee fancy name"
 msgstr ""
 
-#: ../stoq/gui/receivable.py:429
+#: ../stoq/gui/receivable.py:456
 msgid "Received payments"
 msgstr ""
 
-#: ../stoq/gui/receivable.py:498
+#: ../stoq/gui/receivable.py:525
 msgid "Cannot renegotiate selected payments"
 msgstr ""
 
-#: ../stoq/gui/receivable.py:540
+#: ../stoq/gui/receivable.py:567
 msgid "No bill payments were selected"
 msgstr ""
 
-#: ../stoq/gui/receivable.py:553
+#: ../stoq/gui/receivable.py:580
 msgid "An error ocurred while generating the CNAB"
 msgstr ""
 
@@ -10567,7 +10576,7 @@ msgstr ""
 msgid "Renegotiated"
 msgstr ""
 
-#: ../stoqlib/domain/payment/views.py:427
+#: ../stoqlib/domain/payment/views.py:431
 #: ../stoqlib/gui/search/paymentreceivingsearch.py:127
 msgid "Due Date"
 msgstr ""
@@ -11913,12 +11922,12 @@ msgid "Adjusted"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/inventorydetails.py:121
-#: ../stoqlib/gui/dialogs/purchasedetails.py:234
+#: ../stoqlib/gui/dialogs/purchasedetails.py:261
 msgid "Purchase items"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/inventorydetails.py:122
-#: ../stoqlib/gui/dialogs/purchasedetails.py:235
+#: ../stoqlib/gui/dialogs/purchasedetails.py:261
 msgid "purchase-items"
 msgstr ""
 
@@ -11954,7 +11963,7 @@ msgid "Sale Invoice Dialog"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/labeldialog.py:44
-#: ../stoqlib/gui/dialogs/purchasedetails.py:180
+#: ../stoqlib/gui/dialogs/purchasedetails.py:181
 #: ../stoqlib/gui/dialogs/receivingdialog.py:87
 #: ../stoqlib/gui/editors/sellableeditor.py:253
 #: ../stoqlib/gui/wizards/receivingwizard.py:458
@@ -12135,21 +12144,21 @@ msgid "Payment Comments"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/paymentdetails.py:78
-#: ../stoqlib/gui/dialogs/purchasedetails.py:218
+#: ../stoqlib/gui/dialogs/purchasedetails.py:219
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:145
 #: ../stoqlib/gui/dialogs/saledetails.py:284
 msgid "When"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/paymentdetails.py:83
-#: ../stoqlib/gui/dialogs/purchasedetails.py:222
+#: ../stoqlib/gui/dialogs/purchasedetails.py:223
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:150
 #: ../stoqlib/gui/dialogs/saledetails.py:289
 msgid "Changed"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/paymentdetails.py:85
-#: ../stoqlib/gui/dialogs/purchasedetails.py:224
+#: ../stoqlib/gui/dialogs/purchasedetails.py:225
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:152
 #: ../stoqlib/gui/dialogs/saledetails.py:291
 msgid "From"
@@ -12413,13 +12422,21 @@ msgstr ""
 msgid "Purchase Details"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/purchasedetails.py:195
+#: ../stoqlib/gui/dialogs/purchasedetails.py:196
 #: ../stoqlib/gui/wizards/receivingwizard.py:152
 msgid "Qty Received"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/purchasedetails.py:199
+#: ../stoqlib/gui/dialogs/purchasedetails.py:200
 msgid "Current Stock"
+msgstr ""
+
+#: ../stoqlib/gui/dialogs/purchasedetails.py:264
+msgid "Received items"
+msgstr ""
+
+#: ../stoqlib/gui/dialogs/purchasedetails.py:264
+msgid "received-items"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/quotedialog.py:80
@@ -13443,7 +13460,7 @@ msgid "The bill has arrived."
 msgstr ""
 
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:128
-#: ../stoqlib/gui/search/paymentsearch.py:172
+#: ../stoqlib/gui/search/paymentsearch.py:176
 msgid "Card Device"
 msgstr ""
 
@@ -13476,12 +13493,12 @@ msgid "Device"
 msgstr ""
 
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:372
-#: ../stoqlib/gui/search/paymentsearch.py:176
+#: ../stoqlib/gui/search/paymentsearch.py:180
 msgid "Provider"
 msgstr ""
 
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:374
-#: ../stoqlib/gui/search/paymentsearch.py:190
+#: ../stoqlib/gui/search/paymentsearch.py:196
 msgid "Authorization"
 msgstr ""
 
@@ -13538,14 +13555,14 @@ msgstr ""
 
 #. Translators: Fee is Taxa in pt_BR
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:512
-#: ../stoqlib/gui/search/paymentsearch.py:189
+#: ../stoqlib/gui/search/paymentsearch.py:195
 #: ../stoqlib/reporting/payment.py:76
 msgid "Fee"
 msgstr ""
 
 #. Translators: Fare is Tarifa in pt_BR
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:515
-#: ../stoqlib/gui/search/paymentsearch.py:186
+#: ../stoqlib/gui/search/paymentsearch.py:192
 msgid "Fare"
 msgstr ""
 
@@ -14697,7 +14714,7 @@ msgstr ""
 msgid "Card Payment Search"
 msgstr ""
 
-#: ../stoqlib/gui/search/paymentsearch.py:187
+#: ../stoqlib/gui/search/paymentsearch.py:193
 msgid "% Fee"
 msgstr ""
 
