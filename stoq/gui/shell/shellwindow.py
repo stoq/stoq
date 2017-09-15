@@ -406,10 +406,10 @@ class ShellWindow(GladeDelegate):
         if api.user_settings.get('hide-demo-warning'):
             return
 
-        button_label = _('Enable production mode')
-        title = _('You are using Stoq in demonstration mode.')
+        button_label = _('Use my own data')
+        title = _('You are using Stoq with example data.')
         desc = (_("Some features are limited due to fiscal reasons. "
-                  "Click on '%s' to remove the limitations and finish the demonstration.")
+                  "Click on '%s' to remove the limitations.")
                 % button_label)
         msg = '<b>%s</b>\n%s' % (api.escape(title), api.escape(desc))
 

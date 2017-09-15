@@ -12,7 +12,7 @@ GtkDialog(toplevel): title='Stoq - Installation', hidden
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
         GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
-          GtkButton(cancel_button): 'gtk-quit'
+          GtkButton(cancel_button): 'gtk-quit', insensitive
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): 'Run Stoq'
           GtkButton(ok_button): 'gtk-ok', hidden
