@@ -16,7 +16,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                           GtkLabel(username_lbl): 'Username:'
                           ProxyEntry(username): '', mandatory
                           GtkEventBox(password_holder): slave PasswordEditorSlave is attached
-                            GtkTable(toplevel):
+                            GtkTable(table1):
                               GtkLabel(password_lbl): 'Password:'
                               ProxyEntry(password): '', mandatory
                               GtkLabel(confirm_password_lbl): 'Confirm password:'

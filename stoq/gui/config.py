@@ -29,7 +29,6 @@ Stoq Configuration dialogs
 
 Current flow of the database steps:
 
-  * :obj:`WelcomeStep`
   * :obj:`DatabaseLocationStep`
 
     * :obj:`DatabaseSettingsStep` (if network database)
@@ -38,8 +37,6 @@ Current flow of the database steps:
       * :obj:`FinishInstallationStep` (if an installed database was found)
 
   * :obj:`InstallationModeStep`
-  * :obj:`PluginStep`
-  * :obj:`StoqAdminPasswordStep`
   * :obj:`CreateDatabaseStep`
   * :obj:`LinkStep`
   * :obj:`FinishInstallationStep`
@@ -53,7 +50,7 @@ import sys
 
 import glib
 import gtk
-from kiwi.component import provide_utility
+from kiwi.component import provide_utility, get_utility
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.delegates import GladeSlaveDelegate
@@ -76,10 +73,10 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import (BaseWizard, WizardEditorStep,
                                       WizardStep)
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
-from stoqlib.gui.utils.logo import render_logo_pixbuf
 from stoqlib.gui.utils.openbrowser import open_browser
 from stoqlib.gui.widgets.processview import ProcessView
 from stoqlib.lib.configparser import StoqConfig
+from stoqlib.lib.interfaces import ICookieFile
 from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.message import error, warning, yesno
 from stoqlib.lib.osutils import read_registry_key
@@ -96,9 +93,11 @@ from stoq.lib.startup import setup
 
 logger = logging.getLogger(__name__)
 
+is_windows = platform.system() == 'Windows'
 
-LOGO_WIDTH = 91
-LOGO_HEIGHT = 32
+WINDOWS_DEFAULT_DBNAME = 'stoq'
+WINDOWS_DEFAULT_USER = 'postgres'
+WINDOWS_DEFAULT_PASSWORD = 'postgres'
 
 #
 # Wizard Steps
@@ -120,21 +119,6 @@ class BaseWizardStep(WizardStep, GladeSlaveDelegate):
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
 
 
-class WelcomeStep(BaseWizardStep):
-    gladefile = "WelcomeStep"
-
-    def __init__(self, wizard):
-        BaseWizardStep.__init__(self, wizard)
-        self._update_widgets()
-
-    def _update_widgets(self):
-        self.image1.set_from_pixbuf(render_logo_pixbuf('config'))
-        self.title_label.set_bold(True)
-
-    def next_step(self):
-        return DatabaseLocationStep(self.wizard, self)
-
-
 class DatabaseLocationStep(BaseWizardStep):
     gladefile = 'DatabaseLocationStep'
 
@@ -149,12 +133,10 @@ class DatabaseLocationStep(BaseWizardStep):
             return DatabaseSettingsStep(self.wizard, self)
 
         settings = self.wizard.settings
-        # FIXME: Allow developers to specify another database
-        #        is_developer_mode() or STOQ_DATABASE_NAME
         settings.dbname = "stoq"
-        if platform.system() == 'Windows':
+        if is_windows:
             settings.address = "localhost"
-            settings.username = "postgres"
+            settings.username = WINDOWS_DEFAULT_USER
             settings.port = self.wizard.get_win32_postgres_port()
             return PostgresAdminPasswordStep(self.wizard, self)
         else:
@@ -283,45 +265,16 @@ class InstallationModeStep(BaseWizardStep):
 
     def next_step(self):
         self.wizard.create_examples = not self.empty_database_radio.get_active()
-        return PluginStep(self.wizard, self)
+        if self.wizard.db_is_local and not test_local_database():
+            return InstallPostgresStep(self.wizard, self)
+        else:
+            return CreateDatabaseStep(self.wizard, self)
 
     def on_empty_database_radio__activate(self, radio):
         self.wizard.go_to_next()
 
     def on_example_database_radio__activate(self, radio):
         self.wizard.go_to_next()
-
-
-class PluginStep(BaseWizardStep):
-    gladefile = 'PluginStep'
-
-    def post_init(self):
-        self.wizard.plugins = []
-        self.enable_ecf.grab_focus()
-        if platform.system() == 'Windows':
-            self.enable_ecf.set_active(False)
-            self.enable_ecf.set_sensitive(False)
-
-    def next_step(self):
-        offline_plugins = ['ecf', 'nfe']
-        online_plugins = ['sat', 'nfce', 'magento', 'conector']
-        for name in offline_plugins:
-            if getattr(self, 'enable_' + name).get_active():
-                self.wizard.plugins.append(name)
-        for name in online_plugins:
-            if getattr(self, 'enable_' + name).get_active():
-                # Since the enable_sat is always ticked, we need to check if
-                # the enable_coupon is also ticked
-                if name == 'sat' and not self.enable_coupon.get_active():
-                    continue
-                self.wizard.online_plugins.append(name)
-        self.wizard.enable_backup = self.enable_backup.get_active()
-
-        return StoqAdminPasswordStep(self.wizard, self)
-
-    def on_enable_coupon__toggled(self, action):
-        is_active = self.enable_coupon.get_active()
-        self.coupon_box.set_sensitive(is_active)
 
 
 class LinkStep(WizardEditorStep):
@@ -341,6 +294,11 @@ class LinkStep(WizardEditorStep):
     #
 
     def _setup_widgets(self):
+        if is_windows:
+            # Make it mandatory to register on windows.
+            self.register_now.hide()
+        self.wizard.disable_cancel()
+        self.wizard.disable_back()
         self.image.set_from_file(
             library.get_resource_filename('stoq', 'pixmaps', 'link_step.png'))
         self.image_eventbox.add_events(gtk.gdk.BUTTON_PRESS_MASK |
@@ -432,12 +390,7 @@ class LinkStep(WizardEditorStep):
             open_browser(url.format(user_hash), self.wizard)
 
     def on_register_now__toggled(self, widget):
-        # If any of these plugins is enabled (backup or nfce or sat, or magento),
-        # the online services must be True
-        online_services = bool(self.wizard.online_plugins
-                               or self.wizard.enable_backup
-                               or widget.get_active())
-        self.wizard.enable_online_services = online_services
+        self.wizard.enable_online_services = widget.get_active()
         self._update_widgets()
 
     def on_email__validate(self, widget, value):
@@ -529,40 +482,6 @@ class PostgresAdminPasswordStep(PasswordStep):
         self.wizard.auth_type = PASSWORD_AUTHENTICATION
         self.wizard.write_pgpass()
         return self.wizard.connect_for_settings(self)
-
-
-class StoqAdminPasswordStep(PasswordStep):
-    """ Ask a password for the new user being created. """
-    title_label = _("Administrator account")
-
-    def get_title_label(self):
-        return '<b>%s</b>' % _("Administrator account")
-
-    def get_description_label(self):
-        return _("I'm adding a user account called <b>%s</b> which will "
-                 "have administrator privilegies.\n\nTo be "
-                 "able to create other users you need to login "
-                 "with this user in the admin application and "
-                 "create them.") % USER_ADMIN_DEFAULT_NAME
-
-    #
-    # WizardStep hooks
-    #
-
-    def validate_step(self):
-        # FIXME: self.password_slave os not implementing any
-        #        validate_confirm, so, this check is useless.
-        good_pass = self.password_slave.validate_confirm()
-        if good_pass:
-            self.wizard.options.login_username = 'admin'
-            self.wizard.login_password = self.password_slave.model.new_password
-        return good_pass
-
-    def next_step(self):
-        if self.wizard.db_is_local and not test_local_database():
-            return InstallPostgresStep(self.wizard, self)
-        else:
-            return CreateDatabaseStep(self.wizard, self)
 
 
 class InstallPostgresStep(BaseWizardStep):
@@ -706,17 +625,8 @@ class CreateDatabaseStep(BaseWizardStep):
                     "please install postgresql-contrib on it"))
 
         store.close()
-
-        # Secondly, ask the user if he really wants to create the database,
-        dbname = settings.dbname
-        if yesno(_(u"The specified database '%s' does not exist.\n"
-                   u"Do you want to create it?") % dbname,
-                 gtk.RESPONSE_YES, _(u"Create database"), _(u"Don't create")):
-            self.process_view.feed("** Creating database\r\n")
-            self._launch_stoqdbadmin()
-        else:
-            self.process_view.feed("** Not creating database\r\n")
-            self.wizard.disable_next()
+        self.process_view.feed("** Creating database\r\n")
+        self._launch_stoqdbadmin()
 
     def _launch_stoqdbadmin(self):
         logger.info('_launch_stoqdbadmin')
@@ -742,12 +652,6 @@ class CreateDatabaseStep(BaseWizardStep):
         elif self.wizard.enable_production:
             args.append('--force')
 
-        if self.wizard.online_plugins:
-            args.append('--register-plugins')
-            args.append(','.join(self.wizard.online_plugins))
-        if self.wizard.plugins:
-            args.append('--enable-plugins')
-            args.append(','.join(self.wizard.plugins))
         if self.wizard.db_is_local:
             args.append('--create-dbuser')
 
@@ -877,14 +781,19 @@ class FirstTimeConfigWizard(BaseWizard):
             config = StoqConfig()
 
         self.settings = config.get_settings()
+        if is_windows:
+            self.settings.username = WINDOWS_DEFAULT_USER
+            self.settings.password = WINDOWS_DEFAULT_PASSWORD
+            self.settings.dbname = WINDOWS_DEFAULT_DBNAME
+            self.settings.address = "localhost"
+            self.settings.port = 5432
+
         self.link_request_done = False
         self.create_examples = False
         self.config = config
         self.enable_production = False
         self.has_installed_db = False
         self.options = options
-        self.online_plugins = []
-        self.plugins = []
         self.db_is_local = False
         self.enable_online_services = True
         self.auth_type = TRUST_AUTHENTICATION
@@ -893,9 +802,14 @@ class FirstTimeConfigWizard(BaseWizard):
             self.enable_production = True
 
         if self.enable_production:
-            first_step = PluginStep(self)
+            first_step = CreateDatabaseStep(self)
+        elif is_windows and self.try_connect(self.settings, warn=False):
+            self.auth_type = PASSWORD_AUTHENTICATION
+            self.write_pgpass()
+            first_step = self.connect_for_settings()
         else:
-            first_step = WelcomeStep(self)
+            first_step = DatabaseLocationStep(self)
+
         BaseWizard.__init__(self, None, first_step, title=self.title)
 
         self.get_toplevel().set_deletable(False)
@@ -932,7 +846,10 @@ class FirstTimeConfigWizard(BaseWizard):
             raise DatabaseInconsistency(
                 ("You should have a user with username: %s"
                  % USER_ADMIN_DEFAULT_NAME))
-        adminuser.set_password(self.login_password)
+        # Lets create a user without password and set a cookie so that it
+        # auto login
+        adminuser.set_password(u'')
+        get_utility(ICookieFile).store('admin', '')
 
     def _set_online_services(self, store):
         logger.info('_set_online_services (%s)' %
@@ -973,7 +890,7 @@ class FirstTimeConfigWizard(BaseWizard):
 
     def check_incomplete_database(self):
         logger.info('check_incomplete_database (db_is_local=%s)' %
-                   (self.db_is_local, ))
+                    (self.db_is_local, ))
         # If we don't have postgres installed we cannot have
         # an incomplete database
         if self.db_is_local and not test_local_database():
@@ -1046,7 +963,7 @@ class FirstTimeConfigWizard(BaseWizard):
             error(_('The database version differs from your installed '
                     'version.'), str(err))
 
-    def connect_for_settings(self, step):
+    def connect_for_settings(self, step=None):
         # Try to connect, we don't care if we can connect,
         # we just want to know if it's properly installed
         self.try_connect(self.settings, warn=False)

@@ -167,7 +167,7 @@ class StoqCommandHandler:
         set_default_store(None)
 
         try:
-            initialize_system(password=unicode(options.password),
+            initialize_system(password=u'',
                               force=options.force, empty=options.empty)
         except ValueError as e:
             # Database server is missing pg_trgm

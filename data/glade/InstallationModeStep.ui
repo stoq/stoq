@@ -4,14 +4,17 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="InstallationModeStep">
+    <property name="can_focus">False</property>
     <child>
       <object class="GtkVBox" id="vbox2">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="border_width">6</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Database initialization</property>
             <attributes>
@@ -27,6 +30,7 @@
         <child>
           <object class="GtkHSeparator" id="hseparator1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -37,8 +41,9 @@
         <child>
           <object class="GtkLabel" id="label63">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">0</property>
-            <property name="label" translatable="yes">Would you like to:</property>
+            <property name="label" translatable="yes">We are almost there! Let's create a database for you. What would you like to?</property>
             <property name="wrap">True</property>
           </object>
           <packing>
@@ -50,10 +55,11 @@
         <child>
           <object class="GtkVBox" id="vbox1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="spacing">6</property>
             <child>
               <object class="ProxyRadioButton" id="empty_database_radio">
-                <property name="label" translatable="yes">Create an empty database for production use.</property>
+                <property name="label" translatable="yes">Use my own company data.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
@@ -70,7 +76,7 @@
             </child>
             <child>
               <object class="ProxyRadioButton" id="example_database_radio">
-                <property name="label" translatable="yes">Create a database in demonstration mode.</property>
+                <property name="label" translatable="yes">Use some example data.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
@@ -85,33 +91,18 @@
                 <property name="position">1</property>
               </packing>
             </child>
-            <child>
-              <object class="GtkLabel" id="label2">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="xalign">0</property>
-                <property name="label" translatable="yes">Want to import your data from another software or from spreadsheets? We can help you.
-
-&lt;a href="http://www.stoq.com.br/contato"&gt;Send the data&lt;/a&gt; you want imported to us, and we will give a response within 2 business days.</property>
-                <property name="use_markup">True</property>
-                <property name="wrap">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
+            <property name="padding">18</property>
             <property name="position">3</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel" id="label4">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -122,6 +113,7 @@
         <child>
           <object class="GtkLabel" id="label3">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Select an option above and then click &lt;b&gt;Forward&lt;/b&gt; to continue.</property>
             <property name="use_markup">True</property>

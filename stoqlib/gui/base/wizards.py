@@ -225,6 +225,14 @@ class PluggableWizard(GladeDelegate):
         else:
             self.next_button.set_label(gtk.STOCK_GO_FORWARD)
 
+    def enable_cancel(self):
+        """Enables the cancel button in the wizard."""
+        self.cancel_button.set_sensitive(True)
+
+    def disable_cancel(self):
+        """Disables the cancel button in the wizard."""
+        self.cancel_button.set_sensitive(False)
+
     def set_message(self, message):
         """
         Set message for nofitication.

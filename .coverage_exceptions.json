@@ -23,7 +23,7 @@
  "stoq/gui/accounts.py": 69.54,
  "stoq/gui/admin.py": 91.81,
  "stoq/gui/calendar.py": 50.83,
- "stoq/gui/config.py": 67.72,
+ "stoq/gui/config.py": 61,
  "stoq/gui/delivery.py": 54.00,
  "stoq/gui/financial.py": 78.67,
  "stoq/gui/inventory.py": 92.13,

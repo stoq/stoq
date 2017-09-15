@@ -88,9 +88,6 @@ class TestFirstTimeConfigWizard(GUITest):
 
         wizard = self.create_wizard()
 
-        self.check_wizard(wizard, u'wizard-config-welcome')
-        self.click(wizard.next_button)
-
         step = wizard.get_current_step()
         self.assertTrue(step.radio_local.get_active())
         self.check_wizard(wizard, u'wizard-config-database-location')
@@ -102,28 +99,10 @@ class TestFirstTimeConfigWizard(GUITest):
         self.check_wizard(wizard, u'wizard-config-installation-mode')
         self.click(wizard.next_button)
 
-        self.check_wizard(wizard, u'wizard-config-plugins')
-        step = wizard.get_current_step()
-        test_boxes = ['coupon', 'sat', 'nfce',
-                      'ecf', 'nfe', 'magento', 'backup', 'conector']
-        for name in test_boxes:
-            self.click(getattr(step, 'enable_' + name))
-            self.assertEquals(getattr(step, 'enable_' + name).get_active(),
-                              True)
-        self.click(wizard.next_button)
-
-        step = wizard.get_current_step()
-        step.password_slave.password.update(u'foobar')
-        step.password_slave.confirm_password.update(u'foobar')
-        self.check_wizard(wizard, u'wizard-config-admin-password')
-        self.click(wizard.next_button)
-
         self.check_wizard(wizard, u'wizard-config-installing')
         execute_command.assert_called_once_with([
             'stoq', 'dbadmin', 'init',
             '--no-load-config', '--no-register-station', '-v',
-            '--register-plugins', 'magento,conector',
-            '--enable-plugins', 'ecf,nfe',
             '--create-dbuser',
             '-d', 'stoq',
             '-p', u'12345',
@@ -148,10 +127,6 @@ class TestFirstTimeConfigWizard(GUITest):
         step.process_view.emit(u'read-line', u'stoqlib.database.create INIT START')
         self.assertEquals(step.progressbar.get_text(),
                           u'Creating additional database objects ...')
-
-        step.process_view.emit(u'read-line', u'stoqlib.database.create PLUGIN')
-        self.assertEquals(step.progressbar.get_text(),
-                          'Activating plugins ... This may take some time.')
 
         yesno.return_value = False
         step.process_view.emit(u'finished', 30)
@@ -186,7 +161,6 @@ class TestFirstTimeConfigWizard(GUITest):
     @mock.patch('stoq.gui.config.needs_schema_update')
     @mock.patch('stoq.gui.config.ProcessView.execute_command')
     @mock.patch('stoq.gui.config.create_default_profile_settings')
-    @mock.patch('stoq.gui.config.yesno')
     @mock.patch('stoq.gui.config.warning')
     @mock.patch('stoq.gui.config.get_hostname')
     @mock.patch('stoq.gui.config.get_database_version')
@@ -196,7 +170,6 @@ class TestFirstTimeConfigWizard(GUITest):
                     get_database_version,
                     get_hostname,
                     warning,
-                    yesno,
                     create_default_profile_settings,
                     execute_command,
                     needs_schema_update):
@@ -207,9 +180,6 @@ class TestFirstTimeConfigWizard(GUITest):
         get_hostname.return_value = u'foo_hostname'
         get_database_version.return_value = (9, 1)
         wizard = self.create_wizard()
-
-        # Welcome
-        self.click(wizard.next_button)
 
         # DatabaseLocationStep
         step = wizard.get_current_step()
@@ -227,17 +197,6 @@ class TestFirstTimeConfigWizard(GUITest):
         self.settings.check = True
         self.click(wizard.next_button)
 
-        # Installation mode
-        self.click(wizard.next_button)
-
-        # Plugins
-        self.click(wizard.next_button)
-
-        # AdminPassword
-        step = wizard.get_current_step()
-        step.password_slave.password.update(u'foobar')
-        step.password_slave.confirm_password.update(u'foobar')
-        self.check_wizard(wizard, u'wizard-config-admin-password-remote')
         with tempfile.NamedTemporaryFile() as f:
             os.environ[u'PGPASSFILE'] = f.name
             self.click(wizard.next_button)
@@ -248,12 +207,7 @@ class TestFirstTimeConfigWizard(GUITest):
 
         # Installing
         step = wizard.get_current_step()
-        yesno.return_value = False
         step.process_view.emit(u'finished', 0)
-        yesno.assert_called_once_with(
-            u"The specified database 'dbname' does not exist.\n"
-            u"Do you want to create it?", gtk.RESPONSE_YES,
-            u"Create database", u"Don't create")
 
         create_default_profile_settings.assert_called_once_with()
         self.click(wizard.next_button)
@@ -279,7 +233,6 @@ class TestFirstTimeConfigWizard(GUITest):
 
         wizard = self.create_wizard()
 
-        self.click(wizard.next_button)
         step = wizard.get_current_step()
         step.radio_network.set_active(True)
         self.click(wizard.next_button)

@@ -28,7 +28,7 @@ GtkDialog(toplevel): title='Stoq - Installation', hidden
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
-          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(cancel_button): 'gtk-cancel', insensitive
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): 'gtk-go-forward'
           GtkButton(ok_button): 'gtk-ok', hidden
