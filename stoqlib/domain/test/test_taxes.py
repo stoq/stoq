@@ -391,6 +391,20 @@ class TestInvoiceItemPis(DomainTest):
         self.assertEquals(sale_item_pis.v_bc, 0)
         self.assertEquals(sale_item_pis.v_pis, 0)
 
+    def test_get_tax_template(self):
+        sale_item = self.create_sale_item()
+        invoice_item_pis = self.create_invoice_item_pis(cst=4)
+        pis1 = self.create_product_pis_template()
+        pis2 = self.create_product_pis_template()
+        with self.sysparam(DEFAULT_PRODUCT_PIS_TEMPLATE=pis1):
+            self.assertEquals(pis1, invoice_item_pis.get_tax_template(sale_item))
+            self.assertNotEquals(pis2, invoice_item_pis.get_tax_template(sale_item))
+        product = self.create_product()
+        product.pis_template = pis2
+        sale_item.sellable.product = product
+        self.assertEquals(pis2, invoice_item_pis.get_tax_template(sale_item))
+        self.assertNotEquals(pis1, invoice_item_pis.get_tax_template(sale_item))
+
 
 class TestInvoiceItemCofins(DomainTest):
     def _get_sale_item(self, sale_item_cofins=None, quantity=1, price=10):
@@ -434,3 +448,17 @@ class TestInvoiceItemCofins(DomainTest):
         self.assertEquals(sale_item_cofins.p_cofins, 0)
         self.assertEquals(sale_item_cofins.v_bc, 0)
         self.assertEquals(sale_item_cofins.v_cofins, 0)
+
+    def test_get_tax_template(self):
+        sale_item = self.create_sale_item()
+        invoice_item_cofins = self.create_invoice_item_cofins(cst=4)
+        cofins1 = self.create_product_cofins_template()
+        cofins2 = self.create_product_cofins_template()
+        with self.sysparam(DEFAULT_PRODUCT_COFINS_TEMPLATE=cofins1):
+            self.assertEquals(cofins1, invoice_item_cofins.get_tax_template(sale_item))
+            self.assertNotEquals(cofins2, invoice_item_cofins.get_tax_template(sale_item))
+        product = self.create_product()
+        product.cofins_template = cofins2
+        sale_item.sellable.product = product
+        self.assertEquals(cofins2, invoice_item_cofins.get_tax_template(sale_item))
+        self.assertNotEquals(cofins1, invoice_item_cofins.get_tax_template(sale_item))

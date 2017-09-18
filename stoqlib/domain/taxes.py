@@ -37,6 +37,7 @@ from stoqlib.database.properties import (EnumCol, UnicodeCol, QuantityCol, DateT
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.lib.dateutils import localtoday
+from stoqlib.lib.parameters import sysparam
 
 # SIGLAS:
 # BC - Base de Calculo
@@ -465,7 +466,8 @@ class InvoiceItemPis(BasePIS):
 
     @classmethod
     def get_tax_template(cls, invoice_item):
-        return invoice_item.sellable.product.pis_template
+        default_pis = sysparam.get_object(invoice_item.store, 'DEFAULT_PRODUCT_PIS_TEMPLATE')
+        return invoice_item.sellable.product.pis_template or default_pis
 
     #
     # Private API
@@ -522,7 +524,8 @@ class InvoiceItemCofins(BaseCOFINS):
 
     @classmethod
     def get_tax_template(cls, invoice_item):
-        return invoice_item.sellable.product.cofins_template
+        default_cofins = sysparam.get_object(invoice_item.store, 'DEFAULT_PRODUCT_COFINS_TEMPLATE')
+        return invoice_item.sellable.product.cofins_template or default_cofins
 
     #
     # Private API
