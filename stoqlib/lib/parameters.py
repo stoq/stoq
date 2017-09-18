@@ -40,7 +40,6 @@ from stoqlib.l10n.l10n import get_l10n_field
 from stoqlib.lib.barcode import BarcodeInfo
 from stoqlib.lib.countries import get_countries
 from stoqlib.lib.defaults import MAX_INT
-from stoqlib.lib.threadutils import threadit
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import (validate_int,
                                     validate_decimal,
@@ -1365,6 +1364,7 @@ class ParameterAccess(object):
         # FIXME: Find a better way of doing this after we integrate stoq.link
         # better with Stoq.
         if param_name == 'ONLINE_SERVICES':
+            from stoqlib.lib.threadutils import threadit
             from stoqlib.net.server import ServerProxy
             p = ServerProxy(timeout=5)
             threadit(lambda: p.check_running() and p.call('restart'))

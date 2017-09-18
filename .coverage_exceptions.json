@@ -295,7 +295,7 @@
  "stoqlib/lib/session.py": 23.49,
  "stoqlib/lib/sintegra.py": 86.14,
  "stoqlib/lib/sintegragenerator.py": 82.53,
- "stoqlib/lib/threadutils.py": 47.83,
+ "stoqlib/lib/threadutils.py": 43,
  "stoqlib/lib/translation.py": 92.86,
  "stoqlib/lib/unittestutils.py": 75.00,
  "stoqlib/lib/uptime.py": 88.89,
