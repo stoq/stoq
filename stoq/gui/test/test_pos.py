@@ -29,7 +29,7 @@ from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import converter
 import mock
-from gi.repository import Gtk
+from gi.repository import Gdk, Gtk
 
 from stoqlib.api import api
 from stoqlib.database.runtime import StoqlibStore
@@ -824,6 +824,69 @@ class TestPos(BaseGUITest):
         self.click(pos.remove_item_button)
         # As we remove the parent, we should be removing the children as well
         self.assertEquals(len(list(otree)), 0)
+
+    def _press_delete_key(self, widget):
+        event = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
+        event.keyval = int(Gdk.KEY_Delete)
+        event.hardware_keycode = 119
+        widget.emit('key-press-event', event)
+
+    def test_remove_via_barcode_widget(self):
+        pos = self._get_pos_with_open_till()
+
+        self._add_product(pos, self.create_sellable())
+
+        olist = pos.sale_items
+        olist.select(olist[0])
+
+        # The delete key must delete an element from the olist when pressed.
+        self._press_delete_key(pos.barcode)
+        self.assertEquals(len(olist), 0)
+
+    def test_hold_delete_key_on_barcode_widget(self):
+        pos = self._get_pos_with_open_till()
+
+        for i in range(1, 10):
+            self._add_product(pos, self.create_sellable())
+
+        olist = pos.sale_items
+        olist.select(olist[2])
+
+        # Pressing the delete key 10 times should remove 10 items.
+        for i in range(1, 10):
+            self._press_delete_key(pos.barcode)
+
+        self.assertEquals(len(olist), 0)
+
+    def test_navigate_through_barcode_widget(self):
+        app = self.create_app(PosApp, u'pos')
+        pos = app
+        self._pos_open_till(pos)
+
+        for i in range(1, 10):
+            self._add_product(pos, self.create_sellable())
+
+        olist = pos.sale_items
+        olist.select(olist[0])
+
+        # With the barcode in focus, we press the down key more times than there are
+        # products listed in the current olist.
+        for i in range(1, 20):
+            event = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
+            event.keyval = Gdk.KEY_Down
+            pos.barcode.emit('key-press-event', event)
+            # Each time the down key is pressed, we intend to make the selection shift
+            # down once. After the last product is selected, the selection must maintain
+            # itself on that element.
+            self.assertEquals(olist.index((olist.get_selected())), min(i, len(olist) - 1))
+
+        # As the barcode is still in focus, we press the up key three times in a row and
+        # the selection must move accordingly.
+        for i in range(1, 3):
+            event = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
+            event.keyval = Gdk.KEY_Up
+            pos.barcode.emit('key-press-event', event)
+            self.assertEquals(olist.index((olist.get_selected())), len(olist) - i - 1)
 
     @mock.patch('stoq.gui.pos.yesno')
     def test_close_till_with_open_sale(self, yesno):

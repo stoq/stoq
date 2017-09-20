@@ -26,7 +26,7 @@
 from decimal import Decimal
 import logging
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gdk, Gtk, Pango
 from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import converter, ValidationError
@@ -98,7 +98,8 @@ class TemporarySaleItem(object):
         self.description = sellable.get_description()
         self.unit = sellable.unit_description
         self.code = sellable.code
-        self.can_remove = can_remove
+        self.can_remove_child = can_remove
+        self.can_remove = can_remove and not parent_item
         if sellable.product:
             self.location = sellable.product.location
         else:
@@ -118,7 +119,7 @@ class TemporarySaleItem(object):
     @classmethod
     def from_sale_item(cls, item):
         # FIXME: can_remove is set to False so one cannot remove
-        # any items addeded previously in the sale. This makes
+        # any items added previously in the sale. This makes
         # sense but it should be possible to remove the item if the
         # user (or the manager) really wants to.
         return cls(
@@ -629,12 +630,6 @@ class PosApp(ShellApp):
 
         return sellable, batch
 
-    def _select_first_item(self):
-        if len(self.sale_items):
-            # XXX Probably kiwi should handle this for us. Waiting for
-            # support
-            self.sale_items.select(self.sale_items[0])
-
     def _set_sale_sensitive(self, value):
         # Enable/disable the part of the ui that is used for sales,
         # usually manipulated when printer information changes.
@@ -719,8 +714,7 @@ class PosApp(ShellApp):
         else:
             can_edit = False
         self.set_sensitive([self.edit_item_button], can_edit)
-        can_remove = (sale_item is not None and sale_item.can_remove and
-                      sale_item.parent_item is None)
+        can_remove = sale_item is not None and sale_item.can_remove
         self.set_sensitive([self.remove_item_button], can_remove)
 
         if sysparam.get_bool('USE_SALE_TOKEN'):
@@ -848,6 +842,26 @@ class PosApp(ShellApp):
         if (sale_item.sellable ==
                 sysparam.get_object(self.store, 'DELIVERY_SERVICE').sellable):
             self._delivery = None
+
+    def _select_neighbour(self, item, direction=1):
+        """Selects either previous or next element in sale_items
+
+        :param item: item from sale_items from which we will determine the selection
+          based on the direction parameter.
+        :param direction: when direction is 1, selects the next element from the object
+          list sale_items. When it is -1, selects the previous element. Otherwise, raises
+          an error.
+        """
+        if abs(direction) != 1:
+            raise ValueError('direction should be +1 or -1')
+
+        if direction == 1:
+            target_item = self.sale_items.get_next(item, is_circular=False)
+        if direction == -1:
+            target_item = self.sale_items.get_previous(item, is_circular=False)
+
+        self.sale_items.select(target_item)
+        return True
 
     #
     # Sale Order operations
@@ -1265,15 +1279,15 @@ class PosApp(ShellApp):
 
     def _remove_selected_item(self):
         sale_item = self.sale_items.get_selected()
+        self._select_neighbour(sale_item, direction=-1)
         for child in sale_item.children_items:
-            assert child.can_remove
+            assert child.can_remove_child
             self._coupon_remove_item(child)
             self.sale_items.remove(child)
         assert sale_item.can_remove
         self._coupon_remove_item(sale_item)
         self.sale_items.remove(sale_item)
         self._check_delivery_removed(sale_item)
-        self._select_first_item()
         self._update_widgets()
         self.setup_focus()
 
@@ -1602,6 +1616,36 @@ class PosApp(ShellApp):
 
         # We dont have an ecf. Disable till related operations
         self._disable_printer_ui()
+
+    def on_barcode__key_press_event(self, entry, event):
+        current_item = self.sale_items.get_selected()
+        if not current_item:
+            return False
+
+        # Navigation
+        if event.keyval == Gdk.KEY_Down:
+            return self._select_neighbour(current_item, direction=1)
+        if event.keyval == Gdk.KEY_Up:
+            return self._select_neighbour(current_item, direction=-1)
+
+        # Deletion
+        if event.keyval == Gdk.KEY_Delete and current_item.can_remove:
+            self._remove_selected_item()
+            return True
+        return False
+
+    def on_sale_items__key_press_event(self, entry, event):
+        if not event.keyval == Gdk.KEY_Delete:
+            return False
+
+        current_item = self.sale_items.get_selected()
+        if not current_item:
+            return False
+
+        if current_item.can_remove:
+            self._remove_selected_item()
+            return True
+        return False
 
     def _on_CloseLoanWizardFinishEvent(self, loans, sale, wizard):
         for item in wizard.get_sold_items():
