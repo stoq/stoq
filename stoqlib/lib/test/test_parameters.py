@@ -199,7 +199,7 @@ class TestParameter(DomainTest):
 
     def test_default_product_pis_template(self):
         pis_template = self.create_product_pis_template()
-        param_name = 'DEFAULT_PRODUCT_PIS_TEMPLATE'
+        param_name = u'DEFAULT_PRODUCT_PIS_TEMPLATE'
         self.sparam.set_object(self.store, param_name, pis_template)
 
         wrong_template = self.create_product_cofins_template()
@@ -208,7 +208,7 @@ class TestParameter(DomainTest):
 
     def test_default_product_cofins_template(self):
         cofins_template = self.create_product_cofins_template()
-        param_name = 'DEFAULT_PRODUCT_COFINS_TEMPLATE'
+        param_name = u'DEFAULT_PRODUCT_COFINS_TEMPLATE'
         self.sparam.set_object(self.store, param_name, cofins_template)
 
         wrong_template = self.create_product_pis_template()

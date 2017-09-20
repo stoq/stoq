@@ -1,25 +1,25 @@
 # -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
-##
-## Copyright (C) 2005-2013 Async Open Source <http://www.async.com.br>
-## All rights reserved
-##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU Lesser General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU Lesser General Public License for more details.
-##
-## You should have received a copy of the GNU Lesser General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., or visit: http://www.gnu.org/.
-##
-## Author(s): Stoq Team <stoq-devel@async.com.br>
+#
+# Copyright (C) 2005-2013 Async Open Source <http://www.async.com.br>
+# All rights reserved
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., or visit: http://www.gnu.org/.
+#
+# Author(s): Stoq Team <stoq-devel@async.com.br>
 
 """
 Product, a physical goods that can be purchased, stored and sold.
@@ -86,6 +86,7 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 from storm.references import Reference, ReferenceSet
+from storm.exceptions import NotOneError
 from storm.expr import (And, Eq, LeftJoin, Alias, Sum, Coalesce, Select, Join, Cast)
 from zope.interface import implementer
 
@@ -106,6 +107,7 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.exceptions import StockError
 from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.defaults import quantize
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.stringutils import next_value_for
 from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 
@@ -630,6 +632,20 @@ class Product(Domain):
         :returns: the production cost
         """
         return self.sellable.cost
+
+    def update_product_cost(self, cost=None):
+        if (self.is_package and
+                sysparam.get_bool(u'UPDATE_PRODUCT_COST_ON_PACKAGE_UPDATE')):
+            # We can't update if the package has more than 1 component
+            try:
+                component = self.get_components().one()
+                parent_sellable = component.product.sellable
+                child_sellable = component.component.sellable
+                child_sellable.cost = parent_sellable.cost / component.quantity
+            except NotOneError:
+                return
+        if sysparam.get_bool(u'UPDATE_PRODUCT_COST_ON_COMPONENT_UPDATE'):
+            self.update_production_cost(cost)
 
     def update_production_cost(self, cost=None):
         """Update the production cost of this product and its parents
@@ -1790,7 +1806,7 @@ class StockTransactionHistory(Domain):
             return self.types[self.type]
 
         object_parent = self.get_object_parent()
-        number = unicode(object_parent.identifier)
+        number = str(object_parent.identifier)
 
         return self.types[self.type] % number
 

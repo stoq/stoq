@@ -1,31 +1,30 @@
 # -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
-##
-## Copyright (C) 2006-2015 Async Open Source <http://www.async.com.br>
-## All rights reserved
-##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU Lesser General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-##
-## You should have received a copy of the GNU Lesser General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., or visit: http://www.gnu.org/.
-##
-## Author(s): Stoq Team <stoq-devel@async.com.br>
-##
-""" This module test all class in stoqlib/domain/product.py """
-
-__tests__ = 'stoqlib/domain/product.py'
+#
+# Copyright (C) 2006-2015 Async Open Source <http://www.async.com.br>
+# All rights reserved
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., or visit: http://www.gnu.org/.
+#
+# Author(s): Stoq Team <stoq-devel@async.com.br>
+#
 
 from decimal import Decimal
+
+from storm.exceptions import NotOneError
 
 from stoqlib.exceptions import StockError
 from stoqlib.database.runtime import get_current_branch, new_store
@@ -47,6 +46,10 @@ from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.dateutils import localtoday
+
+""" This module test all class in stoqlib/domain/product.py """
+
+__tests__ = 'stoqlib/domain/product.py'
 
 
 class TestProductSupplierInfo(DomainTest):
@@ -213,6 +216,36 @@ class TestProduct(DomainTest):
             self.product.sellable.cost = 15
             self.assertEquals(inter_product.sellable.cost, 30)
             self.assertEquals(other_product.sellable.cost, 300)
+
+    def test_update_package_cost(self):
+        """This will test if the product component cost is updated when the
+        package cost is updated"""
+        package_product = self.create_product()
+        package_product.sellable.cost = 60
+        package_product.is_package = True
+
+        product_component = self.create_product()
+        product_component.sellable.cost = 15
+        ProductComponent(product=package_product, quantity=4,
+                         component=product_component,
+                         store=self.store)
+
+        self.assertEquals(product_component.sellable.cost, 15)
+        self.assertEquals(package_product.sellable.cost, 60)
+
+        # Test indirect update with parameter
+        with self.sysparam(UPDATE_PRODUCT_COST_ON_PACKAGE_UPDATE=True):
+            package_product.sellable.cost = 40
+            self.assertEquals(product_component.sellable.cost, 10)
+            self.assertEquals(package_product.sellable.cost, 40)
+
+        # Test NotOneError
+        second_component = self.create_product()
+        ProductComponent(product=package_product, quantity=1,
+                         component=second_component,
+                         store=self.store)
+        package_product.sellable.cost = 50
+        self.assertRaises(NotOneError)
 
     def test_is_composed_by(self):
         component = self.create_product()
@@ -985,6 +1018,7 @@ class TestProductQuality(DomainTest):
 
 
 class TestProductQualityTest(DomainTest):
+
     def test_get_description(self):
         product = self.create_product()
         test = ProductQualityTest(store=self.store, product=product,
@@ -1009,6 +1043,7 @@ class TestProductQualityTest(DomainTest):
 
 
 class TestProductEvent(DomainTest):
+
     def test_create_event(self):
         store_list = []
         p_data = _ProductEventData()
@@ -1114,6 +1149,7 @@ class TestProductEvent(DomainTest):
 
 
 class TestProductManufacturer(DomainTest):
+
     def test_get_description_without_code(self):
         manufacturer_name = u'PManufacturer'
 
@@ -1151,6 +1187,7 @@ class TestProductManufacturer(DomainTest):
 
 
 class TestStorable(DomainTest):
+
     def test_register_initial_stock(self):
         b1 = self.create_branch()
         b2 = self.create_branch()
@@ -1309,6 +1346,7 @@ class TestStorable(DomainTest):
 
 
 class TestStorableBatch(DomainTest):
+
     def test_get_description(self):
         storable = self.create_storable(is_batch=True)
         batch = self.create_storable_batch(storable, batch_number=u'123')
@@ -1442,6 +1480,7 @@ class TestStorableBatch(DomainTest):
 
 
 class TestStockTransactionHistory(DomainTest):
+
     def setUp(self):
         DomainTest.setUp(self)
         self.branch = get_current_branch(self.store)
@@ -1754,6 +1793,7 @@ class TestStockTransactionHistory(DomainTest):
 
 
 class TestStorableBatchView(DomainTest):
+
     def test_find(self):
         b1 = self.create_storable_batch(batch_number=u'123')
         b2 = self.create_storable_batch(batch_number=u'456')

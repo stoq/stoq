@@ -37,6 +37,7 @@ GtkVBox(toplevel):
     row: u'Payments', u'Printing of promissory notes on booklets', u'Yes'
     row: u'Payments', u'Mandatory check number', u'No'
     row: u'Payments', u'Create payments for a stock decrease', u'No'
+    row: u'Product', u'Automatic update the cost of a product', u'Yes'
     row: u'Production', u'Automatic update the cost of a production product', u'Yes'
     row: u'Products', u'Disable edit code products', u'No'
     row: u'Products', u'Max size for product barcodes', u'14'

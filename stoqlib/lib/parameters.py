@@ -957,8 +957,17 @@ _details = [
         _(u'Production'),
         _(u'Automatic update the cost of a production product'),
         _(u'When the list of components is updated or the cost of a component '
-          'is updated, the cost of a production product will be automatically '
-          'updated'),
+          u'is updated, the cost of a production product will be automatically '
+          u'updated'),
+        bool, initial=True),
+
+    ParameterDetails(
+        u'UPDATE_PRODUCT_COST_ON_PACKAGE_UPDATE',
+        _(u'Product'),
+        _(u'Automatic update the cost of a product'),
+        _(u'When a package product cost is updated, the cost of the component '
+          u'will be automatically updated. Note that it will work only if the '
+          u'package has only one component.'),
         bool, initial=True),
 
     ParameterDetails(
