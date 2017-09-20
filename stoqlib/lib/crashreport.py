@@ -162,27 +162,28 @@ def collect_report():
     return report_
 
 
-class CustomRavenClient(raven.Client):
-    """Ignores exceptions by also taking their messages into consideration
+if has_raven:
+    class CustomRavenClient(raven.Client):
+        """Ignores exceptions by also taking their messages into consideration
 
-    Custom client made for ignoring certain exceptions when sending reports to
-    Sentry based not only on their exception classes but also on the messages
-    they return and not necessarily the whole exception class.
-    """
-    # When sending exceptions to Sentry, we want to ignore:
-    #   - Known colateral exceptions.
-    ignore = set([
-        ('InternalError', 'current transaction is aborted, commands ignored '
-         'until end of transaction block'),
-    ])
+        Custom client made for ignoring certain exceptions when sending reports to
+        Sentry based not only on their exception classes but also on the messages
+        they return and not necessarily the whole exception class.
+        """
+        # When sending exceptions to Sentry, we want to ignore:
+        #   - Known colateral exceptions.
+        ignore = set([
+            ('InternalError', 'current transaction is aborted, commands ignored '
+             'until end of transaction block'),
+        ])
 
-    def should_capture(self, exc_info):
-        key = (exc_info[0].__name__, str(exc_info[1]))
+        def should_capture(self, exc_info):
+            key = (exc_info[0].__name__, str(exc_info[1]))
 
-        if key in self.ignore:
-            return False
+            if key in self.ignore:
+                return False
 
-        return super(CustomRavenClient, self).should_capture(exc_info)
+            return super(CustomRavenClient, self).should_capture(exc_info)
 
 
 def collect_traceback(tb, output=True, submit=False):
