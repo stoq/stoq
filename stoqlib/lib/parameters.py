@@ -946,6 +946,15 @@ _details = [
         bool, initial=True),
 
     ParameterDetails(
+        u'UPDATE_PRODUCT_COST_ON_PACKAGE_UPDATE',
+        _(u'Product'),
+        _(u'Automatic update the cost of a product'),
+        _(u'When a package product cost is updated, the cost of the component '
+          'will be automatically updated. Note that it will work only if the '
+          'package has only one component.'),
+        bool, initial=True),
+
+    ParameterDetails(
         u'BIRTHDAY_NOTIFICATION',
         _(u'General'),
         _(u'Client birthday notification'),
