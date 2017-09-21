@@ -5,13 +5,16 @@
 # http://wiki.python.org/moin/PythonDecoratorLibrary#Cached_Properties
 #
 
+import errno
 import inspect
 import time
 import functools
 import logging
+import os
 import queue
 import sys
 import threading
+import _thread as thread
 import traceback
 
 log = logging.getLogger(__name__)
@@ -185,3 +188,33 @@ def threaded(original):
         else:
             return retval
     return _run_thread_task
+
+
+class TimeoutError(Exception):
+    pass
+
+
+def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
+    """Timeout Decorator
+
+    This allows the decorated function to have a time limit for it's execution,
+    by raising an exception when the given time expires.
+    """
+    def _handle_timeout():
+        # Since this is running over a thread, we must propagate the exception
+        # to the main one, and we do this by raising KeyboardInterrupt
+        thread.interrupt_main()
+
+    def outer(fn):
+        def inner(*args, **kwargs):
+            timer = threading.Timer(seconds, _handle_timeout)
+            timer.start()
+            try:
+                result = fn(*args, **kwargs)
+            except KeyboardInterrupt:
+                raise TimeoutError(error_message)
+            finally:
+                timer.cancel()
+            return result
+        return inner
+    return outer

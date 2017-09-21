@@ -25,7 +25,8 @@
 import unittest
 import time
 
-from stoqlib.lib.decorators import cached_property, cached_function, threaded
+from stoqlib.lib.decorators import (cached_property, cached_function, threaded,
+                                    timeout, TimeoutError)
 
 
 class TestDecorators(unittest.TestCase):
@@ -167,3 +168,16 @@ class TestDecorators(unittest.TestCase):
 
         with self.assertRaises(AssertionError):
             value = task_that_raises()
+
+    def test_timeout(self):
+        @timeout(0.3)
+        def task_that_succeeds():
+            time.sleep(0.2)
+
+        @timeout(0.3)
+        def task_that_raises():
+            time.sleep(0.5)
+
+        task_that_succeeds()
+        with self.assertRaises(TimeoutError):
+            task_that_raises()
