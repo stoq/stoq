@@ -137,10 +137,10 @@ class DeviceSettingsEditor(BaseEditor):
         devices = []
         for device in get_usb_printer_devices():
             try:
-                dev = 'usb:{}:{}'.format(hex(device.idVendor), hex(device.idProduct))
+                dev = u'usb:{}:{}'.format(hex(device.idVendor), hex(device.idProduct))
                 try:
                     if device.manufacturer is not None:
-                        desc = '{} {}'.format(device.manufacturer, device.product)
+                        desc = u'{} {}'.format(device.manufacturer, device.product)
                     else:
                         desc = dev
                 except Exception:
