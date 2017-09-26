@@ -234,10 +234,21 @@ class TestTill(DomainTest):
         till = Till(station=self.create_station(),
                     store=self.store)
         self.failIf(till.needs_closing())
+
+        # Till is opened today, no need to close
         till.open_till()
         self.failIf(till.needs_closing())
+
+        # till was onpened yesterday. Should close
         till.opening_date = localnow() - datetime.timedelta(1)
         self.failUnless(till.needs_closing())
+
+        # Till was opened yesterday, but there is a tolerance
+        tolerance = int((localnow() - localtoday()).seconds / (60 * 60)) + 1
+        with self.sysparam(TILL_TOLERANCE_FOR_CLOSING=tolerance):
+            self.failIf(till.needs_closing())
+
+        # Till is now closed, no need to close again
         till.close_till()
         self.failIf(till.needs_closing())
 

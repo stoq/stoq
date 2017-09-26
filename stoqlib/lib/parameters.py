@@ -382,6 +382,13 @@ _details = [
         int, initial=600, range=(1, MAX_INT)),
 
     ParameterDetails(
+        u'TILL_TOLERANCE_FOR_CLOSING',
+        _(u'Till'),
+        _(u'Till tolerance for closing'),
+        _(u'Tolerance time for closing the till'),
+        int, initial=0, range=(0, 22)),
+
+    ParameterDetails(
         u'CONFIRM_SALES_ON_TILL',
         _(u'Sales'),
         _(u'Confirm sales in Till'),

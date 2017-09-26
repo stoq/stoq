@@ -46,6 +46,7 @@ from stoqlib.domain.person import Person, LoginUser
 from stoqlib.domain.station import BranchStation
 from stoqlib.exceptions import TillError
 from stoqlib.lib.dateutils import localnow, localtoday
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -279,6 +280,9 @@ class Till(Domain):
 
         # Verify that the till wasn't opened today
         if self.opening_date.date() == localtoday().date():
+            return False
+
+        if localnow().hour < sysparam.get_int('TILL_TOLERANCE_FOR_CLOSING'):
             return False
 
         return True
