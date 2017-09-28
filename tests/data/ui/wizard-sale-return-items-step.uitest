@@ -33,10 +33,10 @@ GtkDialog(toplevel): title='Return Sale Order', hidden
                   column: title='Sold quantity'
                   column: title='Quantity'
                   column: title='Total'
-                  row: True, '', '', 'Package', <currency $10>, Decimal('1.000'), Decimal('1.000'), Decimal('10.000')
-                    row: True, '', '', 'Component', <currency $2>, Decimal('5.000'), Decimal('5.000'), Decimal('10.000000')
-                  row: True, '1234', '', 'Description', <currency $10>, Decimal('1.000'), Decimal('1.000'), Decimal('10.000')
-                  row: True, '5678', '', 'Description', <currency $10>, Decimal('2.000'), Decimal('2.000'), Decimal('20.000')
+                  row: True, '', '', 'Package', <currency $10>, Decimal('1.000'), Decimal('1.000'), Decimal('10.00')
+                    row: True, '', '', 'Component', <currency $2>, Decimal('5.000'), Decimal('5.000'), Decimal('10.00')
+                  row: True, '1234', '', 'Description', <currency $10>, Decimal('1.000'), Decimal('1.000'), Decimal('10.00')
+                  row: True, '5678', '', 'Description', <currency $10>, Decimal('2.000'), Decimal('2.000'), Decimal('20.00')
                 SummaryLabel(step.summary, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total to return:</b>'
                   GtkLabel(): '<b>$50.00</b>'

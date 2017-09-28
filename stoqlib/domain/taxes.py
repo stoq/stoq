@@ -37,6 +37,7 @@ from stoqlib.database.properties import (EnumCol, UnicodeCol, QuantityCol, DateT
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.lib.dateutils import localtoday
+from stoqlib.lib.defaults import quantize
 from stoqlib.lib.parameters import sysparam
 
 # SIGLAS:
@@ -290,7 +291,7 @@ class InvoiceItemIcms(BaseICMS):
             self.v_cred_icms_sn = invoice_item.get_total() * self.p_cred_sn / 100
 
     def _calc_st(self, invoice_item):
-        self.v_bc_st = invoice_item.price * invoice_item.quantity
+        self.v_bc_st = quantize(invoice_item.price * invoice_item.quantity)
 
         if self.bc_st_include_ipi and invoice_item.ipi_info:
             self.v_bc_st += invoice_item.ipi_info.v_ipi
@@ -306,7 +307,7 @@ class InvoiceItemIcms(BaseICMS):
             self.v_icms_st -= self.v_icms
 
     def _calc_normal(self, invoice_item):
-        self.v_bc = invoice_item.price * invoice_item.quantity
+        self.v_bc = quantize(invoice_item.price * invoice_item.quantity)
 
         if self.bc_include_ipi and invoice_item.ipi_info:
             self.v_bc += invoice_item.ipi_info.v_ipi
@@ -412,7 +413,7 @@ class InvoiceItemIpi(BaseIPI):
             return
 
         if self.calculo == self.CALC_ALIQUOTA:
-            self.v_bc = invoice_item.price * invoice_item.quantity
+            self.v_bc = quantize(invoice_item.price * invoice_item.quantity)
             if self.p_ipi is not None:
                 self.v_ipi = self.v_bc * self.p_ipi / 100
         elif self.calculo == self.CALC_UNIDADE:
@@ -460,7 +461,7 @@ class InvoiceItemPis(BasePIS):
             self.v_pis = 0
             return
         cost = self._get_item_cost(invoice_item)
-        self.v_bc = invoice_item.quantity * (invoice_item.price - cost)
+        self.v_bc = quantize(invoice_item.quantity * (invoice_item.price - cost))
         if self.p_pis is not None:
             self.v_pis = self.v_bc * self.p_pis / 100
 
@@ -518,7 +519,7 @@ class InvoiceItemCofins(BaseCOFINS):
             self.v_cofins = 0
             return
         cost = self._get_item_cost(invoice_item)
-        self.v_bc = invoice_item.quantity * (invoice_item.price - cost)
+        self.v_bc = quantize(invoice_item.quantity * (invoice_item.price - cost))
         if self.p_cofins is not None:
             self.v_cofins = self.v_bc * self.p_cofins / 100
 

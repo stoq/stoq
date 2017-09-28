@@ -28,15 +28,19 @@
 from storm.expr import Join, LeftJoin, Sum, Alias, Select, Coalesce
 from storm.info import ClassAlias
 
-from stoqlib.database.expr import Field, NullIf
+from stoqlib.database.expr import Field, NullIf, Round
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.domain.person import Branch, Client, Company, Person, SalesPerson
 from stoqlib.domain.sale import Sale, SaleItem, InvoiceItemIpi
+from stoqlib.lib.defaults import DECIMAL_PRECISION
 
 
 _SaleItemSummary = Select(columns=[SaleItem.sale_id,
-                                   Alias(Sum(SaleItem.quantity * SaleItem.price +
-                                         InvoiceItemIpi.v_ipi), 'subtotal')],
+                                   Alias(Sum(Round(SaleItem.quantity
+                                                   * SaleItem.price
+                                                   + InvoiceItemIpi.v_ipi,
+                                                   DECIMAL_PRECISION)),
+                                         'subtotal')],
                           tables=[SaleItem,
                                   LeftJoin(InvoiceItemIpi,
                                            SaleItem.ipi_info_id == InvoiceItemIpi.id)],

@@ -532,12 +532,12 @@ class ExampleCreator(object):
                                 parent_item=parent_item)
 
     def create_sale_item(self, sale=None, product=True, quantity=1,
-                         sellable=None, parent_item=None):
+                         price=100, sellable=None, parent_item=None):
         from stoqlib.domain.sale import SaleItem
         sellable = sellable or self.create_sellable(product=product)
         return SaleItem(store=self.store,
                         quantity=quantity,
-                        price=100,
+                        price=price,
                         sale=sale or self.create_sale(),
                         sellable=sellable,
                         parent_item=parent_item)

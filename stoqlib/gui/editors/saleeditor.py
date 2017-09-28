@@ -43,7 +43,7 @@ from stoqlib.gui.editors.invoiceitemeditor import InvoiceItemEditor
 from stoqlib.gui.fields import PersonField, PersonQueryField, DateTextField
 from stoqlib.gui.widgets.calculator import CalculatorPopup
 from stoqlib.lib.decorators import cached_property
-from stoqlib.lib.defaults import quantize, QUANTITY_PRECISION, MAX_INT
+from stoqlib.lib.defaults import QUANTITY_PRECISION, MAX_INT
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
@@ -236,7 +236,7 @@ class SaleQuoteItemSlave(BaseEditorSlave):
         total = self.model.price * self.quantity_model.quantity
         if self.model.ipi_info:
             total += self.model.ipi_info.v_ipi
-        self.total.update(currency(quantize(total)))
+        self.total.update(currency(total))
 
     def _validate_quantity(self, new_quantity, allow_zero=False):
         if not allow_zero and new_quantity <= 0:

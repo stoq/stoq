@@ -46,6 +46,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.domain.taxes import check_tax_info_presence
 from stoqlib.lib.dateutils import localnow
+from stoqlib.lib.defaults import quantize
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -161,7 +162,7 @@ class ReturnedSaleItem(Domain):
 
         This is the same as :obj:`.price` * :obj:`.quantity`
         """
-        return self.price * self.quantity
+        return quantize(self.price * self.quantity)
 
     #
     # IInvoiceItem implementation

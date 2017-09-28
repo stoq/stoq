@@ -2849,6 +2849,14 @@ class TestSaleView(DomainTest):
 
         self.assertEquals(sale.get_first_sale_comment(), u'Foo bar')
 
+    def test_subtotal_rounding(self):
+        sale = self.create_sale()
+        self.create_sale_item(sale=sale, quantity=Decimal('0.527'), price=2)
+        self.create_sale_item(sale=sale, quantity=Decimal('0.527'), price=2)
+
+        view = self.store.find(SaleView, id=sale.id).one()
+        self.assertEquals(view.subtotal, currency(2.10))
+
 
 class TestSalesPersonSalesView(DomainTest):
 

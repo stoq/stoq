@@ -34,8 +34,8 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
                   column: title='Sale price'
                   column: title='Discount', hidden
                   column: title='Total'
-                  row: '', 'Description', None, None, Decimal('1.000'), <currency $10>, <currency $100>, Decimal('-90.00'), Decimal('100.00000')
-                  row: '', 'Description', None, None, Decimal('1.000'), <currency $10>, <currency $100>, Decimal('-90.00'), Decimal('100.00000')
+                  row: '', 'Description', None, None, Decimal('1.000'), <currency $10>, <currency $100>, Decimal('-90.00'), Decimal('100.00')
+                  row: '', 'Description', None, None, Decimal('1.000'), <currency $10>, <currency $100>, Decimal('-90.00'), Decimal('100.00')
               GtkTable(table2, fill=True):
                 GtkLabel(label4): 'Subtotal:'
                 ProxyLabel(subtotal_lbl): '<span >$200.00</span>'

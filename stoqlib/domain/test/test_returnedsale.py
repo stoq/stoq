@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import decimal
+from decimal import Decimal
 
 from kiwi.currency import currency
 import mock
@@ -138,6 +138,22 @@ class TestReturnedSale(DomainTest):
         item.price = 10
 
         self.assertEquals(rsale1.sale_total, currency(-100))
+
+    def test_sale_total_with_rounding(self):
+        branch = self.create_branch()
+
+        sale = self.create_sale(branch=branch)
+        self.add_product(sale, price=2, quantity=Decimal('0.527'))
+        self.add_product(sale, price=2, quantity=Decimal('0.527'))
+        self.add_payments(sale)
+        sale.order()
+        sale.confirm()
+        rsale = ReturnedSale(branch=branch,
+                             sale=sale,
+                             store=self.store)
+        # Here, if the rounding was made before adding both products, we would actually
+        # end up with a sale_total of 2.11 instead of 2.10, which is the expected value.
+        self.assertEquals(rsale.sale_total, currency(Decimal('2.10')))
 
     def test_paid_total(self):
         branch = self.create_branch()
@@ -536,7 +552,7 @@ class TestReturnedSaleItem(DomainTest):
         self.assertEquals(item.sale_item.quantity_decreased, 0)
 
         increase_stock.assert_called_once_with(
-            decimal.Decimal(1), branch, StockTransactionHistory.TYPE_RETURNED_SALE,
+            Decimal(1), branch, StockTransactionHistory.TYPE_RETURNED_SALE,
             item.id, batch=item.batch)
 
     def test_return_with_component(self):

@@ -30,7 +30,7 @@ from storm.expr import (And, Coalesce, Eq, Join, LeftJoin, Or, Sum, Select,
 from storm.info import ClassAlias
 
 from stoqlib.database.expr import (Case, Distinct, Field, NullIf,
-                                   StatementTimestamp, Date, Concat)
+                                   StatementTimestamp, Date, Concat, Round)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.address import Address
@@ -62,6 +62,7 @@ from stoqlib.domain.sellable import (Sellable, SellableUnit,
 from stoqlib.domain.stockdecrease import (StockDecrease, StockDecreaseItem)
 from stoqlib.domain.workorder import WorkOrder, WorkOrderItem
 from stoqlib.lib.decorators import cached_property
+from stoqlib.lib.defaults import DECIMAL_PRECISION
 
 # This subselect will be used to filter by branch, so it should include all
 # possible (branch, storable) combinations so that all storables appear in the
@@ -70,8 +71,9 @@ _StockBranchSummary = Alias(Select(
     columns=[Alias(Storable.id, 'storable_id'),
              Alias(Branch.id, 'branch_id'),
              Alias(Sum(ProductStockItem.quantity), 'stock'),
-             Alias(Sum(ProductStockItem.quantity *
-                       ProductStockItem.stock_cost), 'total_stock_cost')],
+             Alias(Sum(ProductStockItem.quantity
+                       * ProductStockItem.stock_cost),
+                   'total_stock_cost')],
     tables=[Storable,
             # This is equivalent to a cross join
             Join(Branch, And(True)),
@@ -649,8 +651,8 @@ class SoldItemView(Viewable):
 
     # Aggregate
     quantity = Sum(SaleItem.quantity)
-    total_sold = Sum(SaleItem.price * SaleItem.quantity)
-    total_cost = Sum(SaleItem.quantity * SaleItem.average_cost)
+    total_sold = Sum(Round(SaleItem.price * SaleItem.quantity, DECIMAL_PRECISION))
+    total_cost = Sum(Round(SaleItem.quantity * SaleItem.average_cost, DECIMAL_PRECISION))
 
     tables = [
         Sellable,
@@ -745,7 +747,7 @@ class SoldItemsByBranchView(SoldItemView):
     branch_name = Coalesce(NullIf(Company.fancy_name, u''), Person.name)
 
     # Aggregates
-    total = Sum(SaleItem.quantity * SaleItem.price)
+    total = Sum(Round(SaleItem.quantity * SaleItem.price, DECIMAL_PRECISION))
 
     tables = SoldItemView.tables[:]
     tables.extend([
@@ -902,7 +904,7 @@ class SaleItemsView(Viewable):
     batch_date = StorableBatch.create_date
 
     item_discount = SaleItem.base_price - SaleItem.price
-    total = SaleItem.price * SaleItem.quantity
+    total = Round(SaleItem.price * SaleItem.quantity, DECIMAL_PRECISION)
 
     tables = [
         SaleItem,
@@ -1153,7 +1155,7 @@ class UnconfirmedSaleItemsView(Viewable):
     price = SaleItem.price
     quantity = SaleItem.quantity
     quantity_decreased = SaleItem.quantity_decreased
-    total = SaleItem.price * SaleItem.quantity
+    total = Round(SaleItem.price * SaleItem.quantity, DECIMAL_PRECISION)
 
     branch_id = Sale.branch_id
     sale_id = Sale.id
@@ -1315,7 +1317,7 @@ class LoanView(Viewable):
 
     # Aggregates
     loaned = Sum(LoanItem.quantity)
-    total = Sum(LoanItem.quantity * LoanItem.price)
+    total = Sum(Round(LoanItem.quantity * LoanItem.price, DECIMAL_PRECISION))
 
     tables = [
         Loan,
@@ -1343,7 +1345,7 @@ class LoanItemView(Viewable):
     sale_quantity = LoanItem.sale_quantity
     return_quantity = LoanItem.return_quantity
     price = LoanItem.price
-    total = LoanItem.quantity * LoanItem.price
+    total = Round(LoanItem.quantity * LoanItem.price, DECIMAL_PRECISION)
 
     loan_identifier = Loan.identifier
     loan_status = Loan.status

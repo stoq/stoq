@@ -477,7 +477,7 @@ class Loan(Domain):
         candidate = None
         for item in self.get_items():
             item.set_discount(discount)
-            new_total += item.price * item.quantity
+            new_total += quantize(item.price * item.quantity)
             if item.quantity == 1:
                 candidate = item
 
@@ -510,8 +510,7 @@ class Loan(Domain):
         :returns: the total value
         """
         return currency(self.get_items().sum(
-            Round(LoanItem.price * LoanItem.quantity,
-                        DECIMAL_PRECISION)) or 0)
+            Round(LoanItem.price * LoanItem.quantity, DECIMAL_PRECISION)) or 0)
 
     def get_client_name(self):
         if self.client:
@@ -563,8 +562,8 @@ class Loan(Domain):
 
         :returns: the base subtotal
         """
-        subtotal = self.get_items().sum(LoanItem.quantity *
-                                        LoanItem.base_price)
+        subtotal = self.get_items().sum(Round(LoanItem.quantity * LoanItem.base_price,
+                                              DECIMAL_PRECISION))
         return currency(subtotal)
 
     def close(self):

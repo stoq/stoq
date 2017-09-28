@@ -43,7 +43,7 @@ GtkDialog(toplevel): title='Products Sold Search', hidden
             column: title='Sold'
             column: title='Avg. Cost'
             column: title='Total sold'
-            row: '2', 'Botas', Decimal('5.000'), Decimal('0E-8'), Decimal('50.00000')
+            row: '2', 'Botas', Decimal('5.000'), Decimal('0E+1'), Decimal('50.00')
       GtkBox(orientation=horizontal, fill=True):
         GtkLabel(expand=True, fill=True):
         GtkLabel(quantity_label): 'Total quantity: 5'
