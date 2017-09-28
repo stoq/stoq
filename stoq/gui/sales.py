@@ -30,6 +30,7 @@ from dateutil.relativedelta import relativedelta
 import pango
 import gtk
 from kiwi.currency import currency
+from kiwi.ui.objectlist import Column
 from storm.expr import And
 
 from stoqlib.api import api
@@ -270,7 +271,8 @@ class SalesApp(ShellApp):
 
     def create_filters(self):
         self.set_text_field_columns(['client_name', 'salesperson_name',
-                                     'identifier_str'])
+                                     'identifier_str', 'token_code',
+                                     'token_name'])
 
         status_filter = ComboSearchFilter(_('Show sales'),
                                           self._get_filter_options())
@@ -314,21 +316,27 @@ class SalesApp(ShellApp):
                 SearchColumn('expire_date', title=_('Expire date'), width=120,
                              data_type=date, justify=gtk.JUSTIFY_RIGHT,
                              visible=False),
-                self._status_col,
-                SearchColumn('client_name', title=_('Client'),
-                             data_type=str, width=140, expand=True,
-                             ellipsize=pango.ELLIPSIZE_END),
-                SearchColumn('client_fancy_name', title=_('Client fancy name'),
-                             data_type=str, width=140, expand=True,
-                             visible=False, ellipsize=pango.ELLIPSIZE_END),
-                SearchColumn('salesperson_name', title=_('Salesperson'),
-                             data_type=str, width=130,
-                             ellipsize=pango.ELLIPSIZE_END),
-                SearchColumn('total_quantity', title=_('Items'),
-                             data_type=decimal.Decimal, width=60,
-                             format_func=format_quantity),
-                SearchColumn('total', title=_('Total'), data_type=currency,
-                             width=120, search_attribute='_total')]
+                self._status_col]
+
+        if api.sysparam.get_bool('USE_SALE_TOKEN'):
+            cols.append(Column('token_str', title=_(u'Sale token'),
+                               data_type=str, visible=True))
+
+        cols.extend([
+            SearchColumn('client_name', title=_('Client'),
+                         data_type=str, width=140, expand=True,
+                         ellipsize=pango.ELLIPSIZE_END),
+            SearchColumn('client_fancy_name', title=_('Client fancy name'),
+                         data_type=str, width=140, expand=True,
+                         visible=False, ellipsize=pango.ELLIPSIZE_END),
+            SearchColumn('salesperson_name', title=_('Salesperson'),
+                         data_type=str, width=130,
+                         ellipsize=pango.ELLIPSIZE_END),
+            SearchColumn('total_quantity', title=_('Items'),
+                         data_type=decimal.Decimal, width=60,
+                         format_func=format_quantity),
+            SearchColumn('total', title=_('Total'), data_type=currency,
+                         width=120, search_attribute='_total')])
         return cols
 
     #

@@ -2136,6 +2136,11 @@ class SaleToken(Domain):
     # Public API
     #
 
+    @classmethod
+    def find_by_client(cls, store, client):
+        tables = [cls, Join(Sale, cls.sale_id == Sale.id)]
+        return store.using(*tables).find(cls, Sale.client == client)
+
     def open_token(self, sale):
         assert self.can_open()
         self.sale = sale

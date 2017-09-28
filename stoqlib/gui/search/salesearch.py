@@ -447,12 +447,14 @@ class SaleTokenSearch(SearchEditor):
                           SaleTokenView.client_name,
                           SaleTokenView.branch_name]
 
-    def __init__(self, store, search_str=None, hide_toolbar=False,
-                 hide_footer=False):
+    def __init__(self, store, initial_string=None, hide_toolbar=False,
+                 hide_footer=False, double_click_confirm=False):
         SearchEditor.__init__(self, store, search_spec=self.search_spec,
                               editor_class=self.editor_class,
+                              initial_string=initial_string,
                               hide_toolbar=hide_toolbar,
-                              hide_footer=hide_footer)
+                              hide_footer=hide_footer,
+                              double_click_confirm=double_click_confirm)
 
     def get_columns(self):
         status_values = ([(_('Any'), None)] +

@@ -49,6 +49,7 @@ from stoqlib.gui.search.deliverysearch import DeliverySearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
+                                           SaleTokenSearch,
                                            SoldItemsByBranchSearch)
 from stoqlib.gui.search.sellablesearch import SaleSellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
@@ -227,6 +228,30 @@ class TestPos(BaseGUITest):
             self._open_token(pos, token)
 
             self.check_app(pos, u'pos-open-token-with-sale')
+
+    @mock.patch('stoq.gui.pos.PosApp.run_dialog')
+    @mock.patch('stoq.gui.services.api.new_store')
+    def test_open_token_search(self, new_store, run_dialog):
+        new_store.return_value = self.store
+        run_dialog.return_value = None
+        with contextlib.nested(
+                self.sysparam(USE_SALE_TOKEN=True),
+                mock.patch.object(self.store, 'close'),
+                mock.patch.object(self.store, 'commit')):
+            pos = self.create_app(PosApp, u'pos')
+            self._pos_open_till(pos)
+
+            token = self.create_sale_token(
+                u'001', branch=api.get_current_branch(self.store))
+            self.create_sale(sale_token=token)
+
+            pos.sale_token.set_text('Person')
+            self.activate(pos.sale_token)
+            run_dialog.assert_called_once_with(SaleTokenSearch, self.store,
+                                               double_click_confirm=True,
+                                               hide_footer=True,
+                                               hide_toolbar=True,
+                                               initial_string='Person')
 
     @mock.patch('stoq.gui.services.api.new_store')
     def test_save_new_sale(self, new_store):
