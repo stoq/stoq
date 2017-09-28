@@ -40,7 +40,7 @@ from stoqdrivers.enum import UnitType
 from stoqlib.api import api
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.person import Transporter
+from stoqlib.domain.person import Transporter, Client
 from stoqlib.domain.product import StorableBatch
 from stoqlib.domain.sale import Delivery, Sale, SaleToken
 from stoqlib.domain.sellable import Sellable
@@ -1625,7 +1625,11 @@ class PosApp(ShellApp):
                                  double_click_confirm=True)
         if not retval:
             return
-        self.set_client(retval.client)
+
+        if isinstance(retval, Client):
+            self.set_client(retval)
+        else:
+            self.set_client(retval.client)
 
     def on_edit_item_button__clicked(self, button):
         item = self.sale_items.get_selected()

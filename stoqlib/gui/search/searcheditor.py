@@ -227,6 +227,8 @@ class SearchEditor(SearchDialog):
         if rv:
             self.search.refresh()
             self.enable_ok()
+            if self.double_click_confirm:
+                self.confirm(rv)
 
     def run_dialog(self, editor_class, parent, *args, **kwargs):
         return run_dialog(editor_class, parent, *args, **kwargs)
