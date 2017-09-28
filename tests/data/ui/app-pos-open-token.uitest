@@ -141,7 +141,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
               GtkBox(footer_hbox, orientation=horizontal):
                 GtkBox(toolbar_vbox, orientation=vertical, fill=True):
                   GtkButtonBox(toolbar_button_box, orientation=horizontal, fill=True):
-                    GtkButton(save_button): insensitive
+                    GtkButton(save_button):
                     GtkButton(checkout_button): insensitive
                     GtkButton(delivery_button): insensitive
                     GtkButton(edit_item_button): insensitive

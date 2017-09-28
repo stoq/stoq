@@ -1953,6 +1953,18 @@ class TestSaleToken(DomainTest):
         token.close_token()
         self.assertEquals(token.status, SaleToken.STATUS_AVAILABLE)
 
+    def test_find_by_client(self):
+        token = self.create_sale_token(code=u'token')
+        sale = self.create_sale()
+        client = self.create_client()
+        token.open_token(sale)
+
+        # The sale has no client yet.
+        self.assertIsNone(SaleToken.find_by_client(self.store, client).one())
+
+        sale.client = client
+        self.assertEqual(SaleToken.find_by_client(self.store, client).one(), token)
+
 
 class TestSaleItem(DomainTest):
 

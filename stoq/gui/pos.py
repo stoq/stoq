@@ -69,6 +69,7 @@ from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.salespersonsearch import SalesPersonSalesSearch
 from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
+                                           SaleTokenSearch,
                                            SoldItemsByBranchSearch)
 from stoqlib.gui.search.sellablesearch import SaleSellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
@@ -720,8 +721,7 @@ class PosApp(ShellApp):
         if sysparam.get_bool('USE_SALE_TOKEN'):
             has_token = bool(self._token)
             self.set_sensitive([self.client_button], has_token)
-            self.set_sensitive([self.save_button],
-                               has_sale_items or bool(self._suggested_client))
+            self.set_sensitive([self.save_button], has_token)
             self.list_header_hbox.set_visible(has_token)
             self.token_box.set_visible(self._till_open and not self._token)
             self.till_status_box.set_visible(
@@ -1144,10 +1144,14 @@ class PosApp(ShellApp):
                                           code=str(token_code),
                                           branch=branch).one()
         if self._token is None:
-            warning(_("There's no token registered with the "
-                      "code \"{}\"".format(token_code)))
-            self.sale_token.grab_focus()
-            return
+            retval = self.run_dialog(SaleTokenSearch, self.store,
+                                     initial_string=token_code, hide_footer=True,
+                                     hide_toolbar=True,
+                                     double_click_confirm=True)
+            if not retval:
+                self.sale_token.grab_focus()
+                return
+            self._token = retval.sale_token
 
         if self._token and self._token.sale:
             sale = self._token.sale
@@ -1196,6 +1200,12 @@ class PosApp(ShellApp):
         if not save_only:
             # The user can save a token with just a client.
             assert len(self.sale_items) >= 1
+
+        if (self._token and not len(self.sale_items) and not
+                self._suggested_client):
+            # This is a sale token with no items nor client. Just close it.
+            self._clear_order()
+            return
 
         # FIXME: We should create self._current_store when adding the first
         # item, so we can simplify a lot of code on this module by using it
@@ -1272,6 +1282,13 @@ class PosApp(ShellApp):
         self._clear_order()
 
     def set_client(self, client):
+        if isinstance(self._token, SaleToken):
+            # One client can have only one token open at a time
+            existing = SaleToken.find_by_client(self.store, client).one()
+            if existing and existing != self._token:
+                warning(_('Client can only have one token'))
+                return
+
         self._suggested_client = client
         self.client_description.set_visible(True)
         self.client_description.set_text(client.get_description())
@@ -1301,7 +1318,7 @@ class PosApp(ShellApp):
                     yesno(_('Save the order?'), Gtk.ResponseType.NO, _('Save'),
                           _("Don't save"))):
                 checkout = False
-            if len(self.sale_items) >= 1 and checkout:
+            if checkout:
                 self.checkout(save_only=self._confirm_sales_on_till)
         else:
             # The user typed something. Try to add the sellable.
