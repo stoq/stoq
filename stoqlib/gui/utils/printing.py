@@ -214,7 +214,7 @@ class PrintOperationPoppler(PrintOperation):
 
         self._report.save()
         uri = Gio.File.new_for_path(self._report.filename).get_uri()
-        from gi.reposutory import Poppler
+        from gi.repository import Poppler
         self._document = Poppler.Document.new_from_file(uri, password="")
 
     def render_done(self):
