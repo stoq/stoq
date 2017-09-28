@@ -34,6 +34,7 @@ from stoqdrivers.escp import EscPPrinter
 
 from stoqlib.domain.fiscal import Invoice
 from stoqlib.lib.dateutils import localtoday
+from stoqlib.lib.defaults import quantize
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -1256,7 +1257,7 @@ class ValorTotalServicosField(InvoiceFieldDescription):
     field_type = Decimal
 
     def fetch(self, width, height):
-        return sum([s.quantity * s.price for s in self.sale.services],
+        return sum([quantize(s.quantity * s.price) for s in self.sale.services],
                    Decimal(0))
 
 

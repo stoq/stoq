@@ -35,6 +35,7 @@ import csv
 from decimal import Decimal
 
 from stoqlib.database.runtime import get_current_branch, new_store
+from stoqlib.lib.defaults import quantize
 
 taxes_data = {}
 TaxInfo = namedtuple('TaxInfo', 'nacionalfederal, importadosfederal, estadual,'
@@ -146,13 +147,13 @@ class IBPTGenerator(object):
         # Different codes, represent taxes of international origin.
         else:
             federal_tax = Decimal(tax_values.importadosfederal) / 100
-        total_item = item.price * item.quantity
+        total_item = quantize(item.price * item.quantity)
         return total_item * federal_tax
 
     def _calculate_state_tax(self, item, tax_values):
         if tax_values is None:
             return Decimal("0")
-        total_item = item.price * item.quantity
+        total_item = quantize(item.price * item.quantity)
         state_tax = Decimal(tax_values.estadual) / 100
         return total_item * state_tax
 

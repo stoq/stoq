@@ -105,6 +105,7 @@ from stoqlib.domain.person import Person, Branch
 from stoqlib.domain.sellable import Sellable
 from stoqlib.exceptions import StockError
 from stoqlib.lib.dateutils import localnow, localtoday
+from stoqlib.lib.defaults import quantize
 from stoqlib.lib.stringutils import next_value_for
 from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 
@@ -780,7 +781,7 @@ class Product(Domain):
         """
         if not self.is_package:
             return
-        self.sellable.price = sum(child.price * child.quantity
+        self.sellable.price = sum(quantize(child.price * child.quantity)
                                   for child in self.get_components())
     #
     # Domain

@@ -50,7 +50,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 column: title='Sale date'
                 column: title='Value'
                 column: title='Total value'
-                row: u'', u'Normal', Decimal('1.000'), datetime.today(), <currency $100>, Decimal('100.00000')
+                row: u'', u'Normal', Decimal('1.000'), datetime.today(), <currency $100>, Decimal('100.00')
             GtkVBox():
               ObjectTree(expand=True, fill=True):
                 column: title='Code'

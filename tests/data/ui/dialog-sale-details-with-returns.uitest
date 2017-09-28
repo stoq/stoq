@@ -34,8 +34,8 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
                   column: title='Sale price'
                   column: title='Discount', hidden
                   column: title='Total'
-                  row: u'', u'Description', None, None, Decimal('1.000'), <currency $10>, <currency $100>, Decimal('-90.00'), Decimal('100.00000')
-                  row: u'', u'Description', None, None, Decimal('1.000'), <currency $10>, <currency $100>, Decimal('-90.00'), Decimal('100.00000')
+                  row: u'', u'Description', None, None, Decimal('1.000'), <currency $10>, <currency $100>, Decimal('-90.00'), Decimal('100.00')
+                  row: u'', u'Description', None, None, Decimal('1.000'), <currency $10>, <currency $100>, Decimal('-90.00'), Decimal('100.00')
               GtkTable(table2, fill=True):
                 GtkLabel(label4): 'Subtotal:'
                 ProxyLabel(subtotal_lbl): '<span >$200.00</span>'
@@ -55,8 +55,8 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
                   column: title='Quantity'
                   column: title='Sale price'
                   column: title='Total'
-                  row: datetime.datetime(2010, 12, 10, 0, 0), None, u'', u'Description', Decimal('1.000'), <currency $96.50>, Decimal('96.50000')
-                  row: datetime.datetime(2010, 12, 10, 0, 0), None, u'', u'Description', Decimal('1.000'), <currency $96.50>, Decimal('96.50000')
+                  row: datetime.datetime(2010, 12, 10, 0, 0), None, u'', u'Description', Decimal('1.000'), <currency $96.50>, Decimal('96.50')
+                  row: datetime.datetime(2010, 12, 10, 0, 0), None, u'', u'Description', Decimal('1.000'), <currency $96.50>, Decimal('96.50')
                 GtkHBox(hbox3, fill=True):
                   GtkButton(print_return_report): 'gtk-print'
                   GtkLabel(label21, expand=True, fill=True): 'Check the "Details" tab for more information...'
@@ -73,7 +73,7 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
                 column: title='Value'
                 column: title='Paid value'
                 row: 999, u'Money', u'1/1 Money for sale 00123', datetime.datetime(2010, 12, 1, 0, 0), datetime.datetime(2010, 12, 1, 0, 0), u'Paid', <currency $193>, <currency $193>
-                row: 666, u'Money', u'Money returned for sale 00123', datetime.datetime(2010, 12, 10, 0, 0), datetime.datetime(2010, 12, 10, 0, 0), u'To Pay', Decimal('-193.00000'), 0
+                row: 666, u'Money', u'Money returned for sale 00123', datetime.datetime(2010, 12, 10, 0, 0), datetime.datetime(2010, 12, 10, 0, 0), u'To Pay', Decimal('-193.00'), 0
               GtkTable(table4, fill=True):
                 GtkLabel(label13): 'Discount:'
                 ProxyLabel(total_discount): '<span >$ 0.00</span>'

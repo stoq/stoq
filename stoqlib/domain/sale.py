@@ -42,7 +42,7 @@ from zope.interface import implementer
 
 from stoqlib.api import api
 from stoqlib.database.expr import (Concat, Date, Distinct, Field, NullIf,
-                                   TransactionTimestamp)
+                                   Round, TransactionTimestamp)
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                          PriceCol, QuantityCol, IdentifierCol,
                                          IdCol, BoolCol, EnumCol)
@@ -77,7 +77,7 @@ from stoqlib.domain.service import Service
 from stoqlib.domain.taxes import check_tax_info_presence, InvoiceItemIpi
 from stoqlib.exceptions import SellError, StockError, DatabaseInconsistency
 from stoqlib.lib.dateutils import localnow
-from stoqlib.lib.defaults import quantize
+from stoqlib.lib.defaults import quantize, DECIMAL_PRECISION
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -265,7 +265,7 @@ class SaleItem(Domain):
         # Dont use self.sale.(surcharge/discount)_percentage here since they are
         # already quantized, and we may lose even more precision.
         percentage = diff / self.sale.get_sale_subtotal()
-        return currency(quantize(self.price * (1 - percentage)))
+        return currency(self.price * (1 - percentage))
 
     #
     # Invoice implementation
@@ -459,7 +459,7 @@ class SaleItem(Domain):
         if self.ipi_info:
             return currency(quantize(self.price * self.quantity +
                                      self.ipi_info.v_ipi))
-        return currency(quantize(self.price * self.quantity))
+        return currency(self.price * self.quantity)
 
     def get_quantity_unit_string(self):
         return u"%s %s" % (format_quantity(self.quantity),
@@ -1453,7 +1453,7 @@ class Sale(Domain):
                 continue
             items.append(item)
             item.set_discount(discount)
-            new_total += item.price * item.quantity
+            new_total += quantize(item.price * item.quantity)
 
         # Since we apply the discount percentage above, items can generate a
         # 3rd decimal place, that will be rounded to the 2nd, making the value
@@ -1527,9 +1527,9 @@ class Sale(Domain):
                 continue
             if item.parent_item:
                 component = item.get_component(item.parent_item)
-                subtotal += item.quantity * component.price
+                subtotal += quantize(item.quantity * component.price)
             else:
-                subtotal += item.quantity * item.base_price
+                subtotal += quantize(item.quantity * item.base_price)
         return currency(subtotal)
 
     def get_items_total_quantity(self):
@@ -2027,7 +2027,7 @@ class Sale(Domain):
             if tax_constant is None or tax_constant.tax_type != TaxType.CUSTOM:
                 continue
             icms_tax = tax_constant.tax_value / Decimal(100)
-            icms_total += icms_tax * (price * item.quantity)
+            icms_total += icms_tax * quantize(price * item.quantity)
 
         return icms_total
 
@@ -2043,7 +2043,7 @@ class Sale(Domain):
         iss_tax = sysparam.get_decimal('ISS_TAX') / Decimal(100)
         for item in self.services:
             price = item.price + av_difference
-            iss_total += iss_tax * (price * item.quantity)
+            iss_total += iss_tax * quantize(price * item.quantity)
         return iss_total
 
     def _get_average_difference(self):
@@ -2257,7 +2257,7 @@ class ReturnedSaleItemsView(Viewable):
     batch_date = StorableBatch.create_date
 
     # summaries
-    total = ReturnedSaleItem.price * ReturnedSaleItem.quantity
+    total = Round(ReturnedSaleItem.price * ReturnedSaleItem.quantity, DECIMAL_PRECISION)
 
     tables = [
         ReturnedSaleItem,
@@ -2311,8 +2311,8 @@ class ReturnedSaleItemsView(Viewable):
 _SaleItemSummary = Select(columns=[SaleItem.sale_id,
                                    Alias(Sum(InvoiceItemIpi.v_ipi), 'v_ipi'),
                                    Alias(Sum(SaleItem.quantity), 'total_quantity'),
-                                   Alias(Sum(SaleItem.quantity *
-                                             SaleItem.price), 'subtotal')],
+                                   Alias(Sum(Round(SaleItem.quantity * SaleItem.price,
+                                                   DECIMAL_PRECISION)), 'subtotal')],
                           tables=[SaleItem,
                                   LeftJoin(InvoiceItemIpi,
                                            InvoiceItemIpi.id == SaleItem.ipi_info_id)],
@@ -2321,7 +2321,7 @@ SaleItemSummary = Alias(_SaleItemSummary, '_sale_item')
 
 
 class SaleView(Viewable):
-    """Stores general informatios about sales
+    """Stores general information about sales
     """
 
     Person_Branch = ClassAlias(Person, 'person_branch')
@@ -2588,7 +2588,7 @@ class ReturnedSaleView(Viewable):
     # Returned Sale Item
     price = ReturnedSaleItem.price
     quantity = ReturnedSaleItem.quantity
-    total = ReturnedSaleItem.price * ReturnedSaleItem.quantity
+    total = Round(ReturnedSaleItem.price * ReturnedSaleItem.quantity, DECIMAL_PRECISION)
 
     # Sellable
     product_name = Sellable.description
@@ -2672,7 +2672,7 @@ class SoldSellableView(Viewable):
 
     # Aggregates
     total_quantity = Sum(SaleItem.quantity)
-    subtotal = Sum(SaleItem.quantity * SaleItem.price)
+    subtotal = Sum(Round(SaleItem.quantity * SaleItem.price, DECIMAL_PRECISION))
 
     group_by = [id, code, description, client_id, client_name, sale_item]
 
@@ -2702,7 +2702,7 @@ class SoldProductsView(SoldSellableView):
 
     value = SaleItem.price
     quantity = SaleItem.quantity
-    total_value = SaleItem.quantity * SaleItem.price
+    total_value = Round(SaleItem.quantity * SaleItem.price, DECIMAL_PRECISION)
     sale_date = Sale.open_date
 
     tables = SoldSellableView.tables[:]
@@ -2788,7 +2788,7 @@ class ClientsWithSaleView(Viewable):
 
     sales = Count(Distinct(Sale.id))
     sale_items = Sum(SaleItem.quantity)
-    total_amount = Sum(SaleItem.price * SaleItem.quantity)
+    total_amount = Sum(Round(SaleItem.price * SaleItem.quantity, DECIMAL_PRECISION))
     last_purchase = Max(Sale.confirm_date)
 
     tables = [
@@ -2849,7 +2849,7 @@ class SoldItemsByClient(Viewable):
     base_price = Avg(SaleItem.base_price)
     quantity = Sum(SaleItem.quantity)
     price = Avg(SaleItem.price)
-    total = Sum(SaleItem.quantity * SaleItem.price)
+    total = Sum(Round(SaleItem.quantity * SaleItem.price, DECIMAL_PRECISION))
 
     tables = [
         Sellable,

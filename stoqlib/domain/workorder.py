@@ -35,7 +35,7 @@ from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
-from stoqlib.database.expr import Field, NullIf, Concat
+from stoqlib.database.expr import Field, NullIf, Concat, Round
 from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
                                          PriceCol, DecimalCol, QuantityCol,
                                          IdentifierCol, IdCol, BoolCol, EnumCol)
@@ -54,6 +54,7 @@ from stoqlib.domain.product import Product, StockTransactionHistory
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import Sellable
 from stoqlib.lib.dateutils import localnow, localtoday
+from stoqlib.lib.defaults import DECIMAL_PRECISION
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -735,8 +736,9 @@ class WorkOrder(Domain):
 
         """
         items = self.order_items.find()
-        return (items.sum(WorkOrderItem.price * WorkOrderItem.quantity) or
-                currency(0))
+        return (items.sum(Round(WorkOrderItem.price * WorkOrderItem.quantity,
+                                DECIMAL_PRECISION))
+                or currency(0))
 
     def add_sellable(self, sellable, price=None, quantity=1, batch=None):
         """Adds a sellable to this work order
@@ -1274,7 +1276,9 @@ _WorkOrderItemsSummary = Alias(Select(
     columns=[
         WorkOrderItem.order_id,
         Alias(Sum(WorkOrderItem.quantity), 'quantity'),
-        Alias(Sum(WorkOrderItem.quantity * WorkOrderItem.price), 'total')],
+        Alias(Sum(Round(WorkOrderItem.quantity * WorkOrderItem.price,
+                        DECIMAL_PRECISION)),
+              'total')],
     tables=[WorkOrderItem],
     group_by=[WorkOrderItem.order_id]),
     '_work_order_items')

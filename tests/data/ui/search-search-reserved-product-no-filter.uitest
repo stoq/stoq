@@ -42,9 +42,9 @@ GtkDialog(toplevel): title='Unconfirmed Sale Items Search', hidden
             column: title='WO Status', hidden
             column: title='Estimated finish', hidden
             column: title='WO Finish date', hidden
-            row: 73, u'Quoting', u'', None, u'Holy Grail', None, u'SalesPerson', None, datetime.datetime(2013, 12, 11, 0, 0), <currency $100>, Decimal('29.000'), Decimal('29.000'), Decimal('2900.00000'), None, '', None, None
-            row: 43, u'Quoting', u'', None, u'Description', None, u'SalesPerson', None, datetime.datetime(2014, 6, 12, 0, 0), <currency $100>, Decimal('33.000'), Decimal('33.000'), Decimal('3300.00000'), 44, u'Opened', None, None
-            row: 42, u'Ordered', u'', None, u'Schrubbery', None, u'SalesPerson', None, datetime.datetime(2013, 12, 11, 0, 0), <currency $100>, Decimal('66.000'), Decimal('23.000'), Decimal('6600.00000'), None, '', None, None
+            row: 73, u'Quoting', u'', None, u'Holy Grail', None, u'SalesPerson', None, datetime.datetime(2013, 12, 11, 0, 0), <currency $100>, Decimal('29.000'), Decimal('29.000'), Decimal('2900.00'), None, '', None, None
+            row: 43, u'Quoting', u'', None, u'Description', None, u'SalesPerson', None, datetime.datetime(2014, 6, 12, 0, 0), <currency $100>, Decimal('33.000'), Decimal('33.000'), Decimal('3300.00'), 44, u'Opened', None, None
+            row: 42, u'Ordered', u'', None, u'Schrubbery', None, u'SalesPerson', None, datetime.datetime(2013, 12, 11, 0, 0), <currency $100>, Decimal('66.000'), Decimal('23.000'), Decimal('6600.00'), None, '', None, None
       GtkHBox(fill=True):
         GtkLabel(expand=True, fill=True):
         GtkLabel(quantity_label): 'Quantity: 128'

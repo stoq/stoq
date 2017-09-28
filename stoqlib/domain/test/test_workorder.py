@@ -22,9 +22,9 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-__tests__ = 'stoqlib/domain/workorder.py'
 
 import contextlib
+from decimal import Decimal
 import mock
 
 from stoqlib.exceptions import InvalidStatus, NeedReason
@@ -42,6 +42,9 @@ from stoqlib.domain.workorder import (WorkOrder, WorkOrderItem,
                                       WorkOrderHistoryView)
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.dateutils import localdate
+
+
+__tests__ = 'stoqlib/domain/workorder.py'
 
 
 def _combine(iter1, iter2):
@@ -299,6 +302,13 @@ class TestWorkOrder(DomainTest):
         self.assertEqual(workorder.get_total_amount(), 10)
         workorder.add_sellable(self.create_sellable(), quantity=5, price=20)
         self.assertEqual(workorder.get_total_amount(), 110)
+
+    def test_get_total_amount_with_rounding(self):
+        workorder = self.create_workorder()
+        quantity = Decimal('0.527')
+        workorder.add_sellable(self.create_sellable(), quantity=quantity, price=2)
+        workorder.add_sellable(self.create_sellable(), quantity=quantity, price=2)
+        self.assertEqual(workorder.get_total_amount(), Decimal('2.10'))
 
     def test_status_str(self):
         workorder = self.create_workorder()
