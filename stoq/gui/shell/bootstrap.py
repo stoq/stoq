@@ -88,12 +88,6 @@ class ShellBootstrap(object):
     def _setup_gobject(self):
         if not self._initial:
             return
-        assert not 'gobject' in sys.modules
-        assert not 'gtk' in sys.modules
-
-        if 'STOQ_USE_GI' in os.environ:
-            from stoq.lib import gicompat
-            gicompat.enable()
 
         import gobject
         gobject.threads_init()
