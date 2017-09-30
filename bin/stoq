@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- Mode: Python; coding: utf-8 -*-
 #
 # Copyright (C) 2005-2011 by Async Open Source
 #
@@ -117,6 +118,53 @@ if platform.system() == 'Windows':
                     raise
                 fp = open(os.devnull, "w")
             setattr(sys, name, fp)
+
+
+# This should be changed when building stoq.exe
+if False:
+    from stoqlib.gui.base import dialogs
+
+    # Quick hack to disable shortcuts. Note that that the shortcut action is
+    # still executed, but if that shortcuts runs a dialog (as most does), the
+    # dialog will not be displayed
+    def _mock_run_dialog(*args, **kwargs):
+        for i in list(args) + list(kwargs.values()):
+            if i.__class__.__name__ == 'StoqlibStore':
+                i.retval = False
+        return None
+
+    from gi.repository import Gtk
+    from stoq.gui.shell.shellwindow import ShellWindow
+    from stoqlib.api import api
+
+    _check_demo_mode = ShellWindow._check_demo_mode
+
+    def _check_trial_mode(self):
+        from stoqlib.lib.translation import stoqlib_gettext as _
+        from stoqlib.domain.system import TransactionEntry
+        from stoqlib.lib.dateutils import localnow
+        _check_demo_mode(self)
+
+        start = self.store.find(TransactionEntry).min(TransactionEntry.te_time)
+        days = 60 - (localnow() - start).days
+        title = _('You are using a trial version of Stoq')
+        desc = (_("There are <b>%s days</b> remaining to try all Stoq features") % days)
+        msg = '<b>%s</b>\n%s' % (api.escape(title), desc)
+
+        trial_button = Gtk.LinkButton('https://www.stoq.com.br/trial_windows', _('Activate'))
+        if days > 0:
+            _type = Gtk.MessageType.INFO
+        else:
+            _type = Gtk.MessageType.WARNING
+        infobar = self.add_info_bar(_type, msg, action_widget=trial_button)
+
+        if days <= 0:
+            for child in self.main_vbox.get_children():
+                if child is not infobar:
+                    child.set_sensitive(False)
+            dialogs.run_dialog = _mock_run_dialog
+
+    ShellWindow._check_demo_mode = _check_trial_mode
 
 
 if len(sys.argv) > 1 and sys.argv[1] == 'dbadmin':
