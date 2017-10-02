@@ -1156,7 +1156,9 @@ class Sale(Domain):
 
         # If ALLOW_CANCEL_CONFIRMED_SALES is not set, we can only cancel
         # quoting sales
-        if not sysparam.get_bool("ALLOW_CANCEL_CONFIRMED_SALES"):
+        user = api.get_current_user(self.store)
+        if not (sysparam.get_bool("ALLOW_CANCEL_CONFIRMED_SALES")
+                or user.profile.check_app_permission(u'admin')):
             return (self.status == self.STATUS_QUOTE or
                     (self.is_external() and self.status == Sale.STATUS_ORDERED))
 

@@ -25,6 +25,7 @@
 import datetime
 from decimal import Decimal
 
+from kiwi.component import provide_utility
 from kiwi.currency import currency
 import mock
 from nose.exc import SkipTest
@@ -32,12 +33,14 @@ from storm.expr import And, Eq, Ne
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_current_branch
+from stoqlib.database.interfaces import ICurrentUser
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.event import Event
 from stoqlib.domain.events import SaleIsExternalEvent
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
+from stoqlib.domain.person import LoginUser
 from stoqlib.domain.product import Storable, StockTransactionHistory
 from stoqlib.domain.returnedsale import ReturnedSaleItem
 from stoqlib.domain.sale import (Sale, SalePaymentMethodView,
@@ -1035,9 +1038,21 @@ class TestSale(DomainTest):
         can_cancel_emit.return_value = False
         self.assertFalse(sale.can_cancel())
         with self.sysparam(ALLOW_CANCEL_CONFIRMED_SALES=False):
+            # This represents a user with administrator permissions.
+            admin_user = api.get_current_user(self.store)
+            # And this is a user without the administrator permissions.
+            salesperson_user = self.store.find(LoginUser, username=u'elias').one()
             for can_cancel in [True, None]:
                 can_cancel_emit.return_value = can_cancel
+                # As the user has admin permissions, he should be able to cancel the
+                # already confirmed sale.
+                self.assertTrue(sale.can_cancel())
+                provide_utility(ICurrentUser, salesperson_user, replace=True)
+                can_cancel_emit.return_value = can_cancel
+                # Non-administrator users shouldn't be able to cancel sales that were
+                # already confirmed when the corresponding parameter is marked as False.
                 self.assertFalse(sale.can_cancel())
+                provide_utility(ICurrentUser, admin_user, replace=True)
 
             sale.status = Sale.STATUS_QUOTE
             can_cancel_emit.return_value = False
@@ -1052,14 +1067,26 @@ class TestSale(DomainTest):
             self.assertFalse(sale.can_cancel())
             for can_cancel in [True, None]:
                 can_cancel_emit.return_value = can_cancel
+                # Again, administrators should be able to cancel confirmed sales.
+                self.assertTrue(sale.can_cancel())
+                provide_utility(ICurrentUser, salesperson_user, replace=True)
+                can_cancel_emit.return_value = can_cancel
+                # But other users shouldn't.
                 self.assertFalse(sale.can_cancel())
+                provide_utility(ICurrentUser, admin_user, replace=True)
 
             sale.group.pay()
             can_cancel_emit.return_value = False
             self.assertFalse(sale.can_cancel())
             for can_cancel in [True, None]:
                 can_cancel_emit.return_value = can_cancel
+                # Administrator:
+                self.assertTrue(sale.can_cancel())
+                provide_utility(ICurrentUser, salesperson_user, replace=True)
+                can_cancel_emit.return_value = can_cancel
+                # Non-administrator:
                 self.assertFalse(sale.can_cancel())
+                provide_utility(ICurrentUser, admin_user, replace=True)
 
             sale.return_(sale.create_sale_return_adapter())
             for can_cancel in [True, False, None]:
