@@ -506,11 +506,23 @@ class ShellWindow(GladeDelegate):
 
         # Setup the default window size, for smaller sizes use
         # 75% of the height or 600px if it's higher than 800px
-        if height == -1:
-            screen = gtk.gdk.screen_get_default()
-            height = min(int(screen.get_height() * 0.75), 600)
+        screen = gtk.gdk.screen_get_default()
+        screen_height = screen.get_height()
+        screen_width = screen.get_width()
+
+        if height == -1 or y > screen_height:
+            height = min(int(screen_height * 0.75), 600)
+
+        if width == -1 or y > screen_width:
+            width = min(int(screen_width * 0.75), 1200)
+
+        # Setup window position according to the settings file, but if settings file
+        # indicates values out of the screen, move the window to the outermost position
+        # within the screen.
         toplevel = self.get_toplevel()
         toplevel.set_default_size(width, height)
+        y = min(y, screen_height - height)
+        x = min(x, screen_width - width)
         if x != -1 and y != -1:
             toplevel.move(x, y)
 
