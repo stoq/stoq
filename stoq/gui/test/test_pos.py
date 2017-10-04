@@ -167,6 +167,11 @@ class TestPos(BaseGUITest):
         for arg, expected in zip(args, expected_args):
             self.assertEquals(arg, expected)
 
+    def test_add_button(self):
+        app = self.create_app(PosApp, u'pos')
+        app.add_toolbar_button('New Button', Gtk.STOCK_PRINT)
+        self.check_app(app, u'pos-with-new-button')
+
     @mock.patch('stoqlib.database.runtime.StoqlibStore.confirm')
     def test_till_open(self, confirm):
         app = self.create_app(PosApp, u'pos')

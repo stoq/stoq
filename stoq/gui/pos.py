@@ -1190,6 +1190,17 @@ class PosApp(ShellApp):
         self.barcode.set_text('')
         self._update_buttons()
 
+    @public(since="3.0.0")
+    def add_toolbar_button(self, label, stock):
+        button = Gtk.Button.new()
+        box = Gtk.VBox()
+        button.add(box)
+        box.pack_start(Gtk.Image.new_from_stock(stock, Gtk.IconSize.MENU), True, True, 0)
+        box.pack_start(Gtk.Label(label), True, True, 0)
+        button.show_all()
+        self.toolbar_button_box.pack_start(button, False, False, 6)
+        return button
+
     @public(since="1.5.0")
     def checkout(self, cancel_clear=False, save_only=False):
         """Initiate the sale checkout process.
