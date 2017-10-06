@@ -20,7 +20,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from datetime import timedelta
 from decimal import Decimal
 
 from stoqlib.lib.cnab.base import Field, Record, Cnab
@@ -159,7 +158,7 @@ class ItauPaymentDetail(Record400):
             payer_postal_code=postal_code.split('-')[0],
             payer_city=address.city_location.city,
             payer_state=address.city_location.state,
-            # Juros diário (em reaiso)
+            # Juros diário (em reais)
             interest_value=interest_value
         )
         if discount_value:
@@ -187,7 +186,7 @@ class ItauPenaltyDetail(Record400):
     ]
 
     def __init__(self, payment, bank_info, **kwargs):
-        pdate = payment.due_date + timedelta(days=1)
+        pdate = payment.due_date
         kwargs.update(
             penalty_date=pdate.strftime('%d%m%Y'),
         )
