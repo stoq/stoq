@@ -40,6 +40,7 @@ GtkBox(vbox1, orientation=vertical):
     row: 'Production', 'Automatic update the cost of a production product', 'Yes'
     row: 'Products', 'Disable edit code products', 'No'
     row: 'Products', 'Suggest product code based on the selected category', 'No'
+    row: 'Products', 'Max size for product barcodes', '14'
     row: 'Products', 'Default PIS template', ''
     row: 'Products', 'Default COFINS template', ''
     row: 'Purchase', 'Suggested supplier', 'Cia de Roupas São Carlos'
