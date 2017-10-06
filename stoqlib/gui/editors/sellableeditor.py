@@ -561,8 +561,11 @@ class SellableEditor(BaseEditor):
     def on_barcode__validate(self, widget, value):
         if not value:
             return
-        if value and len(value) > 14:
-            return ValidationError(_(u'Barcode must have 14 digits or less.'))
+
+        max_barcode = sysparam.get_int('BARCODE_MAX_SIZE')
+        if value and len(value) > max_barcode:
+            return ValidationError(_(u'Barcode must have %s digits or less.') %
+                                   max_barcode)
         if self.model.sellable.check_barcode_exists(value):
             return ValidationError(_('The barcode %s already exists') % value)
         if self._demo_mode and value not in _DEMO_BAR_CODES:

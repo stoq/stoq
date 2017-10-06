@@ -196,6 +196,13 @@ _details = [
         bool, initial=False),
 
     ParameterDetails(
+        u'BARCODE_MAX_SIZE',
+        _(u'Products'),
+        _(u'Max size for product barcodes'),
+        _(u'Max number of digits for product barcodes'),
+        int, initial=14),
+
+    ParameterDetails(
         u'DEFAULT_PRODUCT_PIS_TEMPLATE',
         _(u'Products'),
         _(u'Default PIS template'),
