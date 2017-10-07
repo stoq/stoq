@@ -4,6 +4,7 @@
 # 
 # Translators:
 # andrelcmarinho <andrelcmarinho@bol.com.br>, 2014
+# Felipe Nehmi <fhbnehmi@gmail.com>, 2017
 # gerga <gerga@async.com.br>, 2015
 # Herbert Silver <herbertsilver@gmail.com>, 2017
 # Johan Dahlin <jdahlin@async.com.br>, 2005
@@ -16,9 +17,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-05 02:10-0300\n"
-"PO-Revision-Date: 2017-10-05 05:10+0000\n"
-"Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
+"POT-Creation-Date: 2017-10-06 02:10-0300\n"
+"PO-Revision-Date: 2017-10-06 17:05+0000\n"
+"Last-Translator: Felipe Nehmi <fhbnehmi@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -581,7 +582,7 @@ msgstr "Criar crédito para vendas futuras"
 
 #: ../data/glade/CertificateChooserDialog.ui.h:1
 msgid "Choose the certificate that will be used in the emission:"
-msgstr "Escolha o certificado que sera utilizado na emissão:"
+msgstr "Escolha o certificado que será utilizado na emissão:"
 
 #: ../data/glade/CertificateEditor.ui.h:1
 msgid "Certificate:"
@@ -1918,11 +1919,11 @@ msgstr "Integração multi-filiais"
 #: ../data/glade/PluginStep.ui.h:15
 msgid ""
 "Manage multiple branches, track all of them in one place, in real-time."
-msgstr "Gerencie múltiplas filiais, observe todas de um só luga, em tempo real."
+msgstr "Gerencie múltiplas filiais, observe todas de um só lugar, em tempo real."
 
 #: ../data/glade/PluginStep.ui.h:16
 msgid "E-commerce integration"
-msgstr "Integração e-commerce"
+msgstr "Integração com e-commerce"
 
 #: ../data/glade/PluginStep.ui.h:17
 msgid "Manage your online store directly from Stoq."
@@ -1981,7 +1982,7 @@ msgstr "dias"
 
 #: ../data/glade/ProductComponentSlave.ui.h:3
 msgid "Yields:"
-msgstr "Rendimento:"
+msgstr "Rendimentos:"
 
 #: ../data/glade/ProductComponentSlave.ui.h:5
 #: ../data/glade/ProductQualityTestSlave.ui.h:2
@@ -2048,7 +2049,7 @@ msgstr "EX TIPI:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:21
 msgid "CEST:"
-msgstr ""
+msgstr "CEST:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:22
 msgid "<b>Mercosul Details</b>"
@@ -2502,7 +2503,7 @@ msgstr "Frete:"
 
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:26
 msgid "Invoice Key:"
-msgstr ""
+msgstr "Chave da Nota Fiscal:"
 
 #: ../data/glade/ReceivingItemEditor.ui.h:1
 msgid "Receiving Order:"
@@ -2518,7 +2519,7 @@ msgstr "Pedido de compra:"
 
 #: ../data/glade/ReceivingOrderDetailsDialog.ui.h:1
 msgid "Return Receiving"
-msgstr ""
+msgstr "Devolver Recebimento"
 
 #: ../data/glade/ReceivingOrderDetailsDialog.ui.h:2
 msgid "Received Products"
@@ -2837,7 +2838,7 @@ msgstr "Item da lista de serviços:"
 
 #: ../data/glade/ServiceFiscalSlave.ui.h:2
 msgid "City Taxation Code:"
-msgstr "Código do imposto municipal:"
+msgstr "Código de Tributação Municipal:"
 
 #: ../data/glade/ServiceFiscalSlave.ui.h:3
 msgid "ISS Aliquot:"
@@ -7249,19 +7250,19 @@ msgstr "Editar a entrega selecionada"
 
 #: ../stoq/gui/delivery.py:90
 msgid "Pick..."
-msgstr ""
+msgstr "Selecionar..."
 
 #: ../stoq/gui/delivery.py:93
 msgid "Pick the selected delivery"
-msgstr ""
+msgstr "Selecionar a entrega escolhida"
 
 #: ../stoq/gui/delivery.py:94
 msgid "Pack..."
-msgstr ""
+msgstr "Empacotar..."
 
 #: ../stoq/gui/delivery.py:97
 msgid "Pack the selected delivery"
-msgstr ""
+msgstr "Empacotar a entrega escolhida"
 
 #: ../stoq/gui/delivery.py:98
 msgid "Send..."
@@ -7277,7 +7278,7 @@ msgstr "Marcar como recebido..."
 
 #: ../stoq/gui/delivery.py:105
 msgid "Mark the selected delivery as received by the client"
-msgstr "Marcar as entregas como recebidas pelos clientes"
+msgstr "Marcar as entregas como recebidas pelo cliente"
 
 #: ../stoq/gui/delivery.py:106 ../stoq/gui/inventory.py:89
 #: ../stoq/gui/payable.py:101 ../stoq/gui/pos.py:227
@@ -7320,23 +7321,23 @@ msgstr "Nenhuma entrega cancelada encontrada"
 
 #: ../stoq/gui/delivery.py:180
 msgid "No picked deliveries could be found"
-msgstr ""
+msgstr "Nenhuma entrega selecionada encontrada"
 
 #: ../stoq/gui/delivery.py:181
 msgid "No packed deliveries could be found"
-msgstr ""
+msgstr "Nenhuma entrega empacotada encontrada"
 
 #: ../stoq/gui/delivery.py:182
 msgid "No sent deliveries could be found"
-msgstr "Nenhuma entrega encontrada"
+msgstr "Nenhuma entrega enviada encontrada"
 
 #: ../stoq/gui/delivery.py:183
 msgid "No received deliveries could be found"
-msgstr ""
+msgstr "Nenhuma entrega recebida encontrada"
 
 #: ../stoq/gui/delivery.py:208
 msgid "Status (Description)"
-msgstr "Estado (Descrição)"
+msgstr "Situação (Descrição)"
 
 #: ../stoq/gui/delivery.py:213 ../stoqlib/domain/uiform.py:151
 #: ../stoqlib/gui/editors/deliveryeditor.py:148
@@ -7348,7 +7349,7 @@ msgstr "Transportadora"
 
 #: ../stoq/gui/delivery.py:219
 msgid "Pick date"
-msgstr "Data da compra"
+msgstr "Data da seleção"
 
 #: ../stoq/gui/delivery.py:221
 msgid "Pack date"
@@ -7378,7 +7379,7 @@ msgstr "Não cancelar"
 
 #: ../stoq/gui/delivery.py:258
 msgid "This will mark the delivery as picked. Are you sure?"
-msgstr ""
+msgstr "Isso irá marcar a entrega como selecionada. Tem certeza?"
 
 #: ../stoq/gui/delivery.py:259
 msgid "Mark as picked"
@@ -7392,15 +7393,15 @@ msgstr "Não marcar"
 
 #: ../stoq/gui/delivery.py:270
 msgid "This will mark the delivery as packed. Are you sure?"
-msgstr ""
+msgstr "Isso irá marcar a entrega como empacotada. Tem certeza?"
 
 #: ../stoq/gui/delivery.py:271
 msgid "Mark as packed"
-msgstr ""
+msgstr "Marcar como empacotada"
 
 #: ../stoq/gui/delivery.py:282
 msgid "This will mark the delivery as sent to the client. Are you sure?"
-msgstr "Essa ação irá marcar as entregas como enviadas aos clientes. Você tem certeza que deseja marcar?"
+msgstr "Essa ação irá marcar as entregas como enviadas ao cliente. Você tem certeza que deseja marcar?"
 
 #: ../stoq/gui/delivery.py:284
 msgid "Mark as sent"
@@ -7408,7 +7409,7 @@ msgstr "Marcar como entregue"
 
 #: ../stoq/gui/delivery.py:295
 msgid "This will mark the delivery as received by the client. Are you sure?"
-msgstr "Essa ação irá marcar as entregas como recebidas pelos clientes. Você tem certeza que deseja marcar?"
+msgstr "Essa ação irá marcar as entregas como recebidas pelo cliente. Você tem certeza que deseja marcar?"
 
 #: ../stoq/gui/delivery.py:297
 msgid "Mark as received"
@@ -8062,7 +8063,7 @@ msgstr "O valor da troca é igual ao valor da nova venda. Por favor, adicione ma
 
 #: ../stoq/gui/pos.py:1289
 msgid "Client can only have one token"
-msgstr ""
+msgstr "O cliente pode ter apenas um token de venda"
 
 #: ../stoq/gui/pos.py:1318
 msgid "Save the order?"
@@ -8551,11 +8552,11 @@ msgstr "Data da venda"
 
 #: ../stoq/gui/receivable.py:202 ../stoqlib/gui/search/paymentsearch.py:170
 msgid "Card Type"
-msgstr ""
+msgstr "Tipo do Cartão"
 
 #: ../stoq/gui/receivable.py:210
 msgid "Drawee fancy name"
-msgstr ""
+msgstr "Nome Fantasia do Sacado"
 
 #: ../stoq/gui/receivable.py:456
 msgid "Received payments"
@@ -8567,7 +8568,7 @@ msgstr "Não é possível renegociar os pagamentos selecionados"
 
 #: ../stoq/gui/receivable.py:567
 msgid "No bill payments were selected"
-msgstr "Nenhum boleto de pagamentos foi selecionado"
+msgstr "Nenhum boleto de pagamento foi selecionado"
 
 #: ../stoq/gui/receivable.py:580
 msgid "An error ocurred while generating the CNAB"
@@ -8834,7 +8835,7 @@ msgstr "Isto irá cancelar a venda. Você tem certeza?"
 #: ../stoq/gui/sales.py:561
 msgid ""
 "The cancellation was not authorized by SEFAZ. You should do a sale return."
-msgstr "O cancelamento não foi autorizado pela SEFAZ. Você deve realizar uma devolução de venda"
+msgstr "O cancelamento não foi autorizado pela SEFAZ. Você deve realizar uma devolução de venda."
 
 #: ../stoq/gui/services.py:72
 msgid "This will reopen the order. Are you sure?"
@@ -9437,7 +9438,7 @@ msgstr "<b>Está disponível uma nova versão do Stoq (%s)</b>"
 
 #: ../stoq/gui/shell/statusbar.py:48
 msgid "Checking status..."
-msgstr "Checando o status..."
+msgstr "Verificando o status..."
 
 #: ../stoq/gui/shell/statusbar.py:51
 msgid "Status not available"
@@ -9445,15 +9446,15 @@ msgstr "Status não disponível"
 
 #: ../stoq/gui/shell/statusbar.py:54
 msgid "Everything is running fine"
-msgstr "Tudo está rodando ok"
+msgstr "Tudo está funcionando normalmente"
 
 #: ../stoq/gui/shell/statusbar.py:57
 msgid "Some services are in a warning state"
-msgstr "Alguns serviços estão em um estado de alerta"
+msgstr "Alguns serviços estão em estado de alerta"
 
 #: ../stoq/gui/shell/statusbar.py:60
 msgid "Some services are in an error state"
-msgstr "Alguns serviços estão em um estado de erro"
+msgstr "Alguns serviços estão em estado de erro"
 
 #: ../stoq/gui/shell/statusbar.py:66
 msgid "System Status"
@@ -9699,7 +9700,7 @@ msgstr "Você deve selecionar uma filial antes"
 
 #: ../stoq/gui/stock.py:496
 msgid "You can only change the stock of your current branch"
-msgstr "Você só pode alterar o estoque da sua filial corrente"
+msgstr "Você só pode alterar o estoque da sua filial atual"
 
 #: ../stoq/gui/till.py:80 ../stoq/lib/applist.py:64
 #: ../stoqlib/lib/parameters.py:386 ../stoqlib/lib/parameters.py:746
@@ -10045,11 +10046,11 @@ msgstr "Serviços online (Integração Stoq.link, backup, etc) não estão habil
 msgid ""
 "Enable the parameter \"Online Services\" on the \"Admin\" app to solve this "
 "issue"
-msgstr "Habilite o parâmetro \"Serviços online\" no aplicativo \"Admin\" para resolver este problema"
+msgstr "Habilite o parâmetro \"Serviços online\" no aplicativo \"Administrativo\" para resolver este problema"
 
 #: ../stoq/lib/status.py:256
 msgid "Online services data hub is running fine."
-msgstr "O hub de serviços online está rodando ok"
+msgstr "O hub de serviços online está executando normalmente"
 
 #: ../stoq/lib/status.py:260
 msgid "Online services data hub not found..."
@@ -10096,11 +10097,11 @@ msgstr "O backup está em dia. Última data de backup é %s"
 
 #: ../stoq/lib/status.py:333
 msgid "There's no backup data yet"
-msgstr "Não há dados de backup ainda"
+msgstr "Ainda não existem dados de backup"
 
 #: ../stoq/lib/status.py:340
 msgid "Backup now"
-msgstr "Backup agora"
+msgstr "Fazer backup agora"
 
 #: ../stoq/lib/status.py:343
 msgid "Configure"
@@ -10759,7 +10760,7 @@ msgstr "quantidade deve ser um número positivo"
 
 #: ../stoqlib/domain/product.py:1297
 msgid "Quantity to decrease is greater than the available stock."
-msgstr "A quantidade a ser diminuída é maior do que a disponível em estoque."
+msgstr "A quantidade a ser subtraída é maior do que a disponível em estoque."
 
 #: ../stoqlib/domain/product.py:1620
 #, python-format
@@ -11068,11 +11069,11 @@ msgstr "%s não está disponível para venda. Mude seu estado para disponível e
 
 #: ../stoqlib/domain/sale.py:572
 msgid "Picked"
-msgstr ""
+msgstr "Selecionada"
 
 #: ../stoqlib/domain/sale.py:573
 msgid "Packed"
-msgstr ""
+msgstr "Empacotada"
 
 #: ../stoqlib/domain/sale.py:574 ../stoqlib/domain/transfer.py:217
 #: ../stoqlib/domain/workorder.py:176
@@ -11588,7 +11589,7 @@ msgstr "Digite a senha para <b>%s</b>:"
 
 #: ../stoqlib/gui/dialogs/certificatedialog.py:50
 msgid "Wrong password provided..."
-msgstr "Senha fornecida errada..."
+msgstr "Senha fornecida incorreta..."
 
 #: ../stoqlib/gui/dialogs/certificatedialog.py:77
 msgid "Certificate Chooser"
@@ -12036,7 +12037,7 @@ msgstr "Dividir o valor de"
 #: ../stoqlib/gui/dialogs/masseditordialog.py:238
 #: ../stoqlib/gui/dialogs/masseditordialog.py:255
 msgid "Set value to"
-msgstr "Setar o valor para"
+msgstr "Definir o valor para"
 
 #: ../stoqlib/gui/dialogs/masseditordialog.py:220
 msgid "Replace"
@@ -12255,7 +12256,7 @@ msgstr "Configurando a conexão. Isso pode levar um tempo..."
 msgid ""
 "Stoq.Link registration successful! You may manage your installation from "
 "there now"
-msgstr "Registro do Stoq.Link realizado com sucesso! Você pode gerenciar a sua instalação de lá agora"
+msgstr "Registro do Stoq.Link realizado com sucesso! Agora você pode gerenciar a sua instalação a partir de lá."
 
 #: ../stoqlib/gui/dialogs/pindialog.py:118
 msgid "An error happened when trying to register to Stoq.Link"
@@ -12265,7 +12266,7 @@ msgstr "Um erro aconteceu ao tentar se registrar no Stoq.Link"
 #. on how to get and install the stoq-server package?
 #: ../stoqlib/gui/dialogs/pindialog.py:128
 msgid "Could not find an instance of Stoq Server running."
-msgstr "Não foi possível encontrar uma instância do Stoq Server rodando."
+msgstr "Não foi possível encontrar uma instância do Stoq Server executando."
 
 #: ../stoqlib/gui/dialogs/pindialog.py:129
 msgid ""
@@ -12442,11 +12443,11 @@ msgstr "Estoque atual"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:264
 msgid "Received items"
-msgstr ""
+msgstr "Itens Recebidos"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:264
 msgid "received-items"
-msgstr ""
+msgstr "itens-recebidos"
 
 #: ../stoqlib/gui/dialogs/quotedialog.py:80
 msgid "Quote Filling"
@@ -12632,15 +12633,15 @@ msgstr "Fim da promoção"
 #. Cost and price update time
 #: ../stoqlib/gui/dialogs/sellabledialog.py:191
 msgid "Need Price Update"
-msgstr ""
+msgstr "Requer Atualização do Preço"
 
 #: ../stoqlib/gui/dialogs/sellabledialog.py:193
 msgid "Cost Last Updated"
-msgstr ""
+msgstr "Última Atualização do Custo"
 
 #: ../stoqlib/gui/dialogs/sellabledialog.py:195
 msgid "Price Last Updated"
-msgstr "Preço da última atualização"
+msgstr "Última atualização do preço"
 
 #. Product Fields
 #: ../stoqlib/gui/dialogs/sellabledialog.py:199
@@ -12655,7 +12656,7 @@ msgstr "Item da lista de serviços"
 
 #: ../stoqlib/gui/dialogs/sellabledialog.py:215
 msgid "City Taxation Code"
-msgstr "Código do imposto municipal"
+msgstr "Código de Tributação Municipal"
 
 #: ../stoqlib/gui/dialogs/sellabledialog.py:217
 msgid "ISS Aliquot"
@@ -15507,7 +15508,7 @@ msgstr "Definir como imagem principal"
 
 #: ../stoqlib/gui/slaves/imageslave.py:111
 msgid "Internal use only"
-msgstr "Uso interno apenas"
+msgstr "Apenas para uso interno"
 
 #: ../stoqlib/gui/slaves/imageslave.py:112
 msgid "View"
@@ -15523,7 +15524,7 @@ msgstr "Esta é a imagem principal"
 
 #: ../stoqlib/gui/slaves/imageslave.py:164
 msgid "This is for internal use only"
-msgstr "Está imagem é apenas para uso interno"
+msgstr "Esta imagem é apenas para uso interno"
 
 #: ../stoqlib/gui/slaves/imageslave.py:187
 msgid "Select Image"
@@ -17036,7 +17037,7 @@ msgstr "Saída manual"
 
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:309
 msgid "Receiving Order Return"
-msgstr ""
+msgstr "Devolução de Recebimento de Compra"
 
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:332
 msgid "Would you like to print a receipt?"
@@ -17968,11 +17969,11 @@ msgstr "O número máximo de resultados que exibiremos após uma pesquisa em qua
 
 #: ../stoqlib/lib/parameters.py:387
 msgid "Till tolerance for closing"
-msgstr ""
+msgstr "Tolerância para o fechamento do caixa"
 
 #: ../stoqlib/lib/parameters.py:388
 msgid "Tolerance time for closing the till"
-msgstr ""
+msgstr "Tempo de tolerância para fechar o caixa"
 
 #: ../stoqlib/lib/parameters.py:394
 msgid "Confirm sales in Till"
@@ -18226,13 +18227,13 @@ msgstr "C.F.O.P. Padrão (Código de Operações Fiscais) utilizado quando receb
 
 #: ../stoqlib/lib/parameters.py:590
 msgid "Default Purchase Return C.F.O.P."
-msgstr ""
+msgstr "C.F.O.P padrão para devolução de compra"
 
 #: ../stoqlib/lib/parameters.py:591
 msgid ""
 "Default C.F.O.P. (Fiscal Code of Operations) used when returning a purchase "
 "in the stock application."
-msgstr ""
+msgstr "C.F.O.P (Código Fiscal de Operações e Prestações) padrão utilizado ao devolver um recebimento de compra no aplicativo Estoque."
 
 #: ../stoqlib/lib/parameters.py:598
 msgid "Default C.F.O.P. for Stock Decreases"
@@ -18600,7 +18601,7 @@ msgstr "Permitir a adição de pagamentos em cotação de vendas"
 msgid ""
 "When enabled, the sale quote wizard will have an extra step to configure the"
 " payments for the sale."
-msgstr "Quando habilitado, o assistente de cotação de vendas terá um passo extra onde será possível configurar pagamentos na mesma."
+msgstr "Quando habilitado, o assistente de cotação de vendas terá um passo extra onde será possível configurar pagamentos para a venda."
 
 #: ../stoqlib/lib/parameters.py:909
 msgid "Set authorization number mandatory"
@@ -18662,14 +18663,14 @@ msgstr "Quando a lista de componentes é atualizado ou o custo de um componente 
 
 #: ../stoqlib/lib/parameters.py:958
 msgid "Automatic update the cost of a product"
-msgstr ""
+msgstr "Atualizar automaticamente o custo do produto componente"
 
 #: ../stoqlib/lib/parameters.py:959
 msgid ""
 "When a package product cost is updated, the cost of the component will be "
 "automatically updated. Note that it will work only if the package has only "
 "one component."
-msgstr ""
+msgstr "Quando o custo de um produto do tipo pacote for atualizado, o custo do componente será atualizado automaticamente. Isso valerá apenas para pacotes com somente um único componente."
 
 #: ../stoqlib/lib/parameters.py:967
 msgid "Client birthday notification"
@@ -18693,13 +18694,13 @@ msgstr "O valor do hash é utilizado para a integração e comunicação com a a
 
 #: ../stoqlib/lib/parameters.py:985
 msgid "Show full time of the sale on receivable payments"
-msgstr ""
+msgstr "Exibir o horário completo da venda na listagem de pagamentos a receber"
 
 #: ../stoqlib/lib/parameters.py:986
 msgid ""
 "Beyond date, display exactly the hour and minute of the sale on the "
 "receivable payments list."
-msgstr ""
+msgstr "Além da data, exibir a hora exata da venda na listagem de pagamentos a receber."
 
 #: ../stoqlib/lib/payment.py:77
 msgid "Need at least one value"
