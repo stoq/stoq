@@ -38,6 +38,7 @@ from stoqlib.database.runtime import new_store
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.exceptions import DeviceError
+from stoqlib.lib.defaults import quantize
 from stoqlib.lib.ibpt import generate_ibpt_message
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
@@ -326,7 +327,7 @@ class Coupon(object):
             return -1
 
         base_price = item.base_price
-        discount_value = (base_price - item.price) * item.quantity
+        discount_value = quantize((base_price - item.price) * item.quantity)
         # If the selling value is greater than the base price
         if discount_value < 0:
             discount_value = 0
