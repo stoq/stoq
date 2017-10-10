@@ -202,6 +202,16 @@ class PrintOperation(gtk.PrintOperation):
 
 class PrintOperationPoppler(PrintOperation):
 
+    def __init__(self, report):
+        PrintOperation.__init__(self, report)
+
+        self._report.save()
+        uri = gio.File(path=self._report.filename).get_uri()
+        import poppler
+        self._document = poppler.document_new_from_file(uri, password="")
+
+        self.set_embed_page_setup(True)
+
     def render(self):
         # FIXME: This is an specific fix for boleto printing in landscape
         # orientation. We should find a better fix for it or simply remove
@@ -211,11 +221,6 @@ class PrintOperationPoppler(PrintOperation):
             default_page_setup = gtk.PageSetup()
             default_page_setup.set_orientation(gtk.PAGE_ORIENTATION_LANDSCAPE)
             self.set_default_page_setup(default_page_setup)
-
-        self._report.save()
-        uri = gio.File(path=self._report.filename).get_uri()
-        import poppler
-        self._document = poppler.document_new_from_file(uri, password="")
 
     def render_done(self):
         self.set_n_pages(self._document.get_n_pages())
