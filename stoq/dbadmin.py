@@ -147,6 +147,7 @@ class StoqCommandHandler:
         from stoqlib.database.admin import initialize_system
         from stoqlib.database.runtime import set_default_store
         from stoqlib.database.settings import db_settings
+        from stoqlib.lib.pgpass import write_pg_pass
         from stoqlib.net.server import ServerProxy
         if options.dbname:
             db_settings.dbname = options.dbname
@@ -158,6 +159,11 @@ class StoqCommandHandler:
             db_settings.username = options.username
         if options.password:
             db_settings.password = options.password
+            # a password was sent via command line. Make sure we can run psql by
+            # setting up pgpass
+            write_pg_pass(db_settings.dbname, db_settings.address,
+                          db_settings.port, db_settings.username,
+                          db_settings.password)
 
         server = ServerProxy()
         running = server.check_running()
