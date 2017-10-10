@@ -46,14 +46,14 @@ class LabelReport(object):
         self.temp = temp
         self.rows = []
         for model in models:
-            for i in range(model.quantity):
+            for i in range(int(model.quantity)):
                 # XXX: glabels is not working with unicode caracters
                 desc = strip_accents(model.description)
                 self.rows.append([model.code, model.barcode, desc,
                                   model.price])
 
     def save(self):
-        temp_csv = tempfile.NamedTemporaryFile(suffix='.csv', delete=False)
+        temp_csv = tempfile.NamedTemporaryFile(suffix='.csv', delete=False, mode='w')
         writer = csv.writer(temp_csv, delimiter=',',
                             doublequote=True,
                             quoting=csv.QUOTE_ALL)
