@@ -32,6 +32,8 @@ from stoqlib.importers.csvimporter import CSVImporter
 
 
 class EmployeeImporter(CSVImporter):
+    create_users = False
+
     fields = ['name',
               'phone_number',
               'mobile_number',
@@ -93,9 +95,10 @@ class EmployeeImporter(CSVImporter):
                 streetnumber=streetnumber,
                 district=data.district)
 
-        profile = store.find(UserProfile, name=data.profile).one()
+        if self.create_users:
+            profile = store.find(UserProfile, name=data.profile).one()
+            LoginUser(person=person, store=store, profile=profile,
+                      username=data.username,
+                      password=data.password)
 
-        LoginUser(person=person, store=store, profile=profile,
-                  username=data.username,
-                  password=data.password)
         SalesPerson(person=person, store=store)

@@ -64,7 +64,8 @@ def _set_person_utilities():
     store.commit(close=True)
 
 
-def create(utilities=False):
+def create(utilities=False, create_users=False):
+    EmployeeImporter.create_users = create_users
     log.info('Creating example database')
     _import_one(BranchImporter, 'branches.csv')
     _import_one(CreditProviderImporter, 'creditproviders.csv')

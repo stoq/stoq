@@ -209,6 +209,16 @@ class LoginHelper:
         """ Checks if an user can log in or not.
         :returns: a user object
         """
+        # If there is only one user, and that user is admin with a blank
+        # password, just log the user in
+        store = api.get_default_store()
+        if store.find(LoginUser).count() == 1:
+            try:
+                user = self._check_user(u'admin', LoginUser.hash(u''))
+                return user
+            except Exception:
+                pass
+
         log.info("Showing login dialog")
         # Loop for logins
         retry = 0
