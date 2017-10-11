@@ -331,7 +331,7 @@ class LinkStep(WizardEditorStep):
 
     def _inside_button(self, event):
         x, y = event.get_coords()
-        return 115 < x < 280 and 290 < y < 315
+        return x < 400 and y < 325
 
     #
     #   WizardStep
@@ -377,16 +377,15 @@ class LinkStep(WizardEditorStep):
     def on_image_eventbox__motion_notify_event(self, widget, event):
         w = widget.get_window()
         if self._inside_button(event):
-            cursor = Gdk.Cursor.new(Gdk.HAND2)
+            cursor = Gdk.Cursor.new(Gdk.CursorType.HAND2)
         else:
             cursor = w.get_parent().get_property('cursor')
         w.set_cursor(cursor)
 
     def on_image_eventbox__button_press_event(self, widget, event):
         if self._inside_button(event):
-            url = 'https://stoq.link?source=stoqwizard&hash={}'
-            user_hash = api.sysparam.get_string('USER_HASH')
-            open_browser(url.format(user_hash), self.wizard)
+            url = 'https://www.stoq.com.br?source=stoqwizard'
+            open_browser(url, self.wizard)
 
     def on_register_now__toggled(self, widget):
         self.wizard.enable_online_services = widget.get_active()
