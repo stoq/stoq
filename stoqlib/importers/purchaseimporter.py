@@ -24,7 +24,7 @@
 ##
 
 from stoqlib.database.runtime import get_current_user
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Person, LoginUser
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
@@ -64,12 +64,7 @@ class PurchaseImporter(CSVImporter):
                 data.branch_name, ))
         branch = person.branch
 
-        person = store.find(Person, name=data.user_name).one()
-        if person is None or person.login_user is None:
-            raise ValueError(u"%s is not a valid user" % (
-                data.user_name, ))
-        login_user = person.login_user
-
+        login_user = store.find(LoginUser, username=u'admin').one()
         group = PaymentGroup(store=store)
         purchase = PurchaseOrder(store=store,
                                  status=PurchaseOrder.ORDER_PENDING,

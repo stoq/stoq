@@ -284,4 +284,4 @@ def bootstrap_suite(address=None, dbname=None, port=5432, username=None,
     # to all tables.
     _enable_plugins()
     ensure_admin_user(u"")
-    create(utilities=True)
+    create(utilities=True, create_users=True)
