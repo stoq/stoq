@@ -290,6 +290,24 @@ class StoqCommandHandler:
             for name in plugin_names:
                 manager.pre_install_plugin(store, name)
 
+    def _insert_egg(self, plugin_name, filename):
+        from stoqlib.database.runtime import new_store
+        from stoqlib.domain.plugin import PluginEgg
+        from stoqlib.lib.fileutils import md5sum_for_filename
+
+        print('Inserting plugin egg %s %s' % (plugin_name, filename))
+        md5sum = str(md5sum_for_filename(filename))
+        with open(filename, 'rb') as f:
+            with new_store() as store:
+                plugin_egg = store.find(PluginEgg, plugin_name=plugin_name).one()
+                if plugin_egg is None:
+                    plugin_egg = PluginEgg(
+                        store=store,
+                        plugin_name=plugin_name,
+                    )
+                plugin_egg.egg_content = f.read()
+                plugin_egg.egg_md5sum = md5sum
+
     def _provide_app_info(self):
         # FIXME: The webservice need the IAppInfo provided to get the stoq
         # version. We cannot do that workaround there because we don't want to
@@ -409,16 +427,6 @@ class StoqCommandHandler:
 
         return 0 if retval else 1
 
-    def opt_clone(self, parser, group):
-        group.add_option('', '--dry',
-                         action='store_true',
-                         dest='dry')
-
-    def opt_update(self, parser, group):
-        group.add_option('', '--dry',
-                         action='store_true',
-                         dest='dry')
-
     def cmd_dump(self, options, output):
         """Create a database dump"""
         self._read_config(options)
@@ -468,6 +476,14 @@ class StoqCommandHandler:
         for egg_plugin in manager.egg_plugins_names:
             rv, text = manager.download_plugin(egg_plugin)
             print("{}: [{}] {}".format(egg_plugin, rv, text))
+
+    def cmd_insert_egg(self, options, plugin_name, filename):
+        """Enable a plugin on Stoq"""
+        self._read_config(options, register_station=False,
+                          check_schema=False,
+                          load_plugins=False)
+        self._setup_logging()
+        self._insert_egg(plugin_name, filename)
 
     def cmd_generate_sintegra(self, options, filename, month):
         """Generate a sintegra file"""
