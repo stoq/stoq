@@ -48,7 +48,7 @@ class UpdateWelcomeStep(BaseWizardStep):
     gladefile = 'UpdateWelcomeStep'
 
     def post_init(self):
-        self.title_label.set_size('xx-large')
+        self.title_label.set_size('large')
         self.title_label.set_bold(True)
         self.logo.set_from_pixbuf(render_logo_pixbuf('update'))
         self.wizard.next_button.grab_focus()

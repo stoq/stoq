@@ -34,8 +34,8 @@ from kiwi.ui.pixbufutils import pixbuf_from_string
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.translation import stoqlib_gettext
 
-WIDTH = 462
-HEIGHT = 260
+WIDTH = 450
+HEIGHT = 450
 BORDER = 8  # This includes shadow out border from GtkFrame
 _WINDOW_TIMEOUT = 100  # How often we should check if there are
                       # other visible windows
@@ -93,13 +93,14 @@ class SplashScreen(Gtk.Window):
 
         cr.set_source_rgb(.8, .8, .8)
         layout = PangoCairo.create_layout(cr)
-        desc = Pango.FontDescription('Sans 12')
+        desc = Pango.FontDescription('Sans 10')
         layout.set_font_description(desc)
-        layout.set_alignment(Pango.Alignment.CENTER)
+        layout.set_alignment(Pango.Alignment.RIGHT)
+        layout.set_spacing(3.5 * Pango.SCALE)
         layout.set_markup(self._get_label(), -1)
         PangoCairo.update_layout(cr, layout)
         w, h = layout.get_pixel_size()
-        cr.move_to((WIDTH - w) / 2, (HEIGHT / 2) + h)
+        cr.move_to((WIDTH - w) / 1.08, (HEIGHT / 1.17) + h)
         PangoCairo.show_layout(cr, layout)
 
     def draw(self, widget, cr):
