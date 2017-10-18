@@ -120,7 +120,8 @@ if platform.system() == 'Windows':
             setattr(sys, name, fp)
 
 
-if True:
+trial = False
+if trial:
     from stoqlib.gui.base import dialogs
 
     # Quick hack to disable shortcuts. Note that that the shortcut action is
