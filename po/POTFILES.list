@@ -1,3 +1,4 @@
+include bin/stoq
 recursive-include stoq *.py
 recursive-include stoqlib *.py
 recursive-include plugins *.py
