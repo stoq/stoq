@@ -147,11 +147,11 @@ if trial:
 
         start = self.store.find(TransactionEntry).min(TransactionEntry.te_time)
         days = 60 - (localnow() - start).days
-        title = _('You are using a trial version of Stoq')
+        title = _("You are using a trial version of Stoq")
         desc = (_("There are <b>%s days</b> remaining to try all Stoq features") % days)
         msg = '<b>%s</b>\n%s' % (api.escape(title), desc)
 
-        trial_button = gtk.LinkButton('https://www.stoq.com.br/trial_windows', _('Activate'))
+        trial_button = gtk.LinkButton('https://www.stoq.com.br/trial_windows', _("Activate"))
         if days > 0:
             _type = gtk.MESSAGE_INFO
         else:

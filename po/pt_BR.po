@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-13 16:33-0300\n"
+"POT-Creation-Date: 2017-10-19 13:30-0200\n"
 "PO-Revision-Date: 2017-05-23 17:23+0000\n"
 "Last-Translator: Thiago Bellini Ribeiro <hackedbellini@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/"
@@ -26,6 +26,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: ../bin/stoq:150
+msgid "You are using a trial version of Stoq"
+msgstr "Você está usando uma versão de testes do Stoq"
+
+#: ../bin/stoq:151
+#, c-format
+msgid "There are <b>%s days</b> remaining to try all Stoq features"
+msgstr "Ainda restam <b>%s dias</b> para testar todas as funcionalidades do Stoq"
+
+#: ../bin/stoq:154 ../stoqlib/gui/dialogs/pluginsdialog.py:87
+msgid "Activate"
+msgstr "Ativar"
 
 #: ../data/glade/AccountEditor.ui.h:1
 msgid "Account name:"
@@ -789,7 +802,7 @@ msgstr "Vendas"
 msgid "Stock Decreases"
 msgstr "Saídas manuais"
 
-#: ../data/glade/CreateDatabaseStep.ui.h:1 ../stoq/gui/config.py:757
+#: ../data/glade/CreateDatabaseStep.ui.h:1 ../stoq/gui/config.py:661
 msgid ""
 "Creating a new database for Stoq, depending on the speed of your computer "
 "and the server it may take a couple of minutes to finish."
@@ -872,7 +885,7 @@ msgid "I want to manually configure the database connection."
 msgstr "Quero configurar a conexão com o banco de dados manualmente."
 
 #: ../data/glade/DatabaseLocationStep.ui.h:5
-#: ../data/glade/InstallationModeStep.ui.h:8
+#: ../data/glade/InstallationModeStep.ui.h:5
 msgid "Select an option above and then click <b>Forward</b> to continue."
 msgstr "Selecione uma opção acima e clique em <b>Avançar</b> para continuar."
 
@@ -1320,30 +1333,17 @@ msgid "Database initialization"
 msgstr "Inicialização do banco de dados"
 
 #: ../data/glade/InstallationModeStep.ui.h:2
-msgid "Would you like to:"
-msgstr "Você gostaria de:"
+msgid ""
+"We are almost there! Let's create a database for you. What would you like to?"
+msgstr ""
 
 #: ../data/glade/InstallationModeStep.ui.h:3
-msgid "Create an empty database for production use."
-msgstr "Criar um banco de dados vazio para uso em produção."
+msgid "Use my own company data."
+msgstr ""
 
 #: ../data/glade/InstallationModeStep.ui.h:4
-msgid "Create a database in demonstration mode."
-msgstr "Criar um banco de dados em modo de demonstração."
-
-#: ../data/glade/InstallationModeStep.ui.h:5
-msgid ""
-"Want to import your data from another software or from spreadsheets? We can "
-"help you.\n"
-"\n"
-"<a href=\"http://www.stoq.com.br/contato\">Send the data</a> you want "
-"imported to us, and we will give a response within 2 business days."
+msgid "Use some example data."
 msgstr ""
-"Você gostaria de importar os seus dados de outro programa ou de planilhas? "
-"Nós podemos ajudá-lo.\n"
-"\n"
-"Nos <a href=\"http://www.stoq.com.br/contato\">envie os dados</a> que você "
-"deseja importar, e lhe daremos uma resposta em até 2 dias úteis."
 
 #: ../data/glade/InventoryAdjustmentEditor.ui.h:6
 msgid "_Adjust"
@@ -3140,7 +3140,7 @@ msgstr "Data de recebimento:"
 #: ../plugins/ecf/ecfui.py:372 ../stoq/gui/delivery.py:248
 #: ../stoq/gui/inventory.py:107 ../stoq/gui/production.py:123
 #: ../stoq/gui/purchase.py:175 ../stoq/gui/sales.py:220
-#: ../stoqlib/gui/base/wizards.py:343 ../stoqlib/gui/editors/baseeditor.py:456
+#: ../stoqlib/gui/base/wizards.py:351 ../stoqlib/gui/editors/baseeditor.py:456
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:458
 msgid "Cancel"
 msgstr "Cancelar"
@@ -6943,7 +6943,7 @@ msgstr "Voltar"
 msgid "Go back"
 msgstr "Voltar"
 
-#: ../stoq/gui/calendar.py:294 ../stoq/gui/config.py:579
+#: ../stoq/gui/calendar.py:294 ../stoq/gui/config.py:498
 msgid "Forward"
 msgstr "Avançar"
 
@@ -7054,57 +7054,57 @@ msgstr "Dia"
 msgid "Print this calendar"
 msgstr "Imprime este calendário"
 
-#: ../stoq/gui/config.py:207
+#: ../stoq/gui/config.py:189
 #, python-format
 msgid "The database address '%s' is invalid. Please fix it and try again"
 msgstr ""
 "O endereço '%s' do banco de dados é inválido. Por favor, corrija ele e tente "
 "novamente"
 
-#: ../stoq/gui/config.py:209 ../stoq/gui/config.py:214
+#: ../stoq/gui/config.py:191 ../stoq/gui/config.py:196
 msgid "Invalid database address"
 msgstr "Endereço da base de dados inválido"
 
-#: ../stoq/gui/config.py:245
+#: ../stoq/gui/config.py:227
 msgid "Needs Password"
 msgstr "Necessita de senha"
 
-#: ../stoq/gui/config.py:246
+#: ../stoq/gui/config.py:228
 msgid "Trust"
 msgstr "Confiável"
 
-#: ../stoq/gui/config.py:274
+#: ../stoq/gui/config.py:256
 #, python-format
 msgid "%s is not a valid database name"
 msgstr "%s não é um nome válido de base de dados"
 
-#: ../stoq/gui/config.py:355
+#: ../stoq/gui/config.py:313
 msgid "Done!"
 msgstr "Feito!"
 
-#: ../stoq/gui/config.py:405 ../stoqlib/gui/dialogs/crashreportdialog.py:182
+#: ../stoq/gui/config.py:363 ../stoqlib/gui/dialogs/crashreportdialog.py:182
 msgid "Sending..."
 msgstr "Enviando..."
 
-#: ../stoq/gui/config.py:448
+#: ../stoq/gui/config.py:401
 #, python-format
 msgid "%s is not a valid email"
 msgstr "%s não é um email válido"
 
-#: ../stoq/gui/config.py:455
+#: ../stoq/gui/config.py:408
 #, python-format
 msgid "%s is not a valid phone"
 msgstr "%s não é um telefone válido"
 
-#: ../stoq/gui/config.py:508
+#: ../stoq/gui/config.py:461
 msgid "PostgresSQL 'postgres' password"
 msgstr "Senha do usuário 'postgres' do PostgreSQL"
 
-#: ../stoq/gui/config.py:511
+#: ../stoq/gui/config.py:464
 msgid "PostgreSQL password"
 msgstr "Senha do PostgreSQL"
 
-#: ../stoq/gui/config.py:514
+#: ../stoq/gui/config.py:467
 msgid ""
 "To be able to create a new Stoq database you need to enter the password of "
 "the <b>postgres</b> user for the PostgreSQL database we're installing to.\n"
@@ -7117,26 +7117,7 @@ msgstr ""
 "mesma senha que foi informada no momento da instalação do PostgreSQL nesse "
 "computador."
 
-#: ../stoq/gui/config.py:536 ../stoq/gui/config.py:539
-msgid "Administrator account"
-msgstr "Conta de administrador"
-
-#: ../stoq/gui/config.py:542
-#, python-format
-msgid ""
-"I'm adding a user account called <b>%s</b> which will have administrator "
-"privilegies.\n"
-"\n"
-"To be able to create other users you need to login with this user in the "
-"admin application and create them."
-msgstr ""
-"Estou adicionando um usuário chamado <b>%s</b> que terá privilégios de "
-"administrador.\n"
-"\n"
-"Para poder criar outros usuários, você precisa fazer login com este usuário "
-"no aplicativo admin e criá-los."
-
-#: ../stoq/gui/config.py:584
+#: ../stoq/gui/config.py:503
 msgid ""
 "The installation guide will now install the packages for you using apt, it "
 "may ask you for your password to continue."
@@ -7145,13 +7126,13 @@ msgstr ""
 "pode perguntar a sua senha para continuar."
 
 #. Translators: %s is the string "Forward"
-#: ../stoq/gui/config.py:588
+#: ../stoq/gui/config.py:507
 #, python-format
 msgid "Click %s to begin installing the PostgreSQL server."
 msgstr "Clique em %s para iniciar a instalação do servidor PostgreSQL."
 
 #. Translators: %s is the string "Forward"
-#: ../stoq/gui/config.py:593
+#: ../stoq/gui/config.py:512
 #, python-format
 msgid ""
 "Click %s to continue when you have installed PostgreSQL server on this "
@@ -7160,15 +7141,15 @@ msgstr ""
 "Quando a instalação do servidor PostgreSQL neste computador terminar, clique "
 "em %s para continuar ."
 
-#: ../stoq/gui/config.py:609
+#: ../stoq/gui/config.py:528
 msgid "You need to install PostgreSQL before moving forward"
 msgstr "Você precisa instalar o PostgreSQL antes de avançar"
 
-#: ../stoq/gui/config.py:632
+#: ../stoq/gui/config.py:551
 msgid "Please wait while the package installation is completing."
 msgstr "Por favor espere enquanto a instalação do pacote está sendo realizada."
 
-#: ../stoq/gui/config.py:647
+#: ../stoq/gui/config.py:566
 msgid ""
 "Postgresql installation succeeded. You may now proceed to the next step by "
 "clicking the <b>Forward</b> button"
@@ -7176,17 +7157,17 @@ msgstr ""
 "A instalação do Postgresql finalizou com sucesso. Você pode proceder para o "
 "próximo passo clicando em <b>Avançar</b>"
 
-#: ../stoq/gui/config.py:652
+#: ../stoq/gui/config.py:571
 msgid "Authorization failed, try again or connect to another database"
 msgstr ""
 "A autorização falhou, tente novamente ou conecte-se em um outro banco de "
 "dados"
 
-#: ../stoq/gui/config.py:655
+#: ../stoq/gui/config.py:574
 msgid "Something went wrong while trying to install the PostgreSQL server."
 msgstr "Algo deu errado enquanto tentava-se instalar o servidor PostgreSQL."
 
-#: ../stoq/gui/config.py:658
+#: ../stoq/gui/config.py:577
 msgid ""
 "Sorry, something went wrong while installing PostgreSQL, try again manually "
 "or go back and configure Stoq to connect to another."
@@ -7195,12 +7176,12 @@ msgstr ""
 "novamente manualmente ou retorne e configure o Stoq para se conectar em "
 "outro."
 
-#: ../stoq/gui/config.py:698
+#: ../stoq/gui/config.py:617
 #, python-format
 msgid "Stoq requires PostgresSQL 9.1 or later, but %s found"
 msgstr "O Stoq requer o PostgreSQL 9.1 ou mais recente, mas %s foi encontrado"
 
-#: ../stoq/gui/config.py:705
+#: ../stoq/gui/config.py:624
 msgid ""
 "Missing PostgreSQL extension on the server, please install postgresql-"
 "contrib on it"
@@ -7208,57 +7189,40 @@ msgstr ""
 "Extensão do PostgreSQL não encontrada no servidor. Por favor instale o "
 "pacote postgresql-contrib nele"
 
-#: ../stoq/gui/config.py:712
-#, python-format
-msgid ""
-"The specified database '%s' does not exist.\n"
-"Do you want to create it?"
-msgstr ""
-"A base de dados '%s' não existe.\n"
-"Você deseja criá-la?"
-
-#: ../stoq/gui/config.py:714
-msgid "Create database"
-msgstr "Criar banco de dados"
-
-#: ../stoq/gui/config.py:714
-msgid "Don't create"
-msgstr "Não criar"
-
-#: ../stoq/gui/config.py:760
+#: ../stoq/gui/config.py:664
 msgid "Creating database..."
 msgstr "Criando base de dados..."
 
-#: ../stoq/gui/config.py:765
+#: ../stoq/gui/config.py:669
 msgid "Please wait while the database is being created."
 msgstr "Por favor espere enquanto o banco de dados está sendo criado."
 
-#: ../stoq/gui/config.py:775
+#: ../stoq/gui/config.py:679
 msgid "Creating base schema..."
 msgstr "Criando esquema da base de dados..."
 
-#: ../stoq/gui/config.py:779
+#: ../stoq/gui/config.py:683
 msgid "Creating schema, applying patches..."
 msgstr "Criando esquema, aplicando patches..."
 
-#: ../stoq/gui/config.py:784
+#: ../stoq/gui/config.py:688
 #, python-format
 msgid "Creating schema, applying patch %d ..."
 msgstr "Criando esquema, aplicando patch %d ..."
 
-#: ../stoq/gui/config.py:786
+#: ../stoq/gui/config.py:690
 msgid "Creating additional database objects ..."
 msgstr "Criando objetos adicionais do banco de dados ..."
 
-#: ../stoq/gui/config.py:789
+#: ../stoq/gui/config.py:693
 msgid "Creating examples ..."
 msgstr "Criando exemplos ..."
 
-#: ../stoq/gui/config.py:792
+#: ../stoq/gui/config.py:696
 msgid "Activating plugins ..."
 msgstr "Ativando plugins ..."
 
-#: ../stoq/gui/config.py:794
+#: ../stoq/gui/config.py:698
 msgid "This may take some time."
 msgstr "Este processo pode levar algum tempo."
 
@@ -7266,23 +7230,23 @@ msgstr "Este processo pode levar algum tempo."
 #. - pressed cancel in the authentication popup
 #. - user erred the password 3 times
 #. Allow him to try again
-#: ../stoq/gui/config.py:811
+#: ../stoq/gui/config.py:715
 msgid "Something went wrong while trying to create the database. Try again?"
 msgstr ""
 "Algo deu errado ao tentar criar o banco de dados. Deseja tentar novamente?"
 
-#: ../stoq/gui/config.py:813
+#: ../stoq/gui/config.py:717
 msgid "Change settings"
 msgstr "Editar configurações"
 
-#: ../stoq/gui/config.py:813 ../stoq/gui/pos.py:1289 ../stoq/gui/till.py:355
+#: ../stoq/gui/config.py:717 ../stoq/gui/pos.py:1289 ../stoq/gui/till.py:355
 #: ../stoqlib/gui/fiscalprinter.py:649 ../stoqlib/gui/fiscalprinter.py:692
 #: ../stoqlib/gui/fiscalprinter.py:712 ../stoqlib/gui/fiscalprinter.py:741
 #: ../stoqlib/gui/fiscalprinter.py:767
 msgid "Try again"
 msgstr "Tentar novamente"
 
-#: ../stoq/gui/config.py:820
+#: ../stoq/gui/config.py:724
 msgid ""
 "Your database is missing the postgresql-contrib package. Install it and try "
 "again"
@@ -7290,43 +7254,43 @@ msgstr ""
 "O pacote postgresql-contrib está faltando na sua base de dados. Instale-o e "
 "tente novamente"
 
-#: ../stoq/gui/config.py:825
+#: ../stoq/gui/config.py:729
 msgid "Something went wrong while trying to create the Stoq database"
 msgstr "Algo deu errado ao tentar criar o banco de dados do Stoq"
 
-#: ../stoq/gui/config.py:831
+#: ../stoq/gui/config.py:735
 msgid "Done."
 msgstr "Concluído."
 
-#: ../stoq/gui/config.py:835
+#: ../stoq/gui/config.py:739
 msgid "Installation successful, click <b>Forward</b> to continue."
 msgstr ""
 "Instalação realizada com sucesso, clique em <b>Avançar</b> para continuar."
 
-#: ../stoq/gui/config.py:857
+#: ../stoq/gui/config.py:761
 msgid "Run Stoq"
 msgstr "Rodar o Stoq"
 
-#: ../stoq/gui/config.py:872
+#: ../stoq/gui/config.py:776
 msgid "Stoq - Installation"
 msgstr "Stoq - Instalação"
 
-#: ../stoq/gui/config.py:994
+#: ../stoq/gui/config.py:911
 msgid "It was not possible to connect to the database."
 msgstr "Não foi possível conectar no banco de dados."
 
-#: ../stoq/gui/config.py:995
+#: ../stoq/gui/config.py:912
 msgid "Check the server configuration and try again."
 msgstr "Verifique a configuração do servidor e tente novamente."
 
-#: ../stoq/gui/config.py:1014
+#: ../stoq/gui/config.py:931
 #, python-brace-format
 msgid "Database {dbname} at {address}:{port} is not a Stoq database."
 msgstr ""
 "O banco de dados {dbname} em {address}:{port}  não é um banco de dados do "
 "Stoq."
 
-#: ../stoq/gui/config.py:1020
+#: ../stoq/gui/config.py:937
 #, python-brace-format
 msgid ""
 "Stoq was able to succesfully connect to the database {dbname} at the "
@@ -7337,7 +7301,7 @@ msgstr ""
 "com sucesso, porém, este está corrompido ou não é um banco de dados do Stoq. "
 "Por favor, selecione outro."
 
-#: ../stoq/gui/config.py:1046 ../stoq/gui/shell/shell.py:171
+#: ../stoq/gui/config.py:963 ../stoq/gui/shell/shell.py:171
 msgid "The database version differs from your installed version."
 msgstr "A versão do banco de dados difere da sua versão instalada."
 
@@ -7512,7 +7476,7 @@ msgstr "Isso irá cancelar a entrega. Tem certeza?"
 #: ../stoq/gui/delivery.py:248 ../stoq/gui/inventory.py:226
 #: ../stoq/gui/pos.py:958 ../stoq/gui/pos.py:1481 ../stoq/gui/production.py:262
 #: ../stoq/gui/purchase.py:416 ../stoq/gui/sales.py:543
-#: ../stoqlib/gui/base/wizards.py:343
+#: ../stoqlib/gui/base/wizards.py:351
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:174
 #: ../stoqlib/gui/editors/baseeditor.py:456
 msgid "Don't cancel"
@@ -9248,7 +9212,7 @@ msgstr "Isso vai rejeitar a ordem. Você tem certeza?"
 msgid "This will undo the rejection of the order. Are you sure?"
 msgstr "Isso vai desfazer a rejeição da ordem. Você tem certeza?"
 
-#: ../stoq/gui/shell/bootstrap.py:119
+#: ../stoq/gui/shell/bootstrap.py:113
 #, python-format
 msgid ""
 "Could not set locale to %s. Make sure that you have the packages for this "
@@ -9257,7 +9221,7 @@ msgstr ""
 "Não foi possível setar a localização para %s. Tenha certeza de ter instalado "
 "os pacotes para esta localização."
 
-#: ../stoq/gui/shell/bootstrap.py:384
+#: ../stoq/gui/shell/bootstrap.py:378
 msgid "There was an error quering the database"
 msgstr "Ocorreu um erro ao realizar uma consulta na base de dados"
 
@@ -9338,7 +9302,7 @@ msgstr ""
 msgid "[%s] - %s"
 msgstr "[%s] - %s"
 
-#: ../stoq/gui/shell/shellwindow.py:92 ../stoqlib/gui/utils/printing.py:259
+#: ../stoq/gui/shell/shellwindow.py:92 ../stoqlib/gui/utils/printing.py:264
 msgid "Stoq"
 msgstr "Stoq"
 
@@ -9526,19 +9490,20 @@ msgstr ""
 "\n"
 "Você pode fazer isso se registrando em <a href=\"{}\">Stoq.link</a>."
 
-#: ../stoq/gui/shell/shellwindow.py:410 ../stoq/gui/shell/shellwindow.py:1089
-msgid "Enable production mode"
-msgstr "Habilitar modo de produção"
+#: ../stoq/gui/shell/shellwindow.py:410
+msgid "Use my own data"
+msgstr ""
 
 #: ../stoq/gui/shell/shellwindow.py:411
-msgid "You are using Stoq in demonstration mode."
+#, fuzzy
+msgid "You are using Stoq with example data."
 msgstr "Você está utilizando o Stoq em modo de demonstração."
 
 #: ../stoq/gui/shell/shellwindow.py:412
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "Some features are limited due to fiscal reasons. Click on '%s' to remove the "
-"limitations and finish the demonstration."
+"limitations."
 msgstr ""
 "Alguns recursos estão limitados por razões fiscais. Clique em '%s' para "
 "remover essas limitações e finalizar a demonstração."
@@ -9615,6 +9580,10 @@ msgid ""
 msgstr ""
 "Isto irá habilitar o modo de produção e finalizar a demonstração. Você tem "
 "certeza?"
+
+#: ../stoq/gui/shell/shellwindow.py:1089
+msgid "Enable production mode"
+msgstr "Habilitar modo de produção"
 
 #: ../stoq/gui/shell/shellwindow.py:1089
 msgid "Continue testing"
@@ -11837,7 +11806,7 @@ msgstr "Mantê-los"
 msgid "_Finish"
 msgstr "_Finalizar"
 
-#: ../stoqlib/gui/base/wizards.py:341 ../stoqlib/gui/editors/baseeditor.py:454
+#: ../stoqlib/gui/base/wizards.py:349 ../stoqlib/gui/editors/baseeditor.py:454
 msgid "If you cancel this dialog all changes will be lost. Are you sure?"
 msgstr ""
 "Se você cancelar esse diálogo, todas as mudanças serão descartadas. Você tem "
@@ -12627,10 +12596,6 @@ msgstr "Gerenciador de plugins"
 #: ../stoqlib/gui/dialogs/pluginsdialog.py:70
 msgid "Select the plugin you want to activate and click in the apply button."
 msgstr "Selecione o plugin que deseje habilitar e clique no botão ativar."
-
-#: ../stoqlib/gui/dialogs/pluginsdialog.py:87
-msgid "Activate"
-msgstr "Ativar"
 
 #: ../stoqlib/gui/dialogs/pluginsdialog.py:123
 #, python-format
@@ -16895,23 +16860,23 @@ msgstr "Por favor, contacte o seu administrador do sistema ou a equipe Stoq."
 msgid "User does not have a profile"
 msgstr "Usuário não tem perfil"
 
-#: ../stoqlib/gui/utils/login.py:223
+#: ../stoqlib/gui/utils/login.py:233
 msgid "Stoq - Access Control"
 msgstr "Stoq - Controle de acesso"
 
-#: ../stoqlib/gui/utils/login.py:241
+#: ../stoqlib/gui/utils/login.py:251
 msgid "specify an username"
 msgstr "especifique um usuário"
 
-#: ../stoqlib/gui/utils/login.py:273
+#: ../stoqlib/gui/utils/login.py:283
 msgid "Depleted attempts of authentication"
 msgstr "Tentativas de autenticação esgotadas"
 
-#: ../stoqlib/gui/utils/printing.py:337
+#: ../stoqlib/gui/utils/printing.py:342
 msgid "Font:"
 msgstr "Fonte:"
 
-#: ../stoqlib/gui/utils/printing.py:412
+#: ../stoqlib/gui/utils/printing.py:417
 msgid ""
 "It was not possible to print the labels. The template file was not found."
 msgstr ""
@@ -18210,8 +18175,8 @@ msgid ""
 "Use this information when try to emmit a fiscal document and the product has "
 "no configured PIS"
 msgstr ""
-"Essa informação é usada ao emitir um documento fiscal quando o produto não tem "
-"o PIS configurado"
+"Essa informação é usada ao emitir um documento fiscal quando o produto não "
+"tem o PIS configurado"
 
 #: ../stoqlib/lib/parameters.py:209
 msgid "Default COFINS template"
@@ -18222,8 +18187,8 @@ msgid ""
 "Use this information when try to emmit a fiscal document and the product has "
 "no configured COFINS"
 msgstr ""
-"Essa informação é usada ao emitir um documento fiscal quando o produto não tem "
-"o COFINS configurado"
+"Essa informação é usada ao emitir um documento fiscal quando o produto não "
+"tem o COFINS configurado"
 
 #: ../stoqlib/lib/parameters.py:217
 msgid "Primary company"
@@ -19295,8 +19260,8 @@ msgid ""
 "Beyond date, display exactly the hour and minute of the sale on the "
 "receivable payments list."
 msgstr ""
-"Além da data, exibe a hora e minutos exatos da venda no aplicativo "
-"contas a receber"
+"Além da data, exibe a hora e minutos exatos da venda no aplicativo contas a "
+"receber"
 
 #: ../stoqlib/lib/payment.py:77
 msgid "Need at least one value"
@@ -19902,6 +19867,57 @@ msgstr "ordens de serviço"
 #, python-format
 msgid "Order number: %s"
 msgstr "Número da ordem: %s"
+
+#~ msgid "Would you like to:"
+#~ msgstr "Você gostaria de:"
+
+#~ msgid "Create an empty database for production use."
+#~ msgstr "Criar um banco de dados vazio para uso em produção."
+
+#~ msgid "Create a database in demonstration mode."
+#~ msgstr "Criar um banco de dados em modo de demonstração."
+
+#~ msgid ""
+#~ "Want to import your data from another software or from spreadsheets? We "
+#~ "can help you.\n"
+#~ "\n"
+#~ "<a href=\"http://www.stoq.com.br/contato\">Send the data</a> you want "
+#~ "imported to us, and we will give a response within 2 business days."
+#~ msgstr ""
+#~ "Você gostaria de importar os seus dados de outro programa ou de "
+#~ "planilhas? Nós podemos ajudá-lo.\n"
+#~ "\n"
+#~ "Nos <a href=\"http://www.stoq.com.br/contato\">envie os dados</a> que "
+#~ "você deseja importar, e lhe daremos uma resposta em até 2 dias úteis."
+
+#~ msgid "Administrator account"
+#~ msgstr "Conta de administrador"
+
+#~ msgid ""
+#~ "I'm adding a user account called <b>%s</b> which will have administrator "
+#~ "privilegies.\n"
+#~ "\n"
+#~ "To be able to create other users you need to login with this user in the "
+#~ "admin application and create them."
+#~ msgstr ""
+#~ "Estou adicionando um usuário chamado <b>%s</b> que terá privilégios de "
+#~ "administrador.\n"
+#~ "\n"
+#~ "Para poder criar outros usuários, você precisa fazer login com este "
+#~ "usuário no aplicativo admin e criá-los."
+
+#~ msgid ""
+#~ "The specified database '%s' does not exist.\n"
+#~ "Do you want to create it?"
+#~ msgstr ""
+#~ "A base de dados '%s' não existe.\n"
+#~ "Você deseja criá-la?"
+
+#~ msgid "Create database"
+#~ msgstr "Criar banco de dados"
+
+#~ msgid "Don't create"
+#~ msgstr "Não criar"
 
 #~ msgid "Credit letter for %s"
 #~ msgstr "Carta de crédito para %s"
