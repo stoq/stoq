@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-15 02:10-0200\n"
-"PO-Revision-Date: 2017-10-14 05:10+0000\n"
+"POT-Creation-Date: 2017-10-19 02:10-0200\n"
+"PO-Revision-Date: 2017-10-19 04:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: English (http://www.transifex.com/async/stoq/language/en/)\n"
 "MIME-Version: 1.0\n"
@@ -11422,11 +11422,11 @@ msgstr "The sale was cancelled"
 msgid "Insert Cheque %d"
 msgstr "Insert Cheque %d"
 
-#: ../stoqlib/drivers/scale.py:54
+#: ../stoqlib/drivers/scale.py:55
 msgid "There is no scale configured"
 msgstr "There is no scale configured"
 
-#: ../stoqlib/drivers/scale.py:55
+#: ../stoqlib/drivers/scale.py:56
 #, python-format
 msgid ""
 "There is no scale configured for this station (\"%s\") or the scale is not "
@@ -13065,23 +13065,27 @@ msgstr "Invalid status for %s"
 msgid "Products to deliver"
 msgstr "Products to deliver"
 
-#: ../stoqlib/gui/editors/deviceseditor.py:84
-#: ../stoqlib/gui/editors/deviceseditor.py:100
-#: ../stoqlib/gui/editors/deviceseditor.py:167
-#: ../stoqlib/gui/editors/deviceseditor.py:180
+#: ../stoqlib/gui/editors/deviceseditor.py:77
+msgid "Test device"
+msgstr "Test device"
+
+#: ../stoqlib/gui/editors/deviceseditor.py:98
+#: ../stoqlib/gui/editors/deviceseditor.py:114
+#: ../stoqlib/gui/editors/deviceseditor.py:181
+#: ../stoqlib/gui/editors/deviceseditor.py:194
 msgid "Choose..."
 msgstr "Choose..."
 
-#: ../stoqlib/gui/editors/deviceseditor.py:206
+#: ../stoqlib/gui/editors/deviceseditor.py:220
 #, python-format
 msgid "Edit Device for %s"
 msgstr "Edit Device for %s"
 
-#: ../stoqlib/gui/editors/deviceseditor.py:208
+#: ../stoqlib/gui/editors/deviceseditor.py:222
 msgid "Add Device"
 msgstr "Add Device"
 
-#: ../stoqlib/gui/editors/deviceseditor.py:217
+#: ../stoqlib/gui/editors/deviceseditor.py:231
 #, python-format
 msgid "An active %s already exists for station \"%s\""
 msgstr "An active %s already exists for station \"%s\""
@@ -16443,15 +16447,15 @@ msgstr "Please contact your system administrator or Stoq team."
 msgid "User does not have a profile"
 msgstr "User does not have a profile"
 
-#: ../stoqlib/gui/utils/login.py:223
+#: ../stoqlib/gui/utils/login.py:232
 msgid "Stoq - Access Control"
 msgstr "Stoq - Access Control"
 
-#: ../stoqlib/gui/utils/login.py:241
+#: ../stoqlib/gui/utils/login.py:250
 msgid "specify an username"
 msgstr "specify an username"
 
-#: ../stoqlib/gui/utils/login.py:273
+#: ../stoqlib/gui/utils/login.py:282
 msgid "Depleted attempts of authentication"
 msgstr "Depleted attempts of authentication"
 
