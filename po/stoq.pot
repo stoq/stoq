@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-19 02:10-0200\n"
-"PO-Revision-Date: 2017-10-19 04:10+0000\n"
+"POT-Creation-Date: 2017-10-21 02:10-0200\n"
+"PO-Revision-Date: 2017-10-21 04:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: English (http://www.transifex.com/async/stoq/language/en/)\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../bin/stoq:150
+msgid "You are using a trial version of Stoq"
+msgstr "You are using a trial version of Stoq"
+
+#: ../bin/stoq:151
+#, c-format
+msgid "There are <b>%s days</b> remaining to try all Stoq features"
+msgstr "There are <b>%s days</b> remaining to try all Stoq features"
+
+#: ../bin/stoq:154 ../stoqlib/gui/dialogs/pluginsdialog.py:87
+msgid "Activate"
+msgstr "Activate"
 
 #: ../data/glade/AccountEditor.ui.h:1
 msgid "Account name:"
@@ -12244,10 +12257,6 @@ msgstr "Plugin Manager"
 #: ../stoqlib/gui/dialogs/pluginsdialog.py:70
 msgid "Select the plugin you want to activate and click in the apply button."
 msgstr "Select the plugin you want to activate and click in the apply button."
-
-#: ../stoqlib/gui/dialogs/pluginsdialog.py:87
-msgid "Activate"
-msgstr "Activate"
 
 #: ../stoqlib/gui/dialogs/pluginsdialog.py:123
 #, python-format
