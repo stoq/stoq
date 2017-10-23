@@ -49,7 +49,7 @@
  "stoq/lib/generictreemodel.py": 38.96,
  "stoq/lib/gicompat.py": 4.39,
  "stoq/lib/startup.py": 52.63,
- "stoq/lib/status.py": 50.99,
+ "stoq/lib/status.py": 48,
  "stoqlib/api.py": 75.68,
  "stoqlib/database/admin.py": 80.58,
  "stoqlib/database/debug.py": 17.14,

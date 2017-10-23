@@ -54,6 +54,9 @@ version = '.'.join(map(str, stoq_version))
 #: stoq version as a string, sans the extra version
 short_version = version[:]
 
+#: If stoq is currently on trial mode
+trial_mode = False
+
 if extra_version:
     stoq_version = stoq_version + (extra_version,)
     version += extra_version
