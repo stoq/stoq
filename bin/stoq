@@ -136,6 +136,8 @@ if False:
     from gi.repository import Gtk
     from stoq.gui.shell.shellwindow import ShellWindow
     from stoqlib.api import api
+    import stoq
+    stoq.trial_mode = True
 
     _check_demo_mode = ShellWindow._check_demo_mode
 

@@ -40,6 +40,8 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.webservice import WebService
 from stoqlib.net.server import ServerProxy, ServerError
 
+import stoq
+
 
 class ResourceStatus(GObject.GObject):
     """The status of a given resource"""
@@ -243,6 +245,12 @@ class _ServerStatus(ResourceStatus):
         self._server = ServerProxy()
 
     def refresh(self):
+        if stoq.trial_mode:
+            self.status = ResourceStatus.STATUS_NA
+            self.reason = (_('Online features are not available in trial mode'))
+            self.reason_long = _('Online features require a subscription of Stoq.link')
+            return
+
         if not api.sysparam.get_bool('ONLINE_SERVICES'):
             self.status = ResourceStatus.STATUS_NA
             self.reason = (_("Online services (Stoq.link integration, backup, "
@@ -277,6 +285,12 @@ class _BackupStatus(ResourceStatus):
         self._server = ServerProxy()
 
     def refresh(self):
+        if stoq.trial_mode:
+            self.status = ResourceStatus.STATUS_NA
+            self.reason = (_('Online features are not available in trial mode'))
+            self.reason_long = _('Online features require a subscription of Stoq.link')
+            return
+
         if not api.sysparam.get_bool('ONLINE_SERVICES'):
             self.status = ResourceStatus.STATUS_NA
             self.reason = _('Backup service not running because '

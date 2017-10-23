@@ -81,6 +81,7 @@ from stoqlib.lib.message import info
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
+import stoq
 from stoq.gui.shell.shellapp import ShellApp
 
 _ = stoqlib_gettext
@@ -306,6 +307,8 @@ class Tasks(object):
         self._open_sale_token()
 
     def _open_stoq_link_connect(self):
+        if stoq.trial_mode:
+            return info(_('Online features are not available in trial mode'))
         self.app.run_dialog(PinDialog, self.app.store)
 
     def _open_certificates(self):
