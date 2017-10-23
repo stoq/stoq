@@ -7,7 +7,7 @@ GtkDialog(toplevel): title='Stoq - Installation', hidden
         GtkBox(step.vbox2, orientation=vertical):
           GtkLabel(step.label1, fill=True): 'Database initialization'
           GtkHSeparator(step.hseparator1, fill=True):
-          GtkLabel(step.label63, fill=True): "We are almost there! Let's create a database for you. What would you like to?"
+          GtkLabel(step.label63, fill=True): "We are almost there! Let's create a database for you. What would you like to do?"
           GtkBox(step.vbox1, orientation=vertical, fill=True, padding=18):
             ProxyRadioButton(step.empty_database_radio, fill=True): 'Use my own company data.', active
             ProxyRadioButton(step.example_database_radio, fill=True): 'Use some example data.'
