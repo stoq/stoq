@@ -17,9 +17,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-21 02:10-0200\n"
-"PO-Revision-Date: 2017-10-21 04:10+0000\n"
-"Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
+"POT-Creation-Date: 2017-10-23 02:10-0200\n"
+"PO-Revision-Date: 2017-10-23 12:58+0000\n"
+"Last-Translator: Felipe Nehmi <fhbnehmi@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -29,12 +29,12 @@ msgstr ""
 
 #: ../bin/stoq:150
 msgid "You are using a trial version of Stoq"
-msgstr ""
+msgstr "Você está usando uma versão de testes do Stoq"
 
 #: ../bin/stoq:151
 #, c-format
 msgid "There are <b>%s days</b> remaining to try all Stoq features"
-msgstr ""
+msgstr "Você possui <b>%s dias</b> restantes para testar as funcionalidades do Stoq"
 
 #: ../bin/stoq:154 ../stoqlib/gui/dialogs/pluginsdialog.py:87
 msgid "Activate"
@@ -1309,15 +1309,15 @@ msgstr "Inicialização do banco de dados"
 msgid ""
 "We are almost there! Let's create a database for you. What would you like "
 "to?"
-msgstr ""
+msgstr "Estamos quase prontos! Vamos criar uma base de dados para você. O que você gostaria de fazer?"
 
 #: ../data/glade/InstallationModeStep.ui.h:3
 msgid "Use my own company data."
-msgstr ""
+msgstr "Usar os dados da minha empresa."
 
 #: ../data/glade/InstallationModeStep.ui.h:4
 msgid "Use some example data."
-msgstr ""
+msgstr "Usar dados de exemplo."
 
 #: ../data/glade/InventoryAdjustmentEditor.ui.h:6
 msgid "_Adjust"
@@ -9329,18 +9329,18 @@ msgstr "Os seguintes plugins precisam ser habilitados: <b>{}</b>.\n\nVocê pode 
 
 #: ../stoq/gui/shell/shellwindow.py:409
 msgid "Use my own data"
-msgstr ""
+msgstr "Usar meus próprios dados"
 
 #: ../stoq/gui/shell/shellwindow.py:410
 msgid "You are using Stoq with example data."
-msgstr ""
+msgstr "Você está usando o Stoq com dados de exemplo."
 
 #: ../stoq/gui/shell/shellwindow.py:411
 #, python-format
 msgid ""
 "Some features are limited due to fiscal reasons. Click on '%s' to remove the"
 " limitations."
-msgstr ""
+msgstr "Algumas funcionalidades estão limitadas devido a razões fiscais. Clique em '%s' para remover as limitações."
 
 #: ../stoq/gui/shell/shellwindow.py:444
 #, python-format
@@ -13086,7 +13086,7 @@ msgstr "Produtos a entregar"
 
 #: ../stoqlib/gui/editors/deviceseditor.py:77
 msgid "Test device"
-msgstr ""
+msgstr "Testar dispositivo"
 
 #: ../stoqlib/gui/editors/deviceseditor.py:98
 #: ../stoqlib/gui/editors/deviceseditor.py:114
@@ -14047,7 +14047,7 @@ msgstr "O código %s já existe."
 #: ../stoqlib/gui/editors/sellableeditor.py:567
 #, python-format
 msgid "Barcode must have %s digits or less."
-msgstr ""
+msgstr "Código de barras deve ter %s dígitos ou menos."
 
 #: ../stoqlib/gui/editors/sellableeditor.py:570
 #, python-format
@@ -17744,11 +17744,11 @@ msgstr "Se o código do produto deve ser baseado na categoria selecionada ou nã
 
 #: ../stoqlib/lib/parameters.py:201
 msgid "Max size for product barcodes"
-msgstr ""
+msgstr "Tamanho máximo para códigos de barras de produto"
 
 #: ../stoqlib/lib/parameters.py:202
 msgid "Max number of digits for product barcodes"
-msgstr ""
+msgstr "Número máximo de dígitos para códigos de barras de produto."
 
 #: ../stoqlib/lib/parameters.py:208
 msgid "Default PIS template"
