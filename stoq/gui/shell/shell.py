@@ -370,6 +370,13 @@ class Shell(object):
         import gtk
         gtk.main_quit()
 
+        # Make sure that no connection is left open (specially on Windows)
+        try:
+            from stoqlib.database.runtime import get_default_store
+            get_default_store().close()
+        except Exception:
+            pass
+
         if restart:
             from stoqlib.lib.process import Process
             log.info('Restarting Stoq')
