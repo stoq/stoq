@@ -35,6 +35,11 @@ p {
     position: relative;
 }
 
+#header img {
+    width: 180px;
+    padding-bottom: 5px;
+}
+
 /* Logo */
 
 #logo {
@@ -55,20 +60,20 @@ p {
 #logo h2 {
     margin-top: -10px;
     padding-left: 1px;
-    font-size: 1.2em;
-    color: #7F7772;
+    font-size: 1em;
+    color: #FFFFFF;
 }
 
 /* Menu */
 
 #welcome {
+    color: #FFFFFF;
     float: right;
     margin: 0;
     margin-top: 40px;
     padding-right: 40px;
     display: block;
     font-size: 2em;
-    font-weight: bold;
 }
 
 /* Page */
