@@ -142,6 +142,7 @@ class WebService(object):
         :param store: a store
         :param app_version: application version
         """
+        import stoq
         try:
             bdist_type = library.bdist_type
         except Exception:
@@ -150,6 +151,8 @@ class WebService(object):
         # We should use absolute paths when looking for /etc
         if os.path.exists(os.path.join(os.sep, 'etc', 'init.d', 'stoq-bootstrap')):
             source = 'livecd'
+        elif stoq.trial_mode:
+            source = 'trial'
         elif bdist_type in ['egg', 'wheel']:
             source = 'pypi'
         elif is_developer_mode():

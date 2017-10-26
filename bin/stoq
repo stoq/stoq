@@ -141,6 +141,11 @@ if trial:
 
     _check_demo_mode = ShellWindow._check_demo_mode
 
+    def _link_clicked(button):
+        from stoqlib.gui.utils.openbrowser import open_browser
+        open_browser(button.get_uri())
+        return True
+
     def _check_trial_mode(self):
         from stoqlib.lib.translation import stoqlib_gettext as _
         from stoqlib.domain.system import TransactionEntry
@@ -154,6 +159,7 @@ if trial:
         msg = '<b>%s</b>\n%s' % (api.escape(title), desc)
 
         trial_button = gtk.LinkButton('https://www.stoq.com.br/trial_windows', _("Activate"))
+        trial_button.connect('activate-link', _link_clicked)
         if days > 0:
             _type = gtk.MESSAGE_INFO
         else:

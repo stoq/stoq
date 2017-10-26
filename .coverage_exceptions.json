@@ -304,7 +304,7 @@
  "stoqlib/lib/unittestutils.py": 75.00,
  "stoqlib/lib/uptime.py": 88.89,
  "stoqlib/lib/validators.py": 93.58,
- "stoqlib/lib/webservice.py": 39.33,
+ "stoqlib/lib/webservice.py": 38,
  "stoqlib/lib/xmlutils.py": 28.57,
  "stoqlib/migration/domainv1.py": 45.57,
  "stoqlib/migration/domainv2.py": 44.00,
