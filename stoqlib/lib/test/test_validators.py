@@ -33,7 +33,7 @@ from stoqlib.lib.validators import (validate_cpf, validate_cnpj,
                                     validate_decimal, validate_directory,
                                     validate_percentage, validate_cfop,
                                     validate_phone_number, validate_invoice_key,
-                                    is_date_in_interval)
+                                    is_date_in_interval, validate_cst)
 
 
 class TestValidators(DomainTest):
@@ -185,3 +185,7 @@ class TestValidators(DomainTest):
 
     def test_is_date_in_empty_interval(self):
         assert is_date_in_interval(localtoday(), None, None) is False
+
+    def test_validate_cst(self):
+        self.failIf(validate_cst(80))
+        self.failUnless(validate_cst(9))

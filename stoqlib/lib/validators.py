@@ -253,7 +253,7 @@ def validate_email(value):
 
 def validate_cst(cst):
     """Try to validate a CST to PIS/COFINS tax."""
-    valid_cst = [1, 2, 3, 4, 5, 6, 7, 8, 49, 50, 51, 52, 53, 54, 55, 56, 60,
+    valid_cst = [1, 2, 3, 4, 5, 6, 7, 8, 9, 49, 50, 51, 52, 53, 54, 55, 56, 60,
                  61, 62, 63, 64, 65, 66, 67, 70, 71, 72, 73, 74, 75, 98, 99]
     if cst in valid_cst:
         return True
