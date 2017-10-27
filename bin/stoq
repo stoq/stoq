@@ -159,7 +159,7 @@ if trial:
         msg = '<b>%s</b>\n%s' % (api.escape(title), desc)
 
         trial_button = gtk.LinkButton('https://www.stoq.com.br/trial_windows', _("Activate"))
-        trial_button.connect('activate-link', _link_clicked)
+        trial_button.connect('clicked', _link_clicked)
         if days > 0:
             _type = gtk.MESSAGE_INFO
         else:
