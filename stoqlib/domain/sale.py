@@ -219,8 +219,8 @@ class SaleItem(Domain):
             # Set ipi details before icms, since icms may depend on the ipi
             self.ipi_info.set_item_tax(self)
             self.icms_info.set_item_tax(self)
-            self.pis_info.set_item_tax(self)
-            self.cofins_info.set_item_tax(self)
+        self.pis_info.set_item_tax(self)
+        self.cofins_info.set_item_tax(self)
 
     #
     #  Properties

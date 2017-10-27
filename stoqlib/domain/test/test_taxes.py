@@ -52,8 +52,7 @@ class TestBaseTax(DomainTest):
         product = self.create_product()
         product.icms_template = icms_template
         product.ipi_template = ipi_template
-        sale_item = self.create_sale_item()
-        sale_item.sellable.product = product
+        sale_item = self.create_sale_item(sellable=product.sellable)
         sale_item.icms_info.set_item_tax(sale_item)
         sale_item.ipi_info.set_item_tax(sale_item)
         sale_item.pis_info.set_item_tax(sale_item)
@@ -392,18 +391,30 @@ class TestInvoiceItemPis(DomainTest):
         self.assertEquals(sale_item_pis.v_pis, 0)
 
     def test_get_tax_template(self):
-        sale_item = self.create_sale_item()
+        product = self.create_product()
+        service = self.create_service()
+
+        sale_item = self.create_sale_item(sellable=product.sellable)
+        sale_item2 = self.create_sale_item(sellable=service.sellable)
+
         invoice_item_pis = self.create_invoice_item_pis(cst=4)
         pis1 = self.create_product_pis_template()
         pis2 = self.create_product_pis_template()
+
         with self.sysparam(DEFAULT_PRODUCT_PIS_TEMPLATE=pis1):
+            # Product
             self.assertEquals(pis1, invoice_item_pis.get_tax_template(sale_item))
             self.assertNotEquals(pis2, invoice_item_pis.get_tax_template(sale_item))
-        product = self.create_product()
+            # Service
+            self.assertEquals(pis1, invoice_item_pis.get_tax_template(sale_item2))
+            self.assertNotEquals(pis2, invoice_item_pis.get_tax_template(sale_item2))
+
         product.pis_template = pis2
-        sale_item.sellable.product = product
         self.assertEquals(pis2, invoice_item_pis.get_tax_template(sale_item))
         self.assertNotEquals(pis1, invoice_item_pis.get_tax_template(sale_item))
+
+        self.assertNotEquals(pis1, invoice_item_pis.get_tax_template(sale_item2))
+        self.assertNotEquals(pis2, invoice_item_pis.get_tax_template(sale_item2))
 
 
 class TestInvoiceItemCofins(DomainTest):
@@ -450,15 +461,27 @@ class TestInvoiceItemCofins(DomainTest):
         self.assertEquals(sale_item_cofins.v_cofins, 0)
 
     def test_get_tax_template(self):
-        sale_item = self.create_sale_item()
+        product = self.create_product()
+        service = self.create_service()
+
+        sale_item = self.create_sale_item(sellable=product.sellable)
+        sale_item2 = self.create_sale_item(sellable=service.sellable)
+
         invoice_item_cofins = self.create_invoice_item_cofins(cst=4)
         cofins1 = self.create_product_cofins_template()
         cofins2 = self.create_product_cofins_template()
+
         with self.sysparam(DEFAULT_PRODUCT_COFINS_TEMPLATE=cofins1):
+            # Product
             self.assertEquals(cofins1, invoice_item_cofins.get_tax_template(sale_item))
             self.assertNotEquals(cofins2, invoice_item_cofins.get_tax_template(sale_item))
-        product = self.create_product()
+            # Service
+            self.assertEquals(cofins1, invoice_item_cofins.get_tax_template(sale_item2))
+            self.assertNotEquals(cofins2, invoice_item_cofins.get_tax_template(sale_item2))
+
         product.cofins_template = cofins2
-        sale_item.sellable.product = product
         self.assertEquals(cofins2, invoice_item_cofins.get_tax_template(sale_item))
         self.assertNotEquals(cofins1, invoice_item_cofins.get_tax_template(sale_item))
+
+        self.assertNotEquals(cofins1, invoice_item_cofins.get_tax_template(sale_item2))
+        self.assertNotEquals(cofins2, invoice_item_cofins.get_tax_template(sale_item2))

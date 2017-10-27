@@ -464,6 +464,9 @@ class InvoiceItemPis(BasePIS):
     @classmethod
     def get_tax_template(cls, invoice_item):
         default_pis = sysparam.get_object(invoice_item.store, 'DEFAULT_PRODUCT_PIS_TEMPLATE')
+        if invoice_item.sellable.service:
+            return default_pis
+
         return invoice_item.sellable.product.pis_template or default_pis
 
     #
@@ -522,6 +525,9 @@ class InvoiceItemCofins(BaseCOFINS):
     @classmethod
     def get_tax_template(cls, invoice_item):
         default_cofins = sysparam.get_object(invoice_item.store, 'DEFAULT_PRODUCT_COFINS_TEMPLATE')
+        if invoice_item.sellable.service:
+            return default_cofins
+
         return invoice_item.sellable.product.cofins_template or default_cofins
 
     #

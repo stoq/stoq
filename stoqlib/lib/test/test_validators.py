@@ -31,7 +31,7 @@ from stoqlib.lib.validators import (validate_cpf, validate_cnpj,
                                     validate_area_code, validate_int,
                                     validate_decimal, validate_directory,
                                     validate_percentage, validate_cfop,
-                                    validate_phone_number)
+                                    validate_phone_number, validate_cst)
 
 
 class TestValidators(DomainTest):
@@ -174,3 +174,7 @@ class TestValidators(DomainTest):
         self.failIf(validate_percentage('-1'))
         self.failIf(validate_percentage('101'))
         self.failIf(validate_percentage('50%'))
+
+    def test_validate_cst(self):
+        self.failIf(validate_cst(80))
+        self.failUnless(validate_cst(9))
