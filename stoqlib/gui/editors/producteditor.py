@@ -700,6 +700,23 @@ class ProductStockQuantityEditor(BaseEditor):
             # before calling this.
             return self._register_inventory()
 
+    #
+    # Kiwi Callbacks
+    #
+
+    def on_quantity__validate(self, widget, new_quantity):
+        # Never let the user set negative values
+        if new_quantity < 0:
+            return ValidationError(_("This value cannot be negative"))
+
+        # In Synchronized mode dont let the user decrease the stock from other
+        # branches
+        if (api.sysparam.get_bool('SYNCHRONIZED_MODE')
+                and self._branch != api.get_current_branch(self.store)
+                and new_quantity < self.model.quantity):
+            return ValidationError(_("You cannot decrease stock from other "
+                                     "branches"))
+
 
 class ProductManufacturerEditor(BaseEditor):
     model_name = _('Manufacturer')
