@@ -491,10 +491,6 @@ class StockApp(ShellApp):
         if not branch:
             return warning(_('You must select a branch first'))
 
-        if (api.sysparam.get_bool('SYNCHRONIZED_MODE')
-                and branch != api.get_current_branch(self.store)):
-            return warning(_('You can only change the stock of your current branch'))
-
         with api.new_store() as store:
             self.run_dialog(ProductStockQuantityEditor, store,
                             store.fetch(product), branch=branch)

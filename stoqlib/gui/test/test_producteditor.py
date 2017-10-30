@@ -252,3 +252,40 @@ class TestProductStockQuantityEditor(GUITest):
         self.assertEquals(item.actual_quantity, 20)
         self.assertEquals(item.is_adjusted, True)
         self.assertEquals(inventory.status, Inventory.STATUS_CLOSED)
+
+    def test_same_branch(self):
+        branch = get_current_branch(self.store)
+        product = self.create_product(branch=branch, stock=10)
+
+        editor = ProductStockQuantityEditor(self.store, product, branch)
+        # Using set_text because update() will not show the validation
+        editor.quantity.set_text('-4')
+        editor.reason.update('test')
+        # Do not let the user decrease stock to a negative number
+        self.assertInvalid(editor, ['quantity'])
+
+        # Let the user decrease stock
+        editor.quantity.update(9)
+        self.assertValid(editor, ['quantity'])
+
+        # Let the user increase stock
+        editor.quantity.update(11)
+        self.assertValid(editor, ['quantity'])
+        self.click(editor.main_dialog.ok_button)
+
+    def test_other_branch(self):
+        other_branch = self.create_branch()
+        product = self.create_product(branch=other_branch, stock=10)
+
+        with self.sysparam(SYNCHRONIZED_MODE=True):
+            editor = ProductStockQuantityEditor(self.store, product, other_branch)
+            editor.quantity.set_text('9')
+            # Do not let the user decrease stock from other branches in
+            # synchronized mode
+            self.assertInvalid(editor, ['quantity'])
+
+            # The user can increase stock from other branches
+            editor.quantity.set_text('11')
+            editor.reason.update('test')
+            self.assertValid(editor, ['quantity'])
+            self.click(editor.main_dialog.ok_button)
