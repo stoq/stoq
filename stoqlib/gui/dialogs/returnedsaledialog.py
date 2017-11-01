@@ -31,9 +31,11 @@ from storm.expr import Eq
 
 from stoqlib.api import api
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
+from stoqlib.domain.sale import SaleView
 from stoqlib.domain.views import ReturnedSalesView
 from stoqlib.exceptions import StockError
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.events import SaleReturnWizardFinishEvent
 from stoqlib.gui.utils.printing import print_report
@@ -60,7 +62,8 @@ class ReturnedSaleDialog(BaseEditor):
     # FIXME
     gladefile = "ReturnedSalesDetails"
     proxy_widgets = ['sale_identifier', 'invoice_number', 'returned_date',
-                     'identifier', 'responsible_name', 'status_str']
+                     'identifier', 'responsible_name', 'status_str',
+                     'new_sale_identifier']
 
     def _setup_status(self):
         self.receive_button.set_property('visible', self.model.can_receive())
@@ -68,6 +71,12 @@ class ReturnedSaleDialog(BaseEditor):
         if not self.model.is_pending():
             self.receiving_responsible.set_text(returned_sale.confirm_responsible.person.name)
             self.receiving_date.update(returned_sale.confirm_date)
+        if not self.model.sale:
+            self.sale_label.hide()
+            self.sale_box.hide()
+        if not self.model.new_sale:
+            self.new_sale_box.hide()
+            self.new_sale_label.hide()
 
     def _update_reason(self):
         notes = [_('Return reason'), self.model.reason]
@@ -134,6 +143,14 @@ class ReturnedSaleDialog(BaseEditor):
     #
     # Callbacks
     #
+
+    def on_sale_details_button__clicked(self, event):
+        sale_view = self.store.find(SaleView, id=self.model.sale_id).one()
+        run_dialog(SaleDetailsDialog, self, self.store, sale_view)
+
+    def on_new_sale_details_button__clicked(self, event):
+        sale_view = self.store.find(SaleView, id=self.model.new_sale_id).one()
+        run_dialog(SaleDetailsDialog, self, self.store, sale_view)
 
     def on_receive_button__clicked(self, event):
         if yesno(_(u'Receive pending returned sale?'), Gtk.ResponseType.NO,

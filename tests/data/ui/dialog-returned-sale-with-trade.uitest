@@ -2,28 +2,28 @@ dialog: ReturnedSaleDialog
 GtkBox(toplevel, orientation=vertical):
   GtkTable(table1, fill=True):
     GtkLabel(label4): 'Returned Sale:'
-    ProxyLabel(identifier): '<span >00060</span>'
+    ProxyLabel(identifier): '<span >00991</span>'
     ProxyLabel(kiwilabel7): 'Invoice number:'
     ProxyLabel(invoice_number): '<span ></span>'
     GtkLabel(sale_label): 'Sale:'
     GtkBox(sale_box, orientation=horizontal):
-      ProxyLabel(sale_identifier, expand=True, fill=True): '<span >00336</span>'
+      ProxyLabel(sale_identifier, expand=True, fill=True): '<span >14913</span>'
       GtkButton(sale_details_button, fill=True):
     ProxyLabel(kiwilabel4): 'Status:'
     GtkBox(hbox2, orientation=horizontal):
-      ProxyLabel(status_str, fill=True): '<span >Pending</span>'
-      GtkButton(receive_button, fill=True): 'Receive'
+      ProxyLabel(status_str, fill=True): '<span >Confirmed</span>'
+      GtkButton(receive_button, fill=True): 'Receive', hidden
     GtkLabel(label3): 'Returned date:'
     ProxyLabel(returned_date): '<span >YYYY-MM-DD</span>'
     ProxyLabel(kiwilabel2): 'Confirm date:'
-    ProxyLabel(receiving_date):
+    ProxyLabel(receiving_date): '<span >YYYY-MM-DD</span>'
     ProxyLabel(kiwilabel5): 'Received By:'
     ProxyLabel(responsible_name): '<span >Administrator</span>'
     ProxyLabel(kiwilabel1): 'Confirmed By:'
-    ProxyLabel(receiving_responsible):
-    GtkLabel(new_sale_label): 'New Sale:', hidden
-    GtkBox(new_sale_box, orientation=horizontal): hidden
-      ProxyLabel(new_sale_identifier, expand=True, fill=True): '<span ></span>'
+    ProxyLabel(receiving_responsible): '<span >Administrator</span>'
+    GtkLabel(new_sale_label): 'New Sale:'
+    GtkBox(new_sale_box, orientation=horizontal):
+      ProxyLabel(new_sale_identifier, expand=True, fill=True): '<span >14914</span>'
       GtkButton(new_sale_details_button, fill=True):
   GtkNotebook(details_notebook, expand=True, fill=True):
     GtkBox(products_vbox, orientation=vertical):
@@ -33,16 +33,10 @@ GtkBox(toplevel, orientation=vertical):
         column: title='Qty returned'
         column: title='Price'
         column: title='Total'
+        row: '', 'Description', Decimal('1.000'), <currency $10>, Decimal('10.00')
     GtkBox(hbox1, orientation=horizontal):
       GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
         ProxyTextView(reason): invalid
-    GtkEventBox():
-      GtkEventBox(): slave BasicForm is attached
-        GtkAlignment(toplevel):
-          GtkTable():
-            ProxyLabel(field_name_lbl): 'Slave field:'
-            ProxyEntry(field_name): ''
-            GtkBox(orientation=horizontal):
   GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
-    GtkButton(undo_button): 'Undo Returned Sale', insensitive
+    GtkButton(undo_button): 'Undo Returned Sale'
     GtkButton(print_button): 'gtk-print'
