@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-24 02:10-0200\n"
-"PO-Revision-Date: 2017-10-24 04:10+0000\n"
+"POT-Creation-Date: 2017-10-31 02:10-0200\n"
+"PO-Revision-Date: 2017-10-31 04:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -27,16 +27,16 @@ msgstr ""
 "Language: pt_BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../bin/stoq:152
+#: ../bin/stoq:157
 msgid "You are using a trial version of Stoq"
 msgstr "Você está usando uma versão de testes do Stoq"
 
-#: ../bin/stoq:153
+#: ../bin/stoq:158
 #, c-format
 msgid "There are <b>%s days</b> remaining to try all Stoq features"
 msgstr "Você possui <b>%s dias</b> restantes para testar as funcionalidades do Stoq"
 
-#: ../bin/stoq:156 ../stoqlib/gui/dialogs/pluginsdialog.py:87
+#: ../bin/stoq:161 ../stoqlib/gui/dialogs/pluginsdialog.py:87
 msgid "Activate"
 msgstr "Ativar"
 
@@ -3744,7 +3744,7 @@ msgstr "Custo estimado"
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:59
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:440
 #: ../stoqlib/gui/editors/personeditor.py:200
-#: ../stoqlib/gui/editors/producteditor.py:712
+#: ../stoqlib/gui/editors/producteditor.py:729
 #: ../stoqlib/gui/editors/saleeditor.py:404
 #: ../stoqlib/gui/editors/sellableeditor.py:78
 #: ../stoqlib/gui/editors/workordercategoryeditor.py:51
@@ -3953,7 +3953,7 @@ msgstr "Operações de crédito"
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:122
 #: ../stoqlib/gui/editors/deliveryeditor.py:205
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:103
-#: ../stoqlib/gui/editors/producteditor.py:713
+#: ../stoqlib/gui/editors/producteditor.py:730
 #: ../stoqlib/gui/editors/saleeditor.py:405
 #: ../stoqlib/gui/search/consignmentsearch.py:52
 #: ../stoqlib/gui/search/loansearch.py:79
@@ -6153,7 +6153,7 @@ msgstr "Data de confirmação"
 #: ../stoqlib/gui/dialogs/manufacturerdialog.py:42
 #: ../stoqlib/gui/dialogs/saledetails.py:272
 #: ../stoqlib/gui/dialogs/sellabledialog.py:209
-#: ../stoqlib/gui/editors/producteditor.py:705
+#: ../stoqlib/gui/editors/producteditor.py:722
 #: ../stoqlib/gui/search/productsearch.py:254
 #: ../stoqlib/gui/search/productsearch.py:472
 #: ../stoqlib/gui/search/productsearch.py:549
@@ -9405,24 +9405,24 @@ msgstr "Introspectar slave"
 msgid "Remove settings cache"
 msgstr "Remover cache de preferências"
 
-#: ../stoq/gui/shell/shellwindow.py:1098
+#: ../stoq/gui/shell/shellwindow.py:1094
 msgid ""
 "This will enable production mode and finish the demonstration. Are you sure?"
 msgstr "Isto irá habilitar o modo de produção e finalizar a demonstração. Você tem certeza?"
 
-#: ../stoq/gui/shell/shellwindow.py:1101
+#: ../stoq/gui/shell/shellwindow.py:1097
 msgid "Enable production mode"
 msgstr "Habilitar modo de produção"
 
-#: ../stoq/gui/shell/shellwindow.py:1101
+#: ../stoq/gui/shell/shellwindow.py:1097
 msgid "Continue testing"
 msgstr "Continuar testando"
 
-#: ../stoq/gui/shell/shellwindow.py:1250
+#: ../stoq/gui/shell/shellwindow.py:1246
 msgid "Learn More..."
 msgstr "Saiba mais..."
 
-#: ../stoq/gui/shell/shellwindow.py:1251
+#: ../stoq/gui/shell/shellwindow.py:1247
 #, python-format
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr "<b>Está disponível uma nova versão do Stoq (%s)</b>"
@@ -9688,10 +9688,6 @@ msgstr "Não é possível alterar a quantidade de estoque de um produto de lote"
 #: ../stoq/gui/stock.py:492
 msgid "You must select a branch first"
 msgstr "Você deve selecionar uma filial antes"
-
-#: ../stoq/gui/stock.py:496
-msgid "You can only change the stock of your current branch"
-msgstr "Você só pode alterar o estoque da sua filial atual"
 
 #: ../stoq/gui/till.py:80 ../stoq/lib/applist.py:64
 #: ../stoqlib/lib/parameters.py:393 ../stoqlib/lib/parameters.py:753
@@ -13790,16 +13786,24 @@ msgstr "Imagens"
 msgid "Adjust stock quantity"
 msgstr "Ajustar a quantidade de estoque"
 
-#: ../stoqlib/gui/editors/producteditor.py:729
+#: ../stoqlib/gui/editors/producteditor.py:710
+msgid "This value cannot be negative"
+msgstr ""
+
+#: ../stoqlib/gui/editors/producteditor.py:717
+msgid "You cannot decrease stock from other branches"
+msgstr ""
+
+#: ../stoqlib/gui/editors/producteditor.py:746
 msgid "The manufacturer should have a name."
 msgstr "O fabricante deve ter um nome."
 
-#: ../stoqlib/gui/editors/producteditor.py:733
+#: ../stoqlib/gui/editors/producteditor.py:750
 #, python-format
 msgid "The manufacturer '%s' already exists."
 msgstr "O fabricante '%s' já existe."
 
-#: ../stoqlib/gui/editors/producteditor.py:738
+#: ../stoqlib/gui/editors/producteditor.py:755
 #, python-format
 msgid "The code '%s' already exists"
 msgstr "O código '%s' já existe"
