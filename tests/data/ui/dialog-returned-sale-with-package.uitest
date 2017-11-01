@@ -5,8 +5,10 @@ GtkVBox(details_vbox):
     ProxyLabel(identifier): '<span >00666</span>'
     ProxyLabel(kiwilabel7): 'Invoice number:'
     ProxyLabel(invoice_number): '<span ></span>'
-    GtkLabel(label1): 'Sale:'
-    ProxyLabel(sale_identifier): '<span >00666</span>'
+    GtkLabel(sale_label): 'Sale:'
+    GtkHBox(sale_box):
+      ProxyLabel(sale_identifier, expand=True, fill=True): '<span >00666</span>'
+      GtkButton(sale_details_button, fill=True):
     ProxyLabel(kiwilabel4): 'Status:'
     GtkHBox(hbox2):
       ProxyLabel(status_str, fill=True): '<span >Pending</span>'
@@ -19,6 +21,10 @@ GtkVBox(details_vbox):
     ProxyLabel(responsible_name): '<span >Administrator</span>'
     ProxyLabel(kiwilabel1): 'Confirmed By:'
     ProxyLabel(receiving_responsible):
+    GtkLabel(new_sale_label): 'New Sale:', hidden
+    GtkHBox(new_sale_box): hidden
+      ProxyLabel(new_sale_identifier, expand=True, fill=True): '<span ></span>'
+      GtkButton(new_sale_details_button, fill=True):
   GtkNotebook(details_notebook, expand=True, fill=True):
     GtkVBox(products_vbox):
       ObjectTree(returned_items_list, expand=True, fill=True):

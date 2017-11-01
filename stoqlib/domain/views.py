@@ -1204,10 +1204,15 @@ class UnconfirmedSaleItemsView(Viewable):
         return WorkOrder.statuses[self.wo_status]
 
 
+# XXX: There is another ReturnedSaleView in stoqlib.domain.sale
 class ReturnedSalesView(Viewable):
     PersonBranch = ClassAlias(Person, 'person_branch')
     PersonResponsible = ClassAlias(Person, 'responsible_sale')
     PersonClient = ClassAlias(Person, 'person_client')
+
+    NewSale = ClassAlias(Sale, 'new_sale')
+    NewClient = ClassAlias(Client, 'new_client')
+    NewPersonClient = ClassAlias(Person, 'new_person_client')
 
     returned_sale = ReturnedSale
 
@@ -1230,29 +1235,48 @@ class ReturnedSalesView(Viewable):
     sale_id = Sale.id
     sale_identifier_str = Cast(Sale.identifier, 'text')
 
+    new_sale_id = NewSale.id
+
     responsible_name = PersonResponsible.name
     branch_name = Coalesce(NullIf(Company.fancy_name, u''), PersonBranch.name)
-    client_name = PersonClient.name
+
+    client_name = Coalesce(PersonClient.name, NewPersonClient.name)
 
     tables = [
         ReturnedSale,
-        Join(Sale, Sale.id == ReturnedSale.sale_id),
+        LeftJoin(Sale, Sale.id == ReturnedSale.sale_id),
+        LeftJoin(NewSale, NewSale.id == ReturnedSale.new_sale_id),
         Join(LoginUser, LoginUser.id == ReturnedSale.responsible_id),
         Join(PersonResponsible, PersonResponsible.id == LoginUser.person_id),
         Join(Branch, Branch.id == ReturnedSale.branch_id),
         Join(PersonBranch, PersonBranch.id == Branch.person_id),
         Join(Company, Company.person_id == PersonBranch.id),
         LeftJoin(Invoice, Invoice.id == ReturnedSale.invoice_id),
+        # Client from the original sale
         LeftJoin(Client, Client.id == Sale.client_id),
         LeftJoin(PersonClient, PersonClient.id == Client.person_id),
+        # Client from the new sale (if a trade)
+        LeftJoin(NewClient, NewClient.id == NewSale.client_id),
+        LeftJoin(NewPersonClient, NewPersonClient.id == NewClient.person_id),
     ]
 
     @property
     def sale_identifier(self):
         return self.sale.identifier
 
+    @property
+    def new_sale(self):
+        return self.store.get(Sale, self.new_sale_id)
+
+    @property
+    def new_sale_identifier(self):
+        return self.new_sale.identifier
+
     def can_receive(self):
         from stoqlib.api import api
+        if not self.sale:
+            # There is no original sale to compare
+            return self.is_pending()
         same_branch = self.sale.branch == api.get_current_branch(self.store)
         return bool(self.is_pending() and same_branch)
 

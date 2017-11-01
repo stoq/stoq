@@ -2,28 +2,28 @@ dialog: ReturnedSaleDialog
 GtkVBox(details_vbox):
   GtkTable(table1, fill=True):
     GtkLabel(label4): 'Returned Sale:'
-    ProxyLabel(identifier): '<span >00060</span>'
+    ProxyLabel(identifier): '<span >01992</span>'
     ProxyLabel(kiwilabel7): 'Invoice number:'
     ProxyLabel(invoice_number): '<span ></span>'
-    GtkLabel(sale_label): 'Sale:'
-    GtkHBox(sale_box):
-      ProxyLabel(sale_identifier, expand=True, fill=True): '<span >00336</span>'
+    GtkLabel(sale_label): 'Sale:', hidden
+    GtkHBox(sale_box): hidden
+      ProxyLabel(sale_identifier, expand=True, fill=True): '<span ></span>'
       GtkButton(sale_details_button, fill=True):
     ProxyLabel(kiwilabel4): 'Status:'
     GtkHBox(hbox2):
-      ProxyLabel(status_str, fill=True): '<span >Pending</span>'
-      GtkButton(receive_button, fill=True): 'Receive'
+      ProxyLabel(status_str, fill=True): '<span >Confirmed</span>'
+      GtkButton(receive_button, fill=True): 'Receive', hidden
     GtkLabel(label3): 'Returned date:'
     ProxyLabel(returned_date): '<span >YYYY-MM-DD</span>'
     ProxyLabel(kiwilabel2): 'Confirm date:'
-    ProxyLabel(receiving_date):
+    ProxyLabel(receiving_date): '<span >YYYY-MM-DD</span>'
     ProxyLabel(kiwilabel5): 'Received By:'
     ProxyLabel(responsible_name): '<span >Administrator</span>'
     ProxyLabel(kiwilabel1): 'Confirmed By:'
-    ProxyLabel(receiving_responsible):
-    GtkLabel(new_sale_label): 'New Sale:', hidden
-    GtkHBox(new_sale_box): hidden
-      ProxyLabel(new_sale_identifier, expand=True, fill=True): '<span ></span>'
+    ProxyLabel(receiving_responsible): '<span >Administrator</span>'
+    GtkLabel(new_sale_label): 'New Sale:'
+    GtkHBox(new_sale_box):
+      ProxyLabel(new_sale_identifier, expand=True, fill=True): '<span >14915</span>'
       GtkButton(new_sale_details_button, fill=True):
   GtkNotebook(details_notebook, expand=True, fill=True):
     GtkVBox(products_vbox):
@@ -38,5 +38,5 @@ GtkVBox(details_vbox):
       GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
         ProxyTextView(reason): invalid
   GtkHButtonBox(hbuttonbox1, fill=True):
-    GtkButton(undo_button): 'Undo Returned Sale', insensitive
+    GtkButton(undo_button): 'Undo Returned Sale'
     GtkButton(print_button): 'gtk-print'

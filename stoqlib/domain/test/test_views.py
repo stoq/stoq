@@ -22,9 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-
-__tests__ = 'stoqlib/domain/views.py'
-
 import datetime
 from decimal import Decimal
 
@@ -44,6 +41,7 @@ from stoqlib.domain.product import (ProductSupplierInfo, ProductStockItem,
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.domain.views import ReturnedSalesView
 from stoqlib.domain.views import AccountView
 from stoqlib.domain.views import ClientWithSalesView
 from stoqlib.domain.views import ProductBrandByBranchView
@@ -57,6 +55,8 @@ from stoqlib.domain.views import SellableFullStockView
 from stoqlib.domain.views import SoldItemView
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.introspection import get_all_classes
+
+__tests__ = 'stoqlib/domain/views.py'
 
 
 def _get_all_views():
@@ -440,9 +440,6 @@ class TestProductFullStockView(DomainTest):
         self.assertEquals(results[0].price, 10)
 
     def test_with_unblocked_sellables_query(self):
-        # This is used in the purchase wizard and breaks storm
-        from stoqlib.domain.sellable import Sellable
-
         p1 = self.create_product()
         supplier = self.create_supplier()
 
@@ -737,6 +734,33 @@ class TestAccountView(DomainTest):
         results = self.store.find(AccountView, id=a1.id)
         self.failUnless(list(results))
         self.assertEquals(repr(results[0]), u'<AccountView Test Account>')
+
+
+class TestReturnedSalesView(DomainTest):
+
+    def test_properties(self):
+        self.assertEqual(self.store.find(ReturnedSalesView).count(), 0)
+        # First create a sale
+        sale = self.create_sale(branch=get_current_branch(self.store))
+        self.add_product(sale)
+        sale.order()
+        self.add_payments(sale)
+        sale.confirm()
+        sale.group.pay()
+
+        # A new sale and a trade
+        returned_sale = sale.create_sale_return_adapter()
+        new_sale = self.create_sale()
+        returned_sale.new_sale = new_sale
+        returned_sale.trade()
+
+        # now test the properties
+        self.assertEqual(self.store.find(ReturnedSalesView).count(), 1)
+        view = self.store.find(ReturnedSalesView)[0]
+        assert view
+
+        self.assertEqual(view.new_sale, new_sale)
+        self.assertEqual(view.new_sale_identifier, new_sale.identifier)
 
 
 class TestProductFullStockItemView(DomainTest):

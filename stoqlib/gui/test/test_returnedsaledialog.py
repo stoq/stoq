@@ -28,9 +28,11 @@ import mock
 from kiwi.ui.forms import TextField
 
 from stoqlib.domain.returnedsale import ReturnedSale
+from stoqlib.domain.sale import SaleView
 from stoqlib.domain.views import PendingReturnedSalesView, ReturnedSalesView
 from stoqlib.gui.dialogs.returnedsaledialog import (ReturnedSaleDialog,
                                                     ReturnedSaleUndoDialog)
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.decorators import cached_property
@@ -53,6 +55,38 @@ class TestReturnedSaleDialog(GUITest):
         model = self.store.find(PendingReturnedSalesView).one()
         dialog = ReturnedSaleDialog(self.store, model)
         self.check_dialog(dialog, 'dialog-receive-pending-returned-sale')
+
+    def test_trade(self):
+        # First create a sale
+        sale = self.create_sale()
+        sale.identifier = 14913
+        self.add_product(sale)
+        sale.order()
+        self.add_payments(sale)
+        sale.confirm()
+        sale.group.pay()
+
+        # A new sale and a trade
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.identifier = 991
+        new_sale = self.create_sale()
+        new_sale.identifier = 14914
+        returned_sale.new_sale = new_sale
+        returned_sale.trade()
+
+        model = self.store.find(ReturnedSalesView).one()
+        dialog = ReturnedSaleDialog(self.store, model)
+        self.check_dialog(dialog, 'dialog-returned-sale-with-trade')
+
+    def test_trade_without_original_sale(self):
+        returned_sale = self.create_trade()
+        returned_sale.identifier = 1992
+        returned_sale.new_sale.identifier = 14915
+        returned_sale.trade()
+
+        model = self.store.find(ReturnedSalesView).one()
+        dialog = ReturnedSaleDialog(self.store, model)
+        self.check_dialog(dialog, 'dialog-returned-sale-without-original')
 
     def test_show_with_package_product(self):
         sale = self.create_sale()
@@ -146,6 +180,35 @@ class TestReturnedSaleDialog(GUITest):
 
         run_dialog.assert_called_once_with(ReturnedSaleUndoDialog, dialog,
                                            self.store, model.returned_sale)
+
+    @mock.patch('stoqlib.gui.dialogs.returnedsaledialog.run_dialog')
+    def test_sale_buttons(self, run_dialog):
+        # First create a sale
+        sale = self.create_sale()
+        self.add_product(sale)
+        sale.order()
+        self.add_payments(sale)
+        sale.confirm()
+        sale.group.pay()
+
+        # A new sale and a trade
+        returned_sale = sale.create_sale_return_adapter()
+        new_sale = self.create_sale()
+        returned_sale.new_sale = new_sale
+        returned_sale.trade()
+
+        model = self.store.find(ReturnedSalesView).one()
+        dialog = ReturnedSaleDialog(self.store, model)
+        self.click(dialog.sale_details_button)
+        sale_view = self.store.find(SaleView, id=sale.id).one()
+        run_dialog.assert_called_once_with(SaleDetailsDialog, dialog, self.store,
+                                           sale_view)
+
+        run_dialog.reset_mock()
+        self.click(dialog.new_sale_details_button)
+        sale_view = self.store.find(SaleView, id=new_sale.id).one()
+        run_dialog.assert_called_once_with(SaleDetailsDialog, dialog, self.store,
+                                           sale_view)
 
     def test_add_tab(self):
         rsale = self.create_returned_sale()
