@@ -48,7 +48,7 @@ from stoqlib.gui.utils.keybindings import get_accel, get_accels
 from stoqlib.gui.utils.logo import render_logo_pixbuf
 from stoqlib.gui.utils.openbrowser import open_browser
 from stoqlib.lib.interfaces import IAppInfo, IApplicationDescriptions
-from stoqlib.lib.message import error, yesno
+from stoqlib.lib.message import error, yesno, info
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.pluginmanager import InstalledPlugin, get_plugin_manager
 from stoqlib.lib.translation import (stoqlib_gettext, stoqlib_ngettext,
@@ -545,10 +545,10 @@ class ShellWindow(GladeDelegate):
             toolbar.set_style(value)
 
     def _run_about(self):
-        info = get_utility(IAppInfo)
+        app_info = get_utility(IAppInfo)
         about = gtk.AboutDialog()
-        about.set_name(info.get("name"))
-        about.set_version(info.get("version"))
+        about.set_name(app_info.get("name"))
+        about.set_version(app_info.get("version"))
         about.set_website(stoq.website)
         release_date = stoq.release_date
         about.set_comments(_('Release date: %s') %
@@ -1091,7 +1091,12 @@ class ShellWindow(GladeDelegate):
 
         api.config.set('Database', 'enable_production', 'True')
         api.config.flush()
-        self._shutdown_application(restart=True, force=True)
+        # Restart on windows is causing troble when creating the database. Lets leave it
+        # closed and let the user start it again
+        restart = platform.system() != 'Windows'
+        if not restart:
+            info(_(u'Please restart Stoq now'))
+        self._shutdown_application(restart=restart, force=True)
 
     # File
 

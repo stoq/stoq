@@ -294,7 +294,7 @@
  "stoqlib/lib/permissions.py": 97.44,
  "stoqlib/lib/pgpass.py": 81.48,
  "stoqlib/lib/pluginmanager.py": 94.67,
- "stoqlib/lib/process.py": 60.87,
+ "stoqlib/lib/process.py": 55,
  "stoqlib/lib/settings.py": 87.76,
  "stoqlib/lib/session.py": 23.49,
  "stoqlib/lib/sintegra.py": 88.14,

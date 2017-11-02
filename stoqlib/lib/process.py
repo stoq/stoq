@@ -60,6 +60,16 @@ class Process(subprocess.Popen):
 
         if env is None:
             env = os.environ.copy()
+
+        for key, value in env.items():
+            # environment can only contain strings, try to convert to string any strange
+            # value and if failed, just remove it from environ
+            if type(value) is not str:
+                try:
+                    env[key] = str(value)
+                except Exception:
+                    del env[key]
+
         # Make sure stdout/stderr will not be buffered
         env['PYTHONUNBUFFERED'] = '1'
 
