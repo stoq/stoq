@@ -564,9 +564,11 @@ class FiscalCoupon(gobject.GObject):
             traceback.print_exception(*sys.exc_info())
             warning(_("An error happened while trying to confirm the sale. "
                       "Cancelling the coupon now..."), str(e))
-            self.cancel()
-            store.rollback(name=savepoint, close=False)
-            return False
+            # Just cancel the sale if the coupon is actually being used.
+            if get_plugin_manager().is_active('ecf'):
+                self.cancel()
+                store.rollback(name=savepoint, close=False)
+                return False
 
         print_cheques_for_payment_group(store, sale.group)
 
