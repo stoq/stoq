@@ -262,7 +262,7 @@ class DeliveryApp(ShellApp):
         selection = self.search.get_selected_item()
         with api.new_store() as store:
             delivery = store.fetch(selection.delivery)
-            delivery.pick()
+            delivery.pick(api.get_current_user(store))
 
         self._update_view(select_item=selection)
 
