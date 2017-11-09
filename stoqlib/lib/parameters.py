@@ -393,10 +393,20 @@ _details = [
     ParameterDetails(
         u'CONFIRM_QTY_ON_BARCODE_ACTIVATE',
         _(u'Sales'),
-        _(u'Requires confirmation of quantity after barcode activation'),
+        _(u'Requires quantity confirmation after barcode activation'),
         _(u'The system will always require the quantity of products '
           u'before adding a sale item on Point of Sale'),
         bool, initial=False),
+
+    ParameterDetails(
+        u'POS_ALLOW_CHANGE_PRICE',
+        _(u'POS'),
+        _(u'Allow to change sellable price in POS app'),
+        _(u'When adding a sellable do a sale in the POS app, should the user be '
+          u'allowed to edit the sale price of the selected sellable. This '
+          u'depends on the parameter "Require quantity confirmation after '
+          u'barcode activation"'),
+        bool, initial=True),
 
     ParameterDetails(
         u'ACCEPT_CHANGE_SALESPERSON',

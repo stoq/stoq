@@ -60,6 +60,7 @@ from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.gui.base.dialogs import push_fullscreen, pop_fullscreen
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
+from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
 from stoqlib.gui.editors.deliveryeditor import (CreateDeliveryEditor,
                                                 CreateDeliveryModel)
@@ -173,6 +174,7 @@ class PosApp(ShellApp):
         self._trade_infobar = None
         self._token = None
         self._till_open = False
+        self._manager = None
 
         # The sellable and batch selected, in case the parameter
         # CONFIRM_QTY_ON_BARCODE_ACTIVATE is used.
@@ -265,7 +267,7 @@ class PosApp(ShellApp):
                                                  self.remove_item_button])
 
         # Setting up the barcode area
-        self.item_hbox.set_focus_chain([self.barcode, self.quantity,
+        self.item_hbox.set_focus_chain([self.barcode, self.quantity, self.price,
                                         self.item_button_box])
         self.item_button_box.set_focus_chain([self.add_button,
                                               self.advanced_search])
@@ -285,6 +287,10 @@ class PosApp(ShellApp):
         # Hides or shows sellable description
         self._confirm_quantity = sysparam.get_bool('CONFIRM_QTY_ON_BARCODE_ACTIVATE')
         self.sellable_description.set_visible(self._confirm_quantity)
+
+        self.price_label.set_visible(self._confirm_quantity)
+        self.price.set_visible(self._confirm_quantity)
+        self.price.set_editable(sysparam.get_bool('POS_ALLOW_CHANGE_PRICE'))
 
         # Hide toolbar specially for pos
         self.uimanager.get_widget('/toolbar').hide()
@@ -389,7 +395,7 @@ class PosApp(ShellApp):
 
     def _setup_proxies(self):
         self.sellableitem_proxy = self.add_proxy(
-            Settable(quantity=Decimal(1)), ['quantity'])
+            Settable(quantity=Decimal(1), price=currency(0)), ['quantity', 'price'])
 
     def _update_parameter_widgets(self):
         self.delivery_button.props.visible = sysparam.get_bool('HAS_DELIVERY_MODE')
@@ -410,7 +416,7 @@ class PosApp(ShellApp):
             not sysparam.get_bool('CONFIRM_SALES_ON_TILL'))
 
     def _setup_widgets(self):
-        self._inventory_widgets = [self.barcode, self.quantity,
+        self._inventory_widgets = [self.barcode, self.quantity, self.price,
                                    self.sale_items, self.advanced_search,
                                    self.save_button, self.checkout_button,
                                    self.NewTrade, self.LoanClose, self.WorkOrderClose]
@@ -469,9 +475,9 @@ class PosApp(ShellApp):
         # Reset all the widgets for adding a new sellable.
         self.barcode.set_text('')
         self.barcode.grab_focus()
+        self._sellable = None
         self._reset_quantity_proxy()
         self._update_totals()
-        self._sellable = None
         self._batch = None
         if self._confirm_quantity:
             self.sellable_description.set_text('')
@@ -486,16 +492,17 @@ class PosApp(ShellApp):
             return
 
         quantity = self.sellableitem_proxy.model.quantity
+        price = self.sellableitem_proxy.model.price
         if sellable.product:
-            self._add_product_sellable(sellable, quantity, batch=batch)
+            self._add_product_sellable(sellable, quantity, price, batch=batch)
         elif sellable.service:
-            self._add_service_sellable(sellable, quantity)
+            self._add_service_sellable(sellable, quantity, price)
 
         POSAddSellableEvent.emit(sellable, quantity, batch)
 
-    def _add_service_sellable(self, sellable, quantity):
+    def _add_service_sellable(self, sellable, quantity, price):
         sale_item = TemporarySaleItem(sellable=sellable,
-                                      quantity=quantity)
+                                      quantity=quantity, price=price)
         with api.new_store() as store:
             rv = self.run_dialog(ServiceItemEditor, store, sale_item)
 
@@ -504,7 +511,7 @@ class PosApp(ShellApp):
 
         self._update_added_item(sale_item)
 
-    def _add_product_sellable(self, sellable, quantity, batch=None):
+    def _add_product_sellable(self, sellable, quantity, price, batch=None):
         product = sellable.product
         if product.storable and not batch and product.storable.is_batch:
             available_batches = list(product.storable.get_available_batches(
@@ -513,7 +520,7 @@ class PosApp(ShellApp):
             if len(available_batches) == 1:
                 batch = available_batches[0]
                 sale_item = TemporarySaleItem(sellable=sellable,
-                                              quantity=quantity,
+                                              quantity=quantity, price=price,
                                               batch=batch)
                 self._update_added_item(sale_item)
                 return
@@ -527,11 +534,13 @@ class PosApp(ShellApp):
             for batch, b_quantity in rv.items():
                 sale_item = TemporarySaleItem(sellable=sellable,
                                               quantity=b_quantity,
+                                              price=price,
                                               batch=batch)
                 self._update_added_item(sale_item)
         else:
             sale_item = TemporarySaleItem(sellable=sellable,
                                           quantity=quantity,
+                                          price=price,
                                           batch=batch)
             self._update_added_item(sale_item)
 
@@ -621,7 +630,7 @@ class PosApp(ShellApp):
     def _set_sale_sensitive(self, value):
         # Enable/disable the part of the ui that is used for sales,
         # usually manipulated when printer information changes.
-        widgets = [self.barcode, self.quantity, self.sale_items,
+        widgets = [self.barcode, self.quantity, self.sale_items, self.price,
                    self.advanced_search, self.PaymentReceive]
         self.set_sensitive(widgets, value)
 
@@ -777,7 +786,8 @@ class PosApp(ShellApp):
     def _update_buttons(self):
         has_quantity = self._read_quantity() > 0
         has_sellable = self._has_sellable()
-        self.set_sensitive([self.add_button], has_sellable and has_quantity)
+        self.set_sensitive([self.add_button], has_sellable and has_quantity and
+                           self.price.is_valid())
         self.set_sensitive([self.advanced_search], has_quantity)
 
     def _read_quantity(self):
@@ -806,16 +816,16 @@ class PosApp(ShellApp):
             return
 
         sellable = sellable_view_item.sellable
+        self._set_selected_sellable(sellable)
         if confirm_quantity:
-            self._set_selected_sellable(sellable)
             self.quantity.grab_focus()
         else:
             self._add_sellable(sellable)
 
     def _reset_quantity_proxy(self):
         self.sellableitem_proxy.model.quantity = Decimal(1)
-        self.sellableitem_proxy.update('quantity')
-        self.sellableitem_proxy.model.price = None
+        self.sellableitem_proxy.model.price = currency(0)
+        self.sellableitem_proxy.update_many(['quantity', 'price'])
 
     def _get_deliverable_items(self):
         """Returns a list of sale items which can be delivered"""
@@ -833,6 +843,15 @@ class PosApp(ShellApp):
     # Sale Order operations
     #
 
+    def _can_add_sellable(self):
+        # Before activate, check if 'quantity' widget is valid and if we have a
+        # sellable selected
+        has_sellable = self._has_sellable()
+        if (has_sellable and self.quantity.validate() is not ValueUnset and
+                self.price.is_valid()):
+            return True
+        return False
+
     def _add_sale_item(self, confirm_quantity):
         """Try to create a sale_item based on the barcode field.
 
@@ -848,12 +867,13 @@ class PosApp(ShellApp):
             self._run_advanced_search(message, confirm_quantity)
             return
 
-        if confirm_quantity:
+        if not self._sellable:
             self._set_selected_sellable(sellable, batch)
+
+        if confirm_quantity:
             self.quantity.grab_focus()
         else:
             self._add_sellable(sellable, batch=batch)
-
             self._update_widgets()
 
     def _add_sellable(self, sellable, batch=None):
@@ -1134,6 +1154,8 @@ class PosApp(ShellApp):
         self._sellable = sellable
         self._batch = batch
         self.sellable_description.set_text(sellable.description)
+        self.sellableitem_proxy.model.price = sellable.price
+        self.sellableitem_proxy.update('price')
         self.barcode.set_text('')
         self._update_buttons()
 
@@ -1503,16 +1525,49 @@ class PosApp(ShellApp):
         self._update_buttons()
 
     def on_quantity__activate(self, entry):
-        # Before activate, check if 'quantity' widget is valid and if we have a
-        # sellable selected
-        has_sellable = self._has_sellable()
-        if self.quantity.validate() is not ValueUnset and has_sellable:
+        if self._can_add_sellable():
+            self._add_sale_item(confirm_quantity=False)
+
+    def on_price__activate(self, entry):
+        if self._can_add_sellable():
             self._add_sale_item(confirm_quantity=False)
 
     def on_quantity__validate(self, entry, value):
         self._update_buttons()
         if value <= 0:
             return ValidationError(_("Quantity must be a positive number"))
+
+    def on_price__validate(self, entry, value):
+        self._update_buttons()
+        if not self._sellable:
+            return
+
+        sellable = self._sellable
+
+        # In the future, let the user select the category somehow
+        category = None
+        default_price = sellable.get_price_for_category(category)
+        if (not sysparam.get_bool('ALLOW_HIGHER_SALE_PRICE') and
+                value > default_price):
+            return ValidationError(_(u'The sell price cannot be greater '
+                                     'than %s.') % default_price)
+
+        manager = self._manager or api.get_current_user(self.store)
+        valid_data = sellable.is_valid_price(value, category, manager)
+        if not valid_data['is_valid']:
+            return ValidationError(
+                (_(u'Max discount for this product is %.2f%%.') %
+                 valid_data['max_discount']))
+
+    def on_price__icon_press(self, entry, icon_pos, event):
+        if icon_pos != gtk.ENTRY_ICON_SECONDARY:
+            return
+
+        # Ask for the credentials of a different user that can possibly allow a
+        # bigger discount.
+        self._manager = self.run_dialog(CredentialsDialog, self.store)
+        if self._manager:
+            self.price.validate(force=True)
 
     def on_sale_items__selection_changed(self, sale_items, sale_item):
         self._update_widgets()

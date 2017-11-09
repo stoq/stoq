@@ -97,6 +97,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                   ProxyEntry(expand=True, fill=True): '', insensitive
                   ProxyLabel(expand=True, fill=True): 'Quantity:'
                   ProxySpinButton(expand=True, fill=True): '1.000', insensitive
+                  GtkLabel(expand=True, fill=True): 'Price:', hidden
+                  ProxySpinButton(expand=True, fill=True): '0.00', hidden, insensitive
                   GtkHButtonBox(expand=True, fill=True):
                     GtkButton(): insensitive
                     GtkButton():

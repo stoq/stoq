@@ -32,6 +32,7 @@ GtkVBox(toplevel):
     row: u'General', u'Online services', u'Yes'
     row: u'Loan', u'Printing of promissory notes on loans', u'No'
     row: u'Loan', u'Notice that will be added to the loan report', u'I inform and sign up to receive the items in full working order and I am aware of the responsability that I have for returning them, as well as the return of the amounts involved, in case of loss, damage or any event that make the product unusable.'
+    row: u'POS', u'Allow to change sellable price in POS app', u'Yes'
     row: u'Payments', u'Printing of promissory notes on booklets', u'Yes'
     row: u'Payments', u'Block incomplete purchase payments', u'No'
     row: u'Payments', u'Mandatory check number', u'No'
@@ -53,7 +54,6 @@ GtkVBox(toplevel):
     row: u'Sales', u'Default Substitution tax', Decimal('18.00')
     row: u'Sales', u'Default ICMS tax', Decimal('18.00')
     row: u'Sales', u'Use trade value as a discount', u'No'
-    row: u'Sales', u'Allow trade not registered sales', u'No'
     row: u'Sales', u'Default ISS tax', Decimal('18.00')
     row: u'Sales', u'Return policy on sales', u"Client's choice"
     row: u'Sales', u'Default Return Sales C.F.O.P.', u'5.202 Devolucao'
@@ -66,6 +66,7 @@ GtkVBox(toplevel):
     row: u'Sales', u'Commission Payment At Sale Confirmation', u'No'
     row: u'Sales', u'Default salesperson role', u'Salesperson'
     row: u'Sales', u"Allow client change after sale's confirmation", u'No'
+    row: u'Sales', u'Show cost column in sales', u'No'
     row: u'Sales', u'Bill discount aliquot', Decimal('0.00')
     row: u'Sales', u'Allow to add payment on sale quote', u'No'
     row: u'Sales', u'Ask for Sale Order C.F.O.P.', u'No'
@@ -80,14 +81,14 @@ GtkVBox(toplevel):
     row: u'Sales', u'Printing of sale details on point of sales', u'No'
     row: u'Sales', u'Default payment method selected', u'Money'
     row: u'Sales', u'Bill instructions ', u''
-    row: u'Sales', u'Show cost column in sales', u'No'
+    row: u'Sales', u'Allow trade not registered sales', u'No'
     row: u'Sales', u'Period of time in days to calculate expiration date of a sale quote', u'0'
     row: u'Sales', u'Bill penalty aliquot', Decimal('0.00')
     row: u'Sales', u'Delivery service', u'Delivery'
     row: u'Sales', u'Scale barcode format', u'4 Digits Code with Price'
     row: u'Sales', u'Has delivery mode', u'Yes'
     row: u'Sales', u'Default tax constant for products', u'No tax'
-    row: u'Sales', u'Requires confirmation of quantity after barcode activation', u'No'
+    row: u'Sales', u'Requires quantity confirmation after barcode activation', u'No'
     row: u'Sales', u'Tolerance for a payment to be considered as a late payment.', u'0'
     row: u'Smart lists', u'Load items intelligently from the database', u'Yes'
     row: u'Stock', u'Default C.F.O.P. for Stock Decreases', u'5.949 Outra sa\xedda de mercadoria ou presta\xe7\xe3o de servi\xe7o n\xe3o especificado'
