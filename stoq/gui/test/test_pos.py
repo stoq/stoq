@@ -525,7 +525,7 @@ class TestPos(BaseGUITest):
         self.create_product_component(product=package, component=component1)
         self.create_product_component(product=package, component=component2)
 
-        app._add_product_sellable(package.sellable, 1)
+        app._add_product_sellable(package.sellable, 1, package.sellable.price)
         self.assertEquals(len(list(app.sale_items)), 3)
 
     def test_add_production_sale_item(self):
@@ -535,7 +535,8 @@ class TestPos(BaseGUITest):
         production = self.create_product(description=u'Production')
         component1 = self.create_product(stock=5, description=u'Component 1')
         self.create_product_component(product=production, component=component1)
-        pos._add_product_sellable(production.sellable, 1)
+        pos._add_product_sellable(production.sellable, 1,
+                                  production.sellable.price)
         self.assertEquals(len(list(pos.sale_items)), 1)
 
     @mock.patch('stoq.gui.pos.PosApp.run_dialog')
@@ -840,7 +841,7 @@ class TestPos(BaseGUITest):
         package = self.create_product(description=u'Package', is_package=True)
         component = self.create_product(stock=5, description=u'Component')
         self.create_product_component(product=package, component=component)
-        pos._add_product_sellable(package.sellable, 1)
+        pos._add_product_sellable(package.sellable, 1, package.sellable.price)
 
         otree = pos.sale_items
         self.assertEquals(len(list(otree)), 2)

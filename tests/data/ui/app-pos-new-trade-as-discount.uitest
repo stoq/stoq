@@ -105,6 +105,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
                   ProxyEntry(barcode, expand=True, fill=True): '', invalid
                   ProxyLabel(kiwilabel2, expand=True, fill=True): 'Quantity:'
                   ProxySpinButton(quantity, expand=True, fill=True): '1.000'
+                  GtkLabel(price_label, expand=True, fill=True): 'Price:', hidden
+                  ProxySpinButton(price, expand=True, fill=True): '0.00', hidden
                   GtkButtonBox(item_button_box, orientation=horizontal, expand=True, fill=True):
                     GtkButton(add_button): insensitive
                     GtkButton(advanced_search):
