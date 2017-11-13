@@ -683,7 +683,7 @@ class ProductStockQuantityEditor(BaseEditor):
         if not self._product.storable:
             self._product.set_as_storable_product(self.model.quantity,
                                                   self._branch, self.model.cost)
-        else:
+        elif self.model.quantity:
             self._product.storable.register_initial_stock(self.model.quantity,
                                                           self._branch,
                                                           self.model.cost)

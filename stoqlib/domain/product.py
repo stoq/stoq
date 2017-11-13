@@ -429,6 +429,7 @@ class Product(Domain):
         # FIXME: On first time, only creating a common product.
         # After, also choose between create a consigned or a product with batch control
         storable = Storable(product=self, store=self.store)
+        self.manage_stock = True
 
         if not branch:
             from stoqlib.database.runtime import get_current_branch
@@ -436,8 +437,8 @@ class Product(Domain):
 
         # TODO: Instead of register an initial stock, we must consider the product history.
         # Calculating the current quantity based on stock transaction history.
-        storable.register_initial_stock(quantity, branch, cost or self.sellable.cost)
-        self.manage_stock = True
+        if quantity:
+            storable.register_initial_stock(quantity, branch, cost or self.sellable.cost)
 
     def has_quality_tests(self):
         return not self.quality_tests.find().is_empty()
