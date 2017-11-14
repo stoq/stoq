@@ -188,7 +188,7 @@ class DeliveryApp(ShellApp):
         self.search.set_message(msg)
 
     def create_filters(self):
-        self.set_text_field_columns(['client_name', 'sale_identifier'])
+        self.set_text_field_columns(['client_name', 'identifier_str'])
 
         self.main_filter = ComboSearchFilter(_('Show'), [])
         self.add_filter(self.main_filter, SearchFilterPosition.TOP,
@@ -199,7 +199,7 @@ class DeliveryApp(ShellApp):
 
     def get_columns(self):
         return [
-            IdentifierColumn('sale_identifier', title=_("Sale #")),
+            IdentifierColumn('sale_identifier', title=_("Sale #"), sorted=True),
             SearchColumn('status_str', title=_(u'Status'),
                          search_attribute='status', data_type=str,
                          valid_values=self._get_status_values()),

@@ -213,7 +213,7 @@
  "stoqlib/gui/widgets/calculator.py": 92.09,
  "stoqlib/gui/widgets/fieldgrid.py": 31.13,
  "stoqlib/gui/widgets/kanbanview.py": 21.67,
- "stoqlib/gui/widgets/lazyobjectlist.py": 70.04,
+ "stoqlib/gui/widgets/lazyobjectlist.py": 68.86,
  "stoqlib/gui/widgets/processview.py": 61.67,
  "stoqlib/gui/widgets/queryentry.py": 67.50,
  "stoqlib/gui/widgets/searchentry.py": 90.65,
