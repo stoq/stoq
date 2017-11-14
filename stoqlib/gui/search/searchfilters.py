@@ -511,7 +511,9 @@ class ComboSearchFilter(SearchFilter):
             for item in self.combo.get_model_items().values():
                 if item is None:
                     continue
-                if item.id == value_id:
+                # Filter can come as a string or as a FilterItem object
+                item_id = item if isinstance(item, str) else item.id
+                if item_id == value_id:
                     value = item
                     break
         self.select(value)
