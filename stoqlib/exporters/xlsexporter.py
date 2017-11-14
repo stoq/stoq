@@ -31,6 +31,7 @@ import xlwt
 
 from stoqlib.exporters.xlsutils import (get_date_format,
                                         get_number_format,
+                                        write_app_description,
                                         write_app_hyperlink,
                                         write_app_logo)
 from stoqlib.lib.translation import stoqlib_gettext
@@ -114,7 +115,9 @@ class XLSExporter(object):
         self._column_styles = css
         self._n_columns = len(column_types)
 
-    def add_cells(self, cells):
+    def add_cells(self, cells, filter_description=None):
+        if filter_description:
+            write_app_description(self._ws, 0, filter_description=filter_description)
         write_app_logo(self._ws)
         write_app_hyperlink(self._ws, 0)
 
@@ -137,10 +140,12 @@ class XLSExporter(object):
 
         return temporary
 
-    def add_from_object_list(self, objectlist, data=None):
+    def add_from_object_list(self, objectlist, data=None,
+                             filter_description=None):
         columns = objectlist.get_visible_columns()
         self.set_column_types([
             c.data_type for c in columns])
         self.set_column_headers([
             getattr(c, 'long_title', None) or c.title for c in columns])
-        self.add_cells(objectlist.get_cell_contents(data))
+        self.add_cells(objectlist.get_cell_contents(data),
+                       filter_description=filter_description)

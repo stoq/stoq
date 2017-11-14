@@ -38,6 +38,16 @@ def get_style_color(color):
     return "pattern: pattern solid, fore_color %s;" % (color, )
 
 
+def write_app_description(sheet, row, filter_description=None):
+    style = xlwt.easyxf(
+        "font: height 250;"
+        "alignment: vertical center, horizontal center;")
+    sheet.write_merge(r1=row, r2=row,
+                      c1=0, c2=2,
+                      label=filter_description, style=style)
+    sheet.row(row).height = 1000
+
+
 def write_app_hyperlink(sheet, row):
     url = u"http://www.stoq.com.br/"
     formula = xlwt.Formula(u'HYPERLINK("%s";"%s - %s")' % (
@@ -47,15 +57,15 @@ def write_app_hyperlink(sheet, row):
         "font: height 250;"
         "alignment: vertical center, horizontal center;")
     sheet.write_merge(r1=row, r2=row,
-                      c1=0, c2=15,
+                      c1=3, c2=15,
                       label=formula, style=style)
     sheet.row(row).height = 1000
 
 
 def write_app_logo(sheet):
     filename = environ.get_resource_filename('stoq', 'pixmaps', 'stoq_logo.bmp')
-    sheet.insert_bitmap(filename, 0, 0,
-                        x=2, y=2, scale_x=0.75, scale_y=0.25)
+    sheet.insert_bitmap(filename, 0, 3,
+                        x=0, y=0, scale_x=0.75, scale_y=0.25)
 
 
 def get_number_format():

@@ -42,7 +42,8 @@ class TestXLSExporter(GUITest):
             app_info.get_name.return_value = 'App Name'
             gio.return_value = app_info
             sse.export(object_list=objectlist,
-                       name='Title', filename_prefix='name-prefix')
+                       name='Title', filename_prefix='name-prefix',
+                       filter_description='Testing description')
 
     def test_export_open(self):
         api.user_settings.set('spreadsheet-action', 'open')
