@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-31 02:10-0200\n"
-"PO-Revision-Date: 2017-10-31 04:10+0000\n"
+"POT-Creation-Date: 2017-11-15 02:10-0200\n"
+"PO-Revision-Date: 2017-11-15 04:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: French (http://www.transifex.com/async/stoq/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -2647,7 +2647,7 @@ msgstr ""
 msgid "Comments"
 msgstr ""
 
-#: ../data/glade/SaleDetailsDialog.ui.h:23 ../stoqlib/gui/fiscalprinter.py:579
+#: ../data/glade/SaleDetailsDialog.ui.h:23 ../stoqlib/gui/fiscalprinter.py:582
 msgid "Print booklets"
 msgstr ""
 
@@ -5092,7 +5092,7 @@ msgstr ""
 msgid "Salesperson: %s"
 msgstr ""
 
-#: ../plugins/ecf/couponprinter.py:451 ../stoqlib/exporters/xlsutils.py:44
+#: ../plugins/ecf/couponprinter.py:451 ../stoqlib/exporters/xlsutils.py:54
 msgid "Stoq Retail Management"
 msgstr ""
 
@@ -6410,7 +6410,7 @@ msgstr ""
 
 #: ../plugins/optical/opticalwizard.py:197
 #: ../plugins/optical/tests/test_optical_wizard.py:162
-#: ../stoqlib/gui/fiscalprinter.py:579 ../stoqlib/gui/fiscalprinter.py:587
+#: ../stoqlib/gui/fiscalprinter.py:582 ../stoqlib/gui/fiscalprinter.py:590
 #: ../stoqlib/gui/test/test_salequote_wizard.py:109
 #: ../stoqlib/gui/wizards/loanwizard.py:465
 #: ../stoqlib/gui/wizards/receivingwizard.py:458
@@ -7121,9 +7121,9 @@ msgid "Change settings"
 msgstr ""
 
 #: ../stoq/gui/config.py:716 ../stoq/gui/pos.py:1374 ../stoq/gui/till.py:354
-#: ../stoqlib/gui/fiscalprinter.py:647 ../stoqlib/gui/fiscalprinter.py:690
-#: ../stoqlib/gui/fiscalprinter.py:710 ../stoqlib/gui/fiscalprinter.py:739
-#: ../stoqlib/gui/fiscalprinter.py:765
+#: ../stoqlib/gui/fiscalprinter.py:650 ../stoqlib/gui/fiscalprinter.py:693
+#: ../stoqlib/gui/fiscalprinter.py:713 ../stoqlib/gui/fiscalprinter.py:742
+#: ../stoqlib/gui/fiscalprinter.py:768
 msgid "Try again"
 msgstr ""
 
@@ -9268,7 +9268,7 @@ msgid "Talk about Stoq online"
 msgstr ""
 
 #: ../stoq/gui/shell/shellwindow.py:205 ../stoq/gui/shell/shellwindow.py:226
-#: ../stoqlib/gui/search/searchfilters.py:679
+#: ../stoqlib/gui/search/searchfilters.py:681
 #: ../stoqlib/gui/widgets/searchentry.py:41
 msgid "Search"
 msgstr ""
@@ -10730,136 +10730,136 @@ msgstr ""
 msgid "Package product"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:978 ../stoqlib/reporting/purchase.py:62
+#: ../stoqlib/domain/product.py:979 ../stoqlib/reporting/purchase.py:62
 #: ../stoqlib/reporting/purchase.py:88
 #, python-format
 msgid "%s (%s)"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1248 ../stoqlib/domain/product.py:1290
+#: ../stoqlib/domain/product.py:1249 ../stoqlib/domain/product.py:1291
 msgid "quantity must be a positive number"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1297
+#: ../stoqlib/domain/product.py:1298
 msgid "Quantity to decrease is greater than the available stock."
-msgstr ""
-
-#: ../stoqlib/domain/product.py:1620
-#, python-format
-msgid "Adjustment for inventory %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1621
 #, python-format
-msgid "Returned from loan %s"
+msgid "Adjustment for inventory %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1622
 #, python-format
-msgid "Loaned for loan %s"
+msgid "Returned from loan %s"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1623
 #, python-format
+msgid "Loaned for loan %s"
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1624
+#, python-format
 msgid "Allocated for production %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1624 ../stoqlib/domain/product.py:1625
+#: ../stoqlib/domain/product.py:1625 ../stoqlib/domain/product.py:1626
 #, python-format
 msgid "Produced in production %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1626
+#: ../stoqlib/domain/product.py:1627
 #, python-format
 msgid "Returned remaining from production %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1628
+#: ../stoqlib/domain/product.py:1629
 #, python-format
 msgid "Received for receiving order %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1629
+#: ../stoqlib/domain/product.py:1630
 #, python-format
 msgid "Returned sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1630
+#: ../stoqlib/domain/product.py:1631
 #, python-format
 msgid "Undone the returned sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1631
+#: ../stoqlib/domain/product.py:1632
 #, python-format
 msgid "Returned from canceled sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1632
+#: ../stoqlib/domain/product.py:1633
 #, python-format
 msgid "Sold in sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1633
+#: ../stoqlib/domain/product.py:1634
 #, python-format
 msgid "Product removal for stock decrease %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1634
+#: ../stoqlib/domain/product.py:1635
 #, python-format
 msgid "Transfered from branch in transfer order %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1636
+#: ../stoqlib/domain/product.py:1637
 #, python-format
 msgid "Transfered to this branch in transfer order %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1638
+#: ../stoqlib/domain/product.py:1639
 msgid "Registred initial stock"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1639
-msgid "Imported from previous version"
-msgstr ""
-
 #: ../stoqlib/domain/product.py:1640
-#, python-format
-msgid "Consigned product returned %s."
+msgid "Imported from previous version"
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1641
 #, python-format
-msgid "Used on work order %s."
+msgid "Consigned product returned %s."
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1642
 #, python-format
-msgid "Returned to stock on work order %s."
+msgid "Used on work order %s."
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1643
 #, python-format
-msgid "Reserved for sale %s."
+msgid "Returned to stock on work order %s."
 msgstr ""
 
 #: ../stoqlib/domain/product.py:1644
 #, python-format
+msgid "Reserved for sale %s."
+msgstr ""
+
+#: ../stoqlib/domain/product.py:1645
+#, python-format
 msgid "Reserved quantity for sale %s returned to stock."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1646
+#: ../stoqlib/domain/product.py:1647
 msgid "Quantity manually adjusted"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1647
+#: ../stoqlib/domain/product.py:1648
 msgid "Stock cost updated with no change on the stock"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1861
+#: ../stoqlib/domain/product.py:1862
 msgid "Boolean"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:1862
+#: ../stoqlib/domain/product.py:1863
 msgid "Decimal"
 msgstr ""
 
@@ -11452,13 +11452,13 @@ msgid ""
 "enabled currently"
 msgstr ""
 
-#: ../stoqlib/exporters/xlsexporter.py:50
+#: ../stoqlib/exporters/xlsexporter.py:51
 msgid "Stoq sheet"
 msgstr ""
 
 #. Translators: This is the default date format in excel
 #. columns, see the xlwt python library for more information
-#: ../stoqlib/exporters/xlsutils.py:68
+#: ../stoqlib/exporters/xlsutils.py:78
 msgid "YY-MMM-D"
 msgstr ""
 
@@ -12671,25 +12671,25 @@ msgstr ""
 
 #. FIXME: What if the user presses esc? Esc will return False
 #. and open action will be executed. Esc should cancel the action
-#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:71
+#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:73
 msgid "A spreadsheet has been created, what do you want to do with it?"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:74
+#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:76
 msgid "Save it to disk"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:75
+#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:77
 #: ../stoqlib/gui/editors/preferenceseditor.py:176
 #, python-format
 msgid "Open with %s"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:87
+#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:89
 msgid "Export Spreadsheet..."
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:94
+#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:96
 msgid "Excel Files"
 msgstr ""
 
@@ -14424,48 +14424,50 @@ msgid "Don't Confirm"
 msgstr ""
 
 #: ../stoqlib/gui/fiscalprinter.py:563
-msgid ""
-"An error happened while trying to confirm the sale. Cancelling the coupon "
-"now..."
+msgid "An error happened while trying to confirm the sale."
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:578
+#: ../stoqlib/gui/fiscalprinter.py:566
+msgid "Cancelling the coupon now..."
+msgstr ""
+
+#: ../stoqlib/gui/fiscalprinter.py:581
 msgid "Do you want to print the booklets for this sale?"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:583
+#: ../stoqlib/gui/fiscalprinter.py:586
 msgid "Could not print booklets"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:586
+#: ../stoqlib/gui/fiscalprinter.py:589
 msgid "Do you want to print the bills for this sale?"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:587
+#: ../stoqlib/gui/fiscalprinter.py:590
 msgid "Print bills"
 msgstr ""
 
 #. TRANSLATORS: bills here refers to "boletos" in pt_BR
-#: ../stoqlib/gui/fiscalprinter.py:592
+#: ../stoqlib/gui/fiscalprinter.py:595
 msgid "Could not print bills"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:644 ../stoqlib/gui/fiscalprinter.py:687
-#: ../stoqlib/gui/fiscalprinter.py:736 ../stoqlib/gui/fiscalprinter.py:762
+#: ../stoqlib/gui/fiscalprinter.py:647 ../stoqlib/gui/fiscalprinter.py:690
+#: ../stoqlib/gui/fiscalprinter.py:739 ../stoqlib/gui/fiscalprinter.py:765
 msgid "An error occurred while trying to print. Would you like to try again?"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:647 ../stoqlib/gui/fiscalprinter.py:690
-#: ../stoqlib/gui/fiscalprinter.py:710 ../stoqlib/gui/fiscalprinter.py:739
-#: ../stoqlib/gui/fiscalprinter.py:765
+#: ../stoqlib/gui/fiscalprinter.py:650 ../stoqlib/gui/fiscalprinter.py:693
+#: ../stoqlib/gui/fiscalprinter.py:713 ../stoqlib/gui/fiscalprinter.py:742
+#: ../stoqlib/gui/fiscalprinter.py:768
 msgid "Don't try again"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:654
+#: ../stoqlib/gui/fiscalprinter.py:657
 msgid "It wasn't possible to cancel the last receipt"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:707
+#: ../stoqlib/gui/fiscalprinter.py:710
 msgid ""
 "An error occurred while trying to cancel the the coupon. Would you like to "
 "try again?"
@@ -15228,15 +15230,15 @@ msgstr ""
 msgid "Invalid date"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:687
+#: ../stoqlib/gui/search/searchfilters.py:689
 msgid "Add a filter"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:691
+#: ../stoqlib/gui/search/searchfilters.py:693
 msgid "Clear the search"
 msgstr ""
 
-#: ../stoqlib/gui/search/searchfilters.py:822
+#: ../stoqlib/gui/search/searchfilters.py:824
 msgid "And"
 msgstr ""
 
