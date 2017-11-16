@@ -78,8 +78,10 @@ from stoqlib.gui.search.paymentreceivingsearch import PaymentReceivingSearch
 from stoqlib.gui.search.workordersearch import WorkOrderFinishedSearch
 from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.utils.logo import render_logo_pixbuf
+from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.loanwizard import CloseLoanWizard
 from stoqlib.gui.wizards.salereturnwizard import SaleTradeWizard
+from stoqlib.reporting.sale import SaleOrderReport
 
 from stoq.gui.shell.shellapp import ShellApp
 
@@ -1229,6 +1231,8 @@ class PosApp(ShellApp):
             if sale.status != Sale.STATUS_ORDERED and not sale.get_items().is_empty():
                 sale.order()
             store.commit()
+            if sysparam.get_bool('PRINT_SALE_DETAILS_ON_POS'):
+                self._print_sale_details(sale)
         else:
             if sysparam.get_bool('USE_SALE_TOKEN'):
                 coupon = self._open_coupon()
@@ -1322,6 +1326,11 @@ class PosApp(ShellApp):
                 "the payment.") % (value, )
         self._trade_infobar = self.window.add_info_bar(
             gtk.MESSAGE_INFO, msg, action_widget=button)
+
+    def _print_sale_details(self, sale):
+        if yesno(_("Do you want to print this sale's details?"), gtk.RESPONSE_YES,
+                 _("Print Details"), _("Don't Print")):
+            print_report(SaleOrderReport, sale)
 
     #
     # Coupon related
