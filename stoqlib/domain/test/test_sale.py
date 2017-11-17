@@ -1113,7 +1113,14 @@ class TestSale(DomainTest):
         def callback(sale):
             return True
 
+        admin_user = api.get_current_user(self.store)
+        salesperson_user = self.store.find(LoginUser, username=u'elias').one()
+        provide_utility(ICurrentUser, salesperson_user, replace=True)
+        self.assertFalse(sale.can_cancel())
         SaleIsExternalEvent.connect(callback)
+        self.assertTrue(sale.can_cancel())
+        provide_utility(ICurrentUser, admin_user, replace=True)
+
         sale.cancel(u"Test sale cancellation")
         self.assertEqual(sale.status, Sale.STATUS_CANCELLED)
         SaleIsExternalEvent.disconnect(callback)

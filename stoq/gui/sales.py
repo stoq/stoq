@@ -371,7 +371,8 @@ class SalesApp(ShellApp):
         self.set_sensitive([self.SalesCancel],
                            bool(sale_view and sale_view.can_cancel()))
         self.set_sensitive([self.sale_toolbar.return_sale_button, self.Return],
-                           bool(sale_view and sale_view.can_return()))
+                           bool(sale_view and (sale_view.can_return() or
+                                               sale_view.can_cancel())))
         self.set_sensitive([self.sale_toolbar.return_sale_button, self.Details],
                            bool(sale_view))
         self.set_sensitive([self.sale_toolbar.edit_button, self.Edit],

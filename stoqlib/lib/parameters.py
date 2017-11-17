@@ -330,6 +330,14 @@ _details = [
         bool, initial=False),
 
     ParameterDetails(
+        u'ALLOW_CANCEL_ORDERED_SALES',
+        _(u'Sales'),
+        _(u'Allow to cancel ordered sales'),
+        _(u'When this parameter is True, allow the user to cancel ordered and'
+          u' paid sales'),
+        bool, initial=False),
+
+    ParameterDetails(
         u'CITY_SUGGESTED',
         _(u'General'),
         _(u'Default city'),

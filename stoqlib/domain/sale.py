@@ -1173,16 +1173,29 @@ class Sale(Domain):
         if SaleCanCancelEvent.emit(self) is False:
             return False
 
-        # If ALLOW_CANCEL_CONFIRMED_SALES is not set, we can only cancel
-        # quoting sales
-        user = api.get_current_user(self.store)
-        if not (sysparam.get_bool("ALLOW_CANCEL_CONFIRMED_SALES")
-                or user.profile.check_app_permission(u'admin')):
-            return (self.status == self.STATUS_QUOTE or
-                    (self.is_external() and self.status == Sale.STATUS_ORDERED))
+        if self.status in (Sale.STATUS_INITIAL, Sale.STATUS_CANCELLED,
+                           Sale.STATUS_RETURNED, Sale.STATUS_RENEGOTIATED):
+            return False
 
-        return self.status in (Sale.STATUS_CONFIRMED, Sale.STATUS_ORDERED,
-                               Sale.STATUS_QUOTE)
+        # Can aways cancel a quote
+        if self.status == Sale.STATUS_QUOTE:
+            return True
+
+        # When ALLOW_CANCEL_CONFIRMED_SALES is True, any sale can be cancelled
+        # Admin user can always cancel as well
+        user = api.get_current_user(self.store)
+        if (sysparam.get_bool("ALLOW_CANCEL_CONFIRMED_SALES")
+                or user.profile.check_app_permission(u'admin')):
+            return True
+
+        # If a sale is external, let the user cancel if its ordered (it might
+        # have been cancelled in the external store).
+        if (sysparam.get_bool("ALLOW_CANCEL_ORDERED_SALES") or
+                self.is_external()):
+            return self.status == Sale.STATUS_ORDERED
+
+        # If we reached here, the sale is either ORDERED or CONFIRMED
+        return False
 
     def can_return(self):
         """Only confirmed (with or without payment) sales can be returned

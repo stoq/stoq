@@ -57,6 +57,7 @@ GtkBox(vbox1, orientation=vertical):
     row: 'Sales', 'Use tokens to control sales', 'No'
     row: 'Sales', 'Default payment method selected', 'Money'
     row: 'Sales', 'Allow to cancel confirmed sales', 'No'
+    row: 'Sales', 'Allow to cancel ordered sales', 'No'
     row: 'Sales', 'Has delivery mode', 'Yes'
     row: 'Sales', 'Show cost column in sales', 'No'
     row: 'Sales', 'Confirm sales in Till', 'No'
