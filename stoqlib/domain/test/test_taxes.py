@@ -348,15 +348,32 @@ class TestInvoiceItemIpi(DomainTest):
 
 
 class TestInvoiceItemPis(DomainTest):
-    def _get_sale_item(self, sale_item_pis=None, quantity=1, price=10):
+
+    def _get_sale_item(self, sale_item_pis=None, quantity=1, price=10, cost=None):
         sale = self.create_sale()
         product = self.create_product(price=price)
         sale_item = sale.add_sellable(product.sellable,
                                       quantity=quantity)
         if sale_item_pis:
             sale_item.pis_info = sale_item_pis
+        if cost is not None:
+            sale_item.average_cost = cost
 
         return sale_item
+
+    def test_regime_nao_cumulativo(self):
+        sale_item_pis = self.create_invoice_item_pis(cst=1, p_pis=Decimal('1.65'))
+        sale_item = self._get_sale_item(sale_item_pis, quantity=1, price=10, cost=3)
+        sale_item_pis.update_values(sale_item)
+
+        self.assertEquals(sale_item_pis.v_bc, Decimal('7'))  # 10 - 3
+
+    def test_regime_cumulativo(self):
+        sale_item_pis = self.create_invoice_item_pis(cst=1, p_pis=Decimal('0.65'))
+        sale_item = self._get_sale_item(sale_item_pis, quantity=1, price=10, cost=3)
+        sale_item_pis.update_values(sale_item)
+
+        self.assertEquals(sale_item_pis.v_bc, Decimal('10'))  # sale item price
 
     def test_set_initial_values(self):
         sale_item_pis = self.create_invoice_item_pis(cst=4)
@@ -418,7 +435,8 @@ class TestInvoiceItemPis(DomainTest):
 
 
 class TestInvoiceItemCofins(DomainTest):
-    def _get_sale_item(self, sale_item_cofins=None, quantity=1, price=10):
+
+    def _get_sale_item(self, sale_item_cofins=None, quantity=1, price=10, cost=None):
         sale = self.create_sale()
         product = self.create_product(price=price)
         sale_item = sale.add_sellable(product.sellable,
@@ -426,7 +444,24 @@ class TestInvoiceItemCofins(DomainTest):
         if sale_item_cofins:
             sale_item.cofins_info = sale_item_cofins
 
+        if cost is not None:
+            sale_item.average_cost = cost
+
         return sale_item
+
+    def test_regime_nao_cumulativo(self):
+        sale_item_cofins = self.create_invoice_item_cofins(cst=1, p_cofins=Decimal('7.6'))
+        sale_item = self._get_sale_item(sale_item_cofins, quantity=1, price=10, cost=3)
+        sale_item_cofins.update_values(sale_item)
+
+        self.assertEquals(sale_item_cofins.v_bc, Decimal('7'))  # 10 - 3
+
+    def test_regime_cumulativo(self):
+        sale_item_cofins = self.create_invoice_item_cofins(cst=1, p_cofins=Decimal('3.65'))
+        sale_item = self._get_sale_item(sale_item_cofins, quantity=1, price=10, cost=3)
+        sale_item_cofins.update_values(sale_item)
+
+        self.assertEquals(sale_item_cofins.v_bc, Decimal('10'))  # sale item price
 
     def test_set_initial_values(self):
         sale_item_cofins = self.create_invoice_item_cofins(cst=4)

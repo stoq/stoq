@@ -427,6 +427,8 @@ class InvoiceItemPis(BasePIS):
 
     __storm_table__ = 'invoice_item_pis'
 
+    PIS_NAO_CUMULATIVO_PADRAO = Decimal('1.65')
+
     #: Value of PIS tax.
     v_pis = PriceCol(default=0)
 
@@ -450,6 +452,7 @@ class InvoiceItemPis(BasePIS):
         # because the taxpayer is exempt.
         if self.cst in [4, 5, 6, 7, 8, 9]:
             return
+
         # When the branch is Simples Nacional (CRT 1 or 2) and the pis is 99,
         # the values should be zero
         if self.cst == 99 and invoice_item.parent.branch.crt in [1, 2]:
@@ -457,8 +460,15 @@ class InvoiceItemPis(BasePIS):
             self.p_pis = 0
             self.v_pis = 0
             return
+
         cost = self._get_item_cost(invoice_item)
-        self.v_bc = quantize(invoice_item.quantity * (invoice_item.price - cost))
+        if self.p_pis == self.PIS_NAO_CUMULATIVO_PADRAO:
+            # Regime de incidencia não cumulativa
+            self.v_bc = quantize(invoice_item.quantity * (invoice_item.price - cost))
+        else:
+            # Regime de incidencia cumulativa
+            self.v_bc = quantize(invoice_item.quantity * invoice_item.price)
+
         if self.p_pis is not None:
             self.v_pis = self.v_bc * self.p_pis / 100
 
@@ -488,6 +498,8 @@ class InvoiceItemCofins(BaseCOFINS):
 
     __storm_table__ = 'invoice_item_cofins'
 
+    COFINS_NAO_CUMULATIVO_PADRAO = Decimal('7.6')
+
     #: Value of COFINS tax
     v_cofins = PriceCol(default=0)
 
@@ -511,6 +523,7 @@ class InvoiceItemCofins(BaseCOFINS):
         # because the taxpayer is exempt.
         if self.cst in [4, 5, 6, 7, 8, 9]:
             return
+
         # When the branch is Simples Nacional (CRT 1 or 2) and the cofins is 99,
         # the values should be zero
         if self.cst == 99 and invoice_item.parent.branch.crt in [1, 2]:
@@ -518,8 +531,15 @@ class InvoiceItemCofins(BaseCOFINS):
             self.p_cofins = 0
             self.v_cofins = 0
             return
+
         cost = self._get_item_cost(invoice_item)
-        self.v_bc = quantize(invoice_item.quantity * (invoice_item.price - cost))
+        if self.p_cofins == self.COFINS_NAO_CUMULATIVO_PADRAO:
+            # Regime de incidencia não cumulativa
+            self.v_bc = quantize(invoice_item.quantity * (invoice_item.price - cost))
+        else:
+            # Regime de incidencia cumulativa
+            self.v_bc = quantize(invoice_item.quantity * invoice_item.price)
+
         if self.p_cofins is not None:
             self.v_cofins = self.v_bc * self.p_cofins / 100
 
