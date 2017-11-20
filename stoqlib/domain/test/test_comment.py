@@ -22,10 +22,10 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-__tests__ = 'stoqlib/domain/payment/comment.py'
-
 from stoqlib.domain.payment.comment import PaymentComment
 from stoqlib.domain.test.domaintest import DomainTest
+
+__tests__ = 'stoqlib/domain/payment/comment.py'
 
 
 class TestPaymentComment(DomainTest):
@@ -34,5 +34,5 @@ class TestPaymentComment(DomainTest):
         payment = self.create_payment()
         comment = PaymentComment(author=user, payment=payment,
                                  comment=u'Test de commentário')
-        self.assertEquals(comment.get_description(), '[individual] Test de '
-                                                     'commentário')
+        self.assertEqual(comment.get_description(), '[individual] Test de '
+                                                    'commentário')

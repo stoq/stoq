@@ -282,7 +282,7 @@ class PurchaseItemStep(SellableItemStep):
         minimum = supplier_info.minimum_purchase
         self.quantity.set_adjustment(Gtk.Adjustment(lower=minimum,
                                                     upper=MAX_INT,
-                                                    step_incr=1))
+                                                    step_increment=1))
         self.quantity.set_value(minimum)
         self.cost.set_value(supplier_info.base_cost)
 

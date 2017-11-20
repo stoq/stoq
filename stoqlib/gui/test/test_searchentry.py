@@ -87,21 +87,21 @@ class TestSearchEntryGadget(GUITest):
                 run_dialog.assert_called_once_with(
                     ClientEditor, self.window, self.store, None)
 
-        self.assertEquals(self.entry.read(), client)
-        self.assertEquals(self.entry.get_text(), u'Fulano de Tal')
+        self.assertEqual(self.entry.read(), client)
+        self.assertEqual(self.entry.get_text(), u'Fulano de Tal')
 
     @mock.patch('stoqlib.gui.widgets.searchentry.api.new_store')
     def test_run_editor_override(self, new_store):
         new_store.return_value = self.store
         run_editor = mock.MagicMock()
         run_editor.return_value = None
-        self.assertEquals(run_editor.call_count, 0)
+        self.assertEqual(run_editor.call_count, 0)
         self._create_interface(run_editor=run_editor)
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
                 self.click(self.client_gadget.edit_button)
 
-        self.assertEquals(run_editor.call_count, 1)
+        self.assertEqual(run_editor.call_count, 1)
 
     @mock.patch('stoqlib.gui.widgets.searchentry.api.new_store')
     @mock.patch('stoqlib.gui.widgets.searchentry.run_dialog')
@@ -117,8 +117,8 @@ class TestSearchEntryGadget(GUITest):
         self.entry.set_text('Fulano')
         self.entry.activate()
 
-        self.assertEquals(self.entry.get_text(), 'Fulano de Tal')
-        self.assertEquals(self.entry.read(), fulano)
+        self.assertEqual(self.entry.get_text(), 'Fulano de Tal')
+        self.assertEqual(self.entry.read(), fulano)
 
         # Now when we use 'de tal', there are two clients that match. The
         # search should be displayed
@@ -132,8 +132,8 @@ class TestSearchEntryGadget(GUITest):
             ClientSearch, self.window, self.store, initial_string='de tal',
             double_click_confirm=True)
 
-        self.assertEquals(self.entry.get_text(), 'Cicrano de Tal')
-        self.assertEquals(self.entry.read(), ciclano)
+        self.assertEqual(self.entry.get_text(), 'Cicrano de Tal')
+        self.assertEqual(self.entry.read(), ciclano)
 
     @mock.patch('stoqlib.gui.widgets.searchentry.api.new_store')
     @mock.patch('stoqlib.gui.widgets.searchentry.run_dialog')

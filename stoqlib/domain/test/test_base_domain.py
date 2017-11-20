@@ -86,37 +86,37 @@ class TestSelect(DomainTest):
         cls.store.commit()
 
     def test_select_one(self):
-        self.assertEquals(self.store.find(Ding).one(), None)
+        self.assertEqual(self.store.find(Ding).one(), None)
         ding1 = Ding(store=self.store)
-        self.assertEquals(self.store.find(Ding).one(), ding1)
+        self.assertEqual(self.store.find(Ding).one(), ding1)
         Ding(store=self.store)
         self.assertRaises(NotOneError, self.store.find(Ding).one)
 
     def test_select_one_by(self):
         Ding(store=self.store)
 
-        self.assertEquals(
+        self.assertEqual(
             None, self.store.find(Ding, int_field=1).one())
         ding1 = Ding(store=self.store, int_field=1)
-        self.assertEquals(
+        self.assertEqual(
             ding1, self.store.find(Ding, int_field=1).one())
         Ding(store=self.store, int_field=1)
         self.assertRaises(NotOneError, self.store.find(Ding, int_field=1).one)
 
     def test_validate_attr(self):
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 TypeError,
                 ("expected_type <class 'object'> needs to be a "
                  "<class 'storm.properties.Property'> subclass")):
             Ding.validate_attr(Ding.str_field, expected_type=object)
 
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 TypeError,
                 ("attr str_field needs to be a "
                  "<class 'storm.properties.Bool'> instance")):
             Ding.validate_attr(Ding.str_field, expected_type=BoolCol)
 
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError, "Domain Ding does not have a column bool_field"):
             Ding.validate_attr(Dong.bool_field)
 
@@ -276,7 +276,7 @@ class TestSelect(DomainTest):
         # When there is no object yet, it should return -1
         self.clean_domain([Dung])
         identifier = Dung.get_temporary_identifier(self.store)
-        self.assertEquals(identifier, -1)
+        self.assertEqual(identifier, -1)
 
         # Now save that object, and the new temporary identifier should be -2
         dung = Dung(store=self.store)
@@ -284,11 +284,11 @@ class TestSelect(DomainTest):
 
         new_dung = Dung(store=self.store)
         new_dung.identifier = Dung.get_temporary_identifier(self.store)
-        self.assertEquals(new_dung.identifier, -2)
+        self.assertEqual(new_dung.identifier, -2)
 
     def test_serialize(self):
         ding = Ding(store=self.store, str_field=u'Sambiquira', int_field=666)
-        self.assertEquals(ding.serialize(), {
+        self.assertEqual(ding.serialize(), {
             'id': ding.id,
             'te_id': ding.te_id,
             'str_field': 'Sambiquira',
@@ -296,7 +296,7 @@ class TestSelect(DomainTest):
         })
 
         dong = Dong(store=self.store, bool_field=False)
-        self.assertEquals(dong.serialize(), {
+        self.assertEqual(dong.serialize(), {
             'id': dong.id,
             'te_id': dong.te_id,
             'bool_field': False,
@@ -306,7 +306,7 @@ class TestSelect(DomainTest):
         dung = Dung(store=self.store)
         dung.identifier = Dung.get_temporary_identifier(self.store)
         dung.ding = ding
-        self.assertEquals(dung.serialize(), {
+        self.assertEqual(dung.serialize(), {
             'id': dung.id,
             'te_id': dung.te_id,
             'identifier': str(dung.identifier),

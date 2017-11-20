@@ -338,7 +338,7 @@ class LoanItemSelectionStep(SellableItemStep):
         self.force_validation()
 
     def get_columns(self):
-        adjustment = Gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1)
+        adjustment = Gtk.Adjustment(lower=0, upper=MAX_INT, step_increment=1)
         return [
             Column('sellable.code', title=_('Code'),
                    data_type=str, visible=False),

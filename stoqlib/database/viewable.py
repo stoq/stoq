@@ -120,7 +120,6 @@ Now we can create this viewable:
 """
 
 import inspect
-import warnings
 
 from kiwi.python import ClassInittableObject
 from storm.expr import Expr, JoinExpr
@@ -165,8 +164,6 @@ class Viewable(ClassInittableObject):
 
     @property
     def store(self):
-        warnings.warn("Dont use self.store - get it from some other object)",
-                      DeprecationWarning, stacklevel=2)
         return self._store
 
     # Maybe we could try to use the same api from storm (autoreload)

@@ -207,7 +207,7 @@ class SaleReturnItemsStep(SellableItemStep):
 
     def get_columns(self, editable=True):
         adjustment = Gtk.Adjustment(lower=0, upper=MAX_INT,
-                                    step_incr=1)
+                                    step_increment=1)
         columns = [
             Column('will_return', title=_('Return'),
                    data_type=bool, editable=editable),

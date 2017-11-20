@@ -63,14 +63,14 @@ class TestStockDecreaseWizard(GUITest):
         with mock.patch(module) as emit:
             with mock.patch.object(self.store, 'commit'):
                 self.click(wizard.next_button)
-            self.assertEquals(emit.call_count, 1)
+            self.assertEqual(emit.call_count, 1)
             args, kwargs = emit.call_args
             self.assertTrue(isinstance(args[0], StockDecrease))
 
-        self.assertEquals(receipt_dialog.call_count, 1)
+        self.assertEqual(receipt_dialog.call_count, 1)
 
         # Assert wizard decreased stock.
-        self.assertEquals(storable.get_balance_for_branch(branch), 0)
+        self.assertEqual(storable.get_balance_for_branch(branch), 0)
 
     @mock.patch('stoqlib.gui.wizards.stockdecreasewizard.yesno')
     def test_wizard_create_payment(self, yesno):
@@ -118,7 +118,7 @@ class TestStockDecreaseWizard(GUITest):
 
         entry = self.store.find(CostCenterEntry,
                                 cost_center=wizard.model.cost_center)
-        self.assertEquals(len(list(entry)), 0)
+        self.assertEqual(len(list(entry)), 0)
 
         step = wizard.get_current_step()
         step.reason.update('test')
@@ -135,10 +135,10 @@ class TestStockDecreaseWizard(GUITest):
         with mock.patch.object(self.store, 'commit'):
             self.click(wizard.next_button)
 
-        self.assertEquals(wizard.model.cost_center, cost_center)
+        self.assertEqual(wizard.model.cost_center, cost_center)
         entry = self.store.find(CostCenterEntry,
                                 cost_center=wizard.model.cost_center)
-        self.assertEquals(len(list(entry)), 1)
+        self.assertEqual(len(list(entry)), 1)
 
     @mock.patch('stoqlib.gui.wizards.stockdecreasewizard.yesno')
     def test_wizard_with_receiving_order(self, yesno):
@@ -164,13 +164,13 @@ class TestStockDecreaseWizard(GUITest):
 
         # Run the wizard
         wizard = StockDecreaseWizard(self.store, receiving_order=order)
-        self.assertEquals(wizard.model.branch, order.branch)
-        self.assertEquals(wizard.model.person, order.supplier.person)
+        self.assertEqual(wizard.model.branch, order.branch)
+        self.assertEqual(wizard.model.person, order.supplier.person)
         step = wizard.get_current_step()
         step.reason.update('test')
         self.check_wizard(wizard, 'stock-decrease-with-receiving-order')
         self.click(wizard.next_button)
-        self.assertEquals(wizard.model.get_items().count(), 2)
+        self.assertEqual(wizard.model.get_items().count(), 2)
         with mock.patch.object(self.store, 'commit'):
             self.click(wizard.next_button)
 
@@ -180,5 +180,5 @@ class TestStockDecreaseWizard(GUITest):
         step = wizard.get_current_step()
         step.reason.update('test')
         self.click(wizard.next_button)
-        self.assertEquals(wizard.model.get_items().count(), 0)
+        self.assertEqual(wizard.model.get_items().count(), 0)
         self.assertNotSensitive(wizard, ['next_button'])

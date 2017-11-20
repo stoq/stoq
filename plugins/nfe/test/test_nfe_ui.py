@@ -62,7 +62,7 @@ class TestNfeUI(BaseGUITest):
             self.activate(action)
             args, kwargs = run_dialog.call_args
             editor = args[0]
-            self.assertEquals(editor, FormFieldEditor)
+            self.assertEqual(editor, FormFieldEditor)
 
     def test_uiform_editor(self):
         editor = FormFieldEditor(self.store)
@@ -76,7 +76,7 @@ class TestNfeUI(BaseGUITest):
         # otherwise the test wont call
         renderer = editor._uifield__cell_data_func(editor.forms, renderer_text,
                                                    obj, obj.description)
-        self.assertEquals(renderer, obj.description)
+        self.assertEqual(renderer, obj.description)
         self.assertTrue(renderer_text.get_property('sensitive'))
 
         # Testing with NFe plugin inactive

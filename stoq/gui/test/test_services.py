@@ -69,7 +69,7 @@ class TestServices(BaseGUITest):
         olist.select(olist[0])
 
         # Initial status for the order is Opened
-        self.assertEquals(workorder.status, WorkOrder.STATUS_OPENED)
+        self.assertEqual(workorder.status, WorkOrder.STATUS_OPENED)
         self.assertSensitive(app, ['Cancel'])
 
         with mock.patch.object(self.store, 'close'):
@@ -86,7 +86,7 @@ class TestServices(BaseGUITest):
                     model=Note(), mandatory=True, label_text=u'Reason')
 
                 # Status should not be altered. ie, its still opened
-                self.assertEquals(workorder.status, WorkOrder.STATUS_OPENED)
+                self.assertEqual(workorder.status, WorkOrder.STATUS_OPENED)
 
     @mock.patch('stoq.gui.services.ServicesApp.run_dialog')
     @mock.patch('stoq.gui.services.api.new_store')
@@ -103,7 +103,7 @@ class TestServices(BaseGUITest):
         olist.select(olist[0])
 
         # Initial status for the order is Opened
-        self.assertEquals(workorder.status, WorkOrder.STATUS_OPENED)
+        self.assertEqual(workorder.status, WorkOrder.STATUS_OPENED)
         self.assertSensitive(app, ['Cancel'])
 
         with mock.patch.object(self.store, 'close'):
@@ -120,7 +120,7 @@ class TestServices(BaseGUITest):
                     model=Note(), mandatory=True, label_text=u'Reason')
 
                 # Status should be updated to cancelled.
-                self.assertEquals(workorder.status, WorkOrder.STATUS_CANCELLED)
+                self.assertEqual(workorder.status, WorkOrder.STATUS_CANCELLED)
 
     @mock.patch('stoq.gui.services.yesno')
     @mock.patch('stoq.gui.services.api.new_store')
@@ -146,7 +146,7 @@ class TestServices(BaseGUITest):
         olist.select(olist[0])
         self.assertSensitive(app, ['Finish'])
         # Initial status for the order is Opened
-        self.assertEquals(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
+        self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
         self.assertTrue(workorder.can_finish())
 
         with mock.patch.object(self.store, 'close'):
@@ -162,7 +162,7 @@ class TestServices(BaseGUITest):
                                               u"Don't finish")
 
         # Status should not be altered. ie, its still in Progress
-        self.assertEquals(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
+        self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
 
     @mock.patch('stoq.gui.services.yesno')
     @mock.patch('stoq.gui.services.api.new_store')
@@ -188,7 +188,7 @@ class TestServices(BaseGUITest):
         olist.select(olist[0])
         self.assertSensitive(app, ['Finish'])
         # The status for the order in Progress
-        self.assertEquals(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
+        self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
 
         with mock.patch.object(self.store, 'close'):
             with mock.patch.object(self.store, 'commit'):
@@ -203,7 +203,7 @@ class TestServices(BaseGUITest):
                                               u"Don't finish")
 
         # status should be updated to Finished
-        self.assertEquals(workorder.status, WorkOrder.STATUS_WORK_FINISHED)
+        self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_FINISHED)
 
     def test_client_search(self):
         app = self.create_app(ServicesApp, u'services')

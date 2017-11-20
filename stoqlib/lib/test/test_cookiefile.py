@@ -34,7 +34,7 @@ class CookieTest(unittest.TestCase):
         self._write_cookie('abc')
         self.cookie.clear()
 
-        self.failIf(os.path.exists("test.cookie"))
+        self.assertFalse(os.path.exists("test.cookie"))
 
     def test_store(self):
         self._write_cookie('abc')

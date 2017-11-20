@@ -62,9 +62,9 @@ class TestPaymentChangeDialog(GUITest):
 
         editor.change_reason.update('Just because')
         self.click(editor.main_dialog.ok_button)
-        self.assertEquals(warning.call_count, 0)
+        self.assertEqual(warning.call_count, 0)
 
-        self.assertEquals(payment.due_date.date(), today)
+        self.assertEqual(payment.due_date.date(), today)
 
     @mock.patch('stoqlib.gui.dialogs.paymentchangedialog.warning')
     def test_change_status_paid_sale(self, warning):
@@ -87,19 +87,19 @@ class TestPaymentChangeDialog(GUITest):
             'You can not change the payment status without a reason!')
         warning.reset_mock()
 
-        self.assertEquals(payment.status, Payment.STATUS_PAID)
+        self.assertEqual(payment.status, Payment.STATUS_PAID)
         editor.change_reason.update('Just because')
         self.click(editor.main_dialog.ok_button)
-        self.assertEquals(warning.call_count, 0)
+        self.assertEqual(warning.call_count, 0)
 
-        self.assertEquals(payment.status, Payment.STATUS_PENDING)
+        self.assertEqual(payment.status, Payment.STATUS_PENDING)
         self.assertFalse(sale.paid)
 
         editor = PaymentStatusChangeDialog(self.store, payment,
                                            Payment.STATUS_PAID, sale)
         editor.change_reason.update('Just because')
 
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 AssertionError, "status change not implemented"):
             editor.on_confirm()
 
@@ -123,12 +123,12 @@ class TestPaymentChangeDialog(GUITest):
             'You can not change the payment status without a reason!')
         warning.reset_mock()
 
-        self.assertEquals(payment.status, Payment.STATUS_PAID)
+        self.assertEqual(payment.status, Payment.STATUS_PAID)
         editor.change_reason.update('Just because')
         self.click(editor.main_dialog.ok_button)
-        self.assertEquals(warning.call_count, 0)
+        self.assertEqual(warning.call_count, 0)
 
-        self.assertEquals(payment.status, Payment.STATUS_CANCELLED)
+        self.assertEqual(payment.status, Payment.STATUS_CANCELLED)
 
     def test_change_due_date_lonely_out_payment(self):
         payment = self.create_payment(Payment.TYPE_OUT)

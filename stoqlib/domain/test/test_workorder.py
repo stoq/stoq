@@ -56,7 +56,7 @@ def _combine(iter1, iter2):
 class TestWorkOrderPackage(DomainTest):
     def test_branch_validation(self):
         package = self.create_workorder_package()
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError,
                 "The source branch and destination branch can't be equal"):
             package.destination_branch = package.source_branch
@@ -75,7 +75,7 @@ class TestWorkOrderPackage(DomainTest):
         package = self.create_workorder_package()
         workorder = self.create_workorder()
         workorder.current_branch = self.create_branch()
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError,
                 "The order <WorkOrder '[0-9a-f-]+'> is not in the source branch"):
             package.add_order(workorder)
@@ -86,7 +86,7 @@ class TestWorkOrderPackage(DomainTest):
         self.assertEqual(item.order, workorder)
         self.assertEqual(item.package, package)
 
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError,
                 ("The order <WorkOrder '[0-9a-f-]+'> is already on "
                  "the package <WorkOrderPackage '[0-9a-f-]+'>")):
@@ -121,14 +121,14 @@ class TestWorkOrderPackage(DomainTest):
 
         with mock.patch('stoqlib.domain.workorder.get_current_branch') as gcb:
             gcb.return_value = self.create_branch()
-            with self.assertRaisesRegexp(
+            with self.assertRaisesRegex(
                     ValueError,
                     ("This package's source branch is <Branch '[0-9a-f-]+'> "
                      "and you are in <Branch '[0-9a-f-]+'>. It's not possible "
                      "to send a package outside the source branch")):
                 package.send()
 
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError, "There're no orders to send"):
             package.send()
 
@@ -164,7 +164,7 @@ class TestWorkOrderPackage(DomainTest):
 
         with mock.patch('stoqlib.domain.workorder.get_current_branch') as gcb:
             gcb.return_value = self.create_branch()
-            with self.assertRaisesRegexp(
+            with self.assertRaisesRegex(
                     ValueError,
                     ("This package's destination branch is <Branch '[0-9a-f-]+'> "
                      "and you are in <Branch '[0-9a-f-]+'>. It's not possible "
@@ -199,19 +199,19 @@ class TestWorkOrderItem(DomainTest):
 
         # There is no work order item yet.
         wo_item = WorkOrderItem.get_from_sale_item(self.store, sale_item)
-        self.assertEquals(wo_item, None)
+        self.assertEqual(wo_item, None)
 
         # Create one work order
         item = WorkOrderItem(store=self.store, sellable=sale_item.sellable)
 
         # They are still not related.
         wo_item = WorkOrderItem.get_from_sale_item(self.store, sale_item)
-        self.assertEquals(wo_item, None)
+        self.assertEqual(wo_item, None)
 
         # After relating them, it should be found.
         item.sale_item = sale_item
         wo_item = WorkOrderItem.get_from_sale_item(self.store, sale_item)
-        self.assertEquals(wo_item, item)
+        self.assertEqual(wo_item, item)
 
     def test_reserve(self):
         item = self.create_work_order_item()
@@ -228,7 +228,7 @@ class TestWorkOrderItem(DomainTest):
         self.assertEqual(item.quantity_decreased, 6)
         self.assertEqual(storable.get_balance_for_branch(item.order.branch), 4)
 
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError, "Trying to reserve more than unreserved quantity"):
             item.reserve(50)
 
@@ -266,7 +266,7 @@ class TestWorkOrderItem(DomainTest):
         self.assertEqual(item.quantity_decreased, 14)
         self.assertEqual(storable.get_balance_for_branch(item.order.branch), 6)
 
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError, "Trying to return more quantity than reserved"):
             item.return_to_stock(50)
 
@@ -280,18 +280,18 @@ class TestWorkOrderItem(DomainTest):
 
         branch = sale.branch
         storable = product.storable
-        self.assertEquals(storable.get_balance_for_branch(branch), 10)
+        self.assertEqual(storable.get_balance_for_branch(branch), 10)
 
         sale_item = sale.add_sellable(product.sellable, quantity=3)
         wo_item = work_order.add_sellable(product.sellable, quantity=3)
         wo_item.sale_item = sale_item
         wo_item.reserve(3)
-        self.assertEquals(wo_item.quantity_decreased, 3)
-        self.assertEquals(storable.get_balance_for_branch(branch), 7)
+        self.assertEqual(wo_item.quantity_decreased, 3)
+        self.assertEqual(storable.get_balance_for_branch(branch), 7)
 
         wo_item.return_to_stock(2)
-        self.assertEquals(wo_item.quantity_decreased, 1)
-        self.assertEquals(storable.get_balance_for_branch(branch), 9)
+        self.assertEqual(wo_item.quantity_decreased, 1)
+        self.assertEqual(storable.get_balance_for_branch(branch), 9)
 
 
 class TestWorkOrder(DomainTest):
@@ -377,7 +377,7 @@ class TestWorkOrder(DomainTest):
             self.assertEqual(before_remove, after_remove)
 
             # But not related to the loan
-            self.assertEquals(self.store.find(WorkOrderItem, order=order).count(), 0)
+            self.assertEqual(self.store.find(WorkOrderItem, order=order).count(), 0)
 
     def test_add_sellable(self):
         sellable = self.create_sellable(price=50)
@@ -728,7 +728,7 @@ class TestWorkOrder(DomainTest):
         self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_FINISHED)
         self.assertEqual(workorder.finish_date,
                          self.fake.datetime.datetime.now())
-        self.assertEquals(workorder.execution_branch, branch)
+        self.assertEqual(workorder.execution_branch, branch)
 
         path = 'stoqlib.database.runtime.get_current_branch'
         with mock.patch(path) as current_branch:
@@ -737,7 +737,7 @@ class TestWorkOrder(DomainTest):
             workorder.reopen(reason=u'reopen test')
             workorder.finish()
             # Checking that we are not overwriting the value
-            self.assertEquals(workorder.execution_branch, branch)
+            self.assertEqual(workorder.execution_branch, branch)
 
     def test_reopen(self):
         workorder = self.create_workorder()
@@ -767,24 +767,24 @@ class TestWorkOrder(DomainTest):
         workorder = self.create_workorder()
 
         # Open
-        self.assertEquals(workorder.status, WorkOrder.STATUS_OPENED)
+        self.assertEqual(workorder.status, WorkOrder.STATUS_OPENED)
         with self.assertRaises(InvalidStatus) as se:
             workorder.change_status(WorkOrder.STATUS_OPENED)
-        self.assertEquals(str(se.exception), 'This work order cannot be re-opened')
+        self.assertEqual(str(se.exception), 'This work order cannot be re-opened')
 
         # Waiting material
         workorder.change_status(WorkOrder.STATUS_WORK_WAITING)
         with self.assertRaises(InvalidStatus) as se:
             workorder.change_status(WorkOrder.STATUS_WORK_WAITING)
-        self.assertEquals(str(se.exception),
-                          "This work order cannot wait for material")
+        self.assertEqual(str(se.exception),
+                         "This work order cannot wait for material")
 
         # In progress
         workorder.change_status(WorkOrder.STATUS_WORK_IN_PROGRESS)
         with self.assertRaises(InvalidStatus) as se:
             workorder.change_status(WorkOrder.STATUS_WORK_IN_PROGRESS)
-        self.assertEquals(str(se.exception),
-                          "This work order cannot be worked on")
+        self.assertEqual(str(se.exception),
+                         "This work order cannot be worked on")
 
         # Finished
         prod = self.create_product(stock=100)
@@ -793,14 +793,14 @@ class TestWorkOrder(DomainTest):
         workorder.change_status(WorkOrder.STATUS_WORK_FINISHED)
         with self.assertRaises(InvalidStatus) as se:
             workorder.change_status(WorkOrder.STATUS_WORK_FINISHED)
-        self.assertEquals(str(se.exception),
-                          'This work order cannot be finished')
+        self.assertEqual(str(se.exception),
+                         'This work order cannot be finished')
 
         # Reopen
         with self.assertRaises(NeedReason) as exc:
             workorder.change_status(WorkOrder.STATUS_WORK_IN_PROGRESS)
-            self.assertEquals(str(exc),
-                              "A reason is needed to reopen the work order")
+            self.assertEqual(str(exc),
+                             "A reason is needed to reopen the work order")
 
         workorder.change_status(WorkOrder.STATUS_WORK_IN_PROGRESS,
                                 reason=u'reason')
@@ -812,8 +812,8 @@ class TestWorkOrder(DomainTest):
 
         with self.assertRaises(NeedReason) as se:
             workorder.change_status(WorkOrder.STATUS_WORK_WAITING)
-        self.assertEquals(str(se.exception),
-                          'A reason is needed to pause the work order')
+        self.assertEqual(str(se.exception),
+                         'A reason is needed to pause the work order')
 
         workorder.change_status(WorkOrder.STATUS_WORK_WAITING,
                                 reason=u"Pause")
@@ -828,7 +828,7 @@ class TestWorkOrder(DomainTest):
         workorder2.sale = sale
 
         workorders = list(WorkOrder.find_by_sale(self.store, sale))
-        self.assertEquals(len(workorders), 2)
+        self.assertEqual(len(workorders), 2)
         self.assertIn(workorder1, workorders)
         self.assertIn(workorder2, workorders)
         self.assertNotIn(workorder3, workorders)
@@ -1073,13 +1073,13 @@ class TestWorkOrderView(_TestWorkOrderView):
         # Without a sellable, the equipemnt should be only the description
         wo.sellable = None
         wo_view = self.store.find(self.view, self.view.id == wo.id).one()
-        self.assertEquals(wo_view.equipment, 'Foo')
+        self.assertEqual(wo_view.equipment, 'Foo')
 
         # With a sellable, the equipemnt should be the sellable description +
         # the work order description
         wo.sellable = self.create_sellable(description=u'Bar')
         wo_view = self.store.find(self.view, self.view.id == wo.id).one()
-        self.assertEquals(wo_view.equipment, 'Bar - Foo')
+        self.assertEqual(wo_view.equipment, 'Bar - Foo')
 
 
 class TestWorkWithPackageView(TestWorkOrderView):
@@ -1192,4 +1192,4 @@ class TestWorkOrderHistoryView(DomainTest):
                          user=user,
                          what=u"what!")
         view = WorkOrderHistoryView.find_by_work_order(self.store, work_order).one()
-        self.assertEquals(view.user_name, u'individual')
+        self.assertEqual(view.user_name, u'individual')

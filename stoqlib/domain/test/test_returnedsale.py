@@ -52,8 +52,8 @@ class TestReturnedSale(DomainTest):
         total_items = self.store.find(ReturnedSaleItem,
                                       returned_sale_id=returned_sale.id).count()
 
-        self.assertEquals(total, 1)
-        self.assertEquals(total_items, 2)
+        self.assertEqual(total, 1)
+        self.assertEqual(total_items, 2)
 
         returned_sale.remove()
 
@@ -61,8 +61,8 @@ class TestReturnedSale(DomainTest):
         total_items = self.store.find(ReturnedSaleItem,
                                       returned_sale_id=returned_sale.id).count()
 
-        self.assertEquals(total, 0)
-        self.assertEquals(total_items, 0)
+        self.assertEqual(total, 0)
+        self.assertEqual(total_items, 0)
 
     def test_remove_item(self):
         item = self.create_returned_sale_item()
@@ -86,7 +86,7 @@ class TestReturnedSale(DomainTest):
             self.assertEqual(before_remove, after_remove)
 
             # But not related to the loan
-            self.assertEquals(self.store.find(ReturnedSaleItem, returned_sale=order).count(), 0)
+            self.assertEqual(self.store.find(ReturnedSaleItem, returned_sale=order).count(), 0)
 
     def test_client(self):
         branch = self.create_branch()
@@ -96,7 +96,7 @@ class TestReturnedSale(DomainTest):
         rsale = ReturnedSale(store=self.store)
         self.assertIsNone(rsale.client)
         rsale.sale = sale
-        self.assertEquals(rsale.client, client)
+        self.assertEqual(rsale.client, client)
 
     def test_group(self):
         branch = self.create_branch()
@@ -107,18 +107,18 @@ class TestReturnedSale(DomainTest):
                              store=self.store)
         self.assertIsNone(rsale.group)
         rsale.sale = sale
-        self.assertEquals(rsale.group, sale.group)
+        self.assertEqual(rsale.group, sale.group)
 
         rsale.sale = None
         rsale.new_sale = sale
-        self.assertEquals(rsale.group, sale.group)
+        self.assertEqual(rsale.group, sale.group)
 
     def test_sale_total(self):
         branch = self.create_branch()
 
         rsale = ReturnedSale(branch=branch,
                              store=self.store)
-        self.assertEquals(rsale.sale_total, currency(0))
+        self.assertEqual(rsale.sale_total, currency(0))
 
         sale = self.create_sale(branch=branch)
         sellable = self.add_product(sale)
@@ -129,7 +129,7 @@ class TestReturnedSale(DomainTest):
         rsale2 = ReturnedSale(branch=branch,
                               sale=sale,
                               store=self.store)
-        self.assertEquals(rsale1.sale_total, currency(0))
+        self.assertEqual(rsale1.sale_total, currency(0))
 
         item = ReturnedSaleItem(store=self.store,
                                 returned_sale=rsale2,
@@ -137,7 +137,7 @@ class TestReturnedSale(DomainTest):
         item.quantity = 10
         item.price = 10
 
-        self.assertEquals(rsale1.sale_total, currency(-100))
+        self.assertEqual(rsale1.sale_total, currency(-100))
 
     def test_sale_total_with_rounding(self):
         branch = self.create_branch()
@@ -153,13 +153,13 @@ class TestReturnedSale(DomainTest):
                              store=self.store)
         # Here, if the rounding was made before adding both products, we would actually
         # end up with a sale_total of 2.11 instead of 2.10, which is the expected value.
-        self.assertEquals(rsale.sale_total, currency(Decimal('2.10')))
+        self.assertEqual(rsale.sale_total, currency(Decimal('2.10')))
 
     def test_paid_total(self):
         branch = self.create_branch()
         rsale = ReturnedSale(branch=branch,
                              store=self.store)
-        self.assertEquals(rsale.paid_total, currency(0))
+        self.assertEqual(rsale.paid_total, currency(0))
 
         sale = self.create_sale(branch=branch)
         self.add_product(sale)
@@ -169,7 +169,7 @@ class TestReturnedSale(DomainTest):
         self.add_payments(sale)
         sale.order()
         sale.confirm()
-        self.assertEquals(rsale.paid_total, currency(10))
+        self.assertEqual(rsale.paid_total, currency(10))
 
     def test_total_amount(self):
         branch = self.create_branch()
@@ -178,7 +178,7 @@ class TestReturnedSale(DomainTest):
         rsale = ReturnedSale(branch=branch,
                              sale=sale,
                              store=self.store)
-        self.assertEquals(rsale.total_amount, currency(0))
+        self.assertEqual(rsale.total_amount, currency(0))
 
     def test_total_amount_abs(self):
         branch = self.create_branch()
@@ -187,7 +187,7 @@ class TestReturnedSale(DomainTest):
         rsale = ReturnedSale(branch=branch,
                              sale=sale,
                              store=self.store)
-        self.assertEquals(rsale.total_amount_abs, currency(0))
+        self.assertEqual(rsale.total_amount_abs, currency(0))
 
     def test_add_item(self, branch=None):
         sale_item = self.create_sale_item()
@@ -372,23 +372,23 @@ class TestReturnedSale(DomainTest):
 
         rsale.return_(u'credit')
         # Checking the status of sale and returned_sale
-        self.assertEquals(rsale.status, ReturnedSale.STATUS_PENDING)
-        self.assertEquals(sale.status, Sale.STATUS_RETURNED)
+        self.assertEqual(rsale.status, ReturnedSale.STATUS_PENDING)
+        self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         # Checking the quantity on sale_branch
-        self.assertEquals(product.storable.get_balance_for_branch(sale_branch), 1)
+        self.assertEqual(product.storable.get_balance_for_branch(sale_branch), 1)
         # We should not increase the stock of that product on return_branch
-        self.assertEquals(product.storable.get_balance_for_branch(return_branch), 0)
+        self.assertEqual(product.storable.get_balance_for_branch(return_branch), 0)
 
     # NF-e operations
 
     def test_comments(self):
         returned_sale = self.create_returned_sale()
         returned_sale.reason = u'Reason'
-        self.assertEquals(returned_sale.comments, returned_sale.reason)
+        self.assertEqual(returned_sale.comments, returned_sale.reason)
 
     def test_discount_value(self):
         returned_sale = self.create_returned_sale()
-        self.assertEquals(returned_sale.discount_value, currency(0))
+        self.assertEqual(returned_sale.discount_value, currency(0))
 
     def test_returned_sale_totals(self):
         # Verificar esse funcionamento no Stoq
@@ -405,30 +405,30 @@ class TestReturnedSale(DomainTest):
         ReturnedSaleItem(returned_sale=returned_sale,
                          sale_item=sale_item,
                          quantity=1)
-        self.assertEquals(returned_sale.invoice_subtotal, 100)
-        self.assertEquals(returned_sale.invoice_total, 100)
+        self.assertEqual(returned_sale.invoice_subtotal, 100)
+        self.assertEqual(returned_sale.invoice_total, 100)
 
     def test_recipient(self):
         # Without client
         sale = self.create_sale()
         returned_sale = self.create_returned_sale(sale)
-        self.assertEquals(returned_sale.recipient, None)
+        self.assertEqual(returned_sale.recipient, None)
 
         # With client
         client = self.create_client()
         sale2 = self.create_sale(client=client)
         returned_sale = self.create_returned_sale(sale2)
-        self.assertEquals(returned_sale.recipient, client.person)
+        self.assertEqual(returned_sale.recipient, client.person)
 
         # without a sale (only new sale)
         returned_sale = self.create_trade()
         returned_sale.new_sale.client = client
-        self.assertEquals(returned_sale.recipient, client.person)
+        self.assertEqual(returned_sale.recipient, client.person)
 
     def test_cfop_code(self):
         # FIXME: Check using the operation_nature that will be saved in new field.
         returned_sale = self.create_returned_sale()
-        self.assertEquals(returned_sale.operation_nature, u'Sale Return')
+        self.assertEqual(returned_sale.operation_nature, u'Sale Return')
 
     def test_status(self):
         rsale = self.create_returned_sale()
@@ -454,10 +454,10 @@ class TestReturnedSale(DomainTest):
 
         returned_item.returned_sale.undo(reason=u'teste')
 
-        self.assertEquals(sale.status, sale.STATUS_CONFIRMED)
-        self.assertEquals(sale.return_date, None)
-        self.assertEquals(returned_item.returned_sale.status,
-                          ReturnedSale.STATUS_CANCELLED)
+        self.assertEqual(sale.status, sale.STATUS_CONFIRMED)
+        self.assertEqual(sale.return_date, None)
+        self.assertEqual(returned_item.returned_sale.status,
+                         ReturnedSale.STATUS_CANCELLED)
 
     def test_undo_with_pending_payment(self):
         # First, we create a sale_item and relate it to a sale.
@@ -487,21 +487,21 @@ class TestReturnedSale(DomainTest):
         # This test evaluates if the pending payment was actually cancelled and that, at
         # any point around the undoing of the sale return, no payments are added or
         # removed.
-        self.assertEquals(payment.status, Payment.STATUS_CANCELLED)
-        self.assertEquals(n_payments1, 2)
-        self.assertEquals(sale.group.payments.count(), 2)
+        self.assertEqual(payment.status, Payment.STATUS_CANCELLED)
+        self.assertEqual(n_payments1, 2)
+        self.assertEqual(sale.group.payments.count(), 2)
 
 
 class TestReturnedSaleItem(DomainTest):
     def test_constructor(self):
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError,
                 "A sale_item or a sellable is mandatory to create this object"):
             ReturnedSaleItem(store=self.store)
 
         sellable = self.create_sellable()
         sale_item = self.create_sale_item()
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError,
                 "sellable must be the same as sale_item.sellable"):
             ReturnedSaleItem(sellable=sellable,
@@ -518,11 +518,11 @@ class TestReturnedSaleItem(DomainTest):
         item = ReturnedSaleItem(store=self.store,
                                 sale_item=sale_item)
         item.quantity = 1
-        self.assertEquals(item.total, 100)
+        self.assertEqual(item.total, 100)
         item.price = 10
-        self.assertEquals(item.total, 10)
+        self.assertEqual(item.total, 10)
         item.quantity = 20
-        self.assertEquals(item.total, 200)
+        self.assertEqual(item.total, 200)
 
     def test_get_total(self):
         sale_item = self.create_sale_item()
@@ -530,7 +530,7 @@ class TestReturnedSaleItem(DomainTest):
                                          sale_item=sale_item)
         returned_item.quantity = 2
         returned_item.price = 100
-        self.assertEquals(returned_item.get_total(), 200)
+        self.assertEqual(returned_item.get_total(), 200)
 
     def test_return_(self):
         sale = self.create_sale()
@@ -543,13 +543,13 @@ class TestReturnedSaleItem(DomainTest):
         item = self.store.find(ReturnedSaleItem,
                                returned_sale=returned_sale).any()
 
-        self.assertEquals(item.sale_item.quantity_decreased, 1)
+        self.assertEqual(item.sale_item.quantity_decreased, 1)
         branch = self.create_branch()
 
         with mock.patch(
                 'stoqlib.domain.product.Storable.increase_stock') as increase_stock:
             item.return_(branch)
-        self.assertEquals(item.sale_item.quantity_decreased, 0)
+        self.assertEqual(item.sale_item.quantity_decreased, 0)
 
         increase_stock.assert_called_once_with(
             Decimal(1), branch, StockTransactionHistory.TYPE_RETURNED_SALE,
@@ -596,7 +596,7 @@ class TestReturnedSaleItem(DomainTest):
                 child.quantity = 0
                 item.quantity = 0
         r_sale.return_()
-        self.assertEquals(len(list(r_sale.returned_items)), 1)
+        self.assertEqual(len(list(r_sale.returned_items)), 1)
 
     def test_undo(self):
         sellable = self.create_sellable(product=True, storable=True)
@@ -604,12 +604,12 @@ class TestReturnedSaleItem(DomainTest):
         returned_item = self.create_returned_sale_item(sale_item=sale_item)
 
         # Lets supose this item is already returned
-        self.assertEquals(sale_item.quantity, 1)
-        self.assertEquals(sale_item.quantity_decreased, 0)
+        self.assertEqual(sale_item.quantity, 1)
+        self.assertEqual(sale_item.quantity_decreased, 0)
 
         # If there is not enought stock, we should raise an error
         from stoqlib.exceptions import StockError
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 StockError,
                 "Quantity to decrease is greater than the available stock."):
             returned_item.undo()
@@ -623,9 +623,9 @@ class TestReturnedSaleItem(DomainTest):
         # Now we should be able to undo the return
         returned_item.undo()
         # The quantity decreased should be 1
-        self.assertEquals(sale_item.quantity_decreased, 1)
+        self.assertEqual(sale_item.quantity_decreased, 1)
         # And there should be 9 itens in stock
-        self.assertEquals(storable.get_balance_for_branch(sale_item.sale.branch), 9)
+        self.assertEqual(storable.get_balance_for_branch(sale_item.sale.branch), 9)
 
     def test_get_component_quantity(self):
         package = self.create_product(description=u"Package", is_package=True)
@@ -639,20 +639,20 @@ class TestReturnedSaleItem(DomainTest):
         r_child_item = self.create_returned_sale_item(sale_item=child_item,
                                                       parent_item=r_item)
 
-        self.assertEquals(r_child_item.get_component_quantity(r_item), 1)
+        self.assertEqual(r_child_item.get_component_quantity(r_item), 1)
 
     # NF-e operations
 
     def test_base_price(self):
         returned_item = self.create_returned_sale_item()
         returned_item.price = 150
-        self.assertEquals(returned_item.base_price, 150)
-        self.assertEquals(returned_item.item_discount, 0)
+        self.assertEqual(returned_item.base_price, 150)
+        self.assertEqual(returned_item.item_discount, 0)
 
     def test_parent(self):
         returned_sale = self.create_returned_sale()
         returned_item = self.create_returned_sale_item(returned_sale)
-        self.assertEquals(returned_item.parent, returned_sale)
+        self.assertEqual(returned_item.parent, returned_sale)
 
     def test_cfop_code(self):
         client = self.create_client()
@@ -660,4 +660,4 @@ class TestReturnedSaleItem(DomainTest):
         sale = self.create_sale(client=client)
         returned_sale = self.create_returned_sale(sale)
         returned_sale_item = self.create_returned_sale_item(returned_sale)
-        self.assertEquals(returned_sale_item.cfop_code, u'1202')
+        self.assertEqual(returned_sale_item.cfop_code, u'1202')

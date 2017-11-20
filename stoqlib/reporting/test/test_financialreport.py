@@ -37,43 +37,41 @@ class TestAccount(DomainTest):
         # ===> Check banks transactions per month <===
         banks = data.get(u'Banks')
         # January
-        self.assertEquals(banks[0], [(u'Banks', 0), (u'Banco do Brasil', currency("33013.67"))])
+        self.assertEqual(banks[0], [(u'Banks', 0), (u'Banco do Brasil', currency("33013.67"))])
         # February
-        self.assertEquals(banks[1], [(u'Banks', 0), (u'Banco do Brasil', currency("-8325.35"))])
+        self.assertEqual(banks[1], [(u'Banks', 0), (u'Banco do Brasil', currency("-8325.35"))])
         # Other months (March - December)
         for n in range(2, 12):
-            self.assertEquals(banks[n], [(u'Banks', 0), (u'Banco do Brasil', 0)])
+            self.assertEqual(banks[n], [(u'Banks', 0), (u'Banco do Brasil', 0)])
 
         # ===> Check Expenses transactions <===
         expenses = data.get(u'Expenses')
         # January
-        self.assertEquals(expenses[0],
-                          [(u'Expenses', 0),
-                           (u'Aluguel', currency("850")),
-                           (u'Luz', currency("120.18")),
-                           (u'Sal\xe1rios', currency("4692.76")),
-                           (u'Telefonia', currency("232.30")),
-                           (u'Impostos', currency("6843.91"))])
+        self.assertEqual(expenses[0],
+                         [(u'Expenses', 0),
+                          (u'Aluguel', currency("850")),
+                          (u'Luz', currency("120.18")),
+                          (u'Sal\xe1rios', currency("4692.76")),
+                          (u'Telefonia', currency("232.30")),
+                          (u'Impostos', currency("6843.91"))])
         # February
-        self.assertEquals(expenses[1],
-                          [(u'Expenses', 0),
-                           (u'Aluguel', currency("850")),
-                           (u'Luz', currency("138.48")),
-                           (u'Sal\xe1rios', currency("4502.48")),
-                           (u'Telefonia', 0),
-                           (u'Impostos', currency("2834.39"))])
+        self.assertEqual(expenses[1],
+                         [(u'Expenses', 0),
+                          (u'Aluguel', currency("850")),
+                          (u'Luz', currency("138.48")),
+                          (u'Sal\xe1rios', currency("4502.48")),
+                          (u'Telefonia', 0),
+                          (u'Impostos', currency("2834.39"))])
         # Other months (March - December)
         for n in range(2, 12):
-            self.assertEquals(expenses[n],
-                              [(u'Expenses', 0), (u'Aluguel', 0), (u'Luz', 0),
-                               (u'Sal\xe1rios', 0), (u'Telefonia', 0), (u'Impostos', 0)])
+            self.assertEqual(expenses[n],
+                             [(u'Expenses', 0), (u'Aluguel', 0), (u'Luz', 0),
+                              (u'Sal\xe1rios', 0), (u'Telefonia', 0), (u'Impostos', 0)])
 
         # ===> Check Income transactions <===
         income = data.get(u'Income')
         # January
-        self.assertEquals(income[0],
-                          [(u'Income', currency("-45752.82"))])
+        self.assertEqual(income[0], [(u'Income', currency("-45752.82"))])
         # Other months (February - December)
         for n in range(1, 12):
-            self.assertEquals(income[n],
-                              [(u'Income', 0)])
+            self.assertEqual(income[n], [(u'Income', 0)])

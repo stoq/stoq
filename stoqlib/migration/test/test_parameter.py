@@ -33,8 +33,8 @@ class ParameterTest(DomainTest):
                                     description=u'Imbalance').one()
         account = get_parameter(self.store, u'IMBALANCE_ACCOUNT')
 
-        self.assertEquals(imbalance.id, str(account))
+        self.assertEqual(imbalance.id, str(account))
 
     def test_get_nonexistent_parameter(self):
         account = get_parameter(self.store, u'NONEXISTENT PARAMETER')
-        self.assertEquals(account, None)
+        self.assertEqual(account, None)

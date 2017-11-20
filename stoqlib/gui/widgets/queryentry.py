@@ -160,7 +160,7 @@ class _QueryEntryPopup(PopupWindow):
         vbox.pack_start(self._sw, True, True, 0)
 
         self._model = Gtk.ListStore(object, str, str, bool, int)
-        self._treeview = Gtk.TreeView(self._model)
+        self._treeview = Gtk.TreeView(model=self._model)
         self._treeview.connect('motion-notify-event',
                                self._on_treeview__motion_notify_event)
         self._treeview.connect('button-release-event',

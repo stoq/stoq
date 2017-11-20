@@ -311,7 +311,7 @@ class BatchSelectionDialog(BaseEditor):
         unit = self.model.product.sellable.unit
         upper = self._quantity if self._validate_max_quantity else MAX_INT
         spin.set_adjustment(Gtk.Adjustment(lower=0, upper=upper,
-                                           step_incr=1, page_incr=10))
+                                           step_increment=1, page_increment=10))
         if unit and unit.allow_fraction:
             spin.set_digits(QUANTITY_PRECISION)
         self.setup_spin(spin)

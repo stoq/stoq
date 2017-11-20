@@ -76,7 +76,7 @@ class TestConsignmentWizard(GUITest):
         storable.increase_stock(10, branch,
                                 StockTransactionHistory.TYPE_INITIAL, None)
         stock_quantity = storable.get_stock_item(branch, None).quantity
-        self.assertEquals(stock_quantity, 10)
+        self.assertEqual(stock_quantity, 10)
 
         purchase_item.quantity_received = 10
         purchase_item.quantity_returned = 1
@@ -103,12 +103,12 @@ class TestConsignmentWizard(GUITest):
         step.consignment_items.select(step.consignment_items[0])
 
         self.click(step.edit_button)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         editor, parent, store, item = args
-        self.assertEquals(editor, InConsignmentItemEditor)
-        self.assertEquals(parent, wizard)
-        self.assertEquals(item, purchase_item)
+        self.assertEqual(editor, InConsignmentItemEditor)
+        self.assertEqual(parent, wizard)
+        self.assertEqual(item, purchase_item)
         self.assertTrue(store is not None)
 
         purchase_item.quantity_sold = 2
@@ -125,7 +125,7 @@ class TestConsignmentWizard(GUITest):
 
         self.click(wizard.next_button)
         stock_quantity = storable.get_stock_item(branch, None).quantity
-        self.assertEquals(stock_quantity, 9)
+        self.assertEqual(stock_quantity, 9)
         self.check_wizard(wizard, 'wizard-close-in-consignment-confirm',
                           [wizard.retval, purchase_item, product_stock_item])
 
@@ -143,7 +143,7 @@ class TestConsignmentWizard(GUITest):
         storable.increase_stock(5, branch,
                                 StockTransactionHistory.TYPE_INITIAL, None)
         stock_quantity = storable.get_stock_item(branch, None).quantity
-        self.assertEquals(stock_quantity, 5)
+        self.assertEqual(stock_quantity, 5)
 
         purchase_item.quantity_received = 5
         purchase_item.order.status = PurchaseOrder.ORDER_CONSIGNED
@@ -168,12 +168,12 @@ class TestConsignmentWizard(GUITest):
 
         # Select consignment.
         step.consignment_items.emit('row_activated', step.consignment_items[0])
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         editor, parent, store, item = args
-        self.assertEquals(editor, InConsignmentItemEditor)
-        self.assertEquals(parent, wizard)
-        self.assertEquals(item, purchase_item)
+        self.assertEqual(editor, InConsignmentItemEditor)
+        self.assertEqual(parent, wizard)
+        self.assertEqual(item, purchase_item)
         self.assertTrue(store is not None)
 
         # Return the total received.
@@ -182,7 +182,7 @@ class TestConsignmentWizard(GUITest):
         self.click(wizard.next_button)
         # After return. Item quantity in stock must be decreased.
         stock_quantity = storable.get_stock_item(branch, None).quantity
-        self.assertEquals(stock_quantity, 0)
+        self.assertEqual(stock_quantity, 0)
         self.check_wizard(wizard,
                           'wizard-close-returned-in-consignment-confirm',
                           [wizard.retval, purchase_item, product_stock_item])

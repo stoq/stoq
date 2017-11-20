@@ -74,12 +74,12 @@ class TestProductionOrder(DomainTest):
         sellable = self.create_sellable()
         item = order.add_item(sellable)
         self.assertTrue(isinstance(item, ProductionItem))
-        self.assertEquals(item.order, order)
+        self.assertEqual(item.order, order)
 
     def test_remove_item(self):
         order = self.create_production_order()
         item = ProductionItem(store=self.store)
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
             ValueError,
             (u'Argument item must have an order attribute '
              u'associated with the current production '
@@ -89,7 +89,7 @@ class TestProductionOrder(DomainTest):
         item = self.create_production_item()
         order = item.order
         order.remove_item(item)
-        self.assertEquals(order.get_items().count(), 0)
+        self.assertEqual(order.get_items().count(), 0)
 
         with self.sysparam(SYNCHRONIZED_MODE=True):
             item = self.create_production_item()
@@ -103,12 +103,12 @@ class TestProductionOrder(DomainTest):
             self.assertEqual(before_remove, after_remove)
 
             # But not related to the loan
-            self.assertEquals(self.store.find(ProductionItem, order=order).count(), 0)
+            self.assertEqual(self.store.find(ProductionItem, order=order).count(), 0)
 
     def test_remove_service_item(self):
         order = self.create_production_order()
         item = ProductionService(store=self.store)
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
             ValueError, (u'Argument item must have an order attribute '
                          u'associated with the current production '
                          u'order instance.')):
@@ -117,7 +117,7 @@ class TestProductionOrder(DomainTest):
         item = self.create_production_service()
         order = item.order
         order.remove_service_item(item)
-        self.assertEquals(order.get_service_items().count(), 0)
+        self.assertEqual(order.get_service_items().count(), 0)
 
         with self.sysparam(SYNCHRONIZED_MODE=True):
             item = self.create_production_service()
@@ -131,20 +131,20 @@ class TestProductionOrder(DomainTest):
             self.assertEqual(before_remove, after_remove)
 
             # But not related to the loan
-            self.assertEquals(self.store.find(ProductionService, order=order).count(), 0)
+            self.assertEqual(self.store.find(ProductionService, order=order).count(), 0)
 
     def test_get_status_string(self):
         order = self.create_production_order()
         order.status = ProductionOrder.ORDER_OPENED
-        self.assertEquals(order.get_status_string(), u'Opened')
+        self.assertEqual(order.get_status_string(), u'Opened')
         order.status = ProductionOrder.ORDER_WAITING
-        self.assertEquals(order.get_status_string(), u'Waiting')
+        self.assertEqual(order.get_status_string(), u'Waiting')
         order.status = ProductionOrder.ORDER_PRODUCING
-        self.assertEquals(order.get_status_string(), u'Producing')
+        self.assertEqual(order.get_status_string(), u'Producing')
         order.status = ProductionOrder.ORDER_CLOSED
-        self.assertEquals(order.get_status_string(), u'Closed')
+        self.assertEqual(order.get_status_string(), u'Closed')
         order.status = ProductionOrder.ORDER_QA
-        self.assertEquals(order.get_status_string(), u'Quality Assurance')
+        self.assertEqual(order.get_status_string(), u'Quality Assurance')
 
     def test_is_completely_tested(self):
         item = self.create_production_item(quantity=10)
@@ -174,19 +174,19 @@ class TestProductionOrder(DomainTest):
         branch = self.create_branch()
         branch.person.company.fancy_name = u'foo'
         order = self.create_production_order(branch=branch)
-        self.assertEquals(order.get_branch_name(), u'foo')
+        self.assertEqual(order.get_branch_name(), u'foo')
 
     def test_get_responsible_name(self):
         order = self.create_production_order()
         order.responsible = None
-        self.assertEquals(order.get_responsible_name(), u'')
+        self.assertEqual(order.get_responsible_name(), u'')
         order.responsible = self.create_employee(name=u'employee')
-        self.assertEquals(order.get_responsible_name(), u'employee')
+        self.assertEqual(order.get_responsible_name(), u'employee')
 
     def test_get_description(self):
         order = self.create_production_order()
         order.description = u'Description'
-        self.assertEquals(order.get_description(), u'Description')
+        self.assertEqual(order.get_description(), u'Description')
 
     def test_can_cancel(self):
         order = self.create_production_order()
@@ -218,11 +218,11 @@ class TestProductionOrder(DomainTest):
         order = self.create_production_order()
         self.assertNotEqual(order.status, ProductionOrder.ORDER_CANCELLED)
         order.cancel()
-        self.assertEquals(order.status, ProductionOrder.ORDER_CANCELLED)
+        self.assertEqual(order.status, ProductionOrder.ORDER_CANCELLED)
         order = self.create_production_order()
         order.status = ProductionOrder.ORDER_WAITING
         order.cancel()
-        self.assertEquals(order.status, ProductionOrder.ORDER_CANCELLED)
+        self.assertEqual(order.status, ProductionOrder.ORDER_CANCELLED)
         # We can't cancel started orders
         order = self.create_production_order()
         order.start_production()
@@ -234,7 +234,7 @@ class TestProductionOrder(DomainTest):
         order = self.create_production_order()
         order.start_production()
         order.try_finalize_production(ignore_completion=True)
-        self.assertEquals(order.status, ProductionOrder.ORDER_CLOSED)
+        self.assertEqual(order.status, ProductionOrder.ORDER_CLOSED)
         order = self.create_production_order()
         # This order didnt start. So we cannot finalize
         with self.assertRaises(AssertionError):
@@ -246,12 +246,12 @@ class TestProductionItem(DomainTest):
     def test_get_description(self):
         item = self.create_production_item()
         item.product.sellable.description = u'product'
-        self.assertEquals(item.get_description(), u'product')
+        self.assertEqual(item.get_description(), u'product')
 
     def test_unit_description(self):
         item = self.create_production_item()
         item.product.sellable.unit = self.create_sellable_unit(description=u'un')
-        self.assertEquals(item.unit_description, u'un')
+        self.assertEqual(item.unit_description, u'un')
 
     def test_can_produce(self):
         item = self.create_production_item()
@@ -375,12 +375,12 @@ class TestProductionMaterial(DomainTest):
     def test_get_description(self):
         material = self.create_production_material()
         material.product.sellable.description = u'product'
-        self.assertEquals(material.get_description(), u'product')
+        self.assertEqual(material.get_description(), u'product')
 
     def test_unit_description(self):
         material = self.create_production_material()
         material.product.sellable.unit = self.create_sellable_unit(description=u'un')
-        self.assertEquals(material.unit_description, u'un')
+        self.assertEqual(material.unit_description, u'un')
 
     def test_can_add_lost(self):
         material = self.create_production_material()
@@ -425,7 +425,7 @@ class TestProductionMaterial(DomainTest):
         self.store.remove(storable)
 
         material.allocate()
-        self.assertEquals(material.allocated, material.needed)
+        self.assertEqual(material.allocated, material.needed)
 
     def test_allocate_partial(self):
         material = self.create_production_material()
@@ -500,11 +500,11 @@ class TestProductionMaterial(DomainTest):
             lost = component.quantity
             self.assertEqual(material.lost, lost)
 
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
             ValueError, u'Cannot loose this quantity.'):
             material.add_lost(100)
         material.allocated = 2
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
             ValueError, u'Can not allocate this quantity.'):
             material.add_lost(2)
 
@@ -529,7 +529,7 @@ class TestProductionMaterial(DomainTest):
             consumed = component.quantity
             self.assertEqual(material.consumed, consumed)
 
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
             ValueError, u'Can not consume this quantity.'):
             material.consume(100)
 
@@ -629,32 +629,32 @@ class TestProductionService(DomainTest):
         item = ProductionService(store=self.store)
         item.service = self.create_service()
         item.service.sellable.description = u'service'
-        self.assertEquals(item.get_description(), u'service')
+        self.assertEqual(item.get_description(), u'service')
 
     def test_unit_description(self):
         item = ProductionService(store=self.store)
         item.service = self.create_service()
         item.service.sellable.unit = self.create_sellable_unit(description=u'un')
-        self.assertEquals(item.unit_description, u'un')
+        self.assertEqual(item.unit_description, u'un')
 
 
 class TestProductionProducedItem(DomainTest):
     def test_get_pending_tests(self):
         pitem = ProductionProducedItem(store=self.store)
         pitem.product = self.create_product()
-        self.assertEquals(pitem.get_pending_tests(), [])
+        self.assertEqual(pitem.get_pending_tests(), [])
 
     def test_get_last_serial_number(self):
         pitem = ProductionProducedItem(store=self.store)
         pitem.product = self.create_product()
         last = ProductionProducedItem.get_last_serial_number(pitem.product,
                                                              self.store)
-        self.assertEquals(last, 0)
+        self.assertEqual(last, 0)
 
         pitem.serial_number = 10
         last = ProductionProducedItem.get_last_serial_number(pitem.product,
                                                              self.store)
-        self.assertEquals(last, 10)
+        self.assertEqual(last, 10)
 
     def test_is_valid_serial_range(self):
         pitem = ProductionProducedItem(store=self.store)
@@ -687,20 +687,20 @@ class TestProductionItemQualityResult(DomainTest):
         r = ProductionItemQualityResult(store=self.store)
         r.quality_test = ProductQualityTest(store=self.store,
                                             description=u'description')
-        self.assertEquals(r.get_description(), u'description')
+        self.assertEqual(r.get_description(), u'description')
 
     def test_result_value_str(self):
         r = ProductionItemQualityResult(store=self.store)
         r.result_value = u'True'
-        self.assertEquals(r.result_value_str, u'True')
+        self.assertEqual(r.result_value_str, u'True')
 
     def test_get_boolean_value(self):
         r = ProductionItemQualityResult(store=self.store)
 
         r.result_value = u'True'
-        self.assertEquals(r.get_boolean_value(), True)
+        self.assertEqual(r.get_boolean_value(), True)
         r.result_value = u'False'
-        self.assertEquals(r.get_boolean_value(), False)
+        self.assertEqual(r.get_boolean_value(), False)
         r.result_value = u'broken'
         with self.assertRaises(ValueError):
             r.get_boolean_value()

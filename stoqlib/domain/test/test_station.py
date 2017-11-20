@@ -41,19 +41,19 @@ class TestBranchStation(DomainTest):
     def test_get_active_stations(self):
         active = self.store.find(BranchStation, is_active=True).order_by(
             BranchStation.name)
-        self.assertEquals(set(BranchStation.get_active_stations(self.store)),
-                          set(active))
+        self.assertEqual(set(BranchStation.get_active_stations(self.store)),
+                         set(active))
 
     def test_create(self):
         branch = self.create_branch()
         BranchStation.create(self.store, branch, u'foo')
-        with self.assertRaisesRegexp(
-            StoqlibError, u"There is already a station registered as `foo'."):
+        with self.assertRaisesRegex(
+                StoqlibError, u"There is already a station registered as `foo'."):
             BranchStation.create(self.store, branch, u'foo')
 
     def test_get_station(self):
-        with self.assertRaisesRegexp(
-            TypeError, r"BranchStation.get_station\(\) requires a Branch"):
+        with self.assertRaisesRegex(
+                TypeError, r"BranchStation.get_station\(\) requires a Branch"):
             BranchStation.get_station(self.store, None, None)
 
     def test_activate(self):
@@ -67,12 +67,12 @@ class TestBranchStation(DomainTest):
 
     def test_get_status_string(self):
         station = self.create_station()
-        self.assertEquals(station.get_status_string(), u'Inactive')
+        self.assertEqual(station.get_status_string(), u'Inactive')
         station.activate()
-        self.assertEquals(station.get_status_string(), u'Active')
+        self.assertEqual(station.get_status_string(), u'Active')
 
     def test_get_branch_name(self):
         branch = self.create_branch()
         branch.person.company.fancy_name = u'foo'
         station = self.create_station(branch=branch)
-        self.assertEquals(station.get_branch_name(), u'foo')
+        self.assertEqual(station.get_branch_name(), u'foo')

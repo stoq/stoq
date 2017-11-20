@@ -66,12 +66,12 @@ class TestClientSlave(GUITest):
         slave = ClientCreditSlave(self.store, client)
 
         # checks a valid credit limit
-        self.assertEquals(None, slave.credit_limit.emit('validate', 10))
-        self.assertEquals(None, slave.credit_limit.emit('validate', 0))
+        self.assertEqual(None, slave.credit_limit.emit('validate', 10))
+        self.assertEqual(None, slave.credit_limit.emit('validate', 0))
 
         # checks invalid credit limit
-        self.assertEquals("Credit limit must be greater than or equal to 0",
-                          str(slave.credit_limit.emit('validate', -10)))
+        self.assertEqual("Credit limit must be greater than or equal to 0",
+                         str(slave.credit_limit.emit('validate', -10)))
 
     def test_credit_limit_update(self):
         sysparam.set_decimal(self.store, "CREDIT_LIMIT_SALARY_PERCENT", Decimal(10))
@@ -80,13 +80,13 @@ class TestClientSlave(GUITest):
         client.salary = 50
         slave = ClientCreditSlave(self.store, client)
         slave.salary.emit('changed')
-        self.assertEquals(slave.credit_limit.read(), 5)
+        self.assertEqual(slave.credit_limit.read(), 5)
 
         # checks if credit limit updated correctly when salary changes
         # and parameter salary percent is not 0
         slave.salary.update(100)
         slave.salary.emit('changed')
-        self.assertEquals(slave.credit_limit.read(), 10)
+        self.assertEqual(slave.credit_limit.read(), 10)
 
         sysparam.set_decimal(self.store, "CREDIT_LIMIT_SALARY_PERCENT", Decimal(0))
 
@@ -100,18 +100,18 @@ class TestClientSlave(GUITest):
         slave.salary.update(200)
         slave.salary.emit('changed')
 
-        self.assertEquals(slave.credit_limit.read(), credit_limit)
+        self.assertEqual(slave.credit_limit.read(), credit_limit)
 
     def test_salary_validate(self):
         client = self.create_client()
         slave = ClientCreditSlave(self.store, client)
 
         # checks a valid salary
-        self.assertEquals(None, slave.salary.emit('validate', 10))
+        self.assertEqual(None, slave.salary.emit('validate', 10))
 
         # checks invalid salary
-        self.assertEquals("Salary can't be lower than 0.",
-                          str(slave.salary.emit('validate', -10)))
+        self.assertEqual("Salary can't be lower than 0.",
+                         str(slave.salary.emit('validate', -10)))
 
     @mock.patch('stoqlib.gui.slaves.clientslave.run_dialog')
     def test_salary_history(self, run_dialog):

@@ -72,7 +72,7 @@ class TestPos(BaseGUITest):
         till.open_till()
 
         TillOpenEvent.emit(till=till)
-        self.assertEquals(till, Till.get_current(store))
+        self.assertEqual(till, Till.get_current(store))
         return till
 
     def _pos_open_till(self, pos):
@@ -165,7 +165,7 @@ class TestPos(BaseGUITest):
     def _called_once_with_store(self, func, *expected_args):
         args = func.call_args[0]
         for arg, expected in zip(args, expected_args):
-            self.assertEquals(arg, expected)
+            self.assertEqual(arg, expected)
 
     def test_add_button(self):
         app = self.create_app(PosApp, u'pos')
@@ -435,7 +435,7 @@ class TestPos(BaseGUITest):
         trade = self.create_trade(trade_value=287)
         run_dialog.return_value = trade
         self.activate(pos.NewTrade)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
         self.check_app(pos, u'pos-new-trade')
 
         # Product value = 198
@@ -460,9 +460,9 @@ class TestPos(BaseGUITest):
 
             payments = self.sale.payments
             total = self.sale.get_total_sale_amount() - trade.returned_total
-            self.assertEquals(len(list(payments)), 2)
-            self.assertEquals(payments[0].value, trade.returned_total)
-            self.assertEquals(payments[1].value, total)
+            self.assertEqual(len(list(payments)), 2)
+            self.assertEqual(payments[0].value, trade.returned_total)
+            self.assertEqual(payments[1].value, total)
 
     @mock.patch('stoq.gui.pos.PosApp.run_dialog')
     @mock.patch('stoq.gui.pos.info')
@@ -471,7 +471,7 @@ class TestPos(BaseGUITest):
         trade = self.create_trade(trade_value=198)
         run_dialog.return_value = trade
         self.activate(pos.NewTrade)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
         self.check_app(pos, u'pos-new-trade-as-discount')
 
         # Product value = 198
@@ -499,9 +499,9 @@ class TestPos(BaseGUITest):
             self.activate(pos.ConfirmOrder)
 
             payments = self.sale.payments
-            self.assertEquals(self.sale.discount_value, trade.returned_total)
-            self.assertEquals(len(list(payments)), 1)
-            self.assertEquals(payments[0].value, self.sale.get_total_sale_amount())
+            self.assertEqual(self.sale.discount_value, trade.returned_total)
+            self.assertEqual(len(list(payments)), 1)
+            self.assertEqual(payments[0].value, self.sale.get_total_sale_amount())
 
     def test_add_sale_item(self):
         app = self.create_app(PosApp, u'pos')
@@ -526,7 +526,7 @@ class TestPos(BaseGUITest):
         self.create_product_component(product=package, component=component2)
 
         app._add_product_sellable(package.sellable, 1, package.sellable.price)
-        self.assertEquals(len(list(app.sale_items)), 3)
+        self.assertEqual(len(list(app.sale_items)), 3)
 
     def test_add_production_sale_item(self):
         pos = self.create_app(PosApp, u'pos')
@@ -537,7 +537,7 @@ class TestPos(BaseGUITest):
         self.create_product_component(product=production, component=component1)
         pos._add_product_sellable(production.sellable, 1,
                                   production.sellable.price)
-        self.assertEquals(len(list(pos.sale_items)), 1)
+        self.assertEqual(len(list(pos.sale_items)), 1)
 
     @mock.patch('stoq.gui.pos.PosApp.run_dialog')
     def test_add_service_sellable(self, run_dialog):
@@ -565,25 +565,25 @@ class TestPos(BaseGUITest):
         pos.quantity.set_text("")
         self.assertTrue(bool(pos.quantity.validate() is ValueUnset))
         self.activate(pos.quantity)
-        self.assertEquals(len(pos.sale_items), 0)
+        self.assertEqual(len(pos.sale_items), 0)
 
         # Quantity less than 0
         pos.quantity.update(-1)
         self.assertTrue(bool(pos.quantity.validate() is ValueUnset))
         self.activate(pos.quantity)
-        self.assertEquals(len(pos.sale_items), 0)
+        self.assertEqual(len(pos.sale_items), 0)
 
         # Quantity equal to 0
         pos.quantity.update(0)
         self.assertTrue(bool(pos.quantity.validate() is ValueUnset))
         self.activate(pos.quantity)
-        self.assertEquals(len(pos.sale_items), 0)
+        self.assertEqual(len(pos.sale_items), 0)
 
         # Quantity greater than 0
         pos.quantity.update(1)
         self.activate(pos.quantity)
         self.assertTrue(bool(pos.quantity.validate() is not ValueUnset))
-        self.assertEquals(len(pos.sale_items), 1)
+        self.assertEqual(len(pos.sale_items), 1)
 
     @mock.patch('stoq.gui.pos.POSConfirmSaleEvent.emit')
     def test_pos_confirm_sale_event(self, emit):
@@ -599,10 +599,10 @@ class TestPos(BaseGUITest):
         with mock.patch.object(pos._coupon, 'confirm', mock_confirm):
             pos.checkout()
 
-        self.assertEquals(emit.call_count, 1)
+        self.assertEqual(emit.call_count, 1)
         args, kwargs = emit.call_args
         self.assertTrue(isinstance(args[0], Sale))
-        self.assertEquals(args[1], [sale_item])
+        self.assertEqual(args[1], [sale_item])
 
     @mock.patch('stoq.gui.pos.yesno')
     def test_can_change_application(self, yesno):
@@ -674,7 +674,7 @@ class TestPos(BaseGUITest):
             pos.barcode.set_text(sellable.code)
             self.activate(pos.barcode)
 
-            self.assertEquals(pos.sellable_description.get_text(), sellable.description)
+            self.assertEqual(pos.sellable_description.get_text(), sellable.description)
             self.assertTrue(pos.quantity.is_focus())
 
         # The product is directly added
@@ -698,9 +698,9 @@ class TestPos(BaseGUITest):
             pos.barcode.set_text('01xzp')
             with mock.patch.object(pos, 'run_dialog') as run_dialog:
                 run_dialog.return_value = None
-                self.assertEquals(run_dialog.call_count, 0)
+                self.assertEqual(run_dialog.call_count, 0)
                 self.activate(pos.barcode)
-                self.assertEquals(run_dialog.call_count, 1)
+                self.assertEqual(run_dialog.call_count, 1)
 
             self.assertTrue(pos.barcode.is_focus())
 
@@ -738,13 +738,13 @@ class TestPos(BaseGUITest):
         olist.select(olist[0])
 
         self.click(pos.edit_item_button)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         editor, store, item = args
-        self.assertEquals(editor, ServiceItemEditor)
+        self.assertEqual(editor, ServiceItemEditor)
         self.assertTrue(store is not None)
-        self.assertEquals(item.sellable, sellable)
-        self.assertEquals(item.service, service)
+        self.assertEqual(item.sellable, sellable)
+        self.assertEqual(item.service, service)
 
     @mock.patch('stoq.gui.pos.PosApp.run_dialog')
     def test_new_trade(self, run_dialog):
@@ -753,7 +753,7 @@ class TestPos(BaseGUITest):
         run_dialog.return_value = trade
 
         self.activate(pos.NewTrade)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
 
         with mock.patch('stoq.gui.pos.yesno') as yesno:
             self.activate(pos.NewTrade)
@@ -775,7 +775,7 @@ class TestPos(BaseGUITest):
         msg = (("There is a trade with value %s in progress...\n"
                 "When checking out, it will be used as part of "
                 "the payment.") % value)
-        self.assertEquals(pos._trade_infobar.label.get_label(), msg)
+        self.assertEqual(pos._trade_infobar.label.get_label(), msg)
 
         remove_button = pos._trade_infobar.get_action_area().get_children()[0]
         with mock.patch('stoq.gui.pos.yesno') as yesno:
@@ -798,7 +798,7 @@ class TestPos(BaseGUITest):
                                       u'you sure?', Gtk.ResponseType.NO,
                                       u"Don't cancel", u"Cancel order")
 
-        self.assertEquals(olist[0], sale_item)
+        self.assertEqual(olist[0], sale_item)
 
     @mock.patch('stoq.gui.pos.PosApp.run_dialog')
     def test_create_delivery(self, run_dialog):
@@ -817,13 +817,13 @@ class TestPos(BaseGUITest):
         olist.select(olist[0])
 
         self.activate(pos.NewDelivery)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         editor, store, delivery = args
-        self.assertEquals(editor, CreateDeliveryEditor)
+        self.assertEqual(editor, CreateDeliveryEditor)
         self.assertTrue(store is not None)
-        self.assertEquals(delivery, None)
-        self.assertEquals(kwargs[u'sale_items'], [sale_item])
+        self.assertEqual(delivery, None)
+        self.assertEqual(kwargs[u'sale_items'], [sale_item])
 
     def test_remove_item(self):
         pos = self._get_pos_with_open_till()
@@ -834,7 +834,7 @@ class TestPos(BaseGUITest):
         olist.select(olist[0])
 
         self.click(pos.remove_item_button)
-        self.assertEquals(len(olist), 0)
+        self.assertEqual(len(olist), 0)
 
     def test_remove_package_item(self):
         pos = self._get_pos_with_open_till()
@@ -844,7 +844,7 @@ class TestPos(BaseGUITest):
         pos._add_product_sellable(package.sellable, 1, package.sellable.price)
 
         otree = pos.sale_items
-        self.assertEquals(len(list(otree)), 2)
+        self.assertEqual(len(list(otree)), 2)
 
         # Selecting the child
         otree.select_paths([(0, 0)])
@@ -854,7 +854,7 @@ class TestPos(BaseGUITest):
         otree.select(otree[0])
         self.click(pos.remove_item_button)
         # As we remove the parent, we should be removing the children as well
-        self.assertEquals(len(list(otree)), 0)
+        self.assertEqual(len(list(otree)), 0)
 
     def _press_delete_key(self, widget):
         event = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
@@ -872,7 +872,7 @@ class TestPos(BaseGUITest):
 
         # The delete key must delete an element from the olist when pressed.
         self._press_delete_key(pos.barcode)
-        self.assertEquals(len(olist), 0)
+        self.assertEqual(len(olist), 0)
 
     def test_hold_delete_key_on_barcode_widget(self):
         pos = self._get_pos_with_open_till()
@@ -887,7 +887,7 @@ class TestPos(BaseGUITest):
         for i in range(1, 10):
             self._press_delete_key(pos.barcode)
 
-        self.assertEquals(len(olist), 0)
+        self.assertEqual(len(olist), 0)
 
     def test_navigate_through_barcode_widget(self):
         app = self.create_app(PosApp, u'pos')
@@ -909,7 +909,7 @@ class TestPos(BaseGUITest):
             # Each time the down key is pressed, we intend to make the selection shift
             # down once. After the last product is selected, the selection must maintain
             # itself on that element.
-            self.assertEquals(olist.index((olist.get_selected())), min(i, len(olist) - 1))
+            self.assertEqual(olist.index((olist.get_selected())), min(i, len(olist) - 1))
 
         # As the barcode is still in focus, we press the up key three times in a row and
         # the selection must move accordingly.
@@ -917,7 +917,7 @@ class TestPos(BaseGUITest):
             event = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
             event.keyval = Gdk.KEY_Up
             pos.barcode.emit('key-press-event', event)
-            self.assertEquals(olist.index((olist.get_selected())), len(olist) - i - 1)
+            self.assertEqual(olist.index((olist.get_selected())), len(olist) - i - 1)
 
     @mock.patch('stoq.gui.pos.yesno')
     def test_close_till_with_open_sale(self, yesno):
@@ -941,46 +941,46 @@ class TestPos(BaseGUITest):
         olist.select(olist[0])
 
         self.activate(pos.Clients)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         dialog, store = args
-        self.assertEquals(dialog, ClientSearch)
+        self.assertEqual(dialog, ClientSearch)
         self.assertTrue(store is not None)
 
         self.activate(pos.SoldItemsByBranchSearch)
-        self.assertEquals(run_dialog.call_count, 2)
+        self.assertEqual(run_dialog.call_count, 2)
         args, kwargs = run_dialog.call_args
         dialog, store = args
-        self.assertEquals(dialog, SoldItemsByBranchSearch)
+        self.assertEqual(dialog, SoldItemsByBranchSearch)
         self.assertTrue(store is not None)
 
         self.activate(pos.ProductSearch)
-        self.assertEquals(run_dialog.call_count, 3)
+        self.assertEqual(run_dialog.call_count, 3)
         args, kwargs = run_dialog.call_args
         dialog, store = args
-        self.assertEquals(dialog, ProductSearch)
+        self.assertEqual(dialog, ProductSearch)
         self.assertTrue(store is not None)
 
         self.activate(pos.ServiceSearch)
-        self.assertEquals(run_dialog.call_count, 4)
+        self.assertEqual(run_dialog.call_count, 4)
         args, kwargs = run_dialog.call_args
         dialog, store = args
-        self.assertEquals(dialog, ServiceSearch)
+        self.assertEqual(dialog, ServiceSearch)
         self.assertTrue(store is not None)
 
         self.activate(pos.DeliverySearch)
-        self.assertEquals(run_dialog.call_count, 5)
+        self.assertEqual(run_dialog.call_count, 5)
         args, kwargs = run_dialog.call_args
         dialog, store = args
-        self.assertEquals(dialog, DeliverySearch)
+        self.assertEqual(dialog, DeliverySearch)
         self.assertTrue(store is not None)
 
         with mock.patch('stoq.gui.pos.api', new=self.fake.api):
             self.fake.set_retval(sale_item)
             self.activate(pos.Sales)
 
-            self.assertEquals(run_dialog.call_count, 6)
+            self.assertEqual(run_dialog.call_count, 6)
             args, kwargs = run_dialog.call_args
             dialog, store = args
-            self.assertEquals(dialog, SaleWithToolbarSearch)
+            self.assertEqual(dialog, SaleWithToolbarSearch)
             self.assertTrue(store is not None)

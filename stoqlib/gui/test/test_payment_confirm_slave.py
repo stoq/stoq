@@ -106,24 +106,24 @@ class TestSalePaymentConfirmSlave(GUITest):
         slave = PurchasePaymentConfirmSlave(self.store, [payment])
 
         # Penalty and interest enabled
-        self.assertEquals(slave.penalty.read(), currency('1'))
-        self.assertEquals(slave.interest.read(), currency('5.05'))
+        self.assertEqual(slave.penalty.read(), currency('1'))
+        self.assertEqual(slave.interest.read(), currency('5.05'))
 
         # Penalty disabled and interest enabled
         self.click(slave.pay_penalty)
-        self.assertEquals(slave.penalty.read(), currency('0'))
-        self.assertEquals(slave.interest.read(), currency('5'))
+        self.assertEqual(slave.penalty.read(), currency('0'))
+        self.assertEqual(slave.interest.read(), currency('5'))
 
         # Penalty enabled and interest disabled
         self.click(slave.pay_penalty)
         self.click(slave.pay_interest)
-        self.assertEquals(slave.penalty.read(), currency('1'))
-        self.assertEquals(slave.interest.read(), currency('0'))
+        self.assertEqual(slave.penalty.read(), currency('1'))
+        self.assertEqual(slave.interest.read(), currency('0'))
 
         # Penalty and interest disabled
         self.click(slave.pay_penalty)
-        self.assertEquals(slave.penalty.read(), currency('0'))
-        self.assertEquals(slave.interest.read(), currency('0'))
+        self.assertEqual(slave.penalty.read(), currency('0'))
+        self.assertEqual(slave.interest.read(), currency('0'))
 
 
 class TestLonelyPaymentConfirmSlave(GUITest):
@@ -151,21 +151,21 @@ class TestLonelyPaymentConfirmSlave(GUITest):
         slave = PurchasePaymentConfirmSlave(self.store, [payment])
 
         # Penalty and interest enabled
-        self.assertEquals(slave.penalty.read(), currency('1'))
-        self.assertEquals(slave.interest.read(), currency('5.05'))
+        self.assertEqual(slave.penalty.read(), currency('1'))
+        self.assertEqual(slave.interest.read(), currency('5.05'))
 
         # Penalty disabled and interest enabled
         self.click(slave.pay_penalty)
-        self.assertEquals(slave.penalty.read(), currency('0'))
-        self.assertEquals(slave.interest.read(), currency('5'))
+        self.assertEqual(slave.penalty.read(), currency('0'))
+        self.assertEqual(slave.interest.read(), currency('5'))
 
         # Penalty enabled and interest disabled
         self.click(slave.pay_penalty)
         self.click(slave.pay_interest)
-        self.assertEquals(slave.penalty.read(), currency('1'))
-        self.assertEquals(slave.interest.read(), currency('0'))
+        self.assertEqual(slave.penalty.read(), currency('1'))
+        self.assertEqual(slave.interest.read(), currency('0'))
 
         # Penalty and interest disabled
         self.click(slave.pay_penalty)
-        self.assertEquals(slave.penalty.read(), currency('0'))
-        self.assertEquals(slave.interest.read(), currency('0'))
+        self.assertEqual(slave.penalty.read(), currency('0'))
+        self.assertEqual(slave.interest.read(), currency('0'))

@@ -65,7 +65,7 @@ class TestSale(DomainTest):
     def test_status_str(self):
         sale = Sale(store=self.store, branch=self.create_branch(),
                     status=Sale.STATUS_CONFIRMED)
-        self.assertEquals(sale.status_str, 'Confirmed')
+        self.assertEqual(sale.status_str, 'Confirmed')
 
     def test_constructor_without_cfop(self):
         sale = Sale(store=self.store, branch=self.create_branch())
@@ -73,11 +73,11 @@ class TestSale(DomainTest):
 
     def test_get_client_document(self):
         sale = self.create_sale()
-        self.assertEquals(sale.get_client_document(), None)
+        self.assertEqual(sale.get_client_document(), None)
 
         sale.client = self.create_client()
         sale.client.person.individual.cpf = u'444'
-        self.assertEquals(sale.get_client_document(), u'444')
+        self.assertEqual(sale.get_client_document(), u'444')
 
     def test_sale_payments_ordered(self):
         sale = self.create_sale()
@@ -170,7 +170,7 @@ class TestSale(DomainTest):
         sale.add_sellable(component.sellable, quantity=1, parent=parent)
 
         items = sale.get_items(with_children=False)
-        self.assertEquals(items.count(), 1)
+        self.assertEqual(items.count(), 1)
 
     def test_remove_item(self):
         sale = self.create_sale()
@@ -193,7 +193,7 @@ class TestSale(DomainTest):
             self.assertEqual(before_remove, after_remove)
 
             # But not related to the loan
-            self.assertEquals(self.store.find(SaleItem, sale=sale).count(), 0)
+            self.assertEqual(self.store.find(SaleItem, sale=sale).count(), 0)
 
     def test_remove_delivery_item(self):
         sale = self.create_sale()
@@ -206,9 +206,9 @@ class TestSale(DomainTest):
         other_item = self.create_sale_item(sale)
         delivery.add_item(other_item)
 
-        self.assertEquals(len(delivery.get_items()), 1)
+        self.assertEqual(len(delivery.get_items()), 1)
         sale.remove_item(other_item)
-        self.assertEquals(len(delivery.get_items()), 0)
+        self.assertEqual(len(delivery.get_items()), 0)
         sale.remove_item(sale_item)
 
     def test_remove_item_reserved(self):
@@ -224,8 +224,7 @@ class TestSale(DomainTest):
 
     def test_get_status_name(self):
         sale = self.create_sale()
-        self.assertEquals(sale.get_status_name(sale.STATUS_CONFIRMED),
-                          u'Confirmed')
+        self.assertEqual(sale.get_status_name(sale.STATUS_CONFIRMED), u'Confirmed')
 
         self.failUnlessRaises(TypeError,
                               sale.get_status_name, u'invalid status')
@@ -239,7 +238,7 @@ class TestSale(DomainTest):
         self.assertIsNone(sale.get_items().one())
         item.sale = None
         sale.add_item(item)
-        self.assertEquals(sale.get_items().one(), item)
+        self.assertEqual(sale.get_items().one(), item)
 
     def test_get_items_missing_batch(self):
         product1_with_batch = self.create_product()
@@ -280,9 +279,9 @@ class TestSale(DomainTest):
         product = self.create_product()
         self.create_storable(product=product, branch=branch, stock=1)
         sale.add_sellable(product.sellable)
-        self.assertEquals(sale.need_adjust_batches(), False)
+        self.assertEqual(sale.need_adjust_batches(), False)
         adjusted_batches = sale.check_and_adjust_batches()
-        self.assertEquals(adjusted_batches, True)
+        self.assertEqual(adjusted_batches, True)
 
         # Product with 1 batch
         product = self.create_product()
@@ -290,12 +289,12 @@ class TestSale(DomainTest):
                              stock=1)
         sale.status = Sale.STATUS_QUOTE
         sale.add_sellable(product.sellable)
-        self.assertEquals(sale.need_adjust_batches(), True)
+        self.assertEqual(sale.need_adjust_batches(), True)
         # Try adjust batches
         adjusted_batches = sale.check_and_adjust_batches()
         # Verify if the batches were adjusted
-        self.assertEquals(adjusted_batches, True)
-        self.assertEquals(sale.need_adjust_batches(), False)
+        self.assertEqual(adjusted_batches, True)
+        self.assertEqual(sale.need_adjust_batches(), False)
 
         # Product with 2 batches
         product2 = self.create_product()
@@ -310,12 +309,12 @@ class TestSale(DomainTest):
                                 StockTransactionHistory.TYPE_INITIAL,
                                 None, batch=batch2)
         sale.add_sellable(product2.sellable)
-        self.assertEquals(sale.need_adjust_batches(), True)
+        self.assertEqual(sale.need_adjust_batches(), True)
         # Try adjust batches
         adjusted_batches = sale.check_and_adjust_batches()
         # Verify if the batches not were adjusted
-        self.assertEquals(adjusted_batches, False)
-        self.assertEquals(sale.need_adjust_batches(), True)
+        self.assertEqual(adjusted_batches, False)
+        self.assertEqual(sale.need_adjust_batches(), True)
 
     def test_has_children(self):
         parent = self.create_sale_item()
@@ -332,8 +331,8 @@ class TestSale(DomainTest):
         sale_item = self.create_sale_item(sellable=package.sellable)
         child = self.create_sale_item(sellable=component.sellable,
                                       parent_item=sale_item)
-        self.assertEquals(child.get_component(sale_item).quantity, 2)
-        self.assertEquals(child.parent_item, sale_item)
+        self.assertEqual(child.get_component(sale_item).quantity, 2)
+        self.assertEqual(child.parent_item, sale_item)
 
     def test_get_component_returning_none(self):
         product = self.create_product(storable=True, stock=5)
@@ -345,37 +344,36 @@ class TestSale(DomainTest):
         sale = self.create_sale()
         sellable = self.create_sellable()
 
-        with self.assertRaisesRegexp(SellError, 'The sale must have sellable '
-                                                'items'):
+        with self.assertRaisesRegex(SellError, 'The sale must have sellable items'):
             sale.order()
 
         sale.add_sellable(sellable, quantity=5)
 
-        self.failUnless(sale.can_order())
+        self.assertTrue(sale.can_order())
         sale.order()
-        self.failIf(sale.can_order())
+        self.assertFalse(sale.can_order())
 
         # We can also order sales with QUOTE status
         sale = self.create_sale()
         sale.status = Sale.STATUS_QUOTE
         sellable = self.create_sellable()
         sale.add_sellable(sellable, quantity=5)
-        self.failUnless(sale.can_order())
+        self.assertTrue(sale.can_order())
         sale.order()
-        self.failIf(sale.can_order())
+        self.assertFalse(sale.can_order())
 
         sale.client = self.create_client()
         sale.client.is_active = False
         sale.status = sale.STATUS_INITIAL
         expected = ('Unable to make sales for clients with status %s' %
                     sale.client.get_status_string())
-        with self.assertRaisesRegexp(SellError, expected):
+        with self.assertRaisesRegex(SellError, expected):
             sale.order()
 
     def test_confirm_with_sale_token(self):
         token = self.create_sale_token(code=u'Token')
         sale = self.create_sale(sale_token=token)
-        self.assertEquals(token.status, SaleToken.STATUS_OCCUPIED)
+        self.assertEqual(token.status, SaleToken.STATUS_OCCUPIED)
         self.assertIsNotNone(token.sale)
 
         self.add_product(sale)
@@ -384,18 +382,18 @@ class TestSale(DomainTest):
         token.status = SaleToken.STATUS_OCCUPIED
 
         sale.confirm()
-        self.assertEquals(token.status, SaleToken.STATUS_AVAILABLE)
+        self.assertEqual(token.status, SaleToken.STATUS_AVAILABLE)
         self.assertIsNone(token.sale)
 
     def test_cancel_with_sale_token(self):
         token = self.create_sale_token(code=u'foobar')
         sale = self.create_sale(sale_token=token)
-        self.assertEquals(token.status, SaleToken.STATUS_OCCUPIED)
+        self.assertEqual(token.status, SaleToken.STATUS_OCCUPIED)
         self.assertIsNotNone(token.sale)
 
         sale.status = Sale.STATUS_QUOTE
         sale.cancel(u'reason')
-        self.assertEquals(token.status, SaleToken.STATUS_AVAILABLE)
+        self.assertEqual(token.status, SaleToken.STATUS_AVAILABLE)
         self.assertIsNone(token.sale)
 
     def test_confirm_money(self):
@@ -404,12 +402,12 @@ class TestSale(DomainTest):
         sale.order()
 
         self.add_payments(sale, u'money')
-        self.failIf(self.store.find(FiscalBookEntry,
-                                    entry_type=FiscalBookEntry.TYPE_PRODUCT,
-                                    payment_group=sale.group).one())
-        self.failUnless(sale.can_confirm())
+        self.assertFalse(self.store.find(FiscalBookEntry,
+                                         entry_type=FiscalBookEntry.TYPE_PRODUCT,
+                                         payment_group=sale.group).one())
+        self.assertTrue(sale.can_confirm())
         sale.confirm()
-        self.failIf(sale.can_confirm())
+        self.assertFalse(sale.can_confirm())
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
         self.assertEqual(sale.confirm_date.date(), datetime.date.today())
         # Paying all payments, the sale status changes to STATUS_PAID
@@ -419,7 +417,7 @@ class TestSale(DomainTest):
         book_entry = self.store.find(FiscalBookEntry,
                                      entry_type=FiscalBookEntry.TYPE_PRODUCT,
                                      payment_group=sale.group).one()
-        self.failUnless(book_entry)
+        self.assertTrue(book_entry)
         self.assertEqual(book_entry.cfop.code, u'5.102')
         self.assertEqual(book_entry.icms_value, Decimal("1.8"))
 
@@ -450,9 +448,9 @@ class TestSale(DomainTest):
         self.assertEqual(book_entry.icms_value, Decimal("1.8"))
 
         for payment in sale.payments:
-            self.assertEquals(payment.status, Payment.STATUS_PAID)
+            self.assertEqual(payment.status, Payment.STATUS_PAID)
             entry = self.store.find(TillEntry, payment=payment).one()
-            self.assertEquals(entry.value, payment.value)
+            self.assertEqual(entry.value, payment.value)
 
     def test_confirm_check(self):
         sale = self.create_sale()
@@ -460,19 +458,19 @@ class TestSale(DomainTest):
         sale.order()
 
         self.add_payments(sale, method_type=u'check')
-        self.failIf(self.store.find(FiscalBookEntry,
-                                    entry_type=FiscalBookEntry.TYPE_PRODUCT,
-                                    payment_group=sale.group).one())
-        self.failUnless(sale.can_confirm())
+        self.assertFalse(self.store.find(FiscalBookEntry,
+                                         entry_type=FiscalBookEntry.TYPE_PRODUCT,
+                                         payment_group=sale.group).one())
+        self.assertTrue(sale.can_confirm())
         sale.confirm()
-        self.failIf(sale.can_confirm())
+        self.assertFalse(sale.can_confirm())
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
         self.assertEqual(sale.confirm_date.date(), datetime.date.today())
 
         book_entry = self.store.find(FiscalBookEntry,
                                      entry_type=FiscalBookEntry.TYPE_PRODUCT,
                                      payment_group=sale.group).one()
-        self.failUnless(book_entry)
+        self.assertTrue(book_entry)
         self.assertEqual(book_entry.cfop.code, u'5.102')
         self.assertEqual(book_entry.icms_value, Decimal("1.8"))
 
@@ -503,9 +501,9 @@ class TestSale(DomainTest):
         self.assertEqual(book_entry.icms_value, Decimal("1.8"))
 
         for payment in sale.payments:
-            self.assertEquals(payment.status, Payment.STATUS_PAID)
+            self.assertEqual(payment.status, Payment.STATUS_PAID)
             entry = self.store.find(TillEntry, payment=payment).one()
-            self.assertEquals(entry.value, payment.value)
+            self.assertEqual(entry.value, payment.value)
 
     def test_confirm_paid_payments(self):
         client = self.create_client()
@@ -549,7 +547,7 @@ class TestSale(DomainTest):
 
         sale.client = self.create_client()
         sale.confirm()
-        self.assertEquals(sale.group.payer, sale.client.person)
+        self.assertEqual(sale.group.payer, sale.client.person)
 
     def test_confirm_quantity_decreased(self):
         sale = self.create_sale()
@@ -592,7 +590,7 @@ class TestSale(DomainTest):
 
     def test_pay(self):
         sale = self.create_sale()
-        self.failIf(sale.can_set_paid())
+        self.assertFalse(sale.can_set_paid())
 
         sale.status = sale.STATUS_CONFIRMED
 
@@ -601,14 +599,14 @@ class TestSale(DomainTest):
 
         self.add_product(sale)
         sale.order()
-        self.failIf(sale.can_set_paid())
+        self.assertFalse(sale.can_set_paid())
 
         self.add_payments(sale, u'check')
         sale.confirm()
         sale.group.pay()
 
-        self.failIf(sale.can_set_paid())
-        self.failUnless(sale.close_date)
+        self.assertFalse(sale.can_set_paid())
+        self.assertTrue(sale.close_date)
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
         self.assertTrue(sale.paid)
         self.assertEqual(sale.close_date.date(), datetime.date.today())
@@ -618,7 +616,7 @@ class TestSale(DomainTest):
         payment = self.add_payments(sale)
         payment[0].value = Decimal(35)
         payment[0].payment_type = Payment.TYPE_OUT
-        self.assertEquals(sale.get_total_paid(), -35)
+        self.assertEqual(sale.get_total_paid(), -35)
 
     @mock.patch('stoqlib.domain.sale.Event.log')
     def test_set_paid(self, log_):
@@ -675,11 +673,11 @@ class TestSale(DomainTest):
                          balance_before_confirm - 1)
         balance_before_return = storable.get_balance_for_branch(sale.branch)
 
-        self.failUnless(sale.can_return())
+        self.assertTrue(sale.can_return())
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.return_()
 
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
         self.assertEqual(storable.get_balance_for_branch(sale.branch),
@@ -702,11 +700,11 @@ class TestSale(DomainTest):
                          balance_before_confirm - 5)
         balance_before_return = storable.get_balance_for_branch(sale.branch)
 
-        self.failUnless(sale.can_return())
+        self.assertTrue(sale.can_return())
         returned_sale = sale.create_sale_return_adapter()
         list(returned_sale.returned_items)[0].quantity = 2
         returned_sale.return_()
-        self.failUnless(sale.can_return())
+        self.assertTrue(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
         # 2 of 5 returned
         self.assertEqual(storable.get_balance_for_branch(sale.branch),
@@ -720,7 +718,7 @@ class TestSale(DomainTest):
         self.assertEqual(list(returned_sale.returned_items)[0].quantity, 3)
         # Now this is the final return and will be considered as a total return
         returned_sale.return_()
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
         # All 5 returned (2 before plus 3 above)
@@ -740,29 +738,29 @@ class TestSale(DomainTest):
                               parent_item=sale_item)
 
         r_sale = sale.create_sale_return_adapter()
-        self.assertEquals(len(list(r_sale.returned_items)), 2)
+        self.assertEqual(len(list(r_sale.returned_items)), 2)
 
     def test_total_return_paid(self):
         sale = self.create_sale()
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
 
         self.add_product(sale)
         sale.order()
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
 
         self.add_payments(sale)
         sale.confirm()
-        self.failUnless(sale.can_return())
+        self.assertTrue(sale.can_return())
 
         sale.group.pay()
-        self.failUnless(sale.can_return())
+        self.assertTrue(sale.can_return())
 
         item = self.create_sale_item(sale=sale)
         item.quantity = item.returned_quantity
 
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.return_()
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
 
@@ -785,18 +783,18 @@ class TestSale(DomainTest):
 
     def test_partial_return_paid(self):
         sale = self.create_sale()
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
 
         self.add_product(sale, quantity=2)
         sale.order()
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
 
         self.add_payments(sale, u'check')
         sale.confirm()
-        self.failUnless(sale.can_return())
+        self.assertTrue(sale.can_return())
 
         sale.group.pay()
-        self.failUnless(sale.can_return())
+        self.assertTrue(sale.can_return())
 
         payment = sale.payments[0]
         self.assertEqual(payment.value, 20)
@@ -835,20 +833,20 @@ class TestSale(DomainTest):
 
     def test_total_return_not_paid(self):
         sale = self.create_sale()
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
 
         self.add_product(sale, price=300)
         sale.order()
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
 
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, Decimal(300))
         sale.confirm()
-        self.failUnless(sale.can_return())
+        self.assertTrue(sale.can_return())
 
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.return_()
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
 
@@ -860,16 +858,16 @@ class TestSale(DomainTest):
 
     def test_partial_return_not_paid(self):
         sale = self.create_sale()
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
 
         self.add_product(sale, quantity=2, price=300)
         sale.order()
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
 
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, Decimal(600))
         sale.confirm()
-        self.failUnless(sale.can_return())
+        self.assertTrue(sale.can_return())
 
         returned_sale = sale.create_sale_return_adapter()
         list(returned_sale.returned_items)[0].quantity = 1
@@ -881,7 +879,7 @@ class TestSale(DomainTest):
         payment.cancel()
 
         returned_sale.return_()
-        self.failUnless(sale.can_return())
+        self.assertTrue(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
 
         returned_amount = 0
@@ -892,11 +890,11 @@ class TestSale(DomainTest):
 
     def test_total_return_not_entirely_paid(self):
         sale = self.create_sale()
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
 
         self.add_product(sale, price=300)
         sale.order()
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
 
         # Add 3 check payments of 100 each
         method = PaymentMethod.get_by_name(self.store, u'check')
@@ -908,12 +906,12 @@ class TestSale(DomainTest):
         # Pay the first payment.
         payment = payment1
         payment.pay()
-        self.failUnless(sale.can_return())
+        self.assertTrue(sale.can_return())
 
-        self.failUnless(sale.can_return())
+        self.assertTrue(sale.can_return())
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.return_()
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
 
@@ -929,11 +927,11 @@ class TestSale(DomainTest):
 
     def test_partial_return_not_entirely_paid(self):
         sale = self.create_sale()
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
 
         self.add_product(sale, price=300)
         sale.order()
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
 
         # Add 3 check payments of 100 each
         method = PaymentMethod.get_by_name(self.store, u'check')
@@ -945,12 +943,12 @@ class TestSale(DomainTest):
         # Pay the first payment.
         payment = payment1
         payment.pay()
-        self.failUnless(sale.can_return())
+        self.assertTrue(sale.can_return())
 
-        self.failUnless(sale.can_return())
+        self.assertTrue(sale.can_return())
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.return_()
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
 
@@ -965,23 +963,23 @@ class TestSale(DomainTest):
 
     def test_trade(self):
         sale = self.create_sale(branch=get_current_branch(self.store))
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
 
         sellable = self.add_product(sale)
         storable = sellable.product_storable
         balance_before_confirm = storable.get_balance_for_branch(sale.branch)
         sale.order()
-        self.failIf(sale.can_return())
+        self.assertFalse(sale.can_return())
 
         self.add_payments(sale)
         sale.confirm()
-        self.failUnless(sale.can_return())
+        self.assertTrue(sale.can_return())
         self.assertEqual(storable.get_balance_for_branch(sale.branch),
                          balance_before_confirm - 1)
         balance_before_trade = storable.get_balance_for_branch(sale.branch)
 
         sale.group.pay()
-        self.failUnless(sale.can_return())
+        self.assertTrue(sale.can_return())
 
         returned_sale = sale.create_sale_return_adapter()
         self.assertRaises(AssertionError, returned_sale.trade)
@@ -1007,13 +1005,13 @@ class TestSale(DomainTest):
         self.add_product(sale)
         sale.order()
         sale.status = Sale.STATUS_QUOTE
-        self.failUnless(sale.can_edit())
+        self.assertTrue(sale.can_edit())
         with mock.patch.object(sale, 'is_external') as is_external:
             is_external.return_value = True
             self.assertFalse(sale.can_edit())
 
         sale.status = Sale.STATUS_ORDERED
-        self.failUnless(sale.can_edit())
+        self.assertTrue(sale.can_edit())
         with mock.patch.object(sale, 'is_external') as is_external:
             is_external.return_value = True
             self.assertFalse(sale.can_edit())
@@ -1021,7 +1019,7 @@ class TestSale(DomainTest):
         self.add_payments(sale, u'check')
         sale.confirm()
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
-        self.failIf(sale.can_edit())
+        self.assertFalse(sale.can_edit())
         with mock.patch.object(sale, 'is_external') as is_external:
             is_external.return_value = True
             self.assertFalse(sale.can_edit())
@@ -1102,9 +1100,9 @@ class TestSale(DomainTest):
         sale.status = Sale.STATUS_QUOTE
         sale.cancel(u"Test sale cancellation")
         can_cancel_emit.assert_called_once_with(sale)
-        self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
+        self.assertEqual(sale.status, Sale.STATUS_CANCELLED)
         final_quantity = storable.get_balance_for_branch(sale.branch)
-        self.assertEquals(inital_quantity, final_quantity)
+        self.assertEqual(inital_quantity, final_quantity)
 
     def test_cancel_external(self):
         # Create a external sale order
@@ -1117,7 +1115,7 @@ class TestSale(DomainTest):
 
         SaleIsExternalEvent.connect(callback)
         sale.cancel(u"Test sale cancellation")
-        self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
+        self.assertEqual(sale.status, Sale.STATUS_CANCELLED)
         SaleIsExternalEvent.disconnect(callback)
 
     def test_cancel_force(self):
@@ -1129,9 +1127,9 @@ class TestSale(DomainTest):
         with mock.patch.object(sale, 'can_cancel') as can_cancel:
             sale.cancel(u"Test sale cancellation", force=True)
             self.assertEqual(can_cancel.call_count, 0)
-        self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
+        self.assertEqual(sale.status, Sale.STATUS_CANCELLED)
         final_quantity = storable.get_balance_for_branch(sale.branch)
-        self.assertEquals(inital_quantity, final_quantity)
+        self.assertEqual(inital_quantity, final_quantity)
 
     def test_cancel_with_work_order(self):
         sale = self.create_sale()
@@ -1159,10 +1157,10 @@ class TestSale(DomainTest):
 
         with self.sysparam(ALLOW_CANCEL_CONFIRMED_SALES=True):
             sale.cancel(u"Test sale cancellation")
-            self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
-            self.assertEquals(work_order.status, WorkOrder.STATUS_CANCELLED)
+            self.assertEqual(sale.status, Sale.STATUS_CANCELLED)
+            self.assertEqual(work_order.status, WorkOrder.STATUS_CANCELLED)
             for payment in sale.payments:
-                self.failUnless(payment.is_cancelled())
+                self.assertTrue(payment.is_cancelled())
 
     def test_cancel_decreased_quantity(self):
         sale = self.create_sale()
@@ -1212,17 +1210,17 @@ class TestSale(DomainTest):
         sale.confirm()
         sale.group.pay()
         with self.sysparam(ALLOW_CANCEL_CONFIRMED_SALES=True):
-            self.failUnless(sale.can_cancel())
+            self.assertTrue(sale.can_cancel())
 
             after_confirmed_quantity = storable.get_balance_for_branch(branch)
-            self.assertEquals(initial_quantity - 1, after_confirmed_quantity)
+            self.assertEqual(initial_quantity - 1, after_confirmed_quantity)
 
-            self.failUnless(sale.can_cancel())
+            self.assertTrue(sale.can_cancel())
             sale.cancel(u"Test sale cancellation")
-            self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
+            self.assertEqual(sale.status, Sale.STATUS_CANCELLED)
 
             final_quantity = storable.get_balance_for_branch(branch)
-            self.assertEquals(initial_quantity, final_quantity)
+            self.assertEqual(initial_quantity, final_quantity)
 
     def test_cancel_not_paid(self):
         branch = api.get_current_branch(self.store)
@@ -1231,21 +1229,21 @@ class TestSale(DomainTest):
         storable = sellable.product_storable
         initial_quantity = storable.get_balance_for_branch(branch)
         sale.status = sale.STATUS_QUOTE
-        self.failUnless(sale.can_cancel())
+        self.assertTrue(sale.can_cancel())
 
         self.add_payments(sale)
         sale.confirm()
 
         with self.sysparam(ALLOW_CANCEL_CONFIRMED_SALES=True):
             after_confirmed_quantity = storable.get_balance_for_branch(branch)
-            self.assertEquals(initial_quantity - 1, after_confirmed_quantity)
+            self.assertEqual(initial_quantity - 1, after_confirmed_quantity)
 
-            self.failUnless(sale.can_cancel())
+            self.assertTrue(sale.can_cancel())
             sale.cancel(u"Test sale cancellation")
-            self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
+            self.assertEqual(sale.status, Sale.STATUS_CANCELLED)
 
         final_quantity = storable.get_balance_for_branch(branch)
-        self.assertEquals(initial_quantity, final_quantity)
+        self.assertEqual(initial_quantity, final_quantity)
 
     def test_cancel_quote(self):
         sale = self.create_sale()
@@ -1254,9 +1252,9 @@ class TestSale(DomainTest):
         inital_quantity = storable.get_balance_for_branch(sale.branch)
         sale.status = Sale.STATUS_QUOTE
         sale.cancel(u"Test sale cancellation")
-        self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
+        self.assertEqual(sale.status, Sale.STATUS_CANCELLED)
         final_quantity = storable.get_balance_for_branch(sale.branch)
-        self.assertEquals(inital_quantity, final_quantity)
+        self.assertEqual(inital_quantity, final_quantity)
 
     def test_can_set_renegotiated(self):
         sale = self.create_sale()
@@ -1266,12 +1264,12 @@ class TestSale(DomainTest):
         self.add_payments(sale, method_type=u'check')
         sale.confirm()
 
-        self.failUnless(sale.can_set_renegotiated())
+        self.assertTrue(sale.can_set_renegotiated())
 
         for payment in sale.payments:
             payment.pay()
 
-        self.failIf(sale.can_set_renegotiated())
+        self.assertFalse(sale.can_set_renegotiated())
 
     def test_set_renegotiated(self):
         sale = self.create_sale()
@@ -1281,14 +1279,14 @@ class TestSale(DomainTest):
         self.add_payments(sale, method_type=u'check')
         sale.confirm()
 
-        self.failUnless(sale.can_set_renegotiated())
+        self.assertTrue(sale.can_set_renegotiated())
         sale.set_renegotiated()
         self.assertEqual(sale.status, Sale.STATUS_RENEGOTIATED)
 
         for payment in sale.payments:
             payment.cancel()
 
-        self.failIf(sale.can_set_renegotiated())
+        self.assertFalse(sale.can_set_renegotiated())
 
     def test_set_not_returned(self):
         sale = self.create_sale()
@@ -1299,8 +1297,8 @@ class TestSale(DomainTest):
         sale.set_not_returned()
         self.assertFalse(sale.is_returned())
 
-        self.assertEquals(sale.status, Sale.STATUS_CONFIRMED)
-        self.assertEquals(sale.return_date, None)
+        self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
+        self.assertEqual(sale.return_date, None)
 
     def test_products(self):
         sale = self.create_sale()
@@ -1356,14 +1354,14 @@ class TestSale(DomainTest):
 
     def test_sale_with_delivery(self):
         sale = self.create_sale()
-        self.failIf(sale.can_set_paid())
+        self.assertFalse(sale.can_set_paid())
 
         self.add_product(sale)
 
         sellable = sysparam.get_object(self.store, 'DELIVERY_SERVICE').sellable
         sale.add_sellable(sellable, quantity=1)
         sale.order()
-        self.failIf(sale.can_set_paid())
+        self.assertFalse(sale.can_set_paid())
 
         self.add_payments(sale)
         sale.confirm()
@@ -1382,8 +1380,8 @@ class TestSale(DomainTest):
         self.assertTrue(self.store.find(Commission, sale=sale).is_empty())
         sale.confirm()
         commissions = self.store.find(Commission, sale=sale)
-        self.assertEquals(commissions.count(), 1)
-        self.assertEquals(commissions[0].value, Decimal('20.00'))
+        self.assertEqual(commissions.count(), 1)
+        self.assertEqual(commissions[0].value, Decimal('20.00'))
 
     def test_commission_amount_multiple(self):
         sale = self.create_sale()
@@ -1404,8 +1402,8 @@ class TestSale(DomainTest):
         self.assertTrue(self.store.find(Commission, sale=sale).is_empty())
         sale.confirm()
         commissions = self.store.find(Commission, sale=sale)
-        self.assertEquals(commissions.count(), 1)
-        self.assertEquals(commissions[0].value, Decimal('56.00'))
+        self.assertEqual(commissions.count(), 1)
+        self.assertEqual(commissions[0].value, Decimal('56.00'))
 
     def test_commission_amount_when_sale_returns_completly(self):
         if True:
@@ -1422,7 +1420,7 @@ class TestSale(DomainTest):
         # payment method: money
         # installments number: 1
         self.add_payments(sale)
-        self.failIf(self.store.find(Commission, sale=sale))
+        self.assertFalse(self.store.find(Commission, sale=sale))
         sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.return_()
@@ -1433,7 +1431,7 @@ class TestSale(DomainTest):
         value = sum([c.value for c in commissions])
         self.assertEqual(value, Decimal(0))
         self.assertEqual(commissions.count(), 2)
-        self.failIf(commissions[-1].value >= 0)
+        self.assertFalse(commissions[-1].value >= 0)
 
     def test_commission_amount_when_sale_returns_partially(self):
         if True:
@@ -1450,7 +1448,7 @@ class TestSale(DomainTest):
         # payment method: money
         # installments number: 1
         self.add_payments(sale)
-        self.failIf(self.store.find(Commission, sale=sale))
+        self.assertFalse(self.store.find(Commission, sale=sale))
         sale.confirm()
         commission_value_before_return = self.store.find(Commission,
                                                          sale=sale).sum(Commission.value)
@@ -1466,7 +1464,7 @@ class TestSale(DomainTest):
         self.assertEqual(commissions.sum(Commission.value),
                          commission_value_before_return / 2)
         self.assertEqual(commissions.count(), 2)
-        self.failIf(commissions[-1].value >= 0)
+        self.assertFalse(commissions[-1].value >= 0)
 
     def test_commission_create_on_confirm(self):
         api.sysparam.set_bool(
@@ -1493,7 +1491,7 @@ class TestSale(DomainTest):
 
         # Setting all payments as paid above should have raised the flag
         # paid to True
-        self.assertEquals(sale.status, Sale.STATUS_CONFIRMED)
+        self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
         self.assertTrue(sale.paid)
 
         for p in sale.payments:
@@ -1525,7 +1523,7 @@ class TestSale(DomainTest):
 
         # Setting all payments as paid above should have raised the flag
         # paid to True
-        self.assertEquals(sale.status, Sale.STATUS_CONFIRMED)
+        self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
         self.assertTrue(sale.paid)
 
         for p in sale.payments:
@@ -1568,8 +1566,7 @@ class TestSale(DomainTest):
 
         # When this bug happened, there was no commission for the paid payments
         # (when there should be)
-        self.assertEquals(self.store.find(Commission).count(),
-                          commissions_before)
+        self.assertEqual(self.store.find(Commission).count(), commissions_before)
 
         # Pay the last payment.
         last_payment = payments[-1]
@@ -1577,9 +1574,9 @@ class TestSale(DomainTest):
 
         # This should create all the missing commissions and change the sale
         # status
-        self.assertEquals(self.store.find(Commission).count(),
-                          commissions_before + len(payments))
-        self.assertEquals(sale.status, Sale.STATUS_CONFIRMED)
+        self.assertEqual(self.store.find(Commission).count(),
+                         commissions_before + len(payments))
+        self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
         self.assertTrue(sale.paid)
 
         for p in sale.payments:
@@ -1589,11 +1586,11 @@ class TestSale(DomainTest):
     def test_get_client_role(self):
         sale = self.create_sale()
         client_role = sale.get_client_role()
-        self.failUnless(client_role is None)
+        self.assertTrue(client_role is None)
 
         sale.client = self.create_client()
         client_role = sale.get_client_role()
-        self.failIf(client_role is None)
+        self.assertFalse(client_role is None)
 
         sale.client.person.individual = None
 
@@ -1610,7 +1607,7 @@ class TestSale(DomainTest):
         self.add_payments(sale, method_type=u'money')
         sale.confirm()
 
-        self.failUnless(sale.only_paid_with_money())
+        self.assertTrue(sale.only_paid_with_money())
 
         sale = self.create_sale()
         self.add_product(sale)
@@ -1618,17 +1615,17 @@ class TestSale(DomainTest):
         self.add_payments(sale, method_type=u'check')
         sale.confirm()
 
-        self.failIf(sale.only_paid_with_money())
+        self.assertFalse(sale.only_paid_with_money())
 
     def test_quote_sale(self):
         sale = self.create_sale()
         sale.status = Sale.STATUS_QUOTE
         self.add_product(sale)
 
-        self.failUnless(sale.can_confirm())
+        self.assertTrue(sale.can_confirm())
         self.add_payments(sale, u'check')
         sale.confirm()
-        self.failIf(sale.can_confirm())
+        self.assertFalse(sale.can_confirm())
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
 
     def test_account_transaction_check(self):
@@ -1648,12 +1645,12 @@ class TestSale(DomainTest):
         payment.pay(paid_date)
 
         self.assertFalse(account.transactions.is_empty())
-        self.assertEquals(account.transactions.count(), 1)
+        self.assertEqual(account.transactions.count(), 1)
 
         t = account.transactions[0]
-        self.assertEquals(t.payment, payment)
-        self.assertEquals(t.value, payment.value)
-        self.assertEquals(t.date, payment.paid_date)
+        self.assertEqual(t.payment, payment)
+        self.assertEqual(t.value, payment.value)
+        self.assertEqual(t.date, payment.paid_date)
 
     def test_account_transaction_money(self):
         sale = self.create_sale()
@@ -1715,7 +1712,7 @@ class TestSale(DomainTest):
     def test_get_total_to_pay(self):
         item = self.create_sale_item()
         self.add_payments(item.sale)
-        self.assertEquals(item.sale.get_total_to_pay(), 100)
+        self.assertEqual(item.sale.get_total_to_pay(), 100)
 
     def test_set_items_discount(self):
         sale = self.create_sale()
@@ -1757,7 +1754,7 @@ class TestSale(DomainTest):
 
         # Applying 20% discount
         sale.set_items_discount(currency('20'))
-        self.assertEquals(sale.get_sale_subtotal(), currency('8'))
+        self.assertEqual(sale.get_sale_subtotal(), currency('8'))
 
     def test_set_items_discount_with_negative_diff(self):
         sale = self.create_sale()
@@ -1808,14 +1805,14 @@ class TestSale(DomainTest):
         item = self.create_sale_item()
         item.delivery = self.create_delivery()
         item.delivery.address = self.create_address()
-        self.assertEquals(item.sale.get_details_str(), (u'Delivery Address: '
-                                                        u'Mainstreet 138, '
-                                                        u'Cidade Araci'))
+        self.assertEqual(item.sale.get_details_str(), (u'Delivery Address: '
+                                                       u'Mainstreet 138, '
+                                                       u'Cidade Araci'))
 
         item.delivery = None
         item.notes = u'Testing!!!'
         details.append(item.sale.get_details_str())
-        self.assertEquals(details[0], (u'"Description" Notes: %s' % item.notes))
+        self.assertEqual(details[0], (u'"Description" Notes: %s' % item.notes))
         service = self.create_service()
         item2 = self.create_sale_item(sale=item.sale)
         item2.sellable = service.sellable
@@ -1823,51 +1820,51 @@ class TestSale(DomainTest):
         details.append((u'"%s" Estimated Fix Date: %s') % (
                        item2.get_description(),
                        item2.estimated_fix_date.strftime('%x')))
-        self.assertEquals(str, u'\n'.join(sorted(details)))
+        self.assertEqual(str, u'\n'.join(sorted(details)))
 
     def test_get_salesperson_name(self):
         item = self.create_sale_item()
-        self.assertEquals(item.sale.get_salesperson_name(), u'SalesPerson')
+        self.assertEqual(item.sale.get_salesperson_name(), u'SalesPerson')
 
     def test_get_client_name(self):
         sale = self.create_sale()
-        self.assertEquals(sale.get_client_name(), u'Not Specified')
+        self.assertEqual(sale.get_client_name(), u'Not Specified')
 
         sale.client = self.create_client()
-        self.assertEquals(sale.get_client_name(), u'Client')
+        self.assertEqual(sale.get_client_name(), u'Client')
 
     def test_nfe_coupon_info(self):
         sale = self.create_sale()
         self.assertIsNone(sale.nfe_coupon_info)
 
         sale.coupon_id = 982738
-        self.assertEquals(sale.nfe_coupon_info.coo, 982738)
+        self.assertEqual(sale.nfe_coupon_info.coo, 982738)
 
     def test_get_iss_total(self):
         item = self.create_sale_item()
         service = self.create_service()
         service.sellable = item.sellable
         iss = item.sale._get_iss_total(av_difference=10)
-        self.assertEquals(iss, Decimal('19.80000'))
+        self.assertEqual(iss, Decimal('19.80000'))
 
     def test_add_inpayments(self):
         sale = self.create_sale()
         expected = ('You must have at least one payment for each payment '
                     'group')
-        with self.assertRaisesRegexp(ValueError, expected):
+        with self.assertRaisesRegex(ValueError, expected):
             sale._add_inpayments()
 
     def test_get_average_difference(self):
         sale = self.create_sale()
         expected = (u"Sale orders must have items, which means products or "
                     u"services")
-        with self.assertRaisesRegexp(DatabaseInconsistency, expected):
+        with self.assertRaisesRegex(DatabaseInconsistency, expected):
             sale._get_average_difference()
 
         self.add_product(sale, quantity=0)
 
         expected = (u"Sale total quantity should never be zero")
-        with self.assertRaisesRegexp(DatabaseInconsistency, expected):
+        with self.assertRaisesRegex(DatabaseInconsistency, expected):
             sale._get_average_difference()
 
     def test_get_iss_entry(self):
@@ -1895,12 +1892,12 @@ class TestSale(DomainTest):
     def test_recipient(self):
         # Without client
         sale = self.create_sale()
-        self.assertEquals(sale.recipient, None)
+        self.assertEqual(sale.recipient, None)
 
         # With client
         client = self.create_client()
         sale2 = self.create_sale(client=client)
-        self.assertEquals(sale2.recipient, client.person)
+        self.assertEqual(sale2.recipient, client.person)
 
     def test_is_external(self):
         sale = self.create_sale()
@@ -1928,7 +1925,7 @@ class TestSale(DomainTest):
         with self.sysparam(DELIVERY_SERVICE=delivery_service):
             self.assertIsNone(sale.get_delivery_item())
             delivery_item = sale.add_sellable(delivery_service.sellable)
-            self.assertEquals(sale.get_delivery_item(), delivery_item)
+            self.assertEqual(sale.get_delivery_item(), delivery_item)
 
 
 class TestSaleToken(DomainTest):
@@ -1949,9 +1946,9 @@ class TestSaleToken(DomainTest):
     def test_status_change(self):
         token = self.create_sale_token(code=u'token')
         token.open_token(self.create_sale())
-        self.assertEquals(token.status, SaleToken.STATUS_OCCUPIED)
+        self.assertEqual(token.status, SaleToken.STATUS_OCCUPIED)
         token.close_token()
-        self.assertEquals(token.status, SaleToken.STATUS_AVAILABLE)
+        self.assertEqual(token.status, SaleToken.STATUS_AVAILABLE)
 
     def test_find_by_client(self):
         token = self.create_sale_token(code=u'token')
@@ -1971,8 +1968,8 @@ class TestSaleItem(DomainTest):
     def test__init__(self):
         with self.assertRaises(TypeError) as error:
             SaleItem()
-        self.assertEquals(str(error.exception), 'You must provide a sellable '
-                                                'argument')
+        self.assertEqual(str(error.exception), 'You must provide a sellable '
+                                               'argument')
 
     def test_return_to_stock(self):
         sale = self.create_sale()
@@ -2022,7 +2019,7 @@ class TestSaleItem(DomainTest):
         batch3 = self.create_storable_batch(
             storable=sale_item.sellable.product_storable, batch_number=u'3')
 
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError,
                 ("The sum of batch quantities needs to be equal "
                  "or less than the item's original quantity")):
@@ -2033,8 +2030,8 @@ class TestSaleItem(DomainTest):
             set((i.batch, i.quantity) for i in sale_item.sale.get_items()),
             set([(batch1, 3), (batch2, 6), (batch3, 1)]))
 
-        with self.assertRaisesRegexp(ValueError,
-                                     "This item already has a batch"):
+        with self.assertRaisesRegex(ValueError,
+                                    "This item already has a batch"):
             sale_item.set_batches({})
 
     def test_set_batches_partially(self):
@@ -2262,9 +2259,9 @@ class TestSaleItem(DomainTest):
         item = self.create_sale_item()
         expected = (u"Stoq still doesn't support sales for branch companies "
                     u"different than the current one")
-        with self.assertRaisesRegexp(SellError, expected):
+        with self.assertRaisesRegex(SellError, expected):
             item.sell(branch=None)
-        with self.assertRaisesRegexp(SellError, expected):
+        with self.assertRaisesRegex(SellError, expected):
             item.sell(branch=item.sale.branch)
         get_current_branch_.assert_called_once_with(self.store)
 
@@ -2281,12 +2278,12 @@ class TestSaleItem(DomainTest):
 
         # First test with is_available returning False
         with mock.patch.object(Sellable, 'is_available', new=lambda s: False):
-            with self.assertRaisesRegexp(
+            with self.assertRaisesRegex(
                     SellError,
                     "Product 666 is not available for sale. Try making it "
                     "available first and then try again."):
                 sale_item1.sell(sale_item1.sale.branch)
-            with self.assertRaisesRegexp(
+            with self.assertRaisesRegex(
                     SellError,
                     "Product 667 is not available for sale. Try making it "
                     "available first and then try again."):
@@ -2294,7 +2291,7 @@ class TestSaleItem(DomainTest):
 
         # Now test with is_available returning True (the normal case)
         # sale_item1 will still raise SellError because of the lack of stock
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 SellError,
                 "Quantity to decrease is greater than the available stock."):
             sale_item1.sell(sale_item1.sale.branch)
@@ -2312,7 +2309,7 @@ class TestSaleItem(DomainTest):
 
         # closed services should raise SellError here
         sale_item.sellable.close()
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 SellError,
                 "Service 666 is not available for sale. Try making it "
                 "available first and then try again."):
@@ -2338,7 +2335,7 @@ class TestSaleItem(DomainTest):
         item.sellable.unit = self.create_sellable_unit(description=u'Kg')
         str = u"%s %s" % (format_quantity(item.quantity),
                           item.sellable.unit_description)
-        self.assertEquals(item.get_quantity_unit_string(), str)
+        self.assertEqual(item.get_quantity_unit_string(), str)
 
     def test_get_description(self):
         sale = self.create_sale()
@@ -2349,7 +2346,7 @@ class TestSaleItem(DomainTest):
     def test_parent(self):
         sale = self.create_sale()
         sale_item = self.create_sale_item(sale)
-        self.assertEquals(sale_item.parent, sale)
+        self.assertEqual(sale_item.parent, sale)
 
     def test_cfop_code(self):
         item = self.create_sale_item()
@@ -2358,22 +2355,22 @@ class TestSaleItem(DomainTest):
         item.sale.client = client
         item.sale.coupon_id = 912839712
 
-        self.assertEquals(item.cfop_code, u'5929')
+        self.assertEqual(item.cfop_code, u'5929')
 
         # Test without sale coupon
         item.sale.coupon_id = None
         cfop_code = item.cfop_code
 
         item.cfop = None
-        self.assertEquals(item.cfop_code, cfop_code)
+        self.assertEqual(item.cfop_code, cfop_code)
 
     def test_item_discount(self):
         item = self.create_sale_item()
         item.price = 100
         item.base_price = 150
-        self.assertEquals(item.item_discount, 50)
+        self.assertEqual(item.item_discount, 50)
         item.price = 150
-        self.assertEquals(item.item_discount, 0)
+        self.assertEqual(item.item_discount, 0)
 
     def test_sale_discount(self):
         sale = self.create_sale()
@@ -2410,11 +2407,11 @@ class TestSaleItem(DomainTest):
         sale = self.create_sale()
         product = self.create_product(price=10)
         sale_item = sale.add_sellable(product.sellable, quantity=5)
-        self.failIf(sale_item.is_service() is True)
+        self.assertFalse(sale_item.is_service() is True)
 
         service = self.create_service()
         sale_item = sale.add_sellable(service.sellable, quantity=2)
-        self.failIf(sale_item.is_service() is False)
+        self.assertFalse(sale_item.is_service() is False)
 
     def test_batch(self):
         sale = self.create_sale()
@@ -2448,25 +2445,25 @@ class TestDelivery(DomainTest):
 
     def test_status_str(self):
         delivery = self.create_delivery()
-        self.assertEquals(delivery.status_str, u'Waiting')
+        self.assertEqual(delivery.status_str, u'Waiting')
 
     def test_address_str(self):
         delivery = self.create_delivery()
         delivery.address = self.create_address()
-        self.assertEquals(delivery.address_str, u'Mainstreet 138, Cidade '
-                                                u'Araci')
+        self.assertEqual(delivery.address_str, u'Mainstreet 138, Cidade '
+                                               u'Araci')
 
         delivery.address = None
-        self.assertEquals(delivery.address_str, u'')
+        self.assertEqual(delivery.address_str, u'')
 
     def test_client_str(self):
         delivery = self.create_delivery()
         delivery.service_item = self.create_sale_item()
         delivery.service_item.sale.client = self.create_client()
-        self.assertEquals(delivery.client_str, 'Client')
+        self.assertEqual(delivery.client_str, 'Client')
 
         delivery.service_item.sale.client = None
-        self.assertEquals(delivery.client_str, u'')
+        self.assertEqual(delivery.client_str, u'')
 
     def test_can_pick(self):
         delivery = self.create_delivery()
@@ -2624,10 +2621,10 @@ class TestDelivery(DomainTest):
         item = self.create_sale_item()
         delivery.add_item(item)
 
-        self.assertEquals(len(delivery.get_items()), 1)
+        self.assertEqual(len(delivery.get_items()), 1)
 
         delivery.remove_item(item)
-        self.assertEquals(len(delivery.get_items()), 0)
+        self.assertEqual(len(delivery.get_items()), 0)
 
     def test_remove_all_items(self):
         delivery = self.create_delivery()
@@ -2636,10 +2633,10 @@ class TestDelivery(DomainTest):
         item_2 = self.create_sale_item()
         delivery.add_item(item_2)
 
-        self.assertEquals(len(delivery.get_items()), 2)
+        self.assertEqual(len(delivery.get_items()), 2)
 
         delivery.remove_all_items()
-        self.assertEquals(len(delivery.get_items()), 0)
+        self.assertEqual(len(delivery.get_items()), 0)
 
 
 class TestSalePaymentMethodView(DomainTest):
@@ -2658,7 +2655,7 @@ class TestSalePaymentMethodView(DomainTest):
         method = PaymentMethod.get_by_name(self.store, u'money')
         res = SalePaymentMethodView.find_by_payment_method(self.store, method)
         # Initial database already has a money payment
-        self.assertEquals(res.count(), 2)
+        self.assertEqual(res.count(), 2)
         # Only the first sale should be in the results.
         self.assertTrue(sale_money in [r.sale for r in res])
         self.assertFalse(sale_bill in [r.sale for r in res])
@@ -2666,7 +2663,7 @@ class TestSalePaymentMethodView(DomainTest):
         # We don't have any sale with deposit payment method.
         method = PaymentMethod.get_by_name(self.store, u'deposit')
         res = SalePaymentMethodView.find_by_payment_method(self.store, method)
-        self.assertEquals(res.count(), 0)
+        self.assertEqual(res.count(), 0)
 
     def test_with_two_payment_method_sales(self):
         # Create sale with two payments with different methods: money and bill.
@@ -2679,14 +2676,14 @@ class TestSalePaymentMethodView(DomainTest):
         method = PaymentMethod.get_by_name(self.store, u'money')
         res = SalePaymentMethodView.find_by_payment_method(self.store, method)
         # Initial database already has a money payment
-        self.assertEquals(res.count(), 2)
+        self.assertEqual(res.count(), 2)
         self.assertTrue(sale_two_methods in [r.sale for r in res])
 
         # And bill payments...
         method = PaymentMethod.get_by_name(self.store, u'bill')
         res = SalePaymentMethodView.find_by_payment_method(self.store, method)
         # Initial database already has a bill payment
-        self.assertEquals(res.count(), 2)
+        self.assertEqual(res.count(), 2)
         self.assertTrue(sale_two_methods in [r.sale for r in res])
 
     def test_with_two_installments_sales(self):
@@ -2698,7 +2695,7 @@ class TestSalePaymentMethodView(DomainTest):
 
         method = PaymentMethod.get_by_name(self.store, u'deposit')
         res = SalePaymentMethodView.find_by_payment_method(self.store, method)
-        self.assertEquals(res.count(), 1)
+        self.assertEqual(res.count(), 1)
         self.assertTrue(sale_two_inst in [r.sale for r in res])
 
 
@@ -2735,11 +2732,11 @@ class TestReturnedSaleView(DomainTest):
                     Eq(ReturnedSaleView.client_id, client.id))
         view = self.store.find(ReturnedSaleView, query).one()
         for child in view.get_children_items():
-            self.assertEquals(child.quantity, 3)
-            self.assertEquals(child.returned_sale, r_sale)
-            self.assertEquals(child.sale, sale)
-            self.assertEquals(child.client, client)
-            self.assertEquals(child.returned_item, child_item)
+            self.assertEqual(child.quantity, 3)
+            self.assertEqual(child.returned_sale, r_sale)
+            self.assertEqual(child.sale, sale)
+            self.assertEqual(child.client, client)
+            self.assertEqual(child.returned_item, child_item)
 
 
 class TestReturnedSaleItemsView(DomainTest):
@@ -2754,17 +2751,17 @@ class TestReturnedSaleItemsView(DomainTest):
                                          sale_item=sale_item)
         returned_item_view = self.store.find(ReturnedSaleItemsView,
                                              id=returned_item.id).one()
-        self.assertEquals(returned_item_view.new_sale, None)
+        self.assertEqual(returned_item_view.new_sale, None)
 
         new_sale = self.create_sale(branch=branch, client=client)
         returned.new_sale_id = new_sale.id
         returned_item_view = self.store.find(ReturnedSaleItemsView,
                                              id=returned_item.id).one()
-        self.assertEquals(returned_item_view.new_sale, returned.new_sale)
+        self.assertEqual(returned_item_view.new_sale, returned.new_sale)
 
         found = returned_item_view.find_by_sale(store=self.store,
                                                 sale=returned.sale).one()
-        self.assertEquals(found.id, returned_item_view.id)
+        self.assertEqual(found.id, returned_item_view.id)
 
 
 class TestSaleView(DomainTest):
@@ -2814,52 +2811,51 @@ class TestSaleView(DomainTest):
         item = self.create_sale_item()
 
         view = self.store.find(SaleView, id=item.sale.id).one()
-        self.assertEquals(view.subtotal, 100)
+        self.assertEqual(view.subtotal, 100)
 
     def test_total(self):
         item = self.create_sale_item()
         item.ipi_info.v_ipi = 30
 
         view = self.store.find(SaleView, id=item.sale.id).one()
-        self.assertEquals(view.total, Decimal(130))
+        self.assertEqual(view.total, Decimal(130))
 
         item.ipi_info = None
         view = self.store.find(SaleView, id=item.sale.id).one()
-        self.assertEquals(view.total, Decimal(100))
+        self.assertEqual(view.total, Decimal(100))
 
     def test_get_salesperson_name(self):
         sale = self.create_sale()
         view = self.store.find(SaleView, id=sale.id).one()
-        self.assertEquals(view.salesperson_name, u'SalesPerson')
+        self.assertEqual(view.salesperson_name, u'SalesPerson')
 
     def test_open_date_as_string(self):
         sale = self.create_sale()
         view = self.store.find(SaleView, id=sale.id).one()
-        self.assertEquals(view.open_date_as_string,
-                          sale.open_date.strftime("%x"))
+        self.assertEqual(view.open_date_as_string, sale.open_date.strftime("%x"))
 
     def test_status_name(self):
         sale = self.create_sale()
         view = self.store.find(SaleView, id=sale.id).one()
-        self.assertEquals(view.status_name, u'Opened')
+        self.assertEqual(view.status_name, u'Opened')
 
     def test_get_first_sale_comment(self):
         sale = self.create_sale()
         self.create_sale_comment(sale=sale, comment=u'Foo bar')
 
-        self.assertEquals(sale.get_first_sale_comment(), u'Foo bar')
+        self.assertEqual(sale.get_first_sale_comment(), u'Foo bar')
 
     def test_get_first_sale_comment_without_comment(self):
         sale = self.create_sale()
 
-        self.assertEquals(sale.get_first_sale_comment(), u'')
+        self.assertEqual(sale.get_first_sale_comment(), u'')
 
     def test_get_first_sale_comment_with_multiple_comments(self):
         sale = self.create_sale()
         self.create_sale_comment(sale=sale, comment=u'Foo bar')
         self.create_sale_comment(sale=sale, comment=u'Bar foo')
 
-        self.assertEquals(sale.get_first_sale_comment(), u'Foo bar')
+        self.assertEqual(sale.get_first_sale_comment(), u'Foo bar')
 
     def test_subtotal_rounding(self):
         sale = self.create_sale()
@@ -2867,7 +2863,7 @@ class TestSaleView(DomainTest):
         self.create_sale_item(sale=sale, quantity=Decimal('0.527'), price=2)
 
         view = self.store.find(SaleView, id=sale.id).one()
-        self.assertEquals(view.subtotal, currency(2.10))
+        self.assertEqual(view.subtotal, currency(2.10))
 
 
 class TestSalesPersonSalesView(DomainTest):
@@ -2886,13 +2882,13 @@ class TestSalesPersonSalesView(DomainTest):
                                                        date=date))
         for view in views:
             if view.id == sale.salesperson.id:
-                self.assertEquals(view.name, sale.salesperson.person.name)
+                self.assertEqual(view.name, sale.salesperson.person.name)
 
         date = localdate(2012, 1, 2)
         view = SalesPersonSalesView.find_by_date(store=self.store,
                                                  date=date).one()
 
-        self.assertEquals(view.name, sale.salesperson.person.name)
+        self.assertEqual(view.name, sale.salesperson.person.name)
 
         views = SalesPersonSalesView.find_by_date(store=self.store, date=None)
         self.assertIn(sale.salesperson.id, [row.id for row in views])
@@ -2920,4 +2916,4 @@ class TestClientsWithSale(DomainTest):
         sale2.open_date = sale2.confirm_date = localtoday()
 
         view = self.store.find(ClientsWithSaleView, id=sale.client.person_id).one()
-        self.assertEquals(view.total_amount, 450)
+        self.assertEqual(view.total_amount, 450)

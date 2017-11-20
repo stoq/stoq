@@ -183,8 +183,8 @@ class TestBatchIncreaseSelectionDialog(GUITest):
             # FIXME: Why is this not working? If i put a print before .update
             # and one after, I can see the traceback raises between the prints,
             # GUITest will say that there was an unhandled exception (this one)
-            # and assertRaisesRegexp will say that ValueError wasn't raised. WTF???
-            #with self.assertRaisesRegexp(
+            # and assertRaisesRegex will say that ValueError wasn't raised. WTF???
+            #with self.assertRaisesRegex(
             #    ValueError,
             #    ("branch 'Moda Stoq' needs an acronym since we are on "
             #     "synchronized mode")):

@@ -54,4 +54,4 @@ class TestRunDialog(GUITest):
             run_dialog(PaymentCategoryDialog, parent=None, store=self.store)
 
         fake_run.assert_called_once_with()
-        self.assertEquals(self.event_call_count, 1)
+        self.assertEqual(self.event_call_count, 1)

@@ -3,7 +3,7 @@ stoqlib+gui+widgets+calculator+CalculatorPopup(): title=None, hidden
   GtkFrame():
     GtkAlignment():
       GtkBox(main_box, orientation=vertical): hidden
-        GtkBox(main_widget, orientation=vertical, expand=True, fill=True):
+        GtkBox(main_widget, orientation=vertical, fill=True):
           GtkLabel(_main_label, expand=True, fill=True):
           ProxyEntry(_entry, expand=True, fill=True): ''
           GtkBox(orientation=horizontal, expand=True, fill=True):

@@ -82,12 +82,12 @@ class TestClientDetails(GUITest):
 
         args, kwargs = run_dialog.call_args
         editor, d, store, model = args
-        self.assertEquals(editor, ClientEditor)
-        self.assertEquals(d, dialog)
-        self.assertEquals(model, dialog.model)
+        self.assertEqual(editor, ClientEditor)
+        self.assertEqual(d, dialog)
+        self.assertEqual(model, dialog.model)
         self.assertTrue(isinstance(store, StoqlibStore))
-        self.assertEquals(kwargs.pop('visual_mode'), True)
-        self.assertEquals(kwargs, {})
+        self.assertEqual(kwargs.pop('visual_mode'), True)
+        self.assertEqual(kwargs, {})
 
     @mock.patch('stoqlib.gui.dialogs.clientdetails.run_dialog')
     @mock.patch('stoqlib.gui.dialogs.clientdetails.api.new_store')
@@ -114,7 +114,7 @@ class TestClientDetails(GUITest):
         sales_tab.klist.select(sales_tab.klist[0])
         self.click(sales_tab.button_box.details_button)
         args, kwargs = run_dialog.call_args
-        self.assertEquals(args[0], SaleDetailsDialog)
+        self.assertEqual(args[0], SaleDetailsDialog)
         self.assertTrue(isinstance(kwargs['model'], SaleView))
 
         # Test Sales tab return button
@@ -132,7 +132,7 @@ class TestClientDetails(GUITest):
         returned_sales_tab.klist.select(returned_sales_tab.klist[0])
         self.click(returned_sales_tab.button_box.details_button)
         args, kwargs = run_dialog.call_args
-        self.assertEquals(args[0], SaleDetailsDialog)
+        self.assertEqual(args[0], SaleDetailsDialog)
         self.assertTrue(isinstance(kwargs['model'], SaleView))
 
         # Test Work Orders tab details button
@@ -140,7 +140,7 @@ class TestClientDetails(GUITest):
         work_orders_tab.klist.select(work_orders_tab.klist[0])
         self.click(work_orders_tab.button_box.details_button)
         args, kwargs = run_dialog.call_args
-        self.assertEquals(args[0], WorkOrderEditor)
+        self.assertEqual(args[0], WorkOrderEditor)
         self.assertTrue(isinstance(kwargs['model'], WorkOrder))
 
         # Test Payment tab details button
@@ -148,7 +148,7 @@ class TestClientDetails(GUITest):
         payments_tab.klist.select(payments_tab.klist[0])
         self.click(payments_tab.button_box.details_button)
         args, kwargs = run_dialog.call_args
-        self.assertEquals(args[0], InPaymentEditor)
+        self.assertEqual(args[0], InPaymentEditor)
         self.assertTrue(isinstance(kwargs['model'], Payment))
 
 

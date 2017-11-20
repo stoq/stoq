@@ -89,8 +89,8 @@ class TestTransferOrderDetailsDialog(GUITest):
         yesno.assert_called_once_with(u'Receive the order?', Gtk.ResponseType.YES,
                                       u'Receive', u"Don't receive")
 
-        self.assertEquals(order.status, order.STATUS_RECEIVED)
-        self.assertEquals(order.cancel_date, None)
+        self.assertEqual(order.status, order.STATUS_RECEIVED)
+        self.assertEqual(order.cancel_date, None)
 
     @mock.patch('stoqlib.gui.dialogs.transferorderdialog.run_dialog')
     @mock.patch('stoqlib.gui.dialogs.transferorderdialog.get_plugin_manager')
@@ -119,8 +119,8 @@ class TestTransferOrderDetailsDialog(GUITest):
                 ok_button_label=u"Cancel transfer",
                 cancel_button_label=u"Don't cancel",
                 min_length=15)
-        self.assertEquals(order.status, TransferOrder.STATUS_CANCELLED)
-        self.assertEquals(order.receival_date, None)
+        self.assertEqual(order.status, TransferOrder.STATUS_CANCELLED)
+        self.assertEqual(order.receival_date, None)
 
     @mock.patch('stoqlib.gui.dialogs.transferorderdialog.run_dialog')
     def test_dont_cancel_order(self, run_dialog):
@@ -134,7 +134,7 @@ class TestTransferOrderDetailsDialog(GUITest):
         run_dialog.return_value = False
         with mock.patch.object(self.store, 'commit'):
             self.click(dialog.cancel_button)
-        self.assertEquals(order.status, TransferOrder.STATUS_SENT)
+        self.assertEqual(order.status, TransferOrder.STATUS_SENT)
 
     @mock.patch('stoqlib.gui.dialogs.transferorderdialog.run_dialog')
     @mock.patch('stoqlib.gui.dialogs.transferorderdialog.warning')
@@ -152,7 +152,7 @@ class TestTransferOrderDetailsDialog(GUITest):
             with mock.patch.object(self.store, 'commit'):
                 emit.return_value = False
                 self.click(dialog.cancel_button)
-        self.assertEquals(order.status, TransferOrder.STATUS_SENT)
+        self.assertEqual(order.status, TransferOrder.STATUS_SENT)
         warning.assert_called_once_with(
             "The cancellation was not authorized by SEFAZ. You should do a "
             "reverse transfer.")

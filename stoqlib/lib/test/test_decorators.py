@@ -48,22 +48,22 @@ class TestDecorators(unittest.TestCase):
 
         foo = Foo()
         # The first time its called, it should be 1
-        self.assertEquals(foo.prop, 1)
+        self.assertEqual(foo.prop, 1)
 
         # But the second time, even though we added 1 to the value, it should
         # still return 1
-        self.assertEquals(foo.prop, 1)
+        self.assertEqual(foo.prop, 1)
 
         # Now testing TTL
-        self.assertEquals(foo.prop_ttl, 2)
+        self.assertEqual(foo.prop_ttl, 2)
 
         # Hopefully, this will get called less than one second after the call
         # above
-        self.assertEquals(foo.prop_ttl, 2)
+        self.assertEqual(foo.prop_ttl, 2)
 
         # Sleep the expected ttl (a bit longer, actually)
         time.sleep(1.1)
-        self.assertEquals(foo.prop_ttl, 3)
+        self.assertEqual(foo.prop_ttl, 3)
 
     def test_cached_function(self):
         self.call_count = 0
@@ -73,16 +73,16 @@ class TestDecorators(unittest.TestCase):
             self.call_count += 1
             return arg
 
-        self.assertEquals(func(1), 1)
-        self.assertEquals(self.call_count, 1)
+        self.assertEqual(func(1), 1)
+        self.assertEqual(self.call_count, 1)
 
         # Calling it again should not increase call_count
-        self.assertEquals(func(1), 1)
-        self.assertEquals(self.call_count, 1)
+        self.assertEqual(func(1), 1)
+        self.assertEqual(self.call_count, 1)
 
         # but calling with a different argument, should
-        self.assertEquals(func('a'), 'a')
-        self.assertEquals(self.call_count, 2)
+        self.assertEqual(func('a'), 'a')
+        self.assertEqual(self.call_count, 2)
 
         # Calling a function with a unhashable type should raise a TypeError
         # (this is a programming error really)
@@ -97,19 +97,19 @@ class TestDecorators(unittest.TestCase):
             self.call_count += 1
             return (foo, bar)
 
-        self.assertEquals(func_with_kwargs(foo=1, bar=2), (1, 2))
-        self.assertEquals(self.call_count, 1)
+        self.assertEqual(func_with_kwargs(foo=1, bar=2), (1, 2))
+        self.assertEqual(self.call_count, 1)
 
         # Changing the order of the kwargs should not change the call count
-        self.assertEquals(func_with_kwargs(bar=2, foo=1), (1, 2))
-        self.assertEquals(self.call_count, 1)
+        self.assertEqual(func_with_kwargs(bar=2, foo=1), (1, 2))
+        self.assertEqual(self.call_count, 1)
 
         # Calling with positional arguments should also not change call count
-        self.assertEquals(func_with_kwargs(1, 2), (1, 2))
-        self.assertEquals(self.call_count, 1)
+        self.assertEqual(func_with_kwargs(1, 2), (1, 2))
+        self.assertEqual(self.call_count, 1)
 
-        self.assertEquals(func_with_kwargs(1, bar=2), (1, 2))
-        self.assertEquals(self.call_count, 1)
+        self.assertEqual(func_with_kwargs(1, bar=2), (1, 2))
+        self.assertEqual(self.call_count, 1)
 
     def test_cached_function_variable(self):
         self.call_count = 0
@@ -121,14 +121,14 @@ class TestDecorators(unittest.TestCase):
             self.call_count += 1
             return (len(aaa), len(kkk))
 
-        self.assertEquals(func_variable_args(1, 2, 3, foo=4, bar=5), (3, 2))
-        self.assertEquals(self.call_count, 1)
+        self.assertEqual(func_variable_args(1, 2, 3, foo=4, bar=5), (3, 2))
+        self.assertEqual(self.call_count, 1)
 
-        self.assertEquals(func_variable_args(1, 2, 3, bar=5, foo=4), (3, 2))
-        self.assertEquals(self.call_count, 1)
+        self.assertEqual(func_variable_args(1, 2, 3, bar=5, foo=4), (3, 2))
+        self.assertEqual(self.call_count, 1)
 
-        self.assertEquals(func_variable_args(1, 2, 4, foo=4, bar=5), (3, 2))
-        self.assertEquals(self.call_count, 2)
+        self.assertEqual(func_variable_args(1, 2, 4, foo=4, bar=5), (3, 2))
+        self.assertEqual(self.call_count, 2)
 
     def test_cached_function_ttl(self):
         self.call_count = 0
@@ -138,17 +138,17 @@ class TestDecorators(unittest.TestCase):
             self.call_count += 1
             return arg
 
-        self.assertEquals(func(1), 1)
-        self.assertEquals(self.call_count, 1)
+        self.assertEqual(func(1), 1)
+        self.assertEqual(self.call_count, 1)
 
         # Calling it again should not increase call_count
-        self.assertEquals(func(1), 1)
-        self.assertEquals(self.call_count, 1)
+        self.assertEqual(func(1), 1)
+        self.assertEqual(self.call_count, 1)
 
         # but calling after the ttl, should
         time.sleep(1.1)
-        self.assertEquals(func(1), 1)
-        self.assertEquals(self.call_count, 2)
+        self.assertEqual(func(1), 1)
+        self.assertEqual(self.call_count, 2)
 
     def test_threaded(self):
         self.call_count = 0
@@ -159,7 +159,7 @@ class TestDecorators(unittest.TestCase):
             return self.call_count
 
         value = task_with_retval()
-        self.assertEquals(value, 1)
+        self.assertEqual(value, 1)
 
         @threaded
         def task_that_raises():

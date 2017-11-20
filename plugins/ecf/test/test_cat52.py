@@ -118,4 +118,4 @@ class Cat52Test(DomainTest):
             f.add_payment_method(sale, history, payment)
 
         diff = compare_files(f, 'cat52')
-        self.failIf(diff, '%s\n%s' % ("Files differ, output:", diff))
+        self.assertFalse(diff, '%s\n%s' % ("Files differ, output:", diff))

@@ -46,7 +46,7 @@ class TestBikeShopUi(BaseGUITest):
         # Emitting with something different from WorkOrderQuoteReport
         rv = PrintReportEvent.emit(object)
         self.assertFalse(rv)
-        self.assertEquals(print_report.call_count, 0)
+        self.assertEqual(print_report.call_count, 0)
 
         # Emitting with a WorkOrderQuoteReport
         order = self.create_workorder()

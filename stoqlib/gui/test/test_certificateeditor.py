@@ -41,7 +41,7 @@ class TestCertificateEditor(GUITest):
         # # widget.get_filename method is returning null. This is why we are
         # # calling the callback directly
         # editor.on_certificate_chooser__selection_changed(editor.certificate_chooser)
-        # self.assertEquals(editor.model.name, 'true')
+        # self.assertEqual(editor.model.name, 'true')
 
         editor.password.update('123456')
         # Now the dialog can be confirmed

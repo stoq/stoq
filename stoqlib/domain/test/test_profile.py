@@ -47,8 +47,8 @@ class TestUserProfile(DomainTest):
 
     def test_get_default(self):
         profile = UserProfile.get_default(self.store)
-        self.failUnless(isinstance(profile, UserProfile))
-        self.assertEquals(profile.name, _(u'Salesperson'))
+        self.assertTrue(isinstance(profile, UserProfile))
+        self.assertEqual(profile.name, _(u'Salesperson'))
 
         # Change Salesperson's profile name so get_default won't find it
         # and it will fallback to any
@@ -86,11 +86,11 @@ class TestProfileSettings(DomainTest):
         profile.add_application_reference(u'app', False)
         setting = self.store.find(ProfileSettings, user_profile=profile,
                                   app_dir_name=u'app').one()
-        self.failIf(setting.has_permission)
+        self.assertFalse(setting.has_permission)
         ProfileSettings.set_permission(self.store, profile, u'app', True)
-        self.failUnless(setting.has_permission)
+        self.assertTrue(setting.has_permission)
         ProfileSettings.set_permission(self.store, profile, u'app', False)
-        self.failIf(setting.has_permission)
+        self.assertFalse(setting.has_permission)
 
     def test_get_permissions(self):
         profile = UserProfile(store=self.store, name=u'boss')

@@ -76,41 +76,41 @@ class ViewableTest(DomainTest):
                                       date=due_date)
         # Results should have only one item
         results = list(self.store.find(OutPaymentView))
-        self.assertEquals(len(results), 1)
+        self.assertEqual(len(results), 1)
 
         # And the viewable result should be for the same payment (and have same
         # due_date)
         viewable = results[0]
-        self.assertEquals(viewable.payment, payment)
-        self.assertEquals(viewable.due_date.date(), due_date)
+        self.assertEqual(viewable.payment, payment)
+        self.assertEqual(viewable.due_date.date(), due_date)
 
         # Update the payment due date
         new_due_date = datetime.date(2010, 4, 22)
         payment.due_date = new_due_date
 
         # Before syncing, the due date still have the old value
-        self.assertEquals(viewable.due_date.date(), due_date)
+        self.assertEqual(viewable.due_date.date(), due_date)
 
         # Sync the viewable object and the due date should update to the new
         # value
         viewable.sync()
-        self.assertEquals(viewable.due_date.date(), new_due_date)
+        self.assertEqual(viewable.due_date.date(), new_due_date)
 
     def test_eq(self):
         client = self.create_client(name=u'Fulano')
         view = self.store.find(ClientView, Client.id == client.id).one()
-        self.failIf(view == client)
+        self.assertFalse(view == client)
 
         view2 = self.store.find(ClientView, Client.id == client.id).one()
         self.assertEqual(view, view2)
 
     def test_store(self):
         item = self.store.find(ClientView).any()
-        self.assertEquals(item.store, self.store)
+        self.assertEqual(item.store, self.store)
 
     def test_hash(self):
         item = self.store.find(ClientView).any()
-        self.assertEquals(hash(item), hash(item.id))
+        self.assertEqual(hash(item), hash(item.id))
 
     def test_viewable_with_group_by(self):
         client = self.create_client(name=u'Fulano')
@@ -123,9 +123,9 @@ class ViewableTest(DomainTest):
         views = self.store.find(ClientView)
         for view in views:
             if view.client == client:
-                self.assertEquals(view.person, client.person)
-                self.assertEquals(view.person_name, u'Fulano')
-                self.assertEquals(view.total_sales, 364)
+                self.assertEqual(view.person, client.person)
+                self.assertEqual(view.person_name, u'Fulano')
+                self.assertEqual(view.total_sales, 364)
                 break
         else:
             raise AssertionError('client should be found in the view')
@@ -143,7 +143,7 @@ class ViewableTest(DomainTest):
                                                  new_joins=new_joins)
 
         item = self.store.find(NewViewable, Client.id == client.id).one()
-        self.assertEquals(item.cpf, '123.123.123-12')
+        self.assertEqual(item.cpf, '123.123.123-12')
 
         item = self.store.find(ClientView, Client.id == client.id).one()
         self.assertFalse(hasattr(item, 'cpf'))

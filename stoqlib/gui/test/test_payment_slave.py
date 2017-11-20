@@ -94,7 +94,7 @@ class TestMoneyMethodSlave(GUITest):
                                      order,
                                      method,
                                      Decimal(200))
-            self.assertEquals(
+            self.assertEqual(
                 slave.bank_first_check_number.get_property('mandatory'), False)
 
 
@@ -108,7 +108,7 @@ class TestCheckPaymentSlaves(GUITest):
             order.identifier = 12345
             slave = CheckMethodSlave(wizard, None, self.store, order, method,
                                      Decimal(200))
-            self.assertEquals(
+            self.assertEqual(
                 slave.bank_first_check_number.get_property('mandatory'), True)
             self.check_slave(slave, 'slave-check-method')
 
@@ -172,8 +172,8 @@ class TestCardPaymentSlaves(GUITest):
         method = PaymentMethod.get_by_name(self.store, u'card')
         slave = CardMethodSlave(wizard, None, self.store, sale, method)
         slave.auth_number.update(1234567)
-        self.assertEquals(str(slave.auth_number.emit("validate", 1234567)),
-                          "Authorization number must have 6 digits or less.")
+        self.assertEqual(str(slave.auth_number.emit("validate", 1234567)),
+                         "Authorization number must have 6 digits or less.")
         self.assertNotSensitive(wizard, ['next_button'])
         slave.auth_number.update(123456)
         self.assertSensitive(wizard, ['next_button'])
@@ -204,9 +204,9 @@ class TestMultipleMethodSlave(GUITest):
         wizard = ConfirmSaleWizard(self.store, sale, subtotal)
         slave = MultipleMethodSlave(wizard, None, self.store, sale)
 
-        self.assertEquals(slave.value.read(), 10)
-        self.assertEquals(str(slave.value.emit("validate", 0)),
-                          u"You must provide a payment value.")
+        self.assertEqual(slave.value.read(), 10)
+        self.assertEqual(str(slave.value.emit("validate", 0)),
+                         u"You must provide a payment value.")
         self.assertNotSensitive(slave, ['add_button'])
 
         # Test with an invalid value.
@@ -217,7 +217,7 @@ class TestMultipleMethodSlave(GUITest):
                 radio.set_active(True)
                 break
         # Check if value was updated.
-        self.assertEquals(slave.value.read(), 10)
+        self.assertEqual(slave.value.read(), 10)
         self.assertSensitive(slave, ['add_button'])
 
         # Test with store credit.
@@ -225,10 +225,10 @@ class TestMultipleMethodSlave(GUITest):
             if radio.get_label() == 'Store Credit':
                 radio.set_active(True)
                 break
-        self.assertEquals(slave.value.read(), 10)
+        self.assertEqual(slave.value.read(), 10)
         self.assertSensitive(slave, ['add_button'])
-        self.assertEquals(str(slave.value.emit("validate", 30)),
-                          u"Client does not have enough credit. Client store credit: 20.0.")
+        self.assertEqual(str(slave.value.emit("validate", 30)),
+                         u"Client does not have enough credit. Client store credit: 20.0.")
         self.assertNotSensitive(slave, ['add_button'])
         slave.value.update(10)
         self.assertSensitive(slave, ['add_button'])
@@ -238,7 +238,7 @@ class TestMultipleMethodSlave(GUITest):
             if radio.get_label() == 'Bill':
                 radio.set_active(True)
                 break
-        self.assertEquals(slave.value.read(), 10)
+        self.assertEqual(slave.value.read(), 10)
         self.assertSensitive(slave, ['add_button'])
 
         # Change to money.
@@ -249,7 +249,7 @@ class TestMultipleMethodSlave(GUITest):
                 radio.set_active(True)
                 break
         # Check if the value typed was kept.
-        self.assertEquals(slave.value.read(), 5)
+        self.assertEqual(slave.value.read(), 5)
         self.assertSensitive(slave, ['add_button'])
 
 

@@ -34,4 +34,4 @@ class TestAttachment(DomainTest):
 
     def test_get_description(self):
         attachment = Attachment(name=u'TesteAttachment')
-        self.assertEquals(attachment.get_description(), u'TesteAttachment')
+        self.assertEqual(attachment.get_description(), u'TesteAttachment')

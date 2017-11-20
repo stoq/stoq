@@ -44,7 +44,7 @@ class TestClientCategoryDialog(GUITest):
         # user canceled the dialog
         run_dialog.return_value = None
         self.click(dialog.list_slave.listcontainer.add_button)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
 
     @mock.patch('stoqlib.gui.base.lists.run_dialog')
     def test_remove(self, run_dialog):
@@ -53,7 +53,7 @@ class TestClientCategoryDialog(GUITest):
         client.category = category
 
         total_categoryes = self.store.find(ClientCategory).count()
-        self.assertEquals(total_categoryes, 1)
+        self.assertEqual(total_categoryes, 1)
 
         dialog = ClientCategoryDialog(self.store, reuse_store=True)
         dialog.list_slave.listcontainer.list.select(category)
@@ -64,8 +64,8 @@ class TestClientCategoryDialog(GUITest):
             self.click(dialog.list_slave.listcontainer.remove_button)
 
         total_categoryes = self.store.find(ClientCategory).count()
-        self.assertEquals(total_categoryes, 0)
-        self.assertEquals(client.category, None)
+        self.assertEqual(total_categoryes, 0)
+        self.assertEqual(client.category, None)
 
     @mock.patch('stoqlib.gui.dialogs.clientcategorydialog.warning')
     def test_remove_with_product(self, warning):

@@ -101,13 +101,13 @@ class SaleQuoteItemSlave(BaseEditorSlave):
         self.original_price.update(self.model.base_price)
 
         self.price.set_adjustment(Gtk.Adjustment(lower=0, upper=MAX_INT,
-                                                 step_incr=1, page_incr=10))
+                                                 step_increment=1, page_increment=10))
         unit = self.model.sellable.unit
         digits = QUANTITY_PRECISION if unit and unit.allow_fraction else 0
         for widget in [self.quantity, self.reserved]:
             widget.set_digits(digits)
             widget.set_adjustment(Gtk.Adjustment(lower=0, upper=MAX_INT,
-                                                 step_incr=1, page_incr=10))
+                                                 step_increment=1, page_increment=10))
 
         manager = get_plugin_manager()
         self.nfe_is_active = manager.is_any_active(['nfe', 'nfce'])

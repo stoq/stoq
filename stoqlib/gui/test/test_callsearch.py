@@ -67,24 +67,24 @@ class TestCallsSearch(GUITest):
 
         with mock.patch('stoqlib.gui.search.callsearch.print_report') as print_report:
             self.click(search.print_button)
-            self.assertEquals(print_report.call_count, 1)
+            self.assertEqual(print_report.call_count, 1)
 
         with mock.patch('stoqlib.gui.search.callsearch.run_dialog') as run_dialog:
             self.click(search._toolbar.edit_button)
-            self.assertEquals(run_dialog.call_count, 1)
+            self.assertEqual(run_dialog.call_count, 1)
             args, kwargs = run_dialog.call_args
             editor, parent, store, model, person, person_type = args
-            self.assertEquals(editor, CallsEditor)
-            self.assertEquals(parent, search)
-            self.assertEquals(model, selected.call)
-            self.assertEquals(person, None)
+            self.assertEqual(editor, CallsEditor)
+            self.assertEqual(parent, search)
+            self.assertEqual(model, selected.call)
+            self.assertEqual(person, None)
 
         with mock.patch('stoqlib.gui.search.callsearch.run_dialog') as run_dialog:
             self.click(search._toolbar.new_button)
-            self.assertEquals(run_dialog.call_count, 1)
+            self.assertEqual(run_dialog.call_count, 1)
             args, kwargs = run_dialog.call_args
             editor, parent, store, model, person, person_type = args
-            self.assertEquals(editor, CallsEditor)
-            self.assertEquals(parent, search)
-            self.assertEquals(model, None)
-            self.assertEquals(person, None)
+            self.assertEqual(editor, CallsEditor)
+            self.assertEqual(parent, search)
+            self.assertEqual(model, None)
+            self.assertEqual(person, None)

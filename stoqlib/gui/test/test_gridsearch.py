@@ -56,4 +56,4 @@ class TestAttributeSearch(GUITest):
         self.create_attribute_group()
 
         self.click(search._toolbar.new_button)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)

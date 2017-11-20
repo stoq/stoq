@@ -79,7 +79,7 @@ class TestClientEditor(_BasePersonEditorTest):
 
         # FIXME: The list bellow is broken. It's documenting 26 queries but
         # only 21 are being executed. Maybe we should compare the queries
-        # (with something like assertRaisesRegexp for parts like uuids)
+        # (with something like assertRaisesRegex for parts like uuids)
         # instead of counting them. It will be easier to maintain.
         # NOTE: Document increases/decreases
         # 1: select user/branch/station (normally cached)
@@ -97,7 +97,7 @@ class TestClientEditor(_BasePersonEditorTest):
         # 2: select payment
         # 1: select current user
         # 1: select app permissions for the user
-        self.assertEquals(tracer.count, 21)
+        self.assertEqual(tracer.count, 21)
 
     def test_create_individual(self):
         editor = ClientEditor(self.store, role_type=Person.ROLE_INDIVIDUAL)

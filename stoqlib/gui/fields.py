@@ -466,7 +466,7 @@ class AttachmentField(Field):
         button = Gtk.Button()
         button.connect('clicked', self._on_open_button__clicked)
 
-        box = Gtk.HBox(False, 4)
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=4)
         button.add(box)
 
         self._label = Gtk.Label(label=self.no_attachment_lbl)

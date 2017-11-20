@@ -99,7 +99,7 @@ class TestQuotePurchaseeWizard(GUITest):
         self._check_supplier_step('wizard-purchasequote-supplier-step')
 
         # FIXME: How many times?
-        self.assertEquals(commit.call_count, 1)
+        self.assertEqual(commit.call_count, 1)
 
         purchase = self.wizard.model
         models = [purchase]

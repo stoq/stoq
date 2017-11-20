@@ -44,13 +44,13 @@ class TestPaymentFlowHistoryDialog(GUITest):
         payment = self.create_payment()
         dialog = PaymentFlowHistoryDialog(self.store)
         self.click(dialog.ok_button)
-        self.assertEquals(info.call_count, 1)
+        self.assertEqual(info.call_count, 1)
 
         args, kwargs = info.call_args
         results = kwargs['payment_histories']
 
-        self.assertEquals(len(results), 1)
+        self.assertEqual(len(results), 1)
 
         divergent_payments = results[0].get_divergent_payments()
-        self.assertEquals(divergent_payments.count(), 1)
-        self.assertEquals(divergent_payments[0], payment)
+        self.assertEqual(divergent_payments.count(), 1)
+        self.assertEqual(divergent_payments[0], payment)

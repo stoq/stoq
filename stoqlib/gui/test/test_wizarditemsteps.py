@@ -58,7 +58,7 @@ class BaseTest(object):
     def test_get_sellable_view_query(self):
         retval = self.step.get_sellable_view_query()
         self.assertTrue(isinstance(retval, tuple))
-        self.assertEquals(len(retval), 2)
+        self.assertEqual(len(retval), 2)
         self.assertTrue(issubclass(retval[0], Viewable))
 
     def test_sellable_search(self):

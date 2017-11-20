@@ -116,7 +116,7 @@ class TestBillReport(DomainTest):
         generated = self._render_bill_to_html(sale)
         expected = self._get_expected(name, generated)
         diff = diff_pdf_htmls(expected, generated)
-        self.failIf(diff, '%s\n%s' % ("Files differ, output:", diff))
+        self.assertFalse(diff, '%s\n%s' % ("Files differ, output:", diff))
 
     def test_banco_do_brasil(self):
         sale = self._create_bill_sale()
@@ -222,14 +222,14 @@ class TestBankInfo(DomainTest):
                            BILL_PENALTY=Decimal(11),
                            BILL_INTEREST=Decimal('0.4'),
                            BILL_DISCOUNT=Decimal('123.45')):
-            self.assertEquals(self.info.instrucoes,
-                              [u'Primeia linha da instru\xe7\xe3o',
-                               u'04/07/2000',
-                               u'$60.50 foo $2.20',
-                               u' $678.98 e 00134'])
+            self.assertEqual(self.info.instrucoes,
+                             [u'Primeia linha da instru\xe7\xe3o',
+                              u'04/07/2000',
+                              u'$60.50 foo $2.20',
+                              u' $678.98 e 00134'])
 
     def test_barcode(self):
-        self.assertEquals(len(self.info.barcode), 44)
+        self.assertEqual(len(self.info.barcode), 44)
         with self.assertRaises(BoletoException):
             self.info.campo_livre = '0' * 27
             self.info.barcode
@@ -238,61 +238,61 @@ class TestBankInfo(DomainTest):
         with self.assertRaises(BoletoException):
             TestBank.formata_numero('123456', 3)
 
-        self.assertEquals(TestBank.formata_numero('123', 6), '000123')
+        self.assertEqual(TestBank.formata_numero('123', 6), '000123')
 
     def test_dv_agencia(self):
         self.info.agencia = '123-4'
-        self.assertEquals(self.info.dv_agencia, '4')
+        self.assertEqual(self.info.dv_agencia, '4')
 
         self.info.agencia = '1'
-        self.assertEquals(self.info.dv_agencia, '')
+        self.assertEqual(self.info.dv_agencia, '')
 
     def test_dv_conta(self):
         self.info.conta = '123-9'
-        self.assertEquals(self.info.dv_conta, '9')
+        self.assertEqual(self.info.dv_conta, '9')
 
         self.info.conta = '1'
-        self.assertEquals(self.info.dv_conta, '')
+        self.assertEqual(self.info.dv_conta, '')
 
     def test_get_extra_options(self):
-        self.assertEquals(BankInfo.get_extra_options(), [])
-        self.assertEquals(TestBank.get_extra_options(), ['opcao_teste',
-                                                         'segunda_opcao'])
+        self.assertEqual(BankInfo.get_extra_options(), [])
+        self.assertEqual(TestBank.get_extra_options(), ['opcao_teste',
+                                                        'segunda_opcao'])
 
     def test_validate_field(self):
-        with self.assertRaisesRegexp(BoletoException, 'The field cannot have spaces'):
+        with self.assertRaisesRegex(BoletoException, 'The field cannot have spaces'):
             TestBank.validate_field('with spaces')
 
-        with self.assertRaisesRegexp(BoletoException,
-                                     'The field cannot have dots of commas'):
+        with self.assertRaisesRegex(BoletoException,
+                                    'The field cannot have dots of commas'):
             TestBank.validate_field('cant,have,commas')
 
-        with self.assertRaisesRegexp(BoletoException,
-                                     'The field cannot have dots of commas'):
+        with self.assertRaisesRegex(BoletoException,
+                                    'The field cannot have dots of commas'):
             TestBank.validate_field('cant.have.dots')
 
-        with self.assertRaisesRegexp(BoletoException, 'More than one hyphen found'):
+        with self.assertRaisesRegex(BoletoException, 'More than one hyphen found'):
             TestBank.validate_field('only-one-hyphen-allowed')
 
-        with self.assertRaisesRegexp(BoletoException, 'Verifier digit cannot be empty'):
+        with self.assertRaisesRegex(BoletoException, 'Verifier digit cannot be empty'):
             TestBank.validate_field('noverifiierdigit-')
 
-        with self.assertRaisesRegexp(BoletoException, 'Account needs to be a number'):
+        with self.assertRaisesRegex(BoletoException, 'Account needs to be a number'):
             TestBank.validate_field('foobar')
 
         TestBank.validate_field_dv = '0'
         TestBank.validate_field_func = 'modulo11'
-        with self.assertRaisesRegexp(BoletoException, 'Invalid verifier digit'):
+        with self.assertRaisesRegex(BoletoException, 'Invalid verifier digit'):
             TestBank.validate_field('1234-5')
-        with self.assertRaisesRegexp(BoletoException,
-                                     'Verifier digit must be a number or 0'):
+        with self.assertRaisesRegex(BoletoException,
+                                    'Verifier digit must be a number or 0'):
             TestBank.validate_field('1234-y')
 
         # Now a valid dv
         TestBank.validate_field('1234-3')
 
         TestBank.validate_field_func = 'modulo10'
-        with self.assertRaisesRegexp(BoletoException, 'Invalid verifier digit'):
+        with self.assertRaisesRegex(BoletoException, 'Invalid verifier digit'):
             TestBank.validate_field('1234-5')
 
         # Now a valid dv for modulo 11
@@ -301,7 +301,7 @@ class TestBankInfo(DomainTest):
         # Now with an X verifier digit
         TestBank.validate_field_dv = 'x'
         TestBank.validate_field_func = 'modulo11'
-        with self.assertRaisesRegexp(BoletoException, 'Invalid verifier digit'):
+        with self.assertRaisesRegex(BoletoException, 'Invalid verifier digit'):
             TestBank.validate_field('1234-x')
         TestBank.validate_field('0295-X')
 
@@ -440,10 +440,10 @@ class TestBancoBradesco(DomainTest):
 
     def test_dv_nosso_numero(self):
         self.dados.nosso_numero = '1236'
-        self.assertEquals(self.dados.dv_nosso_numero, 'P')
+        self.assertEqual(self.dados.dv_nosso_numero, 'P')
 
         self.dados.nosso_numero = '1244'
-        self.assertEquals(self.dados.dv_nosso_numero, 0)
+        self.assertEqual(self.dados.dv_nosso_numero, 0)
 
     def test_carteira(self):
         payment = self.create_payment(value=Decimal('2952.95'),
@@ -457,7 +457,7 @@ class TestBancoBradesco(DomainTest):
         account.bank = bank
         payment.method.destination_account = account
         x = BankBradesco(payment)
-        self.assertEquals(
+        self.assertEqual(
             x.barcode, '23793490100002952952752090007589645200149780')
 
         x.validate_option(u'carteira', '9')
@@ -565,6 +565,7 @@ class TestSantander(DomainTest):
         self.assertEqual(self.dados.barcode,
                          '03396522000002952959070707700000123456790102'
                          )
+
 
 if __name__ == '__main__':
     unittest.main()

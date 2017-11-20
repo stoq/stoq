@@ -43,14 +43,14 @@ class TestPaymentMethodsDialog(GUITest):
         dialog.klist.select(payment_method)
         self.click(dialog._toolbar_slave.edit_button)
 
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
 
         args, kwargs = run_dialog.call_args
         editor, payment_dialog, store, method = args
 
-        self.assertEquals(editor, PaymentMethodEditor)
-        self.assertEquals(payment_dialog, dialog)
+        self.assertEqual(editor, PaymentMethodEditor)
+        self.assertEqual(payment_dialog, dialog)
         self.assertTrue(isinstance(store, StoqlibStore))
         # comparing both objects does not work because they are in different
         # transactions
-        self.assertEquals(method.id, payment_method.id)
+        self.assertEqual(method.id, payment_method.id)

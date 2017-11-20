@@ -23,14 +23,13 @@
 ##
 """ This module tests all fiscal data"""
 
-__tests__ = 'stoqlib/domain/fiscal.py'
-
-
 import mock
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry, Invoice
 from stoqlib.domain.test.domaintest import DomainTest
+
+__tests__ = 'stoqlib/domain/fiscal.py'
 
 
 class TestCfopData(DomainTest):
@@ -46,8 +45,8 @@ class TestIcmsIpiBookEntry(DomainTest):
     def test_reverse_entry(self):
         entry = self.create_icms_ipi_book_entry()
         reversal = entry.reverse_entry(100)
-        self.assertEquals(reversal.icms_value, 10)
-        self.assertEquals(reversal.ipi_value, 10)
+        self.assertEqual(reversal.icms_value, 10)
+        self.assertEqual(reversal.ipi_value, 10)
 
     def test_create_product_entry(self):
         sale = self.create_sale()
@@ -56,25 +55,24 @@ class TestIcmsIpiBookEntry(DomainTest):
             self.store,
             sale.group, sale.cfop, sale.coupon_id,
             123)
-        self.failUnless(book_entry)
-        self.assertEquals(book_entry.icms_value, 123)
-        self.assertEquals(book_entry.entry_type,
-                          FiscalBookEntry.TYPE_PRODUCT)
+        self.assertTrue(book_entry)
+        self.assertEqual(book_entry.icms_value, 123)
+        self.assertEqual(book_entry.entry_type, FiscalBookEntry.TYPE_PRODUCT)
 
     def test_has_entry_by_payment_group(self):
         payment_group = self.create_payment_group()
         entry = self.create_icms_ipi_book_entry()
 
-        self.failUnless(entry.has_entry_by_payment_group(
+        self.assertTrue(entry.has_entry_by_payment_group(
             self.store, entry.payment_group, entry.entry_type))
-        self.failIf(entry.has_entry_by_payment_group(
+        self.assertFalse(entry.has_entry_by_payment_group(
             self.store, payment_group, entry.entry_type))
 
     def test_get_entry_by_payment_group(self):
         payment_group = self.create_payment_group()
         entry = self.create_icms_ipi_book_entry()
 
-        self.failIf(entry.get_entry_by_payment_group(
+        self.assertFalse(entry.get_entry_by_payment_group(
             self.store, payment_group,
             entry.entry_type))
 
@@ -84,7 +82,7 @@ class TestIssBookEntry(DomainTest):
     def test_reverse_entry(self):
         entry = self.create_iss_book_entry()
         reversal = entry.reverse_entry(201)
-        self.assertEquals(reversal.iss_value, 10)
+        self.assertEqual(reversal.iss_value, 10)
 
     def test_create_service_entry(self):
         sale = self.create_sale()
@@ -95,25 +93,24 @@ class TestIssBookEntry(DomainTest):
             sale.cfop,
             sale.service_invoice_number,
             123)
-        self.failUnless(book_entry)
-        self.assertEquals(book_entry.iss_value, 123)
-        self.assertEquals(book_entry.entry_type,
-                          FiscalBookEntry.TYPE_SERVICE)
+        self.assertTrue(book_entry)
+        self.assertEqual(book_entry.iss_value, 123)
+        self.assertEqual(book_entry.entry_type, FiscalBookEntry.TYPE_SERVICE)
 
     def test_has_entry_by_payment_group(self):
         payment_group = self.create_payment_group()
         entry = self.create_iss_book_entry()
 
-        self.failUnless(entry.has_entry_by_payment_group(
+        self.assertTrue(entry.has_entry_by_payment_group(
             self.store, entry.payment_group, entry.entry_type))
-        self.failIf(entry.has_entry_by_payment_group(
+        self.assertFalse(entry.has_entry_by_payment_group(
             self.store, payment_group, entry.entry_type))
 
     def test_get_entry_by_payment_group(self):
         payment_group = self.create_payment_group()
         entry = self.create_iss_book_entry()
 
-        self.failIf(entry.get_entry_by_payment_group(
+        self.assertFalse(entry.get_entry_by_payment_group(
             self.store, payment_group,
             entry.entry_type))
 
@@ -135,8 +132,8 @@ class TestInvoice(DomainTest):
                                                                   series=1)
             next_invoice_number = Invoice.get_next_invoice_number(self.store,
                                                                   series=1)
-            self.assertEquals(last_invoice_number, 1234)
-            self.assertEquals(next_invoice_number, 1235)
+            self.assertEqual(last_invoice_number, 1234)
+            self.assertEqual(next_invoice_number, 1235)
 
             # Creating a transfer order on same branch.
             transfer = self.create_transfer_order(source_branch=main_branch)
@@ -145,8 +142,8 @@ class TestInvoice(DomainTest):
             self.create_transfer_order_item(transfer)
             transfer.send()
             next_invoice_number = Invoice.get_next_invoice_number(self.store, series=1)
-            self.assertEquals(transfer.invoice.invoice_number, 1235)
-            self.assertEquals(next_invoice_number, 1236)
+            self.assertEqual(transfer.invoice.invoice_number, 1235)
+            self.assertEqual(next_invoice_number, 1236)
 
             # Creating a new sale and new tranfer on a different branch
             with mock.patch('stoqlib.domain.fiscal.get_current_branch') as get_branch:
@@ -157,8 +154,8 @@ class TestInvoice(DomainTest):
                 new_sale.invoice.invoice_number = 1234
                 last_invoice_number = Invoice.get_last_invoice_number(self.store, series=1)
                 next_invoice_number = Invoice.get_next_invoice_number(self.store, series=1)
-                self.assertEquals(last_invoice_number, 1234)
-                self.assertEquals(next_invoice_number, 1235)
+                self.assertEqual(last_invoice_number, 1234)
+                self.assertEqual(next_invoice_number, 1235)
 
                 new_transfer = self.create_transfer_order(source_branch=new_branch)
                 new_transfer.invoice.series = 1
@@ -166,8 +163,8 @@ class TestInvoice(DomainTest):
                 self.create_transfer_order_item(new_transfer)
                 new_transfer.send()
                 next_invoice_number = Invoice.get_next_invoice_number(self.store, series=1)
-                self.assertEquals(new_transfer.invoice.invoice_number, 1235)
-                self.assertEquals(next_invoice_number, 1236)
+                self.assertEqual(new_transfer.invoice.invoice_number, 1235)
+                self.assertEqual(next_invoice_number, 1236)
 
     def test_nfe_invoice(self):
         branch = self.create_branch()
@@ -199,4 +196,4 @@ class TestInvoice(DomainTest):
         invoice2 = self.create_invoice(Invoice.TYPE_OUT)
         after = invoice2.check_unique_invoice_number_by_branch(
             1, branch, current_mode, 1)
-        self.assertEquals(invoice, after)
+        self.assertEqual(invoice, after)

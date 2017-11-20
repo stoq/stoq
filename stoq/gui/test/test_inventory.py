@@ -87,7 +87,7 @@ class TestInventory(BaseGUITest):
                                               Gtk.ResponseType.NO,
                                               u"Cancel inventory",
                                               u"Don't cancel")
-                self.assertEquals(results[0].status, Inventory.STATUS_CANCELLED)
+                self.assertEqual(results[0].status, Inventory.STATUS_CANCELLED)
 
     @mock.patch('stoq.gui.inventory.yesno')
     @mock.patch('stoq.gui.inventory.api.new_store')
@@ -109,7 +109,7 @@ class TestInventory(BaseGUITest):
                                               Gtk.ResponseType.NO,
                                               u"Cancel inventory",
                                               u"Don't cancel")
-                self.assertEquals(results[0].status, Inventory.STATUS_OPEN)
+                self.assertEqual(results[0].status, Inventory.STATUS_OPEN)
 
     def test_run_dialogs(self):
         inventory = self.create_inventory(branch=get_current_branch(self.store))

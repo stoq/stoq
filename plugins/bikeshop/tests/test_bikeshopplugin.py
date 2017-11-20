@@ -31,15 +31,15 @@ class TestBikePlugin(BaseGUITest):
     def test_migration(self):
         plugin = BikeShopPlugin()
         migration = plugin.get_migration()
-        self.assertEquals(migration, None)
+        self.assertEqual(migration, None)
 
     def test_get_tables(self):
         plugin = BikeShopPlugin()
-        self.assertEquals(plugin.get_tables(), [])
+        self.assertEqual(plugin.get_tables(), [])
 
     def test_get_server_tasks(self):
         plugin = BikeShopPlugin()
-        self.assertEquals(plugin.get_server_tasks(), [])
+        self.assertEqual(plugin.get_server_tasks(), [])
 
     def test_active(self):
         plugin = BikeShopPlugin()
@@ -49,7 +49,7 @@ class TestBikePlugin(BaseGUITest):
 
     def test_get_dbadmin_commands(self):
         plugin = BikeShopPlugin()
-        self.assertEquals(plugin.get_dbadmin_commands(), [])
+        self.assertEqual(plugin.get_dbadmin_commands(), [])
 
         with self.assertRaises(AssertionError):
             plugin.handle_dbadmin_command('foo', 'bar', ['bin'])

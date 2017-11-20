@@ -97,9 +97,9 @@ class TestPluginDescription(DomainTest):
         desc = PluginDescription('tmpfile', is_egg=True)
 
         is_zipfile.assert_called_once_with('tmpfile')
-        self.assertEquals(desc.filename, 'test.plugin')
-        self.assertEquals(desc.plugin_path, 'tmpfile')
-        self.assertEquals(desc.long_name, 'Test plugin')
+        self.assertEqual(desc.filename, 'test.plugin')
+        self.assertEqual(desc.plugin_path, 'tmpfile')
+        self.assertEqual(desc.long_name, 'Test plugin')
 
 
 class TestPluginManager(DomainTest):
@@ -355,7 +355,7 @@ class TestPluginManager(DomainTest):
             self._manager.install_plugin(self.store, dep_name)
             # Commit should be executed 2 times, one for the dependency, and
             # one for the plugin that we actually want to install
-            self.assertEquals(self.store.commit.call_count, 2)
+            self.assertEqual(self.store.commit.call_count, 2)
             self.assertHasCalls(self.store.commit,
                                 [mock.call(close=False)] * 2)
 
@@ -441,7 +441,7 @@ class TestPluginManager(DomainTest):
             installed_plugins.__get__ = mock.Mock(
                 return_value=['b', 'c', 'f'])
 
-            with self.assertRaisesRegexp(
+            with self.assertRaisesRegex(
                     AssertionError,
                     ("Plugin 'f' not found on the system. "
                      "Available plugins: \['a', 'b', 'c', 'd', 'e'\]")):
@@ -452,16 +452,16 @@ class TestPluginManager(DomainTest):
     #
 
     def _check_plugin_active(self, plugin, status):
-        self.assertEquals(plugin.was_activated, status)
-        self.assertEquals(self._manager.is_active(plugin.name), status)
+        self.assertEqual(plugin.was_activated, status)
+        self.assertEqual(self._manager.is_active(plugin.name), status)
 
     def _check_plugin_installed(self, plugin, status):
         installed_names = self._manager.get_installed_plugins_names(self.store)
         contained = plugin.name in installed_names
-        self.assertEquals(contained, status)
+        self.assertEqual(contained, status)
 
-        self.assertEquals(plugin.had_migration_gotten, status)
-        self.assertEquals(
+        self.assertEqual(plugin.had_migration_gotten, status)
+        self.assertEqual(
             self._manager.is_installed(plugin.name, self.store), status)
 
     def _register_test_plugin(self):

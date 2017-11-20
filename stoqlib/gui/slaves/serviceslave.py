@@ -38,5 +38,5 @@ class ServiceFiscalSlave(BaseEditorSlave):
         self.service_list_combo.prefill([("{} - {}".format(
             code, desc), code) for code, desc in SERVICE_LIST.items()])
 
-        self.p_iss.set_adjustment(Gtk.Adjustment(lower=0, upper=100, step_incr=0.5))
+        self.p_iss.set_adjustment(Gtk.Adjustment(lower=0, upper=100, step_increment=0.5))
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)

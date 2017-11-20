@@ -80,12 +80,12 @@ class TestTillSearch(GUITest):
         till.close_till(observations)
 
         model = self.store.find(TillClosedView, id=till.id).one()
-        self.assertEquals(observations, model.observations)
-        self.assertEquals(get_current_user(self.store).get_description(),
-                          model.responsible_open_name)
-        self.assertEquals(get_current_user(self.store).get_description(),
-                          model.responsible_close_name)
-        self.assertEquals(observations, model.observations)
+        self.assertEqual(observations, model.observations)
+        self.assertEqual(get_current_user(self.store).get_description(),
+                         model.responsible_open_name)
+        self.assertEqual(get_current_user(self.store).get_description(),
+                         model.responsible_close_name)
+        self.assertEqual(observations, model.observations)
 
         dialog = TillClosedSearch(self.store)
         dialog.search.refresh()

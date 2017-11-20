@@ -69,7 +69,7 @@ class DetailsTab(Gtk.VBox):
             self.button_box = Gtk.HButtonBox()
             self.button_box.set_layout(Gtk.ButtonBoxStyle.START)
 
-            details_button = Gtk.Button(self.details_lbl)
+            details_button = Gtk.Button.new_with_label(self.details_lbl)
             self.button_box.pack_start(details_button, True, True, 0)
             details_button.set_sensitive(bool(self.klist.get_selected()))
             details_button.show()
@@ -154,7 +154,7 @@ class SalesTab(DetailsTab):
         self.has_open_inventory = self._has_open_inventory()
 
         if len(self.klist):
-            return_button = Gtk.Button(_('Return sale'))
+            return_button = Gtk.Button.new_with_label(_('Return sale'))
             self.button_box.pack_start(return_button, True, True, 0)
             return_button.set_sensitive(bool(self.klist.get_selected()))
             return_button.show()

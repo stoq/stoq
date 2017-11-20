@@ -92,7 +92,7 @@ class TestTransaction(DomainTest):
         self.assertEqual(total_te, start_te + 1)
 
         person_te = self.store.find(TransactionEntry, id=person_te_id).one()
-        self.assertEquals(person.te.id, person_te.id)
+        self.assertEqual(person.te.id, person_te.id)
 
         # Now remove this person, and the transaction entry should be gone
         self.store.remove(person)
@@ -104,7 +104,7 @@ class TestTransaction(DomainTest):
         # The transaction entry created for the person should be removed from
         # the database
         person_te = self.store.find(TransactionEntry, id=person_te_id).one()
-        self.assertEquals(person_te, None)
+        self.assertEqual(person_te, None)
 
     def test_cache_invalidation(self):
         # First create a new person in an outside transaction

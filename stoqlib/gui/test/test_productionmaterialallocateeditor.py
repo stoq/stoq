@@ -49,4 +49,4 @@ class TestProductionMaterialAllocateEditor(GUITest):
         editor.quantity.update(3)
         self.click(editor.main_dialog.ok_button)
 
-        self.assertEquals(material.allocated, allocated + 3)
+        self.assertEqual(material.allocated, allocated + 3)

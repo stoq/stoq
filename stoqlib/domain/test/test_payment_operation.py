@@ -22,8 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-__tests__ = 'stoqlib/domain/payment/operation.py'
-
 import mock
 from stoqdrivers.enum import PaymentMethodType
 
@@ -45,6 +43,8 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.reporting.boleto import BillReport
 from stoqlib.reporting.booklet import BookletReport
+
+__tests__ = 'stoqlib/domain/payment/operation.py'
 
 
 class _TestOperation(DomainTest):
@@ -79,8 +79,7 @@ class _TestOperation(DomainTest):
     def test_get_constant(self):
         payment = self.create_payment()
         self.operation.payment_create(payment)
-        self.assertEquals(self.operation.get_constant(payment),
-                          PaymentMethodType.MONEY)
+        self.assertEqual(self.operation.get_constant(payment), PaymentMethodType.MONEY)
 
     def test_can_cancel(self):
         payment = self.create_payment()
@@ -118,8 +117,7 @@ class TestBillPaymentOperation(_TestOperation):
 
     def test_get_constant(self):
         payment = self.create_payment()
-        self.assertEquals(self.operation.get_constant(payment),
-                          PaymentMethodType.BILL)
+        self.assertEqual(self.operation.get_constant(payment), PaymentMethodType.BILL)
 
     def test_can_print(self):
         payment = self.create_payment()
@@ -130,17 +128,17 @@ class TestBillPaymentOperation(_TestOperation):
 
     @mock.patch('stoqlib.reporting.boleto.warning')
     def test_print_(self, warning):
-        self.assertEquals(self.operation.print_([]), BillReport)
+        self.assertEqual(self.operation.print_([]), BillReport)
 
         method = PaymentMethod.get_by_name(self.store, self.method_name)
         payment = self.create_payment(method=method)
-        self.assertEquals(self.operation.print_([payment]), None)
+        self.assertEqual(self.operation.print_([payment]), None)
         account = self.create_account()
         account.account_type = Account.TYPE_BANK
         account.bank = self.create_bank_account()
         payment.method.destination_account = account
 
-        self.assertEquals(self.operation.print_([payment]), BillReport)
+        self.assertEqual(self.operation.print_([payment]), BillReport)
 
 
 class TestCardPaymentOperation(_TestOperation):
@@ -155,19 +153,19 @@ class TestCardPaymentOperation(_TestOperation):
 
         total = self.store.find(CreditCardData,
                                 payment=credit_card_data.payment).count()
-        self.assertEquals(total, 1)
+        self.assertEqual(total, 1)
 
         payment.delete()
         total = self.store.find(CreditCardData,
                                 payment=credit_card_data.payment).count()
 
-        self.assertEquals(total, 0)
+        self.assertEqual(total, 0)
 
     def test_get_constant(self):
         payment = self.create_payment()
         self.operation.payment_create(payment)
-        self.assertEquals(self.operation.get_constant(payment),
-                          PaymentMethodType.CREDIT_CARD)
+        self.assertEqual(self.operation.get_constant(payment),
+                         PaymentMethodType.CREDIT_CARD)
 
 
 class TestCheckPaymentOperation(_TestOperation):
@@ -176,8 +174,7 @@ class TestCheckPaymentOperation(_TestOperation):
 
     def test_get_constant(self):
         payment = self.create_payment()
-        self.assertEquals(self.operation.get_constant(payment),
-                          PaymentMethodType.CHECK)
+        self.assertEqual(self.operation.get_constant(payment), PaymentMethodType.CHECK)
 
 
 class TestCreditPaymentOperation(_TestOperation):
@@ -212,8 +209,8 @@ class TestMultiplePaymentOperation(_TestOperation):
 
     def test_get_constant(self):
         payment = self.create_payment()
-        self.assertEquals(self.operation.get_constant(payment),
-                          PaymentMethodType.MULTIPLE)
+        self.assertEqual(self.operation.get_constant(payment),
+                         PaymentMethodType.MULTIPLE)
 
 
 class TestOnlinePaymentOperation(_TestOperation):
@@ -242,7 +239,7 @@ class TestStoreCreditPaymentOperation(_TestOperation):
 
     def test_print_(self):
         payment = self.create_payment()
-        self.assertEquals(self.operation.print_([payment]), BookletReport)
+        self.assertEqual(self.operation.print_([payment]), BookletReport)
 
 
 class TestTradePaymentOperation(_TestOperation):

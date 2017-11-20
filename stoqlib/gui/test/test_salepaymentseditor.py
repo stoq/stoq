@@ -49,7 +49,7 @@ class TestSalePaymentsEditor(GUITest):
         payment = self.create_payment(value=20, method=method, group=group)
         payment.set_pending()
         payment.pay()
-        self.assertEquals(client.credit_account_balance, 20)
+        self.assertEqual(client.credit_account_balance, 20)
 
         editor = SalePaymentsEditor(self.store, sale)
         # Select credit method.
@@ -62,9 +62,9 @@ class TestSalePaymentsEditor(GUITest):
         self.assertSensitive(editor.slave, ['add_button'])
         self.click(editor.slave.add_button)
         editor.confirm()
-        self.assertEquals(client.credit_account_balance, 10)
+        self.assertEqual(client.credit_account_balance, 10)
         for payment in sale.payments:
-            self.assertEquals(payment.status, Payment.STATUS_PAID)
+            self.assertEqual(payment.status, Payment.STATUS_PAID)
 
         # Test remove payment.
         self.assertNotSensitive(editor.slave, ['remove_button'])
@@ -75,4 +75,4 @@ class TestSalePaymentsEditor(GUITest):
         self.click(editor.slave.remove_button)
         editor.confirm()
         for payment in sale.payments:
-            self.assertEquals(payment.status, Payment.STATUS_CANCELLED)
+            self.assertEqual(payment.status, Payment.STATUS_CANCELLED)

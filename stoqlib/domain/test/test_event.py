@@ -34,6 +34,6 @@ class TestEvent(DomainTest):
         Event.log(self.store, Event.TYPE_SYSTEM, u"foo")
         events = list(self.store.find(Event))
         events = [event for event in events if event.description == u'foo']
-        self.failUnless(events)
-        self.assertEquals(events[0].description, u"foo")
-        self.assertEquals(events[0].event_type, Event.TYPE_SYSTEM)
+        self.assertTrue(events)
+        self.assertEqual(events[0].description, u"foo")
+        self.assertEqual(events[0].event_type, Event.TYPE_SYSTEM)

@@ -267,8 +267,8 @@ class SearchSlave(SlaveDelegate):
         """
         Enables an advanced search
         """
-        self.label_group = Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
-        self.combo_group = Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
+        self.label_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
+        self.combo_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
 
         self.menu = Gtk.Menu()
         for column in self.columns:
@@ -298,7 +298,7 @@ class SearchSlave(SlaveDelegate):
         """
         assert data_type in (datetime.date, decimal.Decimal, int, currency, str,
                              bool)
-        menu_item = Gtk.MenuItem(title)
+        menu_item = Gtk.MenuItem(label=title)
         menu_item.show()
         menu_item.connect('activate', self._on_menu_item__activate, attr, title,
                           data_type, valid_values, callback, use_having,

@@ -567,7 +567,7 @@ class SellableItemSlave(BaseEditorSlave):
 
         for widget in [self.quantity, self.cost]:
             widget.set_adjustment(Gtk.Adjustment(lower=0, upper=MAX_INT,
-                                                 step_incr=1))
+                                                 step_increment=1))
 
         self._reset_sellable()
         self._setup_summary()

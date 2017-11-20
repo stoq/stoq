@@ -114,11 +114,11 @@ class TestSales(BaseGUITest):
                                  device_name=u'/dev/lp0',
                                  station=api.get_current_station(self.store))
         self.activate(app.SalesPrintInvoice)
-        self.assertEquals(print_sale_invoice.call_count, 1)
+        self.assertEqual(print_sale_invoice.call_count, 1)
         args, kwargs = print_sale_invoice.call_args
         invoice, called_printer = args
         self.assertTrue(isinstance(invoice, SaleInvoice))
-        self.assertEquals(printer, called_printer)
+        self.assertEqual(printer, called_printer)
 
         results[0].sale.invoice.invoice_number = None
         InvoiceField(layout=layout, x=0, y=0, width=1, height=1,
@@ -137,11 +137,11 @@ class TestSales(BaseGUITest):
         app = self.create_app(SalesApp, u'sales')
 
         self.activate(app.window.Print)
-        self.assertEquals(print_report.call_count, 1)
+        self.assertEqual(print_report.call_count, 1)
 
         args, kwargs = print_report.call_args
         report, results, views = args
-        self.assertEquals(report, SalesReport)
+        self.assertEqual(report, SalesReport)
         self.assertTrue(isinstance(results, SearchResultListView))
         for view in views:
             self.assertTrue(isinstance(view, SaleView))
@@ -223,13 +223,13 @@ class TestSales(BaseGUITest):
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
                 self.activate(app.Return)
-                self.assertEquals(run_dialog.call_count, 1)
+                self.assertEqual(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
                 wizard, parent, store, returned_sale = args
-                self.assertEquals(wizard, SaleReturnWizard)
-                self.assertEquals(parent, app)
-                self.assertEquals(store, self.store)
-                self.assertEquals(returned_sale.sale, results[0].sale)
+                self.assertEqual(wizard, SaleReturnWizard)
+                self.assertEqual(parent, app)
+                self.assertEqual(store, self.store)
+                self.assertEqual(returned_sale.sale, results[0].sale)
 
     @mock.patch('stoqlib.gui.slaves.saleslave.run_dialog')
     @mock.patch('stoq.gui.sales.api.new_store')
@@ -271,9 +271,9 @@ class TestSales(BaseGUITest):
                 run_dialog = context[0]
                 self.activate(app.ChangeClient)
                 args, kwargs = run_dialog.call_args
-                self.assertEquals(kwargs['model'], results[0].sale)
-                self.assertEquals(kwargs['store'], self.store)
-                self.assertEquals(run_dialog.call_count, 1)
+                self.assertEqual(kwargs['model'], results[0].sale)
+                self.assertEqual(kwargs['store'], self.store)
+                self.assertEqual(run_dialog.call_count, 1)
 
     @mock.patch('stoq.gui.sales.api.new_store')
     def test_change_salesperson(self, new_store):
@@ -295,8 +295,8 @@ class TestSales(BaseGUITest):
                 run_dialog = context[0]
                 self.activate(app.ChangeSalesperson)
                 args, kwargs = run_dialog.call_args
-                self.assertEquals(kwargs['model'], results[0].sale)
-                self.assertEquals(kwargs['store'], self.store)
+                self.assertEqual(kwargs['model'], results[0].sale)
+                self.assertEqual(kwargs['store'], self.store)
                 run_dialog.assert_called_once_with(SalesPersonEditor,
                                                    store=self.store,
                                                    model=results[0].sale)
@@ -327,16 +327,16 @@ class TestSales(BaseGUITest):
 
                 msg_text = u"This will cancel the sale, Are you sure?"
                 args, kwargs = run_dialog.call_args
-                self.assertEquals(args, (NoteEditor, self.store))
-                self.assertEquals(kwargs['model'], None)
-                self.assertEquals(kwargs['message_text'], msg_text)
-                self.assertEquals(kwargs['label_text'], u"Reason")
-                self.assertEquals(kwargs['mandatory'], True)
-                self.assertEquals(kwargs['ok_button_label'], u"Cancel sale")
-                self.assertEquals(kwargs['cancel_button_label'], u"Don't cancel")
-                self.assertEquals(NoteEditor.retval, None)
-                self.assertEquals(run_dialog.call_count, 1)
-                self.assertEquals(sale_view.sale.status, Sale.STATUS_CONFIRMED)
+                self.assertEqual(args, (NoteEditor, self.store))
+                self.assertEqual(kwargs['model'], None)
+                self.assertEqual(kwargs['message_text'], msg_text)
+                self.assertEqual(kwargs['label_text'], u"Reason")
+                self.assertEqual(kwargs['mandatory'], True)
+                self.assertEqual(kwargs['ok_button_label'], u"Cancel sale")
+                self.assertEqual(kwargs['cancel_button_label'], u"Don't cancel")
+                self.assertEqual(NoteEditor.retval, None)
+                self.assertEqual(run_dialog.call_count, 1)
+                self.assertEqual(sale_view.sale.status, Sale.STATUS_CONFIRMED)
 
     @mock.patch('stoq.gui.sales.api.new_store')
     def test_sales_cancel(self, new_store):
@@ -363,16 +363,16 @@ class TestSales(BaseGUITest):
 
             msg_text = u"This will cancel the sale, Are you sure?"
             args, kwargs = run_dialog.call_args
-            self.assertEquals(args, (NoteEditor, self.store))
-            self.assertEquals(kwargs['model'], None)
-            self.assertEquals(kwargs['message_text'], msg_text)
-            self.assertEquals(kwargs['label_text'], u"Reason")
-            self.assertEquals(kwargs['mandatory'], True)
-            self.assertEquals(kwargs['ok_button_label'], u"Cancel sale")
-            self.assertEquals(kwargs['cancel_button_label'], u"Don't cancel")
+            self.assertEqual(args, (NoteEditor, self.store))
+            self.assertEqual(kwargs['model'], None)
+            self.assertEqual(kwargs['message_text'], msg_text)
+            self.assertEqual(kwargs['label_text'], u"Reason")
+            self.assertEqual(kwargs['mandatory'], True)
+            self.assertEqual(kwargs['ok_button_label'], u"Cancel sale")
+            self.assertEqual(kwargs['cancel_button_label'], u"Don't cancel")
 
-            self.assertEquals(run_dialog.call_count, 1)
-            self.assertEquals(sale_view.sale.status, Sale.STATUS_CANCELLED)
+            self.assertEqual(run_dialog.call_count, 1)
+            self.assertEqual(sale_view.sale.status, Sale.STATUS_CANCELLED)
 
     @mock.patch('stoq.gui.sales.api.new_store')
     def test_confirmed_sales_cancel(self, new_store):
@@ -400,15 +400,15 @@ class TestSales(BaseGUITest):
 
                 msg_text = u"This will cancel the sale, Are you sure?"
                 args, kwargs = run_dialog.call_args
-                self.assertEquals(args, (NoteEditor, self.store))
-                self.assertEquals(kwargs['model'], None)
-                self.assertEquals(kwargs['message_text'], msg_text)
-                self.assertEquals(kwargs['label_text'], u"Reason")
-                self.assertEquals(kwargs['mandatory'], True)
-                self.assertEquals(kwargs['ok_button_label'], u"Cancel sale")
-                self.assertEquals(kwargs['cancel_button_label'], u"Don't cancel")
-                self.assertEquals(run_dialog.call_count, 1)
-                self.assertEquals(sale_view.sale.status, Sale.STATUS_CANCELLED)
+                self.assertEqual(args, (NoteEditor, self.store))
+                self.assertEqual(kwargs['model'], None)
+                self.assertEqual(kwargs['message_text'], msg_text)
+                self.assertEqual(kwargs['label_text'], u"Reason")
+                self.assertEqual(kwargs['mandatory'], True)
+                self.assertEqual(kwargs['ok_button_label'], u"Cancel sale")
+                self.assertEqual(kwargs['cancel_button_label'], u"Don't cancel")
+                self.assertEqual(run_dialog.call_count, 1)
+                self.assertEqual(sale_view.sale.status, Sale.STATUS_CANCELLED)
 
     @mock.patch('stoq.gui.sales.api.new_store')
     def test_paid_sales_cancel(self, new_store):
@@ -436,12 +436,12 @@ class TestSales(BaseGUITest):
 
                 msg_text = u"This will cancel the sale, Are you sure?"
                 args, kwargs = run_dialog.call_args
-                self.assertEquals(args, (NoteEditor, self.store))
-                self.assertEquals(kwargs['model'], None)
-                self.assertEquals(kwargs['message_text'], msg_text)
-                self.assertEquals(kwargs['label_text'], u"Reason")
-                self.assertEquals(kwargs['mandatory'], True)
-                self.assertEquals(kwargs['ok_button_label'], u"Cancel sale")
-                self.assertEquals(kwargs['cancel_button_label'], u"Don't cancel")
-                self.assertEquals(run_dialog.call_count, 1)
-                self.assertEquals(sale_view.sale.status, Sale.STATUS_CANCELLED)
+                self.assertEqual(args, (NoteEditor, self.store))
+                self.assertEqual(kwargs['model'], None)
+                self.assertEqual(kwargs['message_text'], msg_text)
+                self.assertEqual(kwargs['label_text'], u"Reason")
+                self.assertEqual(kwargs['mandatory'], True)
+                self.assertEqual(kwargs['ok_button_label'], u"Cancel sale")
+                self.assertEqual(kwargs['cancel_button_label'], u"Don't cancel")
+                self.assertEqual(run_dialog.call_count, 1)
+                self.assertEqual(sale_view.sale.status, Sale.STATUS_CANCELLED)

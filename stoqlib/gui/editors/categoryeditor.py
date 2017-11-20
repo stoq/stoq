@@ -119,7 +119,7 @@ class SellableCategoryEditor(BaseEditor):
         self.category.prefill(
             api.for_combo(categories, attr='full_description'))
         self.suggested_markup.set_adjustment(
-            Gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
+            Gtk.Adjustment(lower=0, upper=MAX_INT, step_increment=1))
 
     def _update_widgets(self):
         category_lbl = self.category.get_selected_label()

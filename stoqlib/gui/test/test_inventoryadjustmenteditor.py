@@ -55,7 +55,7 @@ class TestProductAdjustmentDialog(GUITest):
         with mock.patch(confirm):
             self.click(dialog.adjust_button)
 
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
 
     def test_adjust_all(self):
         inventory = self.create_inventory()
@@ -64,10 +64,10 @@ class TestProductAdjustmentDialog(GUITest):
 
         dialog = InventoryAdjustmentEditor(self.store, inventory)
         dialog.invoice_number.update(123)
-        self.assertEquals(item.actual_quantity, None)
+        self.assertEqual(item.actual_quantity, None)
         self.click(dialog.adjust_all_button)
-        self.assertEquals(item.actual_quantity, 10)
-        self.assertEquals(item.reason, 'Automatic adjustment')
+        self.assertEqual(item.actual_quantity, 10)
+        self.assertEqual(item.reason, 'Automatic adjustment')
 
 
 class TestAdjustmentDialog(GUITest):

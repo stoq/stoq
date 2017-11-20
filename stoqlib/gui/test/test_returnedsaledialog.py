@@ -143,14 +143,14 @@ class TestReturnedSaleDialog(GUITest):
         self.create_pending_returned_sale()
         model = self.store.find(PendingReturnedSalesView).one()
         dialog = ReturnedSaleDialog(self.store, model)
-        self.assertEquals(dialog.receive_button.get_property('visible'), True)
-        self.assertEquals(model.returned_sale.status, ReturnedSale.STATUS_PENDING)
+        self.assertEqual(dialog.receive_button.get_property('visible'), True)
+        self.assertEqual(model.returned_sale.status, ReturnedSale.STATUS_PENDING)
         with mock.patch.object(self.store, 'commit'):
             self.click(dialog.receive_button)
             yesno.assert_called_once_with(u'Receive pending returned sale?',
                                           Gtk.ResponseType.NO,
                                           u'Receive', u"Don't receive")
-            self.assertEquals(model.returned_sale.status, ReturnedSale.STATUS_CONFIRMED)
+            self.assertEqual(model.returned_sale.status, ReturnedSale.STATUS_CONFIRMED)
 
     @mock.patch('stoqlib.gui.dialogs.returnedsaledialog.print_report')
     def test_print_button(self, print_report):

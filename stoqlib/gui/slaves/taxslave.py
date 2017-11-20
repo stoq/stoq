@@ -78,7 +78,7 @@ class BaseTaxSlave(BaseEditorSlave):
             widget = getattr(self, name)
             widget.set_digits(2)
             widget.set_adjustment(
-                Gtk.Adjustment(lower=0, upper=100, step_incr=1))
+                Gtk.Adjustment(lower=0, upper=100, step_increment=1))
 
         for w in self.hide_widgets:
             getattr(self, w).hide()

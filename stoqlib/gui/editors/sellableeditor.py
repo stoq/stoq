@@ -366,7 +366,7 @@ class SellableEditor(BaseEditor):
     def set_widget_formats(self):
         for widget in (self.cost, self.price):
             widget.set_adjustment(Gtk.Adjustment(lower=0, upper=MAX_INT,
-                                                 step_incr=1))
+                                                 step_increment=1))
         self.requires_weighing_label.set_size("small")
         self.requires_weighing_label.set_text("")
 

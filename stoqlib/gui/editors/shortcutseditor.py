@@ -117,7 +117,7 @@ class ShortcutsEditor(BasicDialog):
 
         box.show()
 
-        defaults_button = Gtk.Button(_("Reset defaults"))
+        defaults_button = Gtk.Button.new_with_label(_("Reset defaults"))
         defaults_button.connect('clicked', self._on_defaults_button__clicked)
         self.action_area.pack_start(defaults_button, False, False, 6)
         self.action_area.reorder_child(defaults_button, 0)

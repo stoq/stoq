@@ -51,4 +51,4 @@ class ReportTest(DomainTest):
         diff = diff_files(expected, output)
         os.unlink(output)
 
-        self.failIf(diff, '%s\n%s' % ("Files differ, output:", diff))
+        self.assertFalse(diff, '%s\n%s' % ("Files differ, output:", diff))

@@ -63,7 +63,7 @@ class LoanItemEditor(BaseEditor):
         self.original_price.update(self.model.price)
         for widget in [self.quantity, self.price]:
             widget.set_adjustment(Gtk.Adjustment(lower=0, upper=MAX_INT,
-                                                 step_incr=1))
+                                                 step_increment=1))
         unit = self.model.sellable.unit
         self.quantity.set_digits(
             QUANTITY_PRECISION if unit and unit.allow_fraction else 0)

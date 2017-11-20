@@ -1220,7 +1220,7 @@ class PosApp(ShellApp):
         box = Gtk.VBox()
         button.add(box)
         box.pack_start(Gtk.Image.new_from_stock(stock, Gtk.IconSize.MENU), True, True, 0)
-        box.pack_start(Gtk.Label(label), True, True, 0)
+        box.pack_start(Gtk.Label(label=label), True, True, 0)
         button.show_all()
         self.toolbar_button_box.pack_start(button, False, False, 6)
         return button
@@ -1376,7 +1376,7 @@ class PosApp(ShellApp):
         if not trade:
             return
 
-        button = Gtk.Button(_("Cancel trade"))
+        button = Gtk.Button.new_with_label(_("Cancel trade"))
         button.connect('clicked', self._on_remove_trade_button__clicked)
         value = converter.as_string(currency, self._trade.returned_total)
         msg = _("There is a trade with value %s in progress...\n"

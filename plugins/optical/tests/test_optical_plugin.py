@@ -34,14 +34,14 @@ class TestOpticalUI(BaseGUITest):
     def test_migration(self):
         plugin = OpticalPlugin()
         migration = plugin.get_migration()
-        self.assertEquals(migration.plugin_name, u'optical')
-        self.assertEquals(migration.patch_resource_domain, u'optical')
-        self.assertEquals(migration.patch_resource, u'sql')
-        self.assertEquals(migration.patch_patterns, ['*.sql', '*.py'])
+        self.assertEqual(migration.plugin_name, u'optical')
+        self.assertEqual(migration.patch_resource_domain, u'optical')
+        self.assertEqual(migration.patch_resource, u'sql')
+        self.assertEqual(migration.patch_patterns, ['*.sql', '*.py'])
 
     def test_get_tables(self):
         plugin = OpticalPlugin()
-        self.assertEquals(plugin.get_tables(), [
+        self.assertEqual(plugin.get_tables(), [
             ('opticaldomain', ['OpticalMedic',
                                'OpticalProduct',
                                'OpticalWorkOrder',
@@ -58,8 +58,8 @@ class TestOpticalUI(BaseGUITest):
 
     def test_get_server_tasks(self):
         plugin = OpticalPlugin()
-        self.assertEquals(plugin.get_server_tasks(), [])
+        self.assertEqual(plugin.get_server_tasks(), [])
 
     def test_get_dbadmin_commands(self):
         plugin = OpticalPlugin()
-        self.assertEquals(plugin.get_dbadmin_commands(), [])
+        self.assertEqual(plugin.get_dbadmin_commands(), [])

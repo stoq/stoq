@@ -103,7 +103,7 @@ class AccountEditor(BaseEditor):
                        store=store)
 
     def _setup_widgets(self):
-        self._test_button = Gtk.Button(_("Print a test bill"))
+        self._test_button = Gtk.Button.new_with_label(_("Print a test bill"))
         self._test_button.connect('clicked',
                                   self._on_test_button__clicked)
         self.parent_accounts = AccountTree(with_code=False, create_mode=True)

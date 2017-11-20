@@ -49,7 +49,7 @@ class TestProducCreateWizard(GUITest):
         groups = attribute_step.slave.attribute_group
         for combo_model in groups.get_model_items():
             # The inactive group should not be shown on combo
-            self.assertNotEquals(combo_model, inactive_group.description)
+            self.assertNotEqual(combo_model, inactive_group.description)
 
     @mock.patch('stoqlib.gui.wizards.productwizard.warning')
     def test_create_without_attribute(self, warning):
@@ -65,7 +65,7 @@ class TestProducCreateWizard(GUITest):
         # Testing without selecting a group
         warning.assert_called_once_with("You should select an attribute first")
         # Checking that we are in the same step after the warning
-        self.assertEquals(wizard.get_current_step(), attribute_step)
+        self.assertEqual(wizard.get_current_step(), attribute_step)
 
         warning.reset_mock()
         # Selecting a group but it doesnt have a GridAttribute
@@ -86,7 +86,7 @@ class TestProducCreateWizard(GUITest):
         attribute_step = wizard.get_current_step()
         attribute_step.slave.attribute_group.select_item_by_data(attribute_group)
         # Inactive attributes should not be shown
-        self.assertEquals(attribute_step.slave._widgets, {})
+        self.assertEqual(attribute_step.slave._widgets, {})
 
     @mock.patch('stoqlib.gui.wizards.productwizard.warning')
     def test_create_with_attribute_not_selected(self, warning):
@@ -127,7 +127,7 @@ class TestProducCreateWizard(GUITest):
         warning.reset_mock()
         # At this point we dont have any attribute_option for grid_attribute
         for i in attribute_step.slave._widgets.keys():
-            self.assertEquals(i.get_sensitive(), False)
+            self.assertEqual(i.get_sensitive(), False)
         self.click(wizard.next_button)
         warning.assert_called_once_with("You should select an attribute first")
 
@@ -145,7 +145,7 @@ class TestProducCreateWizard(GUITest):
         attribute_step = wizard.get_current_step()
         attribute_step.slave.attribute_group.select_item_by_data(attribute_group)
         for check_box in attribute_step.slave._widgets.keys():
-            self.assertEquals(check_box.get_sensitive(), False)
+            self.assertEqual(check_box.get_sensitive(), False)
 
     @mock.patch('stoqlib.gui.slaves.productslave.warning')
     def test_create_grid_product(self, warning):
@@ -176,7 +176,7 @@ class TestProducCreateWizard(GUITest):
         attribute_step.slave.attribute_group.select(attribute_group)
         # Set to active all grid_attributes for that group
         for attribute in attribute_step.slave._widgets.keys():
-            self.assertEquals(attribute.get_sensitive(), True)
+            self.assertEqual(attribute.get_sensitive(), True)
             attribute.set_active(True)
         self.click(wizard.next_button)
 
@@ -184,33 +184,33 @@ class TestProducCreateWizard(GUITest):
         editor_step = wizard.get_current_step()
         # Getting ProductGridSlave
         grid_slave = editor_step.slave.get_slave('Grid')
-        self.assertEquals(grid_slave.add_product_button.get_sensitive(), False)
+        self.assertEqual(grid_slave.add_product_button.get_sensitive(), False)
 
         # Trying add a child without description
         for combo in grid_slave._widgets.values():
             # Position 0 (zero) is empty
             combo.select_item_by_position(1)
-        self.assertEquals(grid_slave.add_product_button.get_sensitive(), True)
+        self.assertEqual(grid_slave.add_product_button.get_sensitive(), True)
         self.click(grid_slave.add_product_button)
         warning.assert_called_once_with('You should fill the description first')
 
         # Filling the description and try again
         editor_step.slave.description.update('grid test')
-        self.assertEquals(grid_slave.add_product_button.get_sensitive(), True)
+        self.assertEqual(grid_slave.add_product_button.get_sensitive(), True)
         self.click(grid_slave.add_product_button)
         # Testing the sensitivity right after adding a child
-        self.assertEquals(grid_slave.add_product_button.get_sensitive(), False)
+        self.assertEqual(grid_slave.add_product_button.get_sensitive(), False)
 
         # One combo not filled with an valid option
         combo = list(grid_slave._widgets.values())[0]
         # Position 0 (zero) is empty
         combo.select_item_by_position(0)
-        self.assertEquals(grid_slave.add_product_button.get_sensitive(), False)
+        self.assertEqual(grid_slave.add_product_button.get_sensitive(), False)
 
         # Trying add a child with exactly the same attribute_option
         for combo in grid_slave._widgets.values():
             combo.select_item_by_position(1)
-        self.assertEquals(grid_slave.add_product_button.get_sensitive(), False)
+        self.assertEqual(grid_slave.add_product_button.get_sensitive(), False)
 
     @mock.patch('stoqlib.gui.slaves.productslave.run_dialog')
     def test_create_package_product(self, run_dialog):
@@ -222,7 +222,7 @@ class TestProducCreateWizard(GUITest):
         # ProductEditor step
         editor_step = wizard.get_current_step()
         # Checking that the slave is attached
-        self.assertEquals(hasattr(editor_step.slave, 'package_slave'), True)
+        self.assertEqual(hasattr(editor_step.slave, 'package_slave'), True)
 
         # Package slave
         package_slave = editor_step.slave.get_slave('Pack content')
@@ -243,7 +243,7 @@ class TestProducCreateWizard(GUITest):
         self.click(package_slave.add_button)
 
         args, kwargs = run_dialog.call_args
-        self.assertEquals(args[0], ProductPackageComponentEditor)
+        self.assertEqual(args[0], ProductPackageComponentEditor)
         self.assertTrue(isinstance(args[2], StoqlibStore))
         self.assertTrue(isinstance(args[3], TemporaryProductComponent))
         self.assertTrue(hasattr(args[3], 'product'))
@@ -288,5 +288,5 @@ class TestProducCreateWizard(GUITest):
             ProductCreateWizard.run_wizard(None)
         # This is the second call to yesno()
         args, kwargs = run_dialog.call_args_list[1]
-        self.assertEquals(kwargs['product_type'], Product.TYPE_GRID)
-        self.assertEquals(kwargs['template'], grid_product)
+        self.assertEqual(kwargs['product_type'], Product.TYPE_GRID)
+        self.assertEqual(kwargs['template'], grid_product)

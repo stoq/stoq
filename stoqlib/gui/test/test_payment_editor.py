@@ -49,12 +49,12 @@ class TestPaymentEditor(GUITest):
         self.assertTrue(isinstance(editor.model, Payment))
         # FIXME: In the long run this should be moved into the domain,
         #        Like Domain.create_empty() or so
-        self.assertEquals(editor.model.payment_type, Payment.TYPE_IN)
-        self.assertEquals(editor.model.method.method_name, u'money')
-        self.assertEquals(editor.model.description, u'')
-        self.assertEquals(editor.model.status, Payment.STATUS_PENDING)
-        self.assertEquals(editor.model.value, 0)
-        self.assertEquals(editor.model.category, None)
+        self.assertEqual(editor.model.payment_type, Payment.TYPE_IN)
+        self.assertEqual(editor.model.method.method_name, u'money')
+        self.assertEqual(editor.model.description, u'')
+        self.assertEqual(editor.model.status, Payment.STATUS_PENDING)
+        self.assertEqual(editor.model.value, 0)
+        self.assertEqual(editor.model.category, None)
         self.check_editor(editor, 'editor-in-payment-create')
 
     def test_edit_paid_out_payment(self):
@@ -130,11 +130,11 @@ class TestPaymentEditor(GUITest):
 
     def test_value_validation(self):
         editor = InPaymentEditor(self.store)
-        self.assertEquals(str(editor.value.emit('validate', None)),
-                          u"The value must be greater than zero.")
+        self.assertEqual(str(editor.value.emit('validate', None)),
+                         u"The value must be greater than zero.")
 
-        self.assertEquals(str(editor.value.emit('validate', -1)),
-                          u"The value must be greater than zero.")
+        self.assertEqual(str(editor.value.emit('validate', -1)),
+                         u"The value must be greater than zero.")
         self.assertFalse(editor.value.emit('validate', 10))
 
     def test_show_out(self):
@@ -223,7 +223,7 @@ class TestPaymentEditor(GUITest):
         # sale_view = SaleView.get(editor.model.group.sale.id, store=self.store)
         # run_dialog.assert_called_once_with(SaleDetailsDialog, editor,
         #                                   editor.store, sale_view)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
 
     @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
     def test_show_stock_decrease_dialog(self, run_dialog):

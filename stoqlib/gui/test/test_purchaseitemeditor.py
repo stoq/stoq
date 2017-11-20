@@ -59,4 +59,4 @@ class TestPurchaseItemEditor(GUITest):
         self.click(editor.main_dialog.ok_button)
 
         editor = PurchaseItemEditor(self.store, child_item)
-        self.assertEquals(editor.quantity.read(), 2)
+        self.assertEqual(editor.quantity.read(), 2)

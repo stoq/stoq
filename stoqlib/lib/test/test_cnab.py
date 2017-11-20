@@ -72,7 +72,7 @@ class TestFebraban(DomainTest):
         cnab = FebrabanCnab(self.branch, self.bank, self.info)
         record = RecordP(self.payment, self.info, registry_sequence=1)
         record.set_cnab(cnab)
-        self.assertEquals(
+        self.assertEqual(
             record.as_string(),
             ('0990001300001P 0101102 000009000150 000000000001'
              '34       11 2200134          1407201200000000000'
@@ -85,7 +85,7 @@ class TestFebraban(DomainTest):
         cnab = FebrabanCnab(self.branch, self.bank, self.info)
         record = RecordQ(self.payment, self.info, registry_sequence=1)
         record.set_cnab(cnab)
-        self.assertEquals(
+        self.assertEqual(
             record.as_string(),
             ('0990001300001Q 012000000000000000Dummy          '
              '                         Mainstreet 138         '
@@ -101,7 +101,7 @@ class TestFebraban(DomainTest):
                                       group=group)
         record = RecordQ(payment, self.info, registry_sequence=1)
         record.set_cnab(cnab)
-        self.assertEquals(
+        self.assertEqual(
             record.as_string(),
             ('0990001300001Q 011000000000000000individual     '
              '                         Mainstreet 138         '
@@ -113,7 +113,7 @@ class TestFebraban(DomainTest):
         cnab = FebrabanCnab(self.branch, self.bank, self.info)
         record = RecordR(self.payment, self.info, registry_sequence=1)
         record.set_cnab(cnab)
-        self.assertEquals(
+        self.assertEqual(
             record.as_string(),
             ('0990001300001R 010000000000000000000000000000000'
              '00000000000000000200000000000000000000000       '
@@ -146,7 +146,7 @@ class TestItau(DomainTest):
         cnab = ItauCnab400(self.branch, self.bank, self.info)
         record = ItauPaymentDetail(self.payment, self.info, registry_sequence=1)
         record.set_cnab(cnab)
-        self.assertEquals(
+        self.assertEqual(
             record.as_string(),
             ('10200000000000000110200001342    0000Test payment '
              '            000001340000000000000109              '
@@ -166,7 +166,7 @@ class TestItau(DomainTest):
         payment.identifier = 9143
         record = ItauPaymentDetail(payment, self.info, registry_sequence=1)
         record.set_cnab(cnab)
-        self.assertEquals(
+        self.assertEqual(
             record.as_string(),
             ('10200000000000000110200001342    0000Test payment '
              '            000001340000000000000109              '
@@ -181,7 +181,7 @@ class TestItau(DomainTest):
         cnab = ItauCnab(self.branch, self.bank, self.info)
         header = ItauBatchHeader()
         header.set_cnab(cnab)
-        self.assertEquals(header.credit_date, cnab.get_value('create_date'))
+        self.assertEqual(header.credit_date, cnab.get_value('create_date'))
 
 
 class FooRecord(Record):
@@ -202,10 +202,10 @@ class TestRecord(DomainTest):
             )
 
         f = Foo(foo=1)
-        self.assertEquals(f.as_string(), '00001')
+        self.assertEqual(f.as_string(), '00001')
 
         b = Bar(bar=1, bin='teste')
-        self.assertEquals(b.as_string(), '001te')
+        self.assertEqual(b.as_string(), '001te')
 
     def test_get_value(self):
         class Foo(Record):
@@ -214,7 +214,7 @@ class TestRecord(DomainTest):
             fields = [Field('some_property', int, 5)]
 
         foo = Foo()
-        self.assertEquals(foo.get_value('some_property'), 4)
+        self.assertEqual(foo.get_value('some_property'), 4)
 
 
 class TestCnab(DomainTest):
@@ -230,18 +230,18 @@ class TestCnab(DomainTest):
     def test_get_value(self):
         cnab = FebrabanCnab(self.branch, self.bank, self.info)
         cnab.some_property = 84
-        self.assertEquals(cnab.get_value('some_property'), 84)
+        self.assertEqual(cnab.get_value('some_property'), 84)
 
     def test_add_record(self):
         cnab = FebrabanCnab(self.branch, self.bank, self.info)
         record = cnab.add_record(FooRecord)
-        self.assertEquals(record.get_value('bank_number'), 99)
+        self.assertEqual(record.get_value('bank_number'), 99)
 
     def test_total_records(self):
         cnab = FebrabanCnab(self.branch, self.bank, self.info)
-        self.assertEquals(cnab.total_records, 0)
+        self.assertEqual(cnab.total_records, 0)
         cnab.add_record(FooRecord)
-        self.assertEquals(cnab.total_records, 1)
+        self.assertEqual(cnab.total_records, 1)
 
     def test_total_registries(self):
         cnab = FebrabanCnab(self.branch, self.bank, self.info)
@@ -253,12 +253,12 @@ class TestCnab(DomainTest):
         bt = cnab.add_record(FebrabanCnab.BatchTrailer)
         cnab.add_record(FebrabanCnab.FileTrailer)
 
-        self.assertEquals(bt.total_registries, 4)
+        self.assertEqual(bt.total_registries, 4)
 
     def test_as_string(self):
         cnab = FebrabanCnab(self.branch, self.bank, self.info)
         cnab.add_record(FooRecord, foo=3)
-        self.assertEquals(cnab.as_string(), '00003\r\n')
+        self.assertEqual(cnab.as_string(), '00003\r\n')
 
 
 class CnabTestMixin(object):

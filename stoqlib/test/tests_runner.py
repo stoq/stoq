@@ -291,7 +291,7 @@ def main(args, extra_plugins=None):
         '--nologcapture',
         # Be verbose, one line per test instead of just a dot (like trial)
         '--verbose',
-        # Detailed errors, useful for tracking down assertEquals
+        # Detailed errors, useful for tracking down assertEqual
         '--detailed-errors',
         # Enable doctests
         '--with-doctest',

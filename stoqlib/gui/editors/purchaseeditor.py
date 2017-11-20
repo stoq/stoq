@@ -70,7 +70,7 @@ class PurchaseItemEditor(BaseEditor):
         for widget in [self.quantity, self.cost, self.quantity_sold,
                        self.quantity_returned]:
             widget.set_adjustment(Gtk.Adjustment(lower=0, upper=MAX_INT,
-                                                 step_incr=1))
+                                                 step_increment=1))
 
         unit = self.model.sellable.unit
         digits = QUANTITY_PRECISION if unit and unit.allow_fraction else 0

@@ -81,8 +81,8 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         with mock.patch('plugins.optical.opticalui.run_dialog') as run_dialog_:
             self.activate(action)
             args, kwargs = run_dialog_.call_args
-            self.assertEquals(args[0], OpticalSaleQuoteWizard)
-            self.assertEquals(args[1], app)
+            self.assertEqual(args[0], OpticalSaleQuoteWizard)
+            self.assertEqual(args[1], app)
             self.assertTrue(isinstance(args[2], StoqlibStore))
 
         with mock.patch('plugins.optical.opticalui.warning') as warning_:
@@ -102,10 +102,10 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         with mock.patch('plugins.optical.opticalui.run_dialog') as run_dialog_:
             self.activate(action)
             args, kwargs = run_dialog_.call_args
-            self.assertEquals(args[0], OpticalMedicSearch)
-            self.assertEquals(args[1], None)
+            self.assertEqual(args[0], OpticalMedicSearch)
+            self.assertEqual(args[1], None)
             self.assertTrue(isinstance(args[2], StoqlibStore))
-            self.assertEquals(kwargs['hide_footer'], True)
+            self.assertEqual(kwargs['hide_footer'], True)
 
     def test_optical_sales_medic_sales_search(self):
         app = self.create_app(SalesApp, u'sales')
@@ -115,10 +115,10 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         with mock.patch('plugins.optical.opticalui.run_dialog') as run_dialog_:
             self.activate(action)
             args, kwargs = run_dialog_.call_args
-            self.assertEquals(args[0], MedicSalesSearch)
-            self.assertEquals(args[1], None)
+            self.assertEqual(args[0], MedicSalesSearch)
+            self.assertEqual(args[1], None)
             self.assertTrue(isinstance(args[2], StoqlibStore))
-            self.assertEquals(kwargs['hide_footer'], True)
+            self.assertEqual(kwargs['hide_footer'], True)
 
     def test_product_editor(self):
         product = self.create_product(stock=10)
@@ -250,13 +250,13 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         # Emitting with something different from SaleOrderReport
         rv = PrintReportEvent.emit(object)
         self.assertFalse(rv)
-        self.assertEquals(print_report.call_count, 0)
+        self.assertEqual(print_report.call_count, 0)
 
         # Emitting with SaleOrderReport, but without workorders
         sale = self.create_sale()
         rv = PrintReportEvent.emit(SaleOrderReport, sale)
         self.assertFalse(rv)
-        self.assertEquals(print_report.call_count, 0)
+        self.assertEqual(print_report.call_count, 0)
 
         # Emitting with SaleOrderReport and with workorders
         optical_wo = self.create_optical_work_order()

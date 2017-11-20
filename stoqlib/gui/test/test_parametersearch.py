@@ -62,31 +62,31 @@ class TestParameterSearch(GUITest):
 
         search.results.select(search.results[0])
         self.click(search.edit_button)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
 
         run_dialog.reset_mock()
         search.on_results__double_click(list(search.results),
                                         search.results[0])
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
 
         run_dialog.reset_mock()
         search.on_results__row_activated(list(search.results),
                                          search.results[0])
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
 
     def test_get_parameter_data_domain(self):
         search = ParameterSearch(self.store)
 
         parameter = sysparam.get_detail_by_name(u'TILLS_ACCOUNT')
         value = search._get_parameter_value(parameter)
-        self.assertEquals(value, 'Tills')
+        self.assertEqual(value, 'Tills')
 
     def test_get_parameter_data_options(self):
         search = ParameterSearch(self.store)
 
         parameter = sysparam.get_detail_by_name(u'SCALE_BARCODE_FORMAT')
         value = search._get_parameter_value(parameter)
-        self.assertEquals(value, u'4 Digits Code with Price')
+        self.assertEqual(value, u'4 Digits Code with Price')
 
     def test_get_parameter_data_path_parameter(self):
         parameter = ParameterDetails(u'FOO', 'section', 'short_desc',
@@ -97,7 +97,7 @@ class TestParameterSearch(GUITest):
         search = ParameterSearch(self.store)
 
         value = search._get_parameter_value(parameter)
-        self.assertEquals(value, u'~/.stoq/cat52')
+        self.assertEqual(value, u'~/.stoq/cat52')
         sysparam._details.pop('FOO')
 
     def test_get_parameter_data_bool(self):
@@ -105,25 +105,25 @@ class TestParameterSearch(GUITest):
 
         parameter = sysparam.get_detail_by_name(u'DISABLE_COOKIES')
         value = search._get_parameter_value(parameter)
-        self.assertEquals(value, 'No')
+        self.assertEqual(value, 'No')
 
     def test_get_parameter_data_country_suggested(self):
         search = ParameterSearch(self.store)
 
         parameter = sysparam.get_detail_by_name(u'COUNTRY_SUGGESTED')
         value = search._get_parameter_value(parameter)
-        self.assertEquals(value, u'Brazil')
+        self.assertEqual(value, u'Brazil')
 
     def test_get_parameter_data_unicode(self):
         search = ParameterSearch(self.store)
 
         parameter = sysparam.get_detail_by_name(u'STATE_SUGGESTED')
         value = search._get_parameter_value(parameter)
-        self.assertEquals(value, u'SP')
+        self.assertEqual(value, u'SP')
 
     def test_get_parameter_data_else(self):
         search = ParameterSearch(self.store)
 
         parameter = sysparam.get_detail_by_name(u'DEFAULT_AREA_CODE')
         value = search._get_parameter_value(parameter)
-        self.assertEquals(value, u'16')
+        self.assertEqual(value, u'16')

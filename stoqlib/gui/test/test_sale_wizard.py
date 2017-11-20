@@ -91,7 +91,7 @@ class TestConfirmSaleWizard(GUITest):
         #  - one is need_adjust_batches
         # 1: select payment status
         # 1: select the branch acronym for sale repr()
-        self.assertEquals(tracer.count, 13)
+        self.assertEqual(tracer.count, 13)
 
     def test_create(self):
         self._create_wizard()
@@ -100,12 +100,12 @@ class TestConfirmSaleWizard(GUITest):
         with mock.patch(module) as emit:
             with mock.patch.object(self.store, 'commit'):
                 self._go_to_next()
-            self.assertEquals(emit.call_count, 1)
+            self.assertEqual(emit.call_count, 1)
             args, kwargs = emit.call_args
             self.assertTrue(isinstance(args[0], Sale))
 
         self._check_wizard('wizard-sale-done-sold')
-        self.assertEquals(self.sale.payments[0].method.method_name, u'money')
+        self.assertEqual(self.sale.payments[0].method.method_name, u'money')
 
     def test_money_payment_with_trade(self):
         # A trade just passes total_paid=value for the trade value (ie, the
@@ -115,10 +115,10 @@ class TestConfirmSaleWizard(GUITest):
             self._go_to_next()
 
         self._check_wizard('wizard-sale-with-trade')
-        self.assertEquals(self.sale.payments[0].method.method_name, u'money')
+        self.assertEqual(self.sale.payments[0].method.method_name, u'money')
 
         # Since $30 was already paid, the client only had to pay $70
-        self.assertEquals(self.sale.payments[0].value, 7)
+        self.assertEqual(self.sale.payments[0].value, 7)
 
     def test_sale_with_trade_same_value(self):
         self._create_wizard(total_paid=10)
@@ -134,7 +134,7 @@ class TestConfirmSaleWizard(GUITest):
         self._check_wizard('wizard-sale-with-trade-same-value')
 
         # No payment created, since the client already paid the whole value
-        self.assertEquals(self.sale.payments.count(), 0)
+        self.assertEqual(self.sale.payments.count(), 0)
 
     def test_sale_with_trade_as_discount(self):
         with contextlib.nested(self.sysparam(USE_TRADE_AS_DISCOUNT=True),
@@ -145,7 +145,7 @@ class TestConfirmSaleWizard(GUITest):
 
             discount_slave = self.step.discount_slave
             self.assertSensitive(discount_slave, ['discount_value'])
-            self.assertEquals(discount_slave.discount_value.get_text(), '100.00')
+            self.assertEqual(discount_slave.discount_value.get_text(), '100.00')
             self.assertSensitive(self.wizard, ['next_button'])
 
             # Discount, greater then max discount + trade discount
@@ -191,17 +191,17 @@ class TestConfirmSaleWizard(GUITest):
         self.check_wizard(self.wizard, 'wizard-sale-with-cost-center')
 
         entry = self.store.find(CostCenterEntry, cost_center=self.sale.cost_center)
-        self.assertEquals(len(list(entry)), 0)
+        self.assertEqual(len(list(entry)), 0)
 
         with mock.patch.object(self.store, 'commit'):
             self._go_to_next()
         # FiscalCoupon calls this method
         self.sale.confirm()
 
-        self.assertEquals(self.sale.cost_center, cost_center)
+        self.assertEqual(self.sale.cost_center, cost_center)
 
         entry = self.store.find(CostCenterEntry, cost_center=self.sale.cost_center)
-        self.assertEquals(len(list(entry)), 1)
+        self.assertEqual(len(list(entry)), 1)
 
     def test_param_accept_change_salesperson_allow(self):
         with self.sysparam(
@@ -238,7 +238,7 @@ class TestConfirmSaleWizard(GUITest):
         # Finish the checkout
         with mock.patch.object(self.store, 'commit'):
             self._go_to_next()
-        self.assertEquals(self.sale.payments[0].method.method_name, u'check')
+        self.assertEqual(self.sale.payments[0].method.method_name, u'check')
 
         self._check_wizard('wizard-sale-step-payment-method-check')
 
@@ -254,7 +254,7 @@ class TestConfirmSaleWizard(GUITest):
         with mock.patch.object(self.store, 'commit'):
             self._go_to_next()
 
-        self.assertEquals(self.sale.payments[0].method.method_name, 'bill')
+        self.assertEqual(self.sale.payments[0].method.method_name, 'bill')
         self._check_wizard('wizard-sale-step-payment-method-bill')
 
     def test_step_payment_method_card(self):
@@ -269,7 +269,7 @@ class TestConfirmSaleWizard(GUITest):
         with mock.patch.object(self.store, 'commit'):
             self._go_to_next()
 
-        self.assertEquals(self.sale.payments[0].method.method_name, 'card')
+        self.assertEqual(self.sale.payments[0].method.method_name, 'card')
 
         models = []
         operation = PaymentMethod.get_by_name(self.store, u'card').operation
@@ -286,7 +286,7 @@ class TestConfirmSaleWizard(GUITest):
         with mock.patch.object(self.store, 'commit'):
             self._go_to_next()
         self._check_wizard('wizard-sale-step-payment-method-deposit')
-        self.assertEquals(self.sale.payments[0].method.method_name, 'deposit')
+        self.assertEqual(self.sale.payments[0].method.method_name, 'deposit')
 
     def test_step_payment_method_store_credit(self):
         client = self.create_client()
@@ -323,7 +323,7 @@ class TestConfirmSaleWizard(GUITest):
         self.assertTrue(self.step.pm_slave._widgets['store_credit'].get_visible())
 
         # It should have fallback to money
-        self.assertEquals(
+        self.assertEqual(
             self.step.pm_slave.get_selected_method().method_name, u'money')
 
     def test_sale_to_client_without_credit(self):
@@ -346,11 +346,11 @@ class TestConfirmSaleWizard(GUITest):
         self.assertFalse(self.step.pm_slave._widgets['credit'].get_visible())
 
         self.step.client_gadget.set_value(client2)
-        self.assertEquals(client2, self.step.client.read())
+        self.assertEqual(client2, self.step.client.read())
         self.assertTrue(self.step.pm_slave._widgets['credit'].get_visible())
 
         # It should have fallback to money
-        self.assertEquals(
+        self.assertEqual(
             self.step.pm_slave.get_selected_method().method_name, u'money')
 
     @mock.patch('stoqlib.gui.widgets.searchentry.run_dialog')
@@ -398,18 +398,18 @@ class TestConfirmSaleWizard(GUITest):
 
         # checks if a client can buy normally
         payment.due_date = today
-        self.assertEquals(step.client.emit('validate', sale.client), None)
+        self.assertEqual(step.client.emit('validate', sale.client), None)
         self.assertTrue(wizard.next_button.props.sensitive)
 
         # checks if a client with late payments can buy with money method
         self._select_method(u'money')
         payment.due_date = today - relativedelta(days=3)
-        self.assertEquals(step.client.emit('validate', sale.client), None)
+        self.assertEqual(step.client.emit('validate', sale.client), None)
         self.assertTrue(wizard.next_button.props.sensitive)
 
         # checks if a client with late payments can buy with store credit
         self._select_method(u'store_credit')
-        self.assertEquals(
+        self.assertEqual(
             str(step.client.emit('validate', sale.client)),
             u'It is not possible to sell with store credit for clients with '
             'late payments.')
@@ -424,19 +424,19 @@ class TestConfirmSaleWizard(GUITest):
 
         # checks if a client can buy normally
         payment.due_date = today
-        self.assertEquals(step.client.emit('validate', sale.client), None)
+        self.assertEqual(step.client.emit('validate', sale.client), None)
 
         # checks if a client with late payments can buy
         payment.due_date = today - relativedelta(days=3)
 
         self._select_method(u'store_credit')
-        self.assertEquals(
+        self.assertEqual(
             str(step.client.emit('validate', sale.client)),
             u'It is not possible to sell for clients with late payments.')
-        self.assertEquals(run_dialog.call_count, 0)
+        self.assertEqual(run_dialog.call_count, 0)
 
         self._select_method('check')
-        self.assertEquals(
+        self.assertEqual(
             str(step.client.emit('validate', sale.client)),
             u'It is not possible to sell for clients with late payments.')
 
@@ -454,7 +454,7 @@ class TestConfirmSaleWizard(GUITest):
         with mock.patch.object(self.store, 'commit'):
             self.click(wizard.next_button)
 
-        self.assertEquals(sale.payments[0].method.method_name, u'store_credit')
+        self.assertEqual(sale.payments[0].method.method_name, u'store_credit')
 
     def test_overpaid_sale(self):
         sale = self.create_sale()
@@ -479,10 +479,10 @@ class TestConfirmSaleWizard(GUITest):
             self._go_to_next()
 
         payments = list(sale.group.get_items())
-        self.assertEquals(len(payments), 2)
-        self.assertEquals(payments[0], payment)
-        self.assertEquals(payments[1].payment_type, Payment.TYPE_OUT)
-        self.assertEquals(payments[1].value, 40)
+        self.assertEqual(len(payments), 2)
+        self.assertEqual(payments[0], payment)
+        self.assertEqual(payments[1].payment_type, Payment.TYPE_OUT)
+        self.assertEqual(payments[1].value, 40)
 
         sale.confirm(till=self.create_till())
 

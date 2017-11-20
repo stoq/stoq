@@ -64,4 +64,4 @@ class TestServiceSearch(GUITest):
         dialog = ServiceSearch(self.store)
         service_item = self.store.find(ServiceView, service_id=service.id).one()
         results = dialog.get_editor_model(model=service_item)
-        self.assertEquals(service, results)
+        self.assertEqual(service, results)

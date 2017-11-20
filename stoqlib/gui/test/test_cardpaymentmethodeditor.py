@@ -80,16 +80,16 @@ class TestCardOperationCostEditor(GUITest):
         upper_start = editor.installment_start.get_adjustment().get_upper()
         upper_end = editor.installment_end.get_adjustment().get_upper()
 
-        self.assertEquals(upper_start, 1)
-        self.assertEquals(upper_end, 1)
+        self.assertEqual(upper_start, 1)
+        self.assertEqual(upper_end, 1)
 
         editor.card_type.update(CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE)
 
         upper_start = editor.installment_start.get_adjustment().get_upper()
         upper_end = editor.installment_end.get_adjustment().get_upper()
 
-        self.assertEquals(upper_start, 16)
-        self.assertEquals(upper_end, 16)
+        self.assertEqual(upper_start, 16)
+        self.assertEqual(upper_end, 16)
 
     def test_validation(self):
         device = self.create_card_device()
@@ -124,9 +124,9 @@ class TestCardOperationCostEditor(GUITest):
         editor.fee.set_text('10')
         self.click(editor.main_dialog.ok_button)
 
-        self.assertEquals(cost.fee, 10)
-        self.assertEquals(cost.installment_start, 7)
-        self.assertEquals(cost.installment_end, 8)
+        self.assertEqual(cost.fee, 10)
+        self.assertEqual(cost.installment_start, 7)
+        self.assertEqual(cost.installment_end, 8)
 
 
 class TestCreditProviderEditor(GUITest):
@@ -189,13 +189,13 @@ class TestCardPaymentDetailsEditor(GUITest):
         editor = CardPaymentDetailsEditor(self.store, card_payment)
 
         # Verify if the original card data was loaded correctly
-        self.assertEquals(editor.device.get_selected(), card_payment.device)
-        self.assertEquals(editor.provider.get_selected(), card_payment.provider)
-        self.assertEquals(int(editor.auth.get_text()), card_payment.auth)
+        self.assertEqual(editor.device.get_selected(), card_payment.device)
+        self.assertEqual(editor.provider.get_selected(), card_payment.provider)
+        self.assertEqual(int(editor.auth.get_text()), card_payment.auth)
 
-        self.assertEquals(card_payment.fee, card_data_old.fee)
-        self.assertEquals(card_payment.fee_value, card_data_old.fee_value)
-        self.assertEquals(card_payment.fare, card_data_old.fare)
+        self.assertEqual(card_payment.fee, card_data_old.fee)
+        self.assertEqual(card_payment.fee_value, card_data_old.fee_value)
+        self.assertEqual(card_payment.fare, card_data_old.fare)
 
         # add new providers on GUI
         editor.device.append_item(card_data_new.device.description, card_data_new.device)
@@ -209,12 +209,12 @@ class TestCardPaymentDetailsEditor(GUITest):
         self.click(editor.main_dialog.ok_button)
 
         # Verify if the changes were saved into the model correctly
-        self.assertEquals(card_payment.device, card_data_new.device)
-        self.assertEquals(card_payment.provider, card_data_new.provider)
-        self.assertEquals(card_payment.auth, 123456)
-        self.assertEquals(card_payment.fee, card_data_new.fee)
-        self.assertEquals(card_payment.fee_value, card_data_new.fee_value)
-        self.assertEquals(card_payment.fare, card_data_new.fare)
+        self.assertEqual(card_payment.device, card_data_new.device)
+        self.assertEqual(card_payment.provider, card_data_new.provider)
+        self.assertEqual(card_payment.auth, 123456)
+        self.assertEqual(card_payment.fee, card_data_new.fee)
+        self.assertEqual(card_payment.fee_value, card_data_new.fee_value)
+        self.assertEqual(card_payment.fare, card_data_new.fare)
 
     def _create_card_data(self, device_description=u'', provider_name=u'',
                           fee=0, fare=0, payment_value=0):
@@ -242,7 +242,7 @@ class TestProviderListSlave(GUITest):
     def test_remove(self, yesno, info):
         provider = self.create_credit_provider(u'Default Provider')
         check_provider = self.store.find(CreditProvider, short_name=u'Default Provider').count()
-        self.assertEquals(check_provider, 1)
+        self.assertEqual(check_provider, 1)
         slave = ProviderListSlave(store=self.store, reuse_store=True)
         slave.listcontainer.list.select(provider)
 
@@ -267,7 +267,7 @@ class TestProviderListSlave(GUITest):
                                  "Remove",
                                  "Cancel")
         check_provider = self.store.find(CreditProvider, short_name=u'Default Provider').count()
-        self.assertEquals(check_provider, 0)
+        self.assertEqual(check_provider, 0)
 
 
 class TestCardDeviceListSlave(GUITest):
@@ -284,7 +284,7 @@ class TestCardDeviceListSlave(GUITest):
     def test_remove(self, info, yesno):
         device = self.create_card_device(u'Default Device')
         devices = self.store.find(CardPaymentDevice, description=u'Default Device').count()
-        self.assertEquals(devices, 1)
+        self.assertEqual(devices, 1)
 
         slave = CardDeviceListSlave(store=self.store, reuse_store=True)
         slave.listcontainer.list.select(device)
@@ -313,9 +313,9 @@ class TestCardDeviceListSlave(GUITest):
         devices = self.store.find(CardPaymentDevice, description=u'Default Device').count()
         operations = self.store.find(CardOperationCost, device=device).count()
         card_data = self.store.find(CreditCardData, device=device).count()
-        self.assertEquals(devices, 0)
-        self.assertEquals(operations, 0)
-        self.assertEquals(card_data, 0)
+        self.assertEqual(devices, 0)
+        self.assertEqual(operations, 0)
+        self.assertEqual(card_data, 0)
 
 
 class TestCardOperationCostListSlave(GUITest):

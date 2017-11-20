@@ -38,12 +38,12 @@ class TestOpenInventoryEditor(GUITest):
 
     def test_open_iventory(self):
         # There are no inventories open right now
-        self.assertEquals(self.store.find(Inventory).count(), 0)
+        self.assertEqual(self.store.find(Inventory).count(), 0)
         dialog = InventoryOpenEditor(self.store)
         self.click(dialog.main_dialog.ok_button)
 
         # There should be one open inventory now
-        self.assertEquals(self.store.find(Inventory).count(), 1)
+        self.assertEqual(self.store.find(Inventory).count(), 1)
 
     def test_category_selection(self):
         dialog = InventoryOpenEditor(self.store)

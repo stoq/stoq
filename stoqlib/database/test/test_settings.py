@@ -65,10 +65,10 @@ class DatabaseSettingsTest(DomainTest):
     def test_get_store_dsn(self):
         settings = DatabaseSettings(address='address',
                                     username='username')
-        self.assertEquals(settings.get_store_uri(),
-                          'postgres://username@address:5432/stoq')
-        self.assertEquals(settings.get_store_dsn(),
-                          'dbname=stoq host=address port=5432 user=username')
+        self.assertEqual(settings.get_store_uri(),
+                         'postgres://username@address:5432/stoq')
+        self.assertEqual(settings.get_store_dsn(),
+                         'dbname=stoq host=address port=5432 user=username')
 
     @mock.patch('stoqlib.database.settings.test_local_database')
     def test_get_store_dsn_no_host(self, tld):
@@ -79,22 +79,22 @@ class DatabaseSettingsTest(DomainTest):
         settings.address = ''
 
         tld.return_value = None
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 DatabaseError,
                 "Could not find a database server on this computer"):
             settings.get_store_dsn()
 
         tld.return_value = ('<unix_socket>', 1234)
-        self.assertEquals(settings.get_store_dsn(),
-                          'dbname=stoq host=<unix_socket> port=1234 user=username')
+        self.assertEqual(settings.get_store_dsn(),
+                         'dbname=stoq host=<unix_socket> port=1234 user=username')
 
     def test_get_store_dsn_password(self):
         settings = DatabaseSettings(address='address',
                                     username='username',
                                     password='password')
-        self.assertEquals(settings.get_store_uri(),
-                          'postgres://username:password@address:5432/stoq')
-        self.assertEquals(
+        self.assertEqual(settings.get_store_uri(),
+                         'postgres://username:password@address:5432/stoq')
+        self.assertEqual(
             settings.get_store_dsn(),
             'dbname=stoq host=address port=5432 user=username password=password')
 
@@ -102,10 +102,10 @@ class DatabaseSettingsTest(DomainTest):
         settings = DatabaseSettings(address='address',
                                     username='username',
                                     port='12345')
-        self.assertEquals(settings.get_store_uri(),
-                          'postgres://username@address:12345/stoq')
-        self.assertEquals(settings.get_store_dsn(),
-                          'dbname=stoq host=address port=12345 user=username')
+        self.assertEqual(settings.get_store_uri(),
+                         'postgres://username@address:12345/stoq')
+        self.assertEqual(settings.get_store_dsn(),
+                         'dbname=stoq host=address port=12345 user=username')
 
     @mock.patch('stoqlib.database.runtime.StoqlibStore')
     @mock.patch('stoqlib.database.settings.create_database')
@@ -117,11 +117,11 @@ class DatabaseSettingsTest(DomainTest):
         store = settings.create_store()
         self.assertEqual(create_database.call_count, 1)
         uri = create_database.call_args[0][0]
-        self.assertEquals(
+        self.assertEqual(
             str(uri),
             'postgres://username:password@address:12345/stoq?isolation=read-committed')
         self.assertEqual(StoqlibStore.call_count, 1)
-        self.failUnless(store)
+        self.assertTrue(store)
 
     @mock.patch('stoqlib.database.runtime.StoqlibStore')
     @mock.patch('stoqlib.database.settings.create_database')
@@ -138,13 +138,13 @@ class DatabaseSettingsTest(DomainTest):
         self.assertEqual(create_database.call_count, 1)
         test_local_database.called_once_with()
         uri = create_database.call_args[0][0]
-        self.assertEquals(uri.host, '/var/run/postgresql')
-        self.assertEquals(uri.port, 5432)
-        self.assertEquals(
+        self.assertEqual(uri.host, '/var/run/postgresql')
+        self.assertEqual(uri.port, 5432)
+        self.assertEqual(
             str(uri),
             'postgres://username@%2Fvar%2Frun%2Fpostgresql:5432/stoq?isolation=read-committed')
         self.assertEqual(StoqlibStore.call_count, 1)
-        self.failUnless(store)
+        self.assertTrue(store)
 
     @mock.patch('stoqlib.database.runtime.StoqlibStore')
     @mock.patch('stoqlib.database.settings.create_database')
@@ -154,30 +154,30 @@ class DatabaseSettingsTest(DomainTest):
         store = settings.create_super_store()
         self.assertEqual(create_database.call_count, 1)
         uri = create_database.call_args[0][0]
-        self.assertEquals(
+        self.assertEqual(
             str(uri),
             'postgres://username@localhost:5432/postgres?isolation=read-committed')
         self.assertEqual(StoqlibStore.call_count, 1)
-        self.failUnless(store)
+        self.assertTrue(store)
 
     def test_get_command_line_arguments(self):
         settings = DatabaseSettings(address='address',
                                     username='username',
                                     password='password',
                                     port='12345')
-        self.assertEquals(settings.get_command_line_arguments(),
-                          ['-d', 'stoq',
-                           '-H', 'address',
-                           '-p', '12345',
-                           '-u', 'username',
-                           '-w', 'password'])
+        self.assertEqual(settings.get_command_line_arguments(),
+                         ['-d', 'stoq',
+                          '-H', 'address',
+                          '-p', '12345',
+                          '-u', 'username',
+                          '-w', 'password'])
 
     def test_get_tool_args(self):
         settings = DatabaseSettings(address='address',
                                     username='username',
                                     password='password',
                                     port='12345')
-        self.assertEquals(settings.get_tool_args(),
-                          ['-U', 'username',
-                           '-h', 'address',
-                           '-p', '12345'])
+        self.assertEqual(settings.get_tool_args(),
+                         ['-U', 'username',
+                          '-h', 'address',
+                          '-p', '12345'])

@@ -64,17 +64,17 @@ class TestStock(BaseGUITest):
             self.activate(action)
 
             run_dialog = ctx[2]
-            self.assertEquals(run_dialog.call_count, 1)
+            self.assertEqual(run_dialog.call_count, 1)
             args, kwargs = run_dialog.call_args
-            self.assertEquals(args[0], dialog)
-            self.assertEquals(args[1], self.store)
+            self.assertEqual(args[0], dialog)
+            self.assertEqual(args[1], self.store)
 
             if not other_args or len(other_args) != len(args[2:]):
                 return
 
             for arg in args[2:]:
                 for other_arg in other_args:
-                    self.assertEquals(arg, other_arg)
+                    self.assertEqual(arg, other_arg)
 
     def test_initial(self):
         app = self.create_app(StockApp, u'stock')
@@ -108,12 +108,12 @@ class TestStock(BaseGUITest):
         results.select(results[0])
 
         self.activate(app.ProductStockHistory)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         dialog, store, sellable = args
-        self.assertEquals(dialog, ProductStockHistoryDialog)
+        self.assertEqual(dialog, ProductStockHistoryDialog)
         self.assertTrue(isinstance(store, StoqlibStore))
-        self.assertEquals(sellable, results[0].sellable)
+        self.assertEqual(sellable, results[0].sellable)
 
     def test_actions(self):
         app = self.create_app(StockApp, u'stock')

@@ -108,10 +108,10 @@ class ImageSlave(BaseEditorSlave):
     def _setup_widgets(self):
         self.set_main_item = Gtk.ImageMenuItem.new_from_stock(STOQ_CHECK, None)
         self.set_main_item.set_label(_("Set as main image"))
-        self.set_internal_item = Gtk.CheckMenuItem(_("Internal use only"))
-        self.view_item = Gtk.MenuItem(_("View"))
-        self.save_item = Gtk.MenuItem(_("Save"))
-        self.erase_item = Gtk.MenuItem(_("Remove"))
+        self.set_internal_item = Gtk.CheckMenuItem(label=_("Internal use only"))
+        self.view_item = Gtk.MenuItem(label=_("View"))
+        self.save_item = Gtk.MenuItem(label=_("Save"))
+        self.erase_item = Gtk.MenuItem(label=_("Remove"))
 
         self.popmenu = Gtk.Menu()
         for item, callback in [

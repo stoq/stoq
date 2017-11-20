@@ -252,7 +252,7 @@ class ReceivingOrderItemStep(BaseWizardStep):
         self.force_validation()
 
     def _setup_widgets(self):
-        adjustment = Gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1)
+        adjustment = Gtk.Adjustment(lower=0, upper=MAX_INT, step_increment=1)
         self.purchase_items.set_columns([
             Column('code', title=_('Code'),
                    data_type=str, searchable=True, visible=False),

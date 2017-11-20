@@ -41,7 +41,7 @@ class TestStockCostDialog(GUITest):
         rows, column = treeview.get_cursor()
         item = dialog.slave.listcontainer.list[0]
         dialog.slave.listcontainer.list.emit('cell-edited', item, 'initial_stock')
-        self.assertNotEquals((rows, column), treeview.get_cursor())
+        self.assertNotEqual((rows, column), treeview.get_cursor())
 
         self.click(dialog.main_dialog.ok_button)
         # retval may be out of order, sort it so the test wont fail randomly

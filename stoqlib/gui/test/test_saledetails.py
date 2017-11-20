@@ -124,7 +124,7 @@ class TestSaleDetails(GUITest):
 
         model = self.store.find(SaleView, id=sale.id).one()
         dialog = SaleDetailsDialog(self.store, model)
-        self.assertEquals(len(list(dialog.items_list)), 3)
+        self.assertEqual(len(list(dialog.items_list)), 3)
 
     @mock.patch('stoqlib.gui.dialogs.saledetails.run_dialog')
     def test_client_details(self, run_dialog):
@@ -138,9 +138,9 @@ class TestSaleDetails(GUITest):
 
         args, kwargs = run_dialog.call_args
         editor, parent, store, model = args
-        self.assertEquals(editor, ClientDetailsDialog)
-        self.assertEquals(parent, dialog)
-        self.assertEquals(model, sale.client)
+        self.assertEqual(editor, ClientDetailsDialog)
+        self.assertEqual(parent, dialog)
+        self.assertEqual(model, sale.client)
         self.assertTrue(isinstance(store, StoqlibStore))
 
     @mock.patch('stoqlib.gui.dialogs.saledetails.BillReport.check_printable')
@@ -208,12 +208,12 @@ class TestSaleDetails(GUITest):
 
         args, kwargs = run_dialog.call_args
         editor, parent, store, model, prop_name = args
-        self.assertEquals(editor, NoteEditor)
-        self.assertEquals(parent, dialog)
+        self.assertEqual(editor, NoteEditor)
+        self.assertEqual(parent, dialog)
         self.assertTrue(isinstance(model, SaleComment))
         self.assertTrue(isinstance(store, StoqlibStore))
-        self.assertEquals(prop_name, 'comment')
-        self.assertEquals(kwargs['title'], 'New Sale Comment')
+        self.assertEqual(prop_name, 'comment')
+        self.assertEqual(kwargs['title'], 'New Sale Comment')
 
 
 if __name__ == '__main__':

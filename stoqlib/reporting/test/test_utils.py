@@ -40,7 +40,7 @@ class TestUtils(DomainTest):
         image.image = b'foobar'
         sysparam.set_object(self.store, 'CUSTOM_LOGO_FOR_REPORTS', image)
         data = get_logo_data(self.store)
-        self.assertEquals(data, 'data:image/png;base64,Zm9vYmFy')
+        self.assertEqual(data, 'data:image/png;base64,Zm9vYmFy')
 
     def test_get_header_data(self):
         branch = get_current_branch(self.store)
@@ -63,4 +63,4 @@ class TestUtils(DomainTest):
                               person.email])
         register = ' - '.join([_("CNPJ: %s") % company.cnpj,
                                _("State Registry: %s") % company.state_registry])
-        self.assertEquals(data['lines'], [address, contact, register])
+        self.assertEqual(data['lines'], [address, contact, register])

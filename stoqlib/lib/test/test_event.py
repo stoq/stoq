@@ -35,7 +35,7 @@ class EventTest(unittest.TestCase):
             returnclass = ReturnStatus
 
         retval = MyEvent.emit()
-        self.assertEquals(None, retval)
+        self.assertEqual(None, retval)
 
     def test_wrong_return_value(self):
         class MyEvent(Event):
@@ -100,7 +100,7 @@ class EventTest(unittest.TestCase):
         class MyEvent(Event):
             pass
 
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 TypeError,
                 "callback <object object at 0x[0-9a-f]+> must be callable"):
             MyEvent.connect(object())

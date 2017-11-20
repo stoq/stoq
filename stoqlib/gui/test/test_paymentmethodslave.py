@@ -32,7 +32,7 @@ __tests__ = 'stoqlib/gui/slaves/paymentmethodslave.py'
 
 class TestSelectPaymentMethodSlave(GUITest):
     def test_init(self):
-        with self.assertRaisesRegexp(ValueError, "payment_type must be set"):
+        with self.assertRaisesRegex(ValueError, "payment_type must be set"):
             SelectPaymentMethodSlave(payment_type=None)
 
     def test_init_default_method(self):

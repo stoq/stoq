@@ -34,7 +34,7 @@ __tests__ = 'stoqlib/domain/transfer.py'
 class TestTransferOrderItem(DomainTest):
 
     def test__init__(self):
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 TypeError, 'You must provide a sellable argument'):
                 TransferOrderItem(store=self.store)
         item = self.create_transfer_order_item()
@@ -44,20 +44,20 @@ class TestTransferOrderItem(DomainTest):
     def test_get_total(self):
         order = self.create_transfer_order()
         item = self.create_transfer_order_item(order)
-        self.assertEquals(item.get_total(), 625)
+        self.assertEqual(item.get_total(), 625)
 
     def test_parent(self):
         order = self.create_transfer_order()
         item = self.create_transfer_order_item(order)
-        self.assertEquals(item.parent, order)
+        self.assertEqual(item.parent, order)
 
     def test_base_price(self):
         transfer_item = self.create_transfer_order_item(stock_cost=70)
-        self.assertEquals(transfer_item.base_price, 70)
+        self.assertEqual(transfer_item.base_price, 70)
 
     def test_price(self):
         transfer_item = self.create_transfer_order_item(stock_cost=50)
-        self.assertEquals(transfer_item.price, transfer_item.stock_cost)
+        self.assertEqual(transfer_item.price, transfer_item.stock_cost)
 
     def test_cfop_code(self):
         # Test for transfers between branches of the same company
@@ -71,7 +71,7 @@ class TestTransferOrderItem(DomainTest):
         # Source branch address is the same of destination branch
         source.person.address.city_location = location
         destination.person.address.city_location = location
-        self.assertEquals(transfer_item.cfop_code, u'5152')
+        self.assertEqual(transfer_item.cfop_code, u'5152')
 
         # Test for transfers between distinct companies
         source_branch = self.create_branch(u'Source', cnpj=u'32.046.355/0001-08')
@@ -84,7 +84,7 @@ class TestTransferOrderItem(DomainTest):
         destination.person.address.city_location = location
         sale_cfop = self.create_cfop_data(code=u'5.102')
         with self.sysparam(DEFAULT_SALES_CFOP=sale_cfop):
-            self.assertEquals(transfer_item.cfop_code, u'5102')
+            self.assertEqual(transfer_item.cfop_code, u'5102')
 
 
 class TestTransferOrder(DomainTest):
@@ -130,7 +130,7 @@ class TestTransferOrder(DomainTest):
         self.assertEqual(after_qty, before_qty - qty)
 
         history = self.store.find(ProductHistory, sellable=item.sellable).one()
-        self.failIf(history is None)
+        self.assertFalse(history is None)
         self.assertEqual(history.quantity_transfered, qty)
 
     def test_receive(self):
@@ -154,30 +154,30 @@ class TestTransferOrder(DomainTest):
         # Checking the balance before send
         sour_before_qty = storable.get_balance_for_branch(order.source_branch)
         dest_before_qty = storable.get_balance_for_branch(order.destination_branch)
-        self.assertEquals(sour_before_qty, 1)
-        self.assertEquals(dest_before_qty, 0)
+        self.assertEqual(sour_before_qty, 1)
+        self.assertEqual(dest_before_qty, 0)
         order.send()
 
         # Checking the balance after sending
         sour_during_qty = storable.get_balance_for_branch(order.source_branch)
         dest_during_qty = storable.get_balance_for_branch(order.destination_branch)
 
-        self.assertEquals(sour_during_qty, 0)
-        self.assertEquals(dest_during_qty, 0)
+        self.assertEqual(sour_during_qty, 0)
+        self.assertEqual(dest_during_qty, 0)
 
         order.cancel(self.create_employee(), 'Cancelled due something')
         # Checking the balance after cancel
         sour_after_qty = storable.get_balance_for_branch(order.source_branch)
         dest_after_qty = storable.get_balance_for_branch(order.destination_branch)
-        self.assertEquals(sour_after_qty, 1)
-        self.assertEquals(dest_after_qty, 0)
+        self.assertEqual(sour_after_qty, 1)
+        self.assertEqual(dest_after_qty, 0)
 
     def test_add_item(self):
         order = self.create_transfer_order()
 
         item = self.create_transfer_order_item()
         order.add_item(item)
-        self.assertEquals(item.transfer_order, order)
+        self.assertEqual(item.transfer_order, order)
 
     def test_remove_item(self):
         order = self.create_transfer_order()
@@ -200,66 +200,63 @@ class TestTransferOrder(DomainTest):
             self.assertEqual(before_remove, after_remove)
 
             # But not related to the loan
-            self.assertEquals(self.store.find(TransferOrderItem, transfer_order=order).count(), 0)
+            self.assertEqual(self.store.find(TransferOrderItem, transfer_order=order).count(), 0)
 
     def test_get_source_branch_name(self):
         order = self.create_transfer_order()
-        self.assertEquals(order.get_source_branch_name(), u'Source shop')
+        self.assertEqual(order.get_source_branch_name(), u'Source shop')
 
     def test_get_destination_branch_name(self):
         order = self.create_transfer_order()
-        self.assertEquals(order.get_destination_branch_name(), u'Dest shop')
+        self.assertEqual(order.get_destination_branch_name(), u'Dest shop')
 
     def test_get_source_responsible_name(self):
         order = self.create_transfer_order()
-        self.assertEquals(order.get_source_responsible_name(),
-                          u'Ipswich')
+        self.assertEqual(order.get_source_responsible_name(), u'Ipswich')
 
     def test_get_destination_responsible_name(self):
         order = self.create_transfer_order()
-        self.assertEquals(order.get_destination_responsible_name(),
-                          u'Bolton')
+        self.assertEqual(order.get_destination_responsible_name(), u'Bolton')
 
         order.destination_responsible = None
-        self.assertEquals(order.get_destination_responsible_name(),
-                          u'')
+        self.assertEqual(order.get_destination_responsible_name(), u'')
 
     def test_get_total_items_transfer(self):
         order = self.create_transfer_order()
         self.create_transfer_order_item(order)
-        self.assertEquals(order.get_total_items_transfer(), 5)
+        self.assertEqual(order.get_total_items_transfer(), 5)
         self.create_transfer_order_item(order)
-        self.assertEquals(order.get_total_items_transfer(), 10)
+        self.assertEqual(order.get_total_items_transfer(), 10)
 
     def test_status_str(self):
         order = self.create_transfer_order()
-        self.assertEquals(order.status_str, 'Pending')
+        self.assertEqual(order.status_str, 'Pending')
 
     def test_branch(self):
         order = self.create_transfer_order()
         self.assertTrue(order.branch)
-        self.assertEquals(order.branch, order.source_branch)
+        self.assertEqual(order.branch, order.source_branch)
         order.source_branch = None
         self.assertFalse(order.branch)
-        self.assertEquals(order.branch, order.source_branch)
+        self.assertEqual(order.branch, order.source_branch)
 
     def test_discount_value(self):
         order = self.create_transfer_order()
-        self.assertEquals(order.discount_value, currency(0))
+        self.assertEqual(order.discount_value, currency(0))
 
     def test_invoice_total(self):
         order = self.create_transfer_order()
         self.create_transfer_order_item(order, quantity=1, stock_cost=20)
-        self.assertEquals(order.invoice_total, 20)
+        self.assertEqual(order.invoice_total, 20)
         self.create_transfer_order_item(order, quantity=2, stock_cost=20)
-        self.assertEquals(order.invoice_total, 60)
+        self.assertEqual(order.invoice_total, 60)
 
     def test_recipient(self):
         destination_branch = self.create_branch()
         order = self.create_transfer_order(dest_branch=destination_branch)
-        self.assertEquals(order.destination_branch.person, order.recipient)
+        self.assertEqual(order.destination_branch.person, order.recipient)
 
     def test_operation_nature(self):
         # FIXME: Check using the operation_nature that will be saved in new field.
         order = self.create_transfer_order()
-        self.assertEquals(order.operation_nature, u'Transfer')
+        self.assertEqual(order.operation_nature, u'Transfer')

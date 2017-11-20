@@ -57,11 +57,11 @@ class TestReceivable(BaseGUITest):
             self.activate(action)
 
             run_dialog = ctx[0]
-            self.assertEquals(run_dialog.call_count, 1)
+            self.assertEqual(run_dialog.call_count, 1)
             args, kwargs = run_dialog.call_args
-            self.assertEquals(args[0], dialog)
-            self.assertEquals(args[1], app)
-            self.assertEquals(args[2], self.store)
+            self.assertEqual(args[0], dialog)
+            self.assertEqual(args[1], app)
+            self.assertEqual(args[2], self.store)
 
     def setUp(self):
         BaseGUITest.setUp(self)
@@ -326,5 +326,5 @@ class TestReceivable(BaseGUITest):
         # We run this test with a private method because .uitest files do not apply
         # the format_func argument to itself - e.g. the card type column for None will
         # show None instead of the empty string shown at the UI.
-        self.assertEquals(app._format_card_type(CreditCardData.TYPE_CREDIT), u'Credit')
-        self.assertEquals(app._format_card_type(None), u'')
+        self.assertEqual(app._format_card_type(CreditCardData.TYPE_CREDIT), u'Credit')
+        self.assertEqual(app._format_card_type(None), u'')

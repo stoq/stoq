@@ -126,7 +126,7 @@ class ProductAttributeSlave(BaseEditorSlave):
             self._add_attribute(attr)
 
         self._create_attribute_box = Gtk.HBox()
-        btn = Gtk.Button(_("Add a new attribute"))
+        btn = Gtk.Button.new_with_label(_("Add a new attribute"))
         btn.connect('clicked', self._on_add_new_attribute_btn__clicked)
         self._create_attribute_box.pack_start(btn, False, True, 0)
         label = Gtk.Label()
@@ -269,7 +269,7 @@ class ProductInformationSlave(BaseEditorSlave):
         for widget in [self.minimum_quantity, self.maximum_quantity,
                        self.width, self.height, self.depth, self.weight]:
             widget.set_adjustment(
-                Gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
+                Gtk.Adjustment(lower=0, upper=MAX_INT, step_increment=1))
 
         if not self.db_form:
             return
@@ -483,7 +483,7 @@ class ProductComponentSlave(BaseEditorSlave):
             self.sort_components_check.set_sensitive(False)
 
         self.yield_quantity.set_adjustment(
-            Gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
+            Gtk.Adjustment(lower=0, upper=MAX_INT, step_increment=1))
 
         self.component_tree.set_columns(self._get_columns())
         self._populate_component_tree()

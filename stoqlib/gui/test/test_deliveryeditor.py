@@ -130,7 +130,7 @@ class TestCreateDeliveryEditor(GUITest):
         # Change client
         editor.fields['client'].set_value(client2)
         new_client = editor.client.read()
-        self.assertNotEquals(first_client, new_client)
+        self.assertNotEqual(first_client, new_client)
         new_address = editor.address.get_selected_data()
-        self.assertNotEquals(first_address, new_address)
+        self.assertNotEqual(first_address, new_address)
         self.check_editor(editor, 'editor-createdelivery-clientchanged')

@@ -360,11 +360,11 @@ class TestSaleTradeWizard(GUITest):
             self.activate(item_step.barcode)
             self.click(item_step.add_sellable_button)
             # Children must be added to the list
-            self.assertEquals(len(list(item_step.slave.klist)), 2)
+            self.assertEqual(len(list(item_step.slave.klist)), 2)
 
             # Testing add production item
             item_step.barcode.set_text(u'333')
             self.activate(item_step.barcode)
             self.click(item_step.add_sellable_button)
             # For production item, we should not add its components to the list
-            self.assertEquals(len(list(item_step.slave.klist)), 3)
+            self.assertEqual(len(list(item_step.slave.klist)), 3)

@@ -77,7 +77,7 @@ class TestInventoryDetails(GUITest):
 
         dialog = InventoryDetailsDialog(self.store, inventory)
         dialog.items_list.emit('double-click', item)
-        self.assertEquals(run_dialog.call_count, 0)
+        self.assertEqual(run_dialog.call_count, 0)
 
     @mock.patch('stoqlib.gui.dialogs.inventorydetails.run_dialog')
     def test_on_items_list__double_click_with_reason(self, run_dialog):
@@ -122,9 +122,9 @@ class TestInventoryDetails(GUITest):
         self.create_inventory_item(inventory)
         dialog = InventoryDetailsDialog(self.store, inventory)
 
-        self.assertEquals(export.call_count, 0)
+        self.assertEqual(export.call_count, 0)
         self.click(dialog.export_button)
-        self.assertEquals(export.call_count, 1)
+        self.assertEqual(export.call_count, 1)
 
 
 if __name__ == '__main__':

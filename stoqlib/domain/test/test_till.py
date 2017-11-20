@@ -214,10 +214,9 @@ class TestTill(DomainTest):
 
         new_till = Till(station=get_current_station(self.store),
                         store=self.store)
-        self.failUnless(new_till._get_last_closed_till())
+        self.assertTrue(new_till._get_last_closed_till())
         new_till.open_till()
-        self.assertEquals(new_till.initial_cash_amount,
-                          till.final_cash_amount)
+        self.assertEqual(new_till.initial_cash_amount, till.final_cash_amount)
 
     def test_till_open_other_station(self):
         till = Till(station=self.create_station(),
@@ -233,24 +232,24 @@ class TestTill(DomainTest):
     def test_needs_closing(self):
         till = Till(station=self.create_station(),
                     store=self.store)
-        self.failIf(till.needs_closing())
+        self.assertFalse(till.needs_closing())
 
         # Till is opened today, no need to close
         till.open_till()
-        self.failIf(till.needs_closing())
+        self.assertFalse(till.needs_closing())
 
         # till was onpened yesterday. Should close
         till.opening_date = localnow() - datetime.timedelta(1)
-        self.failUnless(till.needs_closing())
+        self.assertTrue(till.needs_closing())
 
         # Till was opened yesterday, but there is a tolerance
         tolerance = int((localnow() - localtoday()).seconds / (60 * 60)) + 1
         with self.sysparam(TILL_TOLERANCE_FOR_CLOSING=tolerance):
-            self.failIf(till.needs_closing())
+            self.assertFalse(till.needs_closing())
 
         # Till is now closed, no need to close again
         till.close_till()
-        self.failIf(till.needs_closing())
+        self.assertFalse(till.needs_closing())
 
     def test_add_entry_in_payment(self):
         till = Till(store=self.store,
@@ -294,14 +293,14 @@ class TestTill(DomainTest):
         till = Till(store=self.store,
                     station=get_current_station(self.store))
         till.open_till()
-        self.assertEquals(Till.get_last(self.store), till)
+        self.assertEqual(Till.get_last(self.store), till)
 
     def test_get_last_closed(self):
         till = Till(store=self.store,
                     station=get_current_station(self.store))
         till.open_till()
         till.close_till()
-        self.assertEquals(Till.get_last_closed(self.store), till)
+        self.assertEqual(Till.get_last_closed(self.store), till)
 
 
 class TestTillEntry(DomainTest):
@@ -309,7 +308,7 @@ class TestTillEntry(DomainTest):
     def test_time(self):
         entry = TillEntry(store=self.store,
                           date=datetime.datetime(2000, 1, 1, 12, 34, 59, 789))
-        self.assertEquals(entry.time, datetime.time(12, 34, 59))
+        self.assertEqual(entry.time, datetime.time(12, 34, 59))
 
     def test_branch_name(self):
         till = self.create_till()
@@ -321,7 +320,7 @@ class TestTillEntry(DomainTest):
                           till=till,
                           branch=branch,
                           date=datetime.datetime(2014, 1, 1))
-        self.assertEquals(entry.branch_name, u'Test Shop')
+        self.assertEqual(entry.branch_name, u'Test Shop')
         person.company.fancy_name = None
-        self.assertNotEquals(entry.branch_name, u'Test Shop')
-        self.assertEquals(entry.branch_name, u'Test')
+        self.assertNotEqual(entry.branch_name, u'Test Shop')
+        self.assertEqual(entry.branch_name, u'Test')

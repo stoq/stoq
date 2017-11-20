@@ -95,14 +95,14 @@ class TestFinancial(BaseGUITest):
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
                 self.activate(app.Edit)
-                self.assertEquals(run_dialog.call_count, 1)
+                self.assertEqual(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
                 editor, _app, store, account_transaction, model = args
-                self.assertEquals(editor, AccountTransactionEditor)
+                self.assertEqual(editor, AccountTransactionEditor)
                 self.assertTrue(isinstance(_app, FinancialApp))
-                self.assertEquals(store, self.store)
-                self.assertEquals(account_transaction, at)
-                self.assertEquals(model, at.account)
+                self.assertEqual(store, self.store)
+                self.assertEqual(account_transaction, at)
+                self.assertEqual(model, at.account)
 
     @mock.patch('stoq.gui.financial.run_dialog')
     @mock.patch('stoq.gui.financial.api.new_store')
@@ -121,14 +121,14 @@ class TestFinancial(BaseGUITest):
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
                 self.activate(app.NewTransaction)
-                self.assertEquals(run_dialog.call_count, 1)
+                self.assertEqual(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
                 editor, _app, store, account_transaction, model = args
-                self.assertEquals(editor, AccountTransactionEditor)
+                self.assertEqual(editor, AccountTransactionEditor)
                 self.assertTrue(isinstance(_app, FinancialApp))
-                self.assertEquals(store, self.store)
-                self.assertEquals(account_transaction, None)
-                self.assertEquals(model, at.account)
+                self.assertEqual(store, self.store)
+                self.assertEqual(account_transaction, None)
+                self.assertEqual(model, at.account)
 
     @mock.patch('stoq.gui.financial.yesno')
     @mock.patch('stoq.gui.financial.api.new_store')
@@ -147,16 +147,16 @@ class TestFinancial(BaseGUITest):
         page = self._open_page(app, u"Account")
         accounts = page.result_view
         original = self.store.find(AccountTransaction, account=account).count()
-        self.assertEquals(original, 1)
-        self.assertEquals(len(accounts), 1)
+        self.assertEqual(original, 1)
+        self.assertEqual(len(accounts), 1)
 
         # Check the new transaction is shown.
         original_transaction.source_account = account
         page.refresh()
-        self.assertEquals(len(accounts), 2)
+        self.assertEqual(len(accounts), 2)
         reversed_transaction = accounts[1]
-        self.assertEquals(reversed_transaction.description, original_transaction.description)
-        self.assertEquals(reversed_transaction.value, -100)
+        self.assertEqual(reversed_transaction.description, original_transaction.description)
+        self.assertEqual(reversed_transaction.value, -100)
 
         # Delete the inverted transaction.
         accounts.select(reversed_transaction)
@@ -171,9 +171,9 @@ class TestFinancial(BaseGUITest):
                                               u'Keep transaction')
         # The original transaction, also must have been deleted.
         original = self.store.find(AccountTransaction, account=account).count()
-        self.assertEquals(original, 0)
+        self.assertEqual(original, 0)
         page.refresh()
-        self.assertEquals(len(accounts), 0)
+        self.assertEqual(len(accounts), 0)
 
     @mock.patch('stoq.gui.financial.print_report')
     def test_print(self, print_report):
@@ -259,7 +259,7 @@ class TestFinancial(BaseGUITest):
                                               Gtk.ResponseType.YES,
                                               u'Remove transaction',
                                               u'Keep transaction')
-                self.assertEquals(len(olist), 0)
+                self.assertEqual(len(olist), 0)
 
     @mock.patch('stoq.gui.financial.FinancialApp.run_dialog')
     @mock.patch('stoq.gui.financial.api.new_store')

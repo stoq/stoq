@@ -119,15 +119,15 @@ class TestProduct(DomainTest):
         product.manage_stock = False
 
         storable = self.store.find(Storable, product=product).count()
-        self.assertEquals(storable, 0)
+        self.assertEqual(storable, 0)
 
         # Set as storable product
         product.set_as_storable_product(quantity=2)
-        self.assertEquals(product.manage_stock, True)
+        self.assertEqual(product.manage_stock, True)
         storable = self.store.find(Storable, product=product).one()
-        self.assertEquals(storable.product, product)
+        self.assertEqual(storable.product, product)
         product_stock_item = self.store.find(ProductStockItem, storable=storable).one()
-        self.assertEquals(product_stock_item.quantity, 2)
+        self.assertEqual(product_stock_item.quantity, 2)
 
         with self.assertRaises(AssertionError):
             product.set_as_storable_product(quantity=3)
@@ -139,18 +139,18 @@ class TestProduct(DomainTest):
 
     def test_description(self):
         self.sellable.description = u"Green shoe"
-        self.assertEquals(self.product.description, u"Green shoe")
+        self.assertEqual(self.product.description, u"Green shoe")
 
     def test_get_main_supplier_info(self):
-        self.failIf(self.product.get_main_supplier_info())
+        self.assertFalse(self.product.get_main_supplier_info())
         supplier = self.create_supplier()
         ProductSupplierInfo(store=self.store, supplier=supplier,
                             product=self.product, is_main_supplier=True)
-        self.failUnless(self.product.get_main_supplier_info())
+        self.assertTrue(self.product.get_main_supplier_info())
 
     def test_get_product_supplier_info(self):
         supplier = self.create_supplier()
-        self.failIf(self.product.get_product_supplier_info(supplier))
+        self.assertFalse(self.product.get_product_supplier_info(supplier))
         product_supplier = ProductSupplierInfo(store=self.store,
                                                supplier=supplier,
                                                product=self.product)
@@ -200,22 +200,22 @@ class TestProduct(DomainTest):
         ProductComponent(product=other_product, quantity=10,
                          component=inter_product, store=self.store)
 
-        self.assertEquals(inter_product.sellable.cost, 1)
+        self.assertEqual(inter_product.sellable.cost, 1)
         inter_product.update_production_cost()
-        self.assertEquals(inter_product.sellable.cost, 10)
-        self.assertEquals(other_product.sellable.cost, 100)
+        self.assertEqual(inter_product.sellable.cost, 10)
+        self.assertEqual(other_product.sellable.cost, 100)
 
         component.quantity = 2
         inter_product.update_production_cost()
-        self.assertEquals(inter_product.sellable.cost, 20)
+        self.assertEqual(inter_product.sellable.cost, 20)
 
-        self.assertEquals(other_product.sellable.cost, 200)
+        self.assertEqual(other_product.sellable.cost, 200)
 
         # Test indirect update with parameter
         with self.sysparam(UPDATE_PRODUCT_COST_ON_COMPONENT_UPDATE=True):
             self.product.sellable.cost = 15
-            self.assertEquals(inter_product.sellable.cost, 30)
-            self.assertEquals(other_product.sellable.cost, 300)
+            self.assertEqual(inter_product.sellable.cost, 30)
+            self.assertEqual(other_product.sellable.cost, 300)
 
     def test_update_package_cost(self):
         """This will test if the product component cost is updated when the
@@ -230,14 +230,14 @@ class TestProduct(DomainTest):
                          component=product_component,
                          store=self.store)
 
-        self.assertEquals(product_component.sellable.cost, 15)
-        self.assertEquals(package_product.sellable.cost, 60)
+        self.assertEqual(product_component.sellable.cost, 15)
+        self.assertEqual(package_product.sellable.cost, 60)
 
         # Test indirect update with parameter
         with self.sysparam(UPDATE_PRODUCT_COST_ON_PACKAGE_UPDATE=True):
             package_product.sellable.cost = 40
-            self.assertEquals(product_component.sellable.cost, 10)
-            self.assertEquals(package_product.sellable.cost, 40)
+            self.assertEqual(product_component.sellable.cost, 10)
+            self.assertEqual(package_product.sellable.cost, 40)
 
         # Test NotOneError
         second_component = self.create_product()
@@ -465,7 +465,7 @@ class TestProduct(DomainTest):
                                      store=self.store)
 
         total = self.store.find(Product, id=product.id).count()
-        self.assertEquals(total, 1)
+        self.assertEqual(total, 1)
 
         product.remove()
 
@@ -482,9 +482,9 @@ class TestProduct(DomainTest):
         product.add_grid_child(list(grid_option))
 
         total = self.store.find(Product, id=product.id).count()
-        self.assertEquals(total, 1)
+        self.assertEqual(total, 1)
         total = self.store.find(Product, parent=product).count()
-        self.assertEquals(total, 1)
+        self.assertEqual(total, 1)
 
         product.remove()
         resultset = self.store.find(Product, id=product.id)
@@ -497,33 +497,33 @@ class TestProduct(DomainTest):
         product = self.create_product()
         storable = Storable(product=product, store=self.store)
         stock_item = storable.get_stock_item(branch, None)
-        self.failIf(stock_item is not None)
+        self.assertFalse(stock_item is not None)
 
         storable.increase_stock(1, branch,
                                 StockTransactionHistory.TYPE_INITIAL, None)
         stock_item = storable.get_stock_item(branch, None)
-        self.assertEquals(stock_item.stock_cost, 0)
+        self.assertEqual(stock_item.stock_cost, 0)
 
         storable.increase_stock(1, branch,
                                 StockTransactionHistory.TYPE_INITIAL,
                                 None, unit_cost=10)
         stock_item = storable.get_stock_item(branch, None)
-        self.assertEquals(stock_item.stock_cost, 5)
+        self.assertEqual(stock_item.stock_cost, 5)
 
         stock_item = storable.decrease_stock(1, branch,
                                              StockTransactionHistory.TYPE_INITIAL,
                                              None)
-        self.assertEquals(stock_item.stock_cost, 5)
+        self.assertEqual(stock_item.stock_cost, 5)
 
         storable.increase_stock(1, branch,
                                 StockTransactionHistory.TYPE_INITIAL, None)
         stock_item = storable.get_stock_item(branch, None)
-        self.assertEquals(stock_item.stock_cost, 5)
+        self.assertEqual(stock_item.stock_cost, 5)
 
         storable.increase_stock(2, branch, StockTransactionHistory.TYPE_INITIAL,
                                 None, unit_cost=15)
         stock_item = storable.get_stock_item(branch, None)
-        self.assertEquals(stock_item.stock_cost, 10)
+        self.assertEqual(stock_item.stock_cost, 10)
 
     def test_lead_time(self):
         product = self.create_product()
@@ -578,7 +578,7 @@ class TestProduct(DomainTest):
         self.assertEqual(product.get_max_lead_time(1, branch), 12)
 
     def test_get_main_supplier_name(self):
-        self.assertEquals(self.product.get_main_supplier_name(), None)
+        self.assertEqual(self.product.get_main_supplier_name(), None)
 
         supplier = self.create_supplier(name=u"Supplier")
         ProductSupplierInfo(store=self.store,
@@ -586,7 +586,7 @@ class TestProduct(DomainTest):
                             supplier=supplier,
                             is_main_supplier=True)
 
-        self.assertEquals(self.product.get_main_supplier_name(), u"Supplier")
+        self.assertEqual(self.product.get_main_supplier_name(), u"Supplier")
 
     def test_product_type(self):
         commom_product = self.create_product(storable=True)
@@ -641,7 +641,7 @@ class TestProduct(DomainTest):
         grid_product.update_children_description()
         child_product = self.store.find(Product, parent=grid_product).one()
 
-        self.assertEquals(child_product.sellable.description, u'Tenis Azul')
+        self.assertEqual(child_product.sellable.description, u'Tenis Azul')
 
     def test_update_children_info(self):
         grid_product = self.create_product(is_grid=True)
@@ -658,8 +658,8 @@ class TestProduct(DomainTest):
         child_product.brand = u'brand2'
 
         grid_product.update_children_info()
-        self.assertEquals(child_product.sellable.cost, 3)
-        self.assertEquals(child_product.brand, u'brand1')
+        self.assertEqual(child_product.sellable.cost, 3)
+        self.assertEqual(child_product.brand, u'brand1')
 
     def test_copy_product(self):
         product = self.create_product()
@@ -679,26 +679,24 @@ class TestProduct(DomainTest):
 
         # Checking if all sellable attributes have the same values
         for prop in sellable_props:
-            self.assertEquals(getattr(product.sellable, prop),
-                              getattr(new_product.sellable, prop))
+            self.assertEqual(getattr(product.sellable, prop),
+                             getattr(new_product.sellable, prop))
 
         # Checking if the product attributes have the same values
         for prop in prod_props:
-            self.assertEquals(getattr(product, prop),
-                              getattr(new_product, prop))
+            self.assertEqual(getattr(product, prop), getattr(new_product, prop))
 
         # Checking if the the number of suppliers and the suppliers themselves are the
         # same.
         prod_suppliers = list(product.suppliers)
         new_prod_suppliers = list(new_product.suppliers)
 
-        self.assertEquals(len(prod_suppliers),
-                          len(new_prod_suppliers))
+        self.assertEqual(len(prod_suppliers), len(new_prod_suppliers))
 
         for i in range(product.suppliers.count()):
             for prop in supplier_props:
-                self.assertEquals(getattr(prod_suppliers[i], prop),
-                                  getattr(new_prod_suppliers[i], prop))
+                self.assertEqual(getattr(prod_suppliers[i], prop),
+                                 getattr(new_prod_suppliers[i], prop))
 
     def test_copy_product_suppliers(self):
         product = self.create_product()
@@ -717,13 +715,12 @@ class TestProduct(DomainTest):
 
         # Checking if the the number of suppliers and the suppliers themselves are the
         # same.
-        self.assertEquals(len(prod_suppliers),
-                          len(new_prod_suppliers))
+        self.assertEqual(len(prod_suppliers), len(new_prod_suppliers))
 
         for i in range(product.suppliers.count()):
             for prop in props:
-                self.assertEquals(getattr(prod_suppliers[i], prop),
-                                  getattr(new_prod_suppliers[i], prop))
+                self.assertEqual(getattr(prod_suppliers[i], prop),
+                                 getattr(new_prod_suppliers[i], prop))
 
         # Removing one of the source product supplier e and making the copy
         # again.
@@ -731,13 +728,12 @@ class TestProduct(DomainTest):
         product._copy_product_suppliers(new_product)
 
         # Checking if the target suppliers were updated.
-        self.assertEquals(len(prod_suppliers),
-                          len(new_prod_suppliers))
+        self.assertEqual(len(prod_suppliers), len(new_prod_suppliers))
 
         for i in range(product.suppliers.count()):
             for prop in props:
-                self.assertEquals(getattr(prod_suppliers[i], prop),
-                                  getattr(new_prod_suppliers[i], prop))
+                self.assertEqual(getattr(prod_suppliers[i], prop),
+                                 getattr(new_prod_suppliers[i], prop))
 
     def test_update_sellable_price(self):
         package = self.create_product(description=u'Package', is_package=True)
@@ -748,12 +744,12 @@ class TestProduct(DomainTest):
         self.create_product_component(product=package, component=component2,
                                       component_quantity=1, price=Decimal('10'))
         package.update_sellable_price()
-        self.assertEquals(package.sellable.price, 20)
+        self.assertEqual(package.sellable.price, 20)
 
         # Try to update children
         component1.update_sellable_price()
         # 10 is the default price created
-        self.assertEquals(component1.sellable.price, 10)
+        self.assertEqual(component1.sellable.price, 10)
 
 
 class TestGridGroup(DomainTest):
@@ -762,15 +758,15 @@ class TestGridGroup(DomainTest):
         attribute_group = self.create_attribute_group()
         grid_attr = self.create_grid_attribute(attribute_group)
         attribute = attribute_group.attributes
-        self.assertEquals(list(attribute)[0], grid_attr)
+        self.assertEqual(list(attribute)[0], grid_attr)
 
     def test_has_group(self):
         # Testing without group
-        self.assertEquals(GridGroup.has_group(self.store), None)
+        self.assertEqual(GridGroup.has_group(self.store), None)
 
         # Testing with group
         attribute_group = self.create_attribute_group()
-        self.assertEquals(GridGroup.has_group(self.store), attribute_group)
+        self.assertEqual(GridGroup.has_group(self.store), attribute_group)
 
 
 class TestGridAttribute(DomainTest):
@@ -788,26 +784,26 @@ class TestGridOption(DomainTest):
 
     def test_get_description(self):
         attr_option = self.create_attribute_option()
-        self.assertEquals(attr_option.get_description(), u'grid option 1')
+        self.assertEqual(attr_option.get_description(), u'grid option 1')
 
     def test_can_remove(self):
         grid_product = self.create_product(is_grid=True)
         attribute = self.create_grid_attribute()
         option1 = self.create_attribute_option(grid_attribute=attribute)
-        self.assertEquals(option1.can_remove(), True)
+        self.assertEqual(option1.can_remove(), True)
 
         options = []
         options.append(option1)
         grid_product.add_grid_child(options)
         # We shouldnt be able to remove that option if a product is actually using it
-        self.assertEquals(option1.can_remove(), False)
+        self.assertEqual(option1.can_remove(), False)
 
 
 class TestProductAttribute(DomainTest):
 
     def test_options(self):
         product_attribute = self.create_product_attribute()
-        self.assertEquals(product_attribute.options.count(), 1)
+        self.assertEqual(product_attribute.options.count(), 1)
 
 
 class TestProductSellableItem(DomainTest):
@@ -846,13 +842,13 @@ class TestProductHistory(DomainTest):
         purchase = order_item.receiving_order.purchase_orders.find()[0]
         purchase.status = PurchaseOrder.ORDER_PENDING
         purchase.confirm()
-        self.failIf(
+        self.assertFalse(
             self.store.find(ProductHistory,
                             sellable=order_item.sellable).one())
         order_item.receiving_order.confirm()
         prod_hist = self.store.find(ProductHistory,
                                     sellable=order_item.sellable).one()
-        self.failUnless(prod_hist)
+        self.assertTrue(prod_hist)
         self.assertEqual(prod_hist.quantity_received,
                          order_item.quantity)
 
@@ -867,12 +863,11 @@ class TestProductHistory(DomainTest):
         method = PaymentMethod.get_by_name(self.store, u'money')
         method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, sale.get_sale_subtotal())
 
-        self.failIf(self.store.find(ProductHistory,
-                                    sellable=sellable).one())
+        self.assertFalse(self.store.find(ProductHistory, sellable=sellable).one())
         sale.order()
         sale.confirm()
         prod_hist = self.store.find(ProductHistory, sellable=sellable).one()
-        self.failUnless(prod_hist)
+        self.assertTrue(prod_hist)
         self.assertEqual(prod_hist.quantity_sold, 5)
         self.assertEqual(prod_hist.quantity_sold,
                          sale_item.quantity)
@@ -882,14 +877,14 @@ class TestProductHistory(DomainTest):
 
         order = self.create_transfer_order()
         transfer_item = self.create_transfer_order_item(order, quantity=qty)
-        self.failIf(self.store.find(ProductHistory,
-                                    sellable=transfer_item.sellable).one())
+        self.assertFalse(self.store.find(ProductHistory,
+                                         sellable=transfer_item.sellable).one())
 
         order.send()
         order.receive(self.create_employee())
         prod_hist = self.store.find(ProductHistory,
                                     sellable=transfer_item.sellable).one()
-        self.failUnless(prod_hist)
+        self.assertTrue(prod_hist)
         self.assertEqual(prod_hist.quantity_transfered, qty)
 
     def test_add_lost_item(self):
@@ -897,14 +892,14 @@ class TestProductHistory(DomainTest):
         branch = get_current_branch(self.store)
         with self.assertRaises(ValueError) as exc:
             ProductHistory.add_lost_item(self.store, branch, item)
-            self.assertEquals(str(exc), "lost_item must have a positive lost attribute")
+            self.assertEqual(str(exc), "lost_item must have a positive lost attribute")
         item.lost = 10
         ProductHistory.add_lost_item(self.store, branch, item)
 
         history = self.store.find(ProductHistory,
                                   sellable=item.product.sellable).one()
-        self.assertEquals(history.branch, branch)
-        self.assertEquals(history.quantity_lost, item.lost)
+        self.assertEqual(history.branch, branch)
+        self.assertEqual(history.quantity_lost, item.lost)
 
     def test_add_decreased_item(self):
         item = self.create_stock_decrease_item()
@@ -914,8 +909,8 @@ class TestProductHistory(DomainTest):
         history = self.store.find(ProductHistory,
                                   sellable=item.sellable).one()
 
-        self.assertEquals(history.branch, branch)
-        self.assertEquals(history.quantity_decreased, item.quantity)
+        self.assertEqual(history.branch, branch)
+        self.assertEqual(history.quantity_decreased, item.quantity)
 
 
 class TestProductQuality(DomainTest):
@@ -1023,23 +1018,23 @@ class TestProductQualityTest(DomainTest):
         product = self.create_product()
         test = ProductQualityTest(store=self.store, product=product,
                                   description=u'Description')
-        self.assertEquals(test.get_description(), u'Description')
+        self.assertEqual(test.get_description(), u'Description')
 
     def test_type_str(self):
         product = self.create_product()
 
         test = ProductQualityTest(store=self.store, product=product)
-        self.assertEquals(test.type_str, u'Boolean')
+        self.assertEqual(test.type_str, u'Boolean')
 
         test = ProductQualityTest(store=self.store, product=product,
                                   test_type=ProductQualityTest.TYPE_DECIMAL)
-        self.assertEquals(test.type_str, u'Decimal')
+        self.assertEqual(test.type_str, u'Decimal')
 
     def test_success_value_str(self):
         product = self.create_product()
 
         test = ProductQualityTest(store=self.store, product=product)
-        self.assertEquals(test.success_value_str, u'True')
+        self.assertEqual(test.success_value_str, u'True')
 
 
 class TestProductEvent(DomainTest):
@@ -1179,11 +1174,11 @@ class TestProductManufacturer(DomainTest):
         manufacturer = self.create_product_manufacturer(name=manufacturer_name)
         results = self.store.find(ProductManufacturer,
                                   name=manufacturer_name).count()
-        self.assertEquals(results, 1)
+        self.assertEqual(results, 1)
         manufacturer.remove()
         results = self.store.find(ProductManufacturer,
                                   name=manufacturer_name).count()
-        self.assertEquals(results, 0)
+        self.assertEqual(results, 0)
 
 
 class TestStorable(DomainTest):
@@ -1289,12 +1284,12 @@ class TestStorable(DomainTest):
         with self.assertRaises(ValueError) as exc:
             storable.increase_stock(0, branch,
                                     StockTransactionHistory.TYPE_INITIAL, None)
-            self.assertEquals(str(exc), "quantity must be a positive number")
+            self.assertEqual(str(exc), "quantity must be a positive number")
 
         with self.assertRaises(ValueError) as exc:
             storable.increase_stock(1, None,
                                     StockTransactionHistory.TYPE_INITIAL, None)
-            self.assertEquals(str(exc), "quantity must be a positive number")
+            self.assertEqual(str(exc), "quantity must be a positive number")
 
     def test_decrease_stock_error(self):
         storable = self.create_storable()
@@ -1303,18 +1298,18 @@ class TestStorable(DomainTest):
         with self.assertRaises(ValueError) as exc:
             storable.decrease_stock(0, branch,
                                     StockTransactionHistory.TYPE_INITIAL, None)
-            self.assertEquals(str(exc), "quantity must be a positive number")
+            self.assertEqual(str(exc), "quantity must be a positive number")
 
         with self.assertRaises(ValueError) as exc:
             storable.decrease_stock(1, None,
                                     StockTransactionHistory.TYPE_INITIAL, None)
-            self.assertEquals(str(exc), "quantity must be a positive number")
+            self.assertEqual(str(exc), "quantity must be a positive number")
 
         with self.assertRaises(StockError) as exc:
             storable.decrease_stock(100, branch,
                                     StockTransactionHistory.TYPE_INITIAL, None)
-            self.assertEquals(str(exc),
-                              'Quantity to decrease is greater than the available stock.')
+            self.assertEqual(str(exc),
+                             'Quantity to decrease is greater than the available stock.')
 
     def test_decrease_stock_cost_center(self):
         storable = self.create_storable()
@@ -1350,7 +1345,7 @@ class TestStorableBatch(DomainTest):
     def test_get_description(self):
         storable = self.create_storable(is_batch=True)
         batch = self.create_storable_batch(storable, batch_number=u'123')
-        self.assertEquals(batch.get_description(), u'123')
+        self.assertEqual(batch.get_description(), u'123')
 
     def test_is_batch_number_available(self):
         self.assertTrue(StorableBatch.is_batch_number_available(
@@ -1406,8 +1401,8 @@ class TestStorableBatch(DomainTest):
 
         # There is no stock yet for both batches
         # FIXME
-        self.assertEquals(batch1.get_balance_for_branch(branch), 0)
-        self.assertEquals(batch2.get_balance_for_branch(branch), 0)
+        self.assertEqual(batch1.get_balance_for_branch(branch), 0)
+        self.assertEqual(batch2.get_balance_for_branch(branch), 0)
 
         # Increase stock for both batches.
         storable.increase_stock(7, branch,
@@ -1418,19 +1413,19 @@ class TestStorableBatch(DomainTest):
                                 None, batch=batch2)
 
         # First batch should have 7 itens, second 3 and third 0
-        self.assertEquals(batch1.get_balance_for_branch(branch), 7)
-        self.assertEquals(batch2.get_balance_for_branch(branch), 3)
-        self.assertEquals(batch3.get_balance_for_branch(branch), 0)
+        self.assertEqual(batch1.get_balance_for_branch(branch), 7)
+        self.assertEqual(batch2.get_balance_for_branch(branch), 3)
+        self.assertEqual(batch3.get_balance_for_branch(branch), 0)
 
         # Getting the balance without informing the batch should return the
         # quantity for all batches:
-        self.assertEquals(storable.get_balance_for_branch(branch), 10)
+        self.assertEqual(storable.get_balance_for_branch(branch), 10)
 
         # The balance for another branch should be zero for all batches
         branch2 = self.create_branch()
-        self.assertEquals(batch1.get_balance_for_branch(branch2), 0)
-        self.assertEquals(batch2.get_balance_for_branch(branch2), 0)
-        self.assertEquals(batch3.get_balance_for_branch(branch2), 0)
+        self.assertEqual(batch1.get_balance_for_branch(branch2), 0)
+        self.assertEqual(batch2.get_balance_for_branch(branch2), 0)
+        self.assertEqual(batch3.get_balance_for_branch(branch2), 0)
 
     def test_get_available_batches(self):
         branch = self.create_branch()
@@ -1439,22 +1434,22 @@ class TestStorableBatch(DomainTest):
         storable = self.create_storable(is_batch=True)
 
         # Inicially, we dont have any batch for this storable
-        self.assertEquals(storable.get_available_batches(branch).count(), 0)
+        self.assertEqual(storable.get_available_batches(branch).count(), 0)
 
         # Lets create some batches for it:
         batch = self.create_storable_batch(storable=storable, batch_number=u'1')
         self.create_storable_batch(storable=storable, batch_number=u'2')
 
         # This batch does not have any stock, so it is still unavailable
-        self.assertEquals(storable.get_available_batches(branch).count(), 0)
+        self.assertEqual(storable.get_available_batches(branch).count(), 0)
 
         storable.increase_stock(10, branch,
                                 StockTransactionHistory.TYPE_INITIAL,
                                 None, batch=batch)
 
         # Now there are some batches with stock.
-        self.assertEquals(storable.get_available_batches(branch).count(), 1)
-        self.assertEquals(storable.get_available_batches(branch)[0], batch)
+        self.assertEqual(storable.get_available_batches(branch).count(), 1)
+        self.assertEqual(storable.get_available_batches(branch)[0], batch)
 
     def test_change_stock_with_batch(self):
         branch = self.create_branch()
@@ -1490,7 +1485,7 @@ class TestStockTransactionHistory(DomainTest):
             quantity=15, stock_cost=100,
             trans_type=StockTransactionHistory.TYPE_IMPORTED)
 
-        self.assertEquals(history.total, 1500)
+        self.assertEqual(history.total, 1500)
 
     def test_total_negative(self):
         sale_item = self.create_sale_item()
@@ -1501,9 +1496,9 @@ class TestStockTransactionHistory(DomainTest):
         sale_item.sell(self.branch)
 
         history = self.store.find(StockTransactionHistory, object_id=sale_item.id).one()
-        self.assertEquals(history.quantity, -1)
-        self.assertEquals(history.stock_cost, 10)
-        self.assertEquals(history.total, 10)
+        self.assertEqual(history.quantity, -1)
+        self.assertEqual(history.stock_cost, 10)
+        self.assertEqual(history.total, 10)
 
     def _check_stock(self, product):
         storable = product.storable or self.create_storable(product)
@@ -1517,12 +1512,12 @@ class TestStockTransactionHistory(DomainTest):
         history_before = self.store.find(StockTransactionHistory).count()
         storable.register_initial_stock(10, self.branch, 5)
         history_after = self.store.find(StockTransactionHistory).count()
-        self.assertEquals(history_after, history_before + 1)
+        self.assertEqual(history_after, history_before + 1)
 
         history = self.store.find(StockTransactionHistory,
                                   type=StockTransactionHistory.TYPE_INITIAL).one()
-        self.assertEquals(history.product_stock_item.storable, storable)
-        self.assertEquals(history.get_description(), u'Registred initial stock')
+        self.assertEqual(history.product_stock_item.storable, storable)
+        self.assertEqual(history.get_description(), u'Registred initial stock')
 
     def test_imported(self):
         storable = self.create_storable()
@@ -1532,8 +1527,7 @@ class TestStockTransactionHistory(DomainTest):
             quantity=15, storable=storable,
             trans_type=StockTransactionHistory.TYPE_IMPORTED)
 
-        self.assertEquals(history.get_description(),
-                          u'Imported from previous version')
+        self.assertEqual(history.get_description(), u'Imported from previous version')
         self.assertIsNone(history.get_object())
         self.assertIsNone(history.get_object_parent())
 
@@ -1542,12 +1536,12 @@ class TestStockTransactionHistory(DomainTest):
         stock_item = product.storable.get_stock_item(self.branch, None)
         transactions = stock_item.transactions.order_by(StockTransactionHistory.date)
         transaction = transactions.last()
-        self.assertEquals(transaction.quantity, quantity)
-        self.assertEquals(transaction.type, type)
-        self.assertEquals(transaction.get_object(), item)
-        self.assertEquals(transaction.get_object_parent(), parent)
-        self.assertEquals(transaction.get_description(),
-                          description.format(parent=parent.identifier))
+        self.assertEqual(transaction.quantity, quantity)
+        self.assertEqual(transaction.type, type)
+        self.assertEqual(transaction.get_object(), item)
+        self.assertEqual(transaction.get_object_parent(), parent)
+        self.assertEqual(transaction.get_description(),
+                         description.format(parent=parent.identifier))
 
     def test_stock_decrease(self):
         decrease_item = self.create_stock_decrease_item()

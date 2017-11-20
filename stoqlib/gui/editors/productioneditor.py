@@ -80,7 +80,7 @@ class ProductionItemEditor(BaseEditor):
     def setup_editor_widgets(self):
         self.identifier.set_text(str(self.model.order.identifier))
         self.quantity.set_adjustment(
-            Gtk.Adjustment(lower=0, upper=self.get_max_quantity(), step_incr=1))
+            Gtk.Adjustment(lower=0, upper=self.get_max_quantity(), step_increment=1))
 
         if isinstance(self.model, (ProductionItem, ProductionMaterial)):
             sellable = self.model.product.sellable

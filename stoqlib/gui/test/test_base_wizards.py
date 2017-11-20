@@ -42,8 +42,8 @@ class TestBaseWizard(GUITest):
         # need_cancel_confirmation is False, cancel should close the wizard
         with mock.patch.object(wizard, 'close') as close:
             wizard.cancel()
-            self.assertEquals(yesno.call_count, 0)
-            self.assertEquals(close.call_count, 1)
+            self.assertEqual(yesno.call_count, 0)
+            self.assertEqual(close.call_count, 1)
 
         wizard.need_cancel_confirmation = True
 
@@ -51,8 +51,8 @@ class TestBaseWizard(GUITest):
         # should still close the dialog
         with mock.patch.object(wizard, 'close') as close:
             wizard.cancel()
-            self.assertEquals(yesno.call_count, 0)
-            self.assertEquals(close.call_count, 1)
+            self.assertEqual(yesno.call_count, 0)
+            self.assertEqual(close.call_count, 1)
 
         # Just to make store.get_pending_changes return something greater
         # thant the time the wizard was created
@@ -68,7 +68,7 @@ class TestBaseWizard(GUITest):
                 ("If you cancel this dialog all changes will be "
                  "lost. Are you sure?"),
                 Gtk.ResponseType.NO, "Cancel", "Don't cancel")
-            self.assertEquals(close.call_count, 1)
+            self.assertEqual(close.call_count, 1)
 
         yesno.reset_mock()
         yesno.return_value = False
@@ -81,4 +81,4 @@ class TestBaseWizard(GUITest):
                 ("If you cancel this dialog all changes will be "
                  "lost. Are you sure?"),
                 Gtk.ResponseType.NO, "Cancel", "Don't cancel")
-            self.assertEquals(close.call_count, 0)
+            self.assertEqual(close.call_count, 0)

@@ -55,4 +55,4 @@ class TestPaymentCategory(DomainTest):
 
     def test_get_description(self):
         category = self.create_payment_category()
-        self.assertEquals(category.get_description(), u'category')
+        self.assertEqual(category.get_description(), u'category')

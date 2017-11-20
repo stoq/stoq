@@ -59,15 +59,15 @@ class TestSaleQuoteWizard(GUITest):
             step.client_gadget.set_value(client)
 
             self.click(step.notes_button)
-            self.assertEquals(run_dialog.call_count, 1)
+            self.assertEqual(run_dialog.call_count, 1)
             args, kwargs = run_dialog.call_args
             editor, parent, store, model, notes = args
-            self.assertEquals(editor, NoteEditor)
-            self.assertEquals(parent, wizard)
+            self.assertEqual(editor, NoteEditor)
+            self.assertEqual(parent, wizard)
             self.assertTrue(store is not None)
-            self.assertEquals(set(wizard.model.comments), set([model]))
-            self.assertEquals(notes, 'comment')
-            self.assertEquals(kwargs['title'], "Additional Information")
+            self.assertEqual(set(wizard.model.comments), set([model]))
+            self.assertEqual(notes, 'comment')
+            self.assertEqual(kwargs['title'], "Additional Information")
 
             self.check_wizard(wizard, 'wizard-sale-quote-start-sale-quote-step')
             self.click(wizard.next_button)
@@ -99,7 +99,7 @@ class TestSaleQuoteWizard(GUITest):
             with mock.patch(module) as emit:
                 with mock.patch.object(self.store, 'commit'):
                     self.click(wizard.next_button)
-                self.assertEquals(emit.call_count, 1)
+                self.assertEqual(emit.call_count, 1)
                 args, kwargs = emit.call_args
                 self.assertTrue(isinstance(args[0], Sale))
 
@@ -131,13 +131,13 @@ class TestSaleQuoteWizard(GUITest):
 
         self.check_wizard(wizard, 'wizard-sale-quote-missing-items')
         self.click(step.slave.message_details_button)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         self.assertTrue(issubclass(args[0], SimpleListDialog))
         self.assertTrue(isinstance(args[1], Gtk.Dialog))
         self.assertTrue(isinstance(args[2], list))
         self.assertTrue(isinstance(args[3], list))
-        self.assertEquals(kwargs['title'], 'Missing products')
+        self.assertEqual(kwargs['title'], 'Missing products')
 
     def test_add_package_product(self):
         product = self.create_product(price=10, description=u'Package',
@@ -157,9 +157,9 @@ class TestSaleQuoteWizard(GUITest):
         self.click(item_step.add_sellable_button)
         summary_label = item_step.summary.get_value_widget()
         # XXX We are not summarizing the children price for now
-        self.assertEquals(summary_label.get_text(), '$10.00')
+        self.assertEqual(summary_label.get_text(), '$10.00')
         # Adding the package, its children should be included on the list as well
-        self.assertEquals(len(list(item_step.slave.klist)), 2)
+        self.assertEqual(len(list(item_step.slave.klist)), 2)
 
         klist = item_step.slave.klist
         klist.select(klist[0])
@@ -169,7 +169,7 @@ class TestSaleQuoteWizard(GUITest):
         child = klist.get_descendants(selected[0])
 
         # Checking the quantity of the child is correctly added
-        self.assertEquals(child[0].quantity, 2)
+        self.assertEqual(child[0].quantity, 2)
         klist.select(child)
         # We are not allowed to remove children
         self.assertNotSensitive(item_step.slave, ['delete_button'])
@@ -182,7 +182,7 @@ class TestSaleQuoteWizard(GUITest):
                 'Delete this item?', Gtk.ResponseType.NO, 'Delete item', 'Keep it')
 
         # As we remove the package, remove its children as well
-        self.assertEquals(len(klist), 0)
+        self.assertEqual(len(klist), 0)
 
     @mock.patch('stoqlib.gui.wizards.salequotewizard.run_dialog')
     def test_apply_discount(self, run_dialog):
@@ -249,6 +249,6 @@ class TestSaleQuoteWizard(GUITest):
         wizard = SaleQuoteWizard(self.store)
         step = wizard.get_current_step()
 
-        self.assertEquals(
+        self.assertEqual(
             str(step.expire_date.emit('validate', datetime.datetime(2013, 1, 1))),
             "The expire date must be after the sale open date")

@@ -41,13 +41,13 @@ class TestGridGroupEditor(GUITest):
     def test_edit_group(self):
         group = self.create_attribute_group()
         editor = GridGroupEditor(self.store, model=group)
-        self.assertEquals(editor.description.read(), u'grid group 1')
+        self.assertEqual(editor.description.read(), u'grid group 1')
 
     def test_description_activation(self):
         editor = GridGroupEditor(self.store)
         editor.description.update("new group")
         retval = editor.description.activate()
-        self.assertEquals(retval, True)
+        self.assertEqual(retval, True)
 
 
 class TestGridAttributeEditor(GUITest):
@@ -71,8 +71,8 @@ class TestGridAttributeEditor(GUITest):
         editor = GridAttributeEditor(self.store, model=attribute)
 
         # checking the values of the widgets
-        self.assertEquals(editor.description.read(), u'grid attribute 1')
-        self.assertEquals(editor.group.get_selected(), group1)
+        self.assertEqual(editor.description.read(), u'grid attribute 1')
+        self.assertEqual(editor.group.get_selected(), group1)
 
         editor.group.select_item_by_data(group2)
         editor.description.update("attribute1")
@@ -81,7 +81,7 @@ class TestGridAttributeEditor(GUITest):
         warning.assert_called_once_with("You need to add at least one option")
 
         GridOption(store=self.store, attribute=attribute)
-        self.assertEquals(editor.group.read(), group2)
+        self.assertEqual(editor.group.read(), group2)
         # changing the selected group and confirming the editor
         self.click(editor.main_dialog.ok_button)
 
@@ -96,7 +96,7 @@ class TestGridOptionEditor(GUITest):
         option = self.create_attribute_option(grid_attribute=attribute,
                                               description=u'option')
         editor = GridOptionEditor(self.store, model=option)
-        self.assertEquals(editor.description.read(), option.description)
+        self.assertEqual(editor.description.read(), option.description)
 
     def test_option_order_validation(self):
         attribute = self.create_grid_attribute()
@@ -158,7 +158,7 @@ class TestGridOptionsSlave(GUITest):
         self.assertSensitive(slave.listcontainer, ['remove_button'])
         yesno.return_value = Gtk.ResponseType.OK
         self.click(slave.listcontainer.remove_button)
-        self.assertEquals(len(slave.listcontainer.list), 0)
+        self.assertEqual(len(slave.listcontainer.list), 0)
 
     @mock.patch('stoqlib.gui.editors.grideditor._GridOptionsSlave.run_dialog')
     def test_run_editor(self, run_dialog):

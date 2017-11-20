@@ -103,15 +103,15 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
 
         run_dialog.return_value = False
         self.click(step.notes_button)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         editor, parent, store, model, comment = args
-        self.assertEquals(editor, NoteEditor)
-        self.assertEquals(parent, wizard)
+        self.assertEqual(editor, NoteEditor)
+        self.assertEqual(parent, wizard)
         self.assertTrue(store is not None)
         self.assertTrue(isinstance(model, SaleComment))
-        self.assertEquals(comment, 'comment')
-        self.assertEquals(kwargs['title'], _("Additional Information"))
+        self.assertEqual(comment, 'comment')
+        self.assertEqual(kwargs['title'], _("Additional Information"))
 
         self.check_wizard(wizard, 'wizard-optical-start-sale-quote-step')
         self.click(wizard.next_button)
@@ -152,7 +152,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         with mock.patch(module) as emit:
             with mock.patch.object(self.store, 'commit'):
                 self.click(wizard.next_button)
-            self.assertEquals(emit.call_count, 1)
+            self.assertEqual(emit.call_count, 1)
             args, kwargs = emit.call_args
             self.assertTrue(isinstance(args[0], Sale))
 
@@ -218,24 +218,24 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         self.check_wizard(wizard, 'wizard-optical-work-order-step-multiple-wo')
 
         step = wizard.get_current_step()
-        self.assertEquals(step.work_orders_nb.get_n_pages(), 3)
+        self.assertEqual(step.work_orders_nb.get_n_pages(), 3)
 
         # Test removing the first, with no items
         self.click(step.slaves['WO 1'].close_button)
-        self.assertEquals(step.work_orders_nb.get_n_pages(), 2)
+        self.assertEqual(step.work_orders_nb.get_n_pages(), 2)
 
         # Test trying to remove the second, since the WO is finished
         self.click(step.slaves['WO 2'].close_button)
         warning.assert_called_once_with(
             ("You cannot remove workorder with the status '%s'") % finished_order.status_str)
-        self.assertEquals(step.work_orders_nb.get_n_pages(), 2)
+        self.assertEqual(step.work_orders_nb.get_n_pages(), 2)
 
         # Test removing the third, which has items
         warning.reset_mock()
         self.click(step.slaves['WO 3'].close_button)
         warning.assert_called_once_with(
             'This workorder already has items and cannot be removed')
-        self.assertEquals(step.work_orders_nb.get_n_pages(), 2)
+        self.assertEqual(step.work_orders_nb.get_n_pages(), 2)
 
     def test_remove_last_work_order(self):
         client = self.create_client()
@@ -249,7 +249,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
 
         # Trying to remove the only workorder of that sale
         self.click(step.slaves['WO 1'].close_button)
-        self.assertEquals(step.work_orders_nb.get_n_pages(), 1)
+        self.assertEqual(step.work_orders_nb.get_n_pages(), 1)
 
     def test_add_work_orders(self):
         client = self.create_client()
@@ -263,7 +263,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
 
         # Add a new tab
         self.click(step.new_tab_button)
-        self.assertEquals(step.work_orders_nb.get_n_pages(), 2)
+        self.assertEqual(step.work_orders_nb.get_n_pages(), 2)
 
     def test_item_step(self):
         client = self.create_client()
@@ -400,8 +400,8 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         # Now check the stock for the two items. The auto reverd should have the
         # stock decreased to 5. The one that not auto reserves should still be
         # at 10
-        self.assertEquals(auto.get_total_balance(), 5)
-        self.assertEquals(not_auto.get_total_balance(), 10)
+        self.assertEqual(auto.get_total_balance(), 5)
+        self.assertEqual(not_auto.get_total_balance(), 10)
 
 
 class TestMedicRoleWizard(GUITest):
@@ -440,7 +440,7 @@ class TestMedicRoleWizard(GUITest):
         step.person_slave.address_slave.district.update('district')
         self.assertNotSensitive(wizard, ['next_button'])
         crm_entry = step.role_editor.medic_details_slave.crm_number
-        self.assertEquals(crm_entry.read(), u'')
+        self.assertEqual(crm_entry.read(), u'')
         crm_entry.update('6789')
         self.assertSensitive(wizard, ['next_button'])
         self.click(wizard.next_button)
@@ -470,7 +470,7 @@ class TestMedicRoleWizard(GUITest):
         step.person_slave.address_slave.streetnumber.update(789)
         step.person_slave.address_slave.district.update('district')
         crm_entry = step.role_editor.medic_details_slave.crm_number
-        self.assertEquals(crm_entry.read(), individual_medic.crm_number)
+        self.assertEqual(crm_entry.read(), individual_medic.crm_number)
         self.assertSensitive(wizard, ['next_button'])
         self.click(wizard.next_button)
 
@@ -499,7 +499,7 @@ class TestMedicRoleWizard(GUITest):
         step.person_slave.address_slave.streetnumber.update(456)
         step.person_slave.address_slave.district.update('district')
         crm_entry = step.role_editor.medic_details_slave.crm_number
-        self.assertEquals(crm_entry.read(), company_medic.crm_number)
+        self.assertEqual(crm_entry.read(), company_medic.crm_number)
         self.assertSensitive(wizard, ['next_button'])
         self.click(wizard.next_button)
 

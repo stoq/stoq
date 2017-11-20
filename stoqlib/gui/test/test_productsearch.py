@@ -77,14 +77,13 @@ class TestProductSearch(GUITest):
 
         self.assertVisible(search._toolbar, ['new_button'])
         self.assertSensitive(search._toolbar, ['edit_button'])
-        self.assertEquals(search._toolbar.edit_button_label.get_label(),
-                          _('_Edit...'))
+        self.assertEqual(search._toolbar.edit_button_label.get_label(), _('_Edit...'))
         self.click(search._toolbar.edit_button)
 
         # We have permission to edit Product, so visual_mode should be false
         args, kwargs = run_dialog.call_args
         self.assertTrue('visual_mode' in kwargs)
-        self.assertEquals(kwargs['visual_mode'], False)
+        self.assertEqual(kwargs['visual_mode'], False)
 
     @mock.patch('stoqlib.gui.search.searcheditor.run_dialog')
     def test_show_without_permission(self, run_dialog):
@@ -98,14 +97,13 @@ class TestProductSearch(GUITest):
         # 'Details'
         self.assertNotVisible(search._toolbar, ['new_button'])
         self.assertSensitive(search._toolbar, ['edit_button'])
-        self.assertEquals(search._toolbar.edit_button_label.get_label(),
-                          _('Details'))
+        self.assertEqual(search._toolbar.edit_button_label.get_label(), _('Details'))
 
         # Editor should be called with visual mode set.
         self.click(search._toolbar.edit_button)
         args, kwargs = run_dialog.call_args
         self.assertTrue('visual_mode' in kwargs)
-        self.assertEquals(kwargs['visual_mode'], True)
+        self.assertEqual(kwargs['visual_mode'], True)
 
         # Retore the default permission so it doens't effect other tests
         pm.set('Product', default_persmission)

@@ -229,29 +229,29 @@ class TestQuantityColumn(GUITest):
         obj = Fake()
 
         obj.quantity = None
-        self.assertEquals(column._format_func(obj, True), '0')
+        self.assertEqual(column._format_func(obj, True), '0')
 
         obj.quantity = 0
-        self.assertEquals(column._format_func(obj, True), '0')
+        self.assertEqual(column._format_func(obj, True), '0')
 
         obj.quantity = 1
-        self.assertEquals(column._format_func(obj, True), '1')
+        self.assertEqual(column._format_func(obj, True), '1')
 
         obj.product = self.create_product()
         obj.sellable = obj.product.sellable
 
         # Without a unit, it should still return just the number
         obj.quantity = 1
-        self.assertEquals(column._format_func(obj, True), '1')
+        self.assertEqual(column._format_func(obj, True), '1')
 
         obj.sellable.unit = self.create_sellable_unit(u'Pc')
-        self.assertEquals(column._format_func(obj, True), '1 Pc')
+        self.assertEqual(column._format_func(obj, True), '1 Pc')
 
         obj.product.manage_stock = False
-        self.assertEquals(column._format_func(obj, True), '1 Pc')
+        self.assertEqual(column._format_func(obj, True), '1 Pc')
 
         obj.quantity = 0
-        self.assertEquals(column._format_func(obj, True), u"\u221E")
+        self.assertEqual(column._format_func(obj, True), u"\u221E")
 
 
 class TestSearchGeneric(DomainTest):

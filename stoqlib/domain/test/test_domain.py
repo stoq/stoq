@@ -225,22 +225,22 @@ class TestDomain(DomainTest):
         self.assertTrue(new_order.id)
         self.assertTrue(new_order.identifier)
         # Id and identifier fields from old and new object must be different.
-        self.assertNotEquals(old_order.id, new_order.id)
-        self.assertNotEquals(old_order.identifier, new_order.identifier)
+        self.assertNotEqual(old_order.id, new_order.id)
+        self.assertNotEqual(old_order.identifier, new_order.identifier)
 
     def test_get_or_create_simple(self):
         # This test is for a simple get_or_create (only one property)
         cat = self.store.find(SellableCategory, description=u'foo').one()
-        self.assertEquals(cat, None)
+        self.assertEqual(cat, None)
 
         cat_a = SellableCategory.get_or_create(self.store, description=u'foo')
-        self.assertEquals(cat_a.description, u'foo')
+        self.assertEqual(cat_a.description, u'foo')
 
         cat_b = SellableCategory.get_or_create(self.store, description=u'foo')
-        self.assertEquals(cat_a, cat_b)
+        self.assertEqual(cat_a, cat_b)
 
         cat_c = SellableCategory.get_or_create(self.store, description=u'bar')
-        self.assertNotEquals(cat_a, cat_c)
+        self.assertNotEqual(cat_a, cat_c)
 
         # Giving an invalid property should raise an error
         self.assertRaises(AttributeError, SellableCategory.get_or_create,
@@ -253,19 +253,19 @@ class TestDomain(DomainTest):
         # Make sure there is no item yet.
         item = self.store.find(ProductionProducedItem, serial_number=123,
                                product=product).one()
-        self.assertEquals(item, None)
+        self.assertEqual(item, None)
 
         # First call to get_or_create should create the object.
         item_a = ProductionProducedItem.get_or_create(
             self.store, serial_number=123, product=product)
         # And set the properties given
-        self.assertEquals(item_a.serial_number, 123)
-        self.assertEquals(item_a.product, product)
+        self.assertEqual(item_a.serial_number, 123)
+        self.assertEqual(item_a.product, product)
 
         # The second call to get_or_create should return the same object
         item_b = ProductionProducedItem.get_or_create(
             self.store, serial_number=123, product=product)
-        self.assertEquals(item_a, item_b)
+        self.assertEqual(item_a, item_b)
 
     def test_get_or_create_multiple_with_null(self):
         # Check if get_or_creating is working properly when using references
@@ -273,12 +273,12 @@ class TestDomain(DomainTest):
         item_a = ProductionProducedItem.get_or_create(
             self.store, serial_number=456, product=None)
 
-        self.assertEquals(item_a.serial_number, 456)
-        self.assertEquals(item_a.product, None)
+        self.assertEqual(item_a.serial_number, 456)
+        self.assertEqual(item_a.product, None)
 
         item_b = ProductionProducedItem.get_or_create(
             self.store, serial_number=456, product=None)
-        self.assertEquals(item_a, item_b)
+        self.assertEqual(item_a, item_b)
 
     def test_validate_batch(self):
         sellable = self.create_sellable()
@@ -286,4 +286,4 @@ class TestDomain(DomainTest):
             sellable.validate_batch(batch=Storable, sellable=sellable)
         expected = 'Batches should only be used with storables,' \
                    ' but %r is not one' % sellable
-        self.assertEquals(str(error.exception), expected)
+        self.assertEqual(str(error.exception), expected)

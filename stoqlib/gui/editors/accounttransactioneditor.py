@@ -56,7 +56,7 @@ class AccountTransactionEditor(BaseEditor):
         self.new = False
         BaseEditor.__init__(self, store, model)
 
-        payment_button = Gtk.Button(_("Show Payment"))
+        payment_button = Gtk.Button.new_with_label(_("Show Payment"))
         payment_button.connect("clicked", self._on_payment_button__clicked)
         box = self.main_dialog.action_area
         box.pack_start(payment_button, False, False, 0)

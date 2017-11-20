@@ -38,7 +38,7 @@ class TestCityLocation(DomainTest):
         foo.plugin_version = None
 
         foo = InstalledPlugin.create(self.store, u'foo')
-        self.assertEquals(foo.plugin_version, 0)
+        self.assertEqual(foo.plugin_version, 0)
 
         self.assertRaises(PluginError, InstalledPlugin.create,
                           self.store, u'foo')

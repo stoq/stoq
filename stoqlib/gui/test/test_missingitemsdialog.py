@@ -85,7 +85,7 @@ class TestMissingItemsDialog(GUITest):
 
         dialog = MissingItemsDialog(sale, [missing_item])
 
-        self.assertEquals(self.store.find(ProductionOrder).count(), 0)
+        self.assertEqual(self.store.find(ProductionOrder).count(), 0)
 
         # Dont commit the transaction
         with mock.patch.object(self.store, 'commit'):
@@ -95,11 +95,11 @@ class TestMissingItemsDialog(GUITest):
 
         info.assert_called_once_with('A new production was created for the '
                                      'missing composed products')
-        self.assertEquals(self.store.find(ProductionOrder).count(), 1)
+        self.assertEqual(self.store.find(ProductionOrder).count(), 1)
         production = self.store.find(ProductionOrder).any()
-        self.assertEquals(production.get_items().count(), 1)
-        self.assertEquals(production.get_items()[0].product, product)
-        self.assertEquals(production.get_items()[0].quantity, 15)
+        self.assertEqual(production.get_items().count(), 1)
+        self.assertEqual(production.get_items()[0].product, product)
+        self.assertEqual(production.get_items()[0].quantity, 15)
 
 
 class TestGetMissingItems(DomainTest):
@@ -119,4 +119,4 @@ class TestGetMissingItems(DomainTest):
 
         missing = get_missing_items(sale, self.store)
 
-        self.assertEquals(missing[0].storable, missing_storable)
+        self.assertEqual(missing[0].storable, missing_storable)

@@ -171,5 +171,5 @@ class TestReceivingOrderWizard(GUITest):
             # Confirm
             self.click(wizard.next_button)
 
-        self.assertEquals(product1.storable.get_balance_for_branch(branch), 7)
-        self.assertEquals(product2.storable.get_balance_for_branch(branch), 5)
+        self.assertEqual(product1.storable.get_balance_for_branch(branch), 7)
+        self.assertEqual(product2.storable.get_balance_for_branch(branch), 5)

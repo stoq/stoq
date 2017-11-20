@@ -22,11 +22,11 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-__tests__ = 'stoqlib/domain/payment/renegotiation.py'
-
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.test.domaintest import DomainTest
+
+__tests__ = 'stoqlib/domain/payment/renegotiation.py'
 
 
 class TestRenegotiation(DomainTest):
@@ -39,16 +39,16 @@ class TestRenegotiation(DomainTest):
 
     def test_get_client_name(self):
         renegotiation = self.create_payment_renegotiation()
-        self.assertEquals(renegotiation.get_client_name(), u'Client')
+        self.assertEqual(renegotiation.get_client_name(), u'Client')
         renegotiation.client = None
-        self.assertEquals(renegotiation.get_client_name(), u'')
+        self.assertEqual(renegotiation.get_client_name(), u'')
 
     def test_get_items(self):
         renegotiation = self.create_payment_renegotiation()
         self.assertFalse(renegotiation.get_items().count())
         group = self.create_payment_group()
         group.renegotiation = renegotiation
-        self.assertEquals(renegotiation.get_items().count(), 1)
+        self.assertEqual(renegotiation.get_items().count(), 1)
 
     def test_set_renegotiated(self):
         payment = self.create_payment()
@@ -57,8 +57,7 @@ class TestRenegotiation(DomainTest):
             renegotiation.set_renegotiated()
         payment.status = Payment.STATUS_PENDING
         renegotiation.set_renegotiated()
-        self.assertEquals(renegotiation.status,
-                          renegotiation.STATUS_RENEGOTIATED)
+        self.assertEqual(renegotiation.status, renegotiation.STATUS_RENEGOTIATED)
 
     def test_add_item(self):
         renegotiation = self.create_payment_renegotiation()
@@ -75,11 +74,11 @@ class TestInPaymentView(DomainTest):
         client = self.create_client(name=u'TestClient')
         rows = self.store.find(PaymentRenegotiation, branch_id=branch.id,
                                client=client).count()
-        self.assertEquals(rows, 0)
+        self.assertEqual(rows, 0)
         PaymentRenegotiation(branch=branch, client=client)
         rows = self.store.find(PaymentRenegotiation, branch_id=branch.id,
                                client=client).count()
-        self.assertEquals(rows, 1)
+        self.assertEqual(rows, 1)
 
     def testRenegotiated(self):
         branch = self.create_branch(name=u'Branch')
@@ -88,9 +87,9 @@ class TestInPaymentView(DomainTest):
         rows = self.store.find(PaymentRenegotiation, branch_id=branch.id,
                                client=client,
                                status=renegotiation.STATUS_RENEGOTIATED).count()
-        self.assertEquals(rows, 0)
+        self.assertEqual(rows, 0)
         renegotiation.status = renegotiation.STATUS_RENEGOTIATED
         rows = self.store.find(PaymentRenegotiation, branch_id=branch.id,
                                client=client,
                                status=renegotiation.STATUS_RENEGOTIATED).count()
-        self.assertEquals(rows, 1)
+        self.assertEqual(rows, 1)

@@ -36,25 +36,25 @@ class TestNoteEditor(GUITest):
 
     def test_confirm_with_payment_comment(self):
         comment = self.create_payment_comment(u'foo')
-        self.assertEquals(comment.comment, u'foo')
+        self.assertEqual(comment.comment, u'foo')
         editor = NoteEditor(self.store, comment, 'comment', label_text='Notes')
         editor.notes.update('bar')
         self.click(editor.main_dialog.ok_button)
-        self.assertEquals(comment.comment, u'bar')
+        self.assertEqual(comment.comment, u'bar')
 
     def test_cancel_with_non_domain(self):
         class TempNote(object):
             obs = u'bin'
 
         obj = TempNote()
-        self.assertEquals(obj.obs, u'bin')
+        self.assertEqual(obj.obs, u'bin')
         editor = NoteEditor(self.store, obj, 'obs', label_text='Notes')
         editor.notes.update('foo')
 
         # Cancelling the dialog should manually revert the changes (since the
         # object edited is not a domain object)
         self.click(editor.main_dialog.cancel_button)
-        self.assertEquals(obj.obs, u'bin')
+        self.assertEqual(obj.obs, u'bin')
 
     def test_button_label(self):
         sale = self.create_sale()
@@ -65,8 +65,8 @@ class TestNoteEditor(GUITest):
                             cancel_button_label=u"Don't cancel")
         cancel_sale_button = editor.main_dialog.ok_button.get_label()
         not_cancel_button = editor.main_dialog.cancel_button.get_label()
-        self.assertEquals(cancel_sale_button, u"Cancel sale")
-        self.assertEquals(not_cancel_button, u"Don't cancel")
+        self.assertEqual(cancel_sale_button, u"Cancel sale")
+        self.assertEqual(not_cancel_button, u"Don't cancel")
 
     @mock.patch('stoqlib.gui.editors.noteeditor.warning')
     def test_warn_note_below_min_length(self, warning):

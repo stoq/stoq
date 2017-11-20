@@ -126,5 +126,5 @@ class TestPaymentSearch(GUITest):
 
     def test_format_card_type(self):
         search = CardPaymentSearch(self.store)
-        self.assertEquals(search._format_card_type(CreditCardData.TYPE_CREDIT), u'Credit')
-        self.assertEquals(search._format_card_type(None), u'')
+        self.assertEqual(search._format_card_type(CreditCardData.TYPE_CREDIT), u'Credit')
+        self.assertEqual(search._format_card_type(None), u'')

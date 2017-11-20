@@ -81,27 +81,27 @@ class QueryExecuterTest(DomainTest):
                              text=text)])
 
     def test_string_query(self):
-        self.assertEquals(self.store.find(ClientCategory).count(), 0)
+        self.assertEqual(self.store.find(ClientCategory).count(), 0)
         self.create_client_category(u'EYE MOON FLARE 110 0.5')
         self.create_client_category(u'EYE MOON FLARE 120 1.0')
         self.create_client_category(u'EYE SUN FLARE 120 1.0')
         self.create_client_category(u'EYE SUN FLARE 110 1.0')
         self.create_client_category(u'EYE SUN STONE 120 0.5')
 
-        self.assertEquals(self._search_string_all(u'eye flare 110').count(), 2)
-        self.assertEquals(self._search_string_all(u'eye 0.5').count(), 2)
-        self.assertEquals(self._search_string_all(u'eye 120').count(), 3)
+        self.assertEqual(self._search_string_all(u'eye flare 110').count(), 2)
+        self.assertEqual(self._search_string_all(u'eye 0.5').count(), 2)
+        self.assertEqual(self._search_string_all(u'eye 120').count(), 3)
 
-        self.assertEquals(self._search_string_exactly(u'eye flare 110').count(), 0)
-        self.assertEquals(self._search_string_exactly(u'eye 0.5').count(), 0)
-        self.assertEquals(self._search_string_exactly(u'eye 120').count(), 0)
+        self.assertEqual(self._search_string_exactly(u'eye flare 110').count(), 0)
+        self.assertEqual(self._search_string_exactly(u'eye 0.5').count(), 0)
+        self.assertEqual(self._search_string_exactly(u'eye 120').count(), 0)
 
-        self.assertEquals(self._search_string_not(u'stone 110').count(), 2)
-        self.assertEquals(self._search_string_not(u'eye').count(), 0)
-        self.assertEquals(self._search_string_not(u'moon 120').count(), 1)
+        self.assertEqual(self._search_string_not(u'stone 110').count(), 2)
+        self.assertEqual(self._search_string_not(u'eye').count(), 0)
+        self.assertEqual(self._search_string_not(u'moon 120').count(), 1)
 
     def test_search_async(self):
-        self.assertEquals(self.store.find(ClientCategory).count(), 0)
+        self.assertEqual(self.store.find(ClientCategory).count(), 0)
         try:
             self.create_client_category(u'EYE MOON FLARE 110 0.5')
             self.create_client_category(u'EYE MOON FLARE 120 1.0')
@@ -112,25 +112,25 @@ class QueryExecuterTest(DomainTest):
             # commit the store or else it will not be able to find the objects
             self.store.commit()
 
-            self.assertEquals(
+            self.assertEqual(
                 len(self._search_string_all_async(u'eye flare 110')), 2)
-            self.assertEquals(
+            self.assertEqual(
                 len(self._search_string_all_async(u'eye 0.5')), 2)
-            self.assertEquals(
+            self.assertEqual(
                 len(self._search_string_all_async(u'eye 120')), 3)
 
-            self.assertEquals(
+            self.assertEqual(
                 len(self._search_string_exactly_async(u'eye flare 110')), 0)
-            self.assertEquals(
+            self.assertEqual(
                 len(self._search_string_exactly_async(u'eye 0.5')), 0)
-            self.assertEquals(
+            self.assertEqual(
                 len(self._search_string_exactly_async(u'eye 120')), 0)
 
-            self.assertEquals(
+            self.assertEqual(
                 len(self._search_string_not_async(u'stone 110')), 2)
-            self.assertEquals(
+            self.assertEqual(
                 len(self._search_string_not_async(u'eye')), 0)
-            self.assertEquals(
+            self.assertEqual(
                 len(self._search_string_not_async(u'moon 120')), 1)
         finally:
             self.clean_domain([ClientCategory])

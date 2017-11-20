@@ -122,7 +122,7 @@ class TestParameter(DomainTest):
     def test_return_policy_on_sales(self):
         param = self.sparam.get_int('RETURN_POLICY_ON_SALES')
         self.assertTrue(isinstance(param, int))
-        self.assertEquals(param, 0)
+        self.assertEqual(param, 0)
 
     def test_ask_sale_cfop(self):
         param = self.sparam.get_bool('ASK_SALES_CFOP')
@@ -140,7 +140,7 @@ class TestParameter(DomainTest):
         sale = Sale(coupon_id=432, salesperson=self.salesperson,
                     branch=self.branch, group=group, cfop=param,
                     store=self.store)
-        self.assertEquals(sale.cfop, param)
+        self.assertEqual(sale.cfop, param)
 
     def test_default_return_sales_cfop(self):
         from stoqlib.domain.fiscal import FiscalBookEntry
@@ -217,4 +217,4 @@ class TestParameter(DomainTest):
 
     def test_default_area_code(self):
         param = self.sparam.get_int('DEFAULT_AREA_CODE')
-        self.failUnless(isinstance(param, int), type(param))
+        self.assertTrue(isinstance(param, int), type(param))

@@ -47,4 +47,4 @@ class TestProductionMaterialLostEditor(GUITest):
 
         self.click(editor.main_dialog.ok_button)
 
-        self.assertEquals(material.lost, lost + 3)
+        self.assertEqual(material.lost, lost + 3)

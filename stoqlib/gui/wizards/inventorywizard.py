@@ -286,7 +286,7 @@ class InventoryCountItemStep(SellableItemStep):
 
     def get_columns(self):
         adjustment = Gtk.Adjustment(lower=0, upper=MAX_INT,
-                                    step_incr=1, page_incr=10)
+                                    step_increment=1, page_increment=10)
         return [
             Column('code', title=_('Code'), data_type=str, sorted=True),
             Column('description', title=_('Description'),

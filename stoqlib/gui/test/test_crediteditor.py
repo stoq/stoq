@@ -33,7 +33,7 @@ from stoqlib.gui.test.uitestutils import GUITest
 class TestCreditEditor(GUITest):
     def test_credit_editor(self):
         client = self.create_client()
-        self.assertEquals(client.credit_account_balance, 0)
+        self.assertEqual(client.credit_account_balance, 0)
 
         editor = CreditEditor(self.store, client)
         self.assertNotSensitive(editor.main_dialog, ['ok_button'])
@@ -43,7 +43,7 @@ class TestCreditEditor(GUITest):
         editor.value.set_text('4')
         self.assertSensitive(editor.main_dialog, ['ok_button'])
         editor.confirm()
-        self.assertEquals(client.credit_account_balance, 4)
+        self.assertEqual(client.credit_account_balance, 4)
 
         editor = CreditEditor(self.store, client)
         editor.description.set_text('Desc 2')
@@ -52,9 +52,9 @@ class TestCreditEditor(GUITest):
         # won't confirm the dialog to avoid creating repeated payments.
         payment = editor._create_payment()
 
-        self.assertEquals(payment.value, currency(3))
-        self.assertEquals(payment.payment_type, Payment.TYPE_IN)
-        self.assertEquals(client.credit_account_balance, 1)
+        self.assertEqual(payment.value, currency(3))
+        self.assertEqual(payment.payment_type, Payment.TYPE_IN)
+        self.assertEqual(client.credit_account_balance, 1)
 
     def test_credit_editor_cancel(self):
         method = PaymentMethod.get_by_name(self.store, u'credit')
@@ -74,7 +74,7 @@ class TestCreditEditor(GUITest):
         # Canceling the dialog here does not roll back the transaction because
         # this is done in the caller.
         editor.cancel()
-        self.assertEquals(client.credit_account_balance, currency(6))
+        self.assertEqual(client.credit_account_balance, currency(6))
 
     def test_negative_credit(self):
         method = PaymentMethod.get_by_name(self.store, u'credit')

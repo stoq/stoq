@@ -32,7 +32,7 @@ class TestCertificate(DomainTest):
     def test_type_str(self):
         cert = Certificate()
         cert.type = Certificate.TYPE_PKCS12
-        self.assertEquals(cert.type_str, "A1: Digital certificate")
+        self.assertEqual(cert.type_str, "A1: Digital certificate")
 
     def test_password(self):
         cert = Certificate()

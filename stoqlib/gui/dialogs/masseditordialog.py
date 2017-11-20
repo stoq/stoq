@@ -540,7 +540,7 @@ class MassEditorWidget(Gtk.HBox):
         self.editor_placeholder.add(self._editor)
 
     def _setup_widgets(self):
-        label = Gtk.Label(_('Update'))
+        label = Gtk.Label(label=_('Update'))
         self.pack_start(label, False, False, 0)
         self.field_combo = ProxyComboBox()
         self.field_combo.connect('changed', self._on_field_combo__changed)

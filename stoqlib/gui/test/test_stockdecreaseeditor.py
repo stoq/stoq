@@ -52,16 +52,16 @@ class TestStockDecreaseItemSlave(GUITest):
                                                         cost=150)
         editor = StockDecreaseItemEditor(self.store, decrease_item)
         slave = editor.item_slave
-        self.assertEquals(slave.original_cost.read(), 100)
-        self.assertEquals(slave.cost.read(), 150)
-        self.assertEquals(slave.quantity.get_value(), 2)
+        self.assertEqual(slave.original_cost.read(), 100)
+        self.assertEqual(slave.cost.read(), 150)
+        self.assertEqual(slave.quantity.get_value(), 2)
         self.check_slave(slave, 'slave-stock-decrease-item-show')
 
     def test_on_quantity__validate(self):
         decrease_item = self.create_stock_decrease_item(quantity=10)
         editor = StockDecreaseItemEditor(self.store, decrease_item)
         slave = editor.item_slave
-        self.assertEquals(slave.quantity.get_value(), 10)
+        self.assertEqual(slave.quantity.get_value(), 10)
         slave.quantity.update(0)
         self.assertInvalid(slave, ['quantity'])
         slave.quantity.update(1)
@@ -71,7 +71,7 @@ class TestStockDecreaseItemSlave(GUITest):
         decrease_item = self.create_stock_decrease_item(cost=150)
         editor = StockDecreaseItemEditor(self.store, decrease_item)
         slave = editor.item_slave
-        self.assertEquals(slave.cost.get_value(), 150)
+        self.assertEqual(slave.cost.get_value(), 150)
         slave.cost.update(0)
         self.assertInvalid(slave, ['cost'])
         slave.cost.update(100)
@@ -91,10 +91,10 @@ class TestStockDecreaseItemSlave(GUITest):
         ipi_template.cst = 00
 
         pis_template = self.create_product_pis_template(cst=49)
-        self.assertEquals(pis_template.cst, 49)
+        self.assertEqual(pis_template.cst, 49)
 
         cofins_template = self.create_product_cofins_template(cst=49)
-        self.assertEquals(cofins_template.cst, 49)
+        self.assertEqual(cofins_template.cst, 49)
 
         product = self.create_product()
         product.icms_template = icms_template
@@ -110,11 +110,11 @@ class TestStockDecreaseItemSlave(GUITest):
             slave = editor.item_slave
             icms_slave = editor.icms_slave
             ipi_slave = editor.ipi_slave
-            self.assertEquals(icms_slave.v_bc_st.read(), 100)
-            self.assertEquals(ipi_slave.v_bc.read(), 100)
+            self.assertEqual(icms_slave.v_bc_st.read(), 100)
+            self.assertEqual(ipi_slave.v_bc.read(), 100)
             slave.cost.update(150)
-            self.assertEquals(icms_slave.v_bc_st.read(), 150)
-            self.assertEquals(ipi_slave.v_bc.read(), 150)
+            self.assertEqual(icms_slave.v_bc_st.read(), 150)
+            self.assertEqual(ipi_slave.v_bc.read(), 150)
             slave.quantity.update(2)
-            self.assertEquals(icms_slave.v_bc_st.read(), 300)
-            self.assertEquals(ipi_slave.v_bc.read(), 300)
+            self.assertEqual(icms_slave.v_bc_st.read(), 300)
+            self.assertEqual(ipi_slave.v_bc.read(), 300)

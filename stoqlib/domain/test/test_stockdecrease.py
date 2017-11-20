@@ -35,10 +35,10 @@ __tests__ = 'stoqlib/domain/stockdecrease.py'
 class TestStockDecrease(DomainTest):
 
     def test_get_status_name(self):
-        self.assertEquals(
+        self.assertEqual(
             StockDecrease.get_status_name(StockDecrease.STATUS_INITIAL),
             u'Opened')
-        self.assertEquals(
+        self.assertEqual(
             StockDecrease.get_status_name(StockDecrease.STATUS_CONFIRMED),
             u'Confirmed')
 
@@ -51,9 +51,9 @@ class TestStockDecrease(DomainTest):
 
         item = StockDecreaseItem(store=self.store,
                                  sellable=sellable)
-        self.assertEquals(item.stock_decrease, None)
+        self.assertEqual(item.stock_decrease, None)
         decrease.add_item(item)
-        self.assertEquals(item.stock_decrease, decrease)
+        self.assertEqual(item.stock_decrease, decrease)
 
     def test_remove_item(self):
         decrease = self.create_stock_decrease()
@@ -76,7 +76,7 @@ class TestStockDecrease(DomainTest):
             self.assertEqual(before_remove, after_remove)
 
             # But not related to the loan
-            self.assertEquals(self.store.find(StockDecreaseItem, stock_decrease=order).count(), 0)
+            self.assertEqual(self.store.find(StockDecreaseItem, stock_decrease=order).count(), 0)
 
     def test_get_items(self):
         decrease = self.create_stock_decrease()
@@ -99,54 +99,54 @@ class TestStockDecrease(DomainTest):
 
         self.assertEqual(storable.get_stock_item(branch, None).quantity, 100)
 
-        self.failUnless(decrease.can_confirm())
+        self.assertTrue(decrease.can_confirm())
         decrease.confirm()
-        self.failIf(decrease.can_confirm())
+        self.assertFalse(decrease.can_confirm())
 
         self.assertEqual(storable.get_stock_item(branch, None).quantity, 95)
 
-        self.assertEquals(payment.status, Payment.STATUS_PENDING)
+        self.assertEqual(payment.status, Payment.STATUS_PENDING)
 
     def test_get_branch_name(self):
         branch = self.create_branch()
         branch.person.company.fancy_name = u'foo'
         decrease = self.create_stock_decrease(branch=branch)
-        self.assertEquals(decrease.get_branch_name(), u'foo')
+        self.assertEqual(decrease.get_branch_name(), u'foo')
 
     def test_get_responsible_name(self):
         decrease = self.create_stock_decrease()
         user = self.create_user()
         user.person.name = u'foo'
         decrease.responsible = user
-        self.assertEquals(decrease.get_responsible_name(), u'foo')
+        self.assertEqual(decrease.get_responsible_name(), u'foo')
 
     def test_get_removed_by_name(self):
         decrease = self.create_stock_decrease()
         decrease.removed_by = None
-        self.assertEquals(decrease.get_removed_by_name(), u'')
+        self.assertEqual(decrease.get_removed_by_name(), u'')
 
         employee = self.create_employee()
         employee.person.name = u'foo'
         decrease.removed_by = employee
-        self.assertEquals(decrease.get_removed_by_name(), u'foo')
+        self.assertEqual(decrease.get_removed_by_name(), u'foo')
 
     def test_get_total_items_removed(self):
         decrease = self.create_stock_decrease()
-        self.assertEquals(0, decrease.get_total_items_removed())
+        self.assertEqual(0, decrease.get_total_items_removed())
 
         item1 = self.create_stock_decrease_item(stock_decrease=decrease)
         item1.quantity = 10
-        self.assertEquals(10, decrease.get_total_items_removed())
+        self.assertEqual(10, decrease.get_total_items_removed())
 
         item2 = self.create_stock_decrease_item(stock_decrease=decrease)
         item2.quantity = 20
-        self.assertEquals(30, decrease.get_total_items_removed())
+        self.assertEqual(30, decrease.get_total_items_removed())
 
     def test_get_cfop_description(self):
         decrease = self.create_stock_decrease()
         decrease.cfop.code = u'1.234'
         decrease.cfop.description = u'foo'
-        self.assertEquals(decrease.get_cfop_description(), u'1.234 foo')
+        self.assertEqual(decrease.get_cfop_description(), u'1.234 foo')
 
     def test_get_total_cost(self):
         decrease = self.create_stock_decrease()
@@ -156,58 +156,58 @@ class TestStockDecrease(DomainTest):
         sellable2.cost = currency('10')
         decrease.add_sellable(sellable1, quantity=2)
         decrease.add_sellable(sellable2, quantity=5)
-        self.assertEquals(decrease.get_total_cost(), 250)
+        self.assertEqual(decrease.get_total_cost(), 250)
 
     # NF-e operations
 
     def test_comments(self):
         decrease = self.create_stock_decrease(reason=u'Reason')
-        self.assertEquals(decrease.comments, decrease.reason)
+        self.assertEqual(decrease.comments, decrease.reason)
 
     def test_discount_value(self):
         decrease = self.create_stock_decrease()
-        self.assertEquals(decrease.discount_value, currency(0))
+        self.assertEqual(decrease.discount_value, currency(0))
 
     def test_invoice_totals(self):
         decrease = self.create_stock_decrease()
         decrease_item = self.create_stock_decrease_item(decrease, quantity=2)
         decrease_item.cost = 50
-        self.assertEquals(decrease.invoice_subtotal, 100)
-        self.assertEquals(decrease.invoice_total, 100)
+        self.assertEqual(decrease.invoice_subtotal, 100)
+        self.assertEqual(decrease.invoice_total, 100)
 
     def test_payments(self):
         decrease = self.create_stock_decrease()
-        self.assertEquals(decrease.payments, None)
+        self.assertEqual(decrease.payments, None)
 
         group = self.create_payment_group()
         decrease.group = group
-        self.assertEquals(decrease.payments.count(), 0)
+        self.assertEqual(decrease.payments.count(), 0)
 
         payment = self.create_payment()
         group.add_item(payment)
-        self.assertEquals(decrease.payments.count(), 1)
+        self.assertEqual(decrease.payments.count(), 1)
         payment2 = self.create_payment()
         group.add_item(payment2)
-        self.assertEquals(decrease.payments.count(), 2)
+        self.assertEqual(decrease.payments.count(), 2)
 
     def test_recipient(self):
         person = self.create_person()
         decrease = self.create_stock_decrease(destination=person)
-        self.assertEquals(decrease.recipient, person)
+        self.assertEqual(decrease.recipient, person)
 
     def test_operation_nature(self):
         # FIXME: Check using the operation_nature that will be save in new field
         decrease = self.create_stock_decrease()
-        self.assertEquals(decrease.operation_nature, u'Stock decrease')
+        self.assertEqual(decrease.operation_nature, u'Stock decrease')
 
 
 class TestStockDecreaseItem(DomainTest):
     def test_constructor(self):
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 TypeError, 'You must provide a sellable argument'):
             StockDecreaseItem(store=self.store)
 
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 TypeError, 'You must provide a sellable argument'):
             StockDecreaseItem(store=self.store,
                               sellable=None)
@@ -232,29 +232,29 @@ class TestStockDecreaseItem(DomainTest):
     def test_get_quantity_unit_string(self):
         item = self.create_stock_decrease_item(quantity=1)
         item.sellable.unit = None
-        self.assertEquals(item.get_quantity_unit_string(), u'1.000')
+        self.assertEqual(item.get_quantity_unit_string(), u'1.000')
         item.sellable.unit = self.create_sellable_unit(description=u'U')
-        self.assertEquals(item.get_quantity_unit_string(), u'1.000 U')
+        self.assertEqual(item.get_quantity_unit_string(), u'1.000 U')
 
     # NF-e operations
 
     def test_parent(self):
         order = self.create_stock_decrease()
         item = self.create_stock_decrease_item(order)
-        self.assertEquals(item.parent, order)
+        self.assertEqual(item.parent, order)
 
     def test_base_price(self):
         decrease_item = self.create_stock_decrease_item()
         decrease_item.cost = 140
-        self.assertEquals(decrease_item.base_price, 140)
+        self.assertEqual(decrease_item.base_price, 140)
 
     def test_price(self):
         decrease_item = self.create_stock_decrease_item()
         decrease_item.cost = 100
-        self.assertEquals(decrease_item.price, decrease_item.cost)
+        self.assertEqual(decrease_item.price, decrease_item.cost)
 
     def test_cfop_code(self):
         decrease = self.create_stock_decrease()
         decrease_item = self.create_stock_decrease_item(decrease)
         cfop = decrease.cfop.code.replace('.', '')
-        self.assertEquals(decrease_item.cfop_code, cfop)
+        self.assertEqual(decrease_item.cfop_code, cfop)

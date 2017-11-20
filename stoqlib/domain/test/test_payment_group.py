@@ -22,8 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-__tests__ = 'stoqlib/domain/payment/group.py'
-
 from decimal import Decimal
 
 from nose.exc import SkipTest
@@ -38,6 +36,8 @@ from stoqlib.domain.sale import Sale
 from stoqlib.domain.stockdecrease import StockDecrease
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.parameters import sysparam
+
+__tests__ = 'stoqlib/domain/payment/group.py'
 
 StockDecrease  # pylint: disable=W0104
 
@@ -60,7 +60,7 @@ class TestPaymentGroup(DomainTest):
             self.store,
             "SALE_PAY_COMMISSION_WHEN_CONFIRMED",
             True)
-        self.failUnless(
+        self.assertTrue(
             sysparam.get_bool('SALE_PAY_COMMISSION_WHEN_CONFIRMED'))
 
     def test_remove_item(self):
@@ -71,20 +71,20 @@ class TestPaymentGroup(DomainTest):
 
     def test_installments_number(self):
         payment = self.create_payment()
-        self.assertEquals(payment.group.installments_number, 1)
+        self.assertEqual(payment.group.installments_number, 1)
 
     def test_get_payments_sum(self):
         payment = self.create_payment()
         payments = payment.group.get_valid_payments()
         result = payment.group._get_payments_sum(payments=payments,
                                                  attr=Payment.value)
-        self.assertEquals(result, 10)
+        self.assertEqual(result, 10)
 
     def test_clear_unused(self):
         payment = self.create_payment()
         payment2 = self.create_payment(group=payment.group)
         payment2.status = Payment.STATUS_PREVIEW
-        self.assertEquals(payment.group._get_preview_payments().count(), 2)
+        self.assertEqual(payment.group._get_preview_payments().count(), 2)
         payment.group.clear_unused()
         with self.assertRaises(AttributeError):
             payment.group._get_preview_payments()
@@ -189,16 +189,16 @@ class TestPaymentGroup(DomainTest):
 
         commissions = self.store.find(Commission,
                                       sale=sale).order_by(Commission.value)
-        self.assertEquals(commissions.count(), 2)
+        self.assertEqual(commissions.count(), 2)
         for c in commissions:
-            self.failUnless(c.commission_type == Commission.INSTALLMENTS)
+            self.assertTrue(c.commission_type == Commission.INSTALLMENTS)
 
         # the first payment represent 1/3 of the total amount
         # 5% of 300: 15,00 * 1/3 => 5,00
-        self.assertEquals(commissions[0].value, Decimal("5.00"))
+        self.assertEqual(commissions[0].value, Decimal("5.00"))
         # the second payment represent 2/3 of the total amount
         # $15 * 2/3 => 10,00
-        self.assertEquals(commissions[1].value, Decimal("10.00"))
+        self.assertEqual(commissions[1].value, Decimal("10.00"))
 
     def test_installments_commission_amount_with_multiple_items(self):
         self._payComissionWhenConfirmed()
@@ -222,19 +222,19 @@ class TestPaymentGroup(DomainTest):
 
         commissions = self.store.find(Commission,
                                       sale=sale).order_by(Commission.value)
-        self.assertEquals(commissions.count(), 3)
+        self.assertEqual(commissions.count(), 3)
         for c in commissions:
-            self.failUnless(c.commission_type == Commission.INSTALLMENTS)
+            self.assertTrue(c.commission_type == Commission.INSTALLMENTS)
 
         # the first payment represent 1/3 of the total amount
         # 45 / 6 => 7.50
-        self.assertEquals(commissions[0].value, Decimal("7.50"))
+        self.assertEqual(commissions[0].value, Decimal("7.50"))
         # the second payment represent 1/3 of the total amount
         # 5% of 900: 45,00 * 1/3 => 15,00
-        self.assertEquals(commissions[1].value, Decimal("15.00"))
+        self.assertEqual(commissions[1].value, Decimal("15.00"))
         # the third payment represent 1/2 of the total amount
         # 45 / 2 => 22,50
-        self.assertEquals(commissions[2].value, Decimal("22.50"))
+        self.assertEqual(commissions[2].value, Decimal("22.50"))
 
     def test_installments_commission_amount_when_sale_return(self):
         if True:
@@ -274,7 +274,7 @@ class TestPaymentGroup(DomainTest):
         value = sum([c.value for c in commissions])
         self.assertEqual(value, Decimal(0))
         self.assertEqual(commissions.count(), 4)
-        self.failIf(commissions[-1].value >= 0)
+        self.assertFalse(commissions[-1].value >= 0)
 
     def test_get_total_value(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
@@ -546,11 +546,11 @@ class TestPaymentGroup(DomainTest):
         decrease = self.create_stock_decrease(group=group)
         payment_group = self.create_payment_group()
 
-        self.assertEquals(sale, sale.group.get_parent())
-        self.assertEquals(purchase, purchase.group.get_parent())
-        self.assertEquals(renegotiation, renegotiation.group.get_parent())
-        self.assertEquals(decrease, decrease.group.get_parent())
-        self.assertEquals(None, payment_group.get_parent())
+        self.assertEqual(sale, sale.group.get_parent())
+        self.assertEqual(purchase, purchase.group.get_parent())
+        self.assertEqual(renegotiation, renegotiation.group.get_parent())
+        self.assertEqual(decrease, decrease.group.get_parent())
+        self.assertEqual(None, payment_group.get_parent())
 
     def test_get_description(self):
         sale = self.create_sale()
@@ -564,17 +564,15 @@ class TestPaymentGroup(DomainTest):
         renegotiation.identifier = 99999
         decrease.identifier = 12345
 
-        self.assertEquals(sale.group.get_description(), u'sale 77777')
-        self.assertEquals(purchase.group.get_description(), u'order 88888')
-        self.assertEquals(renegotiation.group.get_description(),
-                          u'renegotiation 99999')
-        self.assertEquals(decrease.group.get_description(),
-                          u'stock decrease 12345')
+        self.assertEqual(sale.group.get_description(), u'sale 77777')
+        self.assertEqual(purchase.group.get_description(), u'order 88888')
+        self.assertEqual(renegotiation.group.get_description(), u'renegotiation 99999')
+        self.assertEqual(decrease.group.get_description(), u'stock decrease 12345')
 
         callback = lambda g, s: Settable(payment_description='foobar')
         PaymentGroupGetOrderEvent.connect(callback)
         try:
-            self.assertEquals(
+            self.assertEqual(
                 self.create_payment_group().get_description(), 'foobar')
         finally:
             PaymentGroupGetOrderEvent.disconnect(callback)

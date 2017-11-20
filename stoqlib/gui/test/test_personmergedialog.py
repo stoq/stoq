@@ -72,7 +72,7 @@ class TestPersonMergeDialog(GUITest):
         self.click(dialog.search_button)
 
         names = set(d.name for d in dialog.dup_tree)
-        self.assertEquals(names, set([u'José Cuervo Pinga', u'Jose Cuervo Pinga']))
+        self.assertEqual(names, set([u'José Cuervo Pinga', u'Jose Cuervo Pinga']))
 
     @mock.patch('stoqlib.gui.dialogs.personmergedialog.ProgressDialog')
     def test_search_first_name_phone(self, ProgressDialog):
@@ -86,7 +86,7 @@ class TestPersonMergeDialog(GUITest):
         self.click(dialog.search_button)
 
         names = set(d.name for d in dialog.dup_tree)
-        self.assertEquals(names, set([u'Juca Pinga', 'Juca']))
+        self.assertEqual(names, set([u'Juca Pinga', 'Juca']))
 
     @mock.patch('stoqlib.gui.dialogs.personmergedialog.ProgressDialog')
     def test_search_first_last_name_address(self, ProgressDialog):
@@ -100,7 +100,7 @@ class TestPersonMergeDialog(GUITest):
         self.click(dialog.search_button)
 
         names = set(d.name for d in dialog.dup_tree)
-        self.assertEquals(names, set([u'José Pinga', 'Jose Cuervo Pinga']))
+        self.assertEqual(names, set([u'José Pinga', 'Jose Cuervo Pinga']))
 
     @mock.patch('stoqlib.gui.dialogs.personmergedialog.ProgressDialog')
     @mock.patch('stoqlib.gui.dialogs.personmergedialog.yesno')
@@ -118,7 +118,7 @@ class TestPersonMergeDialog(GUITest):
                 # Figure out how to mimic the user clicking the row
                 row.merge = True
 
-        self.assertEquals(len(root.get_to_merge()), 2)
+        self.assertEqual(len(root.get_to_merge()), 2)
         dialog.dup_tree.select(root)
 
         with contextlib.nested(
@@ -135,4 +135,4 @@ class TestPersonMergeDialog(GUITest):
 
         # If we search again, there should be no duplicates
         self.click(dialog.search_button)
-        self.assertEquals(len(dialog.dup_tree), 0)
+        self.assertEqual(len(dialog.dup_tree), 0)

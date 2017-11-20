@@ -36,9 +36,9 @@ class TestDeviceSettings(DomainTest):
                                 type=DeviceSettings.CHEQUE_PRINTER_DEVICE,
                                 station=station)
 
-        self.assertEquals(device.description, u'Brand XX')
-        self.assertEquals(device.station_name, u'station')
-        self.assertEquals(device.device_type_name, u'Cheque Printer')
+        self.assertEqual(device.description, u'Brand XX')
+        self.assertEqual(device.station_name, u'station')
+        self.assertEqual(device.device_type_name, u'Cheque Printer')
 
     @mock.patch('stoqlib.domain.devices.SerialPort')
     @mock.patch('stoqlib.domain.devices.ChequePrinter')
@@ -69,7 +69,7 @@ class TestDeviceSettings(DomainTest):
             device.get_interface()
         expected = "The device type referred by this record" \
                    " (%r) is invalid, given None." % device
-        self.assertEquals(str(error.exception), expected)
+        self.assertEqual(str(error.exception), expected)
 
     @mock.patch('stoqlib.domain.devices.NonFiscalPrinter')
     def test_get_interface_usb(self, NonFiscalPrinter):
@@ -99,7 +99,7 @@ class TestDeviceSettings(DomainTest):
         results = device.get_by_station_and_type(store=self.store,
                                                  station=station,
                                                  type=type)
-        self.assertEquals(results, device)
+        self.assertEqual(results, device)
 
     def test_inactivate(self):
         device = DeviceSettings(store=self.store)
@@ -115,9 +115,9 @@ class TestDeviceSettings(DomainTest):
 
     def test_get_status_string(self):
         device = DeviceSettings(store=self.store)
-        self.assertEquals(device.get_status_string(), _(u'Active'))
+        self.assertEqual(device.get_status_string(), _(u'Active'))
         device.inactivate()
-        self.assertEquals(device.get_status_string(), _(u'Inactive'))
+        self.assertEqual(device.get_status_string(), _(u'Inactive'))
 
     def test_get_scale_settings(self):
         device = DeviceSettings(store=self.store,

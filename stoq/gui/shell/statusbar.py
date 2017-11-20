@@ -162,7 +162,7 @@ class StatusDialog(BasicDialog):
             for child in buttonbox.get_children():
                 buttonbox.remove(child)
             for action in resource.get_actions():
-                btn = Gtk.Button(action.label)
+                btn = Gtk.Button.new_with_label(action.label)
 
                 if running_action is not None:
                     btn.set_sensitive(False)
@@ -336,7 +336,7 @@ class ShellStatusbar(Gtk.Statusbar):
     def _create_message_area(self):
         for child in self.get_children():
             child.hide()
-        area = Gtk.HBox(False, 4)
+        area = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=4)
         self.add(area)
         area.show()
         return area
@@ -349,7 +349,7 @@ class ShellStatusbar(Gtk.Statusbar):
         self.message_area.pack_start(alignment, True, True, 0)
         alignment.show()
 
-        widget_area = Gtk.HBox(False, 0)
+        widget_area = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         alignment.add(widget_area)
         widget_area.show()
 
@@ -363,7 +363,7 @@ class ShellStatusbar(Gtk.Statusbar):
         widget_area.pack_start(vsep, False, False, 0)
         vsep.show()
 
-        self._feedback_button = Gtk.Button(_('Feedback'))
+        self._feedback_button = Gtk.Button.new_with_label(_('Feedback'))
         image = Gtk.Image()
         image.set_from_stock(STOQ_FEEDBACK, Gtk.IconSize.MENU)
         self._feedback_button.set_image(image)

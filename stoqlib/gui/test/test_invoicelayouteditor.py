@@ -46,17 +46,17 @@ class TestInvoiceLayoutEditor(GUITest):
         # Testing selecting the client_name widget
         editor.grid.select_field(field_info2)
         self.assertNotSensitive(editor, ['text'])
-        self.assertEquals(editor.text.read(), u'')
+        self.assertEqual(editor.text.read(), u'')
 
         # Selecting a free text widget
         editor.grid.select_field(field_info)
-        self.assertEquals(editor.text.read(), u'free text')
+        self.assertEqual(editor.text.read(), u'free text')
         # We have to do this to emmit __changed signal
         editor.text.insert_text(u'new ', 0)
-        self.assertEquals(editor.text.read(), u'new free text')
+        self.assertEqual(editor.text.read(), u'new free text')
 
         ## Testing clicking on the grid but not on a widget
         editor.grid.select_field(None)
         self.assertNotSensitive(editor, ['text'])
-        self.assertEquals(editor.text.read(), u'')
-        self.assertEquals(editor.field_name.read(), u'')
+        self.assertEqual(editor.text.read(), u'')
+        self.assertEqual(editor.field_name.read(), u'')

@@ -41,23 +41,23 @@ class ViewableTest(DomainTest):
         a = datetime.date(2012, 1, 5)
         b = datetime.date(2012, 1, 10)
         query = Between(Event.date, a, b)
-        self.assertEquals(self.store.find(Event, query).count(), 0)
+        self.assertEqual(self.store.find(Event, query).count(), 0)
 
         Event(store=self.store, date=datetime.datetime(2012, 1, 4),
               event_type=Event.TYPE_SYSTEM, description=u'')
-        self.assertEquals(self.store.find(Event, query).count(), 0)
+        self.assertEqual(self.store.find(Event, query).count(), 0)
 
         Event(store=self.store, date=datetime.datetime(2012, 1, 5),
               event_type=Event.TYPE_SYSTEM, description=u'')
-        self.assertEquals(self.store.find(Event, query).count(), 1)
+        self.assertEqual(self.store.find(Event, query).count(), 1)
 
         Event(store=self.store, date=datetime.datetime(2012, 1, 10),
               event_type=Event.TYPE_SYSTEM, description=u'')
-        self.assertEquals(self.store.find(Event, query).count(), 2)
+        self.assertEqual(self.store.find(Event, query).count(), 2)
 
         Event(store=self.store, date=datetime.datetime(2012, 1, 11),
               event_type=Event.TYPE_SYSTEM, description=u'')
-        self.assertEquals(self.store.find(Event, query).count(), 2)
+        self.assertEqual(self.store.find(Event, query).count(), 2)
 
     def test_generate_series_date(self):
         a = datetime.datetime(2012, 1, 1)
@@ -67,19 +67,19 @@ class ViewableTest(DomainTest):
                                 Cast(u'1 month', 'interval')),
 
         data = list(self.store.using(series).find(Field('generate_series', 'generate_series')))
-        self.assertEquals(len(data), 4)
+        self.assertEqual(len(data), 4)
 
-        self.assertEquals(data[0], a)
-        self.assertEquals(data[1], datetime.datetime(2012, 2, 1))
-        self.assertEquals(data[2], datetime.datetime(2012, 3, 1))
-        self.assertEquals(data[3], b)
+        self.assertEqual(data[0], a)
+        self.assertEqual(data[1], datetime.datetime(2012, 2, 1))
+        self.assertEqual(data[2], datetime.datetime(2012, 3, 1))
+        self.assertEqual(data[3], b)
 
     def test_generate_series_integer(self):
         series = GenerateSeries(5, 10),
         data = list(self.store.using(series).find(Field('generate_series', 'generate_series')))
-        self.assertEquals(len(data), 6)
+        self.assertEqual(len(data), 6)
 
-        self.assertEquals(data, [5, 6, 7, 8, 9, 10])
+        self.assertEqual(data, [5, 6, 7, 8, 9, 10])
 
     def test_case(self):
         # Ordinary case
@@ -87,32 +87,32 @@ class ViewableTest(DomainTest):
         case = Case(condition=Field('generate_series', 'generate_series') <= 3,
                     result=0, else_=1)
         data = list(self.store.using(series).find(case))
-        self.assertEquals(data, [0, 0, 0, 0, 1, 1])
+        self.assertEqual(data, [0, 0, 0, 0, 1, 1])
 
         # else_ is None
         case = Case(condition=Field('generate_series', 'generate_series') <= 3,
                     result=Field('generate_series', 'generate_series'),
                     else_=None)
         data = list(self.store.using(series).find(case))
-        self.assertEquals(data, [0, 1, 2, 3, None, None])
+        self.assertEqual(data, [0, 1, 2, 3, None, None])
 
         # else_ is a False equivalent value
         case = Case(condition=Field('generate_series', 'generate_series') <= 3,
                     result=Field('generate_series', 'generate_series'), else_=0)
         data = list(self.store.using(series).find(case))
-        self.assertEquals(data, [0, 1, 2, 3, 0, 0])
+        self.assertEqual(data, [0, 1, 2, 3, 0, 0])
 
         # else_ is False
         case = Case(condition=Field('generate_series', 'generate_series') != 1,
                     result=True, else_=False)
         data = list(self.store.using(series).find(case))
-        self.assertEquals(data, [True, False, True, True, True, True])
+        self.assertEqual(data, [True, False, True, True, True, True])
 
         # result is None
         case = Case(condition=Field('generate_series', 'generate_series') != 1,
                     result=None, else_=False)
         data = list(self.store.using(series).find(case))
-        self.assertEquals(data, [None, False, None, None, None, None])
+        self.assertEqual(data, [None, False, None, None, None, None])
 
     def test_over(self):
         series = GenerateSeries(0, 10, 1)
@@ -127,7 +127,7 @@ class ViewableTest(DomainTest):
                                                   over_order_values,
                                                   over_partition_values)))
 
-        self.assertEquals(len(data), 11)
+        self.assertEqual(len(data), 11)
 
-        self.assertEquals(data, [
+        self.assertEqual(data, [
             (i, 55, sum(range(i + 1)), i) for i in range(11)])

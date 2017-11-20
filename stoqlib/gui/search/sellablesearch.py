@@ -130,7 +130,7 @@ class SellableSearch(SearchEditor):
         super(SellableSearch, self).confirm(retval=retval)
 
     def setup_widgets(self):
-        self.image_viewer_toggler = Gtk.CheckMenuItem(_("Show image viewer"))
+        self.image_viewer_toggler = Gtk.CheckMenuItem(label=_("Show image viewer"))
         self.popup = Gtk.Menu()
         self.popup.add(self.image_viewer_toggler)
         self.popup.show_all()

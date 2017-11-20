@@ -94,7 +94,7 @@ class TestFirstTimeConfigWizard(GUITest):
         self.click(wizard.next_button)
 
         # Warning should not have being called by now.
-        self.assertEquals(warning.call_count, 0, warning.call_args_list)
+        self.assertEqual(warning.call_count, 0, warning.call_args_list)
 
         self.check_wizard(wizard, u'wizard-config-installation-mode')
 
@@ -110,24 +110,22 @@ class TestFirstTimeConfigWizard(GUITest):
             '-u', u'username',
             '-w', u'password'])
         step = wizard.get_current_step()
-        self.assertEquals(step.progressbar.get_text(),
-                          u'Creating database...')
+        self.assertEqual(step.progressbar.get_text(), u'Creating database...')
 
         step.process_view.emit(u'read-line', u'stoqlib.database.create SCHEMA')
-        self.assertEquals(step.progressbar.get_text(),
-                          u'Creating base schema...')
+        self.assertEqual(step.progressbar.get_text(), u'Creating base schema...')
 
         step.process_view.emit(u'read-line', u'stoqlib.database.create PATCHES:1')
-        self.assertEquals(step.progressbar.get_text(),
-                          u'Creating schema, applying patches...')
+        self.assertEqual(step.progressbar.get_text(),
+                         u'Creating schema, applying patches...')
 
         step.process_view.emit(u'read-line', u'stoqlib.database.create PATCH:0')
-        self.assertEquals(step.progressbar.get_text(),
-                          u'Creating schema, applying patch 1 ...')
+        self.assertEqual(step.progressbar.get_text(),
+                         u'Creating schema, applying patch 1 ...')
 
         step.process_view.emit(u'read-line', u'stoqlib.database.create INIT START')
-        self.assertEquals(step.progressbar.get_text(),
-                          u'Creating additional database objects ...')
+        self.assertEqual(step.progressbar.get_text(),
+                         u'Creating additional database objects ...')
 
         yesno.return_value = False
         step.process_view.emit(u'finished', 30)
@@ -202,9 +200,9 @@ class TestFirstTimeConfigWizard(GUITest):
             os.environ[u'PGPASSFILE'] = f.name
             self.click(wizard.next_button)
             data = f.read().decode()
-        self.assertEquals(data,
-                          (u'remotehost:12345:postgres:username:password\n'
-                           u'remotehost:12345:dbname:username:password\n'))
+        self.assertEqual(data,
+                         (u'remotehost:12345:postgres:username:password\n'
+                          u'remotehost:12345:dbname:username:password\n'))
 
         # Installing
         step = wizard.get_current_step()

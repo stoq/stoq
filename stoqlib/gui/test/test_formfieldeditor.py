@@ -44,23 +44,23 @@ class TestFormFieldEditor(GUITest):
         client_form = store.find(UIForm, form_name=u'client').one()
         field = store.find(UIField,
                            ui_form=client_form, field_name=u'name').one()
-        self.assertEquals(field.mandatory, True)
+        self.assertEqual(field.mandatory, True)
 
         field2 = store2.find(UIField,
                              ui_form=client_form, field_name=u'name').one()
 
         dialog = FormFieldEditor(self.store)
         dialog.forms.select(client_form)
-        self.assertEquals(list(dialog.fields.get_cell_contents())[7][2], True)
+        self.assertEqual(list(dialog.fields.get_cell_contents())[7][2], True)
         setattr(field, 'mandatory', False)
         dialog.fields.refresh()
-        self.assertEquals(list(dialog.fields.get_cell_contents())[7][2], False)
-        self.assertEquals(field2.mandatory, True)
+        self.assertEqual(list(dialog.fields.get_cell_contents())[7][2], False)
+        self.assertEqual(field2.mandatory, True)
         dialog.confirm()
 
         field3 = store3.find(UIField,
                              ui_form=client_form, field_name=u'name').one()
-        self.assertEquals(field3.mandatory, False)
+        self.assertEqual(field3.mandatory, False)
 
         store2.close()
         store3.close()

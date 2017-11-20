@@ -200,9 +200,9 @@ class ProductSupplierEditor(BaseEditor):
         self.unit_label.set_text(description)
         self.base_cost.set_digits(sysparam.get_int('COST_PRECISION_DIGITS'))
         self.base_cost.set_adjustment(
-            Gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
+            Gtk.Adjustment(lower=0, upper=MAX_INT, step_increment=1))
         self.minimum_purchase.set_adjustment(
-            Gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1))
+            Gtk.Adjustment(lower=0, upper=MAX_INT, step_increment=1))
 
     #
     # BaseEditor hooks
@@ -263,11 +263,11 @@ class ProductComponentEditor(BaseEditor):
         self.price_lbl.hide()
         self.component_description.set_text(self.model.description)
         self.quantity.set_adjustment(
-            Gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1,
-                           page_incr=10))
+            Gtk.Adjustment(lower=0, upper=MAX_INT, step_increment=1,
+                           page_increment=10))
         self.price.set_adjustment(
-            Gtk.Adjustment(lower=0, upper=MAX_INT, step_incr=1,
-                           page_incr=10))
+            Gtk.Adjustment(lower=0, upper=MAX_INT, step_increment=1,
+                           page_increment=10))
         # set a default quantity value for new components
         if not self.model.quantity:
             self.quantity.set_value(1)

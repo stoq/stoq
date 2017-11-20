@@ -70,7 +70,7 @@ class TestFiscalBookSearch(GUITest):
 
         self.assertSensitive(search, ['edit_button'])
         self.click(search.edit_button)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
 
 
 class TestCfopSearch(GUITest):

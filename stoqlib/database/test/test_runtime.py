@@ -245,9 +245,9 @@ class StoqlibStoreTest(DomainTest):
         inside_inside = WillBeCommitted(store=self.store, test_var=u'inside_inside_savepoint')
 
         # All objects are on the same store, but two of them are inside savepoints.
-        self.assertEquals(StoqlibStore.of(outside), self.store)
-        self.assertEquals(StoqlibStore.of(inside), self.store)
-        self.assertEquals(StoqlibStore.of(inside_inside), self.store)
+        self.assertEqual(StoqlibStore.of(outside), self.store)
+        self.assertEqual(StoqlibStore.of(inside), self.store)
+        self.assertEqual(StoqlibStore.of(inside_inside), self.store)
 
         # Now rollback to the second savepoint
         self.store.rollback_to_savepoint('second_savepoint')
@@ -255,8 +255,8 @@ class StoqlibStoreTest(DomainTest):
         self.assertIsNone(StoqlibStore.of(inside_inside))
 
         # ... but the other two should still be.
-        self.assertEquals(StoqlibStore.of(inside), self.store)
-        self.assertEquals(StoqlibStore.of(outside), self.store)
+        self.assertEqual(StoqlibStore.of(inside), self.store)
+        self.assertEqual(StoqlibStore.of(outside), self.store)
 
         self.store.rollback_to_savepoint('first_savepoint')
         # The outer inside object should not be in the store
@@ -270,9 +270,9 @@ class StoqlibStoreTest(DomainTest):
         inside_inside = WillBeCommitted(store=self.store, test_var=u'inside_inside_savepoint')
 
         # All objects are on the same store, but tho of them are in savepoints
-        self.assertEquals(StoqlibStore.of(outside), self.store)
-        self.assertEquals(StoqlibStore.of(inside), self.store)
-        self.assertEquals(StoqlibStore.of(inside_inside), self.store)
+        self.assertEqual(StoqlibStore.of(outside), self.store)
+        self.assertEqual(StoqlibStore.of(inside), self.store)
+        self.assertEqual(StoqlibStore.of(inside_inside), self.store)
 
         # Now rollback to the first savepoint
         self.store.rollback_to_savepoint('first_savepoint')
@@ -281,7 +281,7 @@ class StoqlibStoreTest(DomainTest):
         self.assertIsNone(StoqlibStore.of(inside_inside))
 
         # ... but the ouside one should still be in the store.
-        self.assertEquals(StoqlibStore.of(outside), self.store)
+        self.assertEqual(StoqlibStore.of(outside), self.store)
 
         # It should not be possible to rollback to the second_savepoint, since that was
         # already done when we rolled back to the first
@@ -426,8 +426,8 @@ class TestStoqlibResultSet(DomainTest):
         # Make sure there are results so the test makes sense
         assert results.count()
         for objs, tpls in zip(results, results.fast_iter()):
-            self.assertEquals(objs[0].id, tpls[0].id)
-            self.assertEquals(objs[1].id, tpls[1].id)
+            self.assertEqual(objs[0].id, tpls[0].id)
+            self.assertEqual(objs[1].id, tpls[1].id)
 
     def test_fast_iter_mixed(self):
         results = self.store.find((Person, Client.id),
@@ -436,8 +436,8 @@ class TestStoqlibResultSet(DomainTest):
         # Make sure there are results so the test makes sense
         assert results.count()
         for objs, tpls in zip(results, results.fast_iter()):
-            self.assertEquals(objs[0].id, tpls[0].id)
-            self.assertEquals(objs[1], tpls[1])
+            self.assertEqual(objs[0].id, tpls[0].id)
+            self.assertEqual(objs[1], tpls[1])
 
     def test_fast_iter_viewable(self):
         results = self.store.find(ClientView).order_by(Client.te_id)

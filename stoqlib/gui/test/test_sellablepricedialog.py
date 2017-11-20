@@ -74,8 +74,8 @@ class TestSellablePriceDialog(GUITest):
         yesno.return_value = True
         self.click(search.ok_button)
 
-        self.assertEquals(p1.price, 11)
-        self.assertEquals(p2.price, 15)
+        self.assertEqual(p1.price, 11)
+        self.assertEqual(p2.price, 15)
 
     def test_cancel(self):
         editor = SellableMassEditorDialog(self.store)

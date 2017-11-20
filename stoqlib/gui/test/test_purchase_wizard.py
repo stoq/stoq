@@ -107,9 +107,9 @@ class TestPurchaseWizard(GUITest):
 
         wizard = PurchaseWizard(self.store)
         step = wizard.get_current_step()
-        self.assertEquals(step.edit_supplier.get_sensitive(), False)
+        self.assertEqual(step.edit_supplier.get_sensitive(), False)
         step.supplier.set_text('Invalid supplier')
-        self.assertEquals(step.edit_supplier.get_sensitive(), False)
+        self.assertEqual(step.edit_supplier.get_sensitive(), False)
 
         # Activating the suppliers back
         for supplier in suppliers:
@@ -122,7 +122,7 @@ class TestPurchaseWizard(GUITest):
         self.wizard = PurchaseWizard(self.store, purchase_order)
         start_step = self.wizard.get_current_step()
         start_step.open_date.update(None)
-        self.assertEquals(start_step.open_date.mandatory, True)
+        self.assertEqual(start_step.open_date.mandatory, True)
         self.assertNotSensitive(self.wizard, ['next_button'])
 
     def test_create_and_receive(self):

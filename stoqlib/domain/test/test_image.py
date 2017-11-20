@@ -38,7 +38,7 @@ class TestImage(DomainTest):
         image.image = b'teste'
 
         # the second argument is the string 'teste' with base64 encoding
-        self.assertEquals(image.get_base64_encoded(), 'dGVzdGU=')
+        self.assertEqual(image.get_base64_encoded(), 'dGVzdGU=')
 
     def test_get_description(self):
         image = self.create_image()
@@ -53,12 +53,12 @@ class TestImage(DomainTest):
         image = self.create_image()
 
         total = self.store.find(Image, id=image.id).count()
-        self.assertEquals(total, 1)
+        self.assertEqual(total, 1)
 
         image.delete(image.id, self.store)
 
         total = self.store.find(Image, id=image.id).count()
-        self.assertEquals(total, 0)
+        self.assertEqual(total, 0)
 
     def test_on_create(self):
         self._call_count = 0
@@ -69,7 +69,7 @@ class TestImage(DomainTest):
         ImageCreateEvent.connect(_call_back)
         image = self.create_image()
         image.on_create()
-        self.assertNotEquals(self._call_count, 0)
+        self.assertNotEqual(self._call_count, 0)
 
     def test_on_update(self):
         self._call_count = 0
@@ -78,7 +78,7 @@ class TestImage(DomainTest):
         image = self.create_image()
         image.on_update()
 
-        self.assertEquals(self._call_count, 1)
+        self.assertEqual(self._call_count, 1)
 
     def _call_count_function(self, image):
         self._call_count += 1

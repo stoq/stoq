@@ -56,16 +56,16 @@ class TestPayable(BaseGUITest):
             run_dialog = ctx[0]
             self.assertEqual(run_dialog.call_count, 1)
             args, kwargs = run_dialog.call_args
-            self.assertEquals(args[0], dialog)
-            self.assertEquals(args[1], app)
-            self.assertEquals(args[2], self.store)
+            self.assertEqual(args[0], dialog)
+            self.assertEqual(args[1], app)
+            self.assertEqual(args[2], self.store)
 
             if not other_args or len(other_args) != len(args[2:]):
                 return
 
             for arg in args[2:]:
                 for other_arg in other_args:
-                    self.assertEquals(arg, other_arg)
+                    self.assertEqual(arg, other_arg)
 
     def setUp(self):
         BaseGUITest.setUp(self)

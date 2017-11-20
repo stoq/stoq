@@ -64,7 +64,7 @@ class StockDecreaseItemSlave(BaseEditorSlave):
         self.original_cost.update(self.model.sellable.cost)
         for widget in [self.quantity, self.cost]:
             widget.set_adjustment(Gtk.Adjustment(lower=0, upper=MAX_INT,
-                                                 step_incr=1, page_incr=10))
+                                                 step_increment=1, page_increment=10))
 
     def setup_proxies(self):
         self._setup_widgets()

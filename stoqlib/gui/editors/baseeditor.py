@@ -623,7 +623,7 @@ class BaseRelationshipEditorSlave(GladeSlaveDelegate):
 
         self._setup_relations_list()
 
-        size_group = Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
+        size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         size_group.add_widget(self.add_button)
         size_group.add_widget(self.relations_list.edit_button)
         size_group.add_widget(self.relations_list.remove_button)

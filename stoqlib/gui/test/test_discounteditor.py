@@ -108,4 +108,4 @@ class TestDiscountEditor(GUITest):
         editor = DiscountEditor(self.store, sale, user=user)
         editor.discount.update(u'966')
         self.click(editor.main_dialog.ok_button)
-        self.assertEquals(sale.get_total_sale_amount(), decimal.Decimal('5313'))
+        self.assertEqual(sale.get_total_sale_amount(), decimal.Decimal('5313'))

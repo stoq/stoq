@@ -39,7 +39,7 @@ class TestSystemTable(DomainTest):
         store.table_exists.return_value = False
         self.assertFalse(SystemTable.is_available(store))
 
-        self.assertEquals(store.find.call_count, 0)
+        self.assertEqual(store.find.call_count, 0)
 
         store.table_exists.return_value = True
         store.find.return_value = False

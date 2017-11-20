@@ -66,16 +66,16 @@ class TestInitialStockDialog(GUITest):
         branch = api.get_current_branch(self.store)
 
         stock_item = storable.get_stock_item(branch, None)
-        self.assertEquals(stock_item, None)
+        self.assertEqual(stock_item, None)
 
         dialog = InitialStockDialog(self.store)
         dialog.storables[0].initial_stock = 123
         self.click(dialog.main_dialog.ok_button)
 
-        self.assertEquals(123, storable.get_balance_for_branch(branch))
+        self.assertEqual(123, storable.get_balance_for_branch(branch))
 
         stock_item = storable.get_stock_item(branch, None)
-        self.assertEquals(stock_item.stock_cost, 17)
+        self.assertEqual(stock_item.stock_cost, 17)
 
     def test_edit(self):
         self.create_storable()
@@ -91,9 +91,9 @@ class TestInitialStockDialog(GUITest):
 
         dialog.slave.listcontainer.list.emit('cell-edited', item, 'initial_stock')
 
-        self.assertNotEquals((rows, column), treeview.get_cursor())
+        self.assertNotEqual((rows, column), treeview.get_cursor())
 
     def test_format_qty(self):
         dialog = InitialStockDialog(self.store)
-        self.assertEquals(dialog._format_qty(10), 10)
-        self.assertEquals(dialog._format_qty(ValueUnset), None)
+        self.assertEqual(dialog._format_qty(10), 10)
+        self.assertEqual(dialog._format_qty(ValueUnset), None)

@@ -111,12 +111,11 @@ class TestMain(unittest.TestCase):
         boot_shell().main.assert_called_once_with('payable', 'AddPayment')
         boot_shell.reset_mock()
 
-        with self.assertRaisesRegexp(SystemExit,
-                                     stoq.version):
+        with self.assertRaisesRegex(SystemExit, stoq.version):
             main(['stoq', '--version'])
 
-        with self.assertRaisesRegexp(
-            SystemExit,
-            r"'no-such-app' is not an application. "
-            r"Valid applications are: \[[a-z,\' ]+\]"):
+        with self.assertRaisesRegex(
+                SystemExit,
+                r"'no-such-app' is not an application. "
+                r"Valid applications are: \[[a-z,\' ]+\]"):
             main(['stoq', 'no-such-app'])

@@ -73,7 +73,7 @@ class TestProductEditor(GUITest):
     def test_create_grid_product(self):
         grid_product = self.create_product(is_grid=True)
         editor = ProductEditor(self.store, grid_product)
-        self.assertEquals(grid_product.product_type, Product.TYPE_GRID)
+        self.assertEqual(grid_product.product_type, Product.TYPE_GRID)
         self.check_editor(editor, 'editor-product-create-grid-product')
 
     def test_create_with_template(self):
@@ -92,9 +92,9 @@ class TestProductEditor(GUITest):
         # But they have the same list of |grid_attribute|
         grid_product_attributes = set(attr.attribute for attr in grid_product.attributes)
         model_attributes = set(attr.attribute for attr in editor.model.attributes)
-        self.assertEquals(grid_product_attributes, model_attributes)
+        self.assertEqual(grid_product_attributes, model_attributes)
         # and they are not empty
-        self.assertNotEquals(len(model_attributes), 0)
+        self.assertNotEqual(len(model_attributes), 0)
 
     def test_show(self):
         product = self.create_product(storable=True)
@@ -164,7 +164,7 @@ class TestProductProductionEditor(GUITest):
         compslave.component_combo.select_item_by_data(component.component)
         self.click(compslave.add_button)
 
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
 
         self.check_editor(editor, 'editor-product-prod-edit')
 
@@ -214,11 +214,11 @@ class TestProductStockQuantityEditor(GUITest):
 
         # Check data
         stock_items_after = self.store.find(ProductStockItem).count()
-        self.assertEquals(stock_items_after, stock_items_before + 1)
+        self.assertEqual(stock_items_after, stock_items_before + 1)
 
         stock_item = product.storable.get_stock_item(branch, batch=None)
-        self.assertEquals(stock_item.quantity, 15)
-        self.assertEquals(stock_item.stock_cost, Decimal('3.45'))
+        self.assertEqual(stock_item.quantity, 15)
+        self.assertEqual(stock_item.stock_cost, Decimal('3.45'))
 
     def test_inventory(self):
         branch = get_current_branch(self.store)
@@ -237,21 +237,21 @@ class TestProductStockQuantityEditor(GUITest):
 
         # Check data
         inventories_after = self.store.find(Inventory).count()
-        self.assertEquals(inventories_after, inventories_before + 1)
+        self.assertEqual(inventories_after, inventories_before + 1)
 
         stock_item = product.storable.get_stock_item(branch, batch=None)
-        self.assertEquals(stock_item.quantity, 20)
+        self.assertEqual(stock_item.quantity, 20)
 
         # Check Inventory
         inventory = self.store.find(Inventory).order_by(Inventory.te_id).last()
         # The inventory should have only one item
         item = inventory.get_items().one()
 
-        self.assertEquals(item.recorded_quantity, 10)
-        self.assertEquals(item.counted_quantity, 20)
-        self.assertEquals(item.actual_quantity, 20)
-        self.assertEquals(item.is_adjusted, True)
-        self.assertEquals(inventory.status, Inventory.STATUS_CLOSED)
+        self.assertEqual(item.recorded_quantity, 10)
+        self.assertEqual(item.counted_quantity, 20)
+        self.assertEqual(item.actual_quantity, 20)
+        self.assertEqual(item.is_adjusted, True)
+        self.assertEqual(inventory.status, Inventory.STATUS_CLOSED)
 
     def test_same_branch(self):
         branch = get_current_branch(self.store)

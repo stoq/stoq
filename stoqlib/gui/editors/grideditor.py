@@ -148,8 +148,8 @@ class GridOptionEditor(BaseEditor):
     def setup_proxies(self):
         self.option_order_spin.set_adjustment(Gtk.Adjustment(lower=0,
                                                              upper=100,
-                                                             step_incr=1,
-                                                             page_incr=5))
+                                                             step_increment=1,
+                                                             page_increment=5))
         self.proxy = self.add_proxy(self.model, GridOptionEditor.proxy_widgets)
 
 

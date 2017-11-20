@@ -21,8 +21,6 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-__tests__ = 'stoqlib/domain/loan.py'
-
 import decimal
 
 from kiwi.currency import currency
@@ -36,18 +34,19 @@ from stoqlib.domain.taxes import (ProductTaxTemplate, ProductIcmsTemplate,
                                   ProductPisTemplate)
 from stoqlib.domain.test.domaintest import DomainTest
 
+__tests__ = 'stoqlib/domain/loan.py'
+
 
 class TestLoan(DomainTest):
 
     def test_get_status_name(self):
         loan = self.create_loan()
         for status in loan.statuses:
-            self.assertEquals(loan.get_status_name(status),
-                              loan.statuses[status])
+            self.assertEqual(loan.get_status_name(status), loan.statuses[status])
         with self.assertRaises(DatabaseInconsistency) as error:
             loan.get_status_name(9)
         expected = _("Invalid status %d") % 9
-        self.assertEquals(str(error.exception), expected)
+        self.assertEqual(str(error.exception), expected)
 
     def test_add_item(self):
         loan = self.create_loan()
@@ -56,7 +55,7 @@ class TestLoan(DomainTest):
             loan.add_item(loan_item)
         loan_item.loan = None
         loan.add_item(loan_item)
-        self.assertEquals(loan_item.loan, loan)
+        self.assertEqual(loan_item.loan, loan)
 
     def test_add_sellable(self):
         loan = self.create_loan()
@@ -65,34 +64,34 @@ class TestLoan(DomainTest):
                              branch=loan.branch, stock=2)
         loan.add_sellable(sellable, quantity=1, price=10)
         items = list(loan.get_items())
-        self.assertEquals(len(items), 1)
-        self.failIf(items[0].sellable is not sellable)
+        self.assertEqual(len(items), 1)
+        self.assertFalse(items[0].sellable is not sellable)
 
     def test_get_total_amount(self):
         loan_item = self.create_loan_item()
-        self.assertEquals(loan_item.loan.get_total_amount(), currency(10))
+        self.assertEqual(loan_item.loan.get_total_amount(), currency(10))
 
     def test_get_client_name(self):
         loan = self.create_loan()
         self.assertIs(loan.get_client_name(), u'')
         client = self.create_client(name=u'Client XX')
         loan.client = client
-        self.assertEquals(loan.get_client_name(), u'Client XX')
+        self.assertEqual(loan.get_client_name(), u'Client XX')
 
     def test_get_branch_name(self):
         loan = self.create_loan()
-        self.assertEquals(loan.get_branch_name(), u'Moda Stoq')
+        self.assertEqual(loan.get_branch_name(), u'Moda Stoq')
         branch = self.create_branch(name=u'New Branch')
         loan.branch = branch
-        self.assertEquals(loan.get_branch_name(), u'New Branch shop')
+        self.assertEqual(loan.get_branch_name(), u'New Branch shop')
         loan.branch = None
-        self.assertEquals(loan.get_branch_name(), u'')
+        self.assertEqual(loan.get_branch_name(), u'')
 
     def test_get_responsible_name(self):
         loan = self.create_loan()
-        self.assertEquals(loan.get_responsible_name(), u'Administrator')
+        self.assertEqual(loan.get_responsible_name(), u'Administrator')
         loan.responsible.person.name = u''
-        self.assertEquals(loan.get_responsible_name(), u'')
+        self.assertEqual(loan.get_responsible_name(), u'')
 
     def test_sync_stock(self):
         loan = self.create_loan()
@@ -130,16 +129,16 @@ class TestLoan(DomainTest):
         expected = [[decimal.Decimal(10), decimal.Decimal(7)],
                     [decimal.Decimal(25), decimal.Decimal(25)]]
 
-        self.assertEquals(compare, expected)
+        self.assertEqual(compare, expected)
 
     def test_can_close(self):
         loan_item = self.create_loan_item()
         loan = loan_item.loan
-        self.assertEquals(loan.status, Loan.STATUS_OPEN)
-        self.failIf(loan.can_close())
+        self.assertEqual(loan.status, Loan.STATUS_OPEN)
+        self.assertFalse(loan.can_close())
 
         loan_item.return_quantity = loan_item.quantity
-        self.failUnless(loan.can_close())
+        self.assertTrue(loan.can_close())
 
         loan.status = Loan.STATUS_CLOSED
         result = loan.can_close()
@@ -148,25 +147,25 @@ class TestLoan(DomainTest):
     def test_close(self):
         loan_item = self.create_loan_item()
         loan = loan_item.loan
-        self.assertEquals(loan.status, Loan.STATUS_OPEN)
-        self.failIf(loan.can_close())
+        self.assertEqual(loan.status, Loan.STATUS_OPEN)
+        self.assertFalse(loan.can_close())
 
         loan_item.return_quantity = loan_item.quantity
-        self.failUnless(loan.can_close())
+        self.assertTrue(loan.can_close())
         loan.close()
-        self.assertEquals(loan.status, Loan.STATUS_CLOSED)
+        self.assertEqual(loan.status, Loan.STATUS_CLOSED)
 
     def test_remove_item(self):
         loan_item = self.create_loan_item()
         loan = loan_item.loan
 
         total_items = self.store.find(LoanItem, loan=loan).count()
-        self.assertEquals(total_items, 1)
+        self.assertEqual(total_items, 1)
 
         loan.remove_item(loan_item)
 
         total_items = self.store.find(LoanItem, loan=loan).count()
-        self.assertEquals(total_items, 0)
+        self.assertEqual(total_items, 0)
 
         with self.sysparam(SYNCHRONIZED_MODE=True):
             loan_item = self.create_loan_item()
@@ -180,7 +179,7 @@ class TestLoan(DomainTest):
             self.assertEqual(before_remove, after_remove)
 
             # But not related to the loan
-            self.assertEquals(self.store.find(LoanItem, loan=loan).count(), 0)
+            self.assertEqual(self.store.find(LoanItem, loan=loan).count(), 0)
 
     def test_get_available_discount_for_items(self):
         loan_item = self.create_loan_item()
@@ -230,7 +229,7 @@ class TestLoan(DomainTest):
         loan.notes = u'Loan notes 1\n Loan notes 2'
         expected_notes = u'Loan notes 1\n Loan notes 2'
         comments = '\n'.join(c.comment for c in loan.comments)
-        self.assertEquals(expected_notes, comments)
+        self.assertEqual(expected_notes, comments)
 
     def test_discount_value(self):
         loan = self.create_loan()
@@ -240,7 +239,7 @@ class TestLoan(DomainTest):
 
         # Loan item price < base_price
         loan_item1.price = 9
-        self.assertEquals(loan.discount_value, currency(1))
+        self.assertEqual(loan.discount_value, currency(1))
         self.assertEqual(loan.invoice_total, currency(9))
 
         # Loan item price > base_price
@@ -248,24 +247,24 @@ class TestLoan(DomainTest):
         loan_item2.price = 20
         loan_item2.loan = loan
         self.assertEqual(loan.invoice_total, currency(29))
-        self.assertEquals(loan.discount_value, currency(1))
-        self.assertEquals(loan.invoice_subtotal, currency(20))
+        self.assertEqual(loan.discount_value, currency(1))
+        self.assertEqual(loan.invoice_subtotal, currency(20))
 
     def test_get_items(self):
         loan = self.create_loan()
         loan_item = self.create_loan_item(loan=loan)
         items = loan.get_items()
-        self.assertEquals(items[0], loan_item)
+        self.assertEqual(items[0], loan_item)
 
     def test_recipient(self):
         client = self.create_client()
         loan = self.create_loan(client=client)
-        self.assertEquals(loan.recipient, client.person)
+        self.assertEqual(loan.recipient, client.person)
 
     def test_operation_nature(self):
         # FIXME: Check using the operation_nature that will be saved in new field.
         loan = self.create_loan()
-        self.assertEquals(loan.operation_nature, u'Loan')
+        self.assertEqual(loan.operation_nature, u'Loan')
 
 
 class TestLoanItem(DomainTest):
@@ -274,13 +273,13 @@ class TestLoanItem(DomainTest):
         item = self.create_loan_item()
         item.return_quantity = 2
 
-        self.assertEquals(item._original_quantity, 0)
-        self.assertEquals(item._original_return_quantity, 0)
+        self.assertEqual(item._original_quantity, 0)
+        self.assertEqual(item._original_return_quantity, 0)
 
         item.__storm_loaded__()
 
-        self.assertEquals(item._original_quantity, 1)
-        self.assertEquals(item._original_return_quantity, 2)
+        self.assertEqual(item._original_quantity, 1)
+        self.assertEqual(item._original_return_quantity, 2)
 
     def test_sync_stock(self):
         loan = self.create_loan()
@@ -295,11 +294,11 @@ class TestLoanItem(DomainTest):
         quantity = 4
         loan_item = loan.add_sellable(sellable, quantity=quantity, price=10)
         loan_item.sync_stock()
-        self.assertEquals(loan_item.quantity, quantity)
-        self.assertEquals(loan_item.return_quantity, 0)
-        self.assertEquals(loan_item.sale_quantity, 0)
+        self.assertEqual(loan_item.quantity, quantity)
+        self.assertEqual(loan_item.return_quantity, 0)
+        self.assertEqual(loan_item.sale_quantity, 0)
         # The quantity loaned items should be removed from stock
-        self.assertEquals(
+        self.assertEqual(
             storable.get_balance_for_branch(branch),
             initial - quantity)
 
@@ -308,22 +307,22 @@ class TestLoanItem(DomainTest):
         loan_item.return_quantity = 1
         loan_item.sale_quantity = 1
         loan_item.sync_stock()
-        self.assertEquals(loan_item.quantity, quantity)
-        self.assertEquals(loan_item.return_quantity, 1)
-        self.assertEquals(loan_item.sale_quantity, 1)
+        self.assertEqual(loan_item.quantity, quantity)
+        self.assertEqual(loan_item.return_quantity, 1)
+        self.assertEqual(loan_item.sale_quantity, 1)
         # The return_quantity should be returned to the stock
-        self.assertEquals(
+        self.assertEqual(
             storable.get_balance_for_branch(branch),
             initial - quantity + loan_item.return_quantity)
 
         # Return the 2 remaining products in this loan.
         loan_item.return_quantity += 2
         loan_item.sync_stock()
-        self.assertEquals(loan_item.quantity, quantity)
-        self.assertEquals(loan_item.return_quantity, 3)
-        self.assertEquals(loan_item.sale_quantity, 1)
+        self.assertEqual(loan_item.quantity, quantity)
+        self.assertEqual(loan_item.return_quantity, 3)
+        self.assertEqual(loan_item.sale_quantity, 1)
         # The return_quantity should be returned to the stock
-        self.assertEquals(
+        self.assertEqual(
             storable.get_balance_for_branch(branch),
             initial - quantity + loan_item.return_quantity)
 
@@ -341,9 +340,9 @@ class TestLoanItem(DomainTest):
         self.assertEqual(batch.get_balance_for_branch(loan.branch), 10)
         loan_item.sync_stock()
         self.assertEqual(batch.get_balance_for_branch(loan.branch), 6)
-        self.assertEquals(loan_item.quantity, 4)
-        self.assertEquals(loan_item.return_quantity, 0)
-        self.assertEquals(loan_item.sale_quantity, 0)
+        self.assertEqual(loan_item.quantity, 4)
+        self.assertEqual(loan_item.return_quantity, 0)
+        self.assertEqual(loan_item.sale_quantity, 0)
 
         # The sale quantity should still be decreased
         loan_item.sale_quantity = 2
@@ -373,11 +372,11 @@ class TestLoanItem(DomainTest):
     def test_get_quantity_unit_string(self):
         loan_item = self.create_loan_item()
         loan_item.sellable.unit = self.create_sellable_unit(description=u'Kg')
-        self.assertEquals(loan_item.get_quantity_unit_string(), u'1.000 Kg')
+        self.assertEqual(loan_item.get_quantity_unit_string(), u'1.000 Kg')
 
     def test_get_total(self):
         item = self.create_loan_item()
-        self.assertEquals(item.get_total(), currency(10))
+        self.assertEqual(item.get_total(), currency(10))
 
     def test_set_discount(self):
         loan_item = self.create_loan_item()
@@ -422,10 +421,10 @@ class TestLoanItem(DomainTest):
         self.assertIsNotNone(loan_item.pis_info)
         self.assertIsNotNone(loan_item.cofins_info)
 
-        self.assertEquals(loan_item.item_discount, 0)
+        self.assertEqual(loan_item.item_discount, 0)
         loan_item.price -= 2
-        self.assertEquals(loan_item.item_discount, 2)
+        self.assertEqual(loan_item.item_discount, 2)
 
     def test_cfop_code(self):
         loan_item = self.create_loan_item()
-        self.assertEquals(loan_item.cfop_code, u'5917')
+        self.assertEqual(loan_item.cfop_code, u'5917')

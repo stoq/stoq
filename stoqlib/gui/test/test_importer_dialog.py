@@ -34,9 +34,9 @@ class TestImporterDialog(GUITest):
         dialog = ImporterDialog('format', 'filename')
         self.check_dialog(dialog, 'dialog-importer-show')
 
-        self.assertEquals(execute_command.call_count, 1)
+        self.assertEqual(execute_command.call_count, 1)
         args, kwargs = execute_command.call_args
 
         args = args[0]
-        self.assertEquals(args[:8], ['stoq', 'dbadmin', 'import', '-t', 'format',
-                                     '--import-filename', 'filename', '-v'])
+        self.assertEqual(args[:8], ['stoq', 'dbadmin', 'import', '-t', 'format',
+                                    '--import-filename', 'filename', '-v'])

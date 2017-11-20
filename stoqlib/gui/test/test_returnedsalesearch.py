@@ -56,7 +56,7 @@ class TestReturnedSaleSearch(GUITest):
                 mock.patch.object(self.store, 'commit'),
                 mock.patch.object(self.store, 'close')) as (commit, close):
             search.results.double_click(0)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
         run_dialog.assert_called_once_with(ReturnedSaleDialog, search, self.store,
                                            search.results[0])
 
@@ -67,7 +67,7 @@ class TestReturnedSaleSearch(GUITest):
                 mock.patch.object(self.store, 'commit'),
                 mock.patch.object(self.store, 'close')) as (commit, close):
             self.click(search._details_slave.details_button)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
         run_dialog.assert_called_once_with(ReturnedSaleDialog, search, self.store,
                                            search.results[0])
 
@@ -91,7 +91,7 @@ class TestPendingReturnedSaleSearch(GUITest):
         search.search.refresh()
         # Testing double click
         search.results.double_click(0)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
         run_dialog.assert_called_once_with(ReturnedSaleDialog, search,
                                            self.store, search.results[0])
 
@@ -127,7 +127,7 @@ class TestReturnedItemSearch(GUITest):
                 mock.patch.object(self.store, 'commit'),
                 mock.patch.object(self.store, 'close')) as (commit, close):
             search.results.double_click(0)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
         item_view = search.results[0]
         run_dialog.assert_called_once_with(ReturnedSaleDialog, search, self.store,
                                            item_view.returned_sale_view)
@@ -140,7 +140,7 @@ class TestReturnedItemSearch(GUITest):
                 mock.patch.object(self.store, 'commit'),
                 mock.patch.object(self.store, 'close')) as (commit, close):
             self.click(search._details_slave.details_button)
-        self.assertEquals(run_dialog.call_count, 1)
+        self.assertEqual(run_dialog.call_count, 1)
         item_view = search.results[0]
         run_dialog.assert_called_once_with(ReturnedSaleDialog, search, self.store,
                                            item_view.returned_sale_view)

@@ -22,13 +22,13 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-__tests__ = 'stoqlib/domain/payment/card.py'
-
 from decimal import Decimal
 
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.payment.card import CardPaymentDevice, CreditCardData
 from stoqlib.domain.payment.card import CreditProvider, CardOperationCost
+
+__tests__ = 'stoqlib/domain/payment/card.py'
 
 
 class TestCreditProvider(DomainTest):
@@ -43,33 +43,33 @@ class TestCreditProvider(DomainTest):
         self.clean_domain([CreditProvider])
 
         # Initialy no providers are present
-        self.assertEquals(CreditProvider.get_card_providers(self.store).count(), 0)
+        self.assertEqual(CreditProvider.get_card_providers(self.store).count(), 0)
 
         # Create one
         provider = self.create_credit_provider()
 
         # It should be fetched from the database
         providers = CreditProvider.get_card_providers(self.store)
-        self.assertEquals(providers.count(), 1)
-        self.assertEquals(providers[0], provider)
+        self.assertEqual(providers.count(), 1)
+        self.assertEqual(providers[0], provider)
 
     def test_get_provider_by_id(self):
         provider = self.create_credit_provider()
         provider.provider_id = u'foo'
 
         obj = CreditProvider.get_provider_by_provider_id(u'foo', self.store)
-        self.assertEquals(provider, obj[0])
+        self.assertEqual(provider, obj[0])
 
     def test_get_description(self):
         provider = self.create_credit_provider(u'Amex')
-        self.assertEquals(provider.get_description(), u'Amex')
+        self.assertEqual(provider.get_description(), u'Amex')
 
 
 class TestCardPaymentDevice(DomainTest):
 
     def test_get_description(self):
         device = self.create_card_device(u'Cielo')
-        self.assertEquals(device.get_description(), u'Cielo')
+        self.assertEqual(device.get_description(), u'Cielo')
 
     def test_get_prodiver_cost(self):
         credit = CreditCardData.TYPE_CREDIT
@@ -79,7 +79,7 @@ class TestCardPaymentDevice(DomainTest):
 
         # There is no cost configured for this device yet
         cost = device.get_provider_cost(provider, credit, installments=1)
-        self.assertEquals(cost, None)
+        self.assertEqual(cost, None)
 
         # Lets create a debit card cost and a cost for another provider
         self.create_operation_cost(device, provider, debit)
@@ -88,20 +88,20 @@ class TestCardPaymentDevice(DomainTest):
 
         # Cost for credit should still be None
         cost = device.get_provider_cost(provider, credit, installments=1)
-        self.assertEquals(cost, None)
+        self.assertEqual(cost, None)
 
         cost = self.create_operation_cost(device, provider, credit)
         db_cost = device.get_provider_cost(provider, credit, installments=1)
-        self.assertEquals(cost, db_cost)
+        self.assertEqual(cost, db_cost)
 
     def test_get_devices(self):
         self.clean_domain([CardPaymentDevice])
-        self.assertEquals(CardPaymentDevice.get_devices(self.store).count(), 0)
+        self.assertEqual(CardPaymentDevice.get_devices(self.store).count(), 0)
         device = self.create_card_device(u'Cielo')
 
         devices = list(CardPaymentDevice.get_devices(self.store))
-        self.assertEquals(len(devices), 1)
-        self.assertEquals(devices[0], device)
+        self.assertEqual(len(devices), 1)
+        self.assertEqual(devices[0], device)
 
     def test_delete(self):
         self.clean_domain([CreditCardData])
@@ -112,25 +112,25 @@ class TestCardPaymentDevice(DomainTest):
         self.create_card_payment(device=device)
 
         # As we created above, there should be one cost and one credit card data
-        self.assertEquals(device.get_all_costs().count(), 1)
+        self.assertEqual(device.get_all_costs().count(), 1)
         card_data = self.store.find(CreditCardData)
-        self.assertEquals(card_data.count(), 1)
+        self.assertEqual(card_data.count(), 1)
 
         # and the card_data should reference the device
-        self.assertEquals(card_data[0].device, device)
+        self.assertEqual(card_data[0].device, device)
 
         # Now delete the device
         CardPaymentDevice.delete(device.id, self.store)
 
         # The operation cost should be removed...
-        self.assertEquals(self.store.find(CardOperationCost).count(), 0)
+        self.assertEqual(self.store.find(CardOperationCost).count(), 0)
 
         # ... and the CreditCardData should still exist
         card_data = self.store.find(CreditCardData)
-        self.assertEquals(card_data.count(), 1)
+        self.assertEqual(card_data.count(), 1)
 
         # ... but does not contain a reference to the device anymore
-        self.assertEquals(card_data[0].device, None)
+        self.assertEqual(card_data[0].device, None)
 
 
 class TestOperationCost(DomainTest):
@@ -139,17 +139,17 @@ class TestOperationCost(DomainTest):
         provider = self.create_credit_provider(u'Visanet')
         cost = self.create_operation_cost(provider=provider,
                                           card_type=CreditCardData.TYPE_CREDIT)
-        self.assertEquals(cost.get_description(), u'Visanet Credit')
+        self.assertEqual(cost.get_description(), u'Visanet Credit')
 
     def test_installments_range(self):
         # This property is only set for installments payment (provider or store)
         cost = self.create_operation_cost(start=1, end=3,
                                           card_type=CreditCardData.TYPE_CREDIT)
-        self.assertEquals(cost.installment_range_as_string, u'')
+        self.assertEqual(cost.installment_range_as_string, u'')
 
         cost = self.create_operation_cost(start=3, end=8,
                                           card_type=CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE)
-        self.assertEquals(cost.installment_range_as_string, u'From 3 to 8')
+        self.assertEqual(cost.installment_range_as_string, u'From 3 to 8')
 
     def test_validate_installment_range(self):
         provider = self.create_credit_provider()
@@ -203,9 +203,9 @@ class TestCreditCardData(DomainTest):
                                                    provider=provider,
                                                    payment_value=1000)
 
-        self.assertEquals(credit_card.fee, 0)
-        self.assertEquals(credit_card.fare, 0)
-        self.assertEquals(credit_card.fee_value, 0)
+        self.assertEqual(credit_card.fee, 0)
+        self.assertEqual(credit_card.fare, 0)
+        self.assertEqual(credit_card.fee_value, 0)
 
         device = self.create_card_device(description=u'MAQ2')
         provider = self.create_credit_provider(u'PRO2')
@@ -221,29 +221,28 @@ class TestCreditCardData(DomainTest):
                                      installments=1,
                                      card_type=credit_card.TYPE_DEBIT)
 
-        self.assertEquals(credit_card.fee, Decimal(5))
-        self.assertEquals(credit_card.fare, 10)
-        self.assertEquals(credit_card.fee_value, 50)
+        self.assertEqual(credit_card.fee, Decimal(5))
+        self.assertEqual(credit_card.fare, 10)
+        self.assertEqual(credit_card.fee_value, 50)
         with self.assertRaises(TypeError) as error:
             credit_card.update_card_data(device=None, provider=provider,
                                          card_type=credit_card.TYPE_DEBIT,
                                          installments=1)
         expected = 'device must be CardPaymentDevice instance and not None'
-        self.assertEquals(str(error.exception), expected)
+        self.assertEqual(str(error.exception), expected)
         with self.assertRaises(TypeError) as error:
             credit_card.update_card_data(device=device, provider=None,
                                          card_type=credit_card.TYPE_DEBIT,
                                          installments=1)
         expected = 'provider must be CreditProvider instance and not None'
-        self.assertEquals(str(error.exception), expected)
+        self.assertEqual(str(error.exception), expected)
         with self.assertRaises(ValueError) as error:
             credit_card.update_card_data(device=device, provider=provider,
                                          card_type=None,
                                          installments=1)
-        self.assertEquals(str(error.exception), "card_type cannot be None")
+        self.assertEqual(str(error.exception), "card_type cannot be None")
         with self.assertRaises(ValueError) as error:
             credit_card.update_card_data(device=device, provider=provider,
                                          card_type=credit_card.TYPE_DEBIT,
                                          installments=None)
-        self.assertEquals(str(error.exception), "installments cannot be"
-                                                " None")
+        self.assertEqual(str(error.exception), "installments cannot be None")

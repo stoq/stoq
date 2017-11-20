@@ -83,7 +83,7 @@ class OpticalMedicTest(OpticalDomainTest):
         medic = self.create_optical_medic(crm_number=u'333')
         client = self.create_client()
         medic.person.merge_with(client.person)
-        self.assertEquals(client.person, medic.person)
+        self.assertEqual(client.person, medic.person)
 
 
 class OpticalWorkOrderTest(OpticalDomainTest):

@@ -235,7 +235,7 @@ class UserDetailsSlave(BaseEditorSlave):
         self.password_slave = PasswordEditorSlave(self.store)
         self.attach_slave('password_holder', self.password_slave)
 
-        self._sizegroup = Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
+        self._sizegroup = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         self._sizegroup.add_widget(self.username_lbl)
         self._sizegroup.add_widget(self.role_lbl)
         self._sizegroup.add_widget(self.profile)

@@ -354,5 +354,5 @@ class TestMassEditor(GUITest):
         search = self._create_search([price_field], [sellable])
 
         self.click(search.ok_button)
-        self.assertEquals(yesno.call_count, 0)
-        self.assertEquals(warning.call_count, 0)
+        self.assertEqual(yesno.call_count, 0)
+        self.assertEqual(warning.call_count, 0)

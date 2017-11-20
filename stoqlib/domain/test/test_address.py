@@ -21,11 +21,12 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-__tests__ = 'stoqlib/domain/address.py'
 
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.parameters import sysparam
+
+__tests__ = 'stoqlib/domain/address.py'
 
 
 class TestCityLocation(DomainTest):
@@ -33,21 +34,21 @@ class TestCityLocation(DomainTest):
 
     def test_is_valid_model(self):
         location = self.create_city_location()
-        self.failUnless(location.is_valid_model())
+        self.assertTrue(location.is_valid_model())
         invalid_location = CityLocation(store=self.store)
-        self.failIf(invalid_location.is_valid_model())
+        self.assertFalse(invalid_location.is_valid_model())
 
     def test_get_or_create(self):
         loc = CityLocation.get_or_create(self.store, u'City',
                                          u'State', u'Country')
-        self.failUnless(loc)
+        self.assertTrue(loc)
         self.assertEqual(loc.city, u'City')
         self.assertEqual(loc.state, u'State')
         self.assertEqual(loc.country, u'Country')
 
         loc2 = CityLocation.get_or_create(self.store, u'city',
                                           u'state', u'country')
-        self.failUnless(loc2)
+        self.assertTrue(loc2)
         self.assertEqual(loc2.city, u'City')
         self.assertEqual(loc2.state, u'State')
         self.assertEqual(loc2.country, u'Country')
@@ -73,7 +74,7 @@ class TestCityLocation(DomainTest):
         loc2.city_code = 00000
         location = CityLocation.get_or_create(self.store, u'São Carlos',
                                               u'SP', u'Brazil')
-        self.assertEquals(location.city_code, 3548906)
+        self.assertEqual(location.city_code, 3548906)
         loc3 = CityLocation(store=self.store)
         loc3.city = u'City ABC'
         loc3.state = u'SP'
@@ -86,11 +87,11 @@ class TestCityLocation(DomainTest):
         loc4.city_code = None
         location = CityLocation.get_or_create(self.store, u'City ABC',
                                               u'SP', u'Brazil')
-        self.assertNotEquals(location, loc4)
+        self.assertNotEqual(location, loc4)
         loc4.city_code = 13560
         location = CityLocation.get_or_create(self.store, u'City ABC',
                                               u'SP', u'Brazil')
-        self.assertEquals(location, loc4)
+        self.assertEqual(location, loc4)
 
     def test_get_cities_by(self):
         location = CityLocation.get_or_create(self.store, u'Sao Carlos',
@@ -128,26 +129,22 @@ class TestCityLocation(DomainTest):
 
     def test_get_default(self):
         location = CityLocation.get_default(self.store)
-        self.failUnless(isinstance(location, CityLocation))
-        self.assertEquals(location.city,
-                          sysparam.get_string('CITY_SUGGESTED'))
-        self.assertEquals(location.state,
-                          sysparam.get_string('STATE_SUGGESTED'))
-        self.assertEquals(location.country,
-                          sysparam.get_string('COUNTRY_SUGGESTED'))
+        self.assertTrue(isinstance(location, CityLocation))
+        self.assertEqual(location.city, sysparam.get_string('CITY_SUGGESTED'))
+        self.assertEqual(location.state, sysparam.get_string('STATE_SUGGESTED'))
+        self.assertEqual(location.country, sysparam.get_string('COUNTRY_SUGGESTED'))
 
 
 class TestAddress(DomainTest):
     def test_get_description(self):
         addr = self.create_address()
-        self.assertEquals(addr.get_description(),
-                          u'Mainstreet 138, Cidade Araci')
+        self.assertEqual(addr.get_description(), u'Mainstreet 138, Cidade Araci')
         addr.district = None
-        self.assertEquals(addr.get_description(), u'Mainstreet 138')
+        self.assertEqual(addr.get_description(), u'Mainstreet 138')
         addr.streetnumber = None
-        self.assertEquals(addr.get_description(), u'Mainstreet')
+        self.assertEqual(addr.get_description(), u'Mainstreet')
         addr.street = None
-        self.assertEquals(addr.get_description(), u'')
+        self.assertEqual(addr.get_description(), u'')
 
     def test_is_valid_model(self):
         person = self.create_person()
@@ -167,9 +164,9 @@ class TestAddress(DomainTest):
                                 store=self.store)
         address = Address(person=person, city_location=location,
                           store=self.store)
-        self.assertEquals(address.get_city(), u'Acapulco')
-        self.assertEquals(address.get_country(), u'Brazil')
-        self.assertEquals(address.get_state(), u'Cracovia')
+        self.assertEqual(address.get_city(), u'Acapulco')
+        self.assertEqual(address.get_country(), u'Brazil')
+        self.assertEqual(address.get_state(), u'Cracovia')
 
     def test_get_address_string(self):
         person = self.create_person()
@@ -183,16 +180,15 @@ class TestAddress(DomainTest):
                           district=district,
                           store=self.store)
         string = address.get_address_string()
-        self.assertEquals(string, u'%s %s, %s' % (street, streetnumber,
-                                                  district))
+        self.assertEqual(string, u'%s %s, %s' % (street, streetnumber, district))
 
         address.streetnumber = None
         string = address.get_address_string()
-        self.assertEquals(string, u'%s %s, %s' % (street, u'N/A', district))
+        self.assertEqual(string, u'%s %s, %s' % (street, u'N/A', district))
 
         address.street = u""
         string = address.get_address_string()
-        self.assertEquals(string, u'')
+        self.assertEqual(string, u'')
 
     def test_get_postal_number(self):
         person = self.create_person()
@@ -200,11 +196,11 @@ class TestAddress(DomainTest):
         address = Address(person=person, city_location=location,
                           postal_code=u'12345-678', store=self.store)
 
-        self.assertEquals(address.get_postal_code_number(), 12345678)
+        self.assertEqual(address.get_postal_code_number(), 12345678)
         address.postal_code = u'13560-xxx'
-        self.assertEquals(address.get_postal_code_number(), 13560)
+        self.assertEqual(address.get_postal_code_number(), 13560)
         address.postal_code = None
-        self.assertEquals(address.get_postal_code_number(), 0)
+        self.assertEqual(address.get_postal_code_number(), 0)
 
     def test_get_details_string(self):
         person = self.create_person()
@@ -217,18 +213,17 @@ class TestAddress(DomainTest):
         address = Address(person=person, city_location=location,
                           postal_code=postal_code, store=self.store)
         string = address.get_details_string()
-        self.assertEquals(string, u'%s - %s - %s' % (postal_code,
-                                                     city, state))
+        self.assertEqual(string, u'%s - %s - %s' % (postal_code, city, state))
         location.city = u''
         string = address.get_details_string()
-        self.assertEquals(string, u'%s' % postal_code)
+        self.assertEqual(string, u'%s' % postal_code)
         location.state = u''
         string = address.get_details_string()
-        self.assertEquals(string, u'%s' % postal_code)
+        self.assertEqual(string, u'%s' % postal_code)
         address.postal_code = u''
         string = address.get_details_string()
-        self.assertEquals(string, u'')
+        self.assertEqual(string, u'')
         location.city = city
         location.state = state
         string = address.get_details_string()
-        self.assertEquals(string, u'%s - %s' % (city, state))
+        self.assertEqual(string, u'%s - %s' % (city, state))

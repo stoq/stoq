@@ -59,14 +59,14 @@ class DatabaseTest(unittest.TestCase):
         for item in (True, object(), Model()):
             trans = FakeStore()
             trans.confirm(item)
-            self.failUnless(trans.committed, "%s is not committed" % item)
-            self.failIf(trans.rollbacked, "%s is rollbacked" % item)
+            self.assertTrue(trans.committed, "%s is not committed" % item)
+            self.assertFalse(trans.rollbacked, "%s is rollbacked" % item)
 
         for item in (False, None):
             trans = FakeStore()
             trans.confirm(item)
-            self.failIf(trans.committed, "%s is committed" % item)
-            self.failUnless(trans.rollbacked, "%s is not rollbacked" % item)
+            self.assertFalse(trans.committed, "%s is committed" % item)
+            self.assertTrue(trans.rollbacked, "%s is not rollbacked" % item)
 
     def test_rollback(self):
         trans = new_store()

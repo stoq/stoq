@@ -236,7 +236,8 @@ class ShellWindow(GladeDelegate):
         self.application_actions = {}
         actions = []
         for app in self.get_available_applications():
-            action = Gtk.Action(app.name, app.fullname, app.description, app.icon)
+            action = Gtk.Action(name=app.name, label=app.fullname,
+                                tooltip=app.description, stock_id=app.icon)
             action.connect('activate', callback, app.name)
             actions.append(action)
             self.application_actions[app.name] = action
@@ -604,7 +605,7 @@ class ShellWindow(GladeDelegate):
     def _get_action_group(self, name):
         action_group = self._action_groups.get(name)
         if action_group is None:
-            action_group = Gtk.ActionGroup(name)
+            action_group = Gtk.ActionGroup(name=name)
             self.uimanager.insert_action_group(action_group, 0)
             self._action_groups[name] = action_group
         return action_group
