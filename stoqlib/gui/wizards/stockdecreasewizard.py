@@ -73,14 +73,15 @@ _ = stoqlib_gettext
 class StartStockDecreaseStep(WizardEditorStep):
     gladefile = 'StartStockDecreaseStep'
     model_type = StockDecrease
-    proxy_widgets = [
-        'confirm_date',
-        'branch',
-        'reason',
-        'removed_by',
-        'cfop',
-        'cost_center',
-        'person']
+    stock_decrease_widgets = ['confirm_date',
+                              'branch',
+                              'reason',
+                              'removed_by',
+                              'cfop',
+                              'cost_center',
+                              'person']
+    invoice_widgets = ['operation_nature']
+    proxy_widgets = stock_decrease_widgets + invoice_widgets
 
     def _fill_employee_combo(self):
         employess = self.store.find(Employee)
@@ -160,7 +161,10 @@ class StartStockDecreaseStep(WizardEditorStep):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.stock_decrease_proxy = self.add_proxy(self.model,
+                                                   self.stock_decrease_widgets)
+        self.invoice_proxy = self.add_proxy(self.model.invoice,
+                                            StartStockDecreaseStep.invoice_widgets)
         if self.wizard.receiving_order is not None:
             self._set_receiving_order_data()
 
@@ -321,12 +325,14 @@ class StockDecreaseWizard(BaseWizard):
         user = api.get_current_user(store)
         employee = user.person.employee
         cfop_id = sysparam.get_object_id('DEFAULT_STOCK_DECREASE_CFOP')
-        return StockDecrease(responsible=user,
-                             removed_by=employee,
-                             branch=branch,
-                             status=StockDecrease.STATUS_INITIAL,
-                             cfop_id=cfop_id,
-                             store=store)
+        stock_decrease = StockDecrease(store=store,
+                                       responsible=user,
+                                       removed_by=employee,
+                                       branch=branch,
+                                       status=StockDecrease.STATUS_INITIAL,
+                                       cfop_id=cfop_id)
+        stock_decrease.invoice.operation_nature = self.title
+        return stock_decrease
 
     def _receipt_dialog(self):
         msg = _('Would you like to print a receipt?')
@@ -366,6 +372,7 @@ class StockDecreaseWizard(BaseWizard):
             return
 
         self.retval = self.model
+        self.store.confirm(self.model)
         self.model.confirm()
         self.close()
 

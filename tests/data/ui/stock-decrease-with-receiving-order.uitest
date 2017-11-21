@@ -47,6 +47,8 @@ GtkDialog(toplevel): title='Receiving Order Return', hidden
           GtkLabel(step.cost_center_lbl): 'Cost Center:', hidden
           ProxyComboBox(step.cost_center): hidden
           ProxyCheckButton(step.create_payments): 'Create payments'
+          GtkLabel(step.label7): 'Operation Nature:'
+          ProxyEntry(step.operation_nature): ''
           GtkLabel(step.label2): 'Reason:'
           GtkScrolledWindow(step.scrolledwindow1):
             ProxyTextView(step.reason):
