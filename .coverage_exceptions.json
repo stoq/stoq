@@ -29,7 +29,7 @@
  "stoq/gui/inventory.py": 92.13,
  "stoq/gui/launcher.py": 92.59,
  "stoq/gui/payable.py": 89.15,
- "stoq/gui/pos.py": 80.12,
+ "stoq/gui/pos.py": 78,
  "stoq/gui/production.py": 84.94,
  "stoq/gui/purchase.py": 80.56,
  "stoq/gui/receivable.py": 81.65,

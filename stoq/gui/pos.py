@@ -25,6 +25,7 @@
 
 from decimal import Decimal
 import logging
+import sys
 
 from gi.repository import Gdk, Gtk, Pango
 from kiwi import ValueUnset
@@ -49,6 +50,7 @@ from stoqlib.gui.events import (POSConfirmSaleEvent,
                                 CloseLoanWizardFinishEvent,
                                 POSAddSellableEvent)
 from stoqlib.lib.barcode import parse_barcode, BarcodeInfo
+from stoqlib.lib.crashreport import collect_traceback
 from stoqlib.lib.decorators import cached_property, public
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.formatters import (format_sellable_description,
@@ -1388,7 +1390,12 @@ class PosApp(ShellApp):
     def _print_sale_details(self, sale):
         if yesno(_("Do you want to print this sale's details?"), Gtk.ResponseType.YES,
                  _("Print Details"), _("Don't Print")):
-            print_report(SaleOrderReport, sale)
+            try:
+                print_report(SaleOrderReport, sale)
+            except Exception:
+                # Dont fail whole sale if just printing failed.
+                exc = sys.exc_info()
+                collect_traceback(exc, submit=True)
 
     #
     # Coupon related
