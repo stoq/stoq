@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-19 02:10-0200\n"
-"PO-Revision-Date: 2017-11-17 04:10+0000\n"
+"POT-Creation-Date: 2017-11-21 02:10-0200\n"
+"PO-Revision-Date: 2017-11-21 04:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: English (United States) (http://www.transifex.com/async/stoq/language/en_US/)\n"
 "MIME-Version: 1.0\n"
@@ -140,7 +140,7 @@ msgid "New..."
 msgstr ""
 
 #: ../data/glade/AdditionListSlave.ui.h:2 ../data/glade/SearchEditor.ui.h:2
-#: ../stoqlib/gui/test/test_productsearch.py:81
+#: ../stoqlib/gui/test/test_productsearch.py:80
 msgid "_Edit..."
 msgstr ""
 
@@ -167,7 +167,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/producteditor.py:385
 #: ../stoqlib/gui/search/creditcheckhistorysearch.py:62
 #: ../stoqlib/gui/search/searcheditor.py:174
-#: ../stoqlib/gui/test/test_productsearch.py:102
+#: ../stoqlib/gui/test/test_productsearch.py:100
 msgid "Details"
 msgstr ""
 
@@ -405,8 +405,8 @@ msgstr ""
 #: ../stoqlib/domain/person.py:1921 ../stoqlib/domain/person.py:2314
 #: ../stoqlib/domain/person.py:2365 ../stoqlib/domain/station.py:114
 #: ../stoqlib/domain/test/test_devices.py:118
-#: ../stoqlib/domain/test/test_person.py:1143
-#: ../stoqlib/domain/test/test_person.py:1162
+#: ../stoqlib/domain/test/test_person.py:1136
+#: ../stoqlib/domain/test/test_person.py:1155
 #: ../stoqlib/gui/dialogs/certificatedialog.py:102
 #: ../stoqlib/gui/dialogs/devices.py:46
 #: ../stoqlib/gui/dialogs/paymentmethod.py:86
@@ -434,9 +434,9 @@ msgstr ""
 #: ../stoqlib/domain/person.py:1835 ../stoqlib/domain/person.py:1922
 #: ../stoqlib/domain/person.py:2316 ../stoqlib/domain/person.py:2367
 #: ../stoqlib/domain/station.py:115 ../stoqlib/domain/test/test_devices.py:120
-#: ../stoqlib/domain/test/test_person.py:1099
-#: ../stoqlib/domain/test/test_person.py:1145
-#: ../stoqlib/domain/test/test_person.py:1164
+#: ../stoqlib/domain/test/test_person.py:1092
+#: ../stoqlib/domain/test/test_person.py:1138
+#: ../stoqlib/domain/test/test_person.py:1157
 #: ../stoqlib/gui/search/personsearch.py:250
 msgid "Inactive"
 msgstr ""
@@ -2582,17 +2582,31 @@ msgstr ""
 #: ../data/glade/TransferOrderDetails.ui.h:2 ../stoq/gui/receivable.py:153
 #: ../stoq/gui/stock.py:158 ../stoq/gui/stock.py:397
 #: ../stoqlib/domain/account.py:157
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:140
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:157
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:148
 #: ../stoqlib/gui/search/paymentreceivingsearch.py:65
 msgid "Receive"
 msgstr ""
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:10
-msgid "Returned Items"
+#: ../stoqlib/gui/dialogs/clientdetails.py:142
+#: ../stoqlib/gui/editors/paymenteditor.py:187
+msgid "Sale details"
 msgstr ""
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:11
+msgid "New Sale:"
+msgstr ""
+
+#: ../data/glade/ReturnedSalesDetails.ui.h:12
+msgid "New sale details"
+msgstr ""
+
+#: ../data/glade/ReturnedSalesDetails.ui.h:13
+msgid "Returned Items"
+msgstr ""
+
+#: ../data/glade/ReturnedSalesDetails.ui.h:14
 #: ../data/glade/StockDecreaseDetails.ui.h:9
 #: ../data/template/return_sale/return_sale-items.html:8
 #: ../stoq/gui/sales.py:549 ../stoq/gui/services.py:99
@@ -2613,9 +2627,9 @@ msgstr ""
 msgid "Reason"
 msgstr ""
 
-#: ../data/glade/ReturnedSalesDetails.ui.h:12
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:156
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:163
+#: ../data/glade/ReturnedSalesDetails.ui.h:15
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:173
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:180
 msgid "Undo Returned Sale"
 msgstr ""
 
@@ -3483,7 +3497,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/receivingdialog.py:93
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:120
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:138
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:97
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:106
 #: ../stoqlib/gui/dialogs/saledetails.py:250
 #: ../stoqlib/gui/dialogs/saledetails.py:269
 #: ../stoqlib/gui/dialogs/saledetails.py:306
@@ -4130,7 +4144,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/labeldialog.py:52
 #: ../stoqlib/gui/dialogs/loandetails.py:81
 #: ../stoqlib/gui/dialogs/productstockdetails.py:298
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:100
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:109
 #: ../stoqlib/gui/search/loansearch.py:91
 #: ../stoqlib/gui/search/productsearch.py:279
 #: ../stoqlib/gui/search/salesearch.py:367
@@ -4168,7 +4182,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/purchasedetails.py:199
 #: ../stoqlib/gui/dialogs/receivingdialog.py:101
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:142
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:101
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:110
 #: ../stoqlib/gui/dialogs/saledetails.py:281
 #: ../stoqlib/gui/dialogs/saledetails.py:311
 #: ../stoqlib/gui/dialogs/supplierdetails.py:121
@@ -9322,123 +9336,123 @@ msgstr ""
 msgid "Enter or leave fullscreen mode"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:300
+#: ../stoq/gui/shell/shellwindow.py:301
 #, python-format
 msgid "User: %s"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:301
+#: ../stoq/gui/shell/shellwindow.py:302
 #, python-format
 msgid "Computer: %s"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:310
+#: ../stoq/gui/shell/shellwindow.py:311
 msgid "About Stoq"
 msgstr ""
 
 #. Title
-#: ../stoq/gui/shell/shellwindow.py:390
+#: ../stoq/gui/shell/shellwindow.py:391
 msgid "You have pending plugins."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:396
+#: ../stoq/gui/shell/shellwindow.py:397
 msgid ""
 "The following plugins need to be enabled: <b>{}</b>.\n"
 "\n"
 "You can do it by registering on <a href=\"{}\">Stoq.link</a>."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:409
+#: ../stoq/gui/shell/shellwindow.py:410
 msgid "Use my own data"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:410
+#: ../stoq/gui/shell/shellwindow.py:411
 msgid "You are using Stoq with example data."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:411
+#: ../stoq/gui/shell/shellwindow.py:412
 #, python-format
 msgid ""
 "Some features are limited due to fiscal reasons. Click on '%s' to remove the"
 " limitations."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:444
+#: ../stoq/gui/shell/shellwindow.py:445
 #, python-format
 msgid "There is %s client doing birthday today!"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:445
+#: ../stoq/gui/shell/shellwindow.py:446
 #, python-format
 msgid "There are %s clients doing birthday today!"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:447
+#: ../stoq/gui/shell/shellwindow.py:448
 msgid "Check the calendar"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:467
+#: ../stoq/gui/shell/shellwindow.py:468
 #, python-format
 msgid "Welcome to Stoq version %s!"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:469
+#: ../stoq/gui/shell/shellwindow.py:470
 msgid "See what's new"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:477
+#: ../stoq/gui/shell/shellwindow.py:478
 msgid ""
 "You are currently using an <b>unstable version</b> of Stoq that is under development,\n"
 "be aware that it may behave incorrectly, crash or even loose your data.\n"
 "<b>Do not use in production.</b>"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:565
+#: ../stoq/gui/shell/shellwindow.py:566
 #, python-format
 msgid "Release date: %s"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:689
+#: ../stoq/gui/shell/shellwindow.py:690
 #, python-format
 msgid ""
 "This user lacks credentials \n"
 "for application %s"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:885
+#: ../stoq/gui/shell/shellwindow.py:886
 msgid "Show help for this application"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:902
+#: ../stoq/gui/shell/shellwindow.py:903
 msgid "Debug"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:903
+#: ../stoq/gui/shell/shellwindow.py:904
 msgid "Introspect slaves"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:904
+#: ../stoq/gui/shell/shellwindow.py:905
 msgid "Remove settings cache"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1094
+#: ../stoq/gui/shell/shellwindow.py:1095
 msgid ""
 "This will enable production mode and finish the demonstration. Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1097
+#: ../stoq/gui/shell/shellwindow.py:1098
 msgid "Enable production mode"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1097
+#: ../stoq/gui/shell/shellwindow.py:1098
 msgid "Continue testing"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1246
+#: ../stoq/gui/shell/shellwindow.py:1247
 msgid "Learn More..."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1247
+#: ../stoq/gui/shell/shellwindow.py:1248
 #, python-format
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr ""
@@ -10381,7 +10395,7 @@ msgstr ""
 
 #: ../stoqlib/domain/loan.py:354 ../stoqlib/domain/sale.py:1041
 #: ../stoqlib/domain/stockdecrease.py:389
-#: ../stoqlib/domain/test/test_loan.py:49
+#: ../stoqlib/domain/test/test_loan.py:48
 #, python-format
 msgid "Invalid status %d"
 msgstr ""
@@ -10472,7 +10486,7 @@ msgid ""
 msgstr ""
 
 #: ../stoqlib/domain/payment/method.py:240
-#: ../stoqlib/domain/test/test_payment_method.py:254
+#: ../stoqlib/domain/test/test_payment_method.py:252
 msgid "Need at least one installment"
 msgstr ""
 
@@ -10689,22 +10703,22 @@ msgstr ""
 msgid "This user does not have access to this branch."
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1608 ../stoqlib/domain/test/test_person.py:1013
+#: ../stoqlib/domain/person.py:1608 ../stoqlib/domain/test/test_person.py:1006
 #, python-format
 msgid "User '%s' logged in on '%s'"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1613 ../stoqlib/domain/test/test_person.py:1019
+#: ../stoqlib/domain/person.py:1613 ../stoqlib/domain/test/test_person.py:1012
 #, python-format
 msgid "User '%s' logged in"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1620 ../stoqlib/domain/test/test_person.py:1031
+#: ../stoqlib/domain/person.py:1620 ../stoqlib/domain/test/test_person.py:1024
 #, python-format
 msgid "User '%s' logged out from '%s'"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1625 ../stoqlib/domain/test/test_person.py:1037
+#: ../stoqlib/domain/person.py:1625 ../stoqlib/domain/test/test_person.py:1030
 #, python-format
 msgid "User '%s' logged out"
 msgstr ""
@@ -11639,11 +11653,6 @@ msgstr ""
 msgid "Client categories"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/clientdetails.py:142
-#: ../stoqlib/gui/editors/paymenteditor.py:187
-msgid "Sale details"
-msgstr ""
-
 #: ../stoqlib/gui/dialogs/clientdetails.py:157
 msgid "Return sale"
 msgstr ""
@@ -12488,41 +12497,41 @@ msgstr ""
 msgid "Renegotiation Details"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:55
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:57
 msgid "Returned Sale Details"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:73
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:82
 msgid "Return reason"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:75
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:84
 msgid "Undo reason"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:95
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:104
 #: ../stoqlib/gui/slaves/productslave.py:841
 msgid "Product Code"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:99
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:108
 msgid "Qty returned"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:139
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:156
 msgid "Receive pending returned sale?"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:140
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:157
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:149
 msgid "Don't receive"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:164
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:181
 msgid "Don't Undo"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/returnedsaledialog.py:176
+#: ../stoqlib/gui/dialogs/returnedsaledialog.py:193
 msgid ""
 "It was not possible to undo this returned sale. Some of the returned "
 "products are out of stock."
