@@ -423,8 +423,6 @@ class StockDecrease(Domain):
         old_status = self.status
         self.status = StockDecrease.STATUS_CONFIRMED
 
-        # Save the operation_nature and branch in Invoice Table
-        self.invoice.operation_nature = self.operation_nature
         self.invoice.branch = branch
 
         if self.group:

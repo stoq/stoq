@@ -45,6 +45,8 @@ GtkDialog(toplevel): title='Manual Stock Decrease', hidden
             item: 'No cost center.'
             item: 'Cost Center', selected
           ProxyCheckButton(step.create_payments): 'Create payments'
+          GtkLabel(step.label7): 'Operation Nature:'
+          ProxyEntry(step.operation_nature): 'Stock decrease'
           GtkLabel(step.label2): 'Reason:'
           GtkScrolledWindow(step.scrolledwindow1):
             ProxyTextView(step.reason):
