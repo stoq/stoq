@@ -483,6 +483,9 @@ class StockApp(ShellApp):
                              ' change the stock quantity'))
 
         product = self.results.get_selected().product
+        if product.is_grid:
+            return warning(_("Can't change stock quantity of a grid parent"))
+
         if product.storable and product.storable.is_batch:
             return warning(_("It's not possible to change the stock quantity of"
                              " a batch product"))
