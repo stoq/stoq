@@ -63,6 +63,27 @@ class NullIf(NamedFunc):
     name = "NULLIF"
 
 
+class Position(NamedFunc):
+    """PSQL function to find location of specified substring.
+
+    .. line-block::
+
+        POSITION(<substring> in <string>)
+    """
+    __slots__ = ('substring', 'string')
+    name = "POSITION"
+
+    def __init__(self, substring, string):
+        self.substring = StoqNormalizeString(substring)
+        self.string = StoqNormalizeString(string)
+
+
+@expr_compile.when(Position)
+def compile_position(compile, expr, state):
+    return "%s(%s in %s)" % (expr.name, expr_compile(expr.substring, state),
+                             expr_compile(expr.string, state))
+
+
 class Date(NamedFunc):
     """Extract the date part of a timestamp"""
     # http://www.postgresql.org/docs/8.4/static/functions-datetime.html

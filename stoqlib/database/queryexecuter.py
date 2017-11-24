@@ -288,6 +288,7 @@ class AsyncQueryOperation(GObject.GObject):
             return
         self.emit('finish')
 
+
 GObject.type_register(AsyncQueryOperation)
 
 
@@ -334,6 +335,7 @@ class QueryExecuter(object):
         self._limit = -1
         self.store = store
         self.search_spec = None
+        self.order_by = None
         self._query_callbacks = []
         self._filter_query_callbacks = {}
         self._query = self._default_query
@@ -358,7 +360,16 @@ class QueryExecuter(object):
         limit = limit or self._limit
         if limit > 0:
             resultset.config(limit=limit)
-        return resultset
+
+        if callable(self.order_by):
+            order_by = self.order_by()
+        else:
+            order_by = self.order_by
+
+        if order_by:
+            return resultset.order_by(order_by)
+        else:
+            return resultset
 
     def search_async(self, states=None, resultset=None, limit=None):
         """
@@ -436,6 +447,15 @@ class QueryExecuter(object):
         :param search_spec: a Storm search_spec
         """
         self.search_spec = search_spec
+
+    def set_order_by(self, order_by):
+        """
+        Sets the Storm order_by for this executer.
+
+        :param order_by: a Storm expression or a callable that returns either an
+          expression or None.
+        """
+        self.order_by = order_by
 
     def add_query_callback(self, callback):
         """
