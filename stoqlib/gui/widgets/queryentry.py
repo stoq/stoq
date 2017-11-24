@@ -31,6 +31,7 @@ from kiwi.ui.popup import PopupWindow
 from kiwi.utils import gsignal
 
 from stoqlib.api import api
+from stoqlib.database.expr import Position, StoqNormalizeString
 from stoqlib.database.queryexecuter import QueryExecuter
 from stoqlib.domain.person import Client, ClientView, Supplier, SupplierView
 from stoqlib.domain.sale import SaleToken, SaleTokenView
@@ -325,6 +326,7 @@ class QueryEntryGadget(object):
     search_class = None
     search_spec = None
     search_columns = None
+    order_by = None
 
     def __init__(self, entry, store, initial_value=None,
                  parent=None, run_editor=None,
@@ -355,6 +357,7 @@ class QueryEntryGadget(object):
         self._executer = QueryExecuter(self.store)
         self._executer.set_search_spec(self.search_spec)
         self._executer.set_filter_columns(self._filter, self.search_columns)
+        self._executer.set_order_by(self.order_by)
 
         self._last_operation = None
         self._source_id = None
@@ -661,6 +664,11 @@ class ClientEntryGadget(PersonEntryGadget):
     search_columns = [ClientView.name, ClientView.fancy_name,
                       ClientView.phone_number, ClientView.mobile_number,
                       ClientView.cpf, ClientView.rg_number]
+
+    def order_by(self):
+        value = self.entry.get_text()
+        return (Position(StoqNormalizeString(value),
+                         StoqNormalizeString(ClientView.name)), ClientView.name)
 
 
 class SupplierEntryGadget(PersonEntryGadget):
