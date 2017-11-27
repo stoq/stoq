@@ -37,7 +37,7 @@ class TestServices(BaseGUITest):
 
             delivery = self.create_delivery()
             delivery.open_date = datetime.datetime(2017, 1, 1)
-            delivery.service_item = list(sale.get_items())[0]
+            delivery.invoice_id = sale.invoice_id
 
         app = self.create_app(DeliveryApp, u'delivery')
         self.assertEqual(len(app.results), 2)

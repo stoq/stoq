@@ -118,9 +118,10 @@ GtkWindow(toplevel): title='[Moda Stoq] - Deliveries', hidden
                       GtkEntry(search_entry, padding=6): ''
                     stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
               SearchResultListView(results, expand=True, fill=True):
-                column: title='Sale #'
+                column: title='Operation #'
+                column: title='Operation Nature'
                 column: title='Status'
-                column: title='Client', expand
+                column: title='Recipient', expand
                 column: title='Status (Description)'
                 column: title='Branch', hidden
                 column: title='Transporter'
@@ -130,8 +131,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Deliveries', hidden
                 column: title='Pack date', hidden
                 column: title='Send date'
                 column: title='Receive date', hidden
-                row: 666, 'Waiting', None, None, 'Moda Stoq', None, datetime.datetime(2017, 1, 1, 0, 0), None, None, None, None, None
-                row: 667, 'Waiting', None, None, 'Moda Stoq', None, datetime.datetime(2017, 1, 1, 0, 0), None, None, None, None, None
+                row: 666, None, 'Waiting', None, None, 'Moda Stoq', None, datetime.datetime(2017, 1, 1, 0, 0), None, None, None, None, None
+                row: 667, None, 'Waiting', None, None, 'Moda Stoq', None, datetime.datetime(2017, 1, 1, 0, 0), None, None, None, None, None
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkBox(orientation=horizontal):
@@ -145,7 +146,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Deliveries', hidden
             GtkVSeparator():
         LazySummaryLabel(summary_label):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Number of deliveries:</b>'
-          GtkLabel(): '<b>2</b>'
+          GtkLabel(): '<b>00002</b>'
         StatusButton(pack-end):
 
 popup: DeliverySelection

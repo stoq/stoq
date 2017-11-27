@@ -30,7 +30,8 @@ from gi.repository import Gtk, GdkPixbuf, Pango
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
-from stoqlib.domain.sale import Delivery, Sale
+from stoqlib.domain.fiscal import Invoice
+from stoqlib.domain.sale import Delivery
 from stoqlib.domain.views import DeliveryView
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
@@ -102,7 +103,7 @@ class DeliveryApp(ShellApp):
             ("Receive", Gtk.STOCK_APPLY, _("Mark as received..."),
              # group.get('delivery_receive'),
              None,
-             _("Mark the selected delivery as received by the client")),
+             _("Mark the selected delivery as received by the recipient")),
             ("Cancel", Gtk.STOCK_CANCEL, _("Cancel..."),
              # group.get('delivery_cancel'),
              None,
@@ -127,11 +128,11 @@ class DeliveryApp(ShellApp):
             self.Clients,
         ])
 
-        # FIXME: sale_identifier is here because it needs an integer column.
+        # FIXME: identifier is here because it needs an integer column.
         # The lazy summary will actually be taken from the view's
         # post_search_callback
         self.search.set_summary_label(
-            column='sale_identifier',
+            column='identifier',
             label=('<b>%s</b>' %
                    api.escape(_('Number of deliveries:'))),
             format='<b>%s</b>',
@@ -188,25 +189,28 @@ class DeliveryApp(ShellApp):
         self.search.set_message(msg)
 
     def create_filters(self):
-        self.set_text_field_columns(['client_name', 'identifier_str'])
+        self.set_text_field_columns(['recipient_name', 'identifier_str'])
 
         self.main_filter = ComboSearchFilter(_('Show'), [])
         self.add_filter(self.main_filter, SearchFilterPosition.TOP,
                         callback=self._get_main_query)
 
-        self.create_branch_filter(column=[Sale.branch_id])
+        self.create_branch_filter(column=[Invoice.branch_id])
         self._update_filters()
 
     def get_columns(self):
         return [
-            IdentifierColumn('sale_identifier', title=_("Sale #"), sorted=True),
+            IdentifierColumn('identifier', title=_("Operation #"), sorted=True,
+                             width=110, format_func=self._format_identifier),
+            SearchColumn('operation_nature', title=_('Operation Nature'),
+                         data_type=str),
             SearchColumn('status_str', title=_(u'Status'),
                          search_attribute='status', data_type=str,
                          valid_values=self._get_status_values()),
-            SearchColumn('client_name', title=_(u'Client'),
+            SearchColumn('recipient_name', title=_(u'Recipient'),
                          data_type=str, expand=True),
             Column('flag_icon', title=_(u'Status (Description)'),
-                   column='client_name', data_type=GdkPixbuf.Pixbuf,
+                   column='recipient_name', data_type=GdkPixbuf.Pixbuf,
                    format_func=self._format_state_icon, format_func_data=True),
             SearchColumn('branch_name', title=_(u'Branch'),
                          data_type=str, visible=False),
@@ -232,6 +236,9 @@ class DeliveryApp(ShellApp):
     #
     # Private
     #
+
+    def _format_identifier(self, value):
+        return str(value).zfill(5)
 
     def _edit(self):
         delivery = self.search.get_selected_item().delivery
@@ -279,7 +286,7 @@ class DeliveryApp(ShellApp):
         self._update_view(select_item=selection)
 
     def _send(self):
-        if not yesno(_("This will mark the delivery as sent to the client. "
+        if not yesno(_("This will mark the delivery as sent to the recipient. "
                        "Are you sure?"),
                      Gtk.ResponseType.NO, _(u"Mark as sent"), _(u"Don't mark")):
             return
@@ -292,7 +299,7 @@ class DeliveryApp(ShellApp):
         self._update_view(select_item=selection)
 
     def _receive(self):
-        if not yesno(_("This will mark the delivery as received by the client. "
+        if not yesno(_("This will mark the delivery as received by the recipient. "
                        "Are you sure?"),
                      Gtk.ResponseType.NO, _(u"Mark as received"), _(u"Don't mark")):
             return

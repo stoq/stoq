@@ -198,9 +198,10 @@ class TestSale(DomainTest):
     def test_remove_delivery_item(self):
         sale = self.create_sale()
         # This is the delivery item
-        sale_item = self.create_sale_item(sale)
+        sellable = sysparam.get_object(self.store, 'DELIVERY_SERVICE').sellable
+        sale_item = self.create_sale_item(sale, sellable=sellable)
         delivery = self.create_delivery()
-        delivery.service_item_id = sale_item.id
+        delivery.invoice = sale.invoice
 
         # This is the item that will be delivered
         other_item = self.create_sale_item(sale)
@@ -2447,6 +2448,16 @@ class TestSaleItem(DomainTest):
         self.assertRaises(ValueError, sale.add_sellable,
                           storable3.product.sellable, batch=batch)
 
+    def test_delivery_adaptor(self):
+        sale = self.create_sale()
+        sellable = sysparam.get_object(self.store, 'DELIVERY_SERVICE').sellable
+        sale_item = self.create_sale_item(sellable=sellable)
+        delivery = self.create_delivery()
+        delivery.invoice_id = sale.invoice_id
+        self.assertEqual(sale_item.delivery_adaptor, None)
+        sale_item.sale = sale
+        self.assertEqual(sale_item.delivery_adaptor, delivery)
+
 
 class TestDelivery(DomainTest):
 
@@ -2463,14 +2474,11 @@ class TestDelivery(DomainTest):
         delivery.address = None
         self.assertEqual(delivery.address_str, u'')
 
-    def test_client_str(self):
+    def test_recipient_str(self):
         delivery = self.create_delivery()
-        delivery.service_item = self.create_sale_item()
-        delivery.service_item.sale.client = self.create_client()
-        self.assertEqual(delivery.client_str, 'Client')
-
-        delivery.service_item.sale.client = None
-        self.assertEqual(delivery.client_str, u'')
+        client = self.create_client()
+        delivery.address = self.create_address(person=client.person)
+        self.assertEqual(delivery.recipient_str, 'Client')
 
     def test_can_pick(self):
         delivery = self.create_delivery()
@@ -2626,6 +2634,7 @@ class TestDelivery(DomainTest):
     def test_remove_item(self):
         delivery = self.create_delivery()
         item = self.create_sale_item()
+        delivery.invoice = item.sale.invoice
         delivery.add_item(item)
 
         self.assertEqual(len(delivery.get_items()), 1)
@@ -2636,14 +2645,33 @@ class TestDelivery(DomainTest):
     def test_remove_all_items(self):
         delivery = self.create_delivery()
         item_1 = self.create_sale_item()
+        delivery.invoice = item_1.sale.invoice
         delivery.add_item(item_1)
-        item_2 = self.create_sale_item()
+        item_2 = self.create_sale_item(sale=item_1.sale)
         delivery.add_item(item_2)
 
         self.assertEqual(len(delivery.get_items()), 2)
 
         delivery.remove_all_items()
         self.assertEqual(len(delivery.get_items()), 0)
+
+    def test_service_item(self):
+        sale = self.create_sale()
+        delivery = self.create_delivery()
+        delivery.invoice = sale.invoice
+        self.assertIsNone(delivery.service_item)
+        sellable = sysparam.get_object(self.store, 'DELIVERY_SERVICE').sellable
+        sale_item = self.create_sale_item(sellable=sellable, sale=sale)
+        self.assertEqual(delivery.service_item, sale_item)
+
+    def test_get_by_service_item(self):
+        sale = self.create_sale()
+        delivery = self.create_delivery()
+        delivery.invoice = sale.invoice
+        sellable = sysparam.get_object(self.store, 'DELIVERY_SERVICE').sellable
+        sale_item = self.create_sale_item(sellable=sellable, sale=sale)
+        self.assertEqual(Delivery.get_by_service_item(self.store, sale_item),
+                         delivery)
 
 
 class TestSalePaymentMethodView(DomainTest):

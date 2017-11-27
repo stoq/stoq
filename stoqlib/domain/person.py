@@ -555,6 +555,9 @@ class Person(Domain):
         super(Person, self).merge_with(other, skip, copy_empty_values)
         other.merged_with_id = self.id
 
+    def get_description(self):
+        return self.name
+
 
 @implementer(IActive)
 @implementer(IDescribable)
@@ -2559,6 +2562,9 @@ class PersonAddressView(Viewable):
     cpf = Individual.cpf
     birth_date = Individual.birth_date
     rg_number = Individual.rg_number
+    district = Address.district
+    street = Address.street
+    streetnumber = Address.streetnumber
 
     clean_name = StoqNormalizeString(Person.name)
     clean_street = Coalesce(StoqNormalizeString(Address.street), u'')
@@ -2575,3 +2581,6 @@ class PersonAddressView(Viewable):
     ]
 
     clause = Eq(Person.merged_with_id, None)
+
+    def get_description(self):
+        return self.name

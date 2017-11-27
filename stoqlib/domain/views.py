@@ -1469,8 +1469,8 @@ class DeliveryView(Viewable):
     # Aliases
     TransporterPerson = ClassAlias(Person, 'person_transporter')
     TransporterCompany = ClassAlias(Company, 'company_transporter')
-    ClientPerson = ClassAlias(Person, 'person_client')
-    ClientCompany = ClassAlias(Company, 'company_client')
+    RecipientPerson = ClassAlias(Person, 'person_client')
+    RecipientCompany = ClassAlias(Company, 'company_client')
     BranchPerson = ClassAlias(Person, "person_branch")
     BranchCompany = ClassAlias(Company, 'company_branch')
 
@@ -1489,20 +1489,20 @@ class DeliveryView(Viewable):
     receive_date = Delivery.receive_date
     pick_date = Delivery.pick_date
     pack_date = Delivery.pack_date
-    identifier_str = Cast(Sale.identifier, 'text')
 
-    # Sale
-    sale_identifier = Sale.identifier
-    sale_status = Sale.status
-    sale_total = Sale.total_amount
+    # Operation
+    identifier = Coalesce(Sale.identifier, StockDecrease.identifier)
+    identifier_str = Cast(identifier, 'text')
+
+    operation_nature = Invoice.operation_nature
 
     # Transporter
     transporter_name = Coalesce(NullIf(TransporterCompany.fancy_name, u''),
                                 TransporterPerson.name)
 
-    # Client
-    client_name = Coalesce(NullIf(ClientCompany.fancy_name, u''),
-                           ClientPerson.name)
+    # Recipient
+    recipient_name = Coalesce(NullIf(RecipientCompany.fancy_name, u''),
+                              RecipientPerson.name)
 
     # Branch
     branch_name = Coalesce(NullIf(BranchCompany.fancy_name, u''),
@@ -1513,8 +1513,9 @@ class DeliveryView(Viewable):
 
     tables = [
         Delivery,
-        LeftJoin(SaleItem, SaleItem.id == Delivery.service_item_id),
-        LeftJoin(Sale, Sale.id == SaleItem.sale_id),
+        LeftJoin(Invoice, Invoice.id == Delivery.invoice_id),
+        LeftJoin(Sale, Sale.invoice_id == Invoice.id),
+        LeftJoin(StockDecrease, StockDecrease.invoice_id == Invoice.id),
 
         LeftJoin(Transporter, Transporter.id == Delivery.transporter_id),
         LeftJoin(TransporterPerson,
@@ -1522,22 +1523,18 @@ class DeliveryView(Viewable):
         LeftJoin(TransporterCompany,
                  TransporterPerson.id == TransporterCompany.person_id),
 
-        LeftJoin(Branch, Branch.id == Sale.branch_id),
+        LeftJoin(Branch, Branch.id == Invoice.branch_id),
         LeftJoin(BranchPerson, BranchPerson.id == Branch.person_id),
         LeftJoin(BranchCompany, BranchPerson.id == BranchCompany.person_id),
 
-        LeftJoin(Client, Client.id == Sale.client_id),
-        LeftJoin(ClientPerson, ClientPerson.id == Client.person_id),
-        LeftJoin(ClientCompany, ClientPerson.id == ClientCompany.person_id),
+        LeftJoin(Address, Address.id == Delivery.address_id),
+        LeftJoin(RecipientPerson, RecipientPerson.id == Address.person_id),
+        LeftJoin(RecipientCompany, RecipientPerson.id == RecipientCompany.person_id),
     ]
 
     @property
     def status_str(self):
         return Delivery.statuses[self.status]
-
-    @property
-    def sale_status_str(self):
-        return Sale.statuses[self.sale_status]
 
     @property
     def address_str(self):

@@ -147,10 +147,6 @@ class SaleItem(Domain):
     #: The |delivery| this sale_item *is in* or None
     delivery = Reference(delivery_id, 'Delivery.id')
 
-    #: The |delivery| that this item *corresponds* to. Ie, this sale_item's sellable is
-    #: the Delivery service that was added to the sale.
-    delivery_adaptor = Reference('id', 'Delivery.service_item_id', on_remote=True)
-
     cfop_id = IdCol(default=None)
 
     #: :class:`fiscal entry <stoqlib.domain.fiscal.CfopData>`
@@ -298,6 +294,15 @@ class SaleItem(Domain):
 
         # FIXME: remove sale cfop?
         return self.sale.cfop.code.replace(u'.', u'')
+
+    @property
+    def delivery_adaptor(self):
+        """Get the delivery whose service item is self, if exists"""
+        delivery_item = self.sale.get_delivery_item()
+        if delivery_item:
+            return Delivery.get_by_service_item(self.store, self)
+
+        return None
 
     #
     #  Public API
@@ -641,14 +646,6 @@ class Delivery(Domain):
     #: the |transporter| for this delivery
     transporter = Reference(transporter_id, 'Transporter.id')
 
-    service_item_id = IdCol(default=None)
-
-    #: the |saleitem| for the delivery itself
-    service_item = Reference(service_item_id, 'SaleItem.id')
-
-    #: the |saleitems| for the items to deliver
-    delivery_items = ReferenceSet('id', 'SaleItem.delivery_id')
-
     cancel_responsible_id = IdCol(default=None)
     #: The responsible for cancelling the products for delivery
     cancel_responsible = Reference(cancel_responsible_id, 'LoginUser.id')
@@ -665,6 +662,10 @@ class Delivery(Domain):
     #: The responsible for delivering the products to the |transporter|
     send_responsible = Reference(send_responsible_id, 'LoginUser.id')
 
+    invoice_id = IdCol(default=None)
+    #: The operation's invoice this delivery is for
+    invoice = Reference(invoice_id, 'Invoice.id')
+
     #
     #  Properties
     #
@@ -680,11 +681,28 @@ class Delivery(Domain):
         return u''
 
     @property
-    def client_str(self):
-        client = self.service_item.sale.client
-        if client:
-            return client.get_description()
-        return u''
+    def recipient_str(self):
+        return self.address.person.get_description()
+
+    @property
+    def service_item(self):
+        delivery = sysparam.get_object(self.store, 'DELIVERY_SERVICE').sellable
+        operation = self.invoice.operation
+        for item in operation.get_items():
+            if item.sellable == delivery:
+                return item
+
+    @property
+    def delivery_items(self):
+        return self.invoice.operation.get_items().find(delivery_id=self.id)
+
+    #
+    # Classmethods
+    #
+
+    @classmethod
+    def get_by_service_item(cls, store, item):
+        return store.find(cls, invoice_id=item.parent.invoice_id).one()
 
     #
     #  Public API
@@ -1004,6 +1022,8 @@ class Sale(Domain):
     #: All returned sales of this sale
     returned_sales = ReferenceSet('id', 'ReturnedSale.sale_id',
                                   order_by='ReturnedSale.return_date')
+
+    deliveries = ReferenceSet('invoice_id', 'Delivery.invoice_id')
 
     invoice_id = IdCol()
 

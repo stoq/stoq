@@ -39,7 +39,7 @@ from stoqlib.domain.event import Event
 from stoqlib.domain.person import (Calls, ContactInfo, ClientView, EmployeeView,
                                    SupplierView, TransporterView, BranchView,
                                    UserView, CreditCheckHistoryView, CallsView,
-                                   ClientSalaryHistoryView)
+                                   ClientSalaryHistoryView, PersonAddressView)
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.exampledata import ExampleCreator
 from stoqlib.domain.fiscal import CfopData
@@ -241,6 +241,10 @@ class TestPerson(DomainTest):
         self.create_address(person=p3, city_location=germany)
         self.assertEqual(p3.get_relative_location(other),
                          RelativeLocation.OTHER_COUNTRY)
+
+    def test_get_description(self):
+        person = self.create_person(name=u'Person')
+        self.assertEqual(person.get_description(), u'Person')
 
 
 class _PersonFacetTest(object):
@@ -1307,6 +1311,13 @@ class TestUserView(DomainTest):
         user.is_active = False
         view = self.store.find(UserView, id=user.id).one()
         self.assertEqual(view.status_str, u'Inactive')
+
+
+class TestPersonAddressView(DomainTest):
+    def test_get_description(self):
+        client = self.create_client(u'Teste')
+        view = self.store.find(PersonAddressView, id=client.person.id).one()
+        self.assertEqual(view.get_description(), u'Teste')
 
 
 class TestCreditCheckHistoryView(DomainTest):

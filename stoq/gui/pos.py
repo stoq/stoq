@@ -1045,7 +1045,7 @@ class PosApp(ShellApp):
         # FIXME: Canceling the editor still saves the changes.
         return self.run_dialog(CreateDeliveryEditor, self.store,
                                self._delivery,
-                               sale_items=self._get_deliverable_items())
+                               items=self._get_deliverable_items())
 
     def _add_delivery_item(self, delivery, delivery_sellable, can_remove=True):
         for sale_item in self.sale_items:
@@ -1097,15 +1097,16 @@ class PosApp(ShellApp):
     def _adjust_sale(self, store, sale):
         if self._delivery and self._delivery.original_delivery:
             delivery = store.fetch(self._delivery.original_delivery)
-            sale.client = store.fetch(self._delivery.client)
+            sale.client = store.fetch(self._delivery.recipient)
         elif self._delivery:
-            sale.client = store.fetch(self._delivery.client)
+            sale.client = store.fetch(self._delivery.recipient)
             if hasattr(self._delivery, 'transporter_id'):
                 sale.transporter = store.get(Transporter, self._delivery.transporter_id)
             delivery = Delivery(
                 store=store,
                 address=store.fetch(self._delivery.address),
                 transporter=sale.transporter,
+                invoice=sale.invoice,
                 freight_type=self._delivery.freight_type,
                 volumes_kind=self._delivery.volumes_kind,
                 volumes_quantity=self._delivery.volumes_quantity,
@@ -1151,8 +1152,6 @@ class PosApp(ShellApp):
 
             if delivery and fake_sale_item.deliver:
                 delivery.add_item(sale_item)
-            elif delivery and fake_sale_item == self._delivery_item:
-                delivery.service_item = sale_item
             else:
                 sale_item.delivery = None
 

@@ -823,7 +823,7 @@ class TestPos(BaseGUITest):
         self.assertEqual(editor, CreateDeliveryEditor)
         self.assertTrue(store is not None)
         self.assertEqual(delivery, None)
-        self.assertEqual(kwargs[u'sale_items'], [sale_item])
+        self.assertEqual(kwargs[u'items'], [sale_item])
 
     def test_remove_item(self):
         pos = self._get_pos_with_open_till()

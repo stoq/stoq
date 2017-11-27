@@ -197,3 +197,13 @@ class TestInvoice(DomainTest):
         after = invoice2.check_unique_invoice_number_by_branch(
             1, branch, current_mode, 1)
         self.assertEqual(invoice, after)
+
+    def test_operation(self):
+        invoice = self.create_invoice()
+        sale = self.create_sale()
+        sale.invoice = invoice
+        self.assertEqual(invoice.operation, sale)
+        # No operation associated, must raise error
+        invoice = self.create_invoice()
+        with self.assertRaises(AssertionError):
+            invoice.operation

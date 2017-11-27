@@ -38,6 +38,7 @@ from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.person import Branch, Employee, Person
 from stoqlib.domain.product import Product
+from stoqlib.domain.sale import Delivery
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
 from stoqlib.domain.views import ProductWithStockBranchView
@@ -53,6 +54,8 @@ from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
+from stoqlib.gui.editors.deliveryeditor import (CreateDeliveryModel,
+                                                CreateDeliveryEditor)
 from stoqlib.gui.editors.stockdecreaseeditor import StockDecreaseItemEditor
 from stoqlib.gui.events import (StockDecreaseWizardFinishEvent, InvoiceSetupEvent,
                                 WizardAddSellableEvent,
@@ -214,6 +217,18 @@ class DecreaseItemStep(SellableItemStep):
 
         super(DecreaseItemStep, self).post_init()
 
+    def setup_slaves(self):
+        SellableItemStep.setup_slaves(self)
+        self._delivery = None
+        self._delivery_item = None
+
+        self.delivery_button = self.slave.add_extra_button(label=_("Add Delivery"))
+        self.delivery_button.set_sensitive(bool(len(self.slave.klist)))
+
+        self.slave.klist.connect('has_rows', self._on_klist__has_rows)
+        self.delivery_button.connect('clicked',
+                                     self._on_delivery_button__clicked)
+
     def get_sellable_view_query(self):
         # The stock quantity of consigned products can not be
         # decreased manually. See bug 5212.
@@ -224,6 +239,8 @@ class DecreaseItemStep(SellableItemStep):
 
     def get_order_item(self, sellable, cost, quantity, batch=None, parent=None):
         item = self.model.add_sellable(sellable, cost, quantity, batch=batch)
+        # FIXME this attibute is used by DeliveyEditor
+        item.deliver = False
         WizardAddSellableEvent.emit(self.wizard, item)
         return item
 
@@ -283,15 +300,86 @@ class DecreaseItemStep(SellableItemStep):
         super(DecreaseItemStep, self).validate(value)
 
     #
+    # WizardStep hooks
+    #
+
+    def validate_step(self):
+        if self._delivery is not None:
+            delivery = Delivery(
+                store=self.store,
+                transporter_id=self._delivery.transporter_id,
+                invoice=self.model.invoice,
+                address=self._delivery.address,
+                freight_type=self._delivery.freight_type,
+                volumes_kind=self._delivery.volumes_kind,
+                volumes_quantity=self._delivery.volumes_quantity,
+                volumes_gross_weight=self._delivery.volumes_gross_weight,
+                volumes_net_weight=self._delivery.volumes_net_weight,
+                vehicle_license_plate=self._delivery.vehicle_license_plate,
+                vehicle_state=self._delivery.vehicle_state,
+                vehicle_registration=self._delivery.vehicle_registration,
+            )
+        else:
+            delivery = None
+
+        for item in self.slave.klist:
+            item.delivery = delivery if getattr(item, 'deliver', False) else None
+
+        return super(DecreaseItemStep, self).validate_step()
+
+    #
     # Private
     #
 
     def _format_description(self, item, data):
         return format_sellable_description(item.sellable, item.batch)
 
+    def _create_or_update_delivery(self):
+        delivery_service = sysparam.get_object(self.store, 'DELIVERY_SERVICE')
+        delivery_sellable = delivery_service.sellable
+
+        items = [item for item in self.slave.klist
+                 if item.sellable.product is not None]
+
+        if self._delivery is not None:
+            model = self._delivery
+
+        else:
+            model = CreateDeliveryModel(
+                price=delivery_sellable.price, recipient=self.model.person)
+
+        rv = run_dialog(
+            CreateDeliveryEditor, self.get_toplevel().get_toplevel(),
+            self.store, model=model, items=items, person_type=Person)
+
+        if not rv:
+            return
+
+        self._delivery = rv
+        if self._delivery_item:
+            self.slave.klist.update(self._delivery_item)
+        else:
+            self._delivery_item = self.get_order_item(
+                delivery_sellable, self._delivery.price, 1)
+            self.slave.klist.append(None, self._delivery_item)
+
     #
     # Callbacks
     #
+
+    def on_slave__before_edit_item(self, slave, item):
+        # Do not try to edit a delivery
+        if item != self._delivery_item:
+            return
+
+        self._create_or_update_delivery()
+        return self._delivery_item
+
+    def on_slave__before_delete_items(self, klist, items):
+        for item in items:
+            if item == self._delivery_item:
+                self._delivery_item = None
+                self._delivery = None
 
     def _on_klist__cell_editing_started(self, klist, obj, attr,
                                         renderer, editable):
@@ -300,6 +388,13 @@ class DecreaseItemStep(SellableItemStep):
             remaining_quantity = self.get_remaining_quantity(obj.sellable,
                                                              obj.batch)
             adjustment.set_upper(obj.quantity + remaining_quantity)
+
+    def _on_klist__has_rows(self, klist, has_rows):
+        if self.delivery_button is not None:
+            self.delivery_button.set_sensitive(has_rows)
+
+    def _on_delivery_button__clicked(self, button):
+        self._create_or_update_delivery()
 
 
 class StockDecreaseWizard(BaseWizard):

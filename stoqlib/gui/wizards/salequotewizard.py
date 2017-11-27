@@ -467,11 +467,12 @@ class SaleQuoteItemStep(SellableItemStep):
     def validate_step(self):
         delivery = self._find_delivery()
         if self._delivery is not None and delivery is None:
+            self.model.transporter_id = self._delivery.transporter_id
             delivery = Delivery(
                 store=self.store,
-                transporter=self._delivery.transporter,
+                transporter=self.model.transporter,
+                invoice=self.model.invoice,
                 address=self._delivery.address,
-                service_item=self._delivery_item,
                 freight_type=self._delivery.freight_type,
                 volumes_kind=self._delivery.volumes_kind,
                 volumes_quantity=self._delivery.volumes_quantity,
@@ -547,11 +548,12 @@ class SaleQuoteItemStep(SellableItemStep):
             model = self._delivery
         else:
             model = CreateDeliveryModel(
-                price=delivery_sellable.price, client=self.model.client)
+                price=delivery_sellable.price,
+                recipient=self.model.client and self.model.client.person)
 
         rv = run_dialog(
             CreateDeliveryEditor, self.get_toplevel().get_toplevel(),
-            self.store, model, sale_items=items)
+            self.store, model, items=items)
         if not rv:
             return
 

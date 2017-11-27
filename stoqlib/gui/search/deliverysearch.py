@@ -30,7 +30,7 @@ import datetime
 from gi.repository import Gtk, Pango
 from kiwi.ui.objectlist import Column
 
-from stoqlib.domain.sale import Delivery, Sale
+from stoqlib.domain.sale import Delivery
 from stoqlib.domain.views import DeliveryView
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.lib.translation import stoqlib_gettext
@@ -60,18 +60,13 @@ class DeliverySearch(SearchEditor):
         items.insert(0, (_('Any'), None))
         return items
 
-    def _get_sale_status_values(self):
-        items = [(value, key) for key, value in Sale.statuses.items()]
-        items.insert(0, (_('Any'), None))
-        return items
-
     #
     #  SearchEditor
     #
 
     def create_filters(self):
         self.set_text_field_columns(['tracking_code', 'transporter_name',
-                                     'client_name', 'identifier_str'])
+                                     'recipient_name', 'identifier_str'])
 
         # Status
         statuses = [(desc, st) for st, desc in Delivery.statuses.items()]
@@ -85,21 +80,18 @@ class DeliverySearch(SearchEditor):
         return viewable.delivery
 
     def get_columns(self):
-        return [IdentifierColumn('sale_identifier', title=_('Sale #'),
+        return [IdentifierColumn('identifier', title=_('Sale #'),
                                  order=Gtk.SortType.DESCENDING),
                 SearchColumn('status_str', title=_('Status'), data_type=str,
                              search_attribute='status',
                              valid_values=self._get_status_values()),
-                SearchColumn('sale_status_str', title=_('Sale status'),
-                             data_type=str, search_attribute='sale_status',
-                             valid_values=self._get_sale_status_values()),
                 Column('address_str', title=_('Address'), data_type=str,
                        expand=True, ellipsize=Pango.EllipsizeMode.END),
                 SearchColumn('tracking_code', title=_('Tracking code'),
                              data_type=str),
                 SearchColumn('transporter_name', title=_('Transporter'),
                              data_type=str),
-                SearchColumn('client_name', title=_('Client'),
+                SearchColumn('recipient_name', title=_('Recipient'),
                              data_type=str),
                 SearchColumn('open_date', title=_('Open date'),
                              data_type=datetime.date, visible=False),

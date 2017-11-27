@@ -31,7 +31,8 @@ from kiwi.utils import gsignal
 
 from stoqlib.api import api
 from stoqlib.database.queryexecuter import QueryExecuter
-from stoqlib.domain.person import Client, ClientView, Supplier, SupplierView
+from stoqlib.domain.person import (Client, ClientView, Supplier, SupplierView,
+                                   Person, PersonAddressView)
 from stoqlib.domain.sale import SaleToken, SaleTokenView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
@@ -423,9 +424,12 @@ class QueryEntryGadget(object):
     def _update_widgets(self):
         self._can_edit = self.entry.get_editable() and self.entry.get_sensitive()
         if self.edit_button is not None:
-            self.edit_button.set_sensitive(bool(self._can_edit or self._current_obj))
+            self.edit_button.set_sensitive(bool(self.item_editor and
+                                                (self._can_edit or
+                                                 self._current_obj)))
         if self.info_button is not None:
-            self.info_button.set_sensitive(bool(self._current_obj))
+            self.info_button.set_sensitive(bool(self.item_info_dialog and
+                                                self._current_obj))
 
     def _add_button(self, stock):
         image = Gtk.Image.new_from_stock(stock, Gtk.IconSize.MENU)
@@ -579,8 +583,13 @@ class QueryEntryGadget(object):
 
 
 class PersonEntryGadget(QueryEntryGadget):
-
-    person_type = None
+    search_spec = PersonAddressView
+    search_columns = [PersonAddressView.name, PersonAddressView.mobile_number,
+                      PersonAddressView.phone_number, PersonAddressView.email,
+                      PersonAddressView.cpf, PersonAddressView.cnpj]
+    person_type = Person
+    item_editor = None
+    item_info_dialog = None
 
     def __init__(self, entry, store, initial_value=None,
                  parent=None, run_editor=None,

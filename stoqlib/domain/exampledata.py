@@ -1295,9 +1295,9 @@ class ExampleCreator(object):
                               description=u'Invoice Printer',
                               store=self.store)
 
-    def create_delivery(self):
+    def create_delivery(self, transporter=None):
         from stoqlib.domain.sale import Delivery
-        return Delivery(store=self.store)
+        return Delivery(store=self.store, transporter=transporter)
 
     def create_work_permit_data(self):
         from stoqlib.domain.person import WorkPermitData

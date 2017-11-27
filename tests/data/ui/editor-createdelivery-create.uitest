@@ -8,11 +8,11 @@ GtkDialog(main_dialog.toplevel): title='Add Delivery', hidden
           GtkEventBox(forms, fill=True): slave BasicForm is attached
             GtkAlignment(toplevel):
               GtkTable():
-                ProxyLabel(client_lbl): 'Client:'
-                ProxyEntry(client): '', mandatory
+                ProxyLabel(recipient_lbl): 'Recipient:'
+                ProxyEntry(recipient): '', mandatory
                 GtkBox(orientation=horizontal):
-                  GtkButton(client_add_button):
-                  GtkButton(client_edit_button): insensitive
+                  GtkButton(recipient_add_button):
+                  GtkButton(recipient_edit_button): insensitive
                 ProxyLabel(volumes_quantity_lbl): 'Volumes quantity:'
                 ProxyEntry(volumes_quantity): '1'
                 GtkBox(orientation=horizontal):

@@ -30,15 +30,14 @@ GtkDialog(toplevel): title='Delivery Search', hidden
           SearchResultListView(results, expand=True, fill=True):
             column: title='Sale #'
             column: title='Status'
-            column: title='Sale status'
             column: title='Address', expand
             column: title='Tracking code'
             column: title='Transporter'
-            column: title='Client'
+            column: title='Recipient'
             column: title='Open date', hidden
             column: title='Sent date', hidden
             column: title='Received date', hidden
-            row: 20, 'Received', 'Confirmed', 'Mainstreet 138, Cidade Araci', '78', 'Torvalds', None, datetime.datetime(2012, 2, 2, 0, 0), datetime.datetime(2012, 3, 3, 0, 0), datetime.datetime(2012, 4, 4, 0, 0)
+            row: 20, 'Received', 'Mainstreet 138, Cidade Araci', '78', 'Torvalds', None, datetime.datetime(2012, 2, 2, 0, 0), datetime.datetime(2012, 3, 3, 0, 0), datetime.datetime(2012, 4, 4, 0, 0)
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):

@@ -194,8 +194,8 @@ class AddressField(DomainChoiceField):
 
     # Public
 
-    def set_from_client(self, client):
-        self.person = client.person
+    def set_from_person(self, person):
+        self.person = person
         self.populate(self.person.get_main_address())
 
     # Private
@@ -346,12 +346,14 @@ class PersonQueryField(TextField):
     def attach(self):
         assert self.editable
 
-        from stoqlib.domain.person import Client, Supplier
+        from stoqlib.domain.person import Client, Supplier, Person
         from stoqlib.gui.widgets.queryentry import (ClientEntryGadget,
-                                                    SupplierEntryGadget)
+                                                    SupplierEntryGadget,
+                                                    PersonEntryGadget)
         gadgets = {
             Client: ClientEntryGadget,
             Supplier: SupplierEntryGadget,
+            Person: PersonEntryGadget,
         }
         gadget = gadgets.get(self.person_type)
         if gadgets is None:  # pragma no cover

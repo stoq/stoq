@@ -38,6 +38,7 @@ class TestDeliveryEditor(GUITest):
         sale = self.create_sale(client=client)
         self.add_product(sale)
         self.add_product(sale)
+        delivery.invoice = sale.invoice
 
         for i, item in enumerate(sale.get_items()):
             item.sellable.description = u"Delivery item %d" % (i + 1)
@@ -99,9 +100,9 @@ class TestCreateDeliveryEditor(GUITest):
             sale_items.append(sale_item)
         return sale_items
 
-    def test_create(self):
+    def test_create_recipient_client(self):
         sale_items = self._create_sale_items()
-        editor = CreateDeliveryEditor(self.store, sale_items=sale_items)
+        editor = CreateDeliveryEditor(self.store, items=sale_items)
         self.check_editor(editor, 'editor-createdelivery-create')
 
     def test_on_client_changed(self):
@@ -111,25 +112,25 @@ class TestCreateDeliveryEditor(GUITest):
         addres2 = self.create_address(person=client2.person)
         addres2.street = u"Mainstreet02"
         sale_items = self._create_sale_items()
-        editor = CreateDeliveryEditor(self.store, sale_items=sale_items)
+        editor = CreateDeliveryEditor(self.store, items=sale_items)
 
         # No client
-        self.assertIsNone(editor.client.read())
+        self.assertIsNone(editor.recipient.read())
         no_address = editor.address.get_selected_data()
         self.assertEqual(no_address, None)
         self.check_editor(editor, 'editor-createdelivery-noclient')
 
         # Select a client
-        editor.fields['client'].set_value(client1)
-        first_client = editor.client.read()
+        editor.fields['recipient'].set_value(client1)
+        first_client = editor.recipient.read()
         self.assertEqual(first_client, client1)
         first_address = editor.address.get_selected_data()
         self.assertEqual(first_address, address1)
         self.check_editor(editor, 'editor-createdelivery-client')
 
         # Change client
-        editor.fields['client'].set_value(client2)
-        new_client = editor.client.read()
+        editor.fields['recipient'].set_value(client2)
+        new_client = editor.recipient.read()
         self.assertNotEqual(first_client, new_client)
         new_address = editor.address.get_selected_data()
         self.assertNotEqual(first_address, new_address)

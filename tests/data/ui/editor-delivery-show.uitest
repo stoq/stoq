@@ -9,8 +9,8 @@ GtkDialog(main_dialog.toplevel): title='Delivery editor', hidden
             GtkEventBox(forms): slave BasicForm is attached
               GtkAlignment(toplevel):
                 GtkTable():
-                  ProxyLabel(client_str_lbl): 'Client:'
-                  ProxyLabel(client_str): '<span ></span>'
+                  ProxyLabel(recipient_str_lbl): 'Recipient:'
+                  ProxyLabel(recipient_str): '<span ></span>'
                   GtkBox(orientation=horizontal):
                   ProxyLabel(volumes_net_weight_lbl): 'Volumes net weight:'
                   ProxySpinButton(volumes_net_weight): ''
@@ -74,7 +74,7 @@ GtkDialog(main_dialog.toplevel): title='Delivery editor', hidden
                   ProxyLabel(tracking_code_lbl): 'Tracking code:'
                   ProxyEntry(tracking_code): '', insensitive
                   GtkBox(orientation=horizontal):
-                  ProxyCheckButton(is_received_check): 'Was received by client?'
+                  ProxyCheckButton(is_received_check): 'Was received by recipient?'
                   GtkBox(orientation=horizontal):
                   ProxyLabel(freight_type_lbl): 'Freight type:'
                   ProxyComboBox(freight_type):

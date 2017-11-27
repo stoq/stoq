@@ -28,6 +28,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.lib.parameters import sysparam
 
 __tests__ = 'stoqlib/domain/stockdecrease.py'
 
@@ -158,6 +159,16 @@ class TestStockDecrease(DomainTest):
         decrease.add_sellable(sellable2, quantity=5)
         self.assertEqual(decrease.get_total_cost(), 250)
 
+    def test_delivery_adaptor(self):
+        decrease = self.create_stock_decrease()
+        sellable = sysparam.get_object(self.store, 'DELIVERY_SERVICE').sellable
+        decrease_item = self.create_stock_decrease_item(stock_decrease=decrease)
+        delivery = self.create_delivery()
+        delivery.invoice_id = decrease.invoice_id
+        self.assertIsNone(decrease_item.delivery_adaptor)
+        decrease_item.sellable = sellable
+        self.assertEqual(decrease_item.delivery_adaptor, delivery)
+
     # NF-e operations
 
     def test_comments(self):
@@ -199,6 +210,18 @@ class TestStockDecrease(DomainTest):
         # FIXME: Check using the operation_nature that will be save in new field
         decrease = self.create_stock_decrease()
         self.assertEqual(decrease.operation_nature, u'Stock decrease')
+
+    def test_transporter(self):
+        decrease = self.create_stock_decrease()
+        self.assertIsNone(decrease.transporter)
+
+        sellable = sysparam.get_object(self.store, 'DELIVERY_SERVICE').sellable
+        self.create_stock_decrease_item(sellable=sellable,
+                                        stock_decrease=decrease)
+        transporter = self.create_transporter()
+        delivery = self.create_delivery(transporter=transporter)
+        delivery.invoice = decrease.invoice
+        self.assertEqual(decrease.transporter, transporter)
 
 
 class TestStockDecreaseItem(DomainTest):

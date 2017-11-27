@@ -43,7 +43,7 @@ class TestDeliverySearch(GUITest):
         transporter = self.create_transporter(name=u'Hall')
         delivery = Delivery(transporter=transporter,
                             address=address,
-                            service_item=service_item,
+                            invoice=service_item.sale.invoice,
                             open_date=localdate(2012, 1, 1).date(),
                             store=self.store)
         delivery.tracking_code = u'45'
@@ -54,7 +54,7 @@ class TestDeliverySearch(GUITest):
         transporter = self.create_transporter(name=u'Torvalds')
         delivery = Delivery(transporter=transporter,
                             address=address,
-                            service_item=service_item,
+                            invoice=service_item.sale.invoice,
                             open_date=localdate(2012, 2, 2).date(),
                             send_date=localdate(2012, 3, 3).date(),
                             receive_date=localdate(2012, 4, 4).date(),

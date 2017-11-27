@@ -32,7 +32,7 @@ from kiwi.ui.forms import (PriceField, DateField, TextField, BoolField,
 from kiwi.ui.objectlist import Column, ObjectList
 
 from stoqlib.api import api
-from stoqlib.domain.person import Client, Transporter
+from stoqlib.domain.person import Client, Transporter, Person
 from stoqlib.domain.sale import Delivery
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -49,13 +49,13 @@ _ = stoqlib_gettext
 
 
 class CreateDeliveryModel(object):
-    _savepoint_attr = ['price', 'notes', 'client', 'transporter', 'address',
+    _savepoint_attr = ['price', 'notes', 'recipient', 'transporter_id', 'address',
                        'estimated_fix_date', 'freight_type', 'volumes_kind',
                        'volumes_quantity', 'volumes_gross_weight',
                        'volumes_net_weight', 'vehicle_license_plate',
                        'vehicle_state', 'vehicle_registration']
 
-    def __init__(self, price=None, notes=None, client=None, transporter=None,
+    def __init__(self, price=None, notes=None, recipient=None, transporter_id=None,
                  address=None, estimated_fix_date=None, description=None,
                  freight_type=None, volumes_kind=None, volumes_quantity=1,
                  volumes_gross_weight=decimal.Decimal(), vehicle_state=None,
@@ -63,9 +63,9 @@ class CreateDeliveryModel(object):
                  volumes_net_weight=decimal.Decimal(), original_delivery=None):
         self.price = price
         self.notes = notes
-        self.address = address or (client and client.person.address)
-        self.client = client or (address and address.person.client)
-        self.transporter = transporter
+        self.address = address or (recipient and recipient.address)
+        self.recipient = recipient or (address and address.person)
+        self.transporter_id = transporter_id
         self.estimated_fix_date = estimated_fix_date or localtoday().date()
         self.description = description or _(u'Delivery')
         self.freight_type = freight_type or Delivery.FREIGHT_TYPE_CIF
@@ -86,7 +86,7 @@ class CreateDeliveryModel(object):
         return cls(
             price=service_item.price,
             notes=service_item.notes,
-            transporter=delivery.transporter,
+            transporter_id=delivery.transporter_id,
             address=delivery.address,
             estimated_fix_date=service_item.estimated_fix_date,
             freight_type=delivery.freight_type,
@@ -143,8 +143,8 @@ class CreateDeliveryEditor(BaseEditor):
         states = [(v, v) for v in api.get_l10n_field('state').state_list]
 
         return collections.OrderedDict(
-            client=PersonQueryField(_("Client"), proxy=True, mandatory=True,
-                                    person_type=Client),
+            recipient=PersonQueryField(_("Recipient"), proxy=True, mandatory=True,
+                                       person_type=self.person_type),
             transporter_id=PersonField(_("Transporter"), proxy=True,
                                        person_type=Transporter,
                                        can_add=can_modify_transporter,
@@ -166,18 +166,19 @@ class CreateDeliveryEditor(BaseEditor):
             vehicle_registration=TextField(_("Vehicle registration"), proxy=True),
         )
 
-    def __init__(self, store, model=None, sale_items=None):
-        self.sale_items = sale_items
+    def __init__(self, store, model=None, items=None, person_type=Client):
+        self.items = items
         self._deliver_items = []
+        self.person_type = person_type
 
         if not model:
-            for sale_item in sale_items:
-                sale_item.deliver = True
+            for item in items:
+                item.deliver = True
         else:
             model.create_savepoint()
             # Store this information for later rollback.
-            for sale_item in sale_items:
-                self._deliver_items.append(sale_item.deliver)
+            for item in items:
+                self._deliver_items.append(item.deliver)
 
         BaseEditor.__init__(self, store, model)
         self._setup_widgets()
@@ -230,18 +231,23 @@ class CreateDeliveryEditor(BaseEditor):
             return ValidationError(
                 _("The Delivery cost must be a positive value."))
 
-    def on_client__content_changed(self, entry):
-        client = entry.read()
-        if client is None:
+    def on_recipient__content_changed(self, entry):
+        entry_value = entry.read()
+        if entry_value is None:
             return
-        self.fields['address'].set_from_client(client)
+
+        if type(entry_value) is Person:
+            person = entry_value
+        else:
+            person = entry_value.person
+        self.fields['address'].set_from_person(person)
 
     def on_transporter_id__validate(self, widget, transporter_id):
         transporter = self.store.get(Transporter, transporter_id)
         return StockOperationPersonValidationEvent.emit(transporter.person, type(transporter))
 
-    def on_client__validate(self, widget, client):
-        return StockOperationPersonValidationEvent.emit(client.person, type(client))
+    def on_recipient__validate(self, widget, person):
+        return StockOperationPersonValidationEvent.emit(person, type(person))
 
     def _on_items__cell_edited(self, items, item, attribute):
         self.force_validation()
@@ -253,7 +259,7 @@ class CreateDeliveryEditor(BaseEditor):
     def create_model(self, store):
         price = sysparam.get_object(store, 'DELIVERY_SERVICE').sellable.price
         volumes_weight = decimal.Decimal()
-        for item in self.sale_items:
+        for item in self.items:
             product = item.sellable.product
             if product:
                 volumes_weight += product.weight * item.quantity
@@ -262,7 +268,7 @@ class CreateDeliveryEditor(BaseEditor):
 
     def setup_slaves(self):
         self.items = ObjectList(columns=self._get_sale_items_columns(),
-                                objects=self.sale_items)
+                                objects=self.items)
         self.items.connect('cell-edited', self._on_items__cell_edited)
         self.addition_list_holder.add(self.items)
         self.items.show()
@@ -272,13 +278,13 @@ class CreateDeliveryEditor(BaseEditor):
         # that here instead of making this rollback by hand. Bug 5415.
         self.model.rollback_to_savepoint()
         if self._deliver_items:
-            for sale_item, deliver in zip(self.sale_items, self._deliver_items):
-                sale_item.deliver = deliver
+            for item, deliver in zip(self.items, self._deliver_items):
+                item.deliver = deliver
 
     def on_confirm(self):
         estimated_fix_date = self.estimated_fix_date.read()
-        for sale_item in self.sale_items:
-            sale_item.estimated_fix_date = estimated_fix_date
+        for item in self.items:
+            item.estimated_fix_date = estimated_fix_date
 
 
 class DeliveryEditor(BaseEditor):
@@ -304,7 +310,7 @@ class DeliveryEditor(BaseEditor):
         states = [(v, v) for v in api.get_l10n_field('state').state_list]
 
         return collections.OrderedDict(
-            client_str=TextField(_("Client"), proxy=True, editable=False),
+            recipient_str=TextField(_("Recipient"), proxy=True, editable=False),
             transporter_id=PersonField(_("Transporter"), proxy=True,
                                        person_type=Transporter,
                                        can_add=can_modify_transporter,
@@ -326,7 +332,7 @@ class DeliveryEditor(BaseEditor):
             vehicle_state=ChoiceField(_("Vehicle state"), proxy=True, use_entry=True,
                                       values=states),
             vehicle_registration=TextField(_("Vehicle registration"), proxy=True),
-            is_received_check=BoolField(_("Was received by client?")),
+            is_received_check=BoolField(_("Was received by recipient?")),
             receive_date=DateField(_("Receive date"), mandatory=True, proxy=True),
             empty=EmptyField(),
         )

@@ -26,7 +26,9 @@ import mock
 
 from stoqlib.api import api
 from stoqlib.domain.costcenter import CostCenterEntry
-from stoqlib.domain.stockdecrease import StockDecrease
+from stoqlib.domain.sale import Delivery
+from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
+from stoqlib.gui.editors.deliveryeditor import CreateDeliveryModel
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.salewizard import PaymentMethodStep
 from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
@@ -182,3 +184,91 @@ class TestStockDecreaseWizard(GUITest):
         self.click(wizard.next_button)
         self.assertEqual(wizard.model.get_items().count(), 0)
         self.assertNotSensitive(wizard, ['next_button'])
+
+    def test_wizard_with_delivery(self):
+        branch = api.get_current_branch(self.store)
+        storable = self.create_storable(branch=branch, stock=1)
+        sellable = storable.product.sellable
+        # Run the wizard
+        wizard = StockDecreaseWizard(self.store)
+        step = wizard.get_current_step()
+        step.reason.update('test')
+        self.click(wizard.next_button)
+        step = wizard.get_current_step()
+        self.assertNotSensitive(step, ['delivery_button'])
+        step.sellable_selected(sellable)
+        step.quantity.update(1)
+        self.click(step.add_sellable_button)
+        item = step.slave.klist[0]
+        self.assertSensitive(step, ['delivery_button'])
+
+        delivery_sellable = sysparam.get_object(self.store, 'DELIVERY_SERVICE').sellable
+        delivery = CreateDeliveryModel(price=delivery_sellable.price,
+                                       recipient=wizard.model.person)
+
+        module = 'stoqlib.gui.wizards.stockdecreasewizard.run_dialog'
+        with mock.patch(module) as run_dialog:
+            # Nothing done with the editor, no delivery returned
+            run_dialog.return_value = None
+            self.click(step.delivery_button)
+            self.assertIsNone(step._delivery)
+            self.assertIsNone(step._delivery_item)
+
+            # Delivery set
+            run_dialog.return_value = delivery
+            self.click(step.delivery_button)
+            self.assertEqual(step._delivery, delivery)
+            self.assertTrue(isinstance(step._delivery_item, StockDecreaseItem))
+
+            # Edit the delivery item
+            run_dialog.return_value = delivery
+            step.slave.klist.select(step.slave.klist[1])
+            self.click(step.slave.edit_button)
+            self.assertEqual(step._delivery, delivery)
+            self.assertTrue(isinstance(step._delivery_item, StockDecreaseItem))
+
+        # Finishing the wizard must create a Delivery object
+        module = 'stoqlib.gui.wizards.stockdecreasewizard.yesno'
+        with mock.patch(module) as yesno:
+            with mock.patch.object(self.store, 'commit'):
+                yesno.return_value = False
+                item.deliver = True
+                self.click(wizard.next_button)
+                self.assertTrue(isinstance(item.delivery, Delivery))
+
+    @mock.patch('stoqlib.gui.base.lists.yesno')
+    def test_wizard_remove_delivery(self, yesno):
+        yesno.return_value = True
+        branch = api.get_current_branch(self.store)
+        storable = self.create_storable(branch=branch, stock=1)
+        sellable = storable.product.sellable
+        # Run the wizard
+        wizard = StockDecreaseWizard(self.store)
+        step = wizard.get_current_step()
+        step.reason.update('test')
+        self.click(wizard.next_button)
+        step = wizard.get_current_step()
+        self.assertNotSensitive(step, ['delivery_button'])
+        step.sellable_selected(sellable)
+        step.quantity.update(1)
+        self.click(step.add_sellable_button)
+        self.assertSensitive(step, ['delivery_button'])
+
+        delivery_sellable = sysparam.get_object(self.store, 'DELIVERY_SERVICE').sellable
+        delivery = CreateDeliveryModel(price=delivery_sellable.price,
+                                       recipient=wizard.model.person)
+
+        module = 'stoqlib.gui.wizards.stockdecreasewizard.run_dialog'
+        with mock.patch(module) as run_dialog:
+            # Delivery set
+            run_dialog.return_value = delivery
+            self.click(step.delivery_button)
+            self.assertEqual(step._delivery, delivery)
+            self.assertTrue(isinstance(step._delivery_item, StockDecreaseItem))
+
+            # Remove the delivery item
+            run_dialog.return_value = delivery
+            step.slave.klist.select(step.slave.klist[1])
+            self.click(step.slave.delete_button)
+            self.assertIsNone(step._delivery)
+            self.assertIsNone(step._delivery_item)

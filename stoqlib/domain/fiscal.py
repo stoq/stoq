@@ -300,6 +300,20 @@ class Invoice(Domain):
                           mode=mode).max(cls.invoice_number)
         return last or 0
 
+    @property
+    def operation(self):
+        from stoqlib.domain.loan import Loan
+        from stoqlib.domain.returnedsale import ReturnedSale
+        from stoqlib.domain.sale import Sale
+        from stoqlib.domain.stockdecrease import StockDecrease
+        from stoqlib.domain.transfer import TransferOrder
+        for op_class in [Sale, StockDecrease, Loan, ReturnedSale, TransferOrder]:
+            operation = self.store.find(op_class, invoice_id=self.id).one()
+            if operation:
+                return operation
+
+        raise AssertionError("No operation corresponding to this invoice")
+
     def save_nfe_info(self, cnf, key):
         """ Save the CNF and KEY generated in NF-e.
         """

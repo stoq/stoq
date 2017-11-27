@@ -69,6 +69,7 @@ class TestServiceSellableItem(DomainTest):
     def test_add_item(self):
         sale = self.create_sale()
         delivery = Delivery(store=self.store)
+        delivery.invoice = sale.invoice
 
         service = self.create_service()
         service_item = sale.add_sellable(service.sellable, quantity=1, price=10)
