@@ -736,6 +736,13 @@ _details = [
         u'account.Account'),
 
     ParameterDetails(
+        u'SALES_ACCOUNT',
+        _(u'Accounts'),
+        _(u"Sales' payments account"),
+        _(u'Receivable payments originated from sales will default to this account'),
+        u'account.Account'),
+
+    ParameterDetails(
         u'DEMO_MODE',
         _(u'General'),
         _(u'Demonstration mode'),

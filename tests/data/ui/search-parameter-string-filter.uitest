@@ -12,5 +12,6 @@ GtkVBox(toplevel):
     row: u'Accounts', u'Imbalance account', u'Imbalance'
     row: u'Accounts', u'Parent bank account', u'Banks'
     row: u'Accounts', u'Parent till account', u'Tills'
+    row: u'Accounts', u"Sales' payments account", ''
   GtkHButtonBox(hbuttonbox1, fill=True):
     GtkButton(edit_button): 'gtk-edit', insensitive

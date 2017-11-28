@@ -12,6 +12,7 @@ GtkVBox(toplevel):
     row: u'Accounts', u'Imbalance account', u'Imbalance'
     row: u'Accounts', u'Parent bank account', u'Banks'
     row: u'Accounts', u'Parent till account', u'Tills'
+    row: u'Accounts', u"Sales' payments account", ''
     row: u'General', u'Suggest batch number', u'No'
     row: u'General', u'Default area code', u'16'
     row: u'General', u'Custom logotype for reports', ''

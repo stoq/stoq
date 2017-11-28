@@ -52,6 +52,13 @@ _ = stoqlib_gettext
 
 
 def _create_transaction(store, till_entry):
+    # Dont create till entries for sangrias/suprimentos as those are really tied to the
+    # old ECF behaivour (where *all* the sales values are added to the till). If we
+    # create transactions for those operations, the value would be duplicated when the
+    # payment is finally payed.
+    if not till_entry.payment:
+        return
+
     if till_entry.value > 0:
         operation_type = AccountTransaction.TYPE_IN
         source_account = sysparam.get_object_id('IMBALANCE_ACCOUNT')
@@ -142,7 +149,7 @@ class TillOpeningEditor(BaseEditor):
         # or it will return self.model.till
         last_opened = Till.get_last_opened(api.get_default_store())
         if (last_opened and
-            last_opened.opening_date.date() == till.opening_date.date()):
+                last_opened.opening_date.date() == till.opening_date.date()):
             warning(_("A till was opened earlier this day."))
             self.retval = False
             return
@@ -294,6 +301,7 @@ class TillClosingEditor(BaseEditor):
 
             # Financial transaction
             _create_transaction(store, till_entry)
+
             # DB transaction
             store.confirm(True)
             store.close()

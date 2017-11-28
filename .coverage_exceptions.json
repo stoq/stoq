@@ -145,7 +145,7 @@
  "stoqlib/gui/editors/shortcutseditor.py": 68.18,
  "stoqlib/gui/editors/stationeditor.py": 82.35,
  "stoqlib/gui/editors/taxclasseditor.py": 46.51,
- "stoqlib/gui/editors/tilleditor.py": 83.21,
+ "stoqlib/gui/editors/tilleditor.py": 80,
  "stoqlib/gui/editors/workordercategoryeditor.py": 66.67,
  "stoqlib/gui/editors/workordereditor.py": 83.19,
  "stoqlib/gui/fields.py": 74.66,
