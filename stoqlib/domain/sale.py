@@ -1311,9 +1311,13 @@ class Sale(Domain):
         # automatically paid.
         # Since some plugins may listen to the sale status change event, we should
         # set payments as paid before the status change.
+        source_account = sysparam.get_object(store, 'SALES_ACCOUNT')
+        destination_account = sysparam.get_object(store, 'TILLS_ACCOUNT')
         for method in self.store.find(PaymentMethod):
             if method.operation.pay_on_sale_confirm():
-                self.group.pay_method_payments(method.method_name)
+                self.group.pay_method_payments(method.method_name,
+                                               source_account=source_account,
+                                               destination_account=destination_account)
 
         old_status = self.status
         self._set_sale_status(Sale.STATUS_CONFIRMED)

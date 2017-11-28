@@ -108,10 +108,10 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
                   row: 'Luz', None, Decimal('258.66')
                   row: 'Salários', None, Decimal('9195.24')
                   row: 'Telefonia', None, Decimal('232.30')
-                row: 'Imbalance', None, Decimal('0.00')
+                row: 'Imbalance', None, Decimal('-436.00')
                 row: 'Income', None, Decimal('-45752.82')
                 row: 'Saldos Iniciais', None, 0
-                row: 'Tills', None, 0
+                row: 'Tills', None, Decimal('436.00')
           GtkBox(orientation=vertical):
             GtkBox(orientation=horizontal, fill=True, padding=6):
               GtkBox(orientation=vertical, padding=6):

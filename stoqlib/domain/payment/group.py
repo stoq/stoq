@@ -188,14 +188,18 @@ class PaymentGroup(Domain):
                 continue
             payment.pay()
 
-    def pay_method_payments(self, method_name):
+    def pay_method_payments(self, method_name, source_account=None,
+                            destination_account=None):
         """Pay all |payments| of a method in this group
 
         :param method_name: the method of the payments to be paid
+        :param source_account: the account the payments are coming from.
+        :param destination_account: the account the payments are goint to.
         """
         for payment in self.get_valid_payments():
             if payment.is_of_method(method_name) and not payment.is_paid():
-                payment.pay()
+                payment.pay(source_account=source_account,
+                            destination_account=destination_account)
 
     def cancel(self):
         """Cancel all pending |payments| in this group

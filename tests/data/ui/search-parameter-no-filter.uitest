@@ -12,6 +12,7 @@ GtkBox(vbox1, orientation=vertical):
     row: 'Accounts', 'Parent bank account', 'Banks'
     row: 'Accounts', 'Parent till account', 'Tills'
     row: 'Accounts', 'Imbalance account', 'Imbalance'
+    row: 'Accounts', "Sales' payments account", ''
     row: 'General', 'Primary company', 'Moda Stoq'
     row: 'General', 'Custom logotype for reports', ''
     row: 'General', 'Disable cookies', 'No'

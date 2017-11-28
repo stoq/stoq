@@ -1664,12 +1664,13 @@ class TestSale(DomainTest):
         sale = self.create_sale()
         self.add_product(sale)
         sale.order()
-        payment = self.add_payments(sale, method_type=u'money')[0]
-        account = self.create_account()
-        payment.method.destination_account = account
-        self.assertTrue(account.transactions.is_empty())
+        self.add_payments(sale, method_type=u'money')
+
+        account = sysparam.get_object(self.store, 'TILLS_ACCOUNT')
+        transaction_count = account.transactions.count()
         sale.confirm()
-        self.assertFalse(account.transactions.is_empty())
+        # There should be one more transaction in the tills account
+        self.assertEqual(account.transactions.count(), transaction_count + 1)
 
     def test_payments(self):
         sale = self.create_sale()

@@ -413,7 +413,7 @@ class Payment(Domain):
         self.status = self.STATUS_PAID
 
         if (self.is_separate_payment() or
-            self.method.operation.create_transaction()):
+                self.method.operation.create_transaction()):
             AccountTransaction.create_from_payment(
                 self,
                 code=account_transaction_number,
