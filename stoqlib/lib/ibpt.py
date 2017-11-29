@@ -36,6 +36,7 @@ from decimal import Decimal
 
 from stoqlib.database.runtime import get_current_branch, new_store
 from stoqlib.lib.defaults import quantize
+from stoqlib.lib.parameters import sysparam
 
 taxes_data = {}
 TaxInfo = namedtuple('TaxInfo', 'nacionalfederal, importadosfederal, estadual,'
@@ -102,11 +103,12 @@ class IBPTGenerator(object):
         sellable = item.sellable
         product = sellable.product
         service = sellable.service
+        delivery = sysparam.get_object(item.store, 'DELIVERY_SERVICE').sellable
         if product:
             code = product.ncm or ''
             ex_tipi = self._format_ex(product.ex_tipi)
         else:
-            if not self.include_services:
+            if not self.include_services or sellable == delivery:
                 return
 
             code = '%04d' % int(service.service_list_item_code.replace('.', ''))
