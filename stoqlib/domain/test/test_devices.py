@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 import mock
+from serial.serialutil import SerialException
 
 from stoqdrivers.serialbase import VirtualPort
 from stoqlib.domain.devices import DeviceSettings, _
@@ -83,6 +84,46 @@ class TestDeviceSettings(DomainTest):
         NonFiscalPrinter.assert_called_with(brand=None, model=None, port=None,
                                             product_id=1, vendor_id=10,
                                             interface='usb')
+
+    @mock.patch('stoqlib.domain.devices.NonFiscalPrinter')
+    @mock.patch('stoqlib.domain.devices.SerialPort')
+    def test_get_interface_serial(self, SerialPort, NonFiscalPrinter):
+        device = DeviceSettings(store=self.store,
+                                device_name=u'/dev/ttyUSB0',
+                                type=DeviceSettings.NON_FISCAL_PRINTER_DEVICE)
+        port0 = SerialPort(device=device.device_name)
+        port1 = SerialPort(device=u'/dev/ttyUSB1')
+        SerialPort.side_effect = [port0, SerialException, port1]
+        obj = object()
+        NonFiscalPrinter.return_value = obj
+        self.assertIs(device.get_interface(), obj)
+        SerialPort.assert_called_with(baudrate=9600, device=device.device_name)
+        NonFiscalPrinter.assert_called_with(brand=None, model=None, port=port0,
+                                            product_id=None, vendor_id=None,
+                                            interface='serial')
+        with mock.patch('os.path.exists') as mock_os:
+            # Raising the SerialException because the device port has changed names.
+            mock_os.side_effect = [False, True]
+            SerialPort.assert_called_with(baudrate=9600, device=u'/dev/ttyUSB0')
+            device.device_name = u'/dev/ttyUSB1'
+            self.assertIs(device.get_interface(), obj)
+            NonFiscalPrinter.assert_called_with(brand=None, model=None, port=port1,
+                                                product_id=None, vendor_id=None,
+                                                interface='serial')
+
+        with mock.patch('os.path.exists') as mock_os:
+            with self.assertRaises(SerialException):
+                # SerialException, but the port is correct or OS is not Linux.
+                mock_os.return_value = True
+                SerialPort.side_effect = SerialException
+                device.get_interface()
+
+        with mock.patch('os.path.exists') as mock_os:
+            with self.assertRaises(SerialException):
+                # Device not in any ports we search.
+                mock_os.return_value = False
+                SerialPort.side_effect = SerialException
+                device.get_interface()
 
     def test_get_interface_virtual(self):
         device = DeviceSettings(store=self.store, brand=u'virtual',
