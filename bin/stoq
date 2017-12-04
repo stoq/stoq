@@ -120,6 +120,46 @@ if platform.system() == 'Windows':
             setattr(sys, name, fp)
 
 
+def setup_stoq_eggs():
+    # Check if there are eggs on the stoq database (without using stoq at all).
+    # this will allow us to insert an egg in the database and all clients will
+    # use that egg instead of the installed stoq.
+    from ConfigParser import SafeConfigParser
+    import psycopg2
+    import tempfile
+
+    if platform.system() == 'Windows':
+        config_path = os.path.join(os.environ['ALLUSERSPROFILE'], 'stoq', 'stoq.conf')
+    else:
+        config_path = os.path.expanduser('~/.stoq/stoq.conf')
+    if not os.path.exists(config_path):
+        return
+
+    config = SafeConfigParser()
+    config.read(config_path)
+
+    dsn = "dbname={dbname} user={dbusername} port={port}".format(
+        dbname=config.get('Database', 'dbname'),
+        dbusername=config.get('Database', 'dbusername'),
+        port=config.get('Database', 'port'),
+    )
+    if config.get('Database', 'address'):
+        dsn = dsn + ' host={address}'.format(address=config.get('Database',
+                                                                'address'))
+    conn = psycopg2.connect(dsn)
+    cursor = conn.cursor()
+    cursor.execute('SELECT plugin_name, egg_content FROM plugin_egg')
+    for (name, data) in cursor.fetchall():
+        tmp = tempfile.NamedTemporaryFile(prefix=name, suffix='.egg', delete=False)
+        tmp.write(data)
+        sys.path.insert(0, tmp.name)
+
+try:
+    setup_stoq_eggs()
+except Exception as e:
+    print 'Cant load eggs from database', str(e)
+
+
 trial = False
 if trial:
     from stoqlib.gui.base import dialogs

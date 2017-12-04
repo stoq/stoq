@@ -296,14 +296,14 @@ class StoqCommandHandler:
         from stoqlib.lib.fileutils import md5sum_for_filename
 
         print('Inserting plugin egg %s %s' % (plugin_name, filename))
-        md5sum = str(md5sum_for_filename(filename))
+        md5sum = unicode(md5sum_for_filename(filename))
         with open(filename, 'rb') as f:
             with new_store() as store:
-                plugin_egg = store.find(PluginEgg, plugin_name=plugin_name).one()
+                plugin_egg = store.find(PluginEgg, plugin_name=unicode(plugin_name)).one()
                 if plugin_egg is None:
                     plugin_egg = PluginEgg(
                         store=store,
-                        plugin_name=plugin_name,
+                        plugin_name=unicode(plugin_name),
                     )
                 plugin_egg.egg_content = f.read()
                 plugin_egg.egg_md5sum = md5sum
