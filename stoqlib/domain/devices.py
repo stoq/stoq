@@ -27,6 +27,10 @@ Domain classes related to stoqdrivers package.
 
 # pylint: enable=E1101
 
+import os
+import platform
+from serial.serialutil import SerialException
+
 from stoqdrivers.printers.cheque import ChequePrinter
 from stoqdrivers.printers.nonfiscal import NonFiscalPrinter
 from stoqdrivers.scales.scales import Scale
@@ -46,6 +50,8 @@ from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+
+MAX_TTY_SEEKING = 3
 
 
 @implementer(IActive)
@@ -101,6 +107,23 @@ class DeviceSettings(Domain):
     def describe_device_type(self, type):
         return DeviceSettings.device_types[type]
 
+    def _get_serial_port(self):
+        try:
+            return SerialPort(device=self.device_name, baudrate=self.baudrate)
+        except SerialException:
+            # Linux may rename the serial-usb port in which the device is connected
+            # inadvertedly.
+            # XXX: If there are 2 or more ttyUSB devices connected, this may not work.
+            if platform.system() != 'Linux' or os.path.exists(self.device_name):
+                raise
+
+            for i in range(MAX_TTY_SEEKING):
+                temp_device_name = self.device_name[:-1] + str(i)
+                if os.path.exists(temp_device_name):
+                    return SerialPort(device=temp_device_name, baudrate=self.baudrate)
+
+            raise
+
     # XXX: Maybe stoqdrivers can implement a generic way to do this?
     def get_interface(self):
         """ Based on the column values instantiate the stoqdrivers interface
@@ -119,7 +142,7 @@ class DeviceSettings(Domain):
         else:
             # Serial device
             interface = 'serial'
-            port = SerialPort(device=self.device_name, baudrate=self.baudrate)
+            port = self._get_serial_port()
             product_id = vendor_id = None
 
         if self.type == DeviceSettings.CHEQUE_PRINTER_DEVICE:
