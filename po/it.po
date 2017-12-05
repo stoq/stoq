@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-23 02:10-0200\n"
+"POT-Creation-Date: 2017-12-04 02:10-0200\n"
 "PO-Revision-Date: 2017-11-23 04:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Italian (http://www.transifex.com/async/stoq/language/it/)\n"
@@ -357,7 +357,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/salequotewizard.py:419
 #: ../stoqlib/gui/wizards/salereturnwizard.py:235
 #: ../stoqlib/gui/wizards/salewizard.py:444
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:246
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:250
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:67
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:344
 #: ../stoqlib/reporting/product.py:128
@@ -375,7 +375,7 @@ msgstr ""
 
 #: ../data/glade/BatchSelectionDialog.ui.h:6
 #: ../stoqlib/gui/wizards/inventorywizard.py:181
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:184
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:188
 msgid "Total quantity:"
 msgstr "Quantità totale:"
 
@@ -2721,6 +2721,7 @@ msgid "The sale is not listed here"
 msgstr ""
 
 #: ../data/glade/SalesPersonQuoteWizardStep.ui.h:3
+#: ../data/glade/StartStockDecreaseStep.ui.h:9
 #: ../data/glade/WorkOrderQuoteStartStep.ui.h:3
 msgid "Operation Nature:"
 msgstr ""
@@ -3575,7 +3576,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/salequotewizard.py:410
 #: ../stoqlib/gui/wizards/salereturnwizard.py:218
 #: ../stoqlib/gui/wizards/salewizard.py:440
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:241
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:245
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:168
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:338
 #: ../stoqlib/reporting/product.py:89 ../stoqlib/reporting/product.py:126
@@ -3991,7 +3992,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/salequotewizard.py:406
 #: ../stoqlib/gui/wizards/salereturnwizard.py:214
 #: ../stoqlib/gui/wizards/salewizard.py:436
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:240
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:244
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:166
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:334
 #: ../stoqlib/reporting/product.py:88 ../stoqlib/reporting/product.py:125
@@ -4115,7 +4116,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/receivingwizard.py:263
 #: ../stoqlib/gui/wizards/salequotewizard.py:417
 #: ../stoqlib/gui/wizards/salewizard.py:442
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:244
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:248
 #: ../stoqlib/net/calendarevents.py:160
 msgid "Category"
 msgstr ""
@@ -4205,7 +4206,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/salequotewizard.py:444
 #: ../stoqlib/gui/wizards/salereturnwizard.py:238
 #: ../stoqlib/gui/wizards/salewizard.py:450
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:255
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:259
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:175
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:351
 #: ../stoqlib/reporting/financial.py:181 ../stoqlib/reporting/financial.py:241
@@ -4547,7 +4548,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/purchasewizard.py:305
 #: ../stoqlib/gui/wizards/receivingwizard.py:272
 #: ../stoqlib/gui/wizards/salequotewizard.py:425
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:254
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:258
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:177
 msgid "Cost"
 msgstr ""
@@ -5160,7 +5161,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/purchasewizard.py:303
 #: ../stoqlib/gui/wizards/receivingwizard.py:270
 #: ../stoqlib/gui/wizards/salequotewizard.py:421
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:248
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:252
 #: ../stoqlib/reporting/product.py:129
 msgid "Unit"
 msgstr ""
@@ -6432,7 +6433,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/receivingwizard.py:458
 #: ../stoqlib/gui/wizards/salequotewizard.py:731
 #: ../stoqlib/gui/wizards/salereturnwizard.py:537
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:334
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:340
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:255
 msgid "Don't print"
 msgstr ""
@@ -15596,7 +15597,7 @@ msgstr ""
 
 #: ../stoqlib/gui/slaves/paymentconfirmslave.py:573
 #: ../stoqlib/gui/wizards/salewizard.py:601
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:108
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:109
 msgid "No cost center."
 msgstr ""
 
@@ -16691,7 +16692,7 @@ msgid "Would you like to print the receipt now?"
 msgstr ""
 
 #: ../stoqlib/gui/wizards/loanwizard.py:465
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:334
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:340
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:255
 msgid "Print receipt"
 msgstr ""
@@ -17035,19 +17036,19 @@ msgstr ""
 msgid "Sale Checkout"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:303
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:307
 msgid "Manual Stock Decrease"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:309
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:313
 msgid "Receiving Order Return"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:332
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:338
 msgid "Would you like to print a receipt?"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:358
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:364
 msgid "There are some items with missing tax information"
 msgstr ""
 

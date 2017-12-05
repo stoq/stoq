@@ -17,9 +17,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-23 02:10-0200\n"
-"PO-Revision-Date: 2017-11-23 04:10+0000\n"
-"Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
+"POT-Creation-Date: 2017-12-04 02:10-0200\n"
+"PO-Revision-Date: 2017-12-04 13:15+0000\n"
+"Last-Translator: Felipe Nehmi <fhbnehmi@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -364,7 +364,7 @@ msgstr "Lote"
 #: ../stoqlib/gui/wizards/salequotewizard.py:419
 #: ../stoqlib/gui/wizards/salereturnwizard.py:235
 #: ../stoqlib/gui/wizards/salewizard.py:444
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:246
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:250
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:67
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:344
 #: ../stoqlib/reporting/product.py:128
@@ -382,7 +382,7 @@ msgstr "Quantidade faltante:"
 
 #: ../data/glade/BatchSelectionDialog.ui.h:6
 #: ../stoqlib/gui/wizards/inventorywizard.py:181
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:184
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:188
 msgid "Total quantity:"
 msgstr "Quantidade total:"
 
@@ -2606,11 +2606,11 @@ msgstr "Detalhes da venda"
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:11
 msgid "New Sale:"
-msgstr ""
+msgstr "Nova Venda:"
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:12
 msgid "New sale details"
-msgstr ""
+msgstr "Detalhes da nova venda"
 
 #: ../data/glade/ReturnedSalesDetails.ui.h:13
 msgid "Returned Items"
@@ -2728,6 +2728,7 @@ msgid "The sale is not listed here"
 msgstr "A venda não está listada aqui"
 
 #: ../data/glade/SalesPersonQuoteWizardStep.ui.h:3
+#: ../data/glade/StartStockDecreaseStep.ui.h:9
 #: ../data/glade/WorkOrderQuoteStartStep.ui.h:3
 msgid "Operation Nature:"
 msgstr "Natureza da operação:"
@@ -3582,7 +3583,7 @@ msgstr "Forma"
 #: ../stoqlib/gui/wizards/salequotewizard.py:410
 #: ../stoqlib/gui/wizards/salereturnwizard.py:218
 #: ../stoqlib/gui/wizards/salewizard.py:440
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:241
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:245
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:168
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:338
 #: ../stoqlib/reporting/product.py:89 ../stoqlib/reporting/product.py:126
@@ -3998,7 +3999,7 @@ msgstr "Operações de crédito"
 #: ../stoqlib/gui/wizards/salequotewizard.py:406
 #: ../stoqlib/gui/wizards/salereturnwizard.py:214
 #: ../stoqlib/gui/wizards/salewizard.py:436
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:240
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:244
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:166
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:334
 #: ../stoqlib/reporting/product.py:88 ../stoqlib/reporting/product.py:125
@@ -4122,7 +4123,7 @@ msgstr "Data de expiração"
 #: ../stoqlib/gui/wizards/receivingwizard.py:263
 #: ../stoqlib/gui/wizards/salequotewizard.py:417
 #: ../stoqlib/gui/wizards/salewizard.py:442
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:244
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:248
 #: ../stoqlib/net/calendarevents.py:160
 msgid "Category"
 msgstr "Categoria"
@@ -4212,7 +4213,7 @@ msgstr "Preço"
 #: ../stoqlib/gui/wizards/salequotewizard.py:444
 #: ../stoqlib/gui/wizards/salereturnwizard.py:238
 #: ../stoqlib/gui/wizards/salewizard.py:450
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:255
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:259
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:175
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:351
 #: ../stoqlib/reporting/financial.py:181 ../stoqlib/reporting/financial.py:241
@@ -4554,7 +4555,7 @@ msgstr "Itens do pedido de compra"
 #: ../stoqlib/gui/wizards/purchasewizard.py:305
 #: ../stoqlib/gui/wizards/receivingwizard.py:272
 #: ../stoqlib/gui/wizards/salequotewizard.py:425
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:254
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:258
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:177
 msgid "Cost"
 msgstr "Custo"
@@ -5167,7 +5168,7 @@ msgstr "A impressora fiscal não tem a constante para o imposto '%s'"
 #: ../stoqlib/gui/wizards/purchasewizard.py:303
 #: ../stoqlib/gui/wizards/receivingwizard.py:270
 #: ../stoqlib/gui/wizards/salequotewizard.py:421
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:248
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:252
 #: ../stoqlib/reporting/product.py:129
 msgid "Unit"
 msgstr "Unidade"
@@ -6439,7 +6440,7 @@ msgstr "Imprimir detalhes da cotação"
 #: ../stoqlib/gui/wizards/receivingwizard.py:458
 #: ../stoqlib/gui/wizards/salequotewizard.py:731
 #: ../stoqlib/gui/wizards/salereturnwizard.py:537
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:334
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:340
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:255
 msgid "Don't print"
 msgstr "Não imprimir"
@@ -15603,7 +15604,7 @@ msgstr "Note que esta operação não vai gerar um registro de caixa pelo pagame
 
 #: ../stoqlib/gui/slaves/paymentconfirmslave.py:573
 #: ../stoqlib/gui/wizards/salewizard.py:601
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:108
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:109
 msgid "No cost center."
 msgstr "Nenhum centro de custos."
 
@@ -16698,7 +16699,7 @@ msgid "Would you like to print the receipt now?"
 msgstr "Você gostaria de imprimir o recibo agora?"
 
 #: ../stoqlib/gui/wizards/loanwizard.py:465
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:334
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:340
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:255
 msgid "Print receipt"
 msgstr "Imprimir recibo"
@@ -17042,19 +17043,19 @@ msgstr "O número da nota fiscal já existe."
 msgid "Sale Checkout"
 msgstr "Confirmar venda"
 
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:303
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:307
 msgid "Manual Stock Decrease"
 msgstr "Saída manual"
 
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:309
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:313
 msgid "Receiving Order Return"
 msgstr "Devolução de Recebimento de Compra"
 
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:332
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:338
 msgid "Would you like to print a receipt?"
 msgstr "Você gostaria de imprimir um recibo?"
 
-#: ../stoqlib/gui/wizards/stockdecreasewizard.py:358
+#: ../stoqlib/gui/wizards/stockdecreasewizard.py:364
 msgid "There are some items with missing tax information"
 msgstr "Existem alguns itens sem informações de impostos"
 
@@ -17920,12 +17921,12 @@ msgstr "Quando este parâmetro é Verdadeiro, permite ao usuário cancelar venda
 
 #: ../stoqlib/lib/parameters.py:335
 msgid "Allow to cancel ordered sales"
-msgstr ""
+msgstr "Permitir cancelar vendas pedidas"
 
 #: ../stoqlib/lib/parameters.py:336
 msgid ""
 "When this parameter is True, allow the user to cancel ordered and paid sales"
-msgstr ""
+msgstr "Quando este parâmetro estiver ativado,  o usuário poderá cancelar vendas pedidas e pagas."
 
 #: ../stoqlib/lib/parameters.py:343
 msgid "Default city"
@@ -18016,7 +18017,7 @@ msgstr "Uma vez que este parâmetro esteja setado, a confirmação de vendas ser
 
 #: ../stoqlib/lib/parameters.py:418
 msgid "Requires quantity confirmation after barcode activation"
-msgstr ""
+msgstr "Solicitar confirmação da quantidade após inserção do código de barras"
 
 #: ../stoqlib/lib/parameters.py:419
 msgid ""
@@ -18026,18 +18027,18 @@ msgstr "O sistema irá sempre exigir a quantidade dos produtos antes de adiciona
 
 #: ../stoqlib/lib/parameters.py:425
 msgid "POS"
-msgstr ""
+msgstr "PDV"
 
 #: ../stoqlib/lib/parameters.py:426
 msgid "Allow to change sellable price in POS app"
-msgstr ""
+msgstr "Permitir alterar o preço do item no aplicativo Ponto de Vendas"
 
 #: ../stoqlib/lib/parameters.py:427
 msgid ""
 "When adding a sellable do a sale in the POS app, should the user be allowed "
 "to edit the sale price of the selected sellable. This depends on the "
 "parameter \"Require quantity confirmation after barcode activation\""
-msgstr ""
+msgstr "Ao adicionar um item à uma venda no aplicativo Ponto de Vendas, o usuário poderá editar o preço do item selecionado. Isso depende do parâmetro \"Solicitar confirmação da quantidade após inserção do código de barras\""
 
 #: ../stoqlib/lib/parameters.py:436
 msgid "Change salesperson"
