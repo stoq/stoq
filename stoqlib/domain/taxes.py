@@ -473,7 +473,7 @@ class InvoiceItemPis(BasePIS):
             self.v_bc = quantize(invoice_item.quantity * invoice_item.price)
 
         if self.p_pis is not None:
-            self.v_pis = self.v_bc * self.p_pis / 100
+            self.v_pis = quantize(self.v_bc * self.p_pis / 100)
 
     @classmethod
     def get_tax_template(cls, invoice_item):
@@ -545,7 +545,7 @@ class InvoiceItemCofins(BaseCOFINS):
             self.v_bc = quantize(invoice_item.quantity * invoice_item.price)
 
         if self.p_cofins is not None:
-            self.v_cofins = self.v_bc * self.p_cofins / 100
+            self.v_cofins = quantize(self.v_bc * self.p_cofins / 100)
 
     @classmethod
     def get_tax_template(cls, invoice_item):
