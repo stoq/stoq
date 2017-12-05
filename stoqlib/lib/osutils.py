@@ -72,11 +72,17 @@ def get_documents_dir():
     if _system == 'Linux':
         return _get_xdg_dir("XDG_DOCUMENTS_DIR", "~/Documents")
     elif _system == 'Windows':
-        from win32com.shell import shell
-        MY_DOCUMENTS = "::{450d8fba-ad25-11d0-98a8-0800361b1103}"
-        folder = shell.SHGetDesktopFolder()
-        pidl = folder.ParseDisplayName(0, None, MY_DOCUMENTS)[1]
-        return shell.SHGetPathFromIDList(pidl)
+        import ctypes.wintypes
+        # See the url for the constants definition
+        # https://installmate.com/support/im9/using/symbols/functions/csidls.htm
+        CSIDL_PERSONAL = 5  # My Documents
+        SHGFP_TYPE_CURRENT = 0  # Get current, not default value
+
+        buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
+        ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None,
+                                               SHGFP_TYPE_CURRENT, buf)
+
+        return buf.value
     elif _system == 'Darwin':
         return os.path.join(os.environ['HOME'], 'Documents')
     else:
