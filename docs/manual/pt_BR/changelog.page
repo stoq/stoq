@@ -5,7 +5,7 @@
   <title>Novidades da versão</title>
   <info>
     <desc>
-      Novidades da versão 2.1
+      Novidades da versão 2.2
     </desc>
 
     <link type="guide" xref="index" group="changelog" />
@@ -35,14 +35,12 @@
     <section>
       <title>Principais funcionalidades</title>
       <list>
-        <item><p>Nova galeria de imagens, permitindo o registro de mais de uma imagem por produto</p></item>
-        <item><p>Novo modo de visão Kanban para o aplicativo Serviços</p></item>
-        <item><p>Atualização das tabelas do IBPT</p></item>
+        <item><p>Entregas para saídas manuais</p></item>
+        <item><p>Devolução de compras para fornecedor</p></item>
+        <item><p>Suporte à novas informações para entregas</p></item>
+        <item><p>Melhorias no processo de vendas utilizando token/comanda</p></item>
         <item><p>Aperfeiçoamentos nos processos de emissão de NF-e/NFC-e</p></item>
-        <item><p>Suporte inicial à emissão de NFS-e (Nota Fiscal de Serviços Eletrônica)</p></item>
-        <item><p>Adaptações no aplicativo PDV para atender melhor
-                 restaurantes, bares e similares que registram vendas utilizando
-                 comandas.</p></item>
+        <item><p>Aperfeiçoamentos no suporte à emissão de NFS-e (Nota Fiscal de Serviços Eletrônica)</p></item>
         <item><p>Diversas correções e melhorias</p></item>
       </list>
     </section>
