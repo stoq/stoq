@@ -378,6 +378,9 @@ class SaleReturnInvoiceStep(WizardEditorStep):
     def has_next_step(self):
         if isinstance(self.wizard, SaleTradeWizard):
             return False
+        # If we are creating a credit, there is not need to recreate the payments
+        if self.credit_checkbutton.read():
+            return False
         return self.model.total_amount > 0
 
     def setup_proxies(self):
@@ -416,6 +419,10 @@ class SaleReturnInvoiceStep(WizardEditorStep):
 
     def on_credit_checkbutton__toggled(self, widget):
         self.wizard.credit = self.credit_checkbutton.read()
+        if self.wizard.credit:
+            self.wizard.enable_finish()
+        else:
+            self.wizard.disable_finish()
 
 
 class SaleReturnPaymentStep(WizardEditorStep):

@@ -532,7 +532,7 @@ class ReturnedSale(Domain):
         self._clean_not_used_items()
 
         payment = None
-        if self.total_amount == 0:
+        if self.total_amount == 0 and method_name != 'credit':
             # The client does not owe anything to us
             self.group.cancel()
         elif self.total_amount < 0:
@@ -543,17 +543,11 @@ class ReturnedSale(Domain):
                     # us anything, we do now. Cancel pending payments
                     payment.cancel()
 
-            method = PaymentMethod.get_by_name(self.store, method_name)
-            description = _(u'%s returned for sale %s') % (method.description,
-                                                           self.sale.identifier)
-            payment = method.create_payment(Payment.TYPE_OUT,
-                                            payment_group=self.group,
-                                            branch=self.branch,
-                                            value=self.total_amount_abs,
-                                            description=description)
-            payment.set_pending()
-            if method_name == u'credit':
-                payment.pay()
+            self._create_return_payment(method_name, self.total_amount_abs)
+        elif method_name == u'credit':
+            # The out payments are not paid yet, but the user choose to create credit
+            # anyway. Leave the payments as they are and do create the credit
+            self._create_return_payment(method_name, self.returned_total)
 
         # FIXME: For now, we are not reverting the comission as there is a
         # lot of things to consider. See bug 5215 for information about it.
@@ -677,6 +671,19 @@ class ReturnedSale(Domain):
     #
     #  Private
     #
+
+    def _create_return_payment(self, method_name, value):
+        method = PaymentMethod.get_by_name(self.store, method_name)
+        description = _(u'%s returned for sale %s') % (method.description,
+                                                       self.sale.identifier)
+        payment = method.create_payment(Payment.TYPE_OUT,
+                                        payment_group=self.group,
+                                        branch=self.branch,
+                                        value=value,
+                                        description=description)
+        payment.set_pending()
+        if method_name == u'credit':
+            payment.pay()
 
     def _get_cancel_candidate_payment(self, pending_only=False):
         """Try to find a payment to cancel for a canceled operation
