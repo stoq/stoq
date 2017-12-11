@@ -225,6 +225,31 @@ class TestReturnedSale(DomainTest):
                          quantity=0)
         rsale.return_(u'credit')
 
+    def test_return_unpaid_with_credit(self):
+        branch = get_current_branch(self.store)
+        sale_item = self.create_sale_item()
+        sale = sale_item.sale
+        sellable = sale_item.sellable
+        self.create_storable(product=sellable.product, branch=branch, stock=10)
+        self.add_payments(sale, method_type=u'bill', installments=1)
+        sale.order()
+        sale.confirm()
+
+        rsale = ReturnedSale(branch=branch,
+                             sale=sale,
+                             store=self.store)
+        ReturnedSaleItem(store=self.store,
+                         returned_sale=rsale,
+                         sale_item=sale_item,
+                         quantity=1)
+
+        # Before the return there is not out payment
+        self.assertIsNone(sale.group.payments.find(payment_type=Payment.TYPE_OUT).one())
+        rsale.return_(u'credit')
+
+        # There should be one payment with a credit for the returned value
+        self.assertIsNotNone(sale.group.payments.find(payment_type=Payment.TYPE_OUT).one())
+
     def test_trade_as_discount(self):
         sale = self.create_sale(branch=get_current_branch(self.store))
         self.assertEqual(sale.discount_value, currency(0))
