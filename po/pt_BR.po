@@ -17,9 +17,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-06 02:10-0200\n"
-"PO-Revision-Date: 2017-12-05 04:10+0000\n"
-"Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
+"POT-Creation-Date: 2017-12-11 02:10-0200\n"
+"PO-Revision-Date: 2017-12-11 15:55+0000\n"
+"Last-Translator: Felipe Nehmi <fhbnehmi@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -406,7 +406,7 @@ msgstr "Situação da filial:"
 #: ../plugins/books/booksdomain.py:67 ../plugins/ecf/ecfdomain.py:220
 #: ../plugins/ecf/ecfprinterdialog.py:332
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:3
-#: ../stoqlib/domain/devices.py:184 ../stoqlib/domain/payment/method.py:123
+#: ../stoqlib/domain/devices.py:206 ../stoqlib/domain/payment/method.py:123
 #: ../stoqlib/domain/person.py:657 ../stoqlib/domain/person.py:776
 #: ../stoqlib/domain/person.py:1212 ../stoqlib/domain/person.py:1255
 #: ../stoqlib/domain/person.py:1417 ../stoqlib/domain/person.py:1471
@@ -414,7 +414,7 @@ msgstr "Situação da filial:"
 #: ../stoqlib/domain/person.py:1687 ../stoqlib/domain/person.py:1837
 #: ../stoqlib/domain/person.py:1924 ../stoqlib/domain/person.py:2317
 #: ../stoqlib/domain/person.py:2368 ../stoqlib/domain/station.py:114
-#: ../stoqlib/domain/test/test_devices.py:118
+#: ../stoqlib/domain/test/test_devices.py:159
 #: ../stoqlib/domain/test/test_person.py:1140
 #: ../stoqlib/domain/test/test_person.py:1159
 #: ../stoqlib/gui/dialogs/certificatedialog.py:102
@@ -435,7 +435,7 @@ msgstr "Ativo"
 #: ../data/glade/TransporterDataSlave.ui.h:4
 #: ../data/glade/UserStatusSlave.ui.h:3 ../plugins/books/booksdomain.py:45
 #: ../plugins/books/booksdomain.py:68 ../plugins/ecf/ecfdomain.py:221
-#: ../stoqlib/domain/devices.py:185 ../stoqlib/domain/payment/method.py:124
+#: ../stoqlib/domain/devices.py:207 ../stoqlib/domain/payment/method.py:124
 #: ../stoqlib/domain/person.py:658 ../stoqlib/domain/person.py:777
 #: ../stoqlib/domain/person.py:894 ../stoqlib/domain/person.py:1213
 #: ../stoqlib/domain/person.py:1256 ../stoqlib/domain/person.py:1418
@@ -443,7 +443,7 @@ msgstr "Ativo"
 #: ../stoqlib/domain/person.py:1645 ../stoqlib/domain/person.py:1688
 #: ../stoqlib/domain/person.py:1838 ../stoqlib/domain/person.py:1925
 #: ../stoqlib/domain/person.py:2319 ../stoqlib/domain/person.py:2370
-#: ../stoqlib/domain/station.py:115 ../stoqlib/domain/test/test_devices.py:120
+#: ../stoqlib/domain/station.py:115 ../stoqlib/domain/test/test_devices.py:161
 #: ../stoqlib/domain/test/test_person.py:1096
 #: ../stoqlib/domain/test/test_person.py:1142
 #: ../stoqlib/domain/test/test_person.py:1161
@@ -7279,7 +7279,7 @@ msgstr "Marcar como recebido..."
 
 #: ../stoq/gui/delivery.py:106
 msgid "Mark the selected delivery as received by the recipient"
-msgstr ""
+msgstr "Marcar a entrega selecionada como recebida pelo destinatário"
 
 #: ../stoq/gui/delivery.py:107 ../stoq/gui/inventory.py:89
 #: ../stoq/gui/payable.py:101 ../stoq/gui/pos.py:233
@@ -7338,11 +7338,11 @@ msgstr "Nenhuma entrega recebida encontrada"
 
 #: ../stoq/gui/delivery.py:203
 msgid "Operation #"
-msgstr ""
+msgstr "Operação #"
 
 #: ../stoq/gui/delivery.py:205
 msgid "Operation Nature"
-msgstr ""
+msgstr "Natureza da Operação"
 
 #: ../stoq/gui/delivery.py:212
 msgid "Status (Description)"
@@ -7410,7 +7410,7 @@ msgstr "Marcar como empacotada"
 
 #: ../stoq/gui/delivery.py:289
 msgid "This will mark the delivery as sent to the recipient. Are you sure?"
-msgstr ""
+msgstr "Isso irá marcar a entrega como enviada para o destinatário. Você tem certeza?"
 
 #: ../stoq/gui/delivery.py:291
 msgid "Mark as sent"
@@ -7419,7 +7419,7 @@ msgstr "Marcar como entregue"
 #: ../stoq/gui/delivery.py:302
 msgid ""
 "This will mark the delivery as received by the recipient. Are you sure?"
-msgstr ""
+msgstr "Isso irá marcar a entrega como recebida pelo destinatário. Você tem certeza?"
 
 #: ../stoq/gui/delivery.py:304
 msgid "Mark as received"
@@ -9732,7 +9732,7 @@ msgstr "Apenas usuários com acesso ao aplicativo Inventário podem alterar a qu
 
 #: ../stoq/gui/stock.py:487
 msgid "Can't change stock quantity of a grid parent"
-msgstr ""
+msgstr "Não é possível alterar o estoque do produto pai da grade"
 
 #: ../stoq/gui/stock.py:490
 msgid "It's not possible to change the stock quantity of a batch product"
@@ -10373,15 +10373,15 @@ msgstr "A3: Smartcard"
 msgid "A1: Digital certificate"
 msgstr "A1: Certificado digital"
 
-#: ../stoqlib/domain/devices.py:85
+#: ../stoqlib/domain/devices.py:90
 msgid "Scale"
 msgstr "Balança"
 
-#: ../stoqlib/domain/devices.py:86
+#: ../stoqlib/domain/devices.py:91
 msgid "Non Fiscal Printer"
 msgstr "Impressora Não-Fiscal"
 
-#: ../stoqlib/domain/devices.py:87
+#: ../stoqlib/domain/devices.py:92
 msgid "Cheque Printer"
 msgstr "Impressora de cheque"
 
@@ -13126,7 +13126,7 @@ msgstr "Código de rastreio"
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:335
 msgid "Was received by recipient?"
-msgstr ""
+msgstr "Foi recebida pelo destinatário?"
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:383
 #, python-format
@@ -17053,7 +17053,7 @@ msgstr "Confirmar venda"
 
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:225
 msgid "Add Delivery"
-msgstr ""
+msgstr "Adicionar entrega"
 
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:402
 msgid "Manual Stock Decrease"
@@ -18446,11 +18446,11 @@ msgstr "Conta usada para transações de desequilíbrio"
 
 #: ../stoqlib/lib/parameters.py:749
 msgid "Sales' payments account"
-msgstr ""
+msgstr "Conta para pagamentos de vendas"
 
 #: ../stoqlib/lib/parameters.py:750
 msgid "Receivable payments originated from sales will default to this account"
-msgstr ""
+msgstr "Pagamentos recebíveis originados de vendas serão destinados à essa conta por padrão"
 
 #: ../stoqlib/lib/parameters.py:756
 msgid "Demonstration mode"

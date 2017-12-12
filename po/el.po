@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-06 02:10-0200\n"
+"POT-Creation-Date: 2017-12-11 02:10-0200\n"
 "PO-Revision-Date: 2017-12-05 04:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Greek (http://www.transifex.com/async/stoq/language/el/)\n"
@@ -397,7 +397,7 @@ msgstr ""
 #: ../plugins/books/booksdomain.py:67 ../plugins/ecf/ecfdomain.py:220
 #: ../plugins/ecf/ecfprinterdialog.py:332
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:3
-#: ../stoqlib/domain/devices.py:184 ../stoqlib/domain/payment/method.py:123
+#: ../stoqlib/domain/devices.py:206 ../stoqlib/domain/payment/method.py:123
 #: ../stoqlib/domain/person.py:657 ../stoqlib/domain/person.py:776
 #: ../stoqlib/domain/person.py:1212 ../stoqlib/domain/person.py:1255
 #: ../stoqlib/domain/person.py:1417 ../stoqlib/domain/person.py:1471
@@ -405,7 +405,7 @@ msgstr ""
 #: ../stoqlib/domain/person.py:1687 ../stoqlib/domain/person.py:1837
 #: ../stoqlib/domain/person.py:1924 ../stoqlib/domain/person.py:2317
 #: ../stoqlib/domain/person.py:2368 ../stoqlib/domain/station.py:114
-#: ../stoqlib/domain/test/test_devices.py:118
+#: ../stoqlib/domain/test/test_devices.py:159
 #: ../stoqlib/domain/test/test_person.py:1140
 #: ../stoqlib/domain/test/test_person.py:1159
 #: ../stoqlib/gui/dialogs/certificatedialog.py:102
@@ -426,7 +426,7 @@ msgstr "Ενεργό"
 #: ../data/glade/TransporterDataSlave.ui.h:4
 #: ../data/glade/UserStatusSlave.ui.h:3 ../plugins/books/booksdomain.py:45
 #: ../plugins/books/booksdomain.py:68 ../plugins/ecf/ecfdomain.py:221
-#: ../stoqlib/domain/devices.py:185 ../stoqlib/domain/payment/method.py:124
+#: ../stoqlib/domain/devices.py:207 ../stoqlib/domain/payment/method.py:124
 #: ../stoqlib/domain/person.py:658 ../stoqlib/domain/person.py:777
 #: ../stoqlib/domain/person.py:894 ../stoqlib/domain/person.py:1213
 #: ../stoqlib/domain/person.py:1256 ../stoqlib/domain/person.py:1418
@@ -434,7 +434,7 @@ msgstr "Ενεργό"
 #: ../stoqlib/domain/person.py:1645 ../stoqlib/domain/person.py:1688
 #: ../stoqlib/domain/person.py:1838 ../stoqlib/domain/person.py:1925
 #: ../stoqlib/domain/person.py:2319 ../stoqlib/domain/person.py:2370
-#: ../stoqlib/domain/station.py:115 ../stoqlib/domain/test/test_devices.py:120
+#: ../stoqlib/domain/station.py:115 ../stoqlib/domain/test/test_devices.py:161
 #: ../stoqlib/domain/test/test_person.py:1096
 #: ../stoqlib/domain/test/test_person.py:1142
 #: ../stoqlib/domain/test/test_person.py:1161
@@ -10364,15 +10364,15 @@ msgstr ""
 msgid "A1: Digital certificate"
 msgstr ""
 
-#: ../stoqlib/domain/devices.py:85
+#: ../stoqlib/domain/devices.py:90
 msgid "Scale"
 msgstr ""
 
-#: ../stoqlib/domain/devices.py:86
+#: ../stoqlib/domain/devices.py:91
 msgid "Non Fiscal Printer"
 msgstr ""
 
-#: ../stoqlib/domain/devices.py:87
+#: ../stoqlib/domain/devices.py:92
 msgid "Cheque Printer"
 msgstr ""
 
