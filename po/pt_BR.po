@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-11 02:10-0200\n"
+"POT-Creation-Date: 2017-12-12 02:10-0200\n"
 "PO-Revision-Date: 2017-12-11 15:55+0000\n"
 "Last-Translator: Felipe Nehmi <fhbnehmi@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
@@ -1636,7 +1636,7 @@ msgstr "<b>Forma:</b>"
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:4
 #: ../data/template/optical/saledetails.html:39
 #: ../stoqlib/gui/slaves/paymentslave.py:1285
-#: ../stoqlib/gui/wizards/salereturnwizard.py:397
+#: ../stoqlib/gui/wizards/salereturnwizard.py:400
 msgid "Missing:"
 msgstr "Faltando:"
 
@@ -6438,7 +6438,7 @@ msgstr "Imprimir detalhes da cotação"
 #: ../stoqlib/gui/wizards/loanwizard.py:465
 #: ../stoqlib/gui/wizards/receivingwizard.py:458
 #: ../stoqlib/gui/wizards/salequotewizard.py:733
-#: ../stoqlib/gui/wizards/salereturnwizard.py:537
+#: ../stoqlib/gui/wizards/salereturnwizard.py:544
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:435
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:255
 msgid "Don't print"
@@ -11082,21 +11082,21 @@ msgstr "Frete para o recebimento %s"
 msgid "Sale Return"
 msgstr "Devolução"
 
-#: ../stoqlib/domain/returnedsale.py:547
-#: ../stoqlib/gui/wizards/salewizard.py:236
-#, python-format
-msgid "%s returned for sale %s"
-msgstr "%s devolvido pela venda %s"
-
-#: ../stoqlib/domain/returnedsale.py:587
+#: ../stoqlib/domain/returnedsale.py:581
 #, python-format
 msgid "Traded items for sale %s"
 msgstr "Itens trocados para venda %s"
 
-#: ../stoqlib/domain/returnedsale.py:657
+#: ../stoqlib/domain/returnedsale.py:651
 #, python-format
 msgid "%s return undone for sale %s"
 msgstr "%s devolução desfeita pela venda %s"
+
+#: ../stoqlib/domain/returnedsale.py:677
+#: ../stoqlib/gui/wizards/salewizard.py:236
+#, python-format
+msgid "%s returned for sale %s"
+msgstr "%s devolvido pela venda %s"
 
 #: ../stoqlib/domain/sale.py:315
 msgid ""
@@ -15653,7 +15653,7 @@ msgstr "Conta bancária"
 #: ../stoqlib/gui/slaves/paymentslave.py:296
 #: ../stoqlib/gui/slaves/paymentslave.py:1287
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:119
-#: ../stoqlib/gui/wizards/salereturnwizard.py:395
+#: ../stoqlib/gui/wizards/salereturnwizard.py:398
 msgid "Overpaid:"
 msgstr "Pago em excesso:"
 
@@ -15684,7 +15684,7 @@ msgid "Authorization number must have 6 digits or less."
 msgstr "O número da autorização deve ter 6 dígitos ou menos."
 
 #: ../stoqlib/gui/slaves/paymentslave.py:1289
-#: ../stoqlib/gui/wizards/salereturnwizard.py:399
+#: ../stoqlib/gui/wizards/salereturnwizard.py:402
 msgid "Difference:"
 msgstr "Diferença:"
 
@@ -16984,42 +16984,42 @@ msgstr "Total a devolver:"
 msgid "Sold quantity"
 msgstr "Quantidade vendida"
 
-#: ../stoqlib/gui/wizards/salereturnwizard.py:436
+#: ../stoqlib/gui/wizards/salereturnwizard.py:443
 msgid "The client's debt has changed. Use this step to adjust the payments."
 msgstr "A dívida do cliente mudou. Utilize este passo para ajustar os pagamentos."
 
-#: ../stoqlib/gui/wizards/salereturnwizard.py:438
+#: ../stoqlib/gui/wizards/salereturnwizard.py:445
 #, python-format
 msgid ""
 "The debt before was %s and now is %s. Cancel some unpaid installments and "
 "create new ones."
 msgstr "A dívida anterior era de %s e agora é de %s. Cancele algumas parcelas não pagas e crie novas."
 
-#: ../stoqlib/gui/wizards/salereturnwizard.py:496
+#: ../stoqlib/gui/wizards/salereturnwizard.py:503
 msgid "Return Sale Order"
 msgstr "Devolver pedido de venda"
 
-#: ../stoqlib/gui/wizards/salereturnwizard.py:520
+#: ../stoqlib/gui/wizards/salereturnwizard.py:527
 msgid ""
 "The client does not have a debt to this sale anymore. Any existing unpaid "
 "installment will be cancelled."
 msgstr "O cliente não possui mais uma dívida com esta venda. Qualquer parcela existente não paga será cancelada."
 
-#: ../stoqlib/gui/wizards/salereturnwizard.py:523
+#: ../stoqlib/gui/wizards/salereturnwizard.py:530
 msgid ""
 "A reversal payment to the client will be created. You can see it on the "
 "Payable Application."
 msgstr "Um pagamento de estorno ao cliente será criado. Você pode vê-lo no aplicativo Contas a pagar."
 
-#: ../stoqlib/gui/wizards/salereturnwizard.py:536
+#: ../stoqlib/gui/wizards/salereturnwizard.py:543
 msgid "Would you like to print the credit letter?"
 msgstr "Você gostaria de imprimir a carta de crédito?"
 
-#: ../stoqlib/gui/wizards/salereturnwizard.py:537
+#: ../stoqlib/gui/wizards/salereturnwizard.py:544
 msgid "Print Letter"
 msgstr "Imprimir carta"
 
-#: ../stoqlib/gui/wizards/salereturnwizard.py:544
+#: ../stoqlib/gui/wizards/salereturnwizard.py:551
 msgid "Trade Sale Order"
 msgstr "Troca de venda"
 
