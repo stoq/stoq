@@ -246,8 +246,12 @@ class CreateDeliveryEditor(BaseEditor):
         transporter = self.store.get(Transporter, transporter_id)
         return StockOperationPersonValidationEvent.emit(transporter.person, type(transporter))
 
-    def on_recipient__validate(self, widget, person):
-        return StockOperationPersonValidationEvent.emit(person, type(person))
+    def on_recipient__validate(self, widget, recipient):
+        if type(recipient) is Person:
+            person = recipient
+        else:
+            person = recipient.person
+        return StockOperationPersonValidationEvent.emit(person, type(recipient))
 
     def _on_items__cell_edited(self, items, item, attribute):
         self.force_validation()
