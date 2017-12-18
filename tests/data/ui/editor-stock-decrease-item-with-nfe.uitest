@@ -78,15 +78,15 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Stock decrease item"', 
                 item: '2 - Preço tabelado máximo (valor)'
                 item: '3 - Valor da operação'
               GtkLabel(p_icms_st_label): 'Alíquota ICMS ST:'
-              ProxySpinButton(p_icms_st): '', insensitive
+              ProxySpinButton(p_icms_st): '0.00', insensitive
               GtkLabel(p_icms_label): 'Alíquota ICMS:'
-              ProxySpinButton(p_icms): '', insensitive
+              ProxySpinButton(p_icms): '0.00', insensitive
               GtkLabel(p_red_bc_st_label): '% Redução BC ICMS ST:'
-              ProxySpinButton(p_red_bc_st): '', insensitive
+              ProxySpinButton(p_red_bc_st): '0.00', insensitive
               GtkLabel(p_red_bc_label): '% Redução BC ICMS'
-              ProxySpinButton(p_red_bc): '', insensitive
+              ProxySpinButton(p_red_bc): '0.00', insensitive
               GtkLabel(p_mva_st_label): '% MVA ICMS ST:'
-              ProxySpinButton(p_mva_st): '', insensitive
+              ProxySpinButton(p_mva_st): '0.00', insensitive
               ProxyCheckButton(bc_include_ipi): 'Incluir IPI na BC', active, insensitive
               ProxyCheckButton(bc_st_include_ipi): 'Incluir IPI na BC ST', active, insensitive
               GtkLabel(v_bc_label): 'BC ICMS:'
@@ -99,7 +99,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Stock decrease item"', 
               ProxyEntry(v_icms_st): '', ineditable, insensitive
               GtkLabel(label1): '<b>Simples Nacional</b>'
               GtkLabel(p_cred_sn_label): 'Alíquota ICMS SN:'
-              ProxySpinButton(p_cred_sn): '', insensitive
+              ProxySpinButton(p_cred_sn): '0.00', insensitive
               GtkLabel(v_bc_st_ret_label): 'BC ICMS ST Retido:'
               ProxyEntry(v_bc_st_ret): '', insensitive
               GtkLabel(p_cred_sn_valid_until_label): 'Alíquota válida até:', hidden
