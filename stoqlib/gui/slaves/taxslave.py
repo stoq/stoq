@@ -29,6 +29,8 @@ from dateutil.relativedelta import relativedelta
 import gtk
 
 from kiwi.datatypes import ValidationError
+from kiwi.ui.widgets.combo import ProxyComboBox
+from kiwi.ui.widgets.spinbutton import ProxySpinButton
 
 from stoqlib.api import api
 from stoqlib.domain.taxes import (InvoiceItemCofins, InvoiceItemIcms,
@@ -105,6 +107,28 @@ class BaseTaxSlave(BaseEditorSlave):
                 lbl = getattr(self, widget + '_label', None)
                 if lbl:
                     lbl.set_sensitive(True)
+
+    def unset_values(self, valid_widgets):
+        """Unset the values of all the unnecessary widgets
+
+        :param valid_widgets: a list of valid widget name
+        """
+        for widget_name in self.proxy_widgets:
+            if widget_name in valid_widgets:
+                # Do not unset valid widgets
+                continue
+
+            widget = getattr(self, widget_name)
+            if isinstance(widget, ProxySpinButton):
+                # Updating all invalid ProxySpinButtons.
+                widget.update(0)
+                if widget == self.p_cred_sn:
+                    # Only unset the expiration date if the aliquot is
+                    # is also unset.
+                    self.p_cred_sn_valid_until.update(None)
+
+            if isinstance(widget, ProxyComboBox):
+                widget.select_item_by_position(0)
 
 
 class InvoiceItemMixin(object):
@@ -280,6 +304,10 @@ class BaseICMSSlave(BaseTaxSlave):
         else:
             self._update_selected_cst()
 
+    #
+    # Private API
+    #
+
     def _update_widgets(self):
         has_p_cred_sn = (self.p_cred_sn.get_sensitive()
                          and bool(self.p_cred_sn.get_value()))
@@ -296,17 +324,29 @@ class BaseICMSSlave(BaseTaxSlave):
     def _update_selected_cst(self):
         cst = self.cst.get_selected_data()
         valid_widgets = self.MAP_VALID_WIDGETS.get(cst, ('cst', ))
+        self.unset_values(valid_widgets)
         self.set_valid_widgets(valid_widgets)
 
     def _update_selected_csosn(self):
         csosn = self.csosn.get_selected_data()
         valid_widgets = self.MAP_VALID_WIDGETS.get(csosn, ('csosn', ))
+        self.unset_values(valid_widgets)
         self.set_valid_widgets(valid_widgets)
 
+    #
+    # Kiwi Callbacks
+    #
+
     def on_cst__changed(self, widget):
+        if not self.proxy:
+            return
+
         self._update_selected_cst()
 
     def on_csosn__changed(self, widget):
+        if not self.proxy:
+            return
+
         self._update_selected_csosn()
         self._update_widgets()
 
