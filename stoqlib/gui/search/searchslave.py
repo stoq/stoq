@@ -544,8 +544,8 @@ class SearchSlave(SlaveDelegate):
         :param parent: the parent widget a label should be added to or
            ``None`` if it should be added to the SearchContainer
         """
-        # if not '%s' in format:
-        #     raise ValueError("format must contain %s")
+        if not '%s' in format:
+            raise ValueError("format must contain %s")
 
         try:
             self.result_view.get_column_by_name(column)
