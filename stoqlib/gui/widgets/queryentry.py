@@ -102,7 +102,7 @@ class _QueryEntryPopup(PopupWindow):
         if len(self._model):
             self._selection.select_path(self._model[0].path)
 
-        if self._has_new_item:
+        if self._has_new_item and self.entry_gadget.item_editor is not None:
             self._model.append(
                 (_NEW_ITEM_MARKER, self.entry_gadget.NEW_ITEM_TEXT,
                  None, False, 0))
