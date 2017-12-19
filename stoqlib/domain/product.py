@@ -640,13 +640,14 @@ class Product(Domain):
     def update_product_cost(self, cost=None):
         if (self.is_package and
                 sysparam.get_bool('UPDATE_PRODUCT_COST_ON_PACKAGE_UPDATE')):
-            # We can't update if the package has more than 1 component
+            # We can't update if the package doesn't have exactly 1 component
             try:
                 component = self.get_components().one()
+                assert component is not None
                 parent_sellable = component.product.sellable
                 child_sellable = component.component.sellable
                 child_sellable.cost = parent_sellable.cost / component.quantity
-            except NotOneError:
+            except (NotOneError, AssertionError):
                 return
         if sysparam.get_bool('UPDATE_PRODUCT_COST_ON_COMPONENT_UPDATE'):
             self.update_production_cost(cost)
