@@ -1233,9 +1233,9 @@ class PosApp(ShellApp):
         :param cancel_clear: If we should cancel the sale if the checkout
             is cancelled.
         """
-        if not save_only:
+        if not save_only and len(self.sale_items) == 0:
             # The user can save a token with just a client.
-            assert len(self.sale_items) >= 1
+            return
 
         if (self._token and not len(self.sale_items) and not
                 self._suggested_client):
