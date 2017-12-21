@@ -331,6 +331,8 @@ class PosApp(ShellApp):
         # its no longer valid.
         CloseLoanWizardFinishEvent.disconnect(self._on_CloseLoanWizardFinishEvent)
 
+        self._printer.disable_midnight_check()
+
     def setup_focus(self):
         if sysparam.get_bool('USE_SALE_TOKEN') and self._token is None:
             self.sale_token.grab_focus()

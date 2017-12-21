@@ -100,10 +100,8 @@ class FiscalPrinterHelper(gobject.GObject):
       indicating if a ecf printer is present and functional.
 
     """
-                                # Closed, Blocked
-    gsignal('till-status-changed', bool, bool)
-                        # has_ecf
-    gsignal('ecf-changed', bool)
+    gsignal('till-status-changed', bool, bool)  # Closed, Blocked
+    gsignal('ecf-changed', bool)  # has_ecf
 
     def __init__(self, store, parent):
         """ Creates a new FiscalPrinterHelper object
@@ -286,6 +284,10 @@ class FiscalPrinterHelper(gobject.GObject):
         self._midnight_check_id = glib.timeout_add_seconds(
             delta.seconds, self.check_till, True)
 
+    def disable_midnight_check(self):
+        glib.source_remove(self._midnight_check_id)
+        self._midnight_check_id = None
+
     def _till_status_changed(self, closed, blocked):
         self.emit('till-status-changed', closed, blocked)
 
@@ -345,9 +347,10 @@ class FiscalPrinterHelper(gobject.GObject):
             self.emit('ecf-changed', False)
 
         if reset_midnight_check:
-            glib.source_remove(self._midnight_check_id)
-            self._midnight_check_id = None
-            self.setup_midnight_check()
+            self.disable_midnight_check()
+            # Wait a few seconds before adding the check again, otherwise we
+            # might add it a few miliseconds before midnight
+            glib.timeout_add_seconds(5, self.setup_midnight_check)
 
     def run_initial_checks(self):
         """This will check:
@@ -384,8 +387,7 @@ class FiscalCoupon(gobject.GObject):
     gsignal('cancel')
     gsignal('get-coo', retval=int)
     gsignal('get-supports-duplicate-receipt', retval=bool)
-                                   # coo, payment, value, text
-    gsignal('print-payment-receipt', int, object, object, str)
+    gsignal('print-payment-receipt', int, object, object, str)  # coo, payment, value, text
     gsignal('cancel-payment-receipt')
 
     def __init__(self, parent):
