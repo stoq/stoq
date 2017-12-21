@@ -98,10 +98,8 @@ class FiscalPrinterHelper(GObject.GObject):
       indicating if a ecf printer is present and functional.
 
     """
-                                # Closed, Blocked
-    gsignal('till-status-changed', bool, bool)
-                        # has_ecf
-    gsignal('ecf-changed', bool)
+    gsignal('till-status-changed', bool, bool)  # Closed, Blocked
+    gsignal('ecf-changed', bool)  # has_ecf
 
     def __init__(self, store, parent):
         """ Creates a new FiscalPrinterHelper object
@@ -284,6 +282,10 @@ class FiscalPrinterHelper(GObject.GObject):
         self._midnight_check_id = GLib.timeout_add_seconds(
             delta.seconds, self.check_till, True)
 
+    def disable_midnight_check(self):
+        GLib.source_remove(self._midnight_check_id)
+        self._midnight_check_id = None
+
     def _till_status_changed(self, closed, blocked):
         self.emit('till-status-changed', closed, blocked)
 
@@ -343,9 +345,10 @@ class FiscalPrinterHelper(GObject.GObject):
             self.emit('ecf-changed', False)
 
         if reset_midnight_check:
-            GLib.source_remove(self._midnight_check_id)
-            self._midnight_check_id = None
-            self.setup_midnight_check()
+            self.disable_midnight_check()
+            # Wait a few seconds before adding the check again, otherwise we
+            # might add it a few miliseconds before midnight
+            GLib.timeout_add_seconds(5, self.setup_midnight_check)
 
     def run_initial_checks(self):
         """This will check:
@@ -382,8 +385,7 @@ class FiscalCoupon(GObject.GObject):
     gsignal('cancel')
     gsignal('get-coo', retval=int)
     gsignal('get-supports-duplicate-receipt', retval=bool)
-                                   # coo, payment, value, text
-    gsignal('print-payment-receipt', int, object, object, str)
+    gsignal('print-payment-receipt', int, object, object, str)  # coo, payment, value, text
     gsignal('cancel-payment-receipt')
 
     def __init__(self, parent):
@@ -468,16 +470,16 @@ class FiscalCoupon(GObject.GObject):
                     return False
             except OutofPaperError:
                 if not yesno(
-                    _("The fiscal printer has run out of paper.\nAdd more paper "
-                      "before continuing."),
-                    Gtk.ResponseType.YES, _("Resume"), _("Confirm later")):
+                        _("The fiscal printer has run out of paper.\nAdd more paper "
+                          "before continuing."),
+                        Gtk.ResponseType.YES, _("Resume"), _("Confirm later")):
                     return False
                 return self.open()
             except PrinterOfflineError:
                 if not yesno(
-                    (_(u"The fiscal printer is offline, turn it on and try "
-                       "again")),
-                    Gtk.ResponseType.YES, _(u"Resume"), _(u"Confirm later")):
+                        (_(u"The fiscal printer is offline, turn it on and try "
+                           "again")),
+                        Gtk.ResponseType.YES, _(u"Resume"), _(u"Confirm later")):
                     return False
                 return self.open()
             except (DriverError, DeviceError) as e:
@@ -518,7 +520,7 @@ class FiscalCoupon(GObject.GObject):
         msg = _(u"Payment value (%s) is greater than sale's total (%s). "
                 "Do you want to confirm it anyway?") % (payment, amount)
         if (sale_total < payments_total and not
-            yesno(msg, Gtk.ResponseType.NO, _(u"Confirm Sale"), _(u"Don't Confirm"))):
+                yesno(msg, Gtk.ResponseType.NO, _(u"Confirm Sale"), _(u"Don't Confirm"))):
             return False
 
         model = run_dialog(ConfirmSaleWizard, self._parent, store, sale,
