@@ -44,6 +44,7 @@ from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.validators import validate_vehicle_license_plate
 
 _ = stoqlib_gettext
 
@@ -230,6 +231,14 @@ class CreateDeliveryEditor(BaseEditor):
         if price < 0:
             return ValidationError(
                 _("The Delivery cost must be a positive value."))
+
+    def on_vehicle_license_plate__validate(self, widget, value):
+        # Do not validate if the widget is empty
+        if not value:
+            return
+
+        if not validate_vehicle_license_plate(value):
+            return ValidationError(_("Invalid License Plate"))
 
     def on_recipient__content_changed(self, entry):
         entry_value = entry.read()
