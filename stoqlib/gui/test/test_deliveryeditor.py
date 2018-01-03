@@ -134,3 +134,48 @@ class TestCreateDeliveryEditor(GUITest):
         new_address = editor.address.get_selected_data()
         self.assertNotEquals(first_address, new_address)
         self.check_editor(editor, 'editor-createdelivery-clientchanged')
+
+    def test_vehicle_plate_validation(self):
+        sale_items = self._create_sale_items()
+        editor = CreateDeliveryEditor(self.store, sale_items=sale_items)
+
+        # Invalid cases
+        # String with less than 6 characters
+        editor.vehicle_license_plate.set_text('FOO21')
+        self.assertInvalid(editor, ['vehicle_license_plate'])
+
+        # String with more than 7 characters
+        editor.vehicle_license_plate.set_text('FOO20000')
+        self.assertInvalid(editor, ['vehicle_license_plate'])
+
+        # String starting with number
+        editor.vehicle_license_plate.set_text('2FOO20')
+        self.assertInvalid(editor, ['vehicle_license_plate'])
+
+        # String ending with a non-number
+        editor.vehicle_license_plate.set_text('FOO200r')
+        self.assertInvalid(editor, ['vehicle_license_plate'])
+
+        # Valid cases
+        # Uppercase
+        editor.vehicle_license_plate.set_text('FOO201')
+        self.assertValid(editor, ['vehicle_license_plate'])
+
+        # Lowcase
+        editor.vehicle_license_plate.set_text('foo201')
+        self.assertValid(editor, ['vehicle_license_plate'])
+
+        # Mixed Uppercase anda lowcase
+        editor.vehicle_license_plate.set_text('Foo201')
+        self.assertValid(editor, ['vehicle_license_plate'])
+
+        # 2 a-zA-Z characters followed by 4 numeric characters
+        editor.vehicle_license_plate.set_text('Fo2018')
+        self.assertValid(editor, ['vehicle_license_plate'])
+
+        # 4 a-zA-Z characters followed by 3 numeric characters
+        editor.vehicle_license_plate.set_text('Fooo201')
+        self.assertValid(editor, ['vehicle_license_plate'])
+
+        editor.vehicle_license_plate.set_text('FOO201')
+        self.assertValid(editor, ['vehicle_license_plate'])

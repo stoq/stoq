@@ -266,3 +266,13 @@ def validate_invoice_key(key):
         return False
 
     return int(key[-1]) == modulo11(key[:-1])
+
+
+def validate_vehicle_license_plate(value):
+    """Validate Vehicle License Plate"""
+    if len(value) not in (6, 7):
+        return False
+
+    # Despite most license plates are in uppercase, we should allow lowercase
+    exp = '^[a-zA-Z]{2,3}[0-9]{4}|[a-zA-Z]{3,4}[0-9]{3}$'
+    return re.match(exp, value)

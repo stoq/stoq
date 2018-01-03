@@ -44,6 +44,7 @@ from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.validators import validate_vehicle_license_plate
 
 _ = stoqlib_gettext
 
@@ -235,6 +236,14 @@ class CreateDeliveryEditor(BaseEditor):
         if client is None:
             return
         self.fields['address'].set_from_client(client)
+
+    def on_vehicle_license_plate__validate(self, widget, value):
+        # Do not validate if the widget is empty
+        if not value:
+            return
+
+        if not validate_vehicle_license_plate(value):
+            return ValidationError(_("Invalid License Plate"))
 
     def on_transporter_id__validate(self, widget, transporter_id):
         transporter = self.store.get(Transporter, transporter_id)
