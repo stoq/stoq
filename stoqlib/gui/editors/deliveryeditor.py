@@ -129,7 +129,7 @@ class CreateDeliveryEditor(BaseEditor):
     gladefile = 'CreateDeliveryEditor'
     title = _('New Delivery')
     form_columns = 2
-    size = (750, 550)
+    size = (900, 550)
 
     @cached_property()
     def fields(self):
@@ -140,7 +140,7 @@ class CreateDeliveryEditor(BaseEditor):
             user.profile.check_app_permission(u'purchase'),
         ))
         freight_types = [(v, k) for k, v in Delivery.freights.items()]
-        states = [(v, v) for v in api.get_l10n_field('state').state_list]
+        states = [(v, unicode(v)) for v in api.get_l10n_field('state').state_list]
 
         return collections.OrderedDict(
             client=PersonQueryField(_("Client"), proxy=True, mandatory=True,
