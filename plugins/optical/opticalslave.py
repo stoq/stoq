@@ -34,6 +34,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.dateutils import localtoday
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 from .opticaldomain import OpticalWorkOrder, OpticalProduct, OpticalMedic
@@ -218,6 +219,9 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         self.lens_type.prefill(sorted(lens_types))
         self.frame_type.prefill(sorted(frame_types))
         self._medic_combo_prefill()
+        if not sysparam.get_bool('CUSTOM_WORK_ORDER_DESCRIPTION'):
+            self.patient.hide()
+            self.label1.hide()
 
     def _setup_adjustments(self):
         """This will setup the adjustments for the prescription widgets, and

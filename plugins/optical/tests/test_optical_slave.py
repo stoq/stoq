@@ -360,3 +360,14 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
         addition.update(Decimal("0.0"))
         # FIXME: Should be 1.0
         #self.assertEqual(distance_cylindrical.get_value(), Decimal("0.0"))
+
+    def test_hide_description(self):
+        with self.sysparam(CUSTOM_WORK_ORDER_DESCRIPTION=True):
+            workorder = self.create_workorder()
+            slave = WorkOrderOpticalSlave(self.store, workorder)
+            self.assertTrue(slave.patient.get_visible())
+
+        with self.sysparam(CUSTOM_WORK_ORDER_DESCRIPTION=False):
+            workorder = self.create_workorder()
+            slave = WorkOrderOpticalSlave(self.store, workorder)
+            self.assertFalse(slave.patient.get_visible())

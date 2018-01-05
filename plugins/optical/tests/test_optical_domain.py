@@ -28,9 +28,16 @@ from stoqlib.domain.test.domaintest import DomainTest
 from ..opticaldomain import (OpticalMedic, OpticalWorkOrder,
                              OpticalPatientHistory, OpticalPatientMeasures,
                              OpticalPatientTest, OpticalPatientVisualAcuity)
+from ..opticalui import OpticalUI
 
 
 class OpticalDomainTest(DomainTest):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.ui = OpticalUI.get_instance()
+        super(OpticalDomainTest, cls).setUpClass()
+
     def create_optical_medic(self, person=None, crm_number=None):
         person = person or self.create_person()
         person.name = u'Medic'

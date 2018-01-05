@@ -25,6 +25,7 @@
 __tests__ = 'plugins/optical/opticalwizard.py'
 
 import decimal
+import string
 
 import mock
 from gi.repository import Gtk
@@ -402,6 +403,34 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         # at 10
         self.assertEqual(auto.get_total_balance(), 5)
         self.assertEqual(not_auto.get_total_balance(), 10)
+
+    def test_get_work_order_slave(self):
+        client = self.create_client()
+
+        with self.sysparam(CUSTOM_WORK_ORDER_DESCRIPTION=True):
+            wizard = OpticalSaleQuoteWizard(self.store)
+            # First step: Client
+            step = wizard.get_current_step()
+            step.client_gadget.set_value(client)
+            self.click(wizard.next_button)
+            # Second Step: optical data
+            step = wizard.get_current_step()
+            workorder = self.create_workorder()
+            expected_desc = str(string.ascii_uppercase[step._current_work_order])
+            slave = step.get_work_order_slave(workorder)
+            self.assertEqual(slave.patient.read(), expected_desc)
+
+        with self.sysparam(CUSTOM_WORK_ORDER_DESCRIPTION=False):
+            wizard = OpticalSaleQuoteWizard(self.store)
+            # First step: Client
+            step = wizard.get_current_step()
+            step.client_gadget.set_value(client)
+            self.click(wizard.next_button)
+            # Second Step: optical data
+            step = wizard.get_current_step()
+            workorder = self.create_workorder()
+            slave = step.get_work_order_slave(workorder)
+            self.assertEqual(slave.patient.read(), str(workorder.identifier))
 
 
 class TestMedicRoleWizard(GUITest):

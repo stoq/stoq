@@ -50,6 +50,7 @@ from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.personwizard import PersonRoleWizard
 from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
 from stoqlib.lib.message import warning
+from stoqlib.lib.parameters import ParameterDetails, sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.sale import SaleOrderReport
 from stoq.gui.services import ServicesApp
@@ -153,6 +154,17 @@ class ServicesSearchExtention(SearchExtension):
         ]
 
 
+params = [
+    ParameterDetails(
+        u'CUSTOM_WORK_ORDER_DESCRIPTION',
+        _(u'Work order'),
+        _(u'Allow to customize the work order description'),
+        _(u'If true, it will be allowed to set a description for the work order '
+          u'manually. Otherwise, the identifier will be used.'),
+        bool, initial=True)
+]
+
+
 class OpticalUI(object):
     def __init__(self):
         # This will contain a mapping of (appname, uimanager) -> extra_ui
@@ -160,6 +172,7 @@ class OpticalUI(object):
         # uimanager, and we have an extra_ui for different apps
         self._app_ui = dict()
 
+        self._setup_params()
         self.default_store = get_default_store()
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
         StopApplicationEvent.connect(self._on_StopApplicationEvent)
@@ -174,9 +187,21 @@ class OpticalUI(object):
             ('plugin.optical.search_medics', ''),
         ])
 
+    @classmethod
+    def get_instance(cls):
+        if hasattr(cls, '_instance'):
+            return cls._instance
+
+        cls._instance = cls()
+        return cls._instance
+
     #
     # Private
     #
+
+    def _setup_params(self):
+        for detail in params:
+            sysparam.register_param(detail)
 
     def _add_sale_menus(self, sale_app):
         uimanager = sale_app.uimanager

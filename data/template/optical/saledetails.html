@@ -40,7 +40,11 @@
                                            ${ format_quantity(remaining)})</span>
                     % endif
                 </td>
+                % if report.use_wo_description:
                 <td>${ report.get_optical_data(item.order).patient }</td>
+                % else:
+                <td>${ item.order.identifier }</td>
+                % endif
                 <td>${ format_price(item.sale_item.price) }</td>
                 <td>${ format_price(item.sale_item.get_total()) }</td>
               </tr>

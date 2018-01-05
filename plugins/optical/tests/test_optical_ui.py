@@ -60,7 +60,7 @@ __tests__ = 'plugins.optical.opticalui.py'
 class TestOpticalUI(BaseGUITest, OpticalDomainTest):
     @classmethod
     def setUpClass(cls):
-        cls.ui = OpticalUI()
+        cls.ui = OpticalUI.get_instance()
         BaseGUITest.setUpClass()
 
     def test_optical_sales(self):

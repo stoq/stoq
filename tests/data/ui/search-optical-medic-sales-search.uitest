@@ -53,7 +53,28 @@ GtkDialog(toplevel): title='Sold Items by medic', hidden
             column: title='Batch Date', hidden
             column: title='Qty'
             column: title='Total'
-            row: 99413, datetime.today(), datetime.today(), '', None, 'Moda Stoq', 'Description', None, 'Medic', '1234', False, '', None, Decimal('1.000'), Decimal('10.00000')
+            column: title='Frame - Glass Type', hidden
+            column: title='Frame - Size', hidden
+            column: title='Frame - Lens Type', hidden
+            column: title='Frame - Color', hidden
+            column: title='Glass Lenses - Photosensitive', hidden
+            column: title='Glass Lenses - Anti Glare', hidden
+            column: title='Glass Lenses - Refraction Index', hidden
+            column: title='Glass Lenses - Classification', hidden
+            column: title='Glass Lenses - Addition', hidden
+            column: title='Glass Lenses - Diameter', hidden
+            column: title='Glass Lenses - Height', hidden
+            column: title='Glass Lenses - Availability', hidden
+            column: title='Contact Lenses - Degree', hidden
+            column: title='Contact Lenses - Classification', hidden
+            column: title='Contact Lenses - Lens Type', hidden
+            column: title='Contact Lenses - Discard', hidden
+            column: title='Contact Lenses - Addition', hidden
+            column: title='Contact Lenses - Cylindrical', hidden
+            column: title='Contact Lenses - Axis', hidden
+            column: title='Contact Lenses - Color', hidden
+            column: title='Contact Lenses - Curvature', hidden
+            row: 99413, datetime.today(), datetime.today(), '', None, 'Moda Stoq', 'Description', None, 'Medic', '1234', False, '', None, Decimal('1.000'), Decimal('10.00000'), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None
           SummaryLabel(summary_label):
             GtkLabel(expand=True, fill=True, padding=6): 'Total:'
             GtkLabel(): '<b>$10.00</b>'

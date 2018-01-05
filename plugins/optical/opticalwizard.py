@@ -42,6 +42,7 @@ from stoqlib.gui.wizards.workorderquotewizard import (WorkOrderQuoteWizard,
                                                       WorkOrderQuoteWorkOrderStep,
                                                       WorkOrderQuoteItemStep)
 from stoqlib.lib.message import yesno
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 from .opticaldomain import OpticalWorkOrder, OpticalMedic, OpticalProduct
@@ -85,8 +86,11 @@ class OpticalWorkOrderStep(WorkOrderQuoteWorkOrderStep):
         return OpticalItemStep(self.wizard, self, self.store, self.model)
 
     def get_work_order_slave(self, work_order):
-        desc = str(string.ascii_uppercase[self._current_work_order])
-        self._current_work_order += 1
+        if not sysparam.get_bool('CUSTOM_WORK_ORDER_DESCRIPTION'):
+            desc = str(work_order.identifier)
+        else:
+            desc = str(string.ascii_uppercase[self._current_work_order])
+            self._current_work_order += 1
         return WorkOrderOpticalSlave(self.store, work_order,
                                      show_finish_date=True,
                                      description=desc)

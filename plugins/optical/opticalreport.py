@@ -24,6 +24,7 @@
 
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.reporting.report import HTMLReport
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -54,6 +55,8 @@ class OpticalWorkOrderReceiptReport(HTMLReport):
                 self.method_summary[payment.method] += payment.value
             for order in workorders:
                 self.workorder_items.extend(order.get_items())
+
+        self.use_wo_description = sysparam.get_bool('CUSTOM_WORK_ORDER_DESCRIPTION')
 
         super(OpticalWorkOrderReceiptReport, self).__init__(filename)
 

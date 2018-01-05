@@ -18,8 +18,13 @@
           <td>${ format_date(workorder.estimated_finish) }</td>
         </tr>
         <tr>
+          % if report.use_wo_description:
           <td>${ _("Desc") }:</td>
           <td colspan="3">${ optical_data.patient }</td>
+          % else:
+          <td>${ _("WO") }:</td>
+          <td>${ workorder.identifier}</td>
+          % endif
         </tr>
       </tbody>
     </table>
