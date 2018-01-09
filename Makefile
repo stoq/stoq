@@ -67,7 +67,7 @@ coverage: clean check-source-all
 
 jenkins: check-source-all
 	unset STOQLIB_TEST_QUICK && \
-	VERSION=`python3 -c "from stoq import version; print version"` && \
+	VERSION=`python3 -c "from stoq import version; print(version)"` && \
 	rm -fr jenkins-test && \
 	python3 setup.py -q sdist -d jenkins-test && \
 	cd jenkins-test && \
