@@ -302,7 +302,8 @@ class ExampleCreator(object):
             store=self.store)
         return sth
 
-    def create_product_supplier_info(self, supplier=None, product=None):
+    def create_product_supplier_info(self, supplier=None, product=None,
+                                     branch=None):
         from stoqlib.domain.product import ProductSupplierInfo
         product = product or self.create_product(with_supplier=False)
         supplier = supplier or self.create_supplier()
@@ -310,6 +311,7 @@ class ExampleCreator(object):
             store=self.store,
             supplier=supplier,
             product=product,
+            branch=branch,
             is_main_supplier=True,
         )
 

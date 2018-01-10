@@ -840,6 +840,7 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
                        data_type=str, expand=True, sorted=True),
                 Column('supplier_code', title=_(u'Product Code'),
                        data_type=str),
+                Column('branch_str', title=_(u'Branch'), data_type=str),
                 Column('lead_time_str', title=_(u'Lead time'), data_type=str),
                 Column('minimum_purchase', title=_(u'Minimum Purchase'),
                        data_type=Decimal),
@@ -850,10 +851,10 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
         product = self._product
         supplier = self.target_combo.get_selected_data()
 
-        if product.is_supplied_by(supplier):
+        if product.is_supplied_in_all_branches_by(supplier):
             product_desc = self._product.sellable.get_description()
-            info(_(u'%s is already supplied by %s') % (product_desc,
-                                                       supplier.person.name))
+            info(_(u'%s is already supplied by %s in all branches') %
+                 (product_desc, supplier.person.name))
             return
 
         model = ProductSupplierInfo(product=product,

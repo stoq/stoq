@@ -209,8 +209,8 @@ class PurchaseItemStep(SellableItemStep):
     def _set_expected_receival_date(self, item):
         supplier = self.model.supplier
         product = item.sellable.product
-        supplier_info = self.store.find(ProductSupplierInfo, product=product,
-                                        supplier=supplier).one()
+        supplier_info = ProductSupplierInfo.find_by_product_supplier(
+            self.store, product, supplier)
         if supplier_info is not None:
             delta = datetime.timedelta(days=supplier_info.lead_time)
             expected_receival = self.model.open_date + delta
@@ -329,8 +329,8 @@ class PurchaseItemStep(SellableItemStep):
             return
         product = sellable.product
         supplier = self.model.supplier
-        return self.store.find(ProductSupplierInfo, product=product,
-                               supplier=supplier).one()
+        return ProductSupplierInfo.find_by_product_supplier(
+            self.store, product, supplier)
 
     #
     # Callbacks

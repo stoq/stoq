@@ -88,7 +88,8 @@ from decimal import Decimal
 from kiwi.currency import currency
 from storm.references import Reference, ReferenceSet
 from storm.exceptions import NotOneError
-from storm.expr import (And, Eq, LeftJoin, Alias, Sum, Coalesce, Select, Join, Cast)
+from storm.expr import (And, Eq, LeftJoin, Alias, Sum, Coalesce, Select, Join,
+                        Cast, Or, In)
 from zope.interface import implementer
 
 from stoqlib.database.expr import (Field, TransactionTimestamp,
@@ -166,6 +167,25 @@ class ProductSupplierInfo(Domain):
     #: the product code in the supplier
     supplier_code = UnicodeCol(default=u'')
 
+    branch_id = IdCol()
+
+    #: the branch the supplier is for
+    branch = Reference(branch_id, 'Branch.id')
+
+    #
+    # Classmethods
+    #
+
+    @classmethod
+    def find_by_product_supplier(cls, store, product, supplier):
+        from stoqlib.database.runtime import get_current_branch
+        current_branch = get_current_branch(store)
+        supplier_infos = store.find(cls, And(cls.product == product,
+                                             cls.supplier == supplier,
+                                             Or(cls.branch_id == current_branch.id,
+                                                Eq(cls.branch_id, None))))
+        return supplier_infos.order_by(cls.branch_id).first()
+
     #
     # Auxiliary methods
     #
@@ -178,6 +198,9 @@ class ProductSupplierInfo(Domain):
         return u"%d %s" % (
             self.lead_time,
             stoqlib_ngettext(_(u"Day"), _(u"Days"), self.lead_time))
+
+    def get_branch_str(self):
+        return self.branch.get_description() if self.branch else _(u'All Branches')
 
 
 class Product(Domain):
@@ -676,13 +699,31 @@ class Product(Domain):
         for component in parents:
             component.product.update_production_cost()
 
-    def is_supplied_by(self, supplier):
-        """If this product is supplied by the given |supplier|, returns the
-        object with the supplier information. Returns ``None`` otherwise
+    def is_supplied_by(self, supplier, branch=None, exclude=None):
+        """Checks if this product is supplied by the given supplier in the given branch.
+
+        :param supplier: the supplier to check for
+        :param branch: the branch to be checked for the supplier
+        :param exclude: a ProductSupplierInfo to be disconsidered from the check
         """
         store = self.store
-        return store.find(ProductSupplierInfo, product=self,
-                          supplier=supplier).one() is not None
+        except_id = exclude and exclude.id
+        return store.find(ProductSupplierInfo,
+                          And(ProductSupplierInfo.product == self,
+                              ProductSupplierInfo.supplier == supplier,
+                              ProductSupplierInfo.branch == branch,
+                              ProductSupplierInfo.id != except_id)).one() is not None
+
+    def is_supplied_in_all_branches_by(self, supplier):
+        """Checks if there is a ProductSupplierInfo for each branch
+        """
+        store = self.store
+        active_branches = [branch.id for branch in Branch.get_active_branches(self.store)]
+        infos = store.find(ProductSupplierInfo,
+                           And(ProductSupplierInfo.product == self,
+                               ProductSupplierInfo.supplier == supplier,
+                               In(ProductSupplierInfo.branch_id, active_branches)))
+        return infos.count() == len(active_branches)
 
     def is_composed_by(self, product):
         """Returns if we are composed by a given product or not.

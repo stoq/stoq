@@ -36,6 +36,7 @@ from stoqdrivers.enum import TaxType
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
+from stoqlib.domain.person import Branch
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductComponent,
                                     ProductQualityTest, Storable,
@@ -187,7 +188,7 @@ class ProductSupplierEditor(BaseEditor):
     gladefile = 'ProductSupplierEditor'
 
     proxy_widgets = ('base_cost', 'icms', 'notes', 'lead_time',
-                     'minimum_purchase', 'supplier_code')
+                     'minimum_purchase', 'supplier_code', 'branch_combo')
     confirm_widgets = ['base_cost', 'icms', 'lead_time', 'minimum_purchase',
                        'supplier_code']
 
@@ -203,6 +204,26 @@ class ProductSupplierEditor(BaseEditor):
             Gtk.Adjustment(lower=0, upper=MAX_INT, step_increment=1))
         self.minimum_purchase.set_adjustment(
             Gtk.Adjustment(lower=0, upper=MAX_INT, step_increment=1))
+        self._setup_branch_combo()
+
+    def _setup_branch_combo(self):
+        branches = [api.get_current_branch(self.store)]
+        user = api.get_current_user(self.store)
+        if user.profile.check_app_permission(u'admin'):
+            branches.extend(list(Branch.get_active_remote_branches(self.store)))
+        options = [(branch.get_description(), branch) for branch in branches]
+        self.branch_combo.prefill(options)
+        self.branch_combo.set_sensitive(False)
+
+        has_generic_active = self.model.product.is_supplied_by(
+            self.model.supplier, exclude=self.model, branch=None)
+        if self.model.branch is not None or has_generic_active:
+            self.branch_checkbutton.set_active(True)
+            self.branch_combo.set_sensitive(True)
+            if has_generic_active:
+                # There is already a generical supplier info, so this must have a
+                # specific branch
+                self.branch_checkbutton.set_sensitive(False)
 
     #
     # BaseEditor hooks
@@ -246,6 +267,18 @@ class ProductSupplierEditor(BaseEditor):
                 _("This code already exists for this supplier "
                   "on product '%s'") % (desc, ))
 
+    def on_branch_combo__validate(self, entry, value):
+        if self.model.product.is_supplied_by(self.model.supplier, branch=value,
+                                             exclude=self.model):
+            return ValidationError(
+                _("The product is already supplied in this branch"))
+
+    def on_branch_checkbutton__toggled(self, check):
+        active = check.get_active()
+        self.branch_combo.set_sensitive(active)
+        if active is False:
+            self.model.branch = None
+            self.proxy.update('branch')
 
 #
 # Editors

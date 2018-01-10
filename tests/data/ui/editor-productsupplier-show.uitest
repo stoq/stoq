@@ -5,22 +5,26 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product Supplier"', hid
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave ProductSupplierEditor is attached
         GtkTable(toplevel):
+          GtkCheckButton(branch_checkbutton): 'Specific for branch:'
+          ProxyComboEntry(branch_combo): insensitive
+            item: 'Moda Stoq'
+            item: 'Stoq Elite Fashion'
           ProxyLabel(supplier_code_lbl): 'Supplier Code:'
           ProxyEntry(supplier_code): ''
           GtkLabel(label2): 'Supplier Cost:'
           ProxySpinButton(base_cost): '0.00', mandatory
           ProxyLabel(label10): 'ICMS:'
-          GtkBox(hbox3, orientation=horizontal):
-            ProxyEntry(icms, fill=True): '0.0'
-            ProxyLabel(kiwilabel1, expand=True, fill=True): '%'
+          GtkBox(hbox1, orientation=horizontal):
+            GtkBox(hbox3, orientation=horizontal, expand=True, fill=True):
+              ProxyEntry(icms, fill=True): '0.0'
+              ProxyLabel(kiwilabel1, expand=True, fill=True): '%'
+            ProxyLabel(unit_label, expand=True, fill=True): '<span >Unit(s)</span>'
           GtkLabel(label1): 'Lead Time:'
           GtkBox(hbox2, orientation=horizontal):
             ProxySpinButton(lead_time, expand=True, fill=True): '1'
             GtkLabel(label4, fill=True): 'Day(s)'
           GtkLabel(label5): 'Minimum Purchase:'
-          GtkBox(hbox1, orientation=horizontal):
-            ProxySpinButton(minimum_purchase, expand=True, fill=True): '1.00'
-            ProxyLabel(unit_label, expand=True, fill=True): '<span >Unit(s)</span>'
+          ProxySpinButton(minimum_purchase): '1.00'
           GtkLabel(label3): 'Additional \nInformation:'
           GtkScrolledWindow(scrolledwindow1):
             ProxyTextView(notes):

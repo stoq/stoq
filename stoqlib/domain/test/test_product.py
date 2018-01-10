@@ -32,6 +32,7 @@ from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent)
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.person import Branch
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductStockItem,
                                     ProductHistory, ProductComponent,
@@ -587,6 +588,22 @@ class TestProduct(DomainTest):
                             is_main_supplier=True)
 
         self.assertEqual(self.product.get_main_supplier_name(), u"Supplier")
+
+    def test_is_supplied_in_all_branches_by(self):
+        product = self.create_product()
+        supplier = self.create_supplier()
+        branches = list(Branch.get_active_branches(self.store))
+        # Not supplied
+        self.assertFalse(product.is_supplied_in_all_branches_by(supplier))
+        self.create_product_supplier_info(product=product, supplier=supplier,
+                                          branch=branches[0])
+        # Still not supplied in all branches
+        self.assertFalse(product.is_supplied_in_all_branches_by(supplier))
+        self.create_product_supplier_info(product=product, supplier=supplier,
+                                          branch=branches[1])
+
+        # Now supplied in all branches.
+        self.assertTrue(product.is_supplied_in_all_branches_by(supplier))
 
     def test_product_type(self):
         commom_product = self.create_product(storable=True)
