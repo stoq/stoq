@@ -44,7 +44,6 @@ class KanbanObjectListColumn(Column):
 
 class CellRendererTextBox(Gtk.CellRendererText):
 
-    PADDING = 3
     SIZE = 6
 
     #: the magin color of the renderer, this the part to the left of it,
@@ -52,34 +51,22 @@ class CellRendererTextBox(Gtk.CellRendererText):
     margin_color = GObject.Property(type=str)
 
     def do_render(self, drawable, widget, background_area, cell_area,
-                  expose_area, flags):
+                  flags):
         if flags & Gtk.CellRendererState.SELECTED:
-            state = Gtk.StateType.SELECTED
+            state = Gtk.StateFlags.SELECTED
         else:
-            state = Gtk.StateType.NORMAL
+            state = Gtk.StateFlags.NORMAL
 
-        if isinstance(drawable, Gdk.Pixmap):
-            cr = drawable.cairo_create()
-            cr.set_source_color(widget.style.bg[Gtk.StateType.SELECTED])
-            cr.paint()
-        else:
-            widget.style.paint_box(drawable, state, Gtk.ShadowType.IN,
-                                   None, widget, "frame",
-                                   cell_area.x + self.PADDING,
-                                   cell_area.y + self.PADDING,
-                                   cell_area.width - (self.PADDING * 2),
-                                   cell_area.height - (self.PADDING * 2))
-        color = self.props.margin_color
-        if color is not None:
-            cr = drawable.cairo_create()
-            cr.rectangle(cell_area.x + self.PADDING - 1,
-                         cell_area.y + self.PADDING,
-                         4, cell_area.height - (self.PADDING * 2))
-            cr.set_source_color(Gdk.color_parse(color))
-            cr.fill()
+        context = widget.get_style_context()
+        context.set_state(state)
+
+        Gtk.render_background(context, drawable, cell_area.x, cell_area.y,
+                              cell_area.width, cell_area.height)
+        Gtk.render_focus(context, drawable, cell_area.x, cell_area.y, cell_area.width,
+                         cell_area.height)
 
         Gtk.CellRendererText.do_render(self, drawable, widget, background_area,
-                                       cell_area, expose_area, flags)
+                                       cell_area, flags)
 
     def on_get_size(self, widget, cell_area=None):
         if cell_area is None:
@@ -387,7 +374,7 @@ class KanbanView(Gtk.Frame):
             return
 
         selection_data = self._create_selection_data(treeview, titer)
-        selection.set(selection.target, 8, selection_data)
+        selection.set(selection.get_target(), 8, selection_data)
 
     def _create_selection_data(self, treeview, titer):
         model = treeview.get_model()
@@ -403,10 +390,10 @@ class KanbanView(Gtk.Frame):
     def _on_drag_data_received_data(self, treeview, context, x, y,
                                     selection, info, etime):
         model = treeview.get_model()
-        if selection.data is None:
+        if selection.get_data() is None:
             context.finish(False, False, etime)
             return
-        item = self._load_selection_data(selection.data)
+        item = self._load_selection_data(selection.get_data())
         column = self._columns[treeview.get_name()]
         retval = self.emit('item-dragged', column, item)
         if retval is False:
@@ -425,7 +412,7 @@ class KanbanView(Gtk.Frame):
         else:
             titer = model.append([item])
 
-        if context.action == Gdk.DragAction.MOVE:
+        if context.get_actions() & Gdk.DragAction.MOVE:
             context.finish(True, True, etime)
 
         treeview.grab_focus()

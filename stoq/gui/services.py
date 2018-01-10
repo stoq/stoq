@@ -331,6 +331,9 @@ class ServicesApp(ShellApp):
         self.window.SearchToolItem.set_tooltip(
             _(u"Search for work order categories"))
 
+        self.ViewKanban.set_active(
+            self.window._current_app_settings.get('show-kanban', False))
+
         if refresh:
             self._update_view()
 
@@ -901,6 +904,7 @@ class ServicesApp(ShellApp):
         self._update_list_aware_view()
 
     def on_ViewKanban__toggled(self, action):
+        self.window._current_app_settings['show-kanban'] = action.get_active()
         if not action.get_active():
             return
         self.search.set_result_view(WorkOrderResultKanbanView, refresh=True)
