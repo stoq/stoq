@@ -85,6 +85,7 @@ else:
     # Disable global menu for stoq, since it breakes the order and removal of
     # our dinamic menus
     os.environ['UBUNTU_MENUPROXY'] = '0'
+    os.environ['GTK_THEME'] = 'Adwaita:light'
 
 
 # We only support portuguese locale on Windows for now
