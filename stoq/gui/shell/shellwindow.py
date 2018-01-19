@@ -291,7 +291,7 @@ class ShellWindow(GladeDelegate):
         self._create_application_actions()
 
     def _create_statusbar(self):
-        statusbar = ShellStatusbar(self)
+        statusbar = ShellStatusbar(self, self.store)
 
         # Set the initial text, the currently logged in user and the actual
         # branch and station.

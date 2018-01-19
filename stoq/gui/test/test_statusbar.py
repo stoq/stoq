@@ -28,7 +28,7 @@ from gi.repository import Gtk
 from kiwi.python import Settable
 import mock
 
-from stoq.gui.shell.statusbar import StatusButton, StatusDialog
+from stoq.gui.shell.statusbar import StatusButton, StatusPopover
 from stoq.gui.test.baseguitest import BaseGUITest
 from stoq.lib.status import (ResourceStatus, ResourceStatusManager,
                              ResourceStatusAction)
@@ -38,14 +38,14 @@ from stoqlib.gui.stockicons import (STOQ_STATUS_NA,
                                     STOQ_STATUS_ERROR)
 
 
-class TestStatusDialog(BaseGUITest):
+class TestStatusPopover(BaseGUITest):
 
     def test_create(self):
-        dialog = StatusDialog()
-        self.check_dialog(dialog, 'dialog-status')
+        popover = StatusPopover(self.store)
+        self.check_dialog(popover, 'dialog-status')
 
     def test_handle_action(self):
-        dialog = StatusDialog()
+        dialog = StatusPopover(self.store)
         manager = ResourceStatusManager.get_instance()
 
         action = ResourceStatusAction(object(), 'foo', 'bar', lambda: None,
@@ -58,7 +58,7 @@ class TestStatusDialog(BaseGUITest):
     def test_handle_action_threaded(self, ProgressDialog):
         ProgressDialog.return_value = mock.Mock()
 
-        dialog = StatusDialog()
+        dialog = StatusPopover(self.store)
         manager = ResourceStatusManager.get_instance()
 
         action = ResourceStatusAction(Settable(label='baz'), 'foo', 'bar',
@@ -79,7 +79,7 @@ class TestStatusDialog(BaseGUITest):
 class TestStatusButton(BaseGUITest):
 
     def test_pixbuf(self):
-        btn = StatusButton()
+        btn = StatusButton(self.store)
 
         manager = ResourceStatusManager.get_instance()
         for status, stock in [

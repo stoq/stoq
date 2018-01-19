@@ -1,24 +1,20 @@
-dialog: StatusDialog
-GtkDialog(toplevel): title='System Status', hidden
-  GtkBox(_main_vbox, orientation=vertical):
-    GtkBox(vbox, orientation=vertical, expand=True, fill=True):
-      GtkScrolledWindow(expand=True, fill=True):
-        GtkViewport():
-          GtkAlignment():
-            GtkBox(orientation=vertical):
-              GtkBox(orientation=horizontal, fill=True, padding=6):
-                GtkImage(fill=True):
-                GtkLabel(fill=True): 'Status not available...'
-                GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-              GtkHSeparator(fill=True):
-              GtkBox(orientation=horizontal, fill=True, padding=6):
-                GtkImage(fill=True):
-                GtkLabel(fill=True): 'Status not available...'
-                GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-                  GtkButton(expand=True, fill=True): 'Backup now'
-                  GtkButton(expand=True, fill=True): 'Configure'
-    GtkBox(orientation=horizontal, fill=True, pack-end):
-      GtkButtonBox(action_area, orientation=horizontal, fill=True, pack-end):
-        GtkButton(cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel', hidden
-        GtkButton(ok_button, expand=True, fill=True, padding=6): 'gtk-ok'
-        GtkButton(_refresh_btn, expand=True, fill=True, padding=6): 'gtk-refresh'
+dialog: StatusPopover
+stoq+gui+shell+statusbar+StatusPopover(): hidden
+  GtkBox(vbox, orientation=vertical):
+    GtkScrolledWindow(expand=True, fill=True):
+      GtkViewport():
+        GtkAlignment():
+          GtkBox(orientation=vertical):
+            GtkBox(orientation=horizontal, fill=True, padding=6):
+              GtkImage(fill=True):
+              GtkLabel(fill=True): 'Status not available...'
+              GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+            GtkHSeparator(fill=True):
+            GtkBox(orientation=horizontal, fill=True, padding=6):
+              GtkImage(fill=True):
+              GtkLabel(fill=True): 'Status not available...'
+              GtkButtonBox(orientation=horizontal, fill=True, pack-end):
+                GtkButton(expand=True, fill=True): 'Backup now'
+                GtkButton(expand=True, fill=True): 'Configure'
+    GtkButtonBox(orientation=horizontal, fill=True):
+      GtkButton(_refresh_btn, expand=True, fill=True, padding=6): 'gtk-refresh'

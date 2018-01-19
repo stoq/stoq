@@ -27,7 +27,7 @@ import collections
 from gi.repository import Gtk, GObject, GLib, GdkPixbuf
 
 from stoqlib.api import api
-from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.feedbackdialog import FeedbackDialog
 from stoqlib.gui.dialogs.progressdialog import ProgressDialog
 from stoqlib.gui.stockicons import (STOQ_FEEDBACK,
@@ -61,15 +61,12 @@ _status_mapper = {
 }
 
 
-class StatusDialog(BasicDialog):
-    size = (700, 400)
-    title = _("System Status")
+class StatusPopover(Gtk.Popover):
+    size = (600, 350)
 
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('size', self.size)
-        kwargs.setdefault('title', self.title)
-
-        super(StatusDialog, self).__init__(*args, **kwargs)
+    def __init__(self, store):
+        super(StatusPopover, self).__init__()
+        self.set_size_request(*self.size)
 
         self._manager = ResourceStatusManager.get_instance()
         self._manager.connect('status-changed',
@@ -77,9 +74,8 @@ class StatusDialog(BasicDialog):
         self._manager.connect('action-finished',
                               self._on_manager__action_finished)
 
-        with api.new_store() as store:
-            user = api.get_current_user(store)
-            self._is_admin = user.profile.check_app_permission(u'admin')
+        user = api.get_current_user(store)
+        self._is_admin = user.profile.check_app_permission(u'admin')
 
         self._widgets = {}
         self._setup_ui()
@@ -89,21 +85,22 @@ class StatusDialog(BasicDialog):
     #
 
     def _setup_ui(self):
-        self.cancel_button.hide()
-        for child in self.vbox.get_children():
-            self.vbox.remove(child)
-
+        self.vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        self.add(self.vbox)
         self._refresh_btn = Gtk.Button(stock=Gtk.STOCK_REFRESH)
-        action_area = self.toplevel.get_action_area()
+        self._refresh_btn.set_relief(Gtk.ReliefStyle.NONE)
+
+        action_area = Gtk.ButtonBox()
         action_area.pack_start(self._refresh_btn, True, True, 6)
-        action_area.set_child_secondary(self._refresh_btn, True)
+        action_area.set_layout(Gtk.ButtonBoxStyle.END)
+
         self._refresh_btn.connect('clicked', self._on_refresh_btn__clicked)
-        self._refresh_btn.show()
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC,
                       Gtk.PolicyType.AUTOMATIC)
-        self.vbox.add(sw)
+        self.vbox.pack_start(sw, expand=True, fill=True, padding=0)
+        self.vbox.pack_start(action_area, expand=False, fill=True, padding=0)
 
         viewport = Gtk.Viewport()
         viewport.set_shadow_type(Gtk.ShadowType.NONE)
@@ -233,13 +230,13 @@ class StatusDialog(BasicDialog):
         self._manager.refresh_and_notify()
 
 
-class StatusButton(Gtk.Button):
+class StatusButton(Gtk.MenuButton):
 
     __gtype_name__ = 'StatusButton'
     _BLINK_RATE = 500
     _MAX_LENGTH = 28
 
-    def __init__(self):
+    def __init__(self, store):
         super(StatusButton, self).__init__()
 
         self._blink_id = None
@@ -254,6 +251,8 @@ class StatusButton(Gtk.Button):
         self.set_relief(Gtk.ReliefStyle.NONE)
         self._update_status(None)
         self._manager.refresh_and_notify(force=True)
+
+        self.set_popover(StatusPopover(store))
 
     #
     #  Private
@@ -318,9 +317,10 @@ GObject.type_register(StatusButton)
 class ShellStatusbar(Gtk.Statusbar):
     __gtype_name__ = 'ShellStatusbar'
 
-    def __init__(self, window):
+    def __init__(self, window, store):
         super(ShellStatusbar, self).__init__()
 
+        self.store = store
         self._disable_border()
         self.message_area = self._create_message_area()
         self._create_default_widgets()
@@ -379,9 +379,7 @@ class ShellStatusbar(Gtk.Statusbar):
         widget_area.pack_start(vsep, False, False, 0)
         vsep.show()
 
-        self._status_button = StatusButton()
-        self._status_button.connect('clicked',
-                                    self._on_status_button__clicked)
+        self._status_button = StatusButton(self.store)
         self.message_area.pack_end(self._status_button, False, False, 0)
         self._status_button.show()
 
@@ -401,9 +399,6 @@ class ShellStatusbar(Gtk.Statusbar):
         else:
             screen = 'launcher'
         run_dialog(FeedbackDialog, self.get_toplevel(), screen)
-
-    def _on_status_button__clicked(self, button):
-        run_dialog(StatusDialog, self.get_toplevel())
 
 
 GObject.type_register(ShellStatusbar)
