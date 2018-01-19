@@ -31,8 +31,8 @@ from stoqlib.domain.person import (Client, Employee, EmployeeRoleHistory,
                                    Supplier, Transporter, EmployeeRole)
 from stoqlib.domain.product import ProductSupplierInfo
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
-from stoqlib.domain.receiving import (ReceivingOrderItem, ReceivingOrder,
-                                      PurchaseReceivingMap)
+from stoqlib.domain.receiving import (ReceivingOrderItem, ReceivingInvoice,
+                                      PurchaseReceivingMap, ReceivingOrder)
 from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.gui.search.personsearch import (ClientSearch, EmployeeSearch,
@@ -63,8 +63,8 @@ class TestPersonSearch(GUITest):
 
     def test_supplier_search(self):
         self.clean_domain([ReceivingOrderItem, PurchaseReceivingMap,
-                           ReceivingOrder, PurchaseItem, PurchaseOrder,
-                           ProductSupplierInfo, Supplier])
+                           ReceivingOrder, ReceivingInvoice, PurchaseItem,
+                           PurchaseOrder, ProductSupplierInfo, Supplier])
 
         self.create_supplier(u'Eric S. Raymond', u'River Roupas')
         self.create_supplier(u'Guido van Rossum', u'Las Vegas Moda')
@@ -138,8 +138,8 @@ class TestPersonSearch(GUITest):
 
     def test_transporter_search(self):
         self.clean_domain([ReceivingOrderItem, PurchaseReceivingMap,
-                           ReceivingOrder, PurchaseItem, PurchaseOrder,
-                           Transporter])
+                           ReceivingOrder, ReceivingInvoice, PurchaseItem,
+                           PurchaseOrder, Transporter])
 
         self.create_transporter(u'Peter Pan')
         self.create_transporter(u'Captain Hook')

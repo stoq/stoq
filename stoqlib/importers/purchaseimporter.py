@@ -29,9 +29,13 @@ from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
-from stoqlib.domain.receiving import ReceivingOrder, ReceivingOrderItem
+from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
+                                      ReceivingInvoice)
 from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.workorder import WorkOrder
 from stoqlib.importers.csvimporter import CSVImporter
+
+WorkOrder
 
 
 class PurchaseImporter(CSVImporter):
@@ -92,11 +96,14 @@ class PurchaseImporter(CSVImporter):
         for payment in purchase.payments:
             payment.open_date = purchase.open_date
 
+        receiving_invoice = ReceivingInvoice(store=store,
+                                             supplier=supplier,
+                                             invoice_number=int(data.invoice),
+                                             transporter=transporter)
         receiving_order = ReceivingOrder(responsible=login_user,
-                                         supplier=supplier,
                                          invoice_number=int(data.invoice),
-                                         transporter=transporter,
                                          branch=branch,
+                                         receiving_invoice=receiving_invoice,
                                          store=store)
         receiving_order.add_purchase(purchase)
 

@@ -120,6 +120,7 @@ class ExampleCreator(object):
             'PurchaseOrder': self.create_purchase_order,
             'Quotation': self.create_quotation,
             'QuoteGroup': self.create_quote_group,
+            'ReceivingInvoice': self.create_receiving_invoice,
             'ReceivingOrder': self.create_receiving_order,
             'ReceivingOrderItem': self.create_receiving_order_item,
             'ReturnedSale': self.create_returned_sale,
@@ -849,6 +850,16 @@ class ExampleCreator(object):
         return CfopData(store=self.store, code=code,
                         description=u'test')
 
+    def create_receiving_invoice(self, supplier=None, branch=None, group=None,
+                                 invoice_key=None, responsible=None):
+        from stoqlib.domain.receiving import ReceivingInvoice
+        responsible = responsible or get_current_user(self.store)
+        return ReceivingInvoice(store=self.store, invoice_number=222,
+                                supplier=supplier or self.create_supplier(),
+                                branch=branch or get_current_branch(self.store),
+                                invoice_key=invoice_key, group=group,
+                                responsible=responsible)
+
     def create_receiving_order(self, purchase_order=None, branch=None,
                                user=None, invoice_key=None):
         from stoqlib.domain.receiving import ReceivingOrder
@@ -856,13 +867,15 @@ class ExampleCreator(object):
             purchase_order = self.create_purchase_order()
         cfop = self.create_cfop_data()
         cfop.code = u'1.102'
+        branch = branch or get_current_branch(self.store)
+        responsible = user or get_current_user(self.store)
+        invoice = self.create_receiving_invoice(invoice_key=invoice_key,
+                                                branch=branch, responsible=responsible)
         receiving = ReceivingOrder(store=self.store,
                                    invoice_number=222,
-                                   invoice_key=invoice_key,
-                                   supplier=purchase_order.supplier,
-                                   responsible=user or get_current_user(self.store),
-                                   branch=branch or get_current_branch(self.store),
-                                   cfop=cfop)
+                                   responsible=responsible,
+                                   branch=branch, cfop=cfop,
+                                   receiving_invoice=invoice)
         receiving.add_purchase(purchase_order)
         return receiving
 
@@ -880,8 +893,9 @@ class ExampleCreator(object):
         if purchase_item is None:
             purchase_item = receiving_order.purchase_orders.find()[0].add_item(
                 sellable, quantity)
+        cost = purchase_item.cost if purchase_item.cost is not None else 125
         return ReceivingOrderItem(store=self.store,
-                                  quantity=quantity, cost=125,
+                                  quantity=quantity, cost=cost,
                                   purchase_item=purchase_item,
                                   sellable=sellable,
                                   receiving_order=receiving_order,

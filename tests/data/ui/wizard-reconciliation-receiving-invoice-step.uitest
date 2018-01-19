@@ -1,9 +1,9 @@
-wizard: PurchaseWizard
-GtkDialog(toplevel): title='New Order', hidden
+wizard: PurchaseReconciliationWizard
+GtkDialog(toplevel): title='Purchase Reconciliation', hidden
   GtkBox(PluggableWizard-vbox, orientation=vertical):
     GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
-      GtkEventBox(slave_area, expand=True, fill=True): slave ReceivingInvoiceStep is attached
+      GtkEventBox(slave_area, expand=True, fill=True): slave InvoiceDetailsStep is attached
         GtkBox(step.vbox1, orientation=vertical):
           GtkEventBox(step.place_holder, expand=True, fill=True): slave ReceivingInvoiceSlave is attached
             GtkBox(vbox1, orientation=vertical):
@@ -11,18 +11,18 @@ GtkDialog(toplevel): title='New Order', hidden
                 GtkLabel(label10): 'Branch:'
                 ProxyLabel(branch): '<span >Moda Stoq</span>'
                 ProxyLabel(kiwilabel4): 'Products Total ($CURRENCY):'
-                ProxyLabel(products_total): '<span >$125.00</span>'
+                ProxyLabel(products_total): '<span >$260.00</span>'
                 ProxyLabel(purchase_supplier_label): 'Supplier:'
-                ProxyLabel(supplier_label): '<span >Cia de Roupas São Carlos</span>'
+                ProxyLabel(supplier_label): '<span >Supplier</span>'
                 ProxyLabel(kiwilabel54): 'Freight ($CURRENCY):'
                 ProxyEntry(freight): '0.00'
                 GtkLabel(purchase_number_label): 'Order Number:'
-                GtkLabel(identifier): '12345'
+                GtkLabel(identifier): '65432'
                 ProxyLabel(kiwilabel6): 'IPI ($CURRENCY):'
                 ProxyEntry(ipi): '0.00'
                 GtkLabel(label8): 'Invoice Number:'
                 GtkBox(invoice_hbox, orientation=horizontal):
-                  ProxyEntry(invoice_number, fill=True): '67890'
+                  ProxyEntry(invoice_number, fill=True): '1'
                   GtkLabel(label1, expand=True, fill=True):
                 ProxyLabel(kiwilabel200): 'ICMS Total ($CURRENCY):'
                 ProxyEntry(icms_total): '0.00'
@@ -32,7 +32,8 @@ GtkDialog(toplevel): title='New Order', hidden
                 ProxyEntry(icms_st_total): '0.00'
                 GtkLabel(label9): 'C.F.O.P.:'
                 ProxyComboEntry(cfop):
-                  item: '1.102 Compra para Comercializacao', selected
+                  item: '1.102 Compra para Comercializacao'
+                  item: '1.102 test', selected
                   item: '1.202 Devolução de Venda de Mercadoria Adquirida'
                 ProxyLabel(discount_label): 'Discount ($CURRENCY):'
                 ProxyEntry(discount_value): '0.00'
@@ -52,97 +53,15 @@ GtkDialog(toplevel): title='New Order', hidden
                   item: 'CIF - Freight value is unknown'
                   item: 'CIF - Freight value highlighted on invoice'
                 ProxyLabel(kiwilabel11): 'Invoice Total ($CURRENCY):'
-                ProxyLabel(total): '<span weight="bold">$125.00</span>'
+                ProxyLabel(total): '<span weight="bold">$260.00</span>'
                 GtkButtonBox(notes_box, orientation=horizontal):
                   GtkButton(observations_button): 'Observations...'
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
         GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
-          GtkButton(previous_button): 'gtk-go-back', insensitive
-          GtkButton(next_button): '_Finish'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): 'gtk-go-forward'
           GtkButton(ok_button): 'gtk-ok', hidden
-          GtkButton(help_button, expand=True, fill=True): 'gtk-help'
     GtkBox(orientation=horizontal, fill=True, pack-end):
       GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):
-
-model: PurchaseOrder<1>
-  confirm_date: datetime.today()
-  consigned: False
-  discount_value: <currency $0>
-  expected_freight: <currency $0>
-  expected_pay_date: datetime.today()
-  expected_receival_date: datetime.datetime(2010, 1, 4, 0, 0)
-  freight_type: 'fob'
-  group_id: PaymentGroup<4>
-  notes: ''
-  open_date: datetime.datetime(2010, 1, 3, 0, 0)
-  quote_deadline: None
-  receival_date: None
-  salesperson_name: ''
-  status: 'closed'
-  surcharge_value: <currency $0>
-
-model: PurchaseItem<2>
-  base_cost: <currency $125>
-  cost: <currency $125>
-  expected_receival_date: datetime.datetime(2010, 1, 4, 0, 0)
-  order_id: PurchaseOrder<1>
-  quantity: Decimal('1.000')
-  quantity_received: Decimal('1.000')
-  quantity_returned: Decimal('0.000')
-  quantity_sold: Decimal('0.000')
-
-model: Payment<3>
-  base_value: <currency $125>
-  bill_received: False
-  cancel_date: None
-  description: '1/1 Bill for order 12345'
-  discount: <currency $0>
-  due_date: datetime.today()
-  group_id: PaymentGroup<4>
-  interest: <currency $0>
-  open_date: datetime.today()
-  paid_date: None
-  paid_value: None
-  payment_number: None
-  payment_type: 'out'
-  penalty: <currency $0>
-  status: 'pending'
-  value: <currency $125>
-
-model: PaymentGroup<4>
-
-model: ReceivingOrder<5>
-  confirm_date: None
-  invoice_number: 67890
-  notes: ''
-  packing_number: None
-  receival_date: datetime.today()
-  receiving_invoice_id: ReceivingInvoice<6>
-  status: 'pending'
-
-model: ReceivingInvoice<6>
-  discount_value: <currency $0>
-  expense_value: <currency $0>
-  freight_total: <currency $0>
-  freight_type: 'fob-installments'
-  icms_st_total: <currency $0>
-  icms_total: <currency $0>
-  invoice_key: ''
-  invoice_number: 67890
-  invoice_total: <currency $125>
-  ipi_total: <currency $0>
-  secure_value: <currency $0>
-  surcharge_value: <currency $0>
-
-model: ReceivingOrderItem<7>
-  cost: <currency $125>
-  purchase_item_id: PurchaseItem<2>
-  quantity: Decimal('1.000')
-  receiving_order_id: ReceivingOrder<5>
-
-model: ProductStockItem<8>
-  quantity: Decimal('1.000')
-  stock_cost: <currency $125>
-

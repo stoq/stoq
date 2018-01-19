@@ -26,10 +26,11 @@
 
 from kiwi.datatypes import ValidationError, ValueUnset
 from kiwi.utils import gsignal
+from storm.exceptions import NotOneError
 
 from stoqlib.api import api
 from stoqlib.domain.fiscal import CfopData
-from stoqlib.domain.receiving import ReceivingOrder
+from stoqlib.domain.receiving import ReceivingInvoice
 from stoqlib.domain.person import Transporter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
@@ -42,29 +43,37 @@ _ = stoqlib_gettext
 
 class ReceivingInvoiceSlave(BaseEditorSlave):
 
-    model_type = ReceivingOrder
+    model_type = ReceivingInvoice
     gladefile = 'ReceivingInvoiceSlave'
-    proxy_widgets = ('transporter',
-                     'responsible_name',
-                     'products_total',
-                     'freight_combo',
-                     'freight',
-                     'ipi',
-                     'cfop',
-                     'branch',
-                     'supplier_label',
-                     'total',
-                     'invoice_number',
-                     'invoice_key',
-                     'icms_total',
-                     'discount_value',
-                     'secure_value',
-                     'expense_value')
+    receiving_widgets = ['cfop']
+    invoice_widgets = ['transporter',
+                       'branch',
+                       'responsible_name',
+                       'freight_combo',
+                       'freight',
+                       'ipi',
+                       'total',
+                       'products_total',
+                       'supplier_label',
+                       'invoice_number',
+                       'invoice_key',
+                       'icms_total',
+                       'icms_st_total',
+                       'discount_value',
+                       'secure_value',
+                       'expense_value']
+    proxy_widgets = receiving_widgets + invoice_widgets
 
     gsignal('activate')
 
     def __init__(self, store, model, visual_mode=False):
-        self.purchases = list(model.purchase_orders)
+        self.purchases = list(model.get_purchase_orders())
+
+        # Save the receiving order if there is only one for this receiving invoice
+        try:
+            self._receiving_order = model.receiving_orders.one()
+        except NotOneError:
+            self._receiving_order = None
         BaseEditorSlave.__init__(self, store, model, visual_mode)
 
     #
@@ -77,23 +86,22 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
 
     def _setup_freight_combo(self):
         freight_items = [(value, key) for (key, value) in
-                         ReceivingOrder.freight_types.items()]
+                         ReceivingInvoice.freight_types.items()]
 
         # If there is at least one purchase with pending payments, than we can
         # change those.
-        can_change_installments = any(not p.is_paid() for p in self.model.payments)
+        payments = self._receiving_order and self._receiving_order.payments
+        can_change_installments = not payments or any(not p.is_paid() for p in payments)
         if not can_change_installments and not self.visual_mode:
-            ro = ReceivingOrder
-            freight_items.remove((ro.freight_types[ro.FREIGHT_FOB_INSTALLMENTS],
-                                  ro.FREIGHT_FOB_INSTALLMENTS))
+            ri = ReceivingInvoice
+            freight_items.remove((ri.freight_types[ri.FREIGHT_FOB_INSTALLMENTS],
+                                  ri.FREIGHT_FOB_INSTALLMENTS))
 
         # Disconnect that callback to prevent an AttributeError
         # caused by the lack of a proxy.
         handler_func = self.after_freight_combo__content_changed
         self.freight_combo.handler_block_by_func(handler_func)
-
         self.freight_combo.prefill(freight_items)
-
         self.freight_combo.handler_unblock_by_func(handler_func)
 
     def _setup_widgets(self):
@@ -109,6 +117,9 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                            self.secure_value, self.expense_value):
                 widget.set_sensitive(False)
 
+        # Only allow to edit the cfop if there is only one receiving for this invoice
+        self.cfop.set_sensitive(bool(not self.visual_mode and self._receiving_order))
+
         self._setup_transporter_entry()
         self._setup_freight_combo()
 
@@ -123,6 +134,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                                     self.freight,
                                     self.ipi,
                                     self.icms_total,
+                                    self.icms_st_total,
                                     self.discount_value,
                                     self.secure_value,
                                     self.expense_value])
@@ -134,7 +146,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         will be created for freight. If not, it'll be included on installments.
         """
         freight_type = self.freight_combo.read()
-        return freight_type == self.model.FREIGHT_FOB_PAYMENT
+        return freight_type == ReceivingInvoice.FREIGHT_FOB_PAYMENT
 
     #
     # BaseEditorSlave hooks
@@ -145,10 +157,13 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         self.freight_combo.set_sensitive(False)
 
     def setup_proxies(self):
-        self.proxy = None
+        self.receiving_proxy = None
+        self.invoice_proxy = None
         self._setup_widgets()
-        self.proxy = self.add_proxy(self.model,
-                                    ReceivingInvoiceSlave.proxy_widgets)
+        self.invoice_proxy = self.add_proxy(self.model,
+                                            ReceivingInvoiceSlave.invoice_widgets)
+        receiving_order = self._receiving_order or self.model.receiving_orders.any()
+        self.receiving_proxy = self.add_proxy(receiving_order, self.receiving_widgets)
 
         self.model.invoice_total = self.model.products_total
 
@@ -164,7 +179,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             self.model.supplier = purchase.supplier
             self.transporter.update(purchase.transporter)
 
-        self.proxy.update('total')
+        self.invoice_proxy.update('total')
 
     def on_invoice_number__activate(self, widget):
         self.emit('activate')
@@ -176,6 +191,9 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         self.emit('activate')
 
     def on_icms_total__activate(self, widget):
+        self.emit('activate')
+
+    def on_icms_st_total__activate(self, widget):
         self.emit('activate')
 
     def on_discount_value__activate(self, widget):
@@ -209,15 +227,14 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             return ValidationError(
                 _("Invoice number must be between 1 and 999999999"))
 
-        store = api.new_store()
-        # Using a transaction to do the verification bellow because,
-        # if we use self.store the changes on the invoice will be
-        # saved at the same time in the database and it'll think
-        # some valid invoices are invalid.
-        order_count = store.find(ReceivingOrder, invoice_number=value,
-                                 supplier=self.model.supplier).count()
-        store.close()
-        if order_count > 0:
+        with api.new_store() as store:
+            # Using a transaction to do the verification bellow because,
+            # if we use self.store the changes on the invoice will be
+            # saved at the same time in the database and it'll think
+            # some valid invoices are invalid.
+            is_valid = ReceivingInvoice.check_unique_invoice_number(
+                store, value, self.model.supplier)
+        if not is_valid:
             supplier_name = self.model.supplier.person.name
             return ValidationError(_(u'Invoice %d already exists for '
                                      'supplier %s.') % (value, supplier_name, ))
@@ -225,55 +242,31 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
     def after_freight_combo__content_changed(self, widget):
         value = widget.read()
 
-        if value == ReceivingOrder.FREIGHT_CIF_UNKNOWN:
+        if value == ReceivingInvoice.FREIGHT_CIF_UNKNOWN:
             self.freight.update(0)
             self.freight.set_sensitive(False)
         else:
             if not self.visual_mode:
                 self.freight.set_sensitive(True)
                 if (not self.model.freight_total and
-                    value in ReceivingOrder.FOB_FREIGHTS):
+                        value in ReceivingInvoice.FOB_FREIGHTS):
                     # Restore the freight value to the purchase expected one.
                     self.freight.update(self.purchases[0].expected_freight)
 
-        if self.proxy is not None:
-            self.proxy.update('total')
+        if self.invoice_proxy is not None:
+            self.invoice_proxy.update('total')
 
     def after_freight__content_changed(self, widget):
-        try:
-            value = widget.read()
-        except ValidationError:
-            value = ValueUnset
-
-        if value is ValueUnset:
-            self.model.freight_total = 0
-
-        if self.proxy is not None:
-            self.proxy.update('total')
+        self.handle_entry_content_changed(widget, 'freight_total')
 
     def after_ipi__content_changed(self, widget):
-        try:
-            value = widget.read()
-        except ValidationError:
-            value = ValueUnset
+        self.handle_entry_content_changed(widget, 'ipi_total')
 
-        if value is ValueUnset:
-            self.model.ipi_total = 0
-
-        if self.proxy is not None:
-            self.proxy.update('total')
+    def after_icms_st_total__content_changed(self, widget):
+        self.handle_entry_content_changed(widget, 'icms_st_total')
 
     def after_discount_value__content_changed(self, widget):
-        try:
-            value = widget.read()
-        except ValidationError:
-            value = ValueUnset
-
-        if value is ValueUnset:
-            self.model.discount_value = 0
-
-        if self.proxy is not None:
-            self.proxy.update('total')
+        self.handle_entry_content_changed(widget, 'discount_value')
 
     def after_discount_value__validate(self, widget, value):
         if value < 0:
@@ -283,28 +276,22 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                                      "than %s") % (self.model.total,))
 
     def after_secure_value__content_changed(self, widget):
-        try:
-            value = widget.read()
-        except ValidationError:
-            value = ValueUnset
-
-        if value is ValueUnset:
-            self.model.secure_value = 0
-
-        if self.proxy is not None:
-            self.proxy.update('total')
+        self.handle_entry_content_changed(widget, 'secure_value')
 
     def after_expense_value__content_changed(self, widget):
+        self.handle_entry_content_changed(widget, 'expense_value')
+
+    def handle_entry_content_changed(self, widget, attr):
         try:
             value = widget.read()
         except ValidationError:
             value = ValueUnset
 
         if value is ValueUnset:
-            self.model.expense_value = 0
+            setattr(self.model, attr, 0)
 
-        if self.proxy is not None:
-            self.proxy.update('total')
+        if self.invoice_proxy is not None:
+            self.invoice_proxy.update('total')
 
     def on_invoice_key__validate(self, widget, value):
         if value and not validate_invoice_key(value):

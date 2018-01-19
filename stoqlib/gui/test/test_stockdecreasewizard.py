@@ -167,7 +167,7 @@ class TestStockDecreaseWizard(GUITest):
         # Run the wizard
         wizard = StockDecreaseWizard(self.store, receiving_order=order)
         self.assertEqual(wizard.model.branch, order.branch)
-        self.assertEqual(wizard.model.person, order.supplier.person)
+        self.assertEqual(wizard.model.person, order.receiving_invoice.supplier.person)
         step = wizard.get_current_step()
         step.reason.update('test')
         self.check_wizard(wizard, 'stock-decrease-with-receiving-order')

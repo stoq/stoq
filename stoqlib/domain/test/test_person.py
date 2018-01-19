@@ -1504,7 +1504,7 @@ class TestPersonMerging(DomainTest):
             # Supplier
             'UPDATE card_payment_device SET supplier_id=%s WHERE card_payment_device.supplier_id = %s',  # nopep8
             'UPDATE purchase_order SET supplier_id=%s WHERE purchase_order.supplier_id = %s',
-            'UPDATE receiving_order SET supplier_id=%s WHERE receiving_order.supplier_id = %s',
+            'UPDATE receiving_invoice SET supplier_id=%s WHERE receiving_invoice.supplier_id = %s',
         ]
         tracer = StoqlibUpdateTracer([cnpj_query, info_query] + expected_updates
                                      + self.person_updates)
@@ -1547,6 +1547,7 @@ class TestPersonMerging(DomainTest):
             'UPDATE production_item_quality_result SET tested_by_id=%s WHERE production_item_quality_result.tested_by_id = %s',  # nopep8
             'UPDATE production_produced_item SET produced_by_id=%s WHERE production_produced_item.produced_by_id = %s',  # nopep8
             'UPDATE purchase_order SET responsible_id=%s WHERE purchase_order.responsible_id = %s',  # nopep8
+            'UPDATE receiving_invoice SET responsible_id=%s WHERE receiving_invoice.responsible_id = %s',  # nopep8
             'UPDATE receiving_order SET responsible_id=%s WHERE receiving_order.responsible_id = %s',  # nopep8
             'UPDATE returned_sale SET confirm_responsible_id=%s WHERE returned_sale.confirm_responsible_id = %s',  # nopep8
             'UPDATE returned_sale SET responsible_id=%s WHERE returned_sale.responsible_id = %s',  # nopep8
@@ -1598,7 +1599,7 @@ class TestPersonMerging(DomainTest):
         expected_updates = [
             'UPDATE delivery SET transporter_id=%s WHERE delivery.transporter_id = %s',
             'UPDATE purchase_order SET transporter_id=%s WHERE purchase_order.transporter_id = %s',
-            'UPDATE receiving_order SET transporter_id=%s WHERE receiving_order.transporter_id = %s',  # nopep8
+            'UPDATE receiving_invoice SET transporter_id=%s WHERE receiving_invoice.transporter_id = %s',  # nopep8
             'UPDATE sale SET transporter_id=%s WHERE sale.transporter_id = %s',
         ]
         tracer = StoqlibUpdateTracer(expected_updates + self.person_updates)

@@ -369,6 +369,10 @@ class OpticalUI(object):
             return
 
         optical_wo = OpticalWorkOrder.find_by_work_order(order.store, order)
+        # If there is no optical WO, nothing to do here
+        if optical_wo is None:
+            return
+
         if optical_wo.can_create_purchase():
             rv = run_dialog(OpticalSupplierEditor, None, order.store)
             if not rv:

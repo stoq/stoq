@@ -162,8 +162,10 @@ class TestReceivingOrderWizard(GUITest):
         self.click(wizard.next_button)
 
         step = wizard.get_current_step()
+        self.assertNotSensitive(wizard, ['next_button'])
         step.invoice_slave.invoice_number.update(10094)
         step.invoice_slave.freight.update(159)
+        self.assertSensitive(wizard, ['next_button'])
         self.check_wizard(wizard, 'receiving-order-multiple-invoice-step')
 
         with contextlib.nested(

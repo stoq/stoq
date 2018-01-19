@@ -51,6 +51,7 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.receiving import ReceivingInvoice
 from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.stockdecrease import StockDecrease
@@ -595,6 +596,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
             return self.order.purchase_total
         elif isinstance(self.order, PaymentRenegotiation):
             return self.order.total
+        elif isinstance(self.order, ReceivingInvoice):
+            return self.order.total_for_payment
         else:
             raise TypeError
 
@@ -602,7 +605,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         # FIXME: Is it right to consider only PurchaseOrder as TYPE_OUT?
         # Maybe we should add an interface on order objects for them to
         # decide which type of payment would be created here
-        if isinstance(self.order, PurchaseOrder):
+        if isinstance(self.order, (PurchaseOrder, ReceivingInvoice)):
             return Payment.TYPE_OUT
         else:
             return Payment.TYPE_IN

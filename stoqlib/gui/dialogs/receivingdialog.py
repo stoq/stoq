@@ -115,7 +115,11 @@ class ReceivingOrderDetailsDialog(BaseEditor):
         self.add_proxy(self.model, ['notes'])
 
     def setup_slaves(self):
-        self.invoice_slave = ReceivingInvoiceSlave(self.store, self.model,
+        if not self.model.receiving_invoice:
+            return
+
+        self.invoice_slave = ReceivingInvoiceSlave(self.store,
+                                                   self.model.receiving_invoice,
                                                    visual_mode=True)
         self.attach_slave("details_holder", self.invoice_slave)
 

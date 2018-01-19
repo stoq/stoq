@@ -53,7 +53,7 @@ from stoqlib.domain.production import ProductionOrder, ProductionItem
 from stoqlib.domain.purchase import (Quotation, QuoteGroup, PurchaseOrder,
                                      PurchaseItem)
 from stoqlib.domain.receiving import (ReceivingOrderItem, ReceivingOrder,
-                                      PurchaseReceivingMap)
+                                      PurchaseReceivingMap, ReceivingInvoice)
 from stoqlib.domain.sale import SaleItem, Sale, Delivery
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sellable import (Sellable, SellableUnit,
@@ -827,6 +827,15 @@ class ConsignedItemAndStockView(PurchasedItemAndStockView):
                  PurchaseOrder.branch_id == ProductStockItem.branch_id)
 
 
+_ReceivingItemSummary = Select(columns=[ReceivingOrderItem.receiving_order_id,
+                               Alias(Sum(Round(ReceivingOrderItem.quantity *
+                                               ReceivingOrderItem.cost,
+                                               DECIMAL_PRECISION)), 'subtotal')],
+                               tables=[ReceivingOrderItem],
+                               group_by=[ReceivingOrderItem.receiving_order_id])
+ReceivingItemSummary = Alias(_ReceivingItemSummary, '_receiving_item')
+
+
 class PurchaseReceivingView(Viewable):
     """Stores information about received orders.
 
@@ -846,20 +855,31 @@ class PurchaseReceivingView(Viewable):
     _PurchaseResponsible = ClassAlias(Person, "purchase_responsible")
 
     order = ReceivingOrder
+    supplier = Supplier
+    receiving_invoice = ReceivingInvoice
+    purchase = PurchaseOrder
 
     id = ReceivingOrder.id
+    identifier = ReceivingOrder.identifier
     receival_date = ReceivingOrder.receival_date
-    invoice_number = ReceivingOrder.invoice_number
-    invoice_total = ReceivingOrder.invoice_total
+    invoice_number = ReceivingInvoice.invoice_number
+    invoice_total = ReceivingInvoice.invoice_total
+    packing_number = ReceivingOrder.packing_number
+    status = ReceivingOrder.status
     purchase_identifier = PurchaseOrder.identifier
     purchase_identifier_str = Cast(PurchaseOrder.identifier, 'text')
     branch_id = ReceivingOrder.branch_id
     purchase_responsible_name = _PurchaseResponsible.name
     responsible_name = _Responsible.name
     supplier_name = _Supplier.name
+    supplier_id = Supplier.id
+    purchase_group = PurchaseOrder.group_id
+    _subtotal = Coalesce(Field('_receiving_item', 'subtotal'), 0)
 
     tables = [
         ReceivingOrder,
+        LeftJoin(ReceivingItemSummary, Field('_receiving_item',
+                                             'receiving_order_id') == ReceivingOrder.id),
         LeftJoin(PurchaseReceivingMap,
                  ReceivingOrder.id == PurchaseReceivingMap.receiving_id),
         LeftJoin(PurchaseOrder, PurchaseReceivingMap.purchase_id == PurchaseOrder.id),
@@ -867,11 +887,19 @@ class PurchaseReceivingView(Viewable):
                  PurchaseOrder.responsible_id == _PurchaseUser.id),
         LeftJoin(_PurchaseResponsible,
                  _PurchaseUser.person_id == _PurchaseResponsible.id),
-        LeftJoin(Supplier, ReceivingOrder.supplier_id == Supplier.id),
+        LeftJoin(ReceivingInvoice,
+                 ReceivingOrder.receiving_invoice_id == ReceivingInvoice.id),
+        LeftJoin(Supplier, PurchaseOrder.supplier_id == Supplier.id),
         LeftJoin(_Supplier, Supplier.person_id == _Supplier.id),
         LeftJoin(LoginUser, ReceivingOrder.responsible_id == LoginUser.id),
         LeftJoin(_Responsible, LoginUser.person_id == _Responsible.id),
     ]
+
+    @property
+    def subtotal(self):
+        # The editor requires the model to be a currency, but _subtotal is a
+        # decimal. So we need to convert it
+        return currency(self._subtotal)
 
 
 class SaleItemsView(Viewable):
@@ -988,10 +1016,12 @@ class ReceivingItemView(Viewable):
              ReceivingOrderItem.receiving_order_id == ReceivingOrder.id),
         Join(PurchaseReceivingMap,
              ReceivingOrder.id == PurchaseReceivingMap.receiving_id),
+        LeftJoin(ReceivingInvoice,
+                 ReceivingOrder.receiving_invoice_id == ReceivingInvoice.id),
         Join(PurchaseOrder, PurchaseReceivingMap.purchase_id == PurchaseOrder.id),
         LeftJoin(Sellable, ReceivingOrderItem.sellable_id == Sellable.id),
         LeftJoin(SellableUnit, Sellable.unit_id == SellableUnit.id),
-        LeftJoin(Supplier, ReceivingOrder.supplier_id == Supplier.id),
+        LeftJoin(Supplier, PurchaseOrder.supplier_id == Supplier.id),
         LeftJoin(Person, Supplier.person_id == Person.id),
         Join(Branch, PurchaseOrder.branch_id == Branch.id),
     ]

@@ -1,0 +1,22 @@
+dialog: ReceivingOrderDetailsDialog
+GtkBox(vbox1, orientation=vertical):
+  GtkBox(hbox1, orientation=horizontal, fill=True):
+    GtkLabel(header_label, fill=True): 'Received in <b>YYYY-MM-DD</b> for branch <b>Moda Stoq</b>'
+    GtkButtonBox(hbuttonbox2, orientation=horizontal, expand=True, fill=True):
+      GtkButton(return_btn, expand=True): 'Return Receiving', insensitive
+  GtkNotebook(values_list, expand=True, fill=True, padding=6):
+    GtkBox(products_vbox, orientation=vertical):
+      ObjectTree(product_list, expand=True, fill=True):
+        column: title='Code'
+        column: title='Description', expand
+        column: title='Quantity'
+        column: title='Cost'
+        column: title='Total'
+      SummaryLabel(fill=True):
+        GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+        GtkLabel(): '<b>$0.00</b>'
+    GtkEventBox(details_holder):
+    GtkScrolledWindow(scrolledwindow1):
+      ProxyTextView(notes):
+  GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
+    GtkButton(print_labels): 'gtk-print'

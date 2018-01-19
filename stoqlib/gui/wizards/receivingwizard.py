@@ -34,7 +34,7 @@ from storm.expr import And
 
 from stoqlib.api import api
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
-from stoqlib.domain.receiving import ReceivingOrder
+from stoqlib.domain.receiving import ReceivingOrder, ReceivingInvoice
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.gui.base.dialogs import run_dialog
@@ -291,8 +291,6 @@ class ReceivingOrderItemStep(BaseWizardStep):
         return sum([item.total for item in self.purchase_items])
 
     def _create_receiving_order(self):
-        # We only let the user get this far if the purchases select are for the
-        # same branch and supplier
         supplier_id = self.purchases[0].supplier_id
         branch_id = self.purchases[0].branch_id
 
@@ -306,11 +304,14 @@ class ReceivingOrderItemStep(BaseWizardStep):
         # selected a PurchaseOrder yet which ReceivingOrder depends on
         # Create the order here since this is the first place where we
         # actually have a purchase selected
+        receiving_invoice = ReceivingInvoice(
+            supplier=supplier_id, store=self.store, branch=branch_id,
+            responsible=api.get_current_user(self.store))
         self.wizard.model = self.model = ReceivingOrder(
             identifier=temporary_identifier,
-            responsible=api.get_current_user(self.store),
-            supplier=supplier_id, invoice_number=None,
-            branch=branch_id, store=self.store)
+            receiving_invoice=receiving_invoice,
+            responsible=receiving_invoice.responsible,
+            invoice_number=None, branch=branch_id, store=self.store)
 
         for row in self.purchases:
             self.model.add_purchase(row.purchase)
@@ -408,7 +409,8 @@ class ReceivingInvoiceStep(WizardEditorStep):
 
     def post_init(self):
         self._is_valid = False
-        self.invoice_slave = ReceivingInvoiceSlave(self.store, self.model)
+        self.invoice_slave = ReceivingInvoiceSlave(
+            self.store, self.model.receiving_invoice)
         self.invoice_slave.connect('activate', self._on_invoice_slave__activate)
         self.attach_slave("place_holder", self.invoice_slave)
         # Slaves must be focused after being attached

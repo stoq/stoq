@@ -558,16 +558,20 @@ class TestPaymentGroup(DomainTest):
         renegotiation = self.create_payment_renegotiation()
         group = self.create_payment_group()
         decrease = self.create_stock_decrease(group=group)
+        group = self.create_payment_group()
+        receiving_invoice = self.create_receiving_invoice(group=group)
 
         sale.identifier = 77777
         purchase.identifier = 88888
         renegotiation.identifier = 99999
         decrease.identifier = 12345
+        receiving_invoice.identifier = 12223
 
         self.assertEqual(sale.group.get_description(), u'sale 77777')
         self.assertEqual(purchase.group.get_description(), u'order 88888')
         self.assertEqual(renegotiation.group.get_description(), u'renegotiation 99999')
         self.assertEqual(decrease.group.get_description(), u'stock decrease 12345')
+        self.assertEqual(receiving_invoice.group.get_description(), u'receiving 12223')
 
         callback = lambda g, s: Settable(payment_description='foobar')
         PaymentGroupGetOrderEvent.connect(callback)

@@ -17,19 +17,20 @@ class TestSintegraGenerator(DomainTest):
 
     def test_registers(self):
         order = self.create_receiving_order()
+        receiving_invoice = order.receiving_invoice
         order.receival_date = localdate(2007, 6, 1)
-        order.discount_value = 10
+        receiving_invoice.discount_value = 10
         # order.purchase.discount_value = 5
         # order.purchase.surcharge_value = 8
         # order.surcharge_value = 15
-        order.ipi_total = 10
-        order.freight_total = 6
-        order.secure_value = 6
-        order.expense_value = 12
+        receiving_invoice.ipi_total = 10
+        receiving_invoice.freight_total = 6
+        receiving_invoice.secure_value = 6
+        receiving_invoice.expense_value = 12
         supplier = self.create_supplier()
         company = supplier.person.has_individual_or_company_facets()
         company.state_registry = u'103238426117'
-        order.supplier = supplier
+        receiving_invoice.supplier = supplier
         employee = self.create_employee()
         branch = get_current_branch(self.store)
         branch.manager = employee

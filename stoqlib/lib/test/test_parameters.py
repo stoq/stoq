@@ -174,14 +174,12 @@ class TestParameter(DomainTest):
         receiving_order = ReceivingOrder(responsible=responsible,
                                          branch=branch,
                                          store=self.store,
-                                         invoice_number=876,
-                                         supplier=None)
+                                         invoice_number=876)
         param2 = self.sparam.get_object(self.store, 'DEFAULT_SALES_CFOP')
         receiving_order2 = ReceivingOrder(responsible=responsible,
                                           cfop=param2, branch=branch,
                                           store=self.store,
-                                          invoice_number=1231,
-                                          supplier=None)
+                                          invoice_number=1231)
         self.assertEqual(param, receiving_order.cfop)
         self.failIfEqual(param, receiving_order2.cfop)
 

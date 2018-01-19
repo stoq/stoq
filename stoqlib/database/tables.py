@@ -120,7 +120,7 @@ _tables = [
                   "PurchaseItem",
                   "QuoteGroup"]),
     ('receiving', ["ReceivingOrder", "ReceivingOrderItem",
-                   'PurchaseReceivingMap']),
+                   'PurchaseReceivingMap', 'ReceivingInvoice']),
     ('devices', ["DeviceSettings",
                  "FiscalDayHistory",
                  "FiscalDayTax"]),

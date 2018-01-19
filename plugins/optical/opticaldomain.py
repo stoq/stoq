@@ -35,7 +35,6 @@ from stoqlib.database.properties import (DecimalCol, DateTimeCol, EnumCol,
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import DomainMergeEvent
-from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import Person, Company, Branch
 from stoqlib.domain.product import Product, StorableBatch, ProductManufacturer
 from stoqlib.domain.purchase import PurchaseOrder
@@ -418,8 +417,7 @@ class OpticalWorkOrder(Domain):
                                  supplier=supplier,
                                  responsible=api.get_current_user(store),
                                  branch=api.get_current_branch(store),
-                                 work_order=self.work_order,
-                                 group=PaymentGroup(store=store))
+                                 work_order=self.work_order)
         results = OpticalWorkOrderItemsView.find_by_order(self.work_order.store,
                                                           self.work_order)
         for view in results:

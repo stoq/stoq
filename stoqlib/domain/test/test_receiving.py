@@ -35,7 +35,7 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import ProductStockItem, Storable
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.domain.receiving import ReceivingOrder
+from stoqlib.domain.receiving import ReceivingOrder, ReceivingInvoice
 from stoqlib.lib.dateutils import localdate
 
 __tests__ = 'stoqlib/domain/receiving.py'
@@ -46,16 +46,14 @@ class TestReceivingOrder(DomainTest):
     def test_constructor(self):
         cfop = self.create_cfop_data()
         branch = self.create_branch()
-        supplier = self.create_supplier()
 
         # When we don't provide a CFOP, the constructor should use the default
         # one
-        order = ReceivingOrder(self.store, branch=branch, supplier=supplier)
+        order = ReceivingOrder(self.store, branch=branch)
         self.assertNotEqual(order.cfop, None)
         self.assertNotEqual(order.cfop, cfop)
 
-        order = ReceivingOrder(self.store, cfop=cfop, branch=branch,
-                               supplier=supplier)
+        order = ReceivingOrder(self.store, cfop=cfop, branch=branch)
         self.assertEqual(order.cfop, cfop)
 
     def test_get_total(self):
@@ -63,27 +61,10 @@ class TestReceivingOrder(DomainTest):
         purchase = order.purchase_orders.find()[0]
         self.create_receiving_order_item(order)
         self.assertEqual(order.total, currency(1000))
-
-        order.discount_value = 10
+        purchase.discount_value = 10
         self.assertEqual(order.total, currency(990))
-        purchase.discount_value = 5
-        self.assertEqual(order.total, currency(985))
-        purchase.surcharge_value = 8
-        order.surcharge_value = 15
-        self.assertEqual(order.total, currency(1008))
-        order.ipi_total = 10
-        self.assertEqual(order.total, currency(1018))
-        order.freight_total = 6
-        self.assertEqual(order.total, currency(1024))
-        order.secure_value = 6
-        self.assertEqual(order.total, currency(1030))
-        order.expense_value = 12
-        self.assertEqual(order.total, currency(1042))
-
-        purchase.status = purchase.ORDER_PENDING
-        purchase.confirm()
-        order.confirm()
-        self.assertEqual(order.invoice_total, order.total)
+        purchase.surcharge_value = 10
+        self.assertEqual(order.total, currency(1000))
 
     def test_confirm(self):
         order = self.create_receiving_order()
@@ -110,7 +91,7 @@ class TestReceivingOrder(DomainTest):
                              order.total / installment_count)
             self.assertEqual(pay.value,
                              order.total / installment_count)
-        self.assertEqual(order.invoice_total, order.total)
+        self.assertEqual(order.receiving_invoice.invoice_total, order.total)
         self.assertEqual(stock_item.quantity, 16)
 
     def test_order_receive_sell(self):
@@ -150,8 +131,11 @@ class TestReceivingOrder(DomainTest):
 
     def test_update_payment_values(self):
         order = self.create_receiving_order()
+        receiving_invoice = order.receiving_invoice
         purchase = order.purchase_orders.find()[0]
-        self.create_receiving_order_item(order)
+        purchase_item = self.create_purchase_order_item(order=purchase)
+        self.add_payments(purchase, installments=2)
+        self.create_receiving_order_item(order, purchase_item=purchase_item)
         self.assertEqual(order.total, currency(1000))
 
         for item in purchase.get_items():
@@ -163,24 +147,30 @@ class TestReceivingOrder(DomainTest):
         payment_dict = {}
         for pay in order.payments:
             self.assertEqual(pay.value,
-                             order.total / installment_count)
+                             receiving_invoice.total / installment_count)
             payment_dict[pay] = pay.value
 
-        order.discount_value = 20
-        order.surcharge_value = 100
-        order.freight_total = 10
-        order.secure_value = 15
-        order.expense_value = 5
+        receiving_invoice.discount_value = 20
+        receiving_invoice.surcharge_value = 100
+        receiving_invoice.freight_total = 10
+        receiving_invoice.secure_value = 15
+        receiving_invoice.expense_value = 5
         order.update_payments()
 
         for pay in order.payments:
-            self.assertEqual(pay.value, order.total / installment_count)
+            self.assertEqual(pay.value, receiving_invoice.total / installment_count)
             self.assertFalse(pay.value <= payment_dict[pay])
 
     def test_update_payment_values_with_freight_payment(self):
         order = self.create_receiving_order()
+        receiving_invoice = order.receiving_invoice
         purchase = order.purchase_orders.find()[0]
-        self.create_receiving_order_item(order)
+        purchase_item = self.create_purchase_order_item(order=purchase)
+        self.add_payments(purchase, installments=2)
+        # Cover the case of the receiving having more than one purchase
+        purchase2 = self.create_purchase_order()
+        order.add_purchase(purchase2)
+        self.create_receiving_order_item(order, purchase_item=purchase_item)
         self.assertEqual(order.total, currency(1000))
 
         for item in purchase.get_items():
@@ -192,130 +182,33 @@ class TestReceivingOrder(DomainTest):
         payment_dict = {}
         for pay in order.payments:
             self.assertEqual(pay.value,
-                             order.total / installment_count)
+                             receiving_invoice.total / installment_count)
             payment_dict[pay] = pay.value
 
-        order.discount_value = 20
-        order.surcharge_value = 100
-        order.freight_total = 10
-        order.secure_value = 15
-        order.expense_value = 5
+        receiving_invoice.discount_value = 20
+        receiving_invoice.surcharge_value = 100
+        receiving_invoice.freight_total = 10
+        receiving_invoice.secure_value = 15
+        receiving_invoice.expense_value = 5
         order.update_payments(create_freight_payment=True)
 
         for pay in order.payments:
             if pay not in payment_dict.keys():
-                self.assertEqual(pay.value, order.freight_total)
+                self.assertEqual(pay.value, receiving_invoice.freight_total)
             else:
                 self.assertFalse(pay.value <= payment_dict[pay])
-
-    def test_receiving_with_cif_freight(self):
-        purchase = self.create_purchase_order()
-        purchase.freight_type = PurchaseOrder.FREIGHT_CIF
-
-        order = self.create_receiving_order(purchase_order=purchase)
-        self.assertEqual(order.guess_freight_type(),
-                         ReceivingOrder.FREIGHT_CIF_UNKNOWN)
-
-        purchase.expected_freight = 10
-        order = self.create_receiving_order(purchase_order=purchase)
-        self.assertEqual(order.guess_freight_type(),
-                         ReceivingOrder.FREIGHT_CIF_INVOICE)
-
-    def test_get_transporter_name(self):
-        receiving_order = self.create_receiving_order()
-
-        # Without transporter, the transporter name should be empty
-        receiving_order.transporter = None
-        name = receiving_order.transporter_name
-        self.assertEqual(name, '')
-
-        # Now there is a transporter...
-        transporter = self.create_transporter(u'Juca')
-        receiving_order.transporter = transporter
-        name = receiving_order.transporter_name
-        self.assertEqual(name, u'Juca')
-
-    def test_supplier_name(self):
-        receiving_order = self.create_receiving_order()
-
-        # Without supplier, the supplier name should be empty
-        receiving_order.supplier = None
-        name = receiving_order.supplier_name
-        self.assertEqual(name, '')
-
-        # With a supplier 'test'
-        transporter = self.create_supplier(u'test')
-        receiving_order.supplier = transporter
-        name = receiving_order.supplier_name
-        self.assertEqual(name, u'test')
 
     def test_get_percentage_value(self):
         sellable = self.create_sellable()
         sellable.cost = Decimal('35')
         receiving_order = self.create_receiving_order()
-        ro = receiving_order._get_percentage_value(None)
+        invoice = receiving_order.receiving_invoice
+        ro = invoice._get_percentage_value(None)
         self.assertEqual(currency(0), ro)
 
         self.create_receiving_order_item(receiving_order, quantity=1,
                                          sellable=sellable)
-        self.assertEqual(receiving_order._get_percentage_value(5),
-                         Decimal('1.75'))
-
-    def test_discount_percentage_setter(self):
-        sellable = self.create_sellable()
-        sellable.cost = Decimal('190')
-        receiving_order = self.create_receiving_order()
-        self.create_receiving_order_item(receiving_order, quantity=1,
-                                         sellable=sellable)
-
-        receiving_order.discount_percentage = Decimal('10')
-        self.assertEqual(receiving_order.discount_value, Decimal('19'))
-
-    def test_discount_percentage_getter(self):
-        sellable = self.create_sellable()
-        sellable.cost = Decimal('220')
-
-        receiving_order = self.create_receiving_order()
-        receiving_order.discount_value = None
-        p = receiving_order.discount_percentage
-        self.assertEqual(p, currency(0))
-
-        receiving_order = self.create_receiving_order()
-        receiving_order.discount_value = 22
-        with self.assertRaises(AssertionError):
-            self.unused = receiving_order.discount_percentage
-
-        self.create_receiving_order_item(receiving_order, quantity=1,
-                                         sellable=sellable)
-        self.assertEqual(receiving_order.discount_percentage, 10)
-
-    def test_set_surcharge_by_percentage(self):
-        sellable = self.create_sellable()
-        sellable.cost = Decimal('200')
-        receiving_order = self.create_receiving_order()
-        self.create_receiving_order_item(receiving_order, quantity=1,
-                                         sellable=sellable)
-
-        receiving_order.surcharge_percentage = Decimal('10')
-        self.assertEqual(receiving_order.surcharge_value, Decimal('20'))
-
-    def test_get_surcharge_by_percentage(self):
-        sellable = self.create_sellable()
-        sellable.cost = Decimal('210')
-
-        receiving_order = self.create_receiving_order()
-        receiving_order.surcharge_value = None
-        p = receiving_order.surcharge_percentage
-        self.assertEqual(p, currency(0))
-
-        receiving_order = self.create_receiving_order()
-        receiving_order.surcharge_value = 42
-        with self.assertRaises(AssertionError):
-            self.x = receiving_order.surcharge_percentage
-
-        self.create_receiving_order_item(receiving_order, quantity=2,
-                                         sellable=sellable)
-        self.assertEqual(receiving_order.surcharge_percentage, 10)
+        self.assertEqual(invoice._get_percentage_value(5), Decimal('1.75'))
 
     def test_add_purchase_item(self):
         receiving_order = self.create_receiving_order()
@@ -349,34 +242,19 @@ class TestReceivingOrder(DomainTest):
         purchase = receiving_order.purchase_orders.find()[0]
         group = purchase.group
 
-        receiving_order.freight_total = 50
+        receiving_order.receiving_invoice.freight_total = 50
         receiving_order.update_payments(create_freight_payment=True)
-        difference = (receiving_order.total -
-                      receiving_order.products_total)
-        difference -= receiving_order.freight_total
+        receiving_invoice = receiving_order.receiving_invoice
+        difference = (receiving_invoice.total - receiving_invoice.products_total)
+        difference -= receiving_invoice.freight_total
         self.assertEqual(difference, Decimal('0'))
         self.assertEqual(group.get_pending_payments().count(), 1)
 
         receiving_order = self.create_receiving_order()
-        receiving_order._create_freight_payment()
-        receiving_order.freight_total = 50
+        receiving_order.receiving_invoice.create_freight_payment()
+        receiving_order.receiving_invoice.freight_total = 50
         receiving_order.update_payments()
         self.assertEqual(group.get_pending_payments().count(), 1)
-
-    def test__create_freight_payment(self):
-        receiving_order = self.create_receiving_order()
-        transporter = self.create_transporter(u'teste')
-        receiving_order.transporter = transporter
-
-        receiving_order.identifier = 125
-        p = receiving_order._create_freight_payment()
-        self.assertEqual(p.group.recipient, receiving_order.transporter.person)
-        self.assertEqual(p.description, u'Freight for receiving 00125')
-        self.assertEqual(receiving_order.freight_total, 0)
-
-        receiving_order = self.create_receiving_order()
-        q = receiving_order._create_freight_payment()
-        self.assertNotEqual(p.group, q.group)
 
     def test_remove_items(self):
         receiving_order = self.create_receiving_order()
@@ -418,30 +296,22 @@ class TestReceivingOrder(DomainTest):
         order.receival_date = localdate(2010, 1, 1)
         self.assertEqual(order.receival_date_str, u'01/01/2010')
 
-    def test_guess_freight_type(self):
-        order = self.create_receiving_order()
-        purchase = order.purchase_orders.find()[0]
-        purchase.freight_type = PurchaseOrder.FREIGHT_FOB
-        self.assertEqual(order.guess_freight_type(), ReceivingOrder.FREIGHT_FOB_PAYMENT)
-
-        with mock.patch(
-                'stoqlib.domain.purchase.PurchaseOrder.is_paid') as is_paid:
-            is_paid.return_value = False
-            self.assertEqual(order.guess_freight_type(),
-                             ReceivingOrder.FREIGHT_FOB_INSTALLMENTS)
-
-        purchase.freight_type = PurchaseOrder.FREIGHT_CIF
-        purchase.expected_freight = True
-        self.assertEqual(order.guess_freight_type(), ReceivingOrder.FREIGHT_CIF_INVOICE)
-
-        purchase.expected_freight = False
-        self.assertEqual(order.guess_freight_type(), ReceivingOrder.FREIGHT_CIF_UNKNOWN)
-
     def test_total_quantity(self):
         receiving_order = self.create_receiving_order()
         self.create_receiving_order_item(receiving_order, quantity=3)
         self.create_receiving_order_item(receiving_order, quantity=4)
         self.assertEqual(receiving_order.total_quantity, Decimal('7'))
+
+    def test_get_freight_type(self):
+        purchase = self.create_purchase_order()
+        purchase.freight_type = purchase.FREIGHT_FOB
+        receiving = self.create_receiving_order(purchase_order=purchase)
+        receiving.receiving_invoice = None
+        self.assertEqual(receiving.freight_type, purchase.FREIGHT_FOB)
+        invoice = self.create_receiving_invoice()
+        invoice.freight_type = invoice.FREIGHT_FOB_PAYMENT
+        receiving.receiving_invoice = invoice
+        self.assertEqual(receiving.freight_type, invoice.FREIGHT_FOB_PAYMENT)
 
 
 class TestReceivingOrderItem(DomainTest):
@@ -483,3 +353,192 @@ class TestReceivingOrderItem(DomainTest):
 
         order_item.sellable.unit = self.create_sellable_unit(u'XX')
         self.assertEqual(order_item.unit_description, u'XX')
+
+
+class TestReceivingInvoice(DomainTest):
+    def test_get_transporter_name(self):
+        receiving_order = self.create_receiving_order()
+        invoice = receiving_order.receiving_invoice
+
+        # Without transporter, the transporter name should be empty
+        invoice.transporter = None
+        name = invoice.transporter_name
+        self.assertEqual(name, u'')
+
+        # Now there is a transporter...
+        transporter = self.create_transporter(u'Juca')
+        invoice.transporter = transporter
+        name = invoice.transporter_name
+        self.assertEqual(name, u'Juca')
+
+    def test_supplier_name(self):
+        receiving_order = self.create_receiving_order()
+        invoice = receiving_order.receiving_invoice
+
+        # Without supplier, the supplier name should be empty
+        invoice.supplier = None
+        name = invoice.supplier_name
+        self.assertEqual(name, '')
+
+        # With a supplier 'test'
+        transporter = self.create_supplier(u'test')
+        invoice.supplier = transporter
+        name = invoice.supplier_name
+        self.assertEqual(name, u'test')
+
+    def test_guess_freight_type(self):
+        order = self.create_receiving_order()
+        invoice = order.receiving_invoice
+        purchase = order.purchase_orders.find()[0]
+        purchase.freight_type = PurchaseOrder.FREIGHT_FOB
+        self.assertEqual(invoice.guess_freight_type(), invoice.FREIGHT_FOB_PAYMENT)
+
+        with mock.patch(
+                'stoqlib.domain.purchase.PurchaseOrder.is_paid') as is_paid:
+            is_paid.return_value = False
+            self.assertEqual(invoice.guess_freight_type(), invoice.FREIGHT_FOB_INSTALLMENTS)
+
+        purchase.freight_type = PurchaseOrder.FREIGHT_CIF
+        purchase.expected_freight = True
+        self.assertEqual(invoice.guess_freight_type(), invoice.FREIGHT_CIF_INVOICE)
+
+        purchase.expected_freight = False
+        self.assertEqual(invoice.guess_freight_type(), invoice.FREIGHT_CIF_UNKNOWN)
+
+    def test_receiving_with_cif_freight(self):
+        purchase = self.create_purchase_order()
+        purchase.freight_type = PurchaseOrder.FREIGHT_CIF
+
+        order = self.create_receiving_order(purchase_order=purchase)
+        self.assertEqual(order.receiving_invoice.guess_freight_type(),
+                         ReceivingInvoice.FREIGHT_CIF_UNKNOWN)
+
+        purchase.expected_freight = 10
+        order = self.create_receiving_order(purchase_order=purchase)
+        self.assertEqual(order.receiving_invoice.guess_freight_type(),
+                         ReceivingInvoice.FREIGHT_CIF_INVOICE)
+
+    def test_discount_percentage_setter(self):
+        sellable = self.create_sellable()
+        sellable.cost = Decimal('190')
+        receiving_order = self.create_receiving_order()
+        self.create_receiving_order_item(receiving_order, quantity=1,
+                                         sellable=sellable)
+
+        invoice = receiving_order.receiving_invoice
+        invoice.discount_percentage = Decimal('10')
+        self.assertEqual(invoice.discount_value, Decimal('19'))
+
+    def test_discount_percentage_getter(self):
+        sellable = self.create_sellable()
+        sellable.cost = Decimal('220')
+
+        receiving_order = self.create_receiving_order()
+        invoice = receiving_order.receiving_invoice
+        invoice.discount_value = None
+        p = invoice.discount_percentage
+        self.assertEqual(p, currency(0))
+
+        receiving_order = self.create_receiving_order()
+        invoice = receiving_order.receiving_invoice
+        invoice.discount_value = 22
+        with self.assertRaises(AssertionError):
+            self.unused = invoice.discount_percentage
+
+        self.create_receiving_order_item(receiving_order, quantity=1,
+                                         sellable=sellable)
+        self.assertEqual(invoice.discount_percentage, 10)
+
+    def test_set_surcharge_by_percentage(self):
+        sellable = self.create_sellable()
+        sellable.cost = Decimal('200')
+        receiving_order = self.create_receiving_order()
+        self.create_receiving_order_item(receiving_order, quantity=1,
+                                         sellable=sellable)
+
+        invoice = receiving_order.receiving_invoice
+        invoice.surcharge_percentage = Decimal('10')
+        self.assertEqual(invoice.surcharge_value, Decimal('20'))
+
+    def test_get_surcharge_by_percentage(self):
+        sellable = self.create_sellable()
+        sellable.cost = Decimal('210')
+
+        receiving_order = self.create_receiving_order()
+        invoice = receiving_order.receiving_invoice
+        invoice.surcharge_value = None
+        p = invoice.surcharge_percentage
+        self.assertEqual(p, currency(0))
+
+        receiving_order = self.create_receiving_order()
+        invoice = receiving_order.receiving_invoice
+        invoice.surcharge_value = 42
+        with self.assertRaises(AssertionError):
+            self.x = invoice.surcharge_percentage
+
+        self.create_receiving_order_item(receiving_order, quantity=2,
+                                         sellable=sellable)
+        self.assertEqual(invoice.surcharge_percentage, 10)
+
+    def test_get_total(self):
+        order = self.create_receiving_order()
+        purchase = order.purchase_orders.find()[0]
+        self.create_receiving_order_item(order)
+        invoice = order.receiving_invoice
+        self.assertEqual(invoice.total, currency(1000))
+
+        invoice.discount_value = 10
+        self.assertEqual(invoice.total, currency(990))
+        purchase.discount_value = 5
+        self.assertEqual(invoice.total, currency(985))
+        purchase.surcharge_value = 8
+        invoice.surcharge_value = 15
+        self.assertEqual(invoice.total, currency(1008))
+        invoice.ipi_total = 10
+        self.assertEqual(invoice.total, currency(1018))
+        invoice.freight_total = 6
+        self.assertEqual(invoice.total, currency(1024))
+        invoice.secure_value = 6
+        self.assertEqual(invoice.total, currency(1030))
+        invoice.expense_value = 12
+        self.assertEqual(invoice.total, currency(1042))
+        invoice.icms_st_total = 10
+        self.assertEqual(invoice.total, currency(1052))
+
+        purchase.status = purchase.ORDER_PENDING
+        purchase.confirm()
+        invoice.confirm()
+        self.assertEqual(invoice.invoice_total, invoice.total)
+
+    def test_get_total_for_payment(self):
+        order = self.create_receiving_order()
+        self.create_receiving_order_item(order)
+        invoice = order.receiving_invoice
+        self.assertEqual(invoice.total_for_payment, currency(1000))
+        invoice.freight_total = 10
+        invoice.freight_type = invoice.FREIGHT_FOB_INSTALLMENTS
+        self.assertEqual(invoice.total_for_payment, currency(1010))
+        invoice.freight_type = invoice.FREIGHT_FOB_PAYMENT
+        self.assertEqual(invoice.total_for_payment, currency(1000))
+
+    def test_create_freight_payment(self):
+        receiving_invoice = self.create_receiving_invoice()
+        transporter = self.create_transporter(u'teste')
+        receiving_invoice.transporter = transporter
+        receiving_invoice.group = self.create_payment_group()
+
+        receiving_invoice.identifier = 125
+        payment = receiving_invoice.create_freight_payment()
+        self.assertNotEqual(receiving_invoice.group, payment.group)
+        self.assertEqual(payment.group.recipient, receiving_invoice.transporter.person)
+        self.assertEqual(payment.description, u'Freight for receiving 00125')
+
+        receiving_invoice.transporter = None
+        payment = receiving_invoice.create_freight_payment()
+        self.assertNotEqual(receiving_invoice.group, payment.group)
+        self.assertEqual(payment.group.recipient, receiving_invoice.supplier.person)
+
+        receiving_invoice = self.create_receiving_invoice()
+        receiving_invoice.group = self.create_payment_group()
+        payment = receiving_invoice.create_freight_payment(group=receiving_invoice.group)
+        self.assertEqual(receiving_invoice.group, payment.group)

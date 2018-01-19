@@ -477,6 +477,12 @@ class TestPurchaseOrder(DomainTest):
         order = self.create_purchase_order()
         order.status = PurchaseOrder.ORDER_PENDING
         order.add_item(self.create_sellable(), 1)
+
+        # If there is no payment, the order is not paid
+        order.group = None
+        self.assertFalse(order.is_paid())
+
+        order.group = self.create_payment_group()
         self.add_payments(order)
         order.confirm()
 

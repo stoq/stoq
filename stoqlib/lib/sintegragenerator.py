@@ -114,7 +114,7 @@ class StoqlibSintegraGenerator(object):
                                              code, tax.value)
 
     def _get_cnpj_or_cpf(self, receiving_order):
-        person = receiving_order.supplier.person
+        person = receiving_order.receiving_invoice.supplier.person
         company = person.has_individual_or_company_facets()
         if isinstance(company, Company):
             if not company.cnpj:
@@ -129,7 +129,8 @@ class StoqlibSintegraGenerator(object):
         return cnpj
 
     def _get_state_registry(self, receiving_order):
-        company = receiving_order.supplier.person.has_individual_or_company_facets()
+        invoice = receiving_order.receiving_invoice
+        company = invoice.supplier.person.has_individual_or_company_facets()
         if isinstance(company, Company):
             if not company.state_registry:
                 raise SintegraError(
@@ -151,13 +152,14 @@ class StoqlibSintegraGenerator(object):
         # 2) Add order items (registry 54) and collect sellables
         sellables = set()
         for receiving_order in receiving_orders:
+            invoice = receiving_order.receiving_invoice
             self._add_receiving_order_items(receiving_order, sellables)
             self._add_receiving_order_item_special(
-                receiving_order, 991, receiving_order.freight_total)
+                receiving_order, 991, invoice.freight_total)
             self._add_receiving_order_item_special(
-                receiving_order, 992, receiving_order.secure_value)
+                receiving_order, 992, invoice.secure_value)
             self._add_receiving_order_item_special(
-                receiving_order, 999, receiving_order.expense_value)
+                receiving_order, 999, invoice.expense_value)
 
         # 3) Add fiscal coupons (registry 60)
         self._add_fiscal_coupons()
@@ -197,16 +199,17 @@ class StoqlibSintegraGenerator(object):
         # instead we have to put the discount proportionally over all
         # tax constants in the order, calculate the percentage here
         items_total = receiving_order.products_total
-        extra_percental = 1 + ((receiving_order.freight_total +
-                                receiving_order.secure_value +
-                                receiving_order.expense_value -
-                                receiving_order.discount_value) / items_total)
+        receiving_invoice = receiving_order.receiving_invoice
+        extra_percental = 1 + ((receiving_invoice.freight_total +
+                                receiving_invoice.secure_value +
+                                receiving_invoice.expense_value -
+                                receiving_invoice.discount_value) / items_total)
 
         state_registry = self._get_state_registry(receiving_order)
         for tax_value, items in sorted(sellable_per_constant.items()):
             item_total = sum(item.get_total() for item in items)
             item_total *= extra_percental
-            total_ipi = sum(item.receiving_order.ipi_total for item in items)
+            total_ipi = sum(item.receiving_order.receiving_invoice.ipi_total for item in items)
             no_items = receiving_order.get_items().count()
 
             if tax_value:
@@ -230,8 +233,8 @@ class StoqlibSintegraGenerator(object):
                 base_total,
                 item_total * tax_value,
                 0,
-                (receiving_order.expense_value +
-                 receiving_order.secure_value),
+                (receiving_invoice.expense_value +
+                 receiving_invoice.secure_value),
                 tax_value * 100,
                 'N')
 
@@ -271,10 +274,11 @@ class StoqlibSintegraGenerator(object):
         items = receiving_order.get_items()
         no_items = items.count()
         items_total = receiving_order.products_total
-        extra_percental = 1 + ((receiving_order.freight_total +
-                                receiving_order.secure_value +
-                                receiving_order.expense_value -
-                                receiving_order.discount_value) / items_total)
+        receiving_invoice = receiving_order.receiving_invoice
+        extra_percental = 1 + ((receiving_invoice.freight_total +
+                                receiving_invoice.secure_value +
+                                receiving_invoice.expense_value -
+                                receiving_invoice.discount_value) / items_total)
 
         for i, item in enumerate(items):
             tax_value = item.sellable.tax_constant.tax_value or 0
@@ -293,10 +297,10 @@ class StoqlibSintegraGenerator(object):
                 item.sellable.code,
                 item.quantity,
                 item_total,
-                receiving_order.discount_value / no_items,
+                receiving_invoice.discount_value / no_items,
                 base_total,
                 0,
-                receiving_order.ipi_total / no_items,
+                receiving_order.receiving_invoice.ipi_total / no_items,
                 tax_value)
             sellables.add(item.sellable)
 

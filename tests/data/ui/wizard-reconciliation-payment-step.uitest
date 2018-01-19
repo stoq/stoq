@@ -1,0 +1,65 @@
+wizard: PurchaseReconciliationWizard
+GtkDialog(toplevel): title='Purchase Reconciliation', hidden
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave InvoicePaymentStep is attached
+        GtkBox(step.toplevel, orientation=vertical):
+          GtkEventBox(step.method_select_holder, fill=True): slave SelectPaymentMethodSlave is attached
+            GtkBox(vbox1, orientation=vertical):
+              GtkFrame(frame1, expand=True, fill=True):
+                GtkBox(methods_box, orientation=horizontal):
+                  GtkRadioButton(padding=6): 'Money'
+                  GtkRadioButton(padding=6): 'Bill', active
+                  GtkRadioButton(padding=6): 'Check'
+                  GtkRadioButton(padding=6): 'Deposit'
+                  GtkRadioButton(padding=6): 'No payments'
+                GtkLabel(): 'Payment method:'
+          GtkEventBox(step.method_slave_holder, expand=True, fill=True): slave BillMethodSlave is attached
+            GtkFrame(toplevel):
+              GtkBox(vbox1, orientation=vertical):
+                GtkTable(table1, fill=True):
+                  GtkBox(hbox1, orientation=horizontal):
+                    ProxyLabel(installments_number_lbl, fill=True, padding=6): 'Installments:'
+                    ProxySpinButton(installments_number): '1'
+                    ProxyLabel(first_duedate_lbl, fill=True): 'Start at:'
+                    ProxyDateEntry(first_duedate, fill=True): date.today()
+                    ProxyLabel(intervals_lbl, fill=True): 'With intervals of:'
+                    ProxySpinButton(intervals, fill=True): '1', insensitive
+                    ProxyComboBox(interval_type_combo, fill=True): insensitive
+                      item: 'days'
+                      item: 'weeks'
+                      item: 'months', selected
+                      item: 'years'
+                  GtkBox(bank_info_box, orientation=horizontal): hidden
+                    GtkLabel(bank_label, fill=True, padding=6): 'Bank ID:'
+                    ProxyEntry(bank_id, fill=True): ''
+                    GtkLabel(bank_branch_label, fill=True): 'Bank Branch:'
+                    ProxyEntry(bank_branch): ''
+                    GtkLabel(bank_account_label, fill=True): 'Bank Account:'
+                    ProxyEntry(bank_account, fill=True): ''
+                    GtkLabel(bank_label1, expand=True, fill=True, padding=6): 'First Number:'
+                    ProxyEntry(bank_first_check_number, expand=True, padding=6): ''
+                GtkEventBox(slave_holder, expand=True, fill=True): slave PaymentListSlave is attached
+                  GtkBox(vbox1, orientation=vertical):
+                    ObjectList(payment_list, expand=True, fill=True):
+                      column: title='Description', expand
+                      column: title='Number'
+                      column: title='Due date'
+                      column: title='Value'
+                      row: '1/1 Bill for receiving 22222', None, date.today(), <currency $260>
+                    GtkBox(hbox1, orientation=horizontal):
+                      ProxyLabel(difference_status_label, expand=True, fill=True): '<span >Difference</span>'
+                      ProxyLabel(difference_label, fill=True): '<span >$0.00</span>'
+                    GtkBox(hbox2, orientation=horizontal):
+                      ProxyLabel(total_status_label, expand=True, fill=True): 'Total:'
+                      ProxyLabel(total_label, fill=True): '<span >$260.00</span>'
+      ProxyLabel(notification_lbl, fill=True):
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): '_Finish'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

@@ -1,0 +1,43 @@
+wizard: PurchaseReconciliationWizard
+GtkDialog(toplevel): title='Purchase Reconciliation', hidden
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave ReceivingSelectionStep is attached
+        GtkBox(step.vbox1, orientation=vertical):
+          GtkEventBox(step.searchbar_holder, expand=True, fill=True): slave SearchSlave is attached
+            GtkBox(vbox, orientation=vertical):
+              GtkBox(orientation=horizontal, fill=True, padding=6):
+                GtkBox(filters_box, orientation=vertical, padding=6):
+                  GtkBox(hbox, orientation=horizontal):
+                    StringSearchFilter(_primary_filter):
+                      GtkLabel(): 'Search:'
+                      ProxyComboBox(padding=6): hidden
+                        item: 'Contains All Words', selected
+                        item: 'Contains Exactly'
+                        item: 'Identical to'
+                        item: 'Does Not Contain'
+                      GtkEntry(search_entry, padding=6): ''
+                    stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
+              SearchResultListView(results, expand=True, fill=True):
+                column: title='Receiving #'
+                column: title='Purchase #'
+                column: title='Packing Number', hidden
+                column: title='Receival date', expand
+                column: title='Supplier', expand
+                column: title='Responsible', hidden, expand
+                column: title='Purchaser', hidden, expand
+                column: title='Invoice #'
+                column: title='Products total'
+                row: 45633, 65432, None, datetime.datetime(2012, 10, 9, 0, 0), 'Supplier', 'Administrator', 'Administrator', None, <currency $250>
+          GtkBox(step.hbox1, orientation=horizontal, fill=True):
+            GtkButton(step.details_button, fill=True): '_Details'
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back', insensitive
+          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

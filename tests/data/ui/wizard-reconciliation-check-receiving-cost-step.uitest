@@ -1,0 +1,31 @@
+wizard: PurchaseReconciliationWizard
+GtkDialog(toplevel): title='Purchase Reconciliation', hidden
+  GtkBox(PluggableWizard-vbox, orientation=vertical):
+    GtkBox(vbox1, orientation=vertical, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave ProductsCostCheckStep is attached
+        GtkAlignment(step.toplevel):
+          GtkBox(step.vbox1, orientation=vertical):
+            ObjectTree(step.purchase_items, expand=True, fill=True):
+              column: title='Packing Number'
+              column: title='Code', hidden
+              column: title='Barcode', hidden
+              column: title='Description', expand
+              column: title='Qty to receive'
+              column: title='Purchase Cost'
+              column: title='Cost'
+              column: title='Total'
+              row: None, None, None, 'Description', Decimal('2.000'), <currency $125>, <currency $125>, <currency $250>
+            GtkBox(step.hbox1, orientation=horizontal, fill=True):
+              GtkButton(step.edit_btn): 'gtk-edit', hidden
+              GtkLabel(step.label1, expand=True, fill=True): 'Total Received:'
+              ProxyLabel(step.total_received, fill=True): '<span >$250.00</span>'
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
+        GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(dialog-action_area1, orientation=horizontal, fill=True, pack-end):

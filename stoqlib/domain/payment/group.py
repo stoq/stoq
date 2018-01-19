@@ -92,6 +92,9 @@ class PaymentGroup(Domain):
     #: The |stockdecrease| if this group is part of one
     stock_decrease = Reference('id', 'StockDecrease.group_id', on_remote=True)
 
+    #: The |receiving_invoice| if this group is part of one
+    receiving_invoice = Reference('id', 'ReceivingInvoice.group_id', on_remote=True)
+
     #
     # IContainer implementation
     #
@@ -164,7 +167,7 @@ class PaymentGroup(Domain):
     def get_order_object(self):
         """Get the order object related to this payment group"""
         for obj in [self.sale, self.purchase, self._renegotiation,
-                    self.stock_decrease]:
+                    self.stock_decrease, self.receiving_invoice]:
             if obj is not None:
                 return obj
 
@@ -285,6 +288,8 @@ class PaymentGroup(Domain):
             return _(u'renegotiation %s') % self._renegotiation.identifier
         elif self.stock_decrease:
             return _(u'stock decrease %s') % self.stock_decrease.identifier
+        elif self.receiving_invoice:
+            return _(u'receiving %s') % self.receiving_invoice.identifier
 
         order_obj = self.get_order_object()
         # FIXME: Add a proper description when there's no order_obj

@@ -123,7 +123,8 @@ class StartStockDecreaseStep(WizardEditorStep):
         self.branch.update(order.branch)
         cfop = sysparam.get_object(self.store, 'DEFAULT_PURCHASE_RETURN_CFOP')
         self.cfop.update(cfop)
-        self.person.update(order.supplier.person.id)
+        if order.receiving_invoice:
+            self.person.update(order.receiving_invoice.supplier.person.id)
         for widget in (self.branch, self.person):
             if widget.is_valid():
                 widget.set_sensitive(False)

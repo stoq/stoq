@@ -106,6 +106,14 @@ class ReceivingOrderItem(Domain):
         return self.store.find(StockDecreaseItem, receiving_order_item=self).sum(
             StockDecreaseItem.quantity) or Decimal('0')
 
+    @property
+    def purchase_cost(self):
+        return self.purchase_item.cost
+
+    @property
+    def description(self):
+        return self.sellable.description
+
     #
     # Accessors
     #
@@ -121,7 +129,10 @@ class ReceivingOrderItem(Domain):
         # We need to use the the purchase_item cost, since the current cost
         # might be different.
         cost = self.purchase_item.cost
-        return currency(self.quantity * cost)
+        return currency(quantize(self.quantity * cost))
+
+    def get_received_total(self):
+        return currency(quantize(self.quantity * self.cost))
 
     def get_quantity_unit_string(self):
         unit = self.sellable.unit
@@ -159,6 +170,9 @@ class ReceivingOrderItem(Domain):
 
         return self.quantity == self.returned_quantity
 
+    def get_receiving_packing_number(self):
+        return self.receiving_order.packing_number
+
 
 class ReceivingOrder(Domain):
     """Receiving order definition.
@@ -171,23 +185,6 @@ class ReceivingOrder(Domain):
 
     #: All products in the order has been received then the order is closed.
     STATUS_CLOSED = u'closed'
-
-    FREIGHT_FOB_PAYMENT = u'fob-payment'
-    FREIGHT_FOB_INSTALLMENTS = u'fob-installments'
-    FREIGHT_CIF_UNKNOWN = u'cif-unknown'
-    FREIGHT_CIF_INVOICE = u'cif-invoice'
-
-    freight_types = collections.OrderedDict([
-        (FREIGHT_FOB_PAYMENT, _(u"FOB - Freight value on a new payment")),
-        (FREIGHT_FOB_INSTALLMENTS, _(u"FOB - Freight value on installments")),
-        (FREIGHT_CIF_UNKNOWN, _(u"CIF - Freight value is unknown")),
-        (FREIGHT_CIF_INVOICE, _(u"CIF - Freight value highlighted on invoice")),
-    ])
-
-    FOB_FREIGHTS = (FREIGHT_FOB_PAYMENT,
-                    FREIGHT_FOB_INSTALLMENTS, )
-    CIF_FREIGHTS = (FREIGHT_CIF_UNKNOWN,
-                    FREIGHT_CIF_INVOICE)
 
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`Domain.id` when displaying a numerical representation of this object to
@@ -206,35 +203,11 @@ class ReceivingOrder(Domain):
     #: Some optional additional information related to this order.
     notes = UnicodeCol(default=u'')
 
-    #: Type of freight
-    freight_type = EnumCol(allow_none=False, default=FREIGHT_FOB_PAYMENT)
-
-    #: Total of freight paid in receiving order.
-    freight_total = PriceCol(default=0)
-
-    surcharge_value = PriceCol(default=0)
-
-    #: Discount value in receiving order's payment.
-    discount_value = PriceCol(default=0)
-
-    #: Secure value paid in receiving order's payment.
-    secure_value = PriceCol(default=0)
-
-    #: Other expenditures paid in receiving order's payment.
-    expense_value = PriceCol(default=0)
-
-    # This is Brazil-specific information
-    icms_total = PriceCol(default=0)
-    ipi_total = PriceCol(default=0)
-
     #: The invoice number of the order that has been received.
     invoice_number = IntCol()
 
-    #: The invoice total value of the order received
-    invoice_total = PriceCol(default=None)
-
-    #: The invoice key of the order received
-    invoice_key = UnicodeCol()
+    # Número do Romaneio. The number used by the transporter to identify the packing
+    packing_number = UnicodeCol()
 
     cfop_id = IdCol()
     cfop = Reference(cfop_id, 'CfopData.id')
@@ -242,14 +215,11 @@ class ReceivingOrder(Domain):
     responsible_id = IdCol()
     responsible = Reference(responsible_id, 'LoginUser.id')
 
-    supplier_id = IdCol()
-    supplier = Reference(supplier_id, 'Supplier.id')
-
     branch_id = IdCol()
     branch = Reference(branch_id, 'Branch.id')
 
-    transporter_id = IdCol(default=None)
-    transporter = Reference(transporter_id, 'Transporter.id')
+    receiving_invoice_id = IdCol(default=None)
+    receiving_invoice = Reference(receiving_invoice_id, 'ReceivingInvoice.id')
 
     purchase_orders = ReferenceSet('ReceivingOrder.id',
                                    'PurchaseReceivingMap.receiving_id',
@@ -261,7 +231,6 @@ class ReceivingOrder(Domain):
         # These miss default parameters and needs to be set before
         # cfop, which triggers an implicit flush.
         self.branch = kw.pop('branch', None)
-        self.supplier = kw.pop('supplier', None)
         if not 'cfop' in kw:
             self.cfop = sysparam.get_object(store, 'DEFAULT_RECEIVING_CFOP')
 
@@ -270,24 +239,20 @@ class ReceivingOrder(Domain):
     #
 
     def confirm(self):
+        if self.receiving_invoice:
+            self.receiving_invoice.confirm()
+
         for item in self.get_items():
             item.add_stock_items()
 
         purchases = list(self.purchase_orders)
-        # XXX: Maybe FiscalBookEntry should not reference the payment group, but
-        # lets keep this way for now until we refactor the fiscal book related
-        # code, since it will pretty soon need a lot of changes.
-        group = purchases[0].group
-        FiscalBookEntry.create_product_entry(
-            self.store,
-            group, self.cfop, self.invoice_number,
-            self.icms_total, self.ipi_total)
-
-        self.invoice_total = self.total
-
         for purchase in purchases:
             if purchase.can_close():
                 purchase.close()
+
+        # XXX: Will the packing number aways be the same as the suppliert order?
+        if purchase.work_order:
+            self.packing_number = purchase.work_order.supplier_order
 
     def add_purchase(self, order):
         return PurchaseReceivingMap(store=self.store, purchase=order,
@@ -347,9 +312,11 @@ class ReceivingOrder(Domain):
         :param create_freight_payment: True if we should create a new payment
                                        with the freight value, False otherwise.
         """
-        difference = self.total - self.products_total
+        # If the invoice has more than one receiving, the values could be inconsistent
+        assert self.receiving_invoice.receiving_orders.count() == 1
+        difference = self.receiving_invoice.total - self.receiving_invoice.products_total
         if create_freight_payment:
-            difference -= self.freight_total
+            difference -= self.receiving_invoice.freight_total
 
         if difference != 0:
             # Get app pending payments for the purchases associated with this
@@ -363,32 +330,13 @@ class ReceivingOrder(Domain):
                     new_value = payment.value + per_installments_value
                     payment.update_value(new_value)
 
-        if self.freight_total and create_freight_payment:
-            self._create_freight_payment()
-
-    def _create_freight_payment(self):
-        store = self.store
-        money_method = PaymentMethod.get_by_name(store, u'money')
-        # If we have a transporter, the freight payment will be for him
-        # (and in another payment group).
-        purchases = list(self.purchase_orders)
-        if len(purchases) == 1 and self.transporter is None:
-            group = purchases[0].group
-        else:
-            if self.transporter:
-                recipient = self.transporter.person
+        if self.receiving_invoice.freight_total and create_freight_payment:
+            purchases = list(self.purchase_orders)
+            if len(purchases) == 1 and self.receiving_invoice.transporter is None:
+                group = purchases[0].group
             else:
-                recipient = self.supplier.person
-            group = PaymentGroup(store=store, recipient=recipient)
-
-        description = _(u'Freight for receiving %s') % (self.identifier, )
-        payment = money_method.create_payment(
-            Payment.TYPE_OUT,
-            group, self.branch, self.freight_total,
-            due_date=localnow(),
-            description=description)
-        payment.set_pending()
-        return payment
+                group = None
+            self.receiving_invoice.create_freight_payment(group=group)
 
     def get_items(self, with_children=True):
         store = self.store
@@ -414,17 +362,14 @@ class ReceivingOrder(Domain):
 
     @property
     def payments(self):
+        if self.receiving_invoice and self.receiving_invoice.group:
+            return self.receiving_invoice.payments
+
         tables = [PurchaseReceivingMap, PurchaseOrder, Payment]
         query = And(PurchaseReceivingMap.receiving_id == self.id,
                     PurchaseReceivingMap.purchase_id == PurchaseOrder.id,
                     Payment.group_id == PurchaseOrder.group_id)
         return self.store.using(tables).find(Payment, query)
-
-    @property
-    def supplier_name(self):
-        if not self.supplier:
-            return u""
-        return self.supplier.get_description()
 
     #
     # Accessors
@@ -433,6 +378,244 @@ class ReceivingOrder(Domain):
     @property
     def cfop_code(self):
         return self.cfop.code
+
+    @property
+    def freight_type(self):
+        if self.receiving_invoice:
+            return self.receiving_invoice.freight_type
+        return self.purchase_orders.any().freight_type
+
+    @property
+    def branch_name(self):
+        return self.branch.get_description()
+
+    @property
+    def responsible_name(self):
+        return self.responsible.get_description()
+
+    @property
+    def products_total(self):
+        total = sum((item.get_received_total() for item in self.get_items()), currency(0))
+        return currency(total)
+
+    @property
+    def receival_date_str(self):
+        return self.receival_date.strftime("%x")
+
+    @property
+    def total_surcharges(self):
+        """Returns the sum of all surcharges (purchase & receiving)"""
+        total_surcharge = 0
+        for purchase in self.purchase_orders:
+            total_surcharge += purchase.surcharge_value
+        return currency(total_surcharge)
+
+    @property
+    def total_quantity(self):
+        """Returns the sum of all received quantities"""
+        return sum(item.quantity for item in self.get_items(with_children=False))
+
+    @property
+    def total_discounts(self):
+        """Returns the sum of all discounts (purchase & receiving)"""
+        total_discount = 0
+        for purchase in self.purchase_orders:
+            total_discount += purchase.discount_value
+        return currency(total_discount)
+
+    @property
+    def total(self):
+        """Fetch the total, including discount and surcharge for purchase order
+        """
+        total = self.products_total
+        total -= self.total_discounts
+        total += self.total_surcharges
+
+        return currency(total)
+
+
+class PurchaseReceivingMap(Domain):
+    """This class stores a map for purchase and receivings.
+
+    One purchase may be received more than once, for instance, if it was
+    shippped in more than one package.
+
+    Also, a receiving may be for different purchase orders, if more than one
+    purchase order was shipped in the same package.
+    """
+
+    __storm_table__ = 'purchase_receiving_map'
+
+    purchase_id = IdCol()
+
+    #: The purchase that was recieved
+    purchase = Reference(purchase_id, 'PurchaseOrder.id')
+
+    receiving_id = IdCol()
+
+    #: In which receiving the purchase was received.
+    receiving = Reference(receiving_id, 'ReceivingOrder.id')
+
+
+class ReceivingInvoice(Domain):
+
+    __storm_table__ = 'receiving_invoice'
+
+    FREIGHT_FOB_PAYMENT = u'fob-payment'
+    FREIGHT_FOB_INSTALLMENTS = u'fob-installments'
+    FREIGHT_CIF_UNKNOWN = u'cif-unknown'
+    FREIGHT_CIF_INVOICE = u'cif-invoice'
+
+    freight_types = collections.OrderedDict([
+        (FREIGHT_FOB_PAYMENT, _(u"FOB - Freight value on a new payment")),
+        (FREIGHT_FOB_INSTALLMENTS, _(u"FOB - Freight value on installments")),
+        (FREIGHT_CIF_UNKNOWN, _(u"CIF - Freight value is unknown")),
+        (FREIGHT_CIF_INVOICE, _(u"CIF - Freight value highlighted on invoice")),
+    ])
+
+    FOB_FREIGHTS = (FREIGHT_FOB_PAYMENT,
+                    FREIGHT_FOB_INSTALLMENTS, )
+    CIF_FREIGHTS = (FREIGHT_CIF_UNKNOWN,
+                    FREIGHT_CIF_INVOICE)
+
+    #: A numeric identifier for this object. This value should be used instead of
+    #: :obj:`Domain.id` when displaying a numerical representation of this object to
+    #: the user, in dialogs, lists, reports and such.
+    identifier = IdentifierCol()
+
+    #: Type of freight
+    freight_type = EnumCol(allow_none=False, default=FREIGHT_FOB_PAYMENT)
+
+    #: Total of freight paid in receiving order.
+    freight_total = PriceCol(default=0)
+
+    surcharge_value = PriceCol(default=0)
+
+    #: Discount value in receiving order's payment.
+    discount_value = PriceCol(default=0)
+
+    #: Secure value paid in receiving order's payment.
+    secure_value = PriceCol(default=0)
+
+    #: Other expenditures paid in receiving order's payment.
+    expense_value = PriceCol(default=0)
+
+    # This is Brazil-specific information
+    icms_total = PriceCol(default=0)
+    icms_st_total = PriceCol(default=0)
+    ipi_total = PriceCol(default=0)
+
+    #: The invoice number of the order that has been received.
+    invoice_number = IntCol()
+
+    #: The invoice total value of the order received
+    invoice_total = PriceCol(default=0)
+
+    #: The invoice key of the order received
+    invoice_key = UnicodeCol()
+
+    responsible_id = IdCol()
+    responsible = Reference(responsible_id, 'LoginUser.id')
+
+    branch_id = IdCol()
+    branch = Reference(branch_id, 'Branch.id')
+
+    supplier_id = IdCol()
+    supplier = Reference(supplier_id, 'Supplier.id')
+
+    transporter_id = IdCol()
+    transporter = Reference(transporter_id, 'Transporter.id')
+
+    group_id = IdCol()
+    group = Reference(group_id, 'PaymentGroup.id')
+
+    receiving_orders = ReferenceSet('id', 'ReceivingOrder.receiving_invoice_id')
+
+    @classmethod
+    def check_unique_invoice_number(cls, store, invoice_number, supplier):
+        count = store.find(cls, And(cls.invoice_number == invoice_number,
+                                    ReceivingInvoice.supplier == supplier)).count()
+        return count == 0
+
+    @property
+    def total_surcharges(self):
+        """Returns the sum of all surcharges (purchase & receiving)"""
+        total_surcharge = 0
+        if self.surcharge_value:
+            total_surcharge += self.surcharge_value
+        if self.secure_value:
+            total_surcharge += self.secure_value
+        if self.expense_value:
+            total_surcharge += self.expense_value
+        if self.ipi_total:
+            total_surcharge += self.ipi_total
+        if self.icms_st_total:
+            total_surcharge += self.icms_st_total
+
+        for receiving in self.receiving_orders:
+            total_surcharge += receiving.total_surcharges
+
+        # CIF freights don't generate payments.
+        if (self.freight_total and
+            self.freight_type not in (self.FREIGHT_CIF_UNKNOWN,
+                                      self.FREIGHT_CIF_INVOICE)):
+            total_surcharge += self.freight_total
+
+        return currency(total_surcharge)
+
+    @property
+    def total_discounts(self):
+        """Returns the sum of all discounts (purchase & receiving)"""
+        total_discount = 0
+        if self.discount_value:
+            total_discount += self.discount_value
+
+        for receiving in self.receiving_orders:
+            total_discount += receiving.total_discounts
+
+        return currency(total_discount)
+
+    @property
+    def products_total(self):
+        return currency(sum((r.products_total for r in self.receiving_orders), 0))
+
+    @property
+    def total(self):
+        """Fetch the total, including discount and surcharge for both the
+        purchase order and the receiving order.
+        """
+        total = self.products_total
+        total -= self.total_discounts
+        total += self.total_surcharges
+        return currency(total)
+
+    @property
+    def total_for_payment(self):
+        """Fetch the total for the invoice payment. Exclude the freight value if
+        it will be in a diferent pament
+        """
+        total = self.total
+        if self.freight_type == self.FREIGHT_FOB_PAYMENT:
+            total -= self.freight_total
+        return currency(total)
+
+    @property
+    def payments(self):
+        """Returns all valid payments for this invoice
+
+        This will return a list of valid payments for this invoice, that
+        is, all payments on the payment group that were not cancelled.
+        If you need to get the cancelled too, use self.group.payments.
+
+        :returns: a list of |payment|
+        """
+        return self.group.get_valid_payments()
+
+    @property
+    def supplier_name(self):
+        if not self.supplier:
+            return u""
+        return self.supplier.get_description()
 
     @property
     def transporter_name(self):
@@ -447,95 +630,6 @@ class ReceivingOrder(Domain):
     @property
     def responsible_name(self):
         return self.responsible.get_description()
-
-    @property
-    def products_total(self):
-        total = sum([item.get_total() for item in self.get_items()],
-                    currency(0))
-        return currency(total)
-
-    @property
-    def receival_date_str(self):
-        return self.receival_date.strftime("%x")
-
-    @property
-    def total_surcharges(self):
-        """Returns the sum of all surcharges (purchase & receiving)"""
-        total_surcharge = 0
-        if self.surcharge_value:
-            total_surcharge += self.surcharge_value
-        if self.secure_value:
-            total_surcharge += self.secure_value
-        if self.expense_value:
-            total_surcharge += self.expense_value
-
-        for purchase in self.purchase_orders:
-            total_surcharge += purchase.surcharge_value
-
-        if self.ipi_total:
-            total_surcharge += self.ipi_total
-
-        # CIF freights don't generate payments.
-        if (self.freight_total and
-            self.freight_type not in (self.FREIGHT_CIF_UNKNOWN,
-                                      self.FREIGHT_CIF_INVOICE)):
-            total_surcharge += self.freight_total
-
-        return currency(total_surcharge)
-
-    @property
-    def total_quantity(self):
-        """Returns the sum of all received quantities"""
-        return sum(item.quantity for item in self.get_items(with_children=False))
-
-    @property
-    def total_discounts(self):
-        """Returns the sum of all discounts (purchase & receiving)"""
-        total_discount = 0
-        if self.discount_value:
-            total_discount += self.discount_value
-
-        for purchase in self.purchase_orders:
-            total_discount += purchase.discount_value
-
-        return currency(total_discount)
-
-    @property
-    def total(self):
-        """Fetch the total, including discount and surcharge for both the
-        purchase order and the receiving order.
-        """
-        total = self.products_total
-        total -= self.total_discounts
-        total += self.total_surcharges
-
-        return currency(total)
-
-    def guess_freight_type(self):
-        """Returns a freight_type based on the purchase's freight_type"""
-        purchases = list(self.purchase_orders)
-        assert len(purchases) == 1
-
-        purchase = purchases[0]
-        if purchase.freight_type == PurchaseOrder.FREIGHT_FOB:
-            if purchase.is_paid():
-                freight_type = ReceivingOrder.FREIGHT_FOB_PAYMENT
-            else:
-                freight_type = ReceivingOrder.FREIGHT_FOB_INSTALLMENTS
-        elif purchase.freight_type == PurchaseOrder.FREIGHT_CIF:
-            if purchase.expected_freight:
-                freight_type = ReceivingOrder.FREIGHT_CIF_INVOICE
-            else:
-                freight_type = ReceivingOrder.FREIGHT_CIF_UNKNOWN
-
-        return freight_type
-
-    def _get_percentage_value(self, percentage):
-        if not percentage:
-            return currency(0)
-        subtotal = self.products_total
-        percentage = Decimal(percentage)
-        return subtotal * (percentage / 100)
 
     @property
     def discount_percentage(self):
@@ -579,25 +673,72 @@ class ReceivingOrder(Domain):
     def surcharge_percentage(self, value):
         self.surcharge_value = self._get_percentage_value(value)
 
+    def create_freight_payment(self, group=None):
+        store = self.store
+        money_method = PaymentMethod.get_by_name(store, u'money')
+        # If we have a transporter, the freight payment will be for him
+        if not group:
+            if self.transporter:
+                recipient = self.transporter.person
+            else:
+                recipient = self.supplier.person
+            group = PaymentGroup(store=store, recipient=recipient)
 
-class PurchaseReceivingMap(Domain):
-    """This class stores a map for purchase and receivings.
+        description = _(u'Freight for receiving %s') % (self.identifier, )
+        payment = money_method.create_payment(
+            Payment.TYPE_OUT,
+            group, self.branch, self.freight_total,
+            due_date=localnow(),
+            description=description)
+        payment.set_pending()
+        return payment
 
-    One purchase may be received more than once, for instance, if it was
-    shippped in more than one package.
+    def guess_freight_type(self):
+        """Returns a freight_type based on the purchase's freight_type"""
+        purchases = list(self.get_purchase_orders())
+        assert len(purchases) == 1
 
-    Also, a receiving may be for different purchase orders, if more than one
-    purchase order was shipped in the same package.
-    """
+        purchase = purchases[0]
+        if purchase.freight_type == PurchaseOrder.FREIGHT_FOB:
+            if purchase.is_paid():
+                freight_type = ReceivingInvoice.FREIGHT_FOB_PAYMENT
+            else:
+                freight_type = ReceivingInvoice.FREIGHT_FOB_INSTALLMENTS
+        elif purchase.freight_type == PurchaseOrder.FREIGHT_CIF:
+            if purchase.expected_freight:
+                freight_type = ReceivingInvoice.FREIGHT_CIF_INVOICE
+            else:
+                freight_type = ReceivingInvoice.FREIGHT_CIF_UNKNOWN
 
-    __storm_table__ = 'purchase_receiving_map'
+        return freight_type
 
-    purchase_id = IdCol()
+    def confirm(self):
+        self.invoice_total = self.total
+        if self.group:
+            self.group.confirm()
+        for receiving in self.receiving_orders:
+            receiving.invoice_number = self.invoice_number
 
-    #: The purchase that was recieved
-    purchase = Reference(purchase_id, 'PurchaseOrder.id')
+        # XXX: Maybe FiscalBookEntry should not reference the payment group, but
+        # lets keep this way for now until we refactor the fiscal book related
+        # code, since it will pretty soon need a lot of changes.
+        group = self.group or self.get_purchase_orders().pop().group
+        FiscalBookEntry.create_product_entry(
+            self.store, group, receiving.cfop, self.invoice_number,
+            self.icms_total, self.ipi_total)
 
-    receiving_id = IdCol()
+    def add_receiving(self, receiving):
+        receiving.receiving_invoice = self
 
-    #: In which receiving the purchase was received.
-    receiving = Reference(receiving_id, 'ReceivingOrder.id')
+    def get_purchase_orders(self):
+        purchases = set()
+        for receiving in self.receiving_orders:
+            purchases.update(set(receiving.purchase_orders))
+        return purchases
+
+    def _get_percentage_value(self, percentage):
+        if not percentage:
+            return currency(0)
+        subtotal = self.products_total
+        percentage = Decimal(percentage)
+        return subtotal * (percentage / 100)

@@ -24,7 +24,8 @@ GtkDialog(toplevel): title='Receiving Order Return', hidden
             item: 'Cia de Roupas São Carlos (Cia de Roupas São Carlos)'
             item: 'Cleusa Blanc Ferreira Norbiato'
             item: 'Company Name (Supplier)'
-            item: 'Company Name (Supplier) (1)', selected
+            item: 'Company Name (Supplier) (1)'
+            item: 'Company Name (Supplier) (2)', selected
             item: 'Deivis Alexandre Junior'
             item: 'Dummy shop (Dummy)'
             item: 'Franciso Elisio de Lima Junior'

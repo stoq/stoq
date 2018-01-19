@@ -382,6 +382,9 @@ class PurchaseOrder(Domain):
     #
 
     def is_paid(self):
+        if not self.group:
+            return False
+
         for payment in self.payments:
             if not payment.is_paid():
                 return False
@@ -430,11 +433,11 @@ class PurchaseOrder(Domain):
             raise ValueError(fmt % (self.status_str, ))
 
         # In consigned purchases there is no payments at this point.
-        if self.status != PurchaseOrder.ORDER_CONSIGNED:
+        if self.status != PurchaseOrder.ORDER_CONSIGNED and self.group:
             for payment in self.payments:
                 payment.set_pending()
 
-        if self.supplier:
+        if self.supplier and self.group:
             self.group.recipient = self.supplier.person
 
         self.responsible = get_current_user(self.store)

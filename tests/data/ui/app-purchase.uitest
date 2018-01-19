@@ -93,6 +93,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Purchase', hidden
             GtkImageMenuItem(): 'Quote'
             GtkImageMenuItem(): 'Product'
             GtkImageMenuItem(): 'Consignment'
+            GtkImageMenuItem(): 'Purchase reconciliation'
             GtkSeparatorMenuItem():
             GtkImageMenuItem(): '_Window'
       GtkMenuToolButton(): 'Search'

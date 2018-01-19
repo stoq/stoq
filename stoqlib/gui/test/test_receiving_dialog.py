@@ -39,6 +39,12 @@ class TestReceivingDialog(GUITest):
         dialog.invoice_slave.identifier.set_text('333')
         self.check_dialog(dialog, 'dialog-receiving-order-details-show')
 
+    def test_show_without_invoice(self):
+        order = self.create_receiving_order()
+        order.receiving_invoice = None
+        dialog = ReceivingOrderDetailsDialog(self.store, order)
+        self.check_dialog(dialog, 'dialog-receiving-order-details-no-invoice')
+
     def test_show_package_product(self):
         package = self.create_product(description=u'Package', is_package=True)
         component = self.create_product(description=u'component', stock=2)

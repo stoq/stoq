@@ -159,6 +159,7 @@ class TestPurchaseWizard(GUITest):
 
             receive = self.wizard.receiving_model
             models.append(receive)
+            models.append(receive.receiving_invoice)
             models.extend(receive.get_items())
             for item in receive.get_items():
                 models.extend(

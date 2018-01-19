@@ -35,7 +35,7 @@ from stoqlib.api import api
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
-from stoqlib.domain.receiving import ReceivingOrder
+from stoqlib.domain.receiving import ReceivingInvoice
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.gui.base.dialogs import run_dialog
@@ -71,10 +71,10 @@ class _TemporaryReceivingDetails:
 
     def __init__(self, orders):
         freight_type_map = {
-            ReceivingOrder.FREIGHT_FOB_PAYMENT: PurchaseOrder.FREIGHT_FOB,
-            ReceivingOrder.FREIGHT_FOB_INSTALLMENTS: PurchaseOrder.FREIGHT_FOB,
-            ReceivingOrder.FREIGHT_CIF_UNKNOWN: PurchaseOrder.FREIGHT_CIF,
-            ReceivingOrder.FREIGHT_CIF_INVOICE: PurchaseOrder.FREIGHT_CIF
+            ReceivingInvoice.FREIGHT_FOB_PAYMENT: PurchaseOrder.FREIGHT_FOB,
+            ReceivingInvoice.FREIGHT_FOB_INSTALLMENTS: PurchaseOrder.FREIGHT_FOB,
+            ReceivingInvoice.FREIGHT_CIF_UNKNOWN: PurchaseOrder.FREIGHT_CIF,
+            ReceivingInvoice.FREIGHT_CIF_INVOICE: PurchaseOrder.FREIGHT_CIF
         }
         freight_names = PurchaseOrder.freight_types
         freight_types = []
@@ -84,7 +84,8 @@ class _TemporaryReceivingDetails:
             for order in orders:
                 discount += order.total_discounts
                 surcharge += order.total_surcharges
-                freight += order.freight_total
+                if order.receiving_invoice:
+                    freight += order.receiving_invoice.freight_total
                 subtotal += order.products_total
                 total += order.total
                 quantity += order.total_quantity

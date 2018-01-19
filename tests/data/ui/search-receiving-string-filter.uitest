@@ -33,7 +33,7 @@ GtkDialog(toplevel): title='Purchase Receiving Search', hidden
             column: title='Purchaser', hidden, expand
             column: title='Invoice #'
             column: title='Invoice total'
-            row: 78526, datetime.datetime(2012, 2, 2, 0, 0), 'Dominique', 'Administrator', 'Administrator', 222, None
+            row: 78526, datetime.datetime(2012, 2, 2, 0, 0), 'Dominique', 'Administrator', 'Administrator', 222, <currency $0>
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):

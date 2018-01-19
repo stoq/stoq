@@ -58,6 +58,7 @@ from stoqlib.gui.wizards.purchasefinishwizard import PurchaseFinishWizard
 from stoqlib.gui.wizards.purchasequotewizard import (QuotePurchaseWizard,
                                                      ReceiveQuoteWizard)
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
+from stoqlib.gui.wizards.reconciliationwizard import PurchaseReconciliationWizard
 from stoqlib.lib.filizola import generate_filizola_file
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import warning, yesno, info
@@ -104,6 +105,8 @@ class PurchaseApp(ShellApp):
             ("NewProduct", None, _("Product..."),
              group.get('new_product'),
              _("Create a new product")),
+            ('Reconciliation', None, _('Purchase reconciliation...'),
+             group.get('new_reconciliation')),
             ("CloseInConsignment", None, _("Close consigment...")),
             ("ExportFilizola", None, _("Export Filizola File...")),
 
@@ -185,7 +188,8 @@ class PurchaseApp(ShellApp):
             self.NewOrder,
             self.NewQuote,
             self.NewProduct,
-            self.NewConsignment])
+            self.NewConsignment,
+            self.Reconciliation])
         self.window.add_search_items([
             self.Products,
             self.Suppliers,
@@ -559,3 +563,7 @@ class PurchaseApp(ShellApp):
 
     def on_NewConsignment__activate(self, action):
         self._new_consignment()
+
+    def on_Reconciliation__activate(self, button):
+        with api.new_store() as store:
+            self.run_dialog(PurchaseReconciliationWizard, store)

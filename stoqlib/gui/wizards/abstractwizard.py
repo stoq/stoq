@@ -33,6 +33,7 @@ import collections
 from decimal import Decimal
 
 from gi.repository import Gtk
+from kiwi.component import get_utility
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import SummaryLabel
@@ -42,6 +43,8 @@ from storm.expr import And, Lower
 
 from stoqlib.api import api
 from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.product import Product, StorableBatch
 from stoqlib.domain.service import ServiceView
 from stoqlib.domain.views import (ProductFullStockItemView,
@@ -50,13 +53,17 @@ from stoqlib.domain.views import (ProductFullStockItemView,
 from stoqlib.exceptions import TaxError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
-from stoqlib.gui.base.wizards import WizardStep
+from stoqlib.gui.base.wizards import WizardStep, WizardEditorStep
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.events import WizardSellableItemStepEvent
+from stoqlib.gui.interfaces import IDomainSlaveMapper
 from stoqlib.gui.search.sellablesearch import SellableSearch
+from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
+from stoqlib.gui.slaves.paymentslave import register_payment_slaves
 from stoqlib.gui.widgets.calculator import CalculatorPopup
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.defaults import QUANTITY_PRECISION, MAX_INT
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
@@ -881,3 +888,103 @@ class SellableItemStep(SellableItemSlave, WizardStep):
                 return False
 
         return True
+
+
+class BasePaymentStep(WizardEditorStep):
+    gladefile = 'BasePaymentStep'
+    model_type = PaymentGroup
+
+    def __init__(self, wizard, previous, store, model,
+                 outstanding_value=currency(0)):
+        self.parent = model
+        self.slave = None
+        self.discount_surcharge_slave = None
+        self.outstanding_value = outstanding_value
+
+        if not model.payments.count():
+            # Default values
+            self._installments_number = None
+            self._first_duedate = None
+            self._method = 'bill'
+        else:
+            self._installments_number = model.payments.count()
+            self._method = model.payments[0].method.method_name
+
+            # due_date is datetime.datetime. Converting it to datetime.date
+            due_date = model.payments[0].due_date.date()
+            self._first_duedate = (due_date >= localtoday().date() and
+                                   due_date or None)
+
+        WizardEditorStep.__init__(self, store, wizard, model.group, previous)
+
+    def _setup_widgets(self):
+        register_payment_slaves()
+
+        self._ms = SelectPaymentMethodSlave(store=self.store,
+                                            payment_type=Payment.TYPE_OUT,
+                                            default_method=self._method,
+                                            no_payments=True)
+        self._ms.connect_after('method-changed',
+                               self._after_method_select__method_changed)
+
+        self.attach_slave('method_select_holder', self._ms)
+        self._update_payment_method_slave()
+
+    def _set_method_slave(self):
+        """Sets the payment method slave"""
+        method = self._ms.get_selected_method()
+        if not method:
+            return
+        domain_mapper = get_utility(IDomainSlaveMapper)
+        slave_class = domain_mapper.get_slave_class(method)
+        if slave_class:
+            self.wizard.payment_group = self.model
+            self.slave = slave_class(self.wizard, self,
+                                     self.store, self.parent, method,
+                                     outstanding_value=self.outstanding_value,
+                                     first_duedate=self._first_duedate,
+                                     installments_number=self._installments_number,
+                                     temporary_identifiers=self.wizard.is_for_another_branch())
+            self.attach_slave('method_slave_holder', self.slave)
+
+    def _update_payment_method_slave(self):
+        """Updates the payment method slave """
+        holder_name = 'method_slave_holder'
+        if self.get_slave(holder_name):
+            self.slave.get_toplevel().hide()
+            self.detach_slave(holder_name)
+            self.slave = None
+
+        # remove all payments created last time, if any
+        self.model.clear_unused()
+        if not self.slave:
+            self._set_method_slave()
+
+    #
+    # WizardStep hooks
+    #
+
+    def validate_step(self):
+        if self.slave:
+            return self.slave.finish()
+        return True
+
+    def next_step(self):
+        raise NotImplementedError
+
+    def post_init(self):
+        self.model.clear_unused()
+        self.main_box.set_focus_chain([self.method_select_holder,
+                                       self.method_slave_holder])
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
+
+    def setup_proxies(self):
+        self._setup_widgets()
+
+    #
+    # callbacks
+    #
+
+    def _after_method_select__method_changed(self, slave, method):
+        self._update_payment_method_slave()

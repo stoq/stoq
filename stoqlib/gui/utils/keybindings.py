@@ -265,6 +265,8 @@ _bindings = [
      _("Create a new consignment")),
     ('app.purchase.new_product', '',
      _("Create a new product")),
+    ('app.purchase.new_reconciliation', '',
+     _("Start a new purchase reconciliation")),
     ('app.purchase.search_categories', '<Primary>c',
      _("Search for categories")),
     ('app.purchase.search_products', '<Primary>d',

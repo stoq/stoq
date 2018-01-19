@@ -97,6 +97,14 @@ wizards Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`reconciliationwizard` Module
+----------------------------------
+
+.. automodule:: stoqlib.gui.wizards.reconciliationwizard
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`renegotiationwizard` Module
 ---------------------------------
 

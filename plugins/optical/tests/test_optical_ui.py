@@ -314,8 +314,6 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         work_item = wo.add_sellable(product.sellable)
         work_item.sale_item = sale_item
         wo.sale = sale
-        optical_wo = self.create_optical_work_order()
-        optical_wo.work_order = wo
         wo.approve()
 
         app = self.create_app(ServicesApp, u'services')
@@ -327,6 +325,16 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
 
         self.assertIsNotNone(wo_view)
         app.search.results.select(wo_view)
+
+        with mock.patch('plugins.optical.opticalui.run_dialog') as run_dialog:
+            # No optical work order related to this WO, the dialog doesn't even run
+            wo.work()
+            self.assertNotCalled(run_dialog)
+
+        wo.pause('Reason')
+        optical_wo = self.create_optical_work_order()
+        optical_wo.work_order = wo
+
         with mock.patch('plugins.optical.opticalui.run_dialog') as run_dialog:
             run_dialog.return_value = None
             wo.work()
