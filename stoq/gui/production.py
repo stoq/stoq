@@ -110,37 +110,32 @@ class ProductionApp(ShellApp):
              group.get('search_production_history'),
              _("Search for production history")),
         ]
-        self.production_ui = self.add_ui_actions("", actions,
-                                                 filename="production.xml")
+        self.production_ui = self.add_ui_actions(actions)
         self.set_help_section(_("Production help"), 'app-production')
 
-        self.NewProduction.set_short_label(_("New Production"))
-        self.ProductionPurchaseQuote.set_short_label(_("Purchase"))
-        self.SearchProductionItem.set_short_label(_("Search items"))
-        self.StartProduction.set_short_label(_('Start'))
-        self.EditProduction.set_short_label(_('Edit'))
-        self.FinalizeProduction.set_short_label(_('Finalize'))
-        self.CancelProduction.set_short_label(_('Cancel'))
-        self.ProductionDetails.set_short_label(_('Details'))
-
-        self.StartProduction.props.is_important = True
-        self.FinalizeProduction.props.is_important = True
-
     def create_ui(self):
-        self.popup = self.uimanager.get_widget('/ProductionSelection')
         self.window.add_new_items([self.NewProduction,
                                    self.ProductionPurchaseQuote])
         self.window.add_search_items([
             self.SearchProduct,
             self.SearchService,
             self.SearchProductionItem,
+            self.SearchProductionHistory,
         ])
-        self.window.Print.set_tooltip(
-            _("Print a report of these productions"))
 
         self._inventory_widgets = [self.StartProduction]
         self.register_sensitive_group(self._inventory_widgets,
                                       lambda: not self.has_open_inventory())
+
+    def get_domain_options(self):
+        options = [
+            ('fa-info-circle-symbolic', _('Details'), 'production.ProductionDetails', True),
+            ('fa-edit-symbolic', _('Edit production'), 'production.EditProduction', True),
+            ('fa-play-symbolic', _('Start production'), 'production.StartProduction', True),
+            ('fa-stop-symbolic', _('Finalize production'), 'production.FinalizeProduction', True),
+            ('fa-ban-symbolic', _('Cancel production'), 'production.CancelProduction', True),
+        ]
+        return options
 
     def activate(self, refresh=True):
         if refresh:
@@ -149,15 +144,6 @@ class ProductionApp(ShellApp):
         self.check_open_inventory()
 
         self.search.focus_search_entry()
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.production_ui)
-
-    def new_activate(self):
-        self._open_production_order()
-
-    def search_activate(self):
-        self.run_dialog(ProductionProductSearch, self.store)
 
     def create_filters(self):
         self.set_text_field_columns(['description'])
@@ -295,10 +281,6 @@ class ProductionApp(ShellApp):
 
     def on_results__row_activated(self, widget, order):
         self._production_details()
-
-    def on_results__right_click(self, results, result, event):
-        self.popup.popup(None, None, None, None,
-                         event.button.button, event.time)
 
     # Production
 

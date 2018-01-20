@@ -77,8 +77,7 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
 
     def test_optical_sales_pre_sale(self):
         app = self.create_app(SalesApp, u'sales')
-        action = app.uimanager.get_action(
-            '/ui/menubar/ExtraMenubarPH/OpticalMenu/OpticalPreSale')
+        action = app.OpticalPreSale
         assert action, action
         with mock.patch('plugins.optical.opticalui.run_dialog') as run_dialog_:
             self.activate(action)
@@ -98,8 +97,7 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
 
     def test_optical_sales_medic_search(self):
         app = self.create_app(SalesApp, u'sales')
-        action = app.uimanager.get_action(
-            '/ui/menubar/ExtraMenubarPH/OpticalMenu/OpticalMedicSearch')
+        action = app.OpticalMedicSearch
         assert action, action
         with mock.patch('plugins.optical.opticalui.run_dialog') as run_dialog_:
             self.activate(action)
@@ -111,8 +109,7 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
 
     def test_optical_sales_medic_sales_search(self):
         app = self.create_app(SalesApp, u'sales')
-        action = app.uimanager.get_action(
-            '/ui/menubar/ExtraMenubarPH/OpticalMenu/OpticalMedicSaleItems')
+        action = app.OpticalMedicSaleItems
         assert action, action
         with mock.patch('plugins.optical.opticalui.run_dialog') as run_dialog_:
             self.activate(action)
@@ -236,8 +233,7 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         self.assertIsNotNone(wo_view)
         app.search.results.select(wo_view)
 
-        action = app.uimanager.get_action(
-            '/menubar/AppMenubarPH/OrderMenu/OpticalDetails')
+        action = app.OpticalDetails
         with contextlib.nested(
                 mock.patch.object(self.store, 'commit'),
                 mock.patch.object(self.store, 'close')):

@@ -79,7 +79,7 @@ class SearchFilter(Gtk.HBox):
     """
 
     #: the label of this filter
-    label = GObject.Property(type=str, flags=(GObject.PARAM_READWRITE))
+    label = GObject.Property(type=str, flags=(GObject.ParamFlags.READWRITE))
 
     gsignal('changed')
     gsignal('removed')

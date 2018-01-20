@@ -74,7 +74,6 @@ class InventoryApp(ShellApp):
              _('Create a new inventory for product counting')),
 
             # Inventory
-            ('InventoryMenu', None, _('Inventory')),
             ('Details', Gtk.STOCK_INFO, _('Details...'),
              group.get('inventory_details'),
              _('See details about this inventory')),
@@ -97,45 +96,21 @@ class InventoryApp(ShellApp):
              group.get('inventory_print'),
              _('Print the product listing for this inventory'))
         ]
-        self.inventory_ui = self.add_ui_actions('', actions,
-                                                filename='inventory.xml')
+        self.inventory_ui = self.add_ui_actions(actions)
         self.set_help_section(_("Inventory help"), 'app-inventory')
 
-        self.AdjustAction.set_short_label(_("Adjust"))
-        self.CountingAction.set_short_label(_("Count"))
-        self.Details.set_short_label(_("Details"))
-        self.Cancel.set_short_label(_("Cancel"))
-        self.AdjustAction.props.is_important = True
-        self.CountingAction.props.is_important = True
-        self.Details.props.is_important = True
-        self.Cancel.props.is_important = True
-
     def create_ui(self):
-        self.popup = self.uimanager.get_widget('/InventorySelection')
-
         self.window.add_new_items([self.NewInventory])
-        self.window.Print.set_tooltip(
-            _("Print a report of these inventories"))
+        self.window.add_print_items([self.PrintProductListing])
+        self.window.add_export_items([self.Export])
 
     def activate(self, refresh=True):
         if refresh:
             # Avoid letting this sensitive if has-rows is never emitted
             self.refresh()
         self._update_widgets()
-        self.window.SearchToolItem.set_sensitive(False)
 
         self.search.focus_search_entry()
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.inventory_ui)
-        self.window.SearchToolItem.set_sensitive(True)
-
-    def new_activate(self):
-        if not self.NewInventory.get_sensitive():
-            warning(_("You cannot open an inventory without having a "
-                      "branch with stock in it."))
-            return
-        self._open_inventory()
 
     def create_filters(self):
         # Disable string search right now, until we use a proper Viewable
@@ -149,6 +124,16 @@ class InventoryApp(ShellApp):
 
         self.add_filter(self.branch_filter, SearchFilterPosition.TOP,
                         columns=["branch_id"])
+
+    def get_domain_options(self):
+        options = [
+            ('fa-info-circle-symbolic', _('Details'), 'inventory.Details', True),
+            ('fa-list-ol-symbolic', _('Count'), 'inventory.CountingAction', True),
+            ('fa-tasks-symbolic', _('Adjust'), 'inventory.AdjustAction', True),
+            ('fa-ban-symbolic', _('Cancel'), 'inventory.Cancel', True),
+        ]
+
+        return options
 
     def get_columns(self):
         return [IdentifierColumn('identifier', title=_('Inventory #'),
@@ -203,7 +188,6 @@ class InventoryApp(ShellApp):
         self.set_sensitive([self.NewInventory], self._can_open())
         self.set_sensitive([self.CountingAction], has_open and not all_counted)
         self.set_sensitive([self.AdjustAction], has_open and all_counted)
-        self.window.set_new_menu_sensitive(self._can_open())
 
     def _can_open(self):
         branch = api.get_current_branch(self.store)
@@ -300,10 +284,6 @@ class InventoryApp(ShellApp):
 
     def on_results__selection_changed(self, results, product):
         self._update_widgets()
-
-    def on_results__right_click(self, results, result, event):
-        self.popup.popup(None, None, None, None,
-                         event.button.button, event.time)
 
     def on_results__double_click(self, results, inventory):
         self._show_inventory_details()

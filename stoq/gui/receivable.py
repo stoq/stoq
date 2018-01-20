@@ -146,19 +146,33 @@ class ReceivableApp(BaseAccountWindow):
              group.get('search_card_payments'),
              _('Search for card payments')),
         ]
-        self.receivable_ui = self.add_ui_actions(None, actions,
-                                                 filename='receivable.xml')
+        self.receivable_ui = self.add_ui_actions(actions)
         self.set_help_section(_("Accounts receivable help"), 'app-receivable')
 
-        self.Receive.set_short_label(_('Receive'))
-        self.Details.set_short_label(_('Details'))
-        self.Receive.props.is_important = True
+        self.window.add_print_items([self.PrintDocument, self.PrintReceipt])
+        self.window.add_export_items([self.ExportBills])
         self.window.add_new_items([self.AddReceiving])
         self.window.add_search_items([self.BillCheckSearch,
-                                      self.CardPaymentSearch])
-        self.window.Print.set_tooltip(
-            _("Print a report of this payments"))
-        self.popup = self.uimanager.get_widget('/ReceivableSelection')
+                                      self.CardPaymentSearch,
+                                      self.PaymentCategories,
+                                      self.PaymentFlowHistory])
+
+    def get_domain_options(self):
+        options = [
+            ('fa-info-circle-symbolic', _('Details'), 'receivable.Details', True),
+            ('fa-check-symbolic', _('Receive'), 'receivable.Receive', True),
+            ('fa-edit-symbolic', _('Edit installments'), 'receivable.Edit', True),
+
+            ('', _('Cancel payment'), 'receivable.CancelPayment', False),
+            ('', _('Set as not paid'), 'receivable.SetNotPaid', False),
+            ('', _('Change due date'), 'receivable.ChangeDueDate', False),
+            ('', _('Renegotiate'), 'receivable.Renegotiate', False),
+            ('', _('Comments'), 'receivable.Comments', False),
+            ('', _('Print document'), 'receivable.PrintDocument', False),
+            ('', _('Print receipt'), 'receivable.PrintReceipt', False),
+        ]
+
+        return options
 
     def activate(self, refresh=True):
         self._update_widgets()
@@ -167,15 +181,6 @@ class ReceivableApp(BaseAccountWindow):
             self.refresh()
 
         self.search.focus_search_entry()
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.receivable_ui)
-
-    def new_activate(self):
-        self.add_payment()
-
-    def search_activate(self):
-        self._run_bill_check_search()
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'drawee', 'identifier_str'])
@@ -468,10 +473,6 @@ class ReceivableApp(BaseAccountWindow):
 
     def on_results__selection_changed(self, receivables, selected):
         self._update_widgets()
-
-    def on_results__right_click(self, results, result, event):
-        self.popup.popup(None, None, None, None,
-                         event.button.button, event.time)
 
     def on_Details__activate(self, button):
         selected = self.results.get_selected_rows()[0]

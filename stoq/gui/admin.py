@@ -415,8 +415,7 @@ class AdminApp(ShellApp):
              _("Connect this Stoq installation to Stoq.Link")),
             ("ConfigureCertificates", None, _("Configure certificates...")),
         ]
-        self.admin_ui = self.add_ui_actions('', actions,
-                                            filename='admin.xml')
+        self.admin_ui = self.add_ui_actions(actions)
         self.set_help_section(_("Admin help"), 'app-admin')
 
     def create_ui(self):
@@ -433,34 +432,40 @@ class AdminApp(ShellApp):
         for action_name, task in self.ACTION_TASKS.items():
             action = getattr(self, action_name)
             action.connect('activate', self._on_action__activate, task)
-            if not action.get_visible():
+            if not action.get_enabled():
                 self.tasks.hide_item(task)
 
     def activate(self, refresh=True):
-        # Admin app doesn't have anything to print/export
-        for widget in [self.window.Print,
-                       self.window.ExportSpreadSheet]:
-            widget.set_visible(False)
-
         self.window.add_new_items([self.NewUser])
-        self.window.add_search_items([self.SearchUser,
-                                      self.SearchEmployee])
-        self.window.NewToolItem.set_tooltip(
-            _("Create a new user"))
-        self.window.SearchToolItem.set_tooltip(
-            _("Search for users"))
+        self.window.add_search_items([
+            self.SearchRole,
+            self.SearchEmployee,
+            self.SearchCfop,
+            self.SearchFiscalBook,
+            self.SearchUserProfile,
+            self.SearchUser,
+            self.SearchBranch,
+            self.SearchComputer,
+            self.SearchTaxTemplate,
+            self.SearchEvents,
+            self.SearchCostCenters,
+            self.SearchDuplicatedPersons,
+        ])
 
-    def deactivate(self):
-        self.uimanager.remove_ui(self.admin_ui)
+        self.window.add_extra_items(
+            [self.ConfigureDevices, self.ConfigurePaymentMethods,
+             self.ConfigurePaymentCategories, self.ConfigureClientCategories,
+             self.ConfigureTaxes, self.ConfigureSintegra,
+             self.ConfigureParameters, self.ConfigureInvoices,
+             self.ConfigureInvoicePrinters, self.ConfigureGridGroup,
+             self.ConfigureGridAttribute, self.ConfigureUIForm,
+             self.ConfigureSaleToken, self.ConfigureCertificates],
+            _('Configure'))
+
+        self.window.add_extra_items([self.ConfigurePlugins, self.StoqLinkConnect])
 
     def setup_focus(self):
         self.iconview.grab_focus()
-
-    def new_activate(self):
-        self._new_user()
-
-    def search_activate(self):
-        self.tasks.run_task('users')
 
     # Private
 
@@ -473,7 +478,7 @@ class AdminApp(ShellApp):
     # Callbacks
     #
 
-    def _on_action__activate(self, action, task):
+    def _on_action__activate(self, action, parameter, task):
         self.tasks.run_task(task)
 
     # New

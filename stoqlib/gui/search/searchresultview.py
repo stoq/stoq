@@ -56,7 +56,7 @@ class SearchResultListView(ObjectList):
     __gtype_name__ = 'SearchResultListView'
 
     gsignal("item-activated", object)
-    gsignal("item-popup-menu", object, object)
+    gsignal("item-popup-menu", object, object, object)
 
     def __init__(self):
         self._lazy_updater = None
@@ -116,7 +116,7 @@ class SearchResultListView(ObjectList):
         self.emit('item-activated', item)
 
     def _on__right_click(self, object_list, results, event):
-        self.emit('item-popup-menu', results, event)
+        self.emit('item-popup-menu', object_list, results, event)
 
 GObject.type_register(SearchResultListView)
 
@@ -129,7 +129,7 @@ class SearchResultTreeView(ObjectTree):
     __gtype_name__ = 'SearchResultTreeView'
 
     gsignal("item-activated", object)
-    gsignal("item-popup-menu", object, object)
+    gsignal("item-popup-menu", object, object, object)
 
     def __init__(self):
         ObjectTree.__init__(self)
@@ -191,4 +191,4 @@ class SearchResultTreeView(ObjectTree):
         self.emit('item-activated', item)
 
     def _on__right_click(self, object_list, results, event):
-        self.emit('item-popup-menu', results, event)
+        self.emit('item-popup-menu', object_list, results, event)

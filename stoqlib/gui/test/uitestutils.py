@@ -29,7 +29,7 @@ import re
 import sys
 import traceback
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, Gio
 from kiwi.interfaces import IValidatableProxyWidget
 from kiwi.ui.objectlist import ObjectList, ObjectTree
 from kiwi.ui.views import SlaveView
@@ -145,10 +145,17 @@ class GUIDumper(object):
                 self._dump_widget(menu, indent)
 
     def _dump_widget(self, widget, indent=0):
+        if widget is None:
+            return
+
         if isinstance(widget, Gtk.Window):
             self._dump_window(widget, indent)
         elif isinstance(widget, Gtk.Entry):
             self._dump_entry(widget, indent)
+        elif isinstance(widget, Gtk.ModelButton):
+            self._dump_model_button(widget, indent)
+        elif isinstance(widget, Gtk.MenuButton):
+            self._dump_menu_button(widget, indent)
         elif isinstance(widget, Gtk.ToggleButton):
             self._dump_toggle_button(widget, indent)
         elif isinstance(widget, Gtk.Button):
@@ -341,6 +348,14 @@ class GUIDumper(object):
             if menu:
                 self._dump_widget(menu, indent + 2)
 
+    def _dump_menu_button(self, widget, indent):
+        self._write_widget(widget, indent, [])
+        popover = widget.get_popover()
+        self._dump_widget(popover, indent + 2)
+
+    def _dump_model_button(self, button, indent):
+        self._write_widget(button, indent, [button.props.text])
+
     def _dump_iconview(self, iconview, indent):
         extra = []
         model = iconview.get_model()
@@ -460,12 +475,6 @@ class GUIDumper(object):
         self.output += 'app: %s\n' % (app.__class__.__name__, )
         self._dump_widget(app.get_toplevel())
 
-        popups = app.uimanager.get_toplevels(Gtk.UIManagerItemType.POPUP)
-        for popup in popups:
-            self.output += '\n'
-            self.output += 'popup: %s\n' % (popup.get_name(), )
-            self._dump_widget(popup)
-
     def dump_models(self, models):
         if not models:
             return
@@ -563,16 +572,21 @@ class GUITest(DomainTest):
         This verifies that the button is activatable (visible and sensitive) and
         emits the activate signal
         """
-        if not isinstance(widget, (Gtk.Action, Gtk.Widget)):
+        if not isinstance(widget, (Gtk.Action, Gtk.Widget, Gio.Action)):
             raise TypeError("%r must be an action or a widget" % (widget, ))
 
-        if not widget.get_visible():
+        if not isinstance(widget, Gio.Action) and not widget.get_visible():
             self.fail("widget is not visible")
             return
 
-        if not widget.get_sensitive():
-            self.fail("widget is not sensitive")
-            return
+        if isinstance(widget, Gio.Action):
+            if not widget.get_enabled():
+                self.fail("widget is not sensitive")
+                return
+        else:
+            if not widget.get_sensitive():
+                self.fail("widget is not sensitive")
+                return
 
         widget.activate()
 
@@ -594,6 +608,11 @@ class GUITest(DomainTest):
         for attr in attributes:
             value = getattr(dialog, attr)
             # If the widget is sensitive, we also expect it to be visible
+            if isinstance(value, Gio.Action):
+                if not value.get_enabled():
+                    self.fail("%s.%s should be sensitive" % (
+                        dialog.__class__.__name__, attr))
+                continue
             if not value.get_sensitive() or not value.get_visible():
                 self.fail("%s.%s should be sensitive" % (
                     dialog.__class__.__name__, attr))

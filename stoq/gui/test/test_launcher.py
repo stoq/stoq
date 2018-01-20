@@ -24,7 +24,7 @@
 
 import mock
 
-from stoq.gui.launcher import LauncherApp, COL_APP
+from stoq.gui.launcher import LauncherApp
 from stoq.gui.test.baseguitest import BaseGUITest
 
 
@@ -78,10 +78,10 @@ class TestLauncher(BaseGUITest):
     def _test_open_app(self, app_name):
         app = self.create_app(LauncherApp, u'launcher')
         emitname = 'stoq.gui.shell.shellwindow.StartApplicationEvent.emit'
-        for row in app.model:
-            if row[COL_APP].name == app_name:
+        for child in app._apps_box.get_children():
+            if child.action_name == 'launch.' + app_name:
                 with mock.patch(emitname) as emit:
-                    app.iconview.item_activated(row.path)
+                    child.activate()
                     self.check_app(app, u'launcher-app-' + app_name)
                 break
         else:

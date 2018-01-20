@@ -4299,7 +4299,7 @@ msgstr "Ordem de serviço"
 #: ../data/template/optical/prescription.html:17 ../stoq/gui/services.py:592
 #: ../stoqlib/gui/editors/deliveryeditor.py:213
 msgid "Deliver"
-msgstr "Entrega"
+msgstr "Entregar"
 
 #: ../data/template/optical/prescription.html:22
 msgid "Desc"

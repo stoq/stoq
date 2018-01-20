@@ -136,7 +136,7 @@ class TestSales(BaseGUITest):
         api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         app = self.create_app(SalesApp, u'sales')
 
-        self.activate(app.window.Print)
+        self.activate(app.window.print)
         self.assertEqual(print_report.call_count, 1)
 
         args, kwargs = print_report.call_args
@@ -207,7 +207,7 @@ class TestSales(BaseGUITest):
     @mock.patch('stoq.gui.financial.SpreadSheetExporter.export')
     def test_export_spreadsheet(self, export):
         app = self.create_app(SalesApp, u'sales')
-        self.activate(app.ExportSpreadSheet)
+        self.activate(app.window.export)
         export.assert_called_once_with(object_list=app.results, name='sales',
                                        filename_prefix='sales')
 

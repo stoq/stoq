@@ -56,10 +56,8 @@ class TestNfeUI(BaseGUITest):
 
     def test_nfe_uiforms(self):
         app = self.create_app(AdminApp, u'admin')
-        action = app.uimanager.get_action(
-            '/ui/menubar/AppMenubarPH/ConfigureMenu/ConfigureUIForm')
         with mock.patch('stoq.gui.admin.AdminApp.run_dialog') as run_dialog:
-            self.activate(action)
+            self.activate(app.ConfigureUIForm)
             args, kwargs = run_dialog.call_args
             editor = args[0]
             self.assertEqual(editor, FormFieldEditor)

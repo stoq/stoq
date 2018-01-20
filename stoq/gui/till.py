@@ -128,6 +128,7 @@ class TillApp(ShellApp):
              group.get('confirm_sale'),
              _("Confirm the selected sale, decreasing stock and making it "
                "possible to receive it's payments")),
+
             # FIXME: This button should change the label to "Cancel" when the
             # selected sale can be cancelled and not returned, since that's
             # what is going to happen when the user click in it
@@ -142,20 +143,10 @@ class TillApp(ShellApp):
              _("Edit payments of the selected sale")),
         ]
 
-        self.till_ui = self.add_ui_actions('', actions,
-                                           filename="till.xml")
+        self.till_ui = self.add_ui_actions(actions)
         self.set_help_section(_("Till help"), 'app-till')
 
-        self.Confirm.set_short_label(_('Confirm'))
-        self.Return.set_short_label(_('Return'))
-        self.Details.set_short_label(_('Details'))
-        self.Confirm.props.is_important = True
-        self.Return.props.is_important = True
-        self.Details.props.is_important = True
-
     def create_ui(self):
-        self.popup = self.uimanager.get_widget('/TillSelection')
-
         self.current_branch = api.get_current_branch(self.store)
         # Groups
         self.main_vbox.set_focus_chain([self.app_vbox])
@@ -168,34 +159,39 @@ class TillApp(ShellApp):
         self.status_link.set_use_markup(True)
         self.status_link.set_justify(Gtk.Justification.CENTER)
 
-    def get_title(self):
-        return _('[%s] - Till') % (
-            api.get_current_branch(self.store).get_description(), )
+    def get_domain_options(self):
+        options = [
+            ('fa-info-circle-symbolic', _('Details'), 'till.Details', True),
+            ('fa-check-symbolic', _('Confirm'), 'till.Confirm', True),
+            ('fa-undo-symbolic', _('Return'), 'till.Return', True),
+            ('', _('Payment'), 'till.Payment', False),
+        ]
+
+        return options
 
     def activate(self, refresh=True):
+        self.window.add_print_items()
+        self.window.add_export_items()
+        self.window.add_extra_items([self.TillOpen, self.TillVerify, self.TillClose])
         self.window.add_new_items([self.TillAddCash,
-                                   self.TillRemoveCash])
-        self.window.add_search_items([self.SearchFiscalTillOperations,
-                                      self.SearchClient,
-                                      self.SearchSale])
-        self.window.Print.set_tooltip(_("Print a report of these sales"))
+                                   self.TillRemoveCash, self.PaymentReceive])
+        self.window.add_search_items([
+            self.SearchClient,
+            self.SearchSale,
+            self.SearchSoldItemsByBranch,
+            self.SearchCardPayment,
+            # Separator
+            self.SearchClosedTill,
+            self.SearchTillHistory,
+            self.SearchFiscalTillOperations,
+            self.TillDailyMovement,
+        ])
         if refresh:
             self.refresh()
         self._printer.run_initial_checks()
         self.check_open_inventory()
 
         self.search.focus_search_entry()
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.till_ui)
-
-    def new_activate(self):
-        if not self.TillAddCash.get_sensitive():
-            return
-        self._run_add_cash_dialog()
-
-    def search_activate(self):
-        self._run_search_dialog(TillFiscalOperationsSearch)
 
     #
     # ShellApp
@@ -548,10 +544,6 @@ class TillApp(ShellApp):
 
     def on_results__has_rows(self, results, has_rows):
         self._update_total()
-
-    def on_results__right_click(self, results, result, event):
-        self.popup.popup(None, None, None, None,
-                         event.button.button, event.time)
 
     def on_Details__activate(self, action):
         self._run_details_dialog()

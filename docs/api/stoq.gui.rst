@@ -153,6 +153,14 @@ gui Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`widgets` Module
+---------------------
+
+.. automodule:: stoq.gui.widgets
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 .. toctree::
 
     stoq.gui.shell

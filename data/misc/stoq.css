@@ -14,8 +14,8 @@ else:
 
 /* Fit a bit more data in all TreeViews */
 GtkTreeView {
-    -GtkTreeView-vertical-separator: 0;
-    -GtkTreeView-horizontal-separator: 0;
+    -GtkTreeView-vertical-separator: 4;
+    -GtkTreeView-horizontal-separator: 4;
     -GtkTreeView-grid-line-width: 0;
 }
 
@@ -63,8 +63,37 @@ KanbanView {
     outline-width: 0;
 }
 
+Shortcut {
+    padding: 12px;
+}
+
+Section {
+    font-size: 1.5em;
+}
+
+
+AppEntry {
+    padding: 6px;
+    padding-bottom: 0;
+}
+
+Shortcut .title,
+AppEntry .title {
+    font-size: larger;
+}
+
+Shortcut .subtitle,
+AppEntry .subtitle {
+    font-size: smaller;
+}
+
 .visualmode {
     /* This seems to be the way sensntive colors are calculated
      * in the default theme */
     color: mix (@theme_fg_color, @theme_bg_color, 0.4);
+}
+
+.no-padding {
+    padding-left: 0;
+    padding-right: 0;
 }

@@ -121,23 +121,30 @@ class PayableApp(BaseAccountWindow):
              _('Search for bills and checks')),
         ]
 
-        self.payable_ui = self.add_ui_actions(None, actions,
-                                              filename='payable.xml')
+        self.payable_ui = self.add_ui_actions(actions)
         self.set_help_section(_("Accounts payable help"), 'app-payable')
-        self.Pay.set_short_label(_('Pay'))
-        self.Edit.set_short_label(_('Edit'))
-        self.Details.set_short_label(_('Details'))
-        self.Pay.props.is_important = True
         self.set_sensitive([self.Pay], False)
         self.set_sensitive([self.PrintReceipt], False)
-        self.popup = self.uimanager.get_widget('/PayableSelection')
+
         self.window.add_new_items([self.AddPayment])
-        self.window.NewToolItem.set_tooltip(self.AddPayment.get_tooltip())
-        self.window.add_search_items([self.BillCheckSearch])
-        self.window.SearchToolItem.set_tooltip(
-            self.BillCheckSearch.get_tooltip())
-        self.window.Print.set_tooltip(
-            _("Print a report of these payments"))
+        self.window.add_search_items([self.BillCheckSearch,
+                                      self.PaymentCategories,
+                                      self.PaymentFlowHistory])
+
+    def get_domain_options(self):
+        options = [
+            ('fa-info-circle-symbolic', _('Details'), 'payable.Details', True),
+            ('fa-check-symbolic', _('Pay'), 'payable.Pay', True),
+            ('fa-edit-symbolic', _('Edit installments'), 'payable.Edit', True),
+
+            ('', _('Cancel payment'), 'payable.CancelPayment', False),
+            ('', _('Set as not paid'), 'payable.SetNotPaid', False),
+            ('', _('Change due date'), 'payable.ChangeDueDate', False),
+            ('', _('Comments'), 'payable.Comments', False),
+            ('', _('Print receipt'), 'payable.PrintReceipt', False),
+        ]
+
+        return options
 
     def activate(self, refresh=True):
         if refresh:
@@ -145,15 +152,6 @@ class PayableApp(BaseAccountWindow):
         self._update_widgets()
 
         self.search.focus_search_entry()
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.payable_ui)
-
-    def new_activate(self):
-        self.add_payment()
-
-    def search_activate(self):
-        run_dialog(OutPaymentBillCheckSearch, self, self.store)
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'supplier_name',
@@ -409,10 +407,6 @@ class PayableApp(BaseAccountWindow):
     def on_results__row_activated(self, klist, payable_view):
         if self._can_show_details([payable_view]):
             self.show_details(payable_view)
-
-    def on_results__right_click(self, results, result, event):
-        self.popup.popup(None, None, None, None,
-                         event.button.button, event.time)
 
     def on_results__selection_changed(self, results, selected):
         self._update_widgets()

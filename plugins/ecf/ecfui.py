@@ -51,7 +51,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
+from stoqlib.gui.events import (StartApplicationEvent,
                                 CouponCreatedEvent, EditorCreateEvent)
 from stoqlib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.lib.message import info, warning, yesno
@@ -123,11 +123,6 @@ class ECFUI(object):
         self._setup_params()
         self._setup_events()
 
-        self._till_summarize_action = Gtk.Action(
-            'Summary', _('Summary'), None, None)
-        self._till_summarize_action.connect(
-            'activate', self._on_TillSummary__activate)
-
         add_bindings([
             ('plugin.ecf.read_memory', '<Primary>F9'),
             ('plugin.ecf.summarize', '<Primary>F11'),
@@ -150,7 +145,6 @@ class ECFUI(object):
         TillAddTillEntryEvent.connect(self._on_AddTillEntry)
         TillRemoveCashEvent.connect(self._on_TillRemoveCash)
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
-        StopApplicationEvent.connect(self._on_StopApplicationEvent)
         CouponCreatedEvent.connect(self._on_CouponCreatedEvent)
         GerencialReportPrintEvent.connect(self._on_GerencialReportPrintEvent)
         GerencialReportCancelEvent.connect(self._on_GerencialReportCancelEvent)
@@ -195,92 +189,59 @@ class ECFUI(object):
 
             self._printer_verified = True
 
-    def _add_ui_menus(self, appname, app, uimanager):
+    def _add_ui_menus(self, appname, app):
         self._current_app = app
         if appname == 'pos':
             self._create_printer()
-            self._add_pos_menus(uimanager)
+            self._add_pos_menus(app)
         elif appname == 'till':
             self._create_printer()
-            self._add_till_menus(uimanager)
+            self._add_till_menus(app)
         elif appname == 'sales':
             # The sales app needs the printer to check if the
             # sale being returned is the last sale on the ECF.
             self._create_printer()
         elif appname == 'admin':
-            self._add_admin_menus(uimanager)
+            self._add_admin_menus(app)
             app.tasks.add_item(
                 _('Fiscal Printers'), 'fiscal-printer', 'printer',
                 self._on_ConfigurePrinter__activate)
 
-    def _remove_ui_menus(self, uimanager):
-        if not self._ui:
-            return
-        uimanager.remove_ui(self._ui)
-        self._ui = None
-
-    def _add_admin_menus(self, uimanager):
-        ui_string = """<ui>
-          <menubar name="menubar">
-            <placeholder action="AppMenubarPH">
-              <menu action="ConfigureMenu">
-              <placeholder name="ConfigurePH">
-                <menuitem action="ConfigurePrinter"/>
-              </placeholder>
-              </menu>
-            </placeholder>
-          </menubar>
-        </ui>"""
-
-        ag = Gtk.ActionGroup('ECFMenuActions')
-        ag.add_actions([
+    def _add_admin_menus(self, app):
+        actions = [
             ('ECFMenu', None, _('ECF')),
             ('ConfigurePrinter', None, _('Configure fiscal printer...'),
              None, None, self._on_ConfigurePrinter__activate),
-        ])
-        uimanager.insert_action_group(ag, 0)
-        self._ui = uimanager.add_ui_from_string(ui_string)
+        ]
+        app.add_ui_actions(actions)
+        app.window.add_extra_items([app.ConfigurePrinter], _('ECF'))
 
-    def _add_ecf_menu(self, uimanager):
-        ui_string = """<ui>
-          <menubar name="menubar">
-            <placeholder name="ExtraMenubarPH">
-              <menu action="ECFMenu">
-                <menuitem action="CancelLastDocument"/>
-                <menuitem action="Summary"/>
-                <menuitem action="ReadMemory"/>
-              </menu>
-            </placeholder>
-          </menubar>
-        </ui>"""
-
+    def _add_ecf_menu(self, app):
         group = get_accels('plugin.ecf')
-
-        ag = Gtk.ActionGroup('ECFMenuActions')
-        ag.add_actions([
-            ('ECFMenu', None, _('ECF')),
+        actions = [
             ('ReadMemory', None, _('Read Memory'),
              group.get('read_memory'), None, self._on_ReadMemory__activate),
             ('CancelLastDocument', None, _('Cancel Last Document'),
              None, None, self._on_CancelLastDocument__activate),
-        ])
-        ag.add_action_with_accel(self._till_summarize_action,
-                                 group.get('summarize'))
+            ('Summary', None, _('Summary'),
+             group.get('read_memory'), None, self._on_TillSummary__activate),
+        ]
+        app.add_ui_actions(actions)
+        items = [
+            app.Summary,
+            app.ReadMemory,
+        ]
+        if sysparam.get_bool('ALLOW_CANCEL_LAST_COUPON'):
+            items.insert(0, app.CancelLastDocument)
+        app.window.add_extra_items(items, _('ECF'))
 
-        can_cancel = sysparam.get_bool('ALLOW_CANCEL_LAST_COUPON')
-        cancel_coupon_menu = ag.get_action('CancelLastDocument')
-        cancel_coupon_menu.set_visible(can_cancel)
-
-        uimanager.insert_action_group(ag, 0)
-        self._ui = uimanager.add_ui_from_string(ui_string)
-
-    def _add_pos_menus(self, uimanager):
+    def _add_pos_menus(self, app):
         if sysparam.get_bool('POS_SEPARATE_CASHIER'):
             return
-        self._add_ecf_menu(uimanager)
+        self._add_ecf_menu(app)
 
-    def _add_till_menus(self, uimanager):
-        self._add_ecf_menu(uimanager)
+    def _add_till_menus(self, app):
+        self._add_ecf_menu(app)
 
     def _check_ecf_state(self):
         log.info('ecfui._check_printer')
@@ -655,10 +616,7 @@ class ECFUI(object):
     #
 
     def _on_StartApplicationEvent(self, appname, app):
-        self._add_ui_menus(appname, app, app.window.uimanager)
-
-    def _on_StopApplicationEvent(self, appname, app):
-        self._remove_ui_menus(app.window.uimanager)
+        self._add_ui_menus(appname, app)
 
     def _on_SaleStatusChanged(self, sale, old_status):
         if sale.status == Sale.STATUS_CONFIRMED:
@@ -773,16 +731,16 @@ class ECFUI(object):
     def _on_coupon__print_payment_receipt(self, coupon, coo, payment, value, receipt):
         coupon.print_payment_receipt(coo, payment, value, receipt)
 
-    def _on_TillSummary__activate(self, action):
+    def _on_TillSummary__activate(self, action, parameter):
         self._till_summarize()
 
-    def _on_ReadMemory__activate(self, action):
+    def _on_ReadMemory__activate(self, action, parameter):
         self._fiscal_memory_dialog()
 
-    def _on_CancelLastDocument__activate(self, action):
+    def _on_CancelLastDocument__activate(self, action, parameter):
         self._cancel_last_document()
 
-    def _on_ConfigurePrinter__activate(self, action=None):
+    def _on_ConfigurePrinter__activate(self, *args):
         run_dialog(ECFListDialog, None)
 
     def _on_GerencialReportCancelEvent(self):

@@ -124,7 +124,7 @@ class KanbanView(Gtk.Frame):
     # item activated
     gsignal('item-activated', object)
     gsignal('item-dragged', object, object, retval=bool)
-    gsignal('item-popup-menu', object, object)
+    gsignal('item-popup-menu', object, object, object)
     gsignal('selection-changed', object)
     gsignal('activate-link', object)
 
@@ -353,7 +353,7 @@ class KanbanView(Gtk.Frame):
         self.emit('item-activated', item)
 
     def _on_right_click(self, olist, item, event):
-        self.emit('item-popup-menu', item, event)
+        self.emit('item-popup-menu', olist, item, event)
 
     def _on_button_press_event(self, treeview, event):
         retval = treeview.get_path_at_pos(int(event.x),

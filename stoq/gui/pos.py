@@ -27,7 +27,7 @@ from decimal import Decimal
 import logging
 import sys
 
-from gi.repository import Gdk, Gtk, Pango
+from gi.repository import Gdk, Gtk, Pango, GLib
 from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import converter, ValidationError
@@ -252,18 +252,34 @@ class PosApp(ShellApp):
             ("DeliverySearch", None, _("Deliveries..."),
              group.get('search_deliveries')),
         ]
-        self.pos_ui = self.add_ui_actions('', actions,
-                                          filename='pos.xml')
+        self.pos_ui = self.add_ui_actions(actions)
 
         toggle_actions = [
             ('DetailsViewer', None, _('Details viewer'),
              group.get('toggle_details_viewer')),
         ]
-        self.add_ui_actions('', toggle_actions, 'ToggleActions', 'toggle')
+        self.add_ui_actions(toggle_actions, 'ToggleActions')
 
         self.set_help_section(_("POS help"), 'app-pos')
 
     def create_ui(self):
+        self.window.add_extra_items([self.DetailsViewer, self.LoanClose,
+                                     self.WorkOrderClose])
+        self.window.add_extra_items([self.TillOpen, self.TillVerify,
+                                     self.TillClose], label=_('Till operations'))
+        self.window.add_extra_items([self.ConfirmOrder, self.CancelOrder,
+                                     self.NewDelivery], label=_('Sale'))
+        self.window.add_new_items([self.NewTrade, self.PaymentReceive])
+        self.window.add_search_items([
+            self.Sales,
+            self.SoldItemsByBranchSearch,
+            self.SearchSalesPersonSales,
+            self.Clients,
+            self.ProductSearch,
+            self.ServiceSearch,
+            self.DeliverySearch,
+        ])
+
         self.sale_items.set_columns(self.get_columns())
         self.sale_items.set_selection_mode(Gtk.SelectionMode.BROWSE)
         # Setting up the widget groups
@@ -292,10 +308,6 @@ class PosApp(ShellApp):
         self._clear_order()
 
     def activate(self, refresh=True):
-        # Admin app doesn't have anything to print/export
-        for widget in (self.window.Print, self.window.ExportSpreadSheet):
-            widget.set_visible(False)
-
         # Hides or shows sellable description
         self._confirm_quantity = sysparam.get_bool('CONFIRM_QTY_ON_BARCODE_ACTIVATE')
         self.sellable_description.set_visible(self._confirm_quantity)
@@ -303,10 +315,6 @@ class PosApp(ShellApp):
         self.price_label.set_visible(self._confirm_quantity)
         self.price.set_visible(self._confirm_quantity)
         self.price.set_editable(sysparam.get_bool('POS_ALLOW_CHANGE_PRICE'))
-
-        # Hide toolbar specially for pos
-        self.uimanager.get_widget('/toolbar').hide()
-        self.uimanager.get_widget('/menubar/ViewMenu/ToggleToolbar').hide()
 
         self.check_open_inventory()
         self._update_parameter_widgets()
@@ -321,12 +329,6 @@ class PosApp(ShellApp):
     def deactivate(self):
         api.user_settings.set('pos-show-details-viewer',
                               self.DetailsViewer.get_active())
-
-        self.uimanager.remove_ui(self.pos_ui)
-
-        # Re enable toolbar
-        self.uimanager.get_widget('/toolbar').show()
-        self.uimanager.get_widget('/menubar/ViewMenu/ToggleToolbar').show()
 
         # one PosApp is created everytime the pos is opened. If we dont
         # disconnect, the callback from this instance would still be called, but
@@ -433,8 +435,8 @@ class PosApp(ShellApp):
             pop_fullscreen(window)
             window.unfullscreen()
 
-        for widget in [self.TillOpen, self.TillClose, self.TillVerify]:
-            widget.set_visible(not sysparam.get_bool('POS_SEPARATE_CASHIER'))
+        self.set_sensitive([self.TillOpen, self.TillClose, self.TillVerify],
+                           not sysparam.get_bool('POS_SEPARATE_CASHIER'))
 
         self.save_button.set_visible(self._confirm_sales_on_till)
         self.checkout_button.set_visible(
@@ -462,9 +464,9 @@ class PosApp(ShellApp):
         self.details_lbl.set_ellipsize(Pango.EllipsizeMode.END)
         self.extra_details_lbl.set_ellipsize(Pango.EllipsizeMode.END)
 
-        self.details_box.set_visible(False)
-        self.DetailsViewer.set_active(
-            api.user_settings.get('pos-show-details-viewer', True))
+        details_visible = api.user_settings.get('pos-show-details-viewer', True)
+        self.details_box.set_visible(details_visible)
+        self.DetailsViewer.set_state(GLib.Variant.new_boolean(details_visible))
 
     def _create_context_menu(self):
         menu = ContextMenu()
@@ -1501,8 +1503,9 @@ class PosApp(ShellApp):
     def on_TillVerify__activate(self, action):
         self._printer.verify_till()
 
-    def on_DetailsViewer__activate(self, button):
-        self.details_box.set_visible(button.get_active())
+    def on_DetailsViewer__change_state(self, action, value):
+        action.set_state(value)
+        self.details_box.set_visible(value.get_boolean())
 
     def on_LoanClose__activate(self, action):
         if self.check_open_inventory():

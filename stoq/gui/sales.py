@@ -208,44 +208,50 @@ class SalesApp(ShellApp):
              _("Show details of the selected sale"))
         ]
 
-        self.sales_ui = self.add_ui_actions("", actions,
-                                            filename="sales.xml")
-
-        self.SaleQuote.set_short_label(_("New Sale Quote"))
-        self.SaleQuote.set_short_label(_("New Sale Quote with Work Order"))
-        self.SearchClient.set_short_label(_("Clients"))
-        self.SearchProduct.set_short_label(_("Products"))
-        self.SearchService.set_short_label(_("Services"))
-        self.SearchDelivery.set_short_label(_("Deliveries"))
-        self.SalesCancel.set_short_label(_("Cancel"))
-        self.ChangeClient.set_short_label(_("Change Client"))
-        self.ChangeSalesperson.set_short_label(_("Change Salesperson"))
-        self.Edit.set_short_label(_("Edit"))
-        self.Return.set_short_label(_("Return"))
-        self.Details.set_short_label(_("Details"))
-
+        self.sales_ui = self.add_ui_actions(actions)
         self.set_help_section(_("Sales help"), 'app-sales')
+
+    def get_domain_options(self):
+        options = [
+            ('fa-info-circle-symbolic', _('Details'), 'sales.Details', True),
+            ('fa-edit-symbolic', _('Edit'), 'sales.Edit', True),
+            ('fa-undo-symbolic', _('Return'), 'sales.Return', True),
+            ('fa-ban-symbolic', _('Cancel'), 'sales.SalesCancel', True),
+        ]
+
+        if api.sysparam.get_bool('CHANGE_CLIENT_AFTER_CONFIRMED'):
+            options.append(('', _('Change client'), 'sales.ChangeClient', False))
+        if api.sysparam.get_bool('CHANGE_SALESPERSON_AFTER_CONFIRMED'):
+            options.append(('', _('Change salesperson'), 'sales.ChangeSalespeson', False))
+
+        return options
 
     def create_ui(self):
         if api.sysparam.get_bool('SMART_LIST_LOADING'):
             self.search.enable_lazy_search()
-        if not api.sysparam.get_bool('CHANGE_CLIENT_AFTER_CONFIRMED'):
-            self.ChangeClient.set_visible(False)
-        if not api.sysparam.get_bool('CHANGE_SALESPERSON_AFTER_CONFIRMED'):
-            self.ChangeSalesperson.set_visible(False)
-
-        self.popup = self.uimanager.get_widget('/SaleSelection')
 
         self._setup_columns()
         self._setup_widgets()
 
-        self.window.add_new_items([self.SaleQuote, self.WorkOrderQuote])
-        self.window.add_search_items([
-            self.SearchProduct,
-            self.SearchClient,
-            self.SearchService,
-            self.SearchDelivery])
-        self.window.Print.set_tooltip(_("Print a report of these sales"))
+        self.window.add_print_items()
+        self.window.add_export_items()
+        self.window.add_extra_items([self.LoanClose])
+        self.window.add_new_items([self.SaleQuote, self.WorkOrderQuote,
+                                   self.LoanNew])
+        self.window.add_search_items(
+            [self.SearchProduct, self.SearchService, self.SearchDelivery])
+        self.window.add_search_items(
+            [self.SearchClient, self.SearchClientCalls,
+             self.SearchCreditCheckHistory, self.SearchClientsWithSale,
+             self.SearchClientsWithCredit])
+        self.window.add_search_items(
+            [self.SearchSalesByPaymentMethod, self.ReturnedSaleSearch,
+             self.SearchCommission, self.SearchSalesPersonSales])
+        self.window.add_search_items(
+            [self.SearchUnconfirmedSaleItems, self.SearchSoldItemsByBranch,
+             self.SearchSoldItemsByClient])
+        self.window.add_search_items(
+            [self.LoanSearch, self.LoanSearchItems])
 
     def activate(self, refresh=True):
         if refresh:
@@ -255,15 +261,6 @@ class SalesApp(ShellApp):
         self._update_toolbar()
 
         self.search.focus_search_entry()
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.sales_ui)
-
-    def new_activate(self):
-        self._new_sale_quote(wizard=SaleQuoteWizard)
-
-    def search_activate(self):
-        self._search_product()
 
     def set_open_inventory(self):
         self.set_sensitive(self._inventory_widgets, False)
@@ -513,10 +510,6 @@ class SalesApp(ShellApp):
 
     def on_results__has_rows(self, results, has_rows):
         self._update_toolbar()
-
-    def on_results__right_click(self, results, result, event):
-        self.popup.popup(None, None, None, None,
-                         event.button.button, event.time)
 
     # Sales
 

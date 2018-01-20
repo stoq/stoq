@@ -24,7 +24,7 @@
 """Routines for parsing the configuration file"""
 
 import binascii
-from configparser import SafeConfigParser
+from configparser import ConfigParser
 import os
 
 from stoqlib.lib.interfaces import IStoqConfig
@@ -40,7 +40,7 @@ class StoqConfig:
     domain = 'stoq'
 
     def __init__(self):
-        self._config = SafeConfigParser()
+        self._config = ConfigParser()
         self._settings = None
         self.filename = None
 

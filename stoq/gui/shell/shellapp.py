@@ -25,8 +25,9 @@
 
 import logging
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gio, Gdk
 from kiwi.ui.delegates import GladeDelegate
+
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
 from stoqlib.enums import SearchFilterPosition
@@ -79,15 +80,19 @@ class ShellApp(GladeDelegate):
     #: the report class for printing the object list embedded on app.
     report_table = None
 
-    def __init__(self, window, store=None):
-        if store is None:
-            store = api.get_default_store()
+    def __init__(self, window, store):
         self.store = store
         self.window = window
 
         self._sensitive_group = dict()
         self.help_ui = None
-        self.uimanager = self.window.uimanager
+
+        # Each app will have its own ActionGroup prefixed with the app name, so
+        # that menus (and other activatables) can activate actions by name (for
+        # instance sale.new_sale)
+        self.action_group = Gio.SimpleActionGroup()
+        window.toplevel.insert_action_group(self.app_name, self.action_group)
+        window._action_specs = {}
 
         # FIXME: These two should probably post-__init__, but
         #        that breaks date_label in the calender app
@@ -96,8 +101,13 @@ class ShellApp(GladeDelegate):
         GladeDelegate.__init__(self,
                                gladefile=self.gladefile,
                                toplevel_name=self.toplevel_name)
+
         self._attach_search()
         self.create_ui()
+
+        domain_options = self.get_domain_options()
+        self.window.add_domain_header(domain_options)
+        self.create_popover(domain_options)
 
     def _create_search(self):
         if self.search_spec is None:
@@ -133,6 +143,9 @@ class ShellApp(GladeDelegate):
     # Overridables
     #
 
+    def get_domain_options(self):
+        return []
+
     def create_actions(self):
         """This is called before the BaseWindow constructor, so we
         can create actions that can be autoconnected.
@@ -153,6 +166,9 @@ class ShellApp(GladeDelegate):
         :param refresh: if we should refresh the search
         """
 
+    def deactivate(self):
+        pass
+
     def setup_focus(self):
         """Define this method on child when it's needed.
         This is for calling grab_focus(), it's called after the window
@@ -161,7 +177,7 @@ class ShellApp(GladeDelegate):
     def get_title(self):
         # This method must be redefined in child when it's needed
         branch = api.get_current_branch(self.store)
-        return _('[%s] - %s') % (branch.get_description(), self.app_title)
+        return branch.get_description()
 
     def can_change_application(self):
         """Define if we can change the current application or not.
@@ -177,7 +193,7 @@ class ShellApp(GladeDelegate):
         """
         return True
 
-    def set_open_inventory(self):
+    def set_open_inventory(self):  # pragma no cover
         """ Subclasses should overide this if they call
         :obj:`.check_open_inventory`.
 
@@ -186,17 +202,9 @@ class ShellApp(GladeDelegate):
         """
         raise NotImplementedError
 
-    def new_activate(self):
-        """Called when the New toolbar item is activated"""
-        raise NotImplementedError
-
-    def search_activate(self):
-        """Called when the Search toolbar item is activated"""
-        raise NotImplementedError
-
     def print_activate(self):
         """Called when the Print toolbar item is activated"""
-        if self.search_spec is None:
+        if self.search_spec is None:  # pragma no cover
             raise NotImplementedError
 
         if self.results.get_selection_mode() == Gtk.SelectionMode.MULTIPLE:
@@ -209,7 +217,7 @@ class ShellApp(GladeDelegate):
 
     def export_spreadsheet_activate(self):
         """Called when the Export menu item is activated"""
-        if self.search_spec is None:
+        if self.search_spec is None:  # pragma no cover
             raise NotImplementedError
 
         model = self.results.get_model()
@@ -232,21 +240,39 @@ class ShellApp(GladeDelegate):
         :param states: search states used to construct the search query search
         """
 
+    def create_popover(self, options):
+        """Create a popover for the main search
+
+        This will create a popover that should be displayed by callsing
+        self.show_popover() when necessary
+        """
+        self.domain_menu = Gio.Menu()
+        for (icon, label, action, in_header) in options:
+            self.domain_menu.append(label, action)
+
+        self._popover = Gtk.Popover.new_from_model(self.results, self.domain_menu)
+        self._popover.set_position(Gtk.PositionType.BOTTOM)
+
     #
     # Public API
     #
 
-    def add_ui_actions(self, ui_string, actions, name='Actions',
-                       action_type='normal', filename=None):
-        return self.window.add_ui_actions(ui_string=ui_string,
-                                          actions=actions,
-                                          name=name,
-                                          action_type=action_type,
-                                          filename=filename,
-                                          instance=self)
+    def add_ui_actions(self, actions, name='Actions'):
+        self.window.add_ui_actions(self, actions, name)
 
-    def add_tool_menu_actions(self, actions):
-        return self.window.add_tool_menu_actions(actions=actions)
+    def show_popover(self, event):
+        """Disaply the popover under the mouse cursor
+
+        :param event: The event that was passed to the right-click event
+        """
+        x, y = event.button.window.coords_to_parent(event.button.x,
+                                                    event.button.y)
+        rect = Gdk.Rectangle()
+        rect.x = x
+        rect.y = y
+        rect.width = rect.height = 1
+        self._popover.set_pointing_to(rect)
+        self._popover.show()
 
     def add_columns(self, columns):
         """Add some columns to the default ones.
@@ -290,7 +316,10 @@ class ShellApp(GladeDelegate):
                     sensitive = False
                     break
 
-            widget.set_sensitive(sensitive)
+            if isinstance(widget, Gio.SimpleAction):
+                widget.set_enabled(sensitive)
+            else:
+                widget.set_sensitive(sensitive)
 
     def register_sensitive_group(self, widgets, validation_func, *args):
         """Register widgets on a sensitive group.
@@ -397,11 +426,12 @@ class ShellApp(GladeDelegate):
     # Callbacks
     #
 
+    def on_results__right_click(self, results, result, event):
+        if self._popover:
+            self.show_popover(event)
+
     def on_search__search_completed(self, search, results, states):
         self.search_completed(results, states)
 
-        has_results = len(results)
-        for widget in [self.window.Print,
-                       self.window.ExportSpreadSheet]:
-            widget.set_sensitive(has_results)
+        self.set_sensitive([self.window.print, self.window.export], len(results))
         self.search.save_filter_settings('app-ui', self.app_name)

@@ -78,7 +78,7 @@ class SearchSlave(SlaveDelegate):
 
     gsignal("search-completed", object, object)
     gsignal("result-item-activated", object)
-    gsignal("result-item-popup-menu", object, object)
+    gsignal("result-item-popup-menu", object, object, object)
     gsignal("result-selection-changed")
 
     def __init__(self, columns=None,
@@ -733,8 +733,8 @@ class SearchSlave(SlaveDelegate):
     def on_result_view__item_activated(self, result_view, item):
         self.emit('result-item-activated', item)
 
-    def on_result_view__item_popup_menu(self, result_view, results, event):
-        self.emit('result-item-popup-menu', results, event)
+    def on_result_view__item_popup_menu(self, result_view, objectlist, results, event):
+        self.emit('result-item-popup-menu', objectlist, results, event)
 
     def on_result_view__selection_changed(self, result_view, selected):
         self.emit('result-selection-changed')

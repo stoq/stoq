@@ -97,14 +97,6 @@ widgets Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`toolmenuaction` Module
-----------------------------
-
-.. automodule:: stoqlib.gui.widgets.toolmenuaction
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`webview` Module
 ---------------------
 

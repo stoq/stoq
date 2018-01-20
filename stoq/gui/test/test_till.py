@@ -185,7 +185,7 @@ class TestTill(BaseGUITest):
 
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                app.TillAddCash.set_sensitive(True)
+                app.TillAddCash.set_enabled(True)
                 self.activate(app.TillAddCash)
                 run_dialog.assert_called_once_with(CashInEditor,
                                                    app, self.store)

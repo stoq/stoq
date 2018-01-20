@@ -45,7 +45,7 @@ STOQ_DEVICES = "stoq-devices"
 STOQ_DOCUMENTS = "stoq-documents"
 STOQ_HR = "stoq-hr"
 STOQ_INVENTORY_APP = "stoq-inventory-app"
-STOQ_LAUNCHER = "stoq-launcher"
+STOQ_LAUNCHER = "stoq-launcher-symbolic"
 STOQ_LINK = "stoq-link"
 STOQ_LOCKED = "stoq-locked"
 STOQ_FORMS = "stoq-forms"
@@ -145,8 +145,6 @@ icon_info = [
     (STOQ_INVENTORY_APP,
      {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-inventory-app-24x24.png",
       GTK_ICON_SIZE_DIALOG: "stoq-inventory-app-48x48.png"}),
-    (STOQ_LAUNCHER,
-     {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-launcher-24x24.png"}),
     (STOQ_LINK,
      {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-link-24x24.png",
       GTK_ICON_SIZE_DIALOG: "stoq-link-48x48.png"}),
@@ -292,3 +290,9 @@ def register():
             iconset.add_source(iconsource)
         iconfactory.add(stock_id, iconset)
     iconfactory.add_default()
+
+    # Remove all from above this when all stock icons are migrated to the icon
+    # theme
+    theme = Gtk.IconTheme.get_default()
+    path = environ.get_resource_filename('stoq', 'pixmaps')
+    theme.prepend_search_path(path)

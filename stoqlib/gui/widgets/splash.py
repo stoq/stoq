@@ -37,8 +37,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 WIDTH = 450
 HEIGHT = 450
 BORDER = 8  # This includes shadow out border from GtkFrame
-_WINDOW_TIMEOUT = 100  # How often we should check if there are
-                      # other visible windows
+_WINDOW_TIMEOUT = 100  # How often we should check if there are other visible windows
 
 _ = stoqlib_gettext
 
@@ -47,6 +46,7 @@ class SplashScreen(Gtk.Window):
 
     def __init__(self):
         super(SplashScreen, self).__init__()
+        self.set_decorated(False)
 
         self.set_name('SplashWindow')
         self.set_type_hint(Gdk.WindowTypeHint.SPLASHSCREEN)

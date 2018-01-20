@@ -345,20 +345,13 @@ class FinancialApp(ShellApp):
     def create_actions(self):
         group = get_accels('app.financial')
         actions = [
-            ('TransactionMenu', None, _('Transaction')),
-            ('AccountMenu', None, _('Account')),
             ('Import', Gtk.STOCK_ADD, _('Import...'),
              group.get('import'), _('Import a GnuCash or OFX file')),
             ('ConfigurePaymentMethods', None,
              _('Payment methods'),
              group.get('configure_payment_methods'),
              _('Select accounts for the payment methods on the system')),
-            ('DeleteAccount', Gtk.STOCK_DELETE, _('Delete...'),
-             group.get('delete_account'),
-             _('Delete the selected account')),
-            ('DeleteTransaction', Gtk.STOCK_DELETE, _('Delete...'),
-             group.get('delete_transaction'),
-             _('Delete the selected transaction')),
+            ('Delete', None, _('Delete...')),
             ("NewAccount", Gtk.STOCK_NEW, _("Account..."),
              group.get('new_account'),
              _("Add a new account")),
@@ -368,23 +361,29 @@ class FinancialApp(ShellApp):
             ("Edit", Gtk.STOCK_EDIT, _("Edit..."),
              group.get('edit')),
         ]
-        self.financial_ui = self.add_ui_actions('', actions,
-                                                filename='financial.xml')
+        self.financial_ui = self.add_ui_actions(actions)
         self.set_help_section(_("Financial help"), 'app-financial')
-        self.Edit.set_short_label(_('Edit'))
-        self.DeleteAccount.set_short_label(_('Delete'))
-        self.DeleteTransaction.set_short_label(_('Delete'))
 
         user = api.get_current_user(self.store)
         if not user.profile.check_app_permission(u'admin'):
             self.set_sensitive([self.ConfigurePaymentMethods], False)
 
-    def create_ui(self):
-        self.trans_popup = self.uimanager.get_widget('/TransactionSelection')
-        self.acc_popup = self.uimanager.get_widget('/AccountSelection')
+    def get_domain_options(self):
+        options = [
+            ('fa-edit-symbolic', _('Edit'), 'financial.Edit', True),
+            ('fa-trash-alt-symbolic', _('Delete'), 'financial.Delete', True),
+        ]
+        return options
 
+    def create_ui(self):
+        self.window.add_print_items()
         self.window.add_new_items([self.NewAccount,
                                    self.NewTransaction])
+
+        self.window.add_export_items([self.Import])
+        self.window.add_extra_items(
+            [self.ConfigurePaymentMethods]
+        )
 
         self.search_holder.add(self.accounts)
         self.accounts.show()
@@ -396,11 +395,6 @@ class FinancialApp(ShellApp):
             self.refresh_pages()
         self._update_actions()
         self._update_tooltips()
-        self.window.SearchToolItem.set_sensitive(False)
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.financial_ui)
-        self.window.SearchToolItem.set_sensitive(True)
 
     def print_activate(self):
         self._print_transaction_report()
@@ -419,28 +413,22 @@ class FinancialApp(ShellApp):
 
     def _update_actions(self):
         is_accounts_tab = self._is_accounts_tab()
-        self.AccountMenu.set_visible(is_accounts_tab)
-        self.TransactionMenu.set_visible(not is_accounts_tab)
-        self.DeleteAccount.set_visible(is_accounts_tab)
-        self.DeleteTransaction.set_visible(not is_accounts_tab)
-        self.window.ExportSpreadSheet.set_sensitive(True)
-        self.window.Print.set_sensitive(not is_accounts_tab)
+        self.set_sensitive([self.window.print], not is_accounts_tab)
+
+        self.set_sensitive([self.Delete], self._can_delete_transaction() or
+                           self._can_delete_account())
 
         self.set_sensitive([self.NewAccount], self._can_add_account())
-        self.set_sensitive([self.DeleteAccount], self._can_delete_account())
         self.set_sensitive([self.NewTransaction], self._can_add_transaction())
-        self.set_sensitive([self.DeleteTransaction], self._can_delete_transaction())
         self.set_sensitive([self.Edit],
                            self._can_edit_account() or self._can_edit_transaction())
 
     def _update_tooltips(self):
+        edit_btn = self.window.domain_header.get_children()[0]
         if self._is_accounts_tab():
-            self.Edit.set_tooltip(_("Edit the selected account"))
-            self.window.Print.set_tooltip("")
+            edit_btn.set_tooltip_text(_("Edit the selected account"))
         else:
-            self.Edit.set_tooltip(_("Edit the selected transaction"))
-            self.window.Print.set_tooltip(
-                _("Print a report of these transactions"))
+            edit_btn.set_tooltip_text(_("Edit the selected transaction"))
 
     def _create_initial_page(self):
         pixbuf = self.accounts.render_icon('stoq-money', Gtk.IconSize.MENU)
@@ -784,8 +772,8 @@ class FinancialApp(ShellApp):
         self._update_actions()
 
     def on_accounts__right_click(self, results, result, event):
-        self.acc_popup.popup(None, None, None, None,
-                             event.button.button, event.time)
+        self._popover.set_relative_to(results)
+        self.show_popover(event)
 
     def on_Edit__activate(self, button):
         if self._is_accounts_tab():
@@ -803,17 +791,11 @@ class FinancialApp(ShellApp):
     def _on_search__result_selection_changed(self, search):
         self._update_actions()
 
-    def _on_search__result_item_popup_menu(self, search, result, event):
-        self.trans_popup.popup(None, None, None, None,
-                               event.button.button, event.time)
+    def _on_search__result_item_popup_menu(self, search, objectlist, result, event):
+        self._popover.set_relative_to(objectlist)
+        self.show_popover(event)
 
     # Toolbar
-
-    def new_activate(self):
-        if self._is_accounts_tab() and self._can_add_account():
-            self._create_new_account()
-        elif self._is_transaction_tab() and self._can_add_transaction():
-            self._add_transaction()
 
     def on_NewAccount__activate(self, action):
         self._create_new_account()
@@ -821,16 +803,16 @@ class FinancialApp(ShellApp):
     def on_NewTransaction__activate(self, action):
         self._add_transaction()
 
-    def on_DeleteAccount__activate(self, action):
-        account_view = self.accounts.get_selected()
-        self._delete_account(account_view)
-
-    def on_DeleteTransaction__activate(self, action):
-        transactions = self.get_current_page()
-        transaction = transactions.result_view.get_selected()
-        self._delete_transaction(transaction)
-        self.refresh_pages()
-        self._refresh_accounts()
+    def on_Delete__activate(self, action):
+        if self._is_accounts_tab():
+            account_view = self.accounts.get_selected()
+            self._delete_account(account_view)
+        elif self._is_transaction_tab():
+            transactions = self.get_current_page()
+            transaction = transactions.result_view.get_selected()
+            self._delete_transaction(transaction)
+            self.refresh_pages()
+            self._refresh_accounts()
 
     # Financial
 

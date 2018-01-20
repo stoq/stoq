@@ -24,12 +24,10 @@
 
 import logging
 
-from gi.repository import Gtk
-
 from stoqlib.database.runtime import get_default_store
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.producteditor import ProductEditor
-from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
+from stoqlib.gui.events import (StartApplicationEvent,
                                 EditorSlaveCreateEvent)
 from stoqlib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.lib.translation import stoqlib_gettext
@@ -47,7 +45,6 @@ class BooksUI(object):
         self._ui = None
         self.default_store = get_default_store()
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
-        StopApplicationEvent.connect(self._on_StopApplicationEvent)
         EditorSlaveCreateEvent.connect(self._on_EditorSlaveCreateEvent)
         add_bindings([
             ('plugin.books.search_books', '<Primary><Alt>B'),
@@ -58,74 +55,38 @@ class BooksUI(object):
     # Private
     #
 
-    def _get_menu_ui_string(self):
-        return """<ui>
-            <menubar name="menubar">
-                <placeholder name="ExtraMenubarPH">
-                    <menu action="BooksMenu">
-                    %s
-                    </menu>
-                </placeholder>
-            </menubar>
-        </ui>"""
-
-    def _add_purchase_menus(self, uimanager):
-        menu_items_str = '''<menuitem action="BookSearch"/>
-                            <menuitem action="Publishers"/>'''
-        ui_string = self._get_menu_ui_string() % menu_items_str
-
+    def _add_purchase_menus(self, app):
         group = get_accels('plugin.books')
-        ag = Gtk.ActionGroup('BooksMenuActions')
-        ag.add_actions([
-            ('BooksMenu', None, _(u'Books')),
+        actions = [
             ('BookSearch', None, _(u'Book Search'),
              group.get('search_books'), None,
              self._on_BookSearch__activate),
             ('Publishers', None, _(u'Publishers ...'),
              group.get('search_publishers'), None,
              self._on_Publishers__activate),
-        ])
+        ]
+        app.add_ui_actions(actions)
+        app.window.add_search_items([app.BookSearch, app.Publishers], _('Books'))
 
-        uimanager.insert_action_group(ag, 0)
-        self._ui = uimanager.add_ui_from_string(ui_string)
-
-    def _add_sale_menus(self, uimanager):
-        menu_items_str = '<menuitem action="BookSearch"/>'
-        ui_string = self._get_menu_ui_string() % menu_items_str
-
+    def _add_sale_menus(self, app):
         group = get_accels('plugin.books')
-        ag = Gtk.ActionGroup('BooksMenuActions')
-        ag.add_actions([
-            ('BooksMenu', None, _(u'Books')),
+        actions = [
             ('BookSearch', None, _(u'Book Search'),
              group.get('search_books'), None,
              self._on_BookSearchView__activate),
-        ])
+        ]
+        app.add_ui_actions(actions)
+        app.window.add_search_items([app.BookSearch], _('Books'))
 
-        uimanager.insert_action_group(ag, 0)
-        self._ui = uimanager.add_ui_from_string(ui_string)
-
-    def _add_pos_menus(self, uimanager):
-        menu_items_str = '<menuitem action="BookSearch"/>'
-        ui_string = self._get_menu_ui_string() % menu_items_str
-
+    def _add_pos_menus(self, app):
         group = get_accels('plugin.books')
-        ag = Gtk.ActionGroup('BooksMenuActions')
-        ag.add_actions([
-            ('BooksMenu', None, _(u'Books')),
+        actions = [
             ('BookSearch', None, _(u'Book Search'),
              group.get('search_books'), None,
              self._on_BookSearchView__activate),
-        ])
-
-        uimanager.insert_action_group(ag, 0)
-        self._ui = uimanager.add_ui_from_string(ui_string)
-
-    def _remove_app_ui(self, uimanager):
-        if not self._ui:
-            return
-        uimanager.remove_ui(self._ui)
-        self._ui = None
+        ]
+        app.add_ui_actions(actions)
+        app.window.add_search_items([app.BookSearch], _('Books'))
 
     def _add_product_slave(self, editor, model, store):
         editor.add_extra_tab(ProductBookSlave.title,
@@ -137,14 +98,11 @@ class BooksUI(object):
 
     def _on_StartApplicationEvent(self, appname, app):
         if appname == 'purchase':
-            self._add_purchase_menus(app.window.uimanager)
+            self._add_purchase_menus(app)
         elif appname == 'sales':
-            self._add_sale_menus(app.window.uimanager)
+            self._add_sale_menus(app)
         elif appname == 'pos':
-            self._add_pos_menus(app.window.uimanager)
-
-    def _on_StopApplicationEvent(self, appname, app):
-        self._remove_app_ui(app.window.uimanager)
+            self._add_pos_menus(app)
 
     def _on_EditorSlaveCreateEvent(self, editor, model, store, *args):
         # Use type() instead of isinstance so tab does
@@ -158,12 +116,12 @@ class BooksUI(object):
     # Callbacks
     #
 
-    def _on_BookSearch__activate(self, action):
+    def _on_BookSearch__activate(self, action, parameter):
         run_dialog(ProductBookSearch, None, self.default_store, hide_price_column=True)
 
-    def _on_BookSearchView__activate(self, action):
+    def _on_BookSearchView__activate(self, action, parameter):
         run_dialog(ProductBookSearch, None, self.default_store, hide_cost_column=True,
                    hide_toolbar=True)
 
-    def _on_Publishers__activate(self, action):
+    def _on_Publishers__activate(self, action, parameter):
         run_dialog(PublisherSearch, None, self.default_store, hide_footer=True)

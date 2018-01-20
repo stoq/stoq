@@ -29,7 +29,7 @@ import logging
 import os
 import sys
 
-from gi.repository import GLib
+from gi.repository import GLib, Gtk
 
 # FIXME: We can import whatever we want here, but don't import anything
 #        significant, it's good to maintain lazy loaded things during startup
@@ -237,6 +237,8 @@ class Shell(object):
         self._login = None
         self._options = options
         self._user = None
+        self._app = Gtk.Application()
+        self._app.connect('activate', self._on_app__activate)
         self.windows = []
 
     #
@@ -366,9 +368,6 @@ class Shell(object):
         # Finally, go out of the reactor and show possible crash reports
         log.debug("Show some crash reports")
         self._show_crash_reports()
-        log.debug("Stoq Gtk.main")
-        from gi.repository import Gtk
-        Gtk.main_quit()
 
         # Make sure that no connection is left open (specially on Windows)
         try:
@@ -454,7 +453,9 @@ class Shell(object):
         from stoqlib.database.runtime import get_default_store
         shell_window = ShellWindow(self._options,
                                    shell=self,
-                                   store=get_default_store())
+                                   store=get_default_store(),
+                                   app=self._app)
+        self._app.add_window(shell_window.toplevel)
         self.windows.append(shell_window)
 
         self._maybe_correct_demo_position(shell_window)
@@ -485,26 +486,13 @@ class Shell(object):
         :param appname: name of the application to run
         :param action_name: action to activate or ``None``
         """
-        self._dbconn.connect()
-        if not self._do_login():
-            raise SystemExit
-        if appname is None:
-            appname = u'launcher'
-        shell_window = self.create_window()
-        app = shell_window.run_application(str(appname))
-        shell_window.show()
+        self._appname = appname
+        self._action_name = action_name
 
-        if action_name is not None:
-            action = getattr(app, action_name, None)
-            if action is not None:
-                action.activate()
-
-        self._maybe_schedule_idle_logout()
+        self._bootstrap.entered_main = True
 
         log.debug("Entering main loop")
-        self._bootstrap.entered_main = True
-        from gi.repository import Gtk
-        Gtk.main()
+        self._app.run()
         log.info("Leaving main loop")
 
     def quit(self, restart=False, app=None):
@@ -525,6 +513,29 @@ class Shell(object):
         api.user_settings.flush()
 
         self._terminate(restart=restart, app=app)
+
+    #
+    # Callbacks
+    #
+
+    def _on_app__activate(self, app):
+        appname = self._appname
+        action_name = self._action_name
+        self._dbconn.connect()
+        if not self._do_login():
+            raise SystemExit
+        if appname is None:
+            appname = u'launcher'
+        shell_window = self.create_window()
+        app = shell_window.run_application(str(appname))
+        shell_window.show()
+
+        if action_name is not None:
+            action = getattr(app, action_name, None)
+            if action is not None:
+                action.activate()
+
+        self._maybe_schedule_idle_logout()
 
 
 def get_shell():

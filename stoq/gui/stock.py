@@ -25,7 +25,7 @@
 
 import logging
 
-from gi.repository import Gtk, GdkPixbuf, Pango
+from gi.repository import Gtk, GdkPixbuf, Pango, GLib
 from kiwi.datatypes import converter
 
 from stoqlib.api import api
@@ -136,6 +136,7 @@ class StockApp(ShellApp):
             ("ProductMenu", None, _("Product")),
             ("PrintLabels", None, _("Print labels...")),
             ("ManageStock", None, _("Manage stock...")),
+
             ("ProductStockHistory", Gtk.STOCK_INFO, _("History..."),
              group.get('history'),
              _('Show the stock history of the selected product')),
@@ -144,42 +145,44 @@ class StockApp(ShellApp):
              _("Edit the selected product, allowing you to change it's "
                "details")),
         ]
-        self.stock_ui = self.add_ui_actions('', actions,
-                                            filename='stock.xml')
+        self.stock_ui = self.add_ui_actions(actions)
 
         toggle_actions = [
             ('StockPictureViewer', None, _('Picture viewer'),
              group.get('toggle_picture_viewer')),
         ]
-        self.add_ui_actions('', toggle_actions, 'ToggleActions',
-                            'toggle')
+        self.add_ui_actions(toggle_actions, 'ToggleActions')
         self.set_help_section(_("Stock help"), 'app-stock')
-
-        self.NewReceiving.set_short_label(_("Receive"))
-        self.NewTransfer.set_short_label(_("Transfer"))
-        self.EditProduct.set_short_label(_("Edit"))
-        self.ProductStockHistory.set_short_label(_("History"))
-        self.EditProduct.props.is_important = True
-        self.ProductStockHistory.props.is_important = True
 
     def create_ui(self):
         if api.sysparam.get_bool('SMART_LIST_LOADING'):
             self.search.enable_lazy_search()
 
-        self.popup = self.uimanager.get_widget('/StockSelection')
+        self.window.add_print_items([self.PrintLabels])
+        self.window.add_export_items()
+        self.window.add_extra_items([self.StockInitial, self.LoanClose,
+                                     self.StockPictureViewer])
         self.window.add_new_items([self.NewReceiving, self.NewTransfer,
                                    self.NewStockDecrease, self.LoanNew])
         self.window.add_search_items([
+            self.SearchPurchaseReceiving,
+            self.SearchProductHistory,
+            self.SearchTransfer,
+            self.SearchTransferItems,
+            self.SearchStockDecrease,
+            self.SearchReturnedItems,
+            self.SearchPurchasedStockItems,
             self.SearchStockItems,
             self.SearchBrandItems,
-            self.SearchStockDecrease,
+            self.SearchBrandItemsByBranch,
+            self.SearchBatchItems,
             self.SearchClosedStockItems,
-            self.SearchProductHistory,
-            self.SearchPurchasedStockItems,
-            self.SearchTransfer,
+            self.SearchPendingReturnedSales,
+            # Separator
+            self.LoanSearch,
+            self.LoanSearchItems,
+
         ])
-        self.window.Print.set_tooltip(
-            _("Print a report of these products"))
         self._inventory_widgets = [self.NewTransfer, self.NewReceiving,
                                    self.StockInitial, self.NewStockDecrease,
                                    self.LoanNew, self.LoanClose]
@@ -189,8 +192,9 @@ class StockApp(ShellApp):
         self.image_viewer = None
 
         self.image = Gtk.Image()
-        self.edit_button = self.uimanager.get_widget('/toolbar/AppToolbarPH/EditProduct')
-        self.edit_button.set_icon_widget(self.image)
+        # FIXME: How are we goint to display an image preview?
+        #self.edit_button = self.uimanager.get_widget('/toolbar/AppToolbarPH/EditProduct')
+        #self.edit_button.set_icon_widget(self.image)
         self.image.show()
 
         self.search.set_summary_label(column='stock',
@@ -198,12 +202,17 @@ class StockApp(ShellApp):
                                       format='<b>%s</b>',
                                       parent=self.get_statusbar_message_area())
 
-    def activate(self, refresh=True):
-        self.window.NewToolItem.set_tooltip(
-            _("Create a new receiving order"))
-        self.window.SearchToolItem.set_tooltip(
-            _("Search for stock items"))
+    def get_domain_options(self):
+        options = [
+            ('fa-info-circle-symbolic', _('History'), 'stock.ProductStockHistory', True),
+            ('fa-edit-symbolic', _('Edit'), 'stock.EditProduct', True),
+            ('', _('Print labels'), 'stock.PrintLabels', False),
+            ('', _('Manage stock'), 'stock.ManageStock', False),
+        ]
 
+        return options
+
+    def activate(self, refresh=True):
         if refresh:
             self.refresh()
 
@@ -226,17 +235,7 @@ class StockApp(ShellApp):
         if self.returned_bar:
             self.returned_bar.hide()
 
-        self.uimanager.remove_ui(self.stock_ui)
         self._close_image_viewer()
-
-    def new_activate(self):
-        if not self.NewReceiving.get_sensitive():
-            warning(_("You cannot receive a purchase with an open inventory."))
-            return
-        self._receive_purchase()
-
-    def search_activate(self):
-        self.run_dialog(ProductStockSearch, self.store)
 
     def set_open_inventory(self):
         self.set_sensitive(self._inventory_widgets, False)
@@ -341,7 +340,7 @@ class StockApp(ShellApp):
         # Note that 'all branches' is not a real branch
         has_branches = len(self.branch_filter.combo) > 2
 
-        transfer_active = self.NewTransfer.get_sensitive()
+        transfer_active = self.NewTransfer.get_enabled()
         self.set_sensitive([self.NewTransfer],
                            transfer_active and has_branches)
         # Building a list of searches that we must disable if there is no
@@ -458,17 +457,13 @@ class StockApp(ShellApp):
 
     def on_image_viewer_closed(self, window, event):
         self.image_viewer = None
-        self.StockPictureViewer.set_active(False)
+        self.StockPictureViewer.set_state(GLib.Variant.new_boolean(False))
 
     def on_results__has_rows(self, results, product):
         self._update_widgets()
 
     def on_results__selection_changed(self, results, product):
         self._update_widgets()
-
-    def on_results__right_click(self, results, result, event):
-        self.popup.popup(None, None, None, None,
-                         event.button.button, event.time)
 
     def on_ProductStockHistory__activate(self, button):
         selected = self.results.get_selected()
@@ -555,8 +550,9 @@ class StockApp(ShellApp):
         if store.committed:
             self.refresh()
 
-    def on_StockPictureViewer__toggled(self, button):
-        if button.get_active():
+    def on_StockPictureViewer__change_state(self, action, value):
+        action.set_state(value)
+        if value.get_boolean():
             self._open_image_viewer()
         else:
             self._close_image_viewer()

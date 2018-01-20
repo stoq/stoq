@@ -163,7 +163,7 @@ class TestFinancial(BaseGUITest):
 
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                self.activate(app.DeleteTransaction)
+                self.activate(app.Delete)
                 yesno.assert_called_once_with(u'Are you sure you want to remove '
                                               u'transaction "Test transaction" ?',
                                               Gtk.ResponseType.YES,
@@ -184,7 +184,7 @@ class TestFinancial(BaseGUITest):
         app = self.create_app(FinancialApp, u"financial")
         page = self._open_page(app, u"The Account")
 
-        self.activate(app.Print)
+        self.activate(app.window.print)
 
         print_report.assert_called_once_with(
             AccountTransactionReport,
@@ -201,7 +201,7 @@ class TestFinancial(BaseGUITest):
         app = self.create_app(FinancialApp, u"financial")
         page = self._open_page(app, u"The Account")
 
-        self.activate(app.ExportSpreadSheet)
+        self.activate(app.window.export)
 
         export.assert_called_once_with(object_list=page.result_view,
                                        name=u'Financial',
@@ -227,7 +227,7 @@ class TestFinancial(BaseGUITest):
         accounts.select(selected_account)
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                self.activate(app.DeleteAccount)
+                self.activate(app.Delete)
                 yesno.assert_called_once_with(u'Are you sure you want to remove '
                                               u'account "The Account" ?',
                                               Gtk.ResponseType.NO,
@@ -252,7 +252,7 @@ class TestFinancial(BaseGUITest):
 
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                self.activate(app.DeleteTransaction)
+                self.activate(app.Delete)
                 yesno.assert_called_once_with(u'Are you sure you want to remove '
                                               u'transaction "Test Account '
                                               u'Transaction" ?',
@@ -280,7 +280,7 @@ class TestFinancial(BaseGUITest):
         new_store.return_value = self.store
 
         at = self.create_account_transaction(self.create_account())
-        at.account.description = u"The Account"
+        at.account.description = u"The Actual Account"
         at.edited_account = at.account
 
         app = self.create_app(FinancialApp, u"financial")
@@ -290,6 +290,7 @@ class TestFinancial(BaseGUITest):
             if account.description == at.account.description:
                 selected_account = account
 
+        app.notebook.set_current_page(0)
         accounts.select(selected_account)
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):

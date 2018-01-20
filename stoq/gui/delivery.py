@@ -66,9 +66,6 @@ class DeliveryApp(ShellApp):
     def create_actions(self):
         #group = get_accels('app.delivery')
         actions = [
-            # File
-            ("DeliveryMenu", None, _(u"Delivery")),
-
             # Search
             ("Transporters", STOQ_TRANSPORTER, _("Transporters..."),
              # group.get("search_transporters")),
@@ -109,11 +106,20 @@ class DeliveryApp(ShellApp):
              None,
              _("Cancel the selected delivery")),
         ]
-        self.delivery_ui = self.add_ui_actions("", actions,
-                                               filename="delivery.xml")
-
+        self.delivery_ui = self.add_ui_actions(actions)
         self.set_help_section(_(u"Delivery help"), 'app-delivery')
-        self.popup = self.uimanager.get_widget('/DeliverySelection')
+
+    def get_domain_options(self):
+        options = [
+            ('fa-edit-symbolic', _('Edit'), 'delivery.Edit', True),
+            ('', _('Pick'), 'delivery.Cancel', False),
+            ('', _('Pack'), 'delivery.Cancel', False),
+            ('fa-share-square-symbolic', _('Send'), 'delivery.Send', True),
+            ('fa-check-square-symbolic', _('Mark as received'), 'delivery.Receive', True),
+            ('fa-ban-symbolic', _('Cancel'), 'delivery.Cancel', True),
+        ]
+
+        return options
 
     def create_ui(self):
         self.search.enable_lazy_search()
@@ -121,6 +127,7 @@ class DeliveryApp(ShellApp):
         # XXX: What should we put on new items?
         self.window.add_new_items([
         ])
+
         self.window.add_search_items([
             self.Products,
             self.Services,
@@ -142,25 +149,10 @@ class DeliveryApp(ShellApp):
 
     def activate(self, refresh=True):
         self.check_open_inventory()
-
-        # XXX
-        #self.window.NewToolItem.set_tooltip(
-        #    _("Create a new delivery"))
-        self.window.SearchToolItem.set_tooltip(_("Search for transporters"))
-
         if refresh:
             self._update_view()
 
         self.search.focus_search_entry()
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.delivery_ui)
-
-    def new_activate(self):
-        print("FIXME: new_activate")
-
-    def search_activate(self):
-        self.run_dialog(TransporterSearch, self.store)
 
     def search_completed(self, results, states):
         if len(results):
@@ -381,10 +373,6 @@ class DeliveryApp(ShellApp):
                 renderer.set_property(prop, value)
 
         return text
-
-    def on_search__result_item_popup_menu(self, search, item, event):
-        self.popup.popup(None, None, None, None,
-                         event.button.button, event.time)
 
     def on_search__result_selection_changed(self, search):
         self._update_list_aware_view()

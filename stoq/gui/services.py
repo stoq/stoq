@@ -29,7 +29,7 @@ import urllib.request
 import urllib.parse
 import urllib.error
 
-from gi.repository import Gtk, GdkPixbuf, Pango
+from gi.repository import Gtk, GdkPixbuf, Pango, GLib
 from kiwi.currency import currency
 from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import Column
@@ -310,39 +310,52 @@ class ServicesApp(ShellApp):
             ("UndoRejection", None, _(u"Undo order rejection...")),
             ("Reopen", None, _(u"Reopen order...")),
         ]
-        self.services_ui = self.add_ui_actions("", actions,
-                                               filename="services.xml")
-
+        self.services_ui = self.add_ui_actions(actions)
         radio_actions = [
             ('ViewKanban', '', _("View as Kanban"),
              '', _("Show in Kanban mode")),
             ('ViewList', '', _("View as List"),
              '', _("Show in list mode")),
         ]
-        self.add_ui_actions('', radio_actions, 'RadioActions',
-                            'radio')
-
-        self.Edit.set_short_label(_(u"Edit"))
-        self.Finish.set_short_label(_(u"Finish"))
-        self.Edit.props.is_important = True
-        self.Finish.props.is_important = True
-
+        self.add_ui_actions(radio_actions, 'RadioActions')
         self.set_help_section(_(u"Services help"), 'app-services')
-        self.popup = self.uimanager.get_widget('/ServicesSelection')
+
+    def get_domain_options(self):
+        options = [
+            ('fa-info-circle-symbolic', _('Details'), 'services.Details', True),
+            ('fa-edit-symbolic', _('Edit'), 'services.Edit', True),
+            ('fa-check-symbolic', _('Finish'), 'services.Finish', True),
+            ('fa-ban-symbolic', _('Cancel'), 'services.Cancel', True),
+
+            ('', _('Deliver'), 'services.DeliverOrder', False),
+            # Separator
+            ('', _('Approve'), 'services.Approve', False),
+            ('', _('Pause the work'), 'services.Pause', False),
+            ('', _('Start the work'), 'services.Work', False),
+            ('', _('Reject order'), 'services.Reject', False),
+            ('', _('Undo order rejection'), 'services.UndoRejection', False),
+            ('', _('Repoen order'), 'services.Reopen', False),
+            # Separator
+            ('', _('Print quote'), 'services.PrintQuote', False),
+            ('', _('Print receipt'), 'services.PrintReceipt', False),
+        ]
+        return options
 
     def create_ui(self):
         if api.sysparam.get_bool('SMART_LIST_LOADING'):
             self.search.enable_lazy_search()
 
-        self.window.add_new_items([
-            self.NewOrder,
-        ])
+        self.window.add_print_items([self.PrintQuote, self.PrintReceipt])
+        self.window.add_export_items()
+        self.window.add_extra_items([self.SendOrders, self.ReceiveOrders])
+        self.window.add_extra_items([self.ViewKanban, self.ViewList])
+        self.window.add_new_items([self.NewOrder])
         self.window.add_search_items([
             self.Products,
             self.Services,
             self.Categories,
+            self.Clients,
         ])
-        self.ViewList.props.active = True
 
         self.search.set_summary_label(
             column='total',
@@ -356,28 +369,15 @@ class ServicesApp(ShellApp):
     def activate(self, refresh=True):
         self.check_open_inventory()
 
-        self.window.NewToolItem.set_tooltip(
-            _(u"Create a new work order"))
-        self.window.SearchToolItem.set_tooltip(
-            _(u"Search for work order categories"))
-
-        self.ViewKanban.set_active(
-            self.window._current_app_settings.get('show-kanban', False))
+        is_kanban = self.window._current_app_settings.get('show-kanban', False)
+        if is_kanban:
+            self.ViewKanban.set_state(GLib.Variant.new_boolean(True))
+            self.search.set_result_view(WorkOrderResultKanbanView, refresh=refresh)
 
         if refresh:
             self._update_view()
 
         self.search.focus_search_entry()
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.services_ui)
-
-    def new_activate(self):
-        self.new_order()
-
-    def search_activate(self):
-        self.run_dialog(ProductSearch, self.store,
-                        hide_footer=True, hide_toolbar=True)
 
     def search_completed(self, results, states):
         if len(results):
@@ -584,13 +584,12 @@ class ServicesApp(ShellApp):
         self.set_sensitive([self.PrintReceipt], has_selected and wo.is_finished())
         self.set_sensitive([self.PrintQuote], has_quote)
 
-        self.Finish.set_short_label(_(u"Finish"))
-        self.Finish.set_label(_(u"Finish..."))
+        finish_btn = self.window.domain_header.get_children()[2]
+        finish_btn.set_tooltip_text(_(u"Finish"))
         # If the selected work order is already finished, we change the finish
         # button's label.
         if has_selected and wo.status == WorkOrder.STATUS_WORK_FINISHED:
-            self.Finish.set_short_label(_(u"Deliver"))
-            self.Finish.set_label(_(u"Deliver..."))
+            finish_btn.set_tooltip_text(_(u"Deliver"))
 
         for widget, value in [
                 (self.Approve, has_selected and wo.can_approve()),
@@ -603,7 +602,7 @@ class ServicesApp(ShellApp):
             # Some of those options are mutually exclusive (except Approve,
             # but it can only be called once) so avoid confusions and
             # hide not available options
-            widget.set_visible(value)
+            self.set_sensitive([widget], value)
 
     def _update_filters(self):
         self._not_delivered_filter_item = _FilterItem(_(u'Not delivered'),
@@ -832,14 +831,14 @@ class ServicesApp(ShellApp):
 
         return text
 
-    def on_search__result_item_popup_menu(self, search, item, event):
-        self.popup.popup(None, None, None, None,
-                         event.button.button, event.time)
+    def on_search__result_item_popup_menu(self, search, objectlist, item, event):
+        self._popover.set_relative_to(objectlist)
+        self.show_popover(event)
 
     def on_search__result_item_activated(self, search, item):
-        if self.Edit.get_sensitive():
+        if self.Edit.get_enabled():
             self._edit_order()
-        elif self.Details.get_sensitive():
+        elif self.Details.get_enabled():
             self._run_order_details_dialog()
         else:
             assert False
@@ -920,15 +919,19 @@ class ServicesApp(ShellApp):
     def on_Clients__activate(self, button):
         self.run_dialog(ClientSearch, self.store, hide_footer=True)
 
-    def on_ViewList__toggled(self, action):
-        if not action.get_active():
+    def on_ViewList__change_state(self, action, value):
+        action.set_state(value)
+        if not value.get_boolean():
             return
+        self.ViewKanban.set_state(GLib.Variant.new_boolean(not value.get_boolean()))
         self.search.set_result_view(SearchResultListView, refresh=True)
         self._update_list_aware_view()
 
-    def on_ViewKanban__toggled(self, action):
-        self.window._current_app_settings['show-kanban'] = action.get_active()
-        if not action.get_active():
+    def on_ViewKanban__change_state(self, action, value):
+        action.set_state(value)
+        self.ViewList.set_state(GLib.Variant.new_boolean(not value.get_boolean()))
+        self.window._current_app_settings['show-kanban'] = value.get_boolean()
+        if not value.get_boolean():
             return
         self.search.set_result_view(WorkOrderResultKanbanView, refresh=True)
         self._update_list_aware_view()

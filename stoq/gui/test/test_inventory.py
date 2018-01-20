@@ -165,17 +165,6 @@ class TestInventory(BaseGUITest):
 
         run_dialog.assert_called_once_with(InventoryDetailsDialog, self.store, results[0])
 
-    @mock.patch('stoq.gui.inventory.warning')
-    @mock.patch('stoq.gui.inventory.api.new_store')
-    def test_new_activate(self, new_store, warning):
-        new_store.return_value = self.store
-        self.create_inventory(branch=get_current_branch(self.store))
-
-        app = self.create_app(InventoryApp, u'inventory')
-        self.activate(app.window.NewToolItem)
-        warning.assert_called_once_with("You cannot open an inventory without having a "
-                                        "branch with stock in it.")
-
     def test_deactivate(self):
         app = self.create_app(InventoryApp, u'inventory')
-        self.activate(app.window.Close)
+        self.activate(app.window.quit)

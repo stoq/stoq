@@ -23,6 +23,7 @@
 ##
 
 import mock
+from gi.repository import Gtk
 
 from stoqlib.api import api
 from stoqlib.domain.profile import ProfileSettings
@@ -82,7 +83,13 @@ class BaseGUITest(GUITest):
         self.shell = mock.Mock()
         self.options = mock.Mock(spec=[u'debug'])
         self.options.debug = False
-        self.window = MockShellWindow(self.options, self.shell, store=self.store)
+        app = Gtk.Application.get_default()
+        if not app:
+            app = Gtk.Application()
+            app.set_default()
+            app.register()
+        self.window = MockShellWindow(self.options, self.shell,
+                                      store=self.store, app=app)
         self.window.in_ui_test = True
         self.window.statusbar.push(0, u'Test Statusbar test')
 

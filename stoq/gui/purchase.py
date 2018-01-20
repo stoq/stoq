@@ -162,27 +162,16 @@ class PurchaseApp(ShellApp):
              _('Complete the selected partially received order')),
         ]
 
-        self.purchase_ui = self.add_ui_actions("", actions,
-                                               filename="purchase.xml")
-
-        self.Confirm.props.is_important = True
-
-        self.NewOrder.set_short_label(_("New order"))
-        self.NewQuote.set_short_label(_("New quote"))
-        self.Products.set_short_label(_("Products"))
-        self.Suppliers.set_short_label(_("Suppliers"))
-        self.Confirm.set_short_label(_("Confirm"))
-        self.Cancel.set_short_label(_("Cancel"))
-        self.Finish.set_short_label(_("Finish"))
-        self.Edit.set_short_label(_("Edit"))
-        self.Details.set_short_label(_("Details"))
-
+        self.purchase_ui = self.add_ui_actions(actions)
         self.set_help_section(_("Purchase help"), 'app-purchase')
-        self.popup = self.uimanager.get_widget('/PurchaseSelection')
 
     def create_ui(self):
         if api.sysparam.get_bool('SMART_LIST_LOADING'):
             self.search.enable_lazy_search()
+
+        self.window.add_print_items()
+        self.window.add_export_items([self.ExportFilizola])
+        self.window.add_extra_items([self.CloseInConsignment, self.StockCost])
 
         self.window.add_new_items([
             self.NewOrder,
@@ -192,9 +181,20 @@ class PurchaseApp(ShellApp):
             self.Reconciliation])
         self.window.add_search_items([
             self.Products,
+            self.Services,
+            self.Categories,
+            self.ProductUnits,
+            self.ProductManufacturers,
+            self.SearchStockItems,
+            self.SearchClosedStockItems,
+            self.Transporter,
             self.Suppliers,
             self.SearchQuotes,
-            self.Services])
+            self.SearchPurchasedItems,
+            self.ProductsSoldSearch,
+            self.ProductsPriceSearch,
+            self.SearchInConsignmentItems,
+        ])
         self.search.set_summary_label(column='total',
                                       label=('<b>%s</b>' %
                                              api.escape(_('Orders total:'))),
@@ -209,12 +209,6 @@ class PurchaseApp(ShellApp):
                                       lambda: not self.has_open_inventory())
 
     def activate(self, refresh=True):
-        self.window.NewToolItem.set_tooltip(
-            _("Create a new purchase order"))
-        self.window.SearchToolItem.set_tooltip(
-            _("Search for purchase orders"))
-        self.window.Print.set_tooltip(
-            _("Print a report of these orders"))
         if refresh:
             self.refresh()
 
@@ -224,14 +218,16 @@ class PurchaseApp(ShellApp):
 
         self.search.focus_search_entry()
 
-    def deactivate(self):
-        self.uimanager.remove_ui(self.purchase_ui)
+    def get_domain_options(self):
+        options = [
+            ('fa-info-circle-symbolic', _('Details'), 'purchase.Details', True),
+            ('fa-edit-symbolic', _('Edit'), 'purchase.Edit', True),
+            ('fa-check-symbolic', _('Confirm'), 'purchase.Confirm', True),
+            ('fa-ban-symbolic', _('Cancel'), 'purchase.Cancel', True),
+            ('', _('Finish'), 'purchase.Finish', False),
+        ]
 
-    def new_activate(self):
-        self._new_order()
-
-    def search_activate(self):
-        self.run_dialog(ProductSearch, self.store)
+        return options
 
     def search_completed(self, results, states):
         if len(results):
@@ -454,10 +450,6 @@ class PurchaseApp(ShellApp):
     #
     # Kiwi Callbacks
     #
-
-    def on_results__right_click(self, results, result, event):
-        self.popup.popup(None, None, None, None,
-                         event.button.button, event.time)
 
     def on_results__row_activated(self, klist, purchase_order_view):
         self._run_details_dialog()

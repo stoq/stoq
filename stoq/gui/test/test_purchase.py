@@ -89,7 +89,7 @@ class TestPurchase(BaseGUITest):
         api.sysparam.set_bool(self.store, 'SMART_LIST_LOADING', False)
         app = self.create_app(PurchaseApp, u'purchase')
 
-        self.activate(app.window.Print)
+        self.activate(app.window.print)
         self.assertEqual(print_report.call_count, 1)
 
         args, kwargs = print_report.call_args

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:export-ydpi="96"
+   inkscape:export-xdpi="96"
+   inkscape:export-filename="/home/dajuda/stoq.png"
+   width="49"
+   height="49"
+   viewBox="0 0 49 49.000001"
+   id="svg6076"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="stoq-launcher-symbolic.svg">
+  <sodipodi:namedview
+     inkscape:object-paths="false"
+     inkscape:snap-bbox-midpoints="false"
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="4"
+     inkscape:cx="22.985554"
+     inkscape:cy="21.445338"
+     inkscape:document-units="px"
+     inkscape:current-layer="g4515"
+     showgrid="false"
+     inkscape:window-width="890"
+     inkscape:window-height="651"
+     inkscape:window-x="443"
+     inkscape:window-y="30"
+     inkscape:window-maximized="0"
+     units="px"
+     inkscape:snap-bbox="true"
+     inkscape:snap-bbox-edge-midpoints="false"
+     inkscape:object-nodes="false"
+     inkscape:bbox-nodes="false"
+     inkscape:snap-smooth-nodes="false" />
+  <defs
+     id="defs6078">
+    <inkscape:path-effect
+       effect="envelope"
+       id="path-effect6911"
+       is_visible="true"
+       yy="true"
+       xx="true"
+       bendpath1="M 2.4986602,9.3045505 23.485736,12.384403"
+       bendpath2="m 23.485736,12.384403 -0.38368,35.722531"
+       bendpath3="m 2.158609,35.905144 20.943447,12.20179"
+       bendpath4="M 2.4986602,9.3045505 2.158609,35.905144"
+       bendpath1-nodetypes="cc"
+       bendpath3-nodetypes="cc"
+       bendpath2-nodetypes="cc"
+       bendpath4-nodetypes="cc" />
+  </defs>
+  <metadata
+     id="metadata6081">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(0,-1003.3622)"
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <g
+       id="g4515"
+       transform="matrix(0.78904989,0,0,0.78904989,-48.590472,216.04751)">
+      <path
+         id="path48"
+         d="m 101.09601,1007.4549 1.54819,7.2645 -4.763641,0 -0.83364,-4.2873 c -0.11909,-0.4763 -0.47637,-0.8336 -0.952729,-0.8336 l -6.07364,0 c -0.476364,0 -0.833637,0.3573 -0.952728,0.8336 l -1.31,6.4309 22.746378,0 c 1.07182,0 1.90546,0.7146 2.14364,1.7864 l 5.95455,28.5818 c 0.23818,1.0719 0,2.1437 -0.71455,2.9773 -0.71454,0.8337 -1.66727,1.31 -2.73909,1.31 l -44.301847,0 c -1.071818,0 -2.024546,-0.4763 -2.739092,-1.31 -0.714546,-0.8336 -0.952728,-1.9054 -0.714546,-2.9773 l 5.954549,-28.5818 c 0.238182,-1.0718 1.071819,-1.7864 2.143637,-1.7864 l 4.644548,0 -5.597275,26.7955 c -0.119091,0.3573 0,0.7146 0.238182,1.0718 0.238182,0.3573 0.595454,0.4764 0.952727,0.4764 l 34.774567,0 c 0.35727,0 0.71455,-0.1191 0.95273,-0.4764 0.23818,-0.3572 0.35727,-0.5954 0.23818,-1.0718 l -4.28727,-19.7691 c -0.1191,-0.5954 -0.59546,-0.9527 -1.19091,-0.9527 l -24.77093,0 3.215456,-15.4818 c 0.238182,-1.191 1.19091,-1.9055 2.38182,-1.9055 l 11.670913,0 c 1.19091,0 2.143641,0.8336 2.381821,1.9055 z"
+         style="clip-rule:evenodd;fill:#666666;fill-rule:evenodd"
+         inkscape:connector-curvature="0" />
+    </g>
+  </g>
+</svg>

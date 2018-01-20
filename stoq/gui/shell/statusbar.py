@@ -106,12 +106,9 @@ class StatusPopover(Gtk.Popover):
         viewport.set_shadow_type(Gtk.ShadowType.NONE)
         sw.add(viewport)
 
-        alignment = Gtk.Alignment.new(0.0, 0.0, 1.0, 1.0)
-        alignment.set_padding(6, 6, 6, 6)
-        viewport.add(alignment)
-
         vbox = Gtk.VBox(spacing=12)
-        alignment.add(vbox)
+        vbox.props.margin = 6
+        viewport.add(vbox)
 
         resources = self._manager.resources.items()
         for i, (name, resource) in enumerate(resources):
@@ -341,20 +338,14 @@ class ShellStatusbar(Gtk.Statusbar):
         return area
 
     def _create_default_widgets(self):
-        alignment = Gtk.Alignment.new(0.0, 0.0, 1.0, 1.0)
-        # FIXME: These looks good on Mac, might need to tweak
-        # on Linux to look good
-        alignment.set_padding(2, 3, 5, 0)
-        self.message_area.pack_start(alignment, True, True, 0)
-        alignment.show()
-
         widget_area = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        alignment.add(widget_area)
+        self.message_area.pack_start(widget_area, True, True, 0)
         widget_area.show()
 
         self._text_label = Gtk.Label()
         self._text_label.set_hexpand(True)
-        self._text_label.set_alignment(0.0, 0.5)
+        self._text_label.set_xalign(0.0)
+        self._text_label.set_yalign(0.5)
         widget_area.pack_start(self._text_label, True, True, 0)
         self._text_label.show()
 
