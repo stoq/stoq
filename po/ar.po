@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-14 02:10-0200\n"
-"PO-Revision-Date: 2018-01-13 04:10+0000\n"
+"POT-Creation-Date: 2018-01-20 02:10-0200\n"
+"PO-Revision-Date: 2018-01-20 04:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/async/stoq/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -4820,7 +4820,7 @@ msgstr ""
 
 #: ../data/template/transfer/transfer.html:23
 #: ../data/template/transfer/transfer.html:51
-#: ../stoq/gui/shell/statusbar.py:277 ../stoq/lib/status.py:57
+#: ../stoq/gui/shell/statusbar.py:276 ../stoq/lib/status.py:57
 #: ../stoqlib/lib/formatters.py:173
 msgid "N/A"
 msgstr ""
@@ -9498,24 +9498,20 @@ msgstr ""
 msgid "Some services are in an error state"
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:66
-msgid "System Status"
-msgstr ""
-
-#: ../stoq/gui/shell/statusbar.py:160
+#: ../stoq/gui/shell/statusbar.py:157
 msgid "Status not available..."
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:173
+#: ../stoq/gui/shell/statusbar.py:170
 msgid "Only admins can execute this action"
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:199
+#: ../stoq/gui/shell/statusbar.py:196
 #, python-format
 msgid "Executing \"%s\". This might take a while..."
 msgstr ""
 
-#: ../stoq/gui/shell/statusbar.py:225
+#: ../stoq/gui/shell/statusbar.py:222
 #, python-format
 msgid "An error happened when executing \"%s\""
 msgstr ""
