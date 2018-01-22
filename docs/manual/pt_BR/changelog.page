@@ -27,15 +27,14 @@
   </note>
 
   <section id="last-version">
-    <title>Novidades da versão 2.1</title>
+    <title>Novidades da versão 2.2</title>
     <p>
-      Data do lançamento: 2017-09-25
+      Data do lançamento: 2018-01-22
     </p>
 
     <section>
       <title>Principais funcionalidades</title>
       <list>
-        <item><p>Entregas para saídas manuais</p></item>
         <item><p>Devolução de compras para fornecedor</p></item>
         <item><p>Suporte à novas informações para entregas</p></item>
         <item><p>Melhorias no processo de vendas utilizando token/comanda</p></item>
