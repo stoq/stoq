@@ -41,11 +41,11 @@ from stoqlib.gui.stockicons import (STOQ_STATUS_NA,
 class TestStatusPopover(BaseGUITest):
 
     def test_create(self):
-        popover = StatusPopover(self.store)
+        popover = StatusPopover()
         self.check_dialog(popover, 'dialog-status')
 
     def test_handle_action(self):
-        dialog = StatusPopover(self.store)
+        dialog = StatusPopover()
         manager = ResourceStatusManager.get_instance()
 
         action = ResourceStatusAction(object(), 'foo', 'bar', lambda: None,
@@ -58,7 +58,7 @@ class TestStatusPopover(BaseGUITest):
     def test_handle_action_threaded(self, ProgressDialog):
         ProgressDialog.return_value = mock.Mock()
 
-        dialog = StatusPopover(self.store)
+        dialog = StatusPopover()
         manager = ResourceStatusManager.get_instance()
 
         action = ResourceStatusAction(Settable(label='baz'), 'foo', 'bar',
@@ -79,7 +79,7 @@ class TestStatusPopover(BaseGUITest):
 class TestStatusButton(BaseGUITest):
 
     def test_pixbuf(self):
-        btn = StatusButton(self.store)
+        btn = StatusButton()
 
         manager = ResourceStatusManager.get_instance()
         for status, stock in [

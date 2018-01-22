@@ -62,9 +62,9 @@ _status_mapper = {
 
 
 class StatusPopover(Gtk.Popover):
-    size = (600, 350)
+    size = (650, 400)
 
-    def __init__(self, store):
+    def __init__(self):
         super(StatusPopover, self).__init__()
         self.set_size_request(*self.size)
 
@@ -74,7 +74,7 @@ class StatusPopover(Gtk.Popover):
         self._manager.connect('action-finished',
                               self._on_manager__action_finished)
 
-        user = api.get_current_user(store)
+        user = api.get_current_user(api.get_default_store())
         self._is_admin = user.profile.check_app_permission(u'admin')
 
         self._widgets = {}
@@ -236,7 +236,7 @@ class StatusButton(Gtk.MenuButton):
     _BLINK_RATE = 500
     _MAX_LENGTH = 28
 
-    def __init__(self, store):
+    def __init__(self):
         super(StatusButton, self).__init__()
 
         self._blink_id = None
@@ -251,8 +251,7 @@ class StatusButton(Gtk.MenuButton):
         self.set_relief(Gtk.ReliefStyle.NONE)
         self._update_status(None)
         self._manager.refresh_and_notify(force=True)
-
-        self.set_popover(StatusPopover(store))
+        self.set_popover(StatusPopover())
 
     #
     #  Private
@@ -309,6 +308,7 @@ class StatusButton(Gtk.MenuButton):
 
     def _on_manager__status_changed(self, manager, status):
         self._update_status(status)
+        self.set_popover(StatusPopover())
 
 
 GObject.type_register(StatusButton)
@@ -317,10 +317,9 @@ GObject.type_register(StatusButton)
 class ShellStatusbar(Gtk.Statusbar):
     __gtype_name__ = 'ShellStatusbar'
 
-    def __init__(self, window, store):
+    def __init__(self, window):
         super(ShellStatusbar, self).__init__()
 
-        self.store = store
         self._disable_border()
         self.message_area = self._create_message_area()
         self._create_default_widgets()
@@ -379,7 +378,7 @@ class ShellStatusbar(Gtk.Statusbar):
         widget_area.pack_start(vsep, False, False, 0)
         vsep.show()
 
-        self._status_button = StatusButton(self.store)
+        self._status_button = StatusButton()
         self.message_area.pack_end(self._status_button, False, False, 0)
         self._status_button.show()
 
