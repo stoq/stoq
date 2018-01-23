@@ -266,7 +266,14 @@ class TestProducCreateWizard(GUITest):
                                      description=u'option for attr 2',
                                      order=2)
 
+        cfop = self.create_cfop_data()
+        pis_template = self.create_product_pis_template()
+        cofins_template = self.create_product_cofins_template()
         grid_product = self.create_product(storable=True, is_grid=True)
+        grid_product.sellable.default_sale_cfop = cfop
+        grid_product.ncm = '12345678'
+        grid_product.pis_template = pis_template
+        grid_product.cofins_template = cofins_template
         self.create_product_attribute(product=grid_product, attribute=grid_attribute)
 
         # We need the mocked yesno to return different values each time it
@@ -288,5 +295,15 @@ class TestProducCreateWizard(GUITest):
             ProductCreateWizard.run_wizard(None)
         # This is the second call to yesno()
         args, kwargs = run_dialog.call_args_list[1]
+        template = kwargs['template']
         self.assertEqual(kwargs['product_type'], Product.TYPE_GRID)
-        self.assertEqual(kwargs['template'], grid_product)
+        self.assertEqual(template, grid_product)
+        self.assertEqual(template.ncm, grid_product.ncm)
+        self.assertEqual(template.pis_template, grid_product.pis_template)
+        self.assertEqual(template.cofins_template, grid_product.cofins_template)
+        self.assertEqual(template.sellable.default_sale_cfop,
+                         grid_product.sellable.default_sale_cfop)
+        self.assertEqual(template.ncm, '12345678')
+        self.assertEqual(template.cofins_template, cofins_template)
+        self.assertEqual(template.pis_template, pis_template)
+        self.assertEqual(template.sellable.default_sale_cfop, cfop)

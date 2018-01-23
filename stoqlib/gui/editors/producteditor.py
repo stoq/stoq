@@ -509,6 +509,7 @@ class ProductEditor(SellableEditor):
             sellable.category = self._template.sellable.category
             sellable.base_price = self._template.sellable.base_price
             sellable.cost = self._template.sellable.cost
+            sellable.default_sale_cfop = self._template.sellable.default_sale_cfop
 
             model.manufacturer = self._template.manufacturer
             model.brand = self._template.brand
@@ -516,6 +517,8 @@ class ProductEditor(SellableEditor):
             model.ncm = self._template.ncm
             model.icms_template = self._template.icms_template
             model.ipi_template = self._template.ipi_template
+            model.pis_template = self._template.pis_template
+            model.cofins_template = self._template.cofins_template
 
             for product_attr in self._template.attributes:
                 ProductAttribute(store=self.store,
