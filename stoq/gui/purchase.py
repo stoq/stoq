@@ -70,8 +70,6 @@ from stoq.gui.shell.shellapp import ShellApp
 
 class PurchaseApp(ShellApp):
 
-    # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
-
     app_title = _('Purchase')
     gladefile = "purchase"
     search_spec = PurchaseOrderView
@@ -199,7 +197,7 @@ class PurchaseApp(ShellApp):
                                       format='<b>%s</b>',
                                       parent=self.get_statusbar_message_area())
         self.results.set_selection_mode(Gtk.SelectionMode.MULTIPLE)
-        self.Confirm.set_sensitive(False)
+        self.set_sensitive([self.Confirm], False)
 
         self._inventory_widgets = [self.NewConsignment,
                                    self.CloseInConsignment]
@@ -299,8 +297,7 @@ class PurchaseApp(ShellApp):
         self._update_view()
 
     def _update_list_aware_widgets(self, has_items):
-        for widget in (self.Edit, self.Details):
-            widget.set_sensitive(has_items)
+        self.set_sensitive([self.Edit, self.Details], has_items)
 
     def _update_view(self):
         self._update_list_aware_widgets(len(self.results))
@@ -324,11 +321,11 @@ class PurchaseApp(ShellApp):
             can_finish = (selection[0].status == PurchaseOrder.ORDER_CONFIRMED and
                           selection[0].received_quantity > 0)
 
-        self.Cancel.set_sensitive(can_cancel)
-        self.Edit.set_sensitive(can_edit)
-        self.Confirm.set_sensitive(can_send_supplier)
-        self.Details.set_sensitive(one_selected)
-        self.Finish.set_sensitive(can_finish)
+        self.set_sensitive([self.Cancel], can_cancel)
+        self.set_sensitive([self.Edit], can_edit)
+        self.set_sensitive([self.Confirm], can_send_supplier)
+        self.set_sensitive([self.Details], one_selected)
+        self.set_sensitive([self.Finish], can_finish)
 
     def _new_order(self, order=None, edit_mode=False):
         with api.new_store() as store:

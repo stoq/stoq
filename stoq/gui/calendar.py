@@ -340,9 +340,9 @@ class CalendarApp(ShellApp):
             # application
             if not user.profile.check_app_permission(app):
                 view_action.props.active = False
-                view_action.set_sensitive(False)
+                self.set_sensitive([view_action], False)
                 if new_action:
-                    new_action.set_sensitive(False)
+                    self.set_sensitive([new_action], False)
 
             view_action.connect('notify::active', self._update_events)
         self._update_events()

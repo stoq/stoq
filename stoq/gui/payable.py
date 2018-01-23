@@ -60,8 +60,6 @@ from stoq.gui.accounts import BaseAccountWindow, FilterItem
 
 class PayableApp(BaseAccountWindow):
 
-    # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
-
     app_title = _('Accounts payable')
     gladefile = 'payable'
     search_spec = OutPaymentView
@@ -130,8 +128,8 @@ class PayableApp(BaseAccountWindow):
         self.Edit.set_short_label(_('Edit'))
         self.Details.set_short_label(_('Details'))
         self.Pay.props.is_important = True
-        self.Pay.set_sensitive(False)
-        self.PrintReceipt.set_sensitive(False)
+        self.set_sensitive([self.Pay], False)
+        self.set_sensitive([self.PrintReceipt], False)
         self.popup = self.uimanager.get_widget('/PayableSelection')
         self.window.add_new_items([self.AddPayment])
         self.window.NewToolItem.set_tooltip(self.AddPayment.get_tooltip())
@@ -235,7 +233,7 @@ class PayableApp(BaseAccountWindow):
         status = purchase and purchase.status
 
         if (status == PurchaseOrder.ORDER_CANCELLED or
-            status == PurchaseOrder.ORDER_PENDING):
+                status == PurchaseOrder.ORDER_PENDING):
             return False
 
         return True
@@ -288,8 +286,8 @@ class PayableApp(BaseAccountWindow):
         purchase_order = payable_views[0].purchase
 
         if (purchase_order and
-            api.sysparam.get_bool('BLOCK_INCOMPLETE_PURCHASE_PAYMENTS') and
-            not purchase_order.status == PurchaseOrder.ORDER_CLOSED):
+                api.sysparam.get_bool('BLOCK_INCOMPLETE_PURCHASE_PAYMENTS') and
+                not purchase_order.status == PurchaseOrder.ORDER_CLOSED):
 
             return warning(_("Can't confirm the payment if the purchase "
                              "is not completely received yet."))
@@ -375,15 +373,15 @@ class PayableApp(BaseAccountWindow):
 
     def _update_widgets(self):
         selected = self.results.get_selected_rows()
-        self.Details.set_sensitive(self._can_show_details(selected))
-        self.Comments.set_sensitive(self._can_show_comments(selected))
-        self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
-        self.CancelPayment.set_sensitive(self._can_cancel_payment(selected))
-        self.Edit.set_sensitive(self._can_edit(selected))
-        self.Pay.set_sensitive(self._can_pay(selected))
-        self.PrintReceipt.set_sensitive(self._are_paid(selected,
-                                                       respect_purchase=True))
-        self.SetNotPaid.set_sensitive(self._are_paid(
+        self.set_sensitive([self.Details], self._can_show_details(selected))
+        self.set_sensitive([self.Comments], self._can_show_comments(selected))
+        self.set_sensitive([self.ChangeDueDate], self._can_change_due_date(selected))
+        self.set_sensitive([self.CancelPayment], self._can_cancel_payment(selected))
+        self.set_sensitive([self.Edit], self._can_edit(selected))
+        self.set_sensitive([self.Pay], self._can_pay(selected))
+        self.set_sensitive([self.PrintReceipt], self._are_paid(selected,
+                                                               respect_purchase=True))
+        self.set_sensitive([self.SetNotPaid], self._are_paid(
             selected, respect_purchase=False) and
             self._can_set_not_paid(selected))
 

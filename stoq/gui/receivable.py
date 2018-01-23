@@ -264,22 +264,22 @@ class ReceivableApp(BaseAccountWindow):
     def _update_widgets(self):
         selected = self.results.get_selected_rows()
         one_item = len(selected) == 1
-        self.Receive.set_sensitive(self._can_receive(selected))
-        self.Details.set_sensitive(
-            one_item and self._can_show_details(selected))
-        self.Comments.set_sensitive(
-            one_item and self._can_show_comments(selected))
-        self.ChangeDueDate.set_sensitive(
-            one_item and self._can_change_due_date(selected))
-        self.CancelPayment.set_sensitive(
-            one_item and self._can_cancel_payment(selected))
-        self.PrintReceipt.set_sensitive(
-            one_item and self._is_paid(selected))
-        self.SetNotPaid.set_sensitive(
-            one_item and self._is_paid(selected) and
-            self._can_set_not_paid(selected))
-        self.Edit.set_sensitive(self._can_edit(selected))
-        self.PrintDocument.set_sensitive(self._can_print(selected))
+        self.set_sensitive([self.Receive], self._can_receive(selected))
+        self.set_sensitive([self.Details],
+                           one_item and self._can_show_details(selected))
+        self.set_sensitive([self.Comments],
+                           one_item and self._can_show_comments(selected))
+        self.set_sensitive([self.ChangeDueDate],
+                           one_item and self._can_change_due_date(selected))
+        self.set_sensitive([self.CancelPayment],
+                           one_item and self._can_cancel_payment(selected))
+        self.set_sensitive([self.PrintReceipt],
+                           one_item and self._is_paid(selected))
+        self.set_sensitive([self.SetNotPaid],
+                           one_item and self._is_paid(selected) and
+                           self._can_set_not_paid(selected))
+        self.set_sensitive([self.Edit], self._can_edit(selected))
+        self.set_sensitive([self.PrintDocument], self._can_print(selected))
 
     def _get_status_values(self):
         values = [(v, k) for k, v in Payment.statuses.items()]

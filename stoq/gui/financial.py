@@ -66,6 +66,7 @@ from storm.expr import And, Or
 from stoq.gui.shell.shellapp import ShellApp
 
 
+@GObject.type_register
 class FinancialSearchResults(SearchResultListView):
 
     __gtype_name__ = 'FinancialSearchResults'
@@ -77,8 +78,6 @@ class FinancialSearchResults(SearchResultListView):
             page.append_transactions(results)
         else:
             super(FinancialSearchResults, self).search_completed(results)
-
-GObject.type_register(FinancialSearchResults)
 
 
 class MonthOption(DateSearchOption):
@@ -378,7 +377,7 @@ class FinancialApp(ShellApp):
 
         user = api.get_current_user(self.store)
         if not user.profile.check_app_permission(u'admin'):
-            self.ConfigurePaymentMethods.set_sensitive(False)
+            self.set_sensitive([self.ConfigurePaymentMethods], False)
 
     def create_ui(self):
         self.trans_popup = self.uimanager.get_widget('/TransactionSelection')
@@ -427,12 +426,12 @@ class FinancialApp(ShellApp):
         self.window.ExportSpreadSheet.set_sensitive(True)
         self.window.Print.set_sensitive(not is_accounts_tab)
 
-        self.NewAccount.set_sensitive(self._can_add_account())
-        self.DeleteAccount.set_sensitive(self._can_delete_account())
-        self.NewTransaction.set_sensitive(self._can_add_transaction())
-        self.DeleteTransaction.set_sensitive(self._can_delete_transaction())
-        self.Edit.set_sensitive(self._can_edit_account() or
-                                self._can_edit_transaction())
+        self.set_sensitive([self.NewAccount], self._can_add_account())
+        self.set_sensitive([self.DeleteAccount], self._can_delete_account())
+        self.set_sensitive([self.NewTransaction], self._can_add_transaction())
+        self.set_sensitive([self.DeleteTransaction], self._can_delete_transaction())
+        self.set_sensitive([self.Edit],
+                           self._can_edit_account() or self._can_edit_transaction())
 
     def _update_tooltips(self):
         if self._is_accounts_tab():
@@ -525,7 +524,7 @@ class FinancialApp(ShellApp):
             return False
 
         if (api.sysparam.compare_object('TILLS_ACCOUNT', page.model.account) or
-            page.model.parent_id == self._tills_account_id):
+                page.model.parent_id == self._tills_account_id):
             return False
         return True
 
@@ -709,16 +708,16 @@ class FinancialApp(ShellApp):
         methods = PaymentMethod.get_by_account(store, account)
         if methods.count() > 0:
             if not yesno(
-                _('This account is used in at least one payment method.\n'
-                  'To be able to delete it the payment methods needs to be'
-                  're-configured first'), Gtk.ResponseType.NO,
-                _("Configure payment methods"), _("Keep account")):
+                    _('This account is used in at least one payment method.\n'
+                      'To be able to delete it the payment methods needs to be'
+                      're-configured first'), Gtk.ResponseType.NO,
+                    _("Configure payment methods"), _("Keep account")):
                 store.close()
                 return
         elif not yesno(
-            _('Are you sure you want to remove account "%s" ?') % (
-                (account_view.description, )), Gtk.ResponseType.NO,
-            _("Remove account"), _("Keep account")):
+                _('Are you sure you want to remove account "%s" ?') % (
+                    (account_view.description, )), Gtk.ResponseType.NO,
+                _("Remove account"), _("Keep account")):
             store.close()
             return
 
