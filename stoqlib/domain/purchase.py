@@ -240,6 +240,10 @@ class PurchaseOrder(Domain):
     group_id = IdCol()
     group = Reference(group_id, 'PaymentGroup.id')
 
+    #: Indicates if the order is from a work order
+    work_order_id = IdCol()
+    work_order = Reference(work_order_id, 'WorkOrder.id')
+
     #
     # IContainer Implementation
     #
@@ -630,6 +634,15 @@ class PurchaseOrder(Domain):
                                        Sellable.id == Storable.id,
                                        Eq(Storable.is_batch, True))).is_empty()
 
+    def create_receiving_order(self):
+        from stoqlib.domain.receiving import ReceivingOrder
+        receiving = ReceivingOrder(self.store, branch=self.branch)
+        receiving.add_purchase(self)
+        for item in self.get_items():
+            receiving.add_purchase_item(item, quantity=item.quantity)
+
+        return receiving
+
     #
     # Classmethods
     #
@@ -640,6 +653,10 @@ class PurchaseOrder(Domain):
             raise DatabaseInconsistency(_(u'Got an unexpected status value: '
                                           u'%s') % status)
         return cls.statuses[status]
+
+    @classmethod
+    def find_by_work_order(cls, store, work_order):
+        return store.find(PurchaseOrder, work_order=work_order)
 
 
 @implementer(IDescribable)

@@ -292,6 +292,19 @@ class SaleAvoidCancelEvent(Event):
 
 
 #
+# Work Order events
+#
+
+@public(since="3.0.0")
+class WorkOrderStatusChangedEvent(Event):
+    """
+    This event is emitted when a |work_order| is has it's status changed
+
+    :param order: the |work_order| which had it's status changed
+    :param old_status: the old |work_order| status
+    """
+
+#
 # Payment related events
 #
 

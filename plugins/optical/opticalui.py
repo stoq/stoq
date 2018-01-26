@@ -32,7 +32,9 @@ from storm.expr import LeftJoin
 from stoqlib.api import api
 from stoqlib.database.runtime import get_default_store
 from stoqlib.database.viewable import Viewable
+from stoqlib.domain.events import (WorkOrderStatusChangedEvent)
 from stoqlib.domain.product import Product, ProductManufacturer
+from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.workorder import WorkOrder
 from stoqlib.gui.base.dialogs import run_dialog
@@ -56,12 +58,14 @@ from stoqlib.reporting.sale import SaleOrderReport
 from stoq.gui.services import ServicesApp
 
 from .medicssearch import OpticalMedicSearch, MedicSalesSearch
-from .opticaleditor import MedicEditor, OpticalWorkOrderEditor
+from .opticaleditor import (MedicEditor, OpticalWorkOrderEditor,
+                            OpticalSupplierEditor)
 from .opticalhistory import OpticalPatientDetails
 from .opticalreport import OpticalWorkOrderReceiptReport
 from .opticalslave import ProductOpticSlave, WorkOrderOpticalSlave
 from .opticalwizard import OpticalSaleQuoteWizard, MedicRoleWizard
-from .opticaldomain import OpticalProduct
+from .opticaldomain import (OpticalProduct,
+                            OpticalWorkOrder)
 
 
 _ = stoqlib_gettext
@@ -180,6 +184,7 @@ class OpticalUI(object):
         RunDialogEvent.connect(self._on_RunDialogEvent)
         PrintReportEvent.connect(self._on_PrintReportEvent)
         SearchDialogSetupSearchEvent.connect(self._on_SearchDialogSetupSearchEvent)
+        WorkOrderStatusChangedEvent.connect(self._on_WorkOrderStatusChangedEvent)
         ApplicationSetupSearchEvent.connect(self._on_ApplicationSetupSearchEvent)
 
         add_bindings([
@@ -357,6 +362,25 @@ class OpticalUI(object):
         if isinstance(app, ServicesApp):
             extention = ServicesSearchExtention()
             extention.attach(app)
+
+    def _on_WorkOrderStatusChangedEvent(self, order, old_status):
+        if old_status == WorkOrder.STATUS_OPENED:
+            #Do nothing at this point.
+            return
+
+        optical_wo = OpticalWorkOrder.find_by_work_order(order.store, order)
+        if optical_wo.can_create_purchase():
+            rv = run_dialog(OpticalSupplierEditor, None, order.store)
+            if not rv:
+                return False
+
+            order.supplier_order = rv.supplier_order
+            optical_wo.create_purchase(rv.supplier)
+            return
+
+        purchase = PurchaseOrder.find_by_work_order(order.store, order).one()
+        if optical_wo.can_receive_purchase(purchase):
+            optical_wo.receive_purchase(purchase, reserve=True)
 
     #
     # Callbacks

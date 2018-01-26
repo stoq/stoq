@@ -29,7 +29,8 @@ from stoqlib.domain.person import Person
 from stoqlib.gui.test.uitestutils import GUITest
 
 from ..opticaldomain import OpticalMedic
-from ..opticaleditor import MedicEditor, OpticalWorkOrderEditor
+from ..opticaleditor import (MedicEditor, OpticalWorkOrderEditor,
+                             OpticalSupplierEditor)
 from .test_optical_domain import OpticalDomainTest
 
 
@@ -76,3 +77,23 @@ class TestOpticalWorkOrderEditor(GUITest, OpticalDomainTest):
         add_entry.assert_called_once_with(
             self.store, optical_wo.work_order, what=u"Optical details",
             notes=u"Optical details updated...")
+
+
+class TestOpticalSupplierEditor(GUITest, OpticalDomainTest):
+
+    def test_show(self):
+        editor = OpticalSupplierEditor(self.store)
+        self.check_editor(editor, 'editor-supplier-create')
+
+    def test_validation(self):
+        supplier = self.create_supplier()
+        editor = OpticalSupplierEditor(self.store)
+
+        # The information of this editor are mandatory
+        self.assertFalse(editor.main_dialog.ok_button.get_sensitive())
+
+        editor.supplier_order.update('order')
+        self.assertFalse(editor.main_dialog.ok_button.get_sensitive())
+
+        editor.supplier.update(supplier)
+        self.assertTrue(editor.main_dialog.ok_button.get_sensitive())

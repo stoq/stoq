@@ -29,6 +29,7 @@ import mock
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.person import Person
+from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.workorder import WorkOrderCategory
 from stoqlib.gui.base.dialogs import run_dialog
@@ -46,6 +47,7 @@ from stoq.gui.sales import SalesApp
 from stoq.gui.services import ServicesApp
 
 from ..medicssearch import OpticalMedicSearch, MedicSalesSearch
+from ..opticaldomain import OpticalProduct
 from ..opticaleditor import MedicEditor, OpticalWorkOrderEditor
 from ..opticalhistory import OpticalPatientDetails
 from ..opticalreport import OpticalWorkOrderReceiptReport
@@ -265,3 +267,65 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         self.assertTrue(rv)
         print_report.assert_called_once_with(OpticalWorkOrderReceiptReport,
                                              [optical_wo.work_order])
+
+    def test_work_order_change_status(self):
+        from kiwi.python import Settable
+        supplier = self.create_supplier()
+        product = self.create_product()
+        opt_type = OpticalProduct.TYPE_GLASS_LENSES
+        optical_product = self.create_optical_product(optical_type=opt_type)
+        optical_product.product = product
+        sale = self.create_sale()
+        sale_item = sale.add_sellable(sellable=product.sellable)
+        wo = self.create_workorder()
+        work_item = wo.add_sellable(product.sellable)
+        work_item.sale_item = sale_item
+        wo.sale = sale
+        optical_wo = self.create_optical_work_order()
+        optical_wo.work_order = wo
+
+        app = self.create_app(ServicesApp, u'services')
+        app.search.refresh()
+
+        for wo_view in app.search.results:
+            if wo_view.work_order == wo:
+                break
+
+        self.assertIsNotNone(wo_view)
+        app.search.results.select(wo_view)
+        with mock.patch('plugins.optical.opticalui.run_dialog') as run_dialog:
+            wo.approve()
+            run_dialog.return_value = Settable(supplier=supplier,
+                                               supplier_order='1111')
+            wo.work()
+            results = PurchaseOrder.find_by_work_order(wo.store, wo)
+            self.assertEquals(len(list(results)), 1)
+
+        wo.finish()
+
+    def test_work_order_cancel_change_status(self):
+        product = self.create_product()
+        sale = self.create_sale()
+        sale.add_sellable(sellable=product.sellable)
+        wo = self.create_workorder()
+        wo.add_sellable(product.sellable)
+        wo.sale = sale
+        optical_wo = self.create_optical_work_order()
+        optical_wo.work_order = wo
+        wo.approve()
+
+        app = self.create_app(ServicesApp, u'services')
+        app.search.refresh()
+
+        for wo_view in app.search.results:
+            if wo_view.work_order == wo:
+                break
+
+        self.assertIsNotNone(wo_view)
+        app.search.results.select(wo_view)
+        with mock.patch('plugins.optical.opticalui.run_dialog') as run_dialog:
+            run_dialog.return_value = None
+            wo.work()
+            # At this point we didnt create a purchase
+            results = PurchaseOrder.find_by_work_order(wo.store, wo)
+            self.assertEquals(len(list(results)), 0)

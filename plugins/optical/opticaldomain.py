@@ -28,17 +28,21 @@ import decimal
 from storm.expr import Join, LeftJoin, Coalesce, Sum, Eq
 from storm.references import Reference
 
+from stoqlib.api import api
 from stoqlib.database.expr import StatementTimestamp
 from stoqlib.database.properties import (DecimalCol, DateTimeCol, EnumCol,
                                          UnicodeCol, IdCol, BoolCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import DomainMergeEvent
+from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import Person, Company, Branch
 from stoqlib.domain.product import Product, StorableBatch, ProductManufacturer
+from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import SaleItem, Sale
 from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.domain.workorder import WorkOrder, WorkOrderItem
+from stoqlib.lib.defaults import quantize
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 
@@ -215,6 +219,10 @@ class OpticalProduct(Domain):
     #: textual descriptions
     cl_curvature = UnicodeCol()
 
+    #
+    # Class methods
+    #
+
     @classmethod
     def get_from_product(cls, product):
         return product.store.find(cls, product=product).one()
@@ -352,6 +360,18 @@ class OpticalWorkOrder(Domain):
     #: Pupil distance (DNP in pt_BR)
     re_near_pd = DecimalCol(default=0)
 
+    #
+    # Class methods
+    #
+
+    @classmethod
+    def find_by_work_order(cls, store, work_order):
+        return store.find(cls, work_order_id=work_order.id).one()
+
+    #
+    # Properties
+    #
+
     @property
     def frame_type_str(self):
         return self.frame_types.get(self.frame_type, '')
@@ -359,6 +379,66 @@ class OpticalWorkOrder(Domain):
     @property
     def lens_type_str(self):
         return self.lens_types.get(self.lens_type, '')
+
+    #
+    # Public API
+    #
+
+    def can_create_purchase(self):
+        work_order = self.work_order
+        if not work_order.status == WorkOrder.STATUS_WORK_IN_PROGRESS:
+            return False
+
+        if not work_order.sale:
+            return False
+
+        # Improve this check later
+        return not PurchaseOrder.find_by_work_order(work_order.store, work_order).any()
+
+    def create_purchase(self, supplier):
+        store = self.work_order.store
+        purchase = PurchaseOrder(store=store,
+                                 status=PurchaseOrder.ORDER_PENDING,
+                                 supplier=supplier,
+                                 responsible=api.get_current_user(store),
+                                 branch=api.get_current_branch(store),
+                                 work_order=self.work_order,
+                                 group=PaymentGroup(store=store))
+        results = OpticalWorkOrderItemsView.find_by_order(self.work_order.store,
+                                                          self.work_order)
+        for view in results:
+            if not view.optical_product.optical_type == OpticalProduct.TYPE_GLASS_LENSES:
+                continue
+            purchase_item = purchase.add_item(view.sellable,
+                                              quantity=view.work_order_item.quantity,
+                                              cost=view.sellable.cost)
+            view.work_order_item.purchase_item = purchase_item
+
+        purchase.confirm()
+        return purchase
+
+    def can_receive_purchase(self, purchase):
+        work_order = self.work_order
+        if not work_order.status == WorkOrder.STATUS_WORK_FINISHED:
+            return False
+
+        # XXX Lets assume that there is only on purchase
+        return purchase and purchase.status == PurchaseOrder.ORDER_CONFIRMED
+
+    def receive_purchase(self, purchase_order, reserve=False):
+        receiving = purchase_order.create_receiving_order()
+        receiving.confirm()
+        if reserve:
+            self.reserve_products(purchase_order)
+
+    def reserve_products(self, purchase_order):
+        for item in self.work_order.get_items():
+            if not item.purchase_item:
+                continue
+            sale_item = item.sale_item
+            to_reserve = sale_item.quantity - sale_item.quantity_decreased
+            if to_reserve > 0:
+                sale_item.reserve(quantize(to_reserve))
 
 
 class OpticalPatientHistory(Domain):
@@ -736,3 +816,48 @@ class MedicSoldItemsView(Viewable):
 
     group_by = [id, branch_name, code, description, category, manufacturer,
                 StorableBatch.id, OpticalMedic.id, Person.id, Sale.id, Branch.id]
+
+
+class OpticalWorkOrderItemsView(Viewable):
+
+    optical_work_order = OpticalWorkOrder
+    work_order = WorkOrder
+    optical_product = OpticalProduct
+    work_order_item = WorkOrderItem
+
+    # OpticalWorkOrder
+    id = OpticalWorkOrder.id
+
+    # WorkOrder
+    work_order_id = WorkOrder.id
+
+    # WorkOrderItem
+    work_order_item_id = WorkOrderItem.id
+
+    # OpticalProduct
+    optical_product_id = OpticalProduct.id
+
+    quantity = WorkOrderItem.quantity
+
+    tables = [
+        OpticalWorkOrder,
+        LeftJoin(WorkOrder, WorkOrder.id == OpticalWorkOrder.work_order_id),
+        LeftJoin(WorkOrderItem, WorkOrderItem.order_id == WorkOrder.id),
+        Join(Sellable, Sellable.id == WorkOrderItem.sellable_id),
+        Join(OpticalProduct, OpticalProduct.product_id == Sellable.id),
+
+    ]
+
+    group_by = [id, work_order_id, work_order_item_id, optical_product_id]
+
+    @property
+    def sellable(self):
+        return self.work_order_item.sellable
+
+    @classmethod
+    def find_by_order(cls, store, work_order):
+        """Find all items on of the given work_order
+
+        :param work_order: |work_order|
+        """
+        return store.find(cls, work_order_id=work_order.id)

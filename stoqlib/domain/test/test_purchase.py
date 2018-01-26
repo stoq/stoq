@@ -564,6 +564,24 @@ class TestPurchaseOrder(DomainTest):
         order.add_item(sellable, 2)
         self.assertTrue(order.has_batch_item())
 
+    def test_create_receiving_order(self):
+        purchase = self.create_purchase_order()
+        sellable = self.create_sellable()
+        purchase.add_item(sellable)
+
+        receiving = purchase.create_receiving_order()
+        for item in receiving.get_items():
+            self.assertEquals(item.sellable, sellable)
+
+    def test_find_by_work_order(self):
+        work_order = self.create_workorder()
+        purchase = self.create_purchase_order()
+        purchase.work_order = work_order
+
+        results = PurchaseOrder.find_by_work_order(work_order.store, work_order)
+        for expected_purchase in results:
+            self.assertEquals(purchase, expected_purchase)
+
 
 class TestQuotation(DomainTest):
     def test_get_description(self):

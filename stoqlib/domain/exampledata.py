@@ -1071,17 +1071,17 @@ class ExampleCreator(object):
             branch=branch or get_current_branch(self.store),
             current_branch=current_branch)
 
-    def create_work_order_item(self, quantity=1, price=10, order=None):
+    def create_work_order_item(self, quantity=1, price=10, order=None,
+                               sellable=None):
         if not order:
             order = self.create_workorder()
         from stoqlib.domain.workorder import WorkOrderItem
-        sellable = self.create_sellable()
         return WorkOrderItem(
             store=self.store,
             order=order,
             quantity=quantity,
             price=price,
-            sellable=sellable)
+            sellable=sellable or self.create_sellable())
 
     # FIXME: Rename to create_work_order_package
     def create_workorder_package(self, identifier=u'', source_branch=None):

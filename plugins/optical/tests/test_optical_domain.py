@@ -23,11 +23,13 @@
 ##
 
 from stoqlib.database.runtime import get_current_user
+from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.test.domaintest import DomainTest
 
 from ..opticaldomain import (OpticalMedic, OpticalWorkOrder,
                              OpticalPatientHistory, OpticalPatientMeasures,
-                             OpticalPatientTest, OpticalPatientVisualAcuity)
+                             OpticalPatientTest, OpticalPatientVisualAcuity,
+                             OpticalProduct, OpticalWorkOrderItemsView)
 from ..opticalui import OpticalUI
 
 
@@ -45,14 +47,20 @@ class OpticalDomainTest(DomainTest):
                             crm_number=crm_number or u'1234',
                             person=person)
 
-    def create_optical_work_order(self):
-        work_order = self.create_workorder()
+    def create_optical_work_order(self, work_order=None):
         return OpticalWorkOrder(store=self.store,
-                                work_order=work_order)
+                                work_order=work_order or self.create_workorder())
 
     def create_optical_patient_history(self, client):
         return OpticalPatientHistory(store=self.store, client=client,
                                      responsible=get_current_user(self.store))
+
+    def create_optical_product(self, product=None, optical_type=None):
+        if not product:
+            product = self.create_product()
+        return OpticalProduct(store=self.store,
+                              product=product,
+                              optical_type=optical_type)
 
     # XXX: This is not a typo. If we include the word 'test' in the method
     # name, it will be considered a unit test
@@ -94,6 +102,13 @@ class OpticalMedicTest(OpticalDomainTest):
 
 
 class OpticalWorkOrderTest(OpticalDomainTest):
+    def test_find_by_work_order(self):
+        work_order = self.create_workorder()
+        optical_wo = self.create_optical_work_order(work_order=work_order)
+        result = OpticalWorkOrder.find_by_work_order(work_order.store,
+                                                     work_order)
+        self.assertEquals(result, optical_wo)
+
     def test_frame_type_str(self):
         opt_wo = self.create_optical_work_order()
         opt_wo.frame_type = OpticalWorkOrder.FRAME_TYPE_3_PIECES
@@ -109,3 +124,96 @@ class OpticalWorkOrderTest(OpticalDomainTest):
         assert opt_wo.lens_type_str == 'Ophtalmic'
         opt_wo.lens_type = OpticalWorkOrder.LENS_TYPE_CONTACT
         assert opt_wo.lens_type_str == 'Contact'
+
+    def test_can_create_purchase(self):
+        sale = self.create_sale()
+        wo = self.create_workorder()
+        optical_wo = self.create_optical_work_order(work_order=wo)
+
+        # Status
+        self.assertFalse(optical_wo.can_create_purchase())
+
+        wo.approve()
+        wo.work()
+        # its not coming from a sale
+        self.assertFalse(optical_wo.can_create_purchase())
+
+        wo.sale = sale
+        self.assertTrue(optical_wo.can_create_purchase())
+
+    def test_create_purchase(self):
+        supplier = self.create_supplier()
+        optical_prod = self.create_optical_product(optical_type=OpticalProduct.TYPE_GLASS_LENSES)
+        optical_prod2 = self.create_optical_product(optical_type=OpticalProduct.TYPE_GLASS_FRAME)
+        optical_wo = self.create_optical_work_order()
+        optical_wo.work_order.add_sellable(optical_prod.product.sellable)
+        optical_wo.work_order.add_sellable(optical_prod2.product.sellable)
+
+        purchase = optical_wo.create_purchase(supplier)
+        for item in purchase.get_items():
+            # This item should not be in the purchase
+            self.assertNotEqual(item.sellable, optical_prod2.product.sellable)
+
+    def test_can_receive_purchase(self):
+        optical_wo = self.create_optical_work_order()
+        wo = optical_wo.work_order
+        purchase = self.create_purchase_order()
+        purchase.status = PurchaseOrder.ORDER_PENDING
+
+        # Wrong WorkOrder status
+        self.assertFalse(optical_wo.can_receive_purchase(purchase))
+
+        wo.approve()
+        wo.work()
+        wo.finish()
+        # PurchaseOrder with wrong status
+        self.assertFalse(optical_wo.can_receive_purchase(purchase))
+
+        purchase.confirm()
+        self.assertTrue(optical_wo.can_receive_purchase(purchase))
+
+    def test_receive_purchase(self):
+        optical_wo = self.create_optical_work_order()
+        wo = optical_wo.work_order
+        purchase = self.create_purchase_order()
+        purchase.status = PurchaseOrder.ORDER_PENDING
+        wo.approve()
+        wo.work()
+        wo.finish()
+        purchase.confirm()
+        optical_wo.receive_purchase(purchase)
+
+        self.assertTrue(purchase.status, PurchaseOrder.ORDER_CLOSED)
+
+    def test_reserve_products(self):
+        supplier = self.create_supplier()
+        optical_prod = self.create_optical_product(optical_type=OpticalProduct.TYPE_GLASS_LENSES)
+        optical_prod2 = self.create_optical_product(optical_type=OpticalProduct.TYPE_GLASS_FRAME)
+        sale = self.create_sale()
+        sale_item1 = sale.add_sellable(optical_prod.product.sellable)
+        sale_item2 = sale.add_sellable(optical_prod2.product.sellable)
+        optical_wo = self.create_optical_work_order()
+        wo_item1 = optical_wo.work_order.add_sellable(optical_prod.product.sellable)
+        wo_item2 = optical_wo.work_order.add_sellable(optical_prod2.product.sellable)
+        wo_item1.sale_item = sale_item1
+        wo_item2.sale_item = sale_item2
+
+        purchase = optical_wo.create_purchase(supplier)
+        optical_wo.reserve_products(purchase)
+
+
+class TestOpticalWorkOrderItemsView(OpticalDomainTest):
+    def test_find_by_order(self):
+        wo = self.create_workorder()
+        optical_wo = self.create_optical_work_order(work_order=wo)
+        product = self.create_product()
+        optical_product = self.create_optical_product(product=product)
+        wo.add_sellable(product.sellable)
+
+        views = OpticalWorkOrderItemsView.find_by_order(wo.store, wo)
+        self.assertEquals(len(list(views)), 1)
+        # We are adding only one product, so its safe to do this
+        view = views[0]
+        self.assertEquals(view.optical_product, optical_product)
+        self.assertEquals(view.sellable, product.sellable)
+        self.assertEquals(view.optical_work_order, optical_wo)

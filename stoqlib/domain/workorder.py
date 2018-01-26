@@ -46,7 +46,8 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (SaleStatusChangedEvent,
                                    SaleItemBeforeDecreaseStockEvent,
                                    SaleItemBeforeIncreaseStockEvent,
-                                   SaleItemAfterSetBatchesEvent)
+                                   SaleItemAfterSetBatchesEvent,
+                                   WorkOrderStatusChangedEvent)
 from stoqlib.domain.interfaces import IDescribable, IContainer
 from stoqlib.domain.person import (Branch, Client, Person, SalesPerson,
                                    Company, LoginUser, Employee)
@@ -381,6 +382,9 @@ class WorkOrderItem(Domain):
     #: |workorder| this item belongs
     order = Reference(order_id, 'WorkOrder.id')
 
+    purchase_item_id = IdCol()
+    purchase_item = Reference(purchase_item_id, 'PurchaseItem.id')
+
     sale_item_id = IdCol()
     #: the corresponding |saleitem| for this item
     sale_item = Reference(sale_item_id, 'SaleItem.id')
@@ -645,8 +649,17 @@ class WorkOrder(Domain):
     #: date this work was approved (set by :obj:`.approve`)
     approve_date = DateTimeCol(default=None)
 
+    #: date this work was set to waiting
+    wait_date = DateTimeCol(default=None)
+
+    #: date this work was set to in progress
+    in_progress_date = DateTimeCol(default=None)
+
     #: date this work was finished (set by :obj:`.finish`)
     finish_date = DateTimeCol(default=None)
+
+    #: date this work was set to delivered
+    deliver_date = DateTimeCol(default=None)
 
     #: if the order was rejected by the other |branch|, e.g. when one
     #: branch sends the order in a |workorderpackage| to another branch
@@ -1027,6 +1040,7 @@ class WorkOrder(Domain):
         WorkOrderHistory.add_entry(
             self.store, self, what=_(u"Approved"),
             old_value=_(u"No"), new_value=_(u"Yes"))
+        self.wait_date = localnow()
         self._change_status(self.STATUS_WORK_WAITING)
 
     def work(self):
@@ -1041,6 +1055,7 @@ class WorkOrder(Domain):
         again when the work can continue.
         """
         assert self.can_work()
+        self.in_progress_date = localnow()
         self._change_status(self.STATUS_WORK_IN_PROGRESS)
 
     def pause(self, reason):
@@ -1096,6 +1111,7 @@ class WorkOrder(Domain):
         Nothing more needs to be done.
         """
         assert self.can_close()
+        self.deliver_date = localnow()
         self._change_status(self.STATUS_DELIVERED)
 
     def change_status(self, new_status, reason=None):
@@ -1178,8 +1194,13 @@ class WorkOrder(Domain):
     #
 
     def _change_status(self, new_status, notes=None):
+        self.store.savepoint('before_change_status')
         old_status = self.status
         self.status = new_status
+        if WorkOrderStatusChangedEvent.emit(self, old_status) is False:
+            self.store.rollback_to_savepoint('before_change_status')
+            return
+
         WorkOrderHistory.add_entry(self.store, self, what=_(u"Status"),
                                    old_value=self.statuses[old_status],
                                    new_value=self.statuses[new_status],
