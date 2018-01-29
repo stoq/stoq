@@ -227,6 +227,13 @@ class OpticalProduct(Domain):
     def get_from_product(cls, product):
         return product.store.find(cls, product=product).one()
 
+    #
+    # Public API
+    #
+
+    def is_glass_lens(self):
+        return self.optical_type == self.TYPE_GLASS_LENSES
+
 
 class OpticalWorkOrder(Domain):
     """This holds the necessary information to execute an work order for optical
@@ -386,16 +393,25 @@ class OpticalWorkOrder(Domain):
 
     def can_create_purchase(self):
         work_order = self.work_order
-        if not work_order.status == WorkOrder.STATUS_WORK_IN_PROGRESS:
+        if work_order.status != WorkOrder.STATUS_WORK_IN_PROGRESS:
             return False
 
         if not work_order.sale:
             return False
 
-        # Improve this check later
-        return not PurchaseOrder.find_by_work_order(work_order.store, work_order).any()
+        results = OpticalWorkOrderItemsView.find_by_order(self.work_order.store,
+                                                          self.work_order)
+        # We may want to improve this check later
+        if PurchaseOrder.find_by_work_order(work_order.store, work_order).any():
+            return False
+
+        return any(item.optical_product.is_glass_lens() for item in results)
 
     def create_purchase(self, supplier):
+        """Create a purchase
+
+        :param supplier: the |supplier| of that purchase
+        """
         store = self.work_order.store
         purchase = PurchaseOrder(store=store,
                                  status=PurchaseOrder.ORDER_PENDING,
@@ -407,7 +423,7 @@ class OpticalWorkOrder(Domain):
         results = OpticalWorkOrderItemsView.find_by_order(self.work_order.store,
                                                           self.work_order)
         for view in results:
-            if not view.optical_product.optical_type == OpticalProduct.TYPE_GLASS_LENSES:
+            if not view.optical_product.is_glass_lens():
                 continue
             purchase_item = purchase.add_item(view.sellable,
                                               quantity=view.work_order_item.quantity,

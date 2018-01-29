@@ -305,10 +305,14 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
 
     def test_work_order_cancel_change_status(self):
         product = self.create_product()
+        opt_type = OpticalProduct.TYPE_GLASS_LENSES
+        optical_product = self.create_optical_product(optical_type=opt_type)
+        optical_product.product = product
         sale = self.create_sale()
-        sale.add_sellable(sellable=product.sellable)
+        sale_item = sale.add_sellable(sellable=product.sellable)
         wo = self.create_workorder()
-        wo.add_sellable(product.sellable)
+        work_item = wo.add_sellable(product.sellable)
+        work_item.sale_item = sale_item
         wo.sale = sale
         optical_wo = self.create_optical_work_order()
         optical_wo.work_order = wo

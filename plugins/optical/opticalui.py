@@ -32,7 +32,7 @@ from storm.expr import LeftJoin
 from stoqlib.api import api
 from stoqlib.database.runtime import get_default_store
 from stoqlib.database.viewable import Viewable
-from stoqlib.domain.events import (WorkOrderStatusChangedEvent)
+from stoqlib.domain.events import WorkOrderStatusChangedEvent
 from stoqlib.domain.product import Product, ProductManufacturer
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import Sellable

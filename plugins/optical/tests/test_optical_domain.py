@@ -25,6 +25,7 @@
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.domain.workorder import WorkOrder
 
 from ..opticaldomain import (OpticalMedic, OpticalWorkOrder,
                              OpticalPatientHistory, OpticalPatientMeasures,
@@ -126,11 +127,12 @@ class OpticalWorkOrderTest(OpticalDomainTest):
         assert opt_wo.lens_type_str == 'Contact'
 
     def test_can_create_purchase(self):
+        supplier = self.create_supplier()
         sale = self.create_sale()
         wo = self.create_workorder()
         optical_wo = self.create_optical_work_order(work_order=wo)
 
-        # Status
+        # wrong Status
         self.assertFalse(optical_wo.can_create_purchase())
 
         wo.approve()
@@ -139,15 +141,27 @@ class OpticalWorkOrderTest(OpticalDomainTest):
         self.assertFalse(optical_wo.can_create_purchase())
 
         wo.sale = sale
+        optical_prod = self.create_optical_product(optical_type=OpticalProduct.TYPE_GLASS_LENSES)
+        optical_wo.work_order.add_sellable(optical_prod.product.sellable)
+        # There is 1 item to be purchased
         self.assertTrue(optical_wo.can_create_purchase())
 
+        # There is a purchase
+        purchase = self.create_purchase_order(supplier=supplier)
+        purchase.work_order = wo
+        self.assertFalse(optical_wo.can_create_purchase())
+
     def test_create_purchase(self):
+        sale = self.create_sale()
         supplier = self.create_supplier()
         optical_prod = self.create_optical_product(optical_type=OpticalProduct.TYPE_GLASS_LENSES)
         optical_prod2 = self.create_optical_product(optical_type=OpticalProduct.TYPE_GLASS_FRAME)
         optical_wo = self.create_optical_work_order()
+        wo = optical_wo.work_order
+        wo.sale = sale
         optical_wo.work_order.add_sellable(optical_prod.product.sellable)
         optical_wo.work_order.add_sellable(optical_prod2.product.sellable)
+        wo.status = WorkOrder.STATUS_WORK_IN_PROGRESS
 
         purchase = optical_wo.create_purchase(supplier)
         for item in purchase.get_items():
@@ -193,10 +207,13 @@ class OpticalWorkOrderTest(OpticalDomainTest):
         sale_item1 = sale.add_sellable(optical_prod.product.sellable)
         sale_item2 = sale.add_sellable(optical_prod2.product.sellable)
         optical_wo = self.create_optical_work_order()
+        wo = optical_wo.work_order
+        wo.sale = sale
         wo_item1 = optical_wo.work_order.add_sellable(optical_prod.product.sellable)
         wo_item2 = optical_wo.work_order.add_sellable(optical_prod2.product.sellable)
         wo_item1.sale_item = sale_item1
         wo_item2.sale_item = sale_item2
+        wo.status = WorkOrder.STATUS_WORK_IN_PROGRESS
 
         purchase = optical_wo.create_purchase(supplier)
         optical_wo.reserve_products(purchase)
