@@ -747,6 +747,24 @@ class TestWorkOrder(DomainTest):
             # Checking that we are not overwriting the value
             self.assertEqual(workorder.execution_branch, branch)
 
+    @mock.patch('stoqlib.domain.workorder.localnow')
+    def test_inform_client(self, localnow):
+        localnow.return_value = localdate(2018, 1, 1)
+        wo = self.create_workorder()
+
+        wo.approve()
+        with self.assertRaises(AssertionError):
+            wo.inform_client()
+
+        wo.work()
+        with self.assertRaises(AssertionError):
+            wo.inform_client()
+
+        wo.finish()
+        wo.inform_client()
+
+        self.assertEqual(wo.client_informed_date, localnow.return_value)
+
     def test_reopen(self):
         workorder = self.create_workorder()
         workorder.approve()

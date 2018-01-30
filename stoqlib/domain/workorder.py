@@ -658,6 +658,9 @@ class WorkOrder(Domain):
     #: date this work was finished (set by :obj:`.finish`)
     finish_date = DateTimeCol(default=None)
 
+    #: the date the client is informed
+    client_informed_date = DateTimeCol(default=None)
+
     #: date this work was set to delivered
     deliver_date = DateTimeCol(default=None)
 
@@ -1089,6 +1092,10 @@ class WorkOrder(Domain):
             branch = get_current_branch(self.store)
             self.execution_branch = branch
         self._change_status(self.STATUS_WORK_FINISHED)
+
+    def inform_client(self):
+        assert self.is_finished()
+        self.client_informed_date = localnow()
 
     def reopen(self, reason):
         """Reopens the work order

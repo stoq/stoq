@@ -106,6 +106,8 @@ class WorkOrderResultKanbanView(KanbanView):
 
     def _change_status(self, work_order, new_status):
         with api.new_store() as store:
+            work_order = store.fetch(work_order)
+            work_order.client_informed_date = None
             if work_order.status == new_status:
                 return True
 
@@ -114,7 +116,6 @@ class WorkOrderResultKanbanView(KanbanView):
                 store.retval = False
                 return
 
-            work_order = store.fetch(work_order)
             try:
                 work_order.change_status(new_status, reason)
             except InvalidStatus as e:
@@ -126,6 +127,19 @@ class WorkOrderResultKanbanView(KanbanView):
                 store.retval = False
 
         return store.retval
+
+    def _set_client_informed(self, view, new_status):
+        # Drag and drop on the same Column
+        if view.work_order.client_informed_date:
+            return
+
+        with api.new_store() as store:
+            work_order = store.fetch(view.work_order)
+            # Make the work_order go through all the status
+            if not work_order.is_finished():
+                work_order.change_status(WorkOrder.STATUS_WORK_FINISHED)
+
+            work_order.inform_client()
 
     # ISearchResultView
 
@@ -142,6 +156,10 @@ class WorkOrderResultKanbanView(KanbanView):
             name = WorkOrder.statuses[status]
             column = KanbanViewColumn(title=name, value=status)
             self.add_column(column)
+
+        # Adding a new column which is not one of |work_order| status
+        self.add_column(KanbanViewColumn(title=_('Client informed'),
+                                         value='client_informed_date'))
         self.enable_editing()
 
     def enable_lazy_search(self):
@@ -154,6 +172,11 @@ class WorkOrderResultKanbanView(KanbanView):
             # Skip cancel/delivered etc
             if status_name is None:
                 continue
+
+            # Since this column isnt one of the |work_order| status
+            if work_order.client_informed_date:
+                status_name = _('Client informed')
+
             column = self.get_column_by_title(status_name)
             if column is None:
                 continue
@@ -179,10 +202,18 @@ class WorkOrderResultKanbanView(KanbanView):
     def render_item(self, column, renderer, work_order_view):
         renderer.props.margin_color = work_order_view.category_color
 
-    # Callbacks
+    #
+    # Kiwi Callbacks
+    #
 
     def _on__item_dragged(self, kanban, column, work_order_view):
         new_status = column.value
+        if new_status == 'client_informed_date':
+            self._set_client_informed(work_order_view, new_status)
+            return True
+
+        # Moving through the |work_order|.status will remove the
+        # client_informed_date information
         return self._change_status(work_order_view.work_order,
                                    new_status)
 
