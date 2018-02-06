@@ -30,7 +30,6 @@ from kiwi.ui.widgets.label import ProxyLabel
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.settings import get_settings
 
-import stoq
 from stoq.main import main
 from stoq.gui.shell.bootstrap import ShellBootstrap
 
@@ -111,7 +110,7 @@ class TestMain(unittest.TestCase):
         boot_shell().main.assert_called_once_with('payable', 'AddPayment')
         boot_shell.reset_mock()
 
-        with self.assertRaisesRegex(SystemExit, stoq.version):
+        with self.assertRaises(SystemExit):
             main(['stoq', '--version'])
 
         with self.assertRaisesRegex(

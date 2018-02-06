@@ -74,7 +74,8 @@ def get_shell(args):
 
     if options.version:
         import stoq
-        raise SystemExit(stoq.version)
+        print(stoq.version)
+        raise SystemExit()
 
     from stoq.gui.shell.bootstrap import boot_shell
     shell = boot_shell(options)
