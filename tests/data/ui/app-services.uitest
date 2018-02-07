@@ -39,7 +39,6 @@ GtkWindow(toplevel): title='[Moda Stoq] - Services', hidden
           GtkImageMenuItem(): 'Edit...', insensitive
           GtkImageMenuItem(): 'Finish...', insensitive
           GtkImageMenuItem(): 'Cancel...', insensitive
-          GtkImageMenuItem(): 'Deliver...', hidden, insensitive
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Approve...', hidden, insensitive
           GtkImageMenuItem(): 'Pause the work...', hidden, insensitive
@@ -184,7 +183,6 @@ GtkMenu(popup): hidden
   GtkImageMenuItem(): 'Edit...', insensitive
   GtkImageMenuItem(): 'Finish...', insensitive
   GtkImageMenuItem(): 'Cancel...', insensitive
-  GtkImageMenuItem(): 'Deliver...', hidden, insensitive
   GtkSeparatorMenuItem():
   GtkImageMenuItem(): 'Approve...', hidden, insensitive
   GtkImageMenuItem(): 'Pause the work...', hidden, insensitive

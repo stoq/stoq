@@ -55,7 +55,6 @@
       <menuitem action="Edit"/>
       <menuitem action="Finish"/>
       <menuitem action="Cancel"/>
-      <menuitem action="DeliverOrder"/>
       <separator/>
       <menuitem action="Approve"/>
       <menuitem action="Pause"/>
@@ -76,7 +75,6 @@
     <menuitem action="Edit"/>
     <menuitem action="Finish"/>
     <menuitem action="Cancel"/>
-    <menuitem action="DeliverOrder"/>
     <separator/>
     <menuitem action="Approve"/>
     <menuitem action="Pause"/>

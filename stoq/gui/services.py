@@ -294,7 +294,6 @@ class ServicesApp(ShellApp):
             ("Cancel", Gtk.STOCK_CANCEL, _(u"Cancel..."),
              group.get('order_cancel'),
              _(u"Cancel the selected order")),
-            ("DeliverOrder", None, _(u"Deliver...")),
             ("Details", Gtk.STOCK_INFO, _(u"Details..."),
              group.get('order_details'),
              _(u"Show details of the selected order")),
@@ -586,10 +585,12 @@ class ServicesApp(ShellApp):
         self.set_sensitive([self.PrintQuote], has_quote)
 
         self.Finish.set_short_label(_(u"Finish"))
+        self.Finish.set_label(_(u"Finish..."))
         # If the selected work order is already finished, we change the finish
         # button's label.
         if has_selected and wo.status == WorkOrder.STATUS_WORK_FINISHED:
             self.Finish.set_short_label(_(u"Deliver"))
+            self.Finish.set_label(_(u"Deliver..."))
 
         for widget, value in [
                 (self.Approve, has_selected and wo.can_approve()),
@@ -597,13 +598,7 @@ class ServicesApp(ShellApp):
                 (self.UndoRejection, has_selected and wo.can_undo_rejection()),
                 (self.Pause, has_selected and wo.can_pause()),
                 (self.Work, has_selected and wo.can_work()),
-                (self.Reopen, has_selected and wo.can_reopen()),
-                # DeliverOrder is grouped here since it's a special case
-                # Only finished orders without items and without sale can be
-                # delivered here, so avoid showing the option if it's not
-                #sensitive to avoid confusions
-                (self.DeliverOrder, (has_selected and wo.can_close() and
-                                     not wo.order_items.count() and not wo.sale))]:
+                (self.Reopen, has_selected and wo.can_reopen())]:
             self.set_sensitive([widget], value)
             # Some of those options are mutually exclusive (except Approve,
             # but it can only be called once) so avoid confusions and
@@ -903,9 +898,6 @@ class ServicesApp(ShellApp):
 
     def on_Reopen__activate(self, action):
         self._reopen()
-
-    def on_DeliverOrder__activate(self, action):
-        self._close_order()
 
     def on_PrintQuote__activate(self, action):
         workorderview = self.search.get_selected_item()
