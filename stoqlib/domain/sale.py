@@ -224,9 +224,13 @@ class SaleItem(Domain):
 
     @property
     def returned_quantity(self):
-        # FIXME: Verificar status do ReturnedSale
-        return self.store.find(ReturnedSaleItem,
-                               sale_item=self).sum(ReturnedSaleItem.quantity) or Decimal('0')
+        tables = [ReturnedSale,
+                  Join(ReturnedSaleItem, ReturnedSale.id == ReturnedSaleItem.returned_sale_id)]
+        query = And(ReturnedSaleItem.sale_item == self,
+                    Or(ReturnedSale.status == ReturnedSale.STATUS_CONFIRMED,
+                       ReturnedSale.status == ReturnedSale.STATUS_PENDING))
+        return self.store.using(*tables).find(
+            ReturnedSaleItem, query).sum(ReturnedSaleItem.quantity) or Decimal('0')
 
     @property
     def sale_discount(self):

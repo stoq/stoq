@@ -2381,6 +2381,22 @@ class TestSaleItem(DomainTest):
         item.price = 150
         self.assertEqual(item.item_discount, 0)
 
+    def test_returned_quantity(self):
+        sale = self.create_sale()
+        sellable = self.create_sellable()
+        sale_item = sale.add_sellable(sellable, quantity=1)
+        sale.order()
+        self.add_payments(sale)
+        sale.confirm()
+        self.assertEqual(sale_item.returned_quantity, 0)
+
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.return_()
+        self.assertEqual(sale_item.returned_quantity, 1)
+
+        returned_sale.undo(reason=u'Test')
+        self.assertEqual(sale_item.returned_quantity, 0)
+
     def test_sale_discount(self):
         sale = self.create_sale()
 
