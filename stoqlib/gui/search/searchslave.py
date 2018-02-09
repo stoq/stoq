@@ -695,7 +695,11 @@ class SearchSlave(SlaveDelegate):
             # Disable auto search to avoid an extra query when restoring the
             # state
             self.set_auto_search(False)
-            self.set_filter_states(filter_states)
+            try:
+                self.set_filter_states(filter_states)
+            except KeyError:
+                # Sometimes when reseting the database, saved filters will have invalid defaults
+                pass
             self.set_auto_search(True)
         self._loading_filters = False
 
