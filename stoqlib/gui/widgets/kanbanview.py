@@ -379,10 +379,11 @@ class KanbanView(Gtk.Frame):
     def _create_selection_data(self, treeview, titer):
         model = treeview.get_model()
         path = model[titer].path
-        return pickle.dumps([treeview.get_name(), path])
+        return pickle.dumps([treeview.get_name(), path.to_string()])
 
     def _load_selection_data(self, selection_data):
         column_title, path = pickle.loads(selection_data)
+        path = Gtk.TreePath.new_from_string(path)
         treeview = self._treeviews[column_title]
         model = treeview.get_model()
         return model[path][0]
