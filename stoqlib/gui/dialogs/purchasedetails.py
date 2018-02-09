@@ -158,11 +158,11 @@ class PurchaseDetailsDialog(BaseEditor):
         self.received_items.add_list(purchase_items)
 
         self.payments_list.set_columns(self._get_payments_columns())
-        self.payments_list.add_list(self.model.group.payments)
-
-        changes = PaymentChangeHistoryView.find_by_group(self.store,
-                                                         self.model.group)
-        self.payments_info_list.add_list(changes)
+        if self.model.group:
+            self.payments_list.add_list(self.model.group.payments)
+            changes = PaymentChangeHistoryView.find_by_group(self.store,
+                                                             self.model.group)
+            self.payments_info_list.add_list(changes)
 
         if self._receiving_orders.is_empty():
             for widget in (self.received_freight_type_label,
@@ -254,7 +254,8 @@ class PurchaseDetailsDialog(BaseEditor):
         self._setup_widgets()
 
         self.add_proxy(self.model, PurchaseDetailsDialog.proxy_widgets)
-        self.add_proxy(self.model.group, PurchaseDetailsDialog.payment_proxy)
+        if self.model.group:
+            self.add_proxy(self.model.group, PurchaseDetailsDialog.payment_proxy)
         self.add_proxy(_TemporaryReceivingDetails(self._receiving_orders),
                        PurchaseDetailsDialog.receiving_proxy)
 

@@ -6309,7 +6309,7 @@ msgstr "Óculos"
 #. Translators: Lente Oftálmica
 #: ../plugins/optical/opticalslave.py:122 ../plugins/optical/opticalui.py:111
 msgid "Glass Lenses"
-msgstr "Lentes de óculos"
+msgstr "Lentes oftálmica"
 
 #. Translators: Lente de Contato
 #: ../plugins/optical/opticalslave.py:124 ../plugins/optical/opticalui.py:122
