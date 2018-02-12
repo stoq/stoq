@@ -24,20 +24,18 @@
 
 import atexit
 import logging
-import multiprocessing
-import os
-import time
+import threading
 
-from stoqlib.net.socketutils import get_random_port
 from stoqlib.lib.environment import is_developer_mode
-from stoqlib.lib.threadutils import threadit
+from stoqlib.lib.threadutils import terminate_thread
+from stoqlib.net.socketutils import get_random_port
 
 _daemon = None
-_event = multiprocessing.Event()
+_event = threading.Event()
 log = logging.getLogger(__name__)
 
 
-class Daemon(multiprocessing.Process):
+class Daemon(threading.Thread):
     def __init__(self, port=None):
         super(Daemon, self).__init__()
 
@@ -59,36 +57,13 @@ class Daemon(multiprocessing.Process):
     def server_uri(self):
         return 'http://localhost:%d' % (self.port, )
 
-    #
-    #  multiprocessing.Process
-    #
-
     def run(self):
-        self._ppid = os.getppid()
-        threadit(self._check_parent_running)
-
         from stoqlib.net.webserver import run_server
         _event.set()
         run_server(self.port)
 
-    #
-    #  Private
-    #
-
-    def _check_parent_running(self):
-        # When developing, we usually kill stoq a lot with something that
-        # will not allow it to stop the daemon (e.g. ctrl+q, ctrl+4) so
-        # it is better to do the check every 1 second. On production this
-        # shouldn't happen often, but if it happens, it is ok to have it
-        # running for another 5 seconds.
-        sleep_time = 1 if is_developer_mode() else 5
-
-        while self.is_alive():
-            # If the parent dies, ppid will change. In this case,
-            # finalize this process. It shouldn't be running anymore.
-            if os.getppid() != self._ppid:
-                os._exit(0)
-            time.sleep(sleep_time)
+    def terminate(self):
+        terminate_thread(self)
 
 
 def start_daemon():
@@ -103,7 +78,7 @@ def start_daemon():
 @atexit.register
 def stop_daemon():
     global _daemon
-    if _daemon is not None and _daemon.is_alive():
+    if _daemon is not None and _daemon.isAlive():
         log.debug('Stopping deamon')
         _daemon.terminate()
     _daemon = None

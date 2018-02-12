@@ -75,8 +75,7 @@ class DependencyChecker(object):
         self._check_gtk(GTK_REQUIRED)
         self._check_kiwi(KIWI_REQUIRED)
         self._check_pycairo(PYCAIRO_REQUIRED)
-        if platform.system() != 'Windows':
-            self._check_pygtkwebkit(PYGTKWEBKIT_REQUIRED)
+        self._check_pygtkwebkit(PYGTKWEBKIT_REQUIRED)
         if platform.system() == 'Darwin':
             self._check_pyobjc(PYOBJC_REQUIRED)
         self._check_zope_interface(ZOPE_INTERFACE_REQUIRED)
