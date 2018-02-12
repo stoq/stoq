@@ -620,6 +620,11 @@ class GUITest(DomainTest):
     def assertNotSensitive(self, dialog, attributes):
         for attr in attributes:
             value = getattr(dialog, attr)
+            if isinstance(value, Gio.Action):
+                if value.get_enabled():
+                    self.fail("%s.%s should not be sensitive" % (
+                        dialog.__class__.__name__, attr))
+                continue
             if value.get_sensitive():
                 self.fail("%s.%s should not be sensitive" % (
                     dialog.__class__.__name__, attr))
