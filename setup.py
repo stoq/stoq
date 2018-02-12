@@ -72,14 +72,13 @@ def listplugins(plugins, exts):
     return files
 
 
-def list_templates():
+def list_recursive(base_dir, extentions, prefix='$datadir'):
     files = []
-    dir_prefix = '$datadir'
-    for root, _, _ in os.walk('data/template'):
+    for root, _, _ in os.walk(base_dir):
         parts = root.split(os.sep)
-        prefix = os.path.join(dir_prefix, *parts[1:])
-        files.append((prefix, listfiles(*(parts + ['*html']))))
-        files.append((prefix, listfiles(*(parts + ['*css']))))
+        _prefix = os.path.join(prefix, *parts[1:])
+        for ext in extentions:
+            files.append((_prefix, listfiles(*(parts + [ext]))))
     return files
 
 
@@ -117,7 +116,8 @@ data_files = [
 if building_egg:
     data_files.append(('', ['__main__.py']))
 
-data_files += list_templates()
+data_files += list_recursive('data/template', ['*html', '*css'])
+data_files += list_recursive('data/pixmaps/hicolor', ['*png', '*svg'])
 
 if building_egg:
     data_files.extend([
