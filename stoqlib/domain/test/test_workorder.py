@@ -748,6 +748,16 @@ class TestWorkOrder(DomainTest):
             self.assertEqual(workorder.execution_branch, branch)
 
     @mock.patch('stoqlib.domain.workorder.localnow')
+    def test_is_informed(self, localnow):
+        localnow.return_value = localdate(2018, 2, 2)
+        wo = self.create_workorder()
+        wo.status = WorkOrder.STATUS_WORK_FINISHED
+        self.assertFalse(wo.is_informed())
+        wo.inform_client()
+
+        self.assertTrue(wo.is_informed())
+
+    @mock.patch('stoqlib.domain.workorder.localnow')
     def test_inform_client(self, localnow):
         localnow.return_value = localdate(2018, 1, 1)
         wo = self.create_workorder()
@@ -764,6 +774,19 @@ class TestWorkOrder(DomainTest):
         wo.inform_client()
 
         self.assertEqual(wo.client_informed_date, localnow.return_value)
+
+    @mock.patch('stoqlib.domain.workorder.localnow')
+    def test_unset_client_informed(self, localnow):
+        localnow.return_value = localdate(2018, 2, 2)
+        wo = self.create_workorder()
+        wo.status = WorkOrder.STATUS_WORK_FINISHED
+
+        # This wo is not set as informed
+        with self.assertRaises(AssertionError):
+            wo.unset_client_informed("teste")
+
+        wo.inform_client()
+        wo.unset_client_informed("teste")
 
     def test_reopen(self):
         workorder = self.create_workorder()

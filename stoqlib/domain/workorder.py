@@ -851,6 +851,9 @@ class WorkOrder(Domain):
         today = localtoday().date()
         return self.estimated_finish.date() < today
 
+    def is_informed(self):
+        return bool(self.client_informed_date)
+
     def can_cancel(self, ignore_sale=False):
         """Checks if this work order can be cancelled
 
@@ -1096,6 +1099,19 @@ class WorkOrder(Domain):
     def inform_client(self):
         assert self.is_finished()
         self.client_informed_date = localnow()
+        WorkOrderHistory.add_entry(self.store, self, what=_("Client informed"),
+                                   old_value=_("No"),
+                                   new_value=_("Yes"),
+                                   notes="")
+
+    def unset_client_informed(self, reason):
+        informed_date = self.client_informed_date
+        assert informed_date, informed_date
+        self.client_informed_date = None
+        WorkOrderHistory.add_entry(self.store, self, what=_("Client informed"),
+                                   old_value=_("Yes"),
+                                   new_value=_("No"),
+                                   notes=reason)
 
     def reopen(self, reason):
         """Reopens the work order

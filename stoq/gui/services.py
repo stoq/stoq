@@ -74,6 +74,8 @@ cancel_question = _(u"This will cancel the selected order. Any reserved items "
                     u"will return to stock. Are you sure?")
 waiting_question = _(u"This will inform the order that we are waiting. "
                      u"Are you sure?")
+uninform_question = _(u"This will set the order as uninformed. "
+                      u"Are you sure?")
 
 
 @implementer(ISearchResultView)
@@ -82,16 +84,24 @@ class WorkOrderResultKanbanView(KanbanView):
         WorkOrder.STATUS_WORK_IN_PROGRESS: reopen_question,
         WorkOrder.STATUS_CANCELLED: cancel_question,
         WorkOrder.STATUS_WORK_WAITING: waiting_question,
+        WorkOrder.STATUS_WORK_FINISHED: uninform_question,
     }
 
     need_reason = [
         (WorkOrder.STATUS_WORK_FINISHED, WorkOrder.STATUS_WORK_WAITING),
         (WorkOrder.STATUS_WORK_FINISHED, WorkOrder.STATUS_WORK_IN_PROGRESS),
+        # from client informed column to status finished column
+        (WorkOrder.STATUS_WORK_FINISHED, WorkOrder.STATUS_WORK_FINISHED),
         (WorkOrder.STATUS_WORK_IN_PROGRESS, WorkOrder.STATUS_WORK_WAITING),
     ]
 
     def _ask_reason(self, work_order, new_status):
         if (work_order.status, new_status) not in self.need_reason:
+            return None
+
+        if work_order.status == new_status and not work_order.is_informed():
+            # This will prevent the NoteEditor popup when drag and drop in the
+            # same column
             return None
 
         msg_text = self.status_question_map[new_status]
@@ -107,14 +117,16 @@ class WorkOrderResultKanbanView(KanbanView):
     def _change_status(self, work_order, new_status):
         with api.new_store() as store:
             work_order = store.fetch(work_order)
-            work_order.client_informed_date = None
-            if work_order.status == new_status:
-                return True
 
             reason = self._ask_reason(work_order, new_status)
             if reason is False:
                 store.retval = False
                 return
+
+            if work_order.status == new_status:
+                if work_order.client_informed_date:
+                    work_order.unset_client_informed(reason)
+                return True
 
             try:
                 work_order.change_status(new_status, reason)
