@@ -74,6 +74,7 @@ def listplugins(plugins, exts):
 
 def list_recursive(base_dir, extentions, prefix='$datadir'):
     files = []
+    base_dir = os.path.join(*base_dir.split('/'))
     for root, _, _ in os.walk(base_dir):
         parts = root.split(os.sep)
         _prefix = os.path.join(prefix, *parts[1:])
