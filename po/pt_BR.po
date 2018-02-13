@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-09 02:10-0200\n"
+"POT-Creation-Date: 2018-02-12 02:10-0200\n"
 "PO-Revision-Date: 2018-02-09 04:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
@@ -982,7 +982,7 @@ msgstr "Férias:"
 #: ../data/template/purchase/purchase-details.html:13
 #: ../data/template/quote/quote-details.html:13
 #: ../data/template/stock_decrease/stock_decrease-details.html:11
-#: ../stoqlib/gui/search/searchslave.py:711
+#: ../stoqlib/gui/search/searchslave.py:715
 msgid "Branch:"
 msgstr "Filial:"
 
@@ -4299,7 +4299,7 @@ msgstr "Ordem de serviço"
 #: ../data/template/optical/prescription.html:17 ../stoq/gui/services.py:592
 #: ../stoqlib/gui/editors/deliveryeditor.py:213
 msgid "Deliver"
-msgstr "Entregar"
+msgstr "Entrega"
 
 #: ../data/template/optical/prescription.html:22
 msgid "Desc"
@@ -12024,12 +12024,12 @@ msgid "Adjusted"
 msgstr "Ajustado"
 
 #: ../stoqlib/gui/dialogs/inventorydetails.py:121
-#: ../stoqlib/gui/dialogs/purchasedetails.py:262
+#: ../stoqlib/gui/dialogs/purchasedetails.py:263
 msgid "Purchase items"
 msgstr "Itens comprados"
 
 #: ../stoqlib/gui/dialogs/inventorydetails.py:122
-#: ../stoqlib/gui/dialogs/purchasedetails.py:262
+#: ../stoqlib/gui/dialogs/purchasedetails.py:263
 msgid "purchase-items"
 msgstr "itens-comprados"
 
@@ -12530,11 +12530,11 @@ msgstr "Qtde recebida"
 msgid "Current Stock"
 msgstr "Estoque atual"
 
-#: ../stoqlib/gui/dialogs/purchasedetails.py:265
+#: ../stoqlib/gui/dialogs/purchasedetails.py:266
 msgid "Received items"
 msgstr "Itens Recebidos"
 
-#: ../stoqlib/gui/dialogs/purchasedetails.py:265
+#: ../stoqlib/gui/dialogs/purchasedetails.py:266
 msgid "received-items"
 msgstr "itens-recebidos"
 
