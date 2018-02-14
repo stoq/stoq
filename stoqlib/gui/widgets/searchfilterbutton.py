@@ -26,12 +26,14 @@ from gi.repository import Gtk
 
 
 class SearchFilterButton(Gtk.Button):
-    def __init__(self, label=None, stock=None, use_underline=True):
-        Gtk.Button.__init__(self, label=label, stock=stock,
+    def __init__(self, label=None, icon=None, use_underline=True):
+        Gtk.Button.__init__(self, label=label,
                             use_underline=use_underline)
-        self.set_icon_size(Gtk.IconSize.MENU)
+        if icon:
+            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
+            self.set_image(image)
         self.set_relief(Gtk.ReliefStyle.NONE)
-        if label != stock and label:
+        if label != icon and label:
             self._set_label(label)
 
     def _set_label(self, label):

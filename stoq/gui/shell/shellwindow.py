@@ -999,8 +999,7 @@ class ShellWindow(Delegate):
         # Set the icon for the application
         app_icon = get_application_icon(app_name)
         toplevel = self.get_toplevel()
-        icon = toplevel.render_icon(app_icon, Gtk.IconSize.MENU)
-        toplevel.set_icon(icon)
+        toplevel.set_icon_name(app_icon)
 
         # FIXME: We should remove the toplevel windows of all ShellApp's
         #        glade files, as we don't use them any longer.

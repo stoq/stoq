@@ -16,7 +16,7 @@ GtkDialog(toplevel): title='Closed Product Stock Search', hidden
                     item: 'Identical to'
                     item: 'Does Not Contain'
                   GtkEntry(search_entry, padding=6): 'bot'
-                stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
+                stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
               ComboSearchFilter(branch_filter):
                 GtkLabel(): 'In branch:'
                 ProxyComboBox(padding=6):

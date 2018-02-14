@@ -23,7 +23,7 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
                         item: 'Identical to'
                         item: 'Does Not Contain'
                       GtkEntry(padding=6): '', hidden
-                    stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(): 'gtk-find'
+                    stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(): 'Find'
               SearchResultListView(expand=True, fill=True):
                 column: title='Inventory #'
                 column: title='Status'

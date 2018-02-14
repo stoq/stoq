@@ -308,16 +308,15 @@ class ShellBootstrap(object):
 
         from gi.repository import Gtk
         from kiwi.environ import environ
-        from kiwi.ui.pixbufutils import pixbuf_from_string
-        data = environ.get_resource_string(
-            'stoq', 'pixmaps', 'stoq-stock-app-24x24.png')
-        Gtk.Window.set_default_icon(pixbuf_from_string(data))
+        from stoqlib.gui.stockicons import STOQ_LAUNCHER
+        Gtk.Window.set_default_icon_name(STOQ_LAUNCHER)
 
         if platform.system() == 'Darwin':
             from AppKit import NSApplication, NSData, NSImage
-            bytes = environ.get_resource_string(
-                'stoq', 'pixmaps', 'stoq-stock-app-48x48.png')
-            data = NSData.alloc().initWithBytes_length_(bytes, len(bytes))
+            # FIXME: This should be a 48x48 icon
+            data = environ.get_resource_string(
+                'stoq', 'pixmaps', 'hicolor', '24x24', 'actions', 'stoq-launcher.png')
+            data = NSData.alloc().initWithBytes_length_(data, len(data))
             icon = NSImage.alloc().initWithData_(data)
             app = NSApplication.sharedApplication()
             app.setApplicationIconImage_(icon)

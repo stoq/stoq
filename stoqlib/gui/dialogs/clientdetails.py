@@ -38,7 +38,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.search.searchcolumns import IdentifierColumn
-from stoqlib.gui.utils.iconutils import get_workorder_state_icon
+from stoqlib.gui.utils.iconutils import get_workorder_state_icon, render_icon
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext
@@ -336,9 +336,7 @@ class WorkOrdersTab(DetailsTab):
     def _format_state_icon(self, item, data):
         stock_id, tooltip = get_workorder_state_icon(item.work_order)
         if stock_id is not None:
-            # We are using self because render_icon is a Gtk.Widget's # method.
-            # It has nothing to do with results tough.
-            return self.render_icon(stock_id, Gtk.IconSize.MENU)
+            return render_icon(stock_id)
 
 
 class PaymentsTab(DetailsTab):

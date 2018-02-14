@@ -91,9 +91,8 @@ class SearchFilter(Gtk.HBox):
         self._remove_button = None
 
     def _add_remove_button(self):
-        self._remove_button = SearchFilterButton(stock=Gtk.STOCK_REMOVE)
+        self._remove_button = SearchFilterButton(icon='list-remove-symbolic')
         self._remove_button.set_relief(Gtk.ReliefStyle.NONE)
-        self._remove_button.set_label_visible(False)
         self._remove_button.connect('clicked', self._on_remove_clicked)
         self._remove_button.show()
         self.pack_start(self._remove_button, False, False, 0)
@@ -682,8 +681,8 @@ class StringSearchFilter(SearchFilter):
                                            'fa-filter-symbolic')
         self.entry.set_icon_tooltip_text(Gtk.EntryIconPosition.PRIMARY,
                                          _("Add a filter"))
-        self.entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY,
-                                       Gtk.STOCK_CLEAR)
+        self.entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY,
+                                           'edit-clear-symbolic')
         self.entry.set_icon_tooltip_text(Gtk.EntryIconPosition.SECONDARY,
                                          _("Clear the search"))
         self.entry.connect("icon-release", self._on_entry__icon_release)

@@ -40,7 +40,7 @@ from stoqlib.gui.base.wizards import (BaseWizardStep, WizardEditorStep,
                                       BaseWizard)
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.search.searchcolumns import IdentifierColumn
-from stoqlib.gui.utils.iconutils import get_workorder_state_icon
+from stoqlib.gui.utils.iconutils import get_workorder_state_icon, render_icon
 
 _ = stoqlib_gettext
 
@@ -148,9 +148,7 @@ class WorkOrderPackageReceiveOrdersStep(WizardEditorStep):
     def _format_state_icon(self, item, data):
         stock_id, tooltip = get_workorder_state_icon(item.work_order)
         if stock_id is not None:
-            # We are using self.identifier because render_icon is a
-            # Gtk.Widget's # method. It has nothing to do with results tough.
-            return self.identifier.render_icon(stock_id, Gtk.IconSize.MENU)
+            return render_icon(stock_id, Gtk.IconSize.MENU)
 
     def _find_orders(self):
         orders = WorkOrderWithPackageView.find_by_package(

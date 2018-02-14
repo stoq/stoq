@@ -22,7 +22,7 @@ GtkDialog(toplevel): title='Purchased Items Search', hidden
                     item: 'Identical to'
                     item: 'Does Not Contain'
                   GtkEntry(search_entry, padding=6): 'bor'
-                stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'gtk-find'
+                stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
           SearchResultListView(results, expand=True, fill=True):
             column: title='Description', expand
             column: title='Purchased'

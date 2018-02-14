@@ -60,8 +60,6 @@ from stoqlib.gui.search.salesearch import (SalesByPaymentMethodSearch,
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.stockicons import (STOQ_PRODUCTS, STOQ_SERVICES,
-                                    STOQ_CLIENTS, STOQ_TRANSPORTER)
 from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
@@ -150,16 +148,16 @@ class SalesApp(ShellApp):
              _("Total sales made by salesperson..."),
              group.get("search_salesperson_sales"),
              _("Search for sales by payment method")),
-            ("SearchProduct", STOQ_PRODUCTS, _("Products..."),
+            ("SearchProduct", None, _("Products..."),
              group.get("search_products"),
              _("Search for products")),
-            ("SearchService", STOQ_SERVICES, _("Services..."),
+            ("SearchService", None, _("Services..."),
              group.get("search_services"),
              _("Search for services")),
-            ("SearchDelivery", STOQ_TRANSPORTER, _("Deliveries..."),
+            ("SearchDelivery", None, _("Deliveries..."),
              group.get("search_deliveries"),
              _("Search for deliveries")),
-            ("SearchClient", STOQ_CLIENTS, _("Clients..."),
+            ("SearchClient", None, _("Clients..."),
              group.get("search_clients"),
              _("Search for clients")),
             ("SearchClientCalls", None, _("Client Calls..."),

@@ -68,7 +68,6 @@ from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
 from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
 from stoqlib.reporting.product import SimpleProductReport
-from stoqlib.gui.stockicons import STOQ_RECEIVING
 
 from stoq.gui.shell.shellapp import ShellApp
 
@@ -90,7 +89,7 @@ class StockApp(ShellApp):
     def create_actions(self):
         group = get_accels('app.stock')
         actions = [
-            ("NewReceiving", STOQ_RECEIVING, _("Order _receival..."),
+            ("NewReceiving", None, _("Order _receival..."),
              group.get('new_receiving')),
             ('NewTransfer', Gtk.STOCK_CONVERT, _('Transfer...'),
              group.get('transfer_product')),

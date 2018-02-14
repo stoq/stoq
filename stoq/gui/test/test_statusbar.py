@@ -81,6 +81,13 @@ class TestStatusButton(BaseGUITest):
     def test_pixbuf(self):
         btn = StatusButton()
 
+        icon_map = {
+            ResourceStatus.STATUS_NA: 'stoq-status-na',
+            ResourceStatus.STATUS_OK: 'stoq-status-ok',
+            ResourceStatus.STATUS_WARNING: 'stoq-status-warning',
+            ResourceStatus.STATUS_ERROR: 'stoq-status-error',
+        }
+
         manager = ResourceStatusManager.get_instance()
         for status, stock in [
                 (ResourceStatus.STATUS_NA,
@@ -91,13 +98,7 @@ class TestStatusButton(BaseGUITest):
                  STOQ_STATUS_WARNING),
                 (ResourceStatus.STATUS_ERROR,
                  STOQ_STATUS_ERROR)]:
-            pixbuf = btn.render_icon(stock, Gtk.IconSize.MENU)
             with contextlib.nested(
-                    mock.patch.object(btn, 'render_icon'),
-                    mock.patch.object(btn._image, 'set_from_pixbuf')) as (ri, sfp):
-                ri.return_value = pixbuf
-
+                    mock.patch.object(btn._image, 'set_from_icon_name')) as (sfp,):
                 manager.emit('status-changed', status)
-
-                self.assertCalledOnceWith(ri, stock, Gtk.IconSize.MENU)
-                self.assertCalledOnceWith(sfp, pixbuf)
+                self.assertCalledOnceWith(sfp, icon_map[status], Gtk.IconSize.MENU)

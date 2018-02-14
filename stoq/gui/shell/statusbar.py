@@ -24,13 +24,14 @@
 
 
 import collections
-from gi.repository import Gtk, GObject, GLib, GdkPixbuf
+from gi.repository import Gtk, GObject, GLib
 
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.feedbackdialog import FeedbackDialog
 from stoqlib.gui.dialogs.progressdialog import ProgressDialog
 from stoqlib.gui.stockicons import (STOQ_FEEDBACK,
+                                    STOQ_REFRESH,
                                     STOQ_STATUS_NA,
                                     STOQ_STATUS_OK,
                                     STOQ_STATUS_WARNING,
@@ -44,7 +45,7 @@ from stoqlib.lib.status import ResourceStatus, ResourceStatusManager
 # FIXME: Improve those strings
 _status_mapper = {
     None: (
-        Gtk.STOCK_REFRESH,
+        STOQ_REFRESH,
         _("Checking status...")),
     ResourceStatus.STATUS_NA: (
         STOQ_STATUS_NA,
@@ -88,7 +89,8 @@ class StatusBox(Gtk.Bin):
     def _setup_ui(self):
         self.vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.add(self.vbox)
-        self._refresh_btn = Gtk.Button(stock=Gtk.STOCK_REFRESH)
+        self._refresh_btn = Gtk.Button.new_from_icon_name(STOQ_REFRESH, Gtk.IconSize.BUTTON)
+        self._refresh_btn.set_label(_('Refresh'))
         self._refresh_btn.set_relief(Gtk.ReliefStyle.NONE)
 
         action_area = Gtk.ButtonBox()
@@ -152,8 +154,9 @@ class StatusBox(Gtk.Bin):
         for name, resource in self._manager.resources.items():
             img, lbl, buttonbox = self._widgets[name]
 
-            status_stock, _ignored = _status_mapper[resource.status]
-            img.set_from_stock(status_stock, icon_size)
+            status_icon, _ignored = _status_mapper[resource.status]
+            img.set_from_icon_name(status_icon, icon_size)
+
             tooltip = ''
             if self._compact and resource.reason:
                 text = api.escape(resource.reason)
@@ -287,9 +290,12 @@ class StatusButton(Gtk.MenuButton):
     #
 
     def _blink_icon(self):
-        pixbuf = self._imgs.popleft()
-        self._image.set_from_pixbuf(pixbuf)
-        self._imgs.append(pixbuf)
+        icon_name = self._imgs.popleft()
+        if icon_name:
+            self._image.set_from_icon_name(icon_name, Gtk.IconSize.MENU)
+        else:
+            self._image.clear()
+        self._imgs.append(icon_name)
         return True
 
     def _update_status(self, status):
@@ -297,7 +303,7 @@ class StatusButton(Gtk.MenuButton):
             GLib.source_remove(self._blink_id)
             self._blink_id = None
 
-        status_stock, text = _status_mapper[status]
+        status_icon, text = _status_mapper[status]
 
         if status is not None:
             tooltip = '\n'.join(
@@ -308,26 +314,16 @@ class StatusButton(Gtk.MenuButton):
 
         self.set_tooltip_text(tooltip)
 
-        pixbuf = self.render_icon(status_stock, Gtk.IconSize.MENU)
-        self._image.set_from_pixbuf(pixbuf)
+        self._image.set_from_icon_name(status_icon, Gtk.IconSize.MENU)
+        self._image.set_size_request(16, 16)
 
         if status not in [None,
                           ResourceStatus.STATUS_NA,
                           ResourceStatus.STATUS_OK]:
             self._imgs.clear()
-            self._imgs.append(pixbuf)
-            width = pixbuf.get_width()
-            height = pixbuf.get_height()
-
-            # Create a transparent pixbuf of the same size to create
-            # the ilusion that the icon is "blinking"
-            # TODO: Make the blink transition by adding more pixbufs
-            # that transitions in tranparency
-            empty = GdkPixbuf.Pixbuf.new(
-                GdkPixbuf.Colorspace.RGB, True, 8, width, height)
-            empty.fill(0x00000000)
-            self._imgs.append(empty)
-
+            self._imgs.append(status_icon)
+            # This 'empty image' will be used for blinking
+            self._imgs.append(None)
             self._blink_id = GLib.timeout_add(self._BLINK_RATE,
                                               self._blink_icon)
 
@@ -387,7 +383,7 @@ class ShellStatusbar(Gtk.Statusbar):
 
         self._feedback_button = Gtk.Button.new_with_label(_('Feedback'))
         image = Gtk.Image()
-        image.set_from_stock(STOQ_FEEDBACK, Gtk.IconSize.MENU)
+        image.set_from_icon_name(STOQ_FEEDBACK, Gtk.IconSize.BUTTON)
         self._feedback_button.set_image(image)
         image.show()
         self._feedback_button.set_can_focus(False)

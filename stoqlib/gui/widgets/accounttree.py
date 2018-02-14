@@ -37,6 +37,7 @@ _ = stoqlib_gettext
 
 class StockTextColumn(Column):
     "A column which you can add a stock item and a text"
+
     def __init__(self, *args, **kwargs):
         Column.__init__(self, *args, **kwargs)
 
@@ -80,7 +81,7 @@ class AccountTree(ObjectTree):
             #        domain classes
             def colorize(account):
                 if (account.kind == 'account' and
-                    account.account_type == Account.TYPE_INCOME):
+                        account.account_type == Account.TYPE_INCOME):
                     return False
                 else:
                     return payment_value_colorize(account.total)
@@ -93,7 +94,9 @@ class AccountTree(ObjectTree):
                             mode=Gtk.SelectionMode.SINGLE)
 
         def render_icon(icon):
-            return self.render_icon(icon, Gtk.IconSize.MENU)
+            theme = Gtk.IconTheme.get_default()
+            return theme.load_icon(icon, 16, Gtk.IconLookupFlags.FORCE_SIZE)
+
         self._pixbuf_money = render_icon(STOQ_MONEY)
         self._pixbuf_payable = render_icon(STOQ_PAYABLE_APP)
         self._pixbuf_receivable = render_icon(STOQ_BILLS)

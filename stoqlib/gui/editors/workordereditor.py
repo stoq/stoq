@@ -47,7 +47,7 @@ from stoqlib.gui.slaves.workorderslave import (WorkOrderOpeningSlave,
                                                WorkOrderQuoteSlave,
                                                WorkOrderExecutionSlave,
                                                WorkOrderHistorySlave)
-from stoqlib.gui.utils.iconutils import get_workorder_state_icon
+from stoqlib.gui.utils.iconutils import get_workorder_state_icon, render_icon
 from stoqlib.gui.widgets.queryentry import ClientEntryGadget
 from stoqlib.lib.message import warning
 from stoqlib.lib.permissions import PermissionManager
@@ -227,7 +227,7 @@ class WorkOrderEditor(BaseEditor):
 
         stock_id, tooltip = get_workorder_state_icon(self.model)
         if stock_id is not None:
-            self.state_icon.set_from_stock(stock_id, Gtk.IconSize.MENU)
+            self.state_icon.set_from_icon_name(stock_id, Gtk.IconSize.MENU)
             self.state_icon.set_visible(True)
             self.state_icon.set_tooltip_text(tooltip)
         else:
@@ -414,9 +414,7 @@ class WorkOrderPackageSendEditor(BaseEditor):
     def _format_state_icon(self, item, data):
         stock_id, tooltip = get_workorder_state_icon(item.work_order)
         if stock_id is not None:
-            # We are using self.identifier because render_icon is a
-            # Gtk.Widget's # method. It has nothing to do with results tough.
-            return self.identifier.render_icon(stock_id, Gtk.IconSize.MENU)
+            return render_icon(stock_id, Gtk.IconSize.MENU)
 
     def _find_workorders(self):
         current_branch = api.get_current_branch(self.store)

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2011 Async Open Source
+## Copyright (C) 2005-2018 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -22,277 +22,73 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-STOQ_ADMIN_APP = "stoq-admin-app"
+# Accounts
+STOQ_MONEY = "stoq-money"
 STOQ_BILLS = "stoq-bills"
+
+# Admin options
 STOQ_BRANCHES = "stoq-branches"
 STOQ_BOOK = "stoq-book"
-STOQ_CALC = "stoq-calc"
-STOQ_CALENDAR_APP = "stoq-calendar-app"
-STOQ_CALENDAR_LIST = "stoq-calendar-list"
-STOQ_CALENDAR_MONTH = "stoq-calendar-month"
-STOQ_CALENDAR_TODAY = "stoq-calendar-today"
-STOQ_CALENDAR_WEEK = "stoq-calendar-week"
 STOQ_CLIENTS = "stoq-clients"
 STOQ_CONNECT = "stoq-connect"
-STOQ_CHECK = "stoq-check"
-STOQ_EDIT = "stoq-edit"
 STOQ_EMPLOYEE = "stoq-employee"
 STOQ_EMPLOYEE_CARD = "stoq-employee-card"
-STOQ_FEEDBACK = "stoq-feedback"
-STOQ_DELIVERY = "stoq-delivery"
 STOQ_TRANSPORTER = "stoq-transporter"
 STOQ_DEVICES = "stoq-devices"
 STOQ_DOCUMENTS = "stoq-documents"
 STOQ_HR = "stoq-hr"
-STOQ_INVENTORY_APP = "stoq-inventory-app"
-STOQ_LAUNCHER = "stoq-launcher-symbolic"
-STOQ_LINK = "stoq-link"
-STOQ_LOCKED = "stoq-locked"
 STOQ_FORMS = "stoq-forms"
-STOQ_KEYBOARD = "stoq-keyboard"
-STOQ_MONEY = "stoq-money"
-STOQ_MONEY_ADD = "stoq-money-add"
-STOQ_MONEY_REMOVE = "stoq-money-remove"
 STOQ_MOVEMENT_PRODUCT = "stoq-movement-product"
 STOQ_PARAMETERS = "stoq-parameters"
-STOQ_PAYABLE_APP = "stoq-payable-app"
 STOQ_PAYMENT_CATEGORY = "stoq-payment-category"
 STOQ_PAYMENT_TYPE = "stoq-payment-type"
 STOQ_PLUGIN = "stoq-plugin"
-STOQ_POS_APP = "stoq-pos-app"
 STOQ_PRINTER = "stoq-printer"
-STOQ_PRODUCTION_APP = "stoq-production-app"
 STOQ_PRODUCTS = "stoq-products"
-STOQ_PURCHASE_APP = "stoq-purchase-app"
-STOQ_RECEIVING = "stoq-receiving"
-STOQ_SALES_APP = "stoq-sales-app"
-STOQ_SERVICES = "stoq-services"
-STOQ_STOCK_APP = "stoq-stock-app"
 STOQ_SUPPLIERS = "stoq-suppliers"
 STOQ_SYSTEM = "stoq-system"
 STOQ_TAX_TYPE = "stoq-tax-type"
-STOQ_TILL_APP = "stoq-till-app"
-STOQ_UNLOCKED = "stoq-unlocked"
-STOQ_USERS = "stoq-users"
 STOQ_USER_PROFILES = "stoq-user-profiles"
+
+
+# Statues
 STOQ_STATUS_NA = "stoq-status-na"
 STOQ_STATUS_OK = "stoq-status-ok"
 STOQ_STATUS_WARNING = "stoq-status-warning"
 STOQ_STATUS_ERROR = "stoq-status-error"
 
+# Emblems
+STOQ_CALC = "stoq-calc"
+STOQ_CHECK = "stoq-check"
+STOQ_LOCKED = "stoq-locked"
+STOQ_FUNNEL = "stoq-funnel"
 
-# Add aliases so we don't need to import gtk here
-(GTK_ICON_SIZE_MENU,           # 16x16
- GTK_ICON_SIZE_SMALL_TOOLBAR,  # 18x18
- GTK_ICON_SIZE_BUTTON,         # 20x20
- GTK_ICON_SIZE_LARGE_TOOLBAR,  # 24x24
- GTK_ICON_SIZE_DND,            # 32x32
- GTK_ICON_SIZE_DIALOG,         # 48x48
- ) = range(6)
+# Apps
+STOQ_LAUNCHER = "stoq-launcher-symbolic"
+STOQ_ADMIN_APP = "stoq-admin-app"
+STOQ_CALENDAR_APP = "stoq-calendar-app"
+STOQ_DELIVERY = "stoq-delivery"
+STOQ_INVENTORY_APP = "stoq-inventory-app"
+STOQ_PAYABLE_APP = "stoq-payable-app"
+STOQ_POS_APP = "stoq-pos-app"
+STOQ_PRODUCTION_APP = "stoq-production-app"
+STOQ_PURCHASE_APP = "stoq-purchase-app"
+STOQ_RECEIVABLE_APP = "stoq-receivable-app"
+STOQ_SALES_APP = "stoq-sales-app"
+STOQ_SERVICES = "stoq-services"
+STOQ_STOCK_APP = "stoq-stock-app"
+STOQ_TILL_APP = "stoq-till-app"
+STOQ_LINK = "stoq-link"
 
-icon_info = [
-    (STOQ_ADMIN_APP,
-     {GTK_ICON_SIZE_MENU: "stoq-admin-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-admin-24x24.png",
-      GTK_ICON_SIZE_DND: "stoq-admin-32x32.png",
-      GTK_ICON_SIZE_DIALOG: "stoq-admin-48x48.png"}),
-    (STOQ_BILLS,
-     {GTK_ICON_SIZE_DIALOG: "stoq-bills-48x48.png"}),
-    (STOQ_BRANCHES,
-     {GTK_ICON_SIZE_DIALOG: "stoq-branches-48x48.png"}),
-    (STOQ_BOOK,
-     {GTK_ICON_SIZE_DIALOG: "stoq-book-48x48.png"}),
-    (STOQ_CALENDAR_APP,
-     {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-calendar-24x24.svg",
-      GTK_ICON_SIZE_DIALOG: "stoq-calendar-48x48.svg"}),
-    (STOQ_CALENDAR_LIST,
-     {GTK_ICON_SIZE_MENU: "stoq-calendar-list-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-calendar-list-24x24.png"}),
-    (STOQ_CALENDAR_MONTH,
-     {GTK_ICON_SIZE_MENU: "stoq-calendar-month-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-calendar-month-24x24.png"}),
-    (STOQ_CALENDAR_TODAY,
-     {GTK_ICON_SIZE_MENU: "stoq-calendar-today-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-calendar-today-24x24.png"}),
-    (STOQ_CALENDAR_WEEK,
-     {GTK_ICON_SIZE_MENU: "stoq-calendar-week-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-calendar-week-24x24.png"}),
-    (STOQ_CLIENTS,
-     {GTK_ICON_SIZE_DIALOG: "stoq-clients-48x48.png"}),
-    (STOQ_CHECK,
-     {GTK_ICON_SIZE_MENU: "stoq-check-16x16.png"}),
-    (STOQ_TRANSPORTER,
-     {GTK_ICON_SIZE_MENU: "stoq-transporter-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-transporter-24x24.png",
-      GTK_ICON_SIZE_DIALOG: "stoq-transporter-48x48.png"}),
-    (STOQ_DELIVERY,
-     {GTK_ICON_SIZE_DIALOG: "stoq-delivery-48x48.png"}),
-    (STOQ_EDIT,
-     {GTK_ICON_SIZE_DIALOG: "stoq-edit-48x48.png"}),
-    (STOQ_EMPLOYEE,
-     {GTK_ICON_SIZE_DIALOG: "stoq-employee-48x48.png"}),
-    (STOQ_EMPLOYEE_CARD,
-     {GTK_ICON_SIZE_DIALOG: "stoq-employee-card-48x48.png"}),
-    (STOQ_FEEDBACK,
-     {GTK_ICON_SIZE_MENU: "stoq-feedback-16x16.png"}),
-    (STOQ_FORMS,
-     {GTK_ICON_SIZE_DIALOG: "stoq-forms-48x48.png"}),
-    (STOQ_HR,
-     {GTK_ICON_SIZE_MENU: "stoq-hr-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-hr-24x24.png",
-      GTK_ICON_SIZE_DND: "stoq-hr-32x32.png",
-      GTK_ICON_SIZE_DIALOG: "stoq-hr-48x48.png"}),
-    (STOQ_INVENTORY_APP,
-     {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-inventory-app-24x24.png",
-      GTK_ICON_SIZE_DIALOG: "stoq-inventory-app-48x48.png"}),
-    (STOQ_LINK,
-     {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-link-24x24.png",
-      GTK_ICON_SIZE_DIALOG: "stoq-link-48x48.png"}),
-    (STOQ_LOCKED,
-     {GTK_ICON_SIZE_MENU: "stoq-locked-16x16.png"}),
-    (STOQ_CONNECT,
-     {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-connect-24x24.png",
-      GTK_ICON_SIZE_DIALOG: "stoq-connect-48x48.png"}),
-    (STOQ_KEYBOARD,
-     {GTK_ICON_SIZE_DIALOG: "stoq-keyboard-48x48.svg"}),
-    (STOQ_MONEY,
-     {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-money-24x24.png",
-      GTK_ICON_SIZE_DIALOG: "stoq-money-48x48.png"}),
-    (STOQ_MONEY_ADD,
-     {GTK_ICON_SIZE_MENU: "stoq-money-add-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-money-add-24x24.png"}),
-    (STOQ_MONEY_REMOVE,
-     {GTK_ICON_SIZE_MENU: "stoq-money-remove-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-money-remove-24x24.png"}),
-    (STOQ_MOVEMENT_PRODUCT,
-     {GTK_ICON_SIZE_DIALOG: "stoq-movement-product-48x48.png"}),
-    (STOQ_PARAMETERS,
-     {GTK_ICON_SIZE_DIALOG: "stoq-parameters-48x48.png"}),
-    (STOQ_PAYABLE_APP,
-     {GTK_ICON_SIZE_DIALOG: "stoq-payable-app-48x48.png"}),
-    (STOQ_PAYMENT_CATEGORY,
-     {GTK_ICON_SIZE_DIALOG: "stoq-payment-category-48x48.png"}),
-    (STOQ_PAYMENT_TYPE,
-     {GTK_ICON_SIZE_DIALOG: "stoq-payment-type-48x48.png"}),
-    (STOQ_PLUGIN,
-     {GTK_ICON_SIZE_MENU: "stoq-plugin-16x16.png",
-      GTK_ICON_SIZE_BUTTON: "stoq-plugin-22x22.png",
-      GTK_ICON_SIZE_DND: "stoq-plugin-32x32.png",
-      GTK_ICON_SIZE_DIALOG: "stoq-plugin-48x48.png"}),
-    (STOQ_POS_APP,
-     {GTK_ICON_SIZE_MENU: "stoq-pos-app-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-pos-app-24x24.png",
-      GTK_ICON_SIZE_DND: "stoq-pos-app-32x32.png",
-      GTK_ICON_SIZE_DIALOG: "stoq-pos-app-48x48.png"}),
-    (STOQ_PRINTER,
-     {GTK_ICON_SIZE_DIALOG: "stoq-printer-48x48.png"}),
-    (STOQ_PRODUCTION_APP,
-     {GTK_ICON_SIZE_DIALOG: "stoq-production-app.png"}),
-    (STOQ_PRODUCTS,
-     {GTK_ICON_SIZE_MENU: "stoq-products-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-products-24x24.png",
-      GTK_ICON_SIZE_DND: "stoq-products-32x32.png",
-      GTK_ICON_SIZE_DIALOG: "stoq-products-48x48.png"}),
-    (STOQ_PURCHASE_APP,
-     {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-purchase-app-24x24.png",
-      GTK_ICON_SIZE_DIALOG: "stoq-purchase-app-48x48.png"}),
-    (STOQ_RECEIVING,
-     {GTK_ICON_SIZE_DIALOG: "stoq-receiving-48x48.png"}),
-    (STOQ_SALES_APP,
-     {GTK_ICON_SIZE_DIALOG: "stoq-sales-app-48x48.png"}),
-    (STOQ_SERVICES,
-     {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-services-24x24.png",
-      GTK_ICON_SIZE_DIALOG: "stoq-services-48x48.png"}),
-    (STOQ_STOCK_APP,
-     {GTK_ICON_SIZE_MENU: "stoq-stock-app-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-stock-app-24x24.png",
-      GTK_ICON_SIZE_DND: "stoq-stock-app-32x32.png",
-      GTK_ICON_SIZE_DIALOG: "stoq-stock-app-48x48.png"}),
-    (STOQ_SUPPLIERS,
-     {GTK_ICON_SIZE_DIALOG: "stoq-suppliers-48x48.png"}),
-    (STOQ_TILL_APP,
-     {GTK_ICON_SIZE_MENU: "stoq-till-app-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-till-app-24x24.png",
-      GTK_ICON_SIZE_DND: "stoq-till-app-32x32.png",
-      GTK_ICON_SIZE_DIALOG: "stoq-till-app-48x48.png"}),
-    (STOQ_USERS,
-     {GTK_ICON_SIZE_MENU: "stoq-users-16x16.png",
-      GTK_ICON_SIZE_DIALOG: "stoq-users-48x48.png"}),
-    (STOQ_SYSTEM,
-     {GTK_ICON_SIZE_DIALOG: "stoq-system-48x48.png"}),
-    (STOQ_CALC,
-     {GTK_ICON_SIZE_MENU: "stoq-calc-16x16.png",
-      GTK_ICON_SIZE_DIALOG: "stoq-calc-48x48.png"}),
-    (STOQ_TAX_TYPE,
-     {GTK_ICON_SIZE_DIALOG: "stoq-tax-type-48x48.png"}),
-    (STOQ_DOCUMENTS,
-     {GTK_ICON_SIZE_DIALOG: "stoq-documents-48x48.png"}),
-    (STOQ_DEVICES,
-     {GTK_ICON_SIZE_DIALOG: "stoq-devices-48x48.png"}),
-    (STOQ_USER_PROFILES,
-     {GTK_ICON_SIZE_DIALOG: "stoq-user-profiles-48x48.png"}),
-    (STOQ_UNLOCKED,
-     {GTK_ICON_SIZE_MENU: "stoq-unlocked-16x16.png"}),
-    (STOQ_STATUS_NA,
-     {GTK_ICON_SIZE_MENU: "stoq-status-na-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-status-na-24x24.png",
-      GTK_ICON_SIZE_DND: "stoq-status-na-32x32.png"}),
-    (STOQ_STATUS_OK,
-     {GTK_ICON_SIZE_MENU: "stoq-status-ok-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-status-ok-24x24.png",
-      GTK_ICON_SIZE_DND: "stoq-status-ok-32x32.png"}),
-    (STOQ_STATUS_WARNING,
-     {GTK_ICON_SIZE_MENU: "stoq-status-warning-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-status-warning-24x24.png",
-      GTK_ICON_SIZE_DND: "stoq-status-warning-32x32.png",
-      GTK_ICON_SIZE_DIALOG: "stoq-status-warning-48x48.png"}),
-    (STOQ_STATUS_ERROR,
-     {GTK_ICON_SIZE_MENU: "stoq-status-error-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-status-error-24x24.png",
-      GTK_ICON_SIZE_DND: "stoq-status-error-32x32.png"}),
-]
+# Others
+STOQ_REFRESH = 'fa-sync-symbolic'
+STOQ_FEEDBACK = "stoq-feedback"
 
 
-# register stoq stock icons
 def register():
     from gi.repository import Gtk
     from kiwi.environ import environ
-    from kiwi.ui.pixbufutils import pixbuf_from_string
 
-    size_dict = {
-        GTK_ICON_SIZE_BUTTON: Gtk.IconSize.BUTTON,
-        GTK_ICON_SIZE_DIALOG: Gtk.IconSize.DIALOG,
-        GTK_ICON_SIZE_DND: Gtk.IconSize.DND,
-        GTK_ICON_SIZE_LARGE_TOOLBAR: Gtk.IconSize.LARGE_TOOLBAR,
-        GTK_ICON_SIZE_MENU: Gtk.IconSize.MENU,
-        GTK_ICON_SIZE_SMALL_TOOLBAR: Gtk.IconSize.SMALL_TOOLBAR,
-    }
-
-    iconfactory = Gtk.IconFactory()
-    stock_ids = Gtk.stock_list_ids()
-    for stock_id, arg in icon_info:
-        # only load image files when our stock_id is not present
-        if stock_id in stock_ids:
-            continue
-        iconset = Gtk.IconSet()
-        for size, filename in arg.items():
-            iconsource = Gtk.IconSource()
-            data = environ.get_resource_string('stoq', 'pixmaps', filename)
-            if filename.endswith('png'):
-                format = 'png'
-            elif filename.endswith('svg'):
-                format = 'svg'
-            else:
-                raise NotImplementedError(format)
-            pixbuf = pixbuf_from_string(data, format)
-            iconsource.set_pixbuf(pixbuf)
-            iconsource.set_size(size_dict[size])
-            iconset.add_source(iconsource)
-        iconfactory.add(stock_id, iconset)
-    iconfactory.add_default()
-
-    # Remove all from above this when all stock icons are migrated to the icon
-    # theme
     theme = Gtk.IconTheme.get_default()
     path = environ.get_resource_filename('stoq', 'pixmaps')
     theme.prepend_search_path(path)

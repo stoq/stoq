@@ -76,11 +76,12 @@ class AppEntry(Gtk.FlowBoxChild):
 
         self.connect('realize', self._on_realize)
         if large_icon:
-            icon_size = Gtk.IconSize.DND
+            icon_size = 30
         else:
-            icon_size = Gtk.IconSize.LARGE_TOOLBAR
+            icon_size = 20
 
-        pixbuf = self.render_icon(app.icon, icon_size)
+        theme = Gtk.IconTheme.get_default()
+        pixbuf = theme.load_icon(app.icon, icon_size, Gtk.IconLookupFlags.FORCE_SIZE)
         image = Gtk.Image.new_from_pixbuf(pixbuf)
         image.props.margin_left = 6
         name = Gtk.Label.new(app.fullname)
@@ -171,7 +172,7 @@ class AppSection(Gtk.Grid):
         super(AppSection, self).__init__()
         self.set_column_spacing(6)
         self.set_column_spacing(6)
-        label = Gtk.Label(name)
+        label = Gtk.Label(label=name)
         label.set_xalign(0)
         label.get_style_context().add_class('h1')
         if large_icons:

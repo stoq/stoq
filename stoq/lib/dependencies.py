@@ -159,6 +159,7 @@ class DependencyChecker(object):
         try:
             import gi
             gi.require_version('Gtk', '3.0')
+            gi.require_version('PangoCairo', '1.0')
             from gi.repository import Gtk
             Gtk  # pylint: disable=W0104
         except (ValueError, ImportError) as e:

@@ -53,8 +53,7 @@ from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
 from stoqlib.gui.search.searchresultview import SearchResultListView
 from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.stockicons import STOQ_CLIENTS
-from stoqlib.gui.utils.iconutils import get_workorder_state_icon
+from stoqlib.gui.utils.iconutils import get_workorder_state_icon, render_icon
 from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.widgets.kanbanview import KanbanView, KanbanViewColumn
@@ -293,7 +292,7 @@ class ServicesApp(ShellApp):
              group.get("search_services")),
             ("Categories", None, _(u"Categories..."),
              group.get("search_categories")),
-            ("Clients", STOQ_CLIENTS, _(u"Clients..."),
+            ("Clients", None, _(u"Clients..."),
              group.get("search_clients")),
 
             # Order
@@ -544,9 +543,7 @@ class ServicesApp(ShellApp):
 
         stock_id, tooltip = get_workorder_state_icon(item.work_order)
         if stock_id is not None:
-            # We are using self.results because render_icon is a Gtk.Widget's
-            # method. It has nothing to do with results tough.
-            return self.results.render_icon(stock_id, Gtk.IconSize.MENU)
+            return render_icon(stock_id, 16)
 
     def _get_main_query(self, state):
         item = state.value

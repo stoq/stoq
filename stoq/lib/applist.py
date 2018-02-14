@@ -78,7 +78,7 @@ def get_application_icon(appname):
     from stoqlib.gui.stockicons import (
         STOQ_ADMIN_APP, STOQ_CALC, STOQ_CALENDAR_APP,
         STOQ_INVENTORY_APP, STOQ_PAYABLE_APP, STOQ_POS_APP, STOQ_PRODUCTION_APP,
-        STOQ_PURCHASE_APP, STOQ_BILLS, STOQ_SALES_APP, STOQ_SERVICES,
+        STOQ_PURCHASE_APP, STOQ_RECEIVABLE_APP, STOQ_SALES_APP, STOQ_SERVICES,
         STOQ_STOCK_APP, STOQ_TILL_APP, STOQ_LINK, STOQ_DELIVERY)
 
     return {u'admin': STOQ_ADMIN_APP,
@@ -93,7 +93,7 @@ def get_application_icon(appname):
             u'pos': STOQ_POS_APP,
             u'production': STOQ_PRODUCTION_APP,
             u'purchase': STOQ_PURCHASE_APP,
-            u'receivable': STOQ_BILLS,
+            u'receivable': STOQ_RECEIVABLE_APP,
             u'sales': STOQ_SALES_APP,
             u'stock': STOQ_STOCK_APP,
             u'till': STOQ_TILL_APP}[appname]

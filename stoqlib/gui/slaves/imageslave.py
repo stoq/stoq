@@ -106,7 +106,8 @@ class ImageSlave(BaseEditorSlave):
         self._thumbnail = get_pixbuf(self.image_model.thumbnail, fill_image=size)
 
     def _setup_widgets(self):
-        self.set_main_item = Gtk.ImageMenuItem.new_from_stock(STOQ_CHECK, None)
+        self.set_main_item = Gtk.ImageMenuItem.new()
+        self.set_main_item.set_image(Gtk.Image.new_from_icon_name(STOQ_CHECK, Gtk.IconSize.MENU))
         self.set_main_item.set_label(_("Set as main image"))
         self.set_internal_item = Gtk.CheckMenuItem(label=_("Internal use only"))
         self.view_item = Gtk.MenuItem(label=_("View"))
@@ -157,10 +158,10 @@ class ImageSlave(BaseEditorSlave):
 
         self.icon.set_visible(is_main or internal_use)
         if is_main:
-            self.icon.set_from_stock(STOQ_CHECK, Gtk.IconSize.MENU)
+            self.icon.set_from_icon_name(STOQ_CHECK, Gtk.IconSize.MENU)
             self.icon.set_tooltip_text(_("This is the main image"))
         elif internal_use:
-            self.icon.set_from_stock(STOQ_LOCKED, Gtk.IconSize.MENU)
+            self.icon.set_from_icon_name(STOQ_LOCKED, Gtk.IconSize.MENU)
             self.icon.set_tooltip_text(_("This is for internal use only"))
 
         self._updating_widgets = False

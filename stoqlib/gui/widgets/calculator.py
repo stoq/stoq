@@ -224,11 +224,11 @@ class CalculatorPopup(PopupWindow):
 
     def _toggle_calculator_icon(self):
         if self.attached_widget.get_sensitive():
-            pixbuf = self.render_icon(STOQ_CALC, Gtk.IconSize.MENU)
+            icon = STOQ_CALC
         else:
-            pixbuf = None
+            icon = None
 
-        self.attached_widget.set_property(self._icon_pos + '-pixbuf', pixbuf)
+        self.attached_widget.set_property(self._icon_pos + '-name', icon)
 
     #
     #  Callbacks

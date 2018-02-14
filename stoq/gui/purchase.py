@@ -49,7 +49,6 @@ from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
 from stoqlib.gui.search.sellableunitsearch import SellableUnitSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.stockicons import (STOQ_PRODUCTS, STOQ_SUPPLIERS)
 from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.wizards.consignmentwizard import (ConsignmentWizard,
                                                    CloseInConsignmentWizard)
@@ -116,7 +115,7 @@ class PurchaseApp(ShellApp):
             # Search
             ("Categories", None, _("Categories..."),
              group.get("search_categories")),
-            ("Products", STOQ_PRODUCTS, _("Products..."),
+            ("Products", None, _("Products..."),
              group.get("search_products")),
             ("ProductUnits", None, _("Product units..."),
              group.get("search_product_units")),
@@ -128,7 +127,7 @@ class PurchaseApp(ShellApp):
              group.get("search_stock_items")),
             ("SearchClosedStockItems", None, _("Closed stock items..."),
              group.get("search_closed_stock_items")),
-            ("Suppliers", STOQ_SUPPLIERS, _("Suppliers..."),
+            ("Suppliers", None, _("Suppliers..."),
              group.get("search_suppliers")),
             ("Transporter", None, _("Transporters..."),
              group.get("search_transporters")),

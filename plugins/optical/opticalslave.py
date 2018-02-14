@@ -32,6 +32,7 @@ from stoqlib.api import api
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.editors.noteeditor import NoteEditor
+from stoqlib.gui.utils.iconutils import render_icon
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.parameters import sysparam
@@ -366,7 +367,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         age = localtoday() - date
         if age.days > LATE_PRESCRIPTION_DAYS:
             # This is not a validation error, just a warning for the user.
-            icon = widget.render_icon(Gtk.STOCK_DIALOG_WARNING, Gtk.IconSize.MENU)
+            icon = render_icon('dialog-warning', 16)
             widget.set_pixbuf(icon)
             widget.set_tooltip(_('Attention: prescription date is older than '
                                  'one year'))

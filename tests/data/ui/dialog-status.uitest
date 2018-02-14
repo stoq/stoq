@@ -17,4 +17,4 @@ stoq+gui+shell+statusbar+StatusPopover(): hidden
                 GtkButton(fill=True): 'Backup now'
                 GtkButton(fill=True): 'Configure'
       GtkButtonBox(orientation=horizontal, fill=True):
-        GtkButton(expand=True, fill=True, padding=6): 'gtk-refresh'
+        GtkButton(expand=True, fill=True, padding=6): 'Refresh'

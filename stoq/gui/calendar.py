@@ -42,7 +42,6 @@ from stoqlib.gui.editors.callseditor import CallsEditor
 from stoqlib.gui.editors.paymenteditor import (InPaymentEditor,
                                                OutPaymentEditor)
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
-from stoqlib.gui.stockicons import STOQ_CALENDAR_TODAY
 from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.widgets.webview import WebView
 from stoqlib.lib import dateutils
@@ -292,7 +291,7 @@ class CalendarApp(ShellApp):
              group.get('go_back'), _("Go back")),
             ('Forward', Gtk.STOCK_GO_FORWARD, _("Forward"),
              group.get('go_forward'), _("Go forward")),
-            ('Today', STOQ_CALENDAR_TODAY, _("Show today"),
+            ('Today', None, _("Show today"),
              group.get('show_today'), _("Show today")),
         ]
         self.calendar_ui = self.add_ui_actions(actions)

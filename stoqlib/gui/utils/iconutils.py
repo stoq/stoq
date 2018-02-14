@@ -25,8 +25,12 @@
 
 from gi.repository import Gtk
 
-from stoqlib.gui.stockicons import STOQ_TRANSPORTER
 from stoqlib.lib.translation import stoqlib_gettext as _
+
+
+def render_icon(icon_name, size):
+    theme = Gtk.IconTheme.get_default()
+    return theme.load_icon(icon_name, size, Gtk.IconLookupFlags.FORCE_SVG)
 
 
 def get_workorder_state_icon(work_order):
@@ -42,6 +46,7 @@ def get_workorder_state_icon(work_order):
     """
     # This is ordered by priority
     if work_order.is_in_transport():
+        from stoqlib.gui.stockicons import STOQ_TRANSPORTER
         return STOQ_TRANSPORTER, _(u"In transport")
     elif work_order.is_rejected:
         return Gtk.STOCK_DIALOG_WARNING, _(u"Rejected")

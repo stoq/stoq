@@ -40,8 +40,7 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.stockicons import STOQ_CLIENTS, STOQ_TRANSPORTER
-from stoqlib.gui.utils.iconutils import get_delivery_state_icon
+from stoqlib.gui.utils.iconutils import get_delivery_state_icon, render_icon
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 from stoq.gui.shell.shellapp import ShellApp
@@ -67,10 +66,10 @@ class DeliveryApp(ShellApp):
         #group = get_accels('app.delivery')
         actions = [
             # Search
-            ("Transporters", STOQ_TRANSPORTER, _("Transporters..."),
+            ("Transporters", None, _("Transporters..."),
              # group.get("search_transporters")),
              None),
-            ("Clients", STOQ_CLIENTS, _("Clients..."),
+            ("Clients", None, _("Clients..."),
              # group.get("search_clients")),
              None),
             ("Products", None, _("Products..."),
@@ -93,7 +92,7 @@ class DeliveryApp(ShellApp):
              # group.get('delivery_pack'),
              None,
              _("Pack the selected delivery")),
-            ("Send", STOQ_TRANSPORTER, _("Send..."),
+            ("Send", None, _("Send..."),
              # group.get('delivery_send'),
              None,
              _("Send the selected delivery to deliver")),
@@ -311,9 +310,7 @@ class DeliveryApp(ShellApp):
 
         stock_id, tooltip = get_delivery_state_icon(item.delivery)
         if stock_id is not None:
-            # We are using self.results because render_icon is a Gtk.Widget's
-            # method. It has nothing to do with results tough.
-            return self.results.render_icon(stock_id, Gtk.IconSize.MENU)
+            return render_icon(stock_id, Gtk.IconSize.MENU)
 
     def _get_main_query(self, state):
         if state.value is None:

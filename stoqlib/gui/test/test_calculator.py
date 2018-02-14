@@ -50,10 +50,11 @@ class TestCalculatorPopup(GUITest):
         entry = ProxyEntry()
         entry.data_type = currency
         self.assertEqual(entry.get_property('secondary-icon-pixbuf'), None)
+        theme = Gtk.IconTheme.get_default()
 
-        calc = CalculatorPopup(entry, CalculatorPopup.MODE_SUB)
-        pixbuf_pixels = calc.render_icon(STOQ_CALC,
-                                         Gtk.IconSize.MENU).get_pixels()
+        CalculatorPopup(entry, CalculatorPopup.MODE_SUB)
+        pixbuf_pixels = theme.load_icon(STOQ_CALC, Gtk.IconSize.MENU, 0).get_pixels()
+
         self.assertEqual(
             entry.get_property('secondary-icon-pixbuf').get_pixels(), pixbuf_pixels)
         entry.set_sensitive(False)
@@ -66,9 +67,7 @@ class TestCalculatorPopup(GUITest):
         spinbutton.data_type = currency
         self.assertEqual(spinbutton.get_property('secondary-icon-pixbuf'), None)
 
-        calc = CalculatorPopup(spinbutton, CalculatorPopup.MODE_SUB)
-        pixbuf_pixels = calc.render_icon(STOQ_CALC,
-                                         Gtk.IconSize.MENU).get_pixels()
+        CalculatorPopup(spinbutton, CalculatorPopup.MODE_SUB)
         self.assertEqual(
             spinbutton.get_property('secondary-icon-pixbuf').get_pixels(), pixbuf_pixels)
         spinbutton.set_sensitive(False)

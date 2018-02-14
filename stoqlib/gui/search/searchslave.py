@@ -167,7 +167,7 @@ class SearchSlave(SlaveDelegate):
 
         self.search_entry = self._primary_filter.entry
 
-        self.search_button = SearchFilterButton(stock=Gtk.STOCK_FIND)
+        self.search_button = SearchFilterButton(_('Find'), icon='edit-find-symbolic')
         hbox.pack_start(self.search_button, False, False, 0)
         self.search_button.show()
 

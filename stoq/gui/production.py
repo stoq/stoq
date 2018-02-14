@@ -41,7 +41,6 @@ from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
-from stoqlib.gui.stockicons import STOQ_PRODUCTION_APP
 from stoqlib.gui.utils.keybindings import get_accels
 from stoqlib.gui.wizards.productionwizard import ProductionWizard
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -73,7 +72,7 @@ class ProductionApp(ShellApp):
              _('Production order...'),
              group.get('new_production_order'),
              _('Create a new production')),
-            ('ProductionPurchaseQuote', STOQ_PRODUCTION_APP,
+            ('ProductionPurchaseQuote', None,
              _('Purchase quote...'),
              group.get('new_production_quote')),
 
@@ -102,7 +101,7 @@ class ProductionApp(ShellApp):
             ("SearchService", None, _("Services..."),
              group.get('search_services'),
              _("Search for services")),
-            ("SearchProductionItem", STOQ_PRODUCTION_APP,
+            ("SearchProductionItem", None,
              _("Production items..."),
              group.get('search_production_items'),
              _("Search for production items")),
