@@ -65,6 +65,10 @@ GtkDialog(toplevel): title='New Medic', hidden
                         ProxyEntry(): ''
                         GtkLabel(): 'RG Expedition\nDate:'
                         ProxyDateEntry(): None
+                        GtkLabel(): 'State Registry:'
+                        ProxyEntry(): ''
+                        GtkLabel(): 'City Registry:'
+                        ProxyEntry(): ''
                   GtkFrame(fill=True): hidden
                     GtkEventBox():
                 GtkBox(orientation=vertical):

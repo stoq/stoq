@@ -67,6 +67,10 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Franciso Elisio de Lima
                             ProxyEntry(rg_expedition_local): ''
                             GtkLabel(rg_expedition_date_lbl): 'RG Expedition\nDate:'
                             ProxyDateEntry(rg_expedition_date): None
+                            GtkLabel(state_registry_lbl): 'State Registry:'
+                            ProxyEntry(state_registry): ''
+                            GtkLabel(city_registry_lbl): 'City Registry:'
+                            ProxyEntry(city_registry): ''
                       GtkFrame(company_frame, fill=True): hidden
                         GtkEventBox(company_holder):
                     GtkBox(details_tab, orientation=vertical):

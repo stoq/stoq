@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.18.3 -->
-<!--*- mode: xml -*-->
 <interface>
-  <requires lib="gtk+" version="3.0"/>
-  <requires lib="kiwiwidgets" version="0.0"/>
+  <!-- interface-requires gtk+ 3.0 -->
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="IndividualDocuments">
+    <property name="can_focus">False</property>
     <property name="title" translatable="yes">client_id_slave</property>
     <child>
       <object class="GtkTable" id="table2">
         <property name="visible">True</property>
-        <property name="n_rows">2</property>
+        <property name="can_focus">False</property>
+        <property name="n_rows">3</property>
         <property name="n_columns">4</property>
         <property name="column_spacing">5</property>
         <property name="row_spacing">5</property>
         <child>
           <object class="GtkLabel" id="cpf_lbl">
             <property name="visible">True</property>
-            <property name="xpad">2</property>
-            <property name="label" translatable="yes">CPF:</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="yalign">0.47999998927116394</property>
+            <property name="xpad">2</property>
+            <property name="label" translatable="yes">CPF:</property>
           </object>
           <packing>
             <property name="x_options">GTK_FILL</property>
@@ -28,12 +30,13 @@
         <child>
           <object class="GtkLabel" id="rg_expedition_local_lbl">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
             <property name="xpad">2</property>
             <property name="label" translatable="yes">RG Expedition
 Local:</property>
             <property name="justify">right</property>
             <property name="wrap">True</property>
-            <property name="xalign">1</property>
           </object>
           <packing>
             <property name="top_attach">1</property>
@@ -44,6 +47,10 @@ Local:</property>
         <child>
           <object class="ProxyEntry" id="cpf">
             <property name="visible">True</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">str</property>
             <property name="model_attribute">cpf</property>
           </object>
@@ -55,6 +62,10 @@ Local:</property>
         <child>
           <object class="ProxyEntry" id="rg_expedition_local">
             <property name="visible">True</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">str</property>
             <property name="model_attribute">rg_expedition_local</property>
           </object>
@@ -68,9 +79,10 @@ Local:</property>
         <child>
           <object class="GtkLabel" id="rg_number_lbl">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
             <property name="xpad">2</property>
             <property name="label" translatable="yes">RG Number:</property>
-            <property name="xalign">1</property>
           </object>
           <packing>
             <property name="left_attach">2</property>
@@ -81,11 +93,12 @@ Local:</property>
         <child>
           <object class="GtkLabel" id="rg_expedition_date_lbl">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
             <property name="xpad">2</property>
             <property name="label" translatable="yes">RG Expedition
 Date:</property>
             <property name="justify">right</property>
-            <property name="xalign">1</property>
           </object>
           <packing>
             <property name="left_attach">2</property>
@@ -98,6 +111,10 @@ Date:</property>
         <child>
           <object class="ProxyEntry" id="rg_number">
             <property name="visible">True</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">str</property>
             <property name="model_attribute">rg_number</property>
           </object>
@@ -117,6 +134,83 @@ Date:</property>
             <property name="right_attach">4</property>
             <property name="top_attach">1</property>
             <property name="bottom_attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="state_registry">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">•</property>
+            <property name="truncate_multiline">True</property>
+            <property name="invisible_char_set">True</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">True</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">str</property>
+            <property name="model_attribute">state_registry</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">2</property>
+            <property name="bottom_attach">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="city_registry">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">•</property>
+            <property name="truncate_multiline">True</property>
+            <property name="invisible_char_set">True</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">True</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">str</property>
+            <property name="model_attribute">city_registry</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">2</property>
+            <property name="bottom_attach">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="state_registry_lbl">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="xpad">2</property>
+            <property name="label" translatable="yes">State Registry:</property>
+            <property name="justify">right</property>
+            <property name="wrap">True</property>
+          </object>
+          <packing>
+            <property name="top_attach">2</property>
+            <property name="bottom_attach">3</property>
+            <property name="x_options">GTK_FILL</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="city_registry_lbl">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="xpad">2</property>
+            <property name="label" translatable="yes">City Registry:</property>
+            <property name="justify">right</property>
+            <property name="wrap">True</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">2</property>
+            <property name="bottom_attach">3</property>
+            <property name="x_options">GTK_FILL</property>
+            <property name="x_padding">6</property>
           </packing>
         </child>
       </object>

@@ -43,7 +43,9 @@ class _IndividualDocuments(BaseEditorSlave):
     proxy_widgets = ('cpf',
                      'rg_expedition_date',
                      'rg_expedition_local',
-                     'rg_number')
+                     'rg_number',
+                     'state_registry',
+                     'city_registry')
 
     def setup_proxies(self):
         self.document_l10n = api.get_l10n_field('person_document')

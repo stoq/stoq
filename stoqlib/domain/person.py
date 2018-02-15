@@ -606,6 +606,13 @@ class Individual(Domain):
     #: A Brazilian government register which identify an individual
     rg_number = UnicodeCol(default=u'')
 
+    # In some cases the individual can have state and city registry
+    #: Brazilian register number associated with a certain State
+    state_registry = UnicodeCol(default='')
+
+    #: Brazilian register number associated with a certain City
+    city_registry = UnicodeCol(default='')
+
     #: when this individual was born
     birth_date = DateTimeCol(default=None)
 
