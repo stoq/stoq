@@ -265,7 +265,7 @@
  "stoqlib/lib/cardinals/pt.py": 95.33,
  "stoqlib/lib/certutils.py": 26.27,
  "stoqlib/lib/configparser.py": 23.68,
- "stoqlib/lib/console.py": 37.74,
+ "stoqlib/lib/console.py": 32,
  "stoqlib/lib/cookie.py": 94.87,
  "stoqlib/lib/countries.py": 90.91,
  "stoqlib/lib/crashreport.py": 72.66,

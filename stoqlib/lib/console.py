@@ -24,12 +24,8 @@
 ##
 """ A debug session for domain objects.  """
 
-import code
 import datetime
 import os
-import readline
-import rlcompleter
-rlcompleter  # pylint: disable=W0104
 
 from stoqlib.api import api
 from stoqlib.database.tables import get_table_types
@@ -79,6 +75,12 @@ class Console(object):
             stoq_version, db_string)
 
     def interact(self, vars=None):
+        # Keep this imports here since they only work on linux
+        import readline
+        import code
+        import rlcompleter
+        rlcompleter  # pylint: disable=W0104
+
         if vars is not None:
             self.ns.update(vars)
 
