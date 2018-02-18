@@ -13,7 +13,7 @@
  "plugins/ecf/ecfmemorydialog.py": 43.14,
  "plugins/ecf/ecfplugin.py": 78.26,
  "plugins/ecf/ecfprinterdialog.py": 30.50,
- "plugins/ecf/ecfprinterstatus.py": 33.33,
+ "plugins/ecf/ecfprinterstatus.py": 31,
  "plugins/ecf/ecfui.py": 21.94,
  "plugins/ecf/paulistainvoicedialog.py": 92.75,
  "plugins/nfe/nfegenerator.py": 86.7,

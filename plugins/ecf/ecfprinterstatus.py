@@ -35,7 +35,7 @@ except ImportError:
 
 from gi.repository import GLib, GObject
 from kiwi.utils import gsignal
-from stoqdrivers.serialbase import SerialPort
+from stoqdrivers.serialbase import SerialPort, VirtualPort
 
 
 class ECFAsyncPrinterStatus(GObject.GObject):
@@ -58,7 +58,7 @@ class ECFAsyncPrinterStatus(GObject.GObject):
         self._port = self._create_port(baudrate)
         self.printer = printer_class(self._port)
 
-        if platform.system() != 'Windows':
+        if platform.system() != 'Windows' and device_name != '/dev/null':
             self._timeout_id = GLib.timeout_add(self._delay * 1000, self._on_timeout)
             GLib.io_add_watch(self._port, GLib.IO_OUT, self._fd_watch_out)
             GLib.io_add_watch(self._port, GLib.IO_IN, self._fd_watch_in)
@@ -76,6 +76,8 @@ class ECFAsyncPrinterStatus(GObject.GObject):
             self.emit('reply', self._reply)
 
     def _create_port(self, baudrate):
+        if self._device_name == '/dev/null':
+            return VirtualPort()
         port = SerialPort(device=self._device_name, baudrate=baudrate)
         port.writeTimeout = 5
         if platform.system() != 'Windows':

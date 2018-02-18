@@ -233,6 +233,9 @@ class ECFEditor(BaseEditor):
             values.append(device.device_name)
         if not self.model.device_name in values:
             values.append(self.model.device_name)
+        if sysparam.get_bool('DEMO_MODE') or is_developer_mode():
+            values.append(u'/dev/null')
+
         self.device_name.prefill(values)
 
     def _populate_ecf_printer(self, status):
