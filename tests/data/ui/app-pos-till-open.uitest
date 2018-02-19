@@ -106,7 +106,9 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
                     GtkBox(orientation=vertical, pack-end):
                       GtkModelButton(fill=True): Trade...
                       GtkModelButton(fill=True): Payment Receival...
-    GtkButton():
+    GtkBox(orientation=horizontal):
+      GtkButton():
+      GtkButton():
     stoq+gui+widgets+ButtonGroup():
       GtkMenuButton():
           GtkPopover(): hidden

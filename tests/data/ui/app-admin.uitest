@@ -71,7 +71,9 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
                   GtkMenuSectionBox(orientation=vertical, fill=True):
                     GtkBox(orientation=vertical, pack-end):
                       GtkModelButton(fill=True): User...
-    GtkButton():
+    GtkBox(orientation=horizontal):
+      GtkButton():
+      GtkButton():
     stoq+gui+widgets+ButtonGroup():
       GtkMenuButton():
           GtkPopover(): hidden

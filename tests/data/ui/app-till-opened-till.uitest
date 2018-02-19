@@ -94,7 +94,9 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
       GtkButton(): insensitive
       GtkButton(): insensitive
       GtkButton(): insensitive
-    GtkButton():
+    GtkBox(orientation=horizontal):
+      GtkButton():
+      GtkButton():
     stoq+gui+widgets+ButtonGroup():
       GtkMenuButton():
           GtkPopover(): hidden

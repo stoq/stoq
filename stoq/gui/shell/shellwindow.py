@@ -182,9 +182,6 @@ class ShellWindow(Delegate):
             self._osx_app.set_use_quartz_accelerators(True)
 
         self._app_settings = api.user_settings.get('app-ui', {})
-        if self.options.debug:
-            self.add_debug_ui()
-
         self.main_vbox = Gtk.VBox()
 
     #
@@ -550,7 +547,6 @@ class ShellWindow(Delegate):
 
         :returns: True if shutdown was successful, False if not
         """
-
         log.debug("Shutting down launcher")
 
         # Ask the application if we can close, currently this only happens
@@ -592,6 +588,9 @@ class ShellWindow(Delegate):
         toplevel = self.get_toplevel().get_toplevel()
         add_current_toplevel(toplevel)
 
+        if self.options.debug:
+            self.add_debug_ui()
+
     def _create_button(self, icon, label=None, menu_model=None, menu=False,
                        action=None, tooltip=None, style_class=None, toggle=False):
         if menu_model or menu:
@@ -632,8 +631,16 @@ class ShellWindow(Delegate):
         self.toplevel.set_titlebar(self.header_bar)
 
         # Right side
-        self.header_bar.pack_end(
-            self._create_button('fa-power-off-symbolic', action='stoq.quit'))
+        self.close_btn = self._create_button('fa-power-off-symbolic', action='stoq.quit')
+        self.close_btn.set_relief(Gtk.ReliefStyle.NONE)
+        self.min_btn = self._create_button('fa-window-minimize-symbolic')
+        self.min_btn.set_relief(Gtk.ReliefStyle.NONE)
+        #self.header_bar.pack_end(self.close_btn)
+        #self.header_bar.pack_end(self.min_btn)
+        box = Gtk.Box.new(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        box.pack_start(self.min_btn, False, False, 0)
+        box.pack_start(self.close_btn, False, False, 0)
+        self.header_bar.pack_end(box)
 
         self.user_menu = builder.get_object('app-menu')
         self.help_section = builder.get_object('help-section')
@@ -644,13 +651,13 @@ class ShellWindow(Delegate):
                                                  _('Searches'),
                                                  menu_model=self.search_menu)
         self.main_menu = Gio.Menu()
-        self.menu_button = self._create_button('fa-bars-symbolic', _('Ações'),
+        self.menu_button = self._create_button('fa-bars-symbolic', _('Actions'),
                                                menu_model=self.main_menu)
 
         self.header_bar.pack_end(
             ButtonGroup([self.menu_button, self.search_button, self.user_button]))
 
-        self.sign_button = self._create_button('', 'Assine já', style_class='suggested-action')
+        self.sign_button = self._create_button('', _('Sign now'), style_class='suggested-action')
         #self.header_bar.pack_end(self.sign_button)
 
         # Left side
@@ -785,6 +792,11 @@ class ShellWindow(Delegate):
             if callback:
                 action.connect('activate', callback)
 
+    def set_close_button_icon(self, icon_name):
+        image = self.close_btn.get_child().get_children()[0]
+        image.set_from_icon_name(icon_name, Gtk.IconSize.BUTTON)
+        image.set_size_request(16, 16)
+
     def show_app(self, app, app_window, **params):
         app_window.get_parent().remove(app_window)
         self.application_box.add(app_window)
@@ -803,6 +815,12 @@ class ShellWindow(Delegate):
                 self._birthdays_bar.show()
             else:
                 self._birthdays_bar.hide()
+
+        if app.app_name == 'launcher':
+            icon_name = 'fa-power-off-symbolic'
+        else:
+            icon_name = 'fa-chevron-left-symbolic'
+        self.set_close_button_icon(icon_name)
 
         # StartApplicationEvent must be emitted before calling app.activate(),
         # so that the plugins can have the chance to modify the application
@@ -887,12 +905,14 @@ class ShellWindow(Delegate):
         self.help_section.insert(0, label, 'stoq.HelpApp')
 
     def add_debug_ui(self):
+        self.toplevel.set_interactive_debugging(True)
+        return
         actions = [
             ('Introspect', None, _('Introspect slaves')),
             ('RemoveSettingsCache', None, _('Remove settings cache')),
         ]
 
-        self.add_ui_actions('', actions)
+        self.add_ui_actions(self, actions, 'Actions')
         self.add_extra_items([self.Introspect, self.RemoveSettingsCache],
                              _('Debug'))
 
@@ -1052,6 +1072,9 @@ class ShellWindow(Delegate):
         api.config.set('Database', 'enable_production', 'True')
         api.config.flush()
         self._shutdown_application(restart=True, force=True)
+
+    def on_min_btn__clicked(self, button):
+        self.get_toplevel().iconify()
 
     # File
 

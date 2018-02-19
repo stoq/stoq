@@ -58,7 +58,9 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
                       GtkModelButton(fill=True): Account payable
                       GtkModelButton(fill=True): Account receivable
                       GtkModelButton(fill=True): Work order
-    GtkButton():
+    GtkBox(orientation=horizontal):
+      GtkButton():
+      GtkButton():
     stoq+gui+widgets+ButtonGroup():
       GtkMenuButton():
           GtkPopover(): hidden
