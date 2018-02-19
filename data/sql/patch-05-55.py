@@ -33,4 +33,6 @@ def apply_patch(store):
     for profile in store.find(UserProfile):
         has_permission = any([profile.check_app_permission('admin'),
                               profile.check_app_permission('sales')])
-        profile.add_application_reference('delivery', has_permission)
+
+        if not store.find(ProfileSettings, app_dir_name='delivery').one():
+            profile.add_application_reference('delivery', has_permission)
