@@ -38,7 +38,7 @@ from stoqlib.gui.stockicons import (STOQ_FEEDBACK,
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.threadutils import terminate_thread
-from stoq.lib.status import ResourceStatus, ResourceStatusManager
+from stoqlib.lib.status import ResourceStatus, ResourceStatusManager
 
 
 # FIXME: Improve those strings
@@ -61,18 +61,19 @@ _status_mapper = {
 }
 
 
-class StatusPopover(Gtk.Popover):
+class StatusBox(Gtk.Bin):
     size = (650, 400)
 
-    def __init__(self):
-        super(StatusPopover, self).__init__()
-        self.set_size_request(*self.size)
+    def __init__(self, compact=False):
+        super(StatusBox, self).__init__()
+        self._compact = compact
 
         self._manager = ResourceStatusManager.get_instance()
         self._manager.connect('status-changed',
                               self._on_manager__status_changed)
         self._manager.connect('action-finished',
                               self._on_manager__action_finished)
+        self._manager.refresh_and_notify()
 
         user = api.get_current_user(api.get_default_store())
         self._is_admin = user.profile.check_app_permission(u'admin')
@@ -91,13 +92,14 @@ class StatusPopover(Gtk.Popover):
         self._refresh_btn.set_relief(Gtk.ReliefStyle.NONE)
 
         action_area = Gtk.ButtonBox()
-        action_area.pack_start(self._refresh_btn, True, True, 6)
+        if not self._compact:
+            action_area.pack_start(self._refresh_btn, True, True, 6)
         action_area.set_layout(Gtk.ButtonBoxStyle.END)
 
         self._refresh_btn.connect('clicked', self._on_refresh_btn__clicked)
 
         sw = Gtk.ScrolledWindow()
-        sw.set_policy(Gtk.PolicyType.AUTOMATIC,
+        sw.set_policy(Gtk.PolicyType.NEVER,
                       Gtk.PolicyType.AUTOMATIC)
         self.vbox.pack_start(sw, expand=True, fill=True, padding=0)
         self.vbox.pack_start(action_area, expand=False, fill=True, padding=0)
@@ -106,7 +108,10 @@ class StatusPopover(Gtk.Popover):
         viewport.set_shadow_type(Gtk.ShadowType.NONE)
         sw.add(viewport)
 
-        vbox = Gtk.VBox(spacing=12)
+        spacing = 12
+        if self._compact:
+            spacing = 2
+        vbox = Gtk.VBox(spacing=spacing)
         vbox.props.margin = 6
         viewport.add(vbox)
 
@@ -117,15 +122,19 @@ class StatusPopover(Gtk.Popover):
             img = Gtk.Image()
             hbox.pack_start(img, False, True, 0)
             lbl = Gtk.Label()
+            lbl.set_xalign(0)
+            lbl.set_line_wrap(True)
             hbox.pack_start(lbl, False, True, 0)
 
-            buttonbox = Gtk.HButtonBox()
-            hbox.pack_end(buttonbox, False, True, 0)
+            buttonbox = Gtk.Box()
+            buttonbox.get_style_context().add_class('linked')
+            if not self._compact:
+                hbox.pack_end(buttonbox, False, True, 0)
 
             self._widgets[name] = (img, lbl, buttonbox)
             vbox.pack_start(hbox, False, True, 6)
 
-            if i < len(resources) - 1:
+            if i < len(resources) - 1 and not self._compact:
                 separator = Gtk.HSeparator()
                 vbox.pack_start(separator, False, True, 0)
 
@@ -136,12 +145,23 @@ class StatusPopover(Gtk.Popover):
         running_action = self._manager.running_action
         self._refresh_btn.set_sensitive(running_action is None)
 
+        icon_size = Gtk.IconSize.LARGE_TOOLBAR
+        if self._compact:
+            icon_size = Gtk.IconSize.BUTTON
+
         for name, resource in self._manager.resources.items():
             img, lbl, buttonbox = self._widgets[name]
 
             status_stock, _ignored = _status_mapper[resource.status]
-            img.set_from_stock(status_stock, Gtk.IconSize.LARGE_TOOLBAR)
-            if resource.reason and resource.reason_long:
+            img.set_from_stock(status_stock, icon_size)
+            tooltip = ''
+            if self._compact and resource.reason:
+                text = api.escape(resource.reason)
+                tooltip = "<b>%s</b>: %s\n<i>%s</i>" % (
+                    api.escape(resource.label),
+                    api.escape(resource.reason),
+                    api.escape(resource.reason_long))
+            elif resource.reason and resource.reason_long:
                 text = "<b>%s</b>: %s\n<i>%s</i>" % (
                     api.escape(resource.label),
                     api.escape(resource.reason),
@@ -184,6 +204,7 @@ class StatusPopover(Gtk.Popover):
                 buttonbox.add(btn)
 
             lbl.set_markup(text)
+            lbl.set_tooltip_markup(tooltip)
 
     def _handle_action(self, action):
         retval = self._manager.handle_action(action)
@@ -225,6 +246,17 @@ class StatusPopover(Gtk.Popover):
 
     def _on_refresh_btn__clicked(self, btn):
         self._manager.refresh_and_notify()
+
+
+class StatusPopover(Gtk.Popover):
+    size = (650, 400)
+
+    def __init__(self):
+        super(StatusPopover, self).__init__()
+        self.set_size_request(*self.size)
+        box = StatusBox()
+        self.add(box)
+        box.show()
 
 
 class StatusButton(Gtk.MenuButton):
@@ -364,14 +396,6 @@ class ShellStatusbar(Gtk.Statusbar):
         self._feedback_button.set_relief(Gtk.ReliefStyle.NONE)
         widget_area.pack_start(self._feedback_button, False, False, 0)
         self._feedback_button.show()
-
-        vsep = Gtk.VSeparator()
-        widget_area.pack_start(vsep, False, False, 0)
-        vsep.show()
-
-        self._status_button = StatusButton()
-        self.message_area.pack_end(self._status_button, False, False, 0)
-        self._status_button.show()
 
     def do_text_popped(self, ctx, text):
         self._text_label.set_label(text)

@@ -78,14 +78,16 @@ class TestLauncher(BaseGUITest):
     def _test_open_app(self, app_name):
         app = self.create_app(LauncherApp, u'launcher')
         emitname = 'stoq.gui.shell.shellwindow.StartApplicationEvent.emit'
-        for child in app._apps_box.get_children():
-            if child.action_name == 'launch.' + app_name:
-                with mock.patch(emitname) as emit:
-                    child.activate()
-                    self.check_app(app, u'launcher-app-' + app_name)
-                break
-        else:
-            raise AssertionError
+        found = False
+        for section in app.app_grid.get_children():
+            for child in section.grid.get_children():
+                if child.app.name == app_name:
+                    with mock.patch(emitname) as emit:
+                        child.activate()
+                        self.check_app(app, u'launcher-app-' + app_name)
+                    found = True
+                    break
 
+        assert found, 'App %s not found' % app_name
         emit.assert_called_once_with(self.window.current_app.app_name,
                                      self.window.current_app)

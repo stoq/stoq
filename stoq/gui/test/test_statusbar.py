@@ -28,10 +28,10 @@ from gi.repository import Gtk
 from kiwi.python import Settable
 import mock
 
-from stoq.gui.shell.statusbar import StatusButton, StatusPopover
+from stoq.gui.shell.statusbar import StatusButton, StatusPopover, StatusBox
 from stoq.gui.test.baseguitest import BaseGUITest
-from stoq.lib.status import (ResourceStatus, ResourceStatusManager,
-                             ResourceStatusAction)
+from stoqlib.lib.status import (ResourceStatus, ResourceStatusManager,
+                                ResourceStatusAction)
 from stoqlib.gui.stockicons import (STOQ_STATUS_NA,
                                     STOQ_STATUS_OK,
                                     STOQ_STATUS_WARNING,
@@ -45,20 +45,20 @@ class TestStatusPopover(BaseGUITest):
         self.check_dialog(popover, 'dialog-status')
 
     def test_handle_action(self):
-        dialog = StatusPopover()
+        box = StatusBox()
         manager = ResourceStatusManager.get_instance()
 
         action = ResourceStatusAction(object(), 'foo', 'bar', lambda: None,
                                       threaded=False)
         with mock.patch.object(manager, 'handle_action') as handle_action:
-            dialog._handle_action(action)
+            box._handle_action(action)
             self.assertCalledOnceWith(handle_action, action)
 
     @mock.patch('stoq.gui.shell.statusbar.ProgressDialog')
     def test_handle_action_threaded(self, ProgressDialog):
         ProgressDialog.return_value = mock.Mock()
 
-        dialog = StatusPopover()
+        box = StatusBox()
         manager = ResourceStatusManager.get_instance()
 
         action = ResourceStatusAction(Settable(label='baz'), 'foo', 'bar',
@@ -68,7 +68,7 @@ class TestStatusPopover(BaseGUITest):
             t.is_alive.return_value = False
 
             handle_action.return_value = t
-            dialog._handle_action(action)
+            box._handle_action(action)
 
             self.assertCalledOnceWith(handle_action, action)
             self.assertCalledOnceWith(

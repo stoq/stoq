@@ -369,6 +369,14 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`status` Module
+--------------------
+
+.. automodule:: stoqlib.lib.status
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`stringutils` Module
 -------------------------
 

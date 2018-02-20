@@ -74,26 +74,6 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
           GtkLabel(expand=True, fill=True): 'Test Statusbar test'
           GtkVSeparator():
           GtkButton(): 'Feedback'
-          GtkVSeparator():
-        StatusButton(pack-end):
-            stoq+gui+shell+statusbar+StatusPopover(): hidden
-              GtkBox(orientation=vertical):
-                GtkScrolledWindow(expand=True, fill=True):
-                  GtkViewport():
-                    GtkBox(orientation=vertical):
-                      GtkBox(orientation=horizontal, fill=True, padding=6):
-                        GtkImage(fill=True):
-                        GtkLabel(fill=True): 'Status not available...'
-                        GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-                      GtkHSeparator(fill=True):
-                      GtkBox(orientation=horizontal, fill=True, padding=6):
-                        GtkImage(fill=True):
-                        GtkLabel(fill=True): 'Status not available...'
-                        GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-                          GtkButton(expand=True, fill=True): 'Backup now'
-                          GtkButton(expand=True, fill=True): 'Configure'
-                GtkButtonBox(orientation=horizontal, fill=True):
-                  GtkButton(expand=True, fill=True, padding=6): 'gtk-refresh'
   GtkHeaderBar():
     stoq+gui+widgets+ButtonGroup():
       GtkButton():

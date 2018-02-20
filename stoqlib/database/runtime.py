@@ -700,7 +700,7 @@ def new_store():
     :returns: a transaction
     """
     log.debug('Creating a new transaction in %s()'
-              % sys._getframe(1).f_code.co_name)
+              % sys._getframe(2).f_code.co_name)
 
     return StoqlibStore()
 

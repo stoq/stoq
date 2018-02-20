@@ -43,6 +43,24 @@ def set_bold(widget):
     widget.override_font(fd)
 
 
+def replace_widget(old, new):
+    """Replaces an widget with another one
+
+    This will put the new widget in exactly the same place as the old widget
+    """
+    parent = old.get_parent()
+
+    props = {}
+    for key in parent.list_child_properties():
+        props[key.name] = parent.child_get_property(old, key.name)
+
+    parent.remove(old)
+    parent.add(new)
+
+    for name, value in props.items():
+        parent.child_set_property(new, name, value)
+
+
 def button_set_image_with_label(button, stock_id, text):
     """Sets an image above the text
     :param button:

@@ -2,106 +2,155 @@ app: LauncherApp
 GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
   GtkBox(orientation=vertical):
     GtkBox(orientation=horizontal, expand=True, fill=True):
-      GtkBox(main_box, orientation=vertical, expand=True, fill=True):
-        GtkBox(box1, orientation=vertical, expand=True, fill=True):
-          GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
-            GtkViewport(viewport1):
-              GtkBox(box2, orientation=horizontal):
-                GtkBox(app_box, orientation=vertical, fill=True):
-                  Section():
-                    GtkLabel(): 'Applications'
-                  GtkFlowBox(_apps_box, orientation=horizontal):
-                    Shortcut():
-                      GtkGrid():
-                        GtkLabel(): 'Manage payment that needs to be paid.'
-                        GtkLabel(): 'Accounts Payable'
-                        GtkImage():
-                    Shortcut():
-                      GtkGrid():
-                        GtkLabel(): 'Manage payments that needs to be received.'
-                        GtkLabel(): 'Accounts Receivable'
-                        GtkImage():
-                    Shortcut():
-                      GtkGrid():
-                        GtkLabel(): 'Administer the branches, users, employees and configure system parameters.'
-                        GtkLabel(): 'Administrative'
-                        GtkImage():
-                    Shortcut():
-                      GtkGrid():
-                        GtkLabel(): 'Shows payments, orders and other things that will happen in the future.'
-                        GtkLabel(): 'Calendar'
-                        GtkImage():
-                    Shortcut():
-                      GtkGrid():
-                        GtkLabel(): 'Control your deliveries.'
-                        GtkLabel(): 'Delivery'
-                        GtkImage():
-                    Shortcut():
-                      GtkGrid():
-                        GtkLabel(): 'Control accounts and financial transactions.'
-                        GtkLabel(): 'Financial'
-                        GtkImage():
-                    Shortcut():
-                      GtkGrid():
-                        GtkLabel(): 'Audit and adjust the product stock.'
-                        GtkLabel(): 'Inventory'
-                        GtkImage():
-                    Shortcut():
-                      GtkGrid():
-                        GtkLabel(): 'Terminal and cash register for selling products and services.'
-                        GtkLabel(): 'Point of Sales'
-                        GtkImage():
-                    Shortcut():
-                      GtkGrid():
-                        GtkLabel(): 'Manage the production process.'
-                        GtkLabel(): 'Production'
-                        GtkImage():
-                    Shortcut():
-                      GtkGrid():
-                        GtkLabel(): 'Create purchase orders and quotes'
-                        GtkLabel(): 'Purchase'
-                        GtkImage():
-                    Shortcut():
-                      GtkGrid():
-                        GtkLabel(): 'Quotes management and commission calculation.'
+      GtkViewport(viewport1, expand=True, fill=True):
+        GtkBox(main_box, orientation=vertical):
+          GtkBox(box1, orientation=vertical, expand=True, fill=True):
+            GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
+              GtkViewport(viewport2):
+                GtkBox(box2, orientation=horizontal):
+                  GtkBox(app_box, orientation=vertical, fill=True):
+                    stoq+gui+widgets+Apps(app_grid):
+                      stoq+gui+widgets+AppSection(padding=6):
+                        AppGrid():
+                          AppEntry():
+                            GtkEventBox():
+                              GtkGrid():
+                                GtkLabel(): 'Terminal and cash register for selling products and services.'
+                                GtkLabel(): 'Point of Sales'
+                                GtkImage():
+                          AppEntry():
+                            GtkEventBox():
+                              GtkGrid():
+                                GtkLabel(): 'Quotes management and commission calculation.'
+                                GtkLabel(): 'Sales'
+                                GtkImage():
+                          AppEntry():
+                            GtkEventBox():
+                              GtkGrid():
+                                GtkLabel(): 'Control tills and their workflow.'
+                                GtkLabel(): 'Till'
+                                GtkImage():
+                          AppEntry():
+                            GtkEventBox():
+                              GtkGrid():
+                                GtkLabel(): 'Perform services like maintenance, installation or repair.'
+                                GtkLabel(): 'Services'
+                                GtkImage():
+                          AppEntry():
+                            GtkEventBox():
+                              GtkGrid():
+                                GtkLabel(): 'Control your deliveries.'
+                                GtkLabel(): 'Delivery'
+                                GtkImage():
+                        GtkSeparator():
                         GtkLabel(): 'Sales'
-                        GtkImage():
-                    Shortcut():
-                      GtkGrid():
-                        GtkLabel(): 'Perform services like maintenance, installation or repair.'
-                        GtkLabel(): 'Services'
-                        GtkImage():
-                    Shortcut():
-                      GtkGrid():
-                        GtkLabel(): 'Stock management, receive products and transfer them between branches.'
-                        GtkLabel(): 'Stock'
-                        GtkImage():
-                    Shortcut():
-                      GtkGrid():
-                        GtkLabel(): 'Manage your company from the cloud with Stoq.link.'
-                        GtkLabel(): 'Stoq.Link'
-                        GtkImage():
-                    Shortcut():
-                      GtkGrid():
-                        GtkLabel(): 'Control tills and their workflow.'
-                        GtkLabel(): 'Till'
-                        GtkImage():
-                GtkBox(side_box, orientation=vertical, fill=True):
-                  Section():
-                    GtkLabel(): 'Shortcuts'
-                  GtkFlowBox(_sc_box, orientation=horizontal):
-                    Shortcut():
-                      GtkGrid():
-                        GtkLabel(): 'Create a new quote for a sale'
-                        GtkLabel(): 'New sale'
-                        GtkImage():
-                    Shortcut():
-                      GtkGrid():
-                        GtkLabel(): 'Create a new sale with WO'
-                        GtkLabel(): 'New sale with work order'
-                        GtkImage():
-                  Section():
-                    GtkLabel(): 'Messages'
+                      stoq+gui+widgets+AppSection(padding=6):
+                        AppGrid():
+                          AppEntry():
+                            GtkEventBox():
+                              GtkGrid():
+                                GtkLabel(): 'Stock management, receive products and transfer them between branches.'
+                                GtkLabel(): 'Stock'
+                                GtkImage():
+                          AppEntry():
+                            GtkEventBox():
+                              GtkGrid():
+                                GtkLabel(): 'Create purchase orders and quotes'
+                                GtkLabel(): 'Purchase'
+                                GtkImage():
+                          AppEntry():
+                            GtkEventBox():
+                              GtkGrid():
+                                GtkLabel(): 'Manage the production process.'
+                                GtkLabel(): 'Production'
+                                GtkImage():
+                          AppEntry():
+                            GtkEventBox():
+                              GtkGrid():
+                                GtkLabel(): 'Audit and adjust the product stock.'
+                                GtkLabel(): 'Inventory'
+                                GtkImage():
+                        GtkSeparator():
+                        GtkLabel(): 'Operations'
+                      stoq+gui+widgets+AppSection(padding=6):
+                        AppGrid():
+                          AppEntry():
+                            GtkEventBox():
+                              GtkGrid():
+                                GtkLabel(): 'Manage payment that needs to be paid.'
+                                GtkLabel(): 'Accounts Payable'
+                                GtkImage():
+                          AppEntry():
+                            GtkEventBox():
+                              GtkGrid():
+                                GtkLabel(): 'Manage payments that needs to be received.'
+                                GtkLabel(): 'Accounts Receivable'
+                                GtkImage():
+                          AppEntry():
+                            GtkEventBox():
+                              GtkGrid():
+                                GtkLabel(): 'Control accounts and financial transactions.'
+                                GtkLabel(): 'Financial'
+                                GtkImage():
+                        GtkSeparator():
+                        GtkLabel(): 'Finances'
+                      stoq+gui+widgets+AppSection(padding=6):
+                        AppGrid():
+                          AppEntry():
+                            GtkEventBox():
+                              GtkGrid():
+                                GtkLabel(): 'Administer the branches, users, employees and configure system parameters.'
+                                GtkLabel(): 'Administrative'
+                                GtkImage():
+                          AppEntry():
+                            GtkEventBox():
+                              GtkGrid():
+                                GtkLabel(): 'Shows payments, orders and other things that will happen in the future.'
+                                GtkLabel(): 'Calendar'
+                                GtkImage():
+                          AppEntry():
+                            GtkEventBox():
+                              GtkGrid():
+                                GtkLabel(): 'Manage your company from the cloud with Stoq.link.'
+                                GtkLabel(): 'Stoq.Link'
+                                GtkImage():
+                        GtkSeparator():
+                        GtkLabel(): 'Others'
+                  GtkBox(side_box, orientation=vertical, fill=True):
+                    Section():
+                      GtkLabel(padding=6): 'Shortcuts'
+                      GtkSeparator(expand=True, fill=True, padding=6):
+                    ShortcutGrid(sc_grid):
+                      Shortcut():
+                        GtkEventBox():
+                          GtkGrid():
+                            GtkLabel(): 'New sale'
+                            GtkImage():
+                      Shortcut():
+                        GtkEventBox():
+                          GtkGrid():
+                            GtkLabel(): 'New sale with WO'
+                            GtkImage():
+                      Shortcut():
+                        GtkEventBox():
+                          GtkGrid():
+                            GtkLabel(): 'Products'
+                            GtkImage():
+                    Section():
+                      GtkLabel(padding=6): 'Messages'
+                      GtkSeparator(expand=True, fill=True, padding=6):
+                    stoq+gui+shell+statusbar+StatusBox(status, expand=True, fill=True):
+                      GtkBox(orientation=vertical):
+                        GtkScrolledWindow(expand=True, fill=True):
+                          GtkViewport():
+                            GtkBox(orientation=vertical):
+                              GtkBox(orientation=horizontal, fill=True, padding=6):
+                                GtkImage(fill=True):
+                                GtkLabel(fill=True): 'Status not available...'
+                              GtkBox(orientation=horizontal, fill=True, padding=6):
+                                GtkImage(fill=True):
+                                GtkLabel(fill=True): 'Status not available...'
+                        GtkButtonBox(orientation=horizontal, fill=True):
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkBox(orientation=horizontal):
@@ -111,26 +160,6 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
           GtkLabel(expand=True, fill=True): 'Test Statusbar test'
           GtkVSeparator():
           GtkButton(): 'Feedback'
-          GtkVSeparator():
-        StatusButton(pack-end):
-            stoq+gui+shell+statusbar+StatusPopover(): hidden
-              GtkBox(orientation=vertical):
-                GtkScrolledWindow(expand=True, fill=True):
-                  GtkViewport():
-                    GtkBox(orientation=vertical):
-                      GtkBox(orientation=horizontal, fill=True, padding=6):
-                        GtkImage(fill=True):
-                        GtkLabel(fill=True): 'Status not available...'
-                        GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-                      GtkHSeparator(fill=True):
-                      GtkBox(orientation=horizontal, fill=True, padding=6):
-                        GtkImage(fill=True):
-                        GtkLabel(fill=True): 'Status not available...'
-                        GtkButtonBox(orientation=horizontal, fill=True, pack-end):
-                          GtkButton(expand=True, fill=True): 'Backup now'
-                          GtkButton(expand=True, fill=True): 'Configure'
-                GtkButtonBox(orientation=horizontal, fill=True):
-                  GtkButton(expand=True, fill=True, padding=6): 'gtk-refresh'
   GtkHeaderBar():
     stoq+gui+widgets+ButtonGroup():
       GtkButton():

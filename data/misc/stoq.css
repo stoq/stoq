@@ -63,28 +63,20 @@ KanbanView {
     outline-width: 0;
 }
 
-Shortcut {
-    padding: 12px;
-}
-
-Section {
-    font-size: 1.5em;
-}
-
-
-AppEntry {
-    padding: 6px;
-    padding-bottom: 0;
-}
-
-Shortcut .title,
-AppEntry .title {
-    font-size: larger;
-}
-
 Shortcut .subtitle,
 AppEntry .subtitle {
-    font-size: smaller;
+    font-size: 0.75em;
+    color: mix (@theme_fg_color, @theme_bg_color, 0.25);
+}
+
+Shortcut.active,
+AppEntry.active {
+    background: mix(@theme_bg_color, @theme_selected_bg_color, 0.25);
+}
+
+Shortcut:selected .subtitle,
+AppEntry:selected .subtitle {
+    color: @theme_color;
 }
 
 .visualmode {
@@ -94,6 +86,30 @@ AppEntry .subtitle {
 }
 
 .no-padding {
+    padding-top: 0;
+    padding-bottom: 0;
     padding-left: 0;
     padding-right: 0;
+}
+
+.warning_count {
+    padding: 2px 4px;
+    border-radius: 5px;
+    color: @error_fg_color;
+    background: @error_color;
+
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.05;
+  }
+}
+
+.blink {
+    animation: blink 1.5s steps(100, start) infinite;
+}
+
+.h1 {
+    font-size: 1.25em;
 }

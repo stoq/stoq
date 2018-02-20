@@ -23,11 +23,24 @@
 #
 
 
-from gi.repository import Gtk, Gdk, GObject, Pango
+from gi.repository import Gtk, Gdk, Pango
 from kiwi.utils import gsignal
+
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.widgets.notification import NotificationCounter
+
+_ = stoqlib_gettext
 
 
 class ButtonGroup(Gtk.HBox):
+    """A horizontal box for grouped buttons.
+
+    This is a quick way to create a horizontal box for grouped buttons form a list of
+    widgets. Eg:
+
+        box = ButtonGroup([Gtk.Button('foo'), Gtk.Button('bar')])
+    """
+
     def __init__(self, buttons):
         super(ButtonGroup, self).__init__()
         self.get_style_context().add_class(Gtk.STYLE_CLASS_LINKED)
@@ -35,17 +48,41 @@ class ButtonGroup(Gtk.HBox):
             self.pack_start(b, False, False, 0)
 
 
-@GObject.type_register
+class Section(Gtk.Box):
+    """A simple section marker
+
+    This is just a label with a line in front of it.
+    """
+    __gtype_name__ = 'Section'
+
+    def __init__(self, title):
+        super(Section, self).__init__()
+        label = Gtk.Label.new(title)
+        label.set_xalign(0)
+        label.get_style_context().add_class('h1')
+
+        sep = Gtk.Separator()
+        sep.set_hexpand(True)
+        self.pack_start(label, False, False, 6)
+        self.pack_start(sep, True, True, 6)
+
+
 class AppEntry(Gtk.FlowBoxChild):
     __gtype_name__ = 'AppEntry'
 
-    def __init__(self, app, icon_size, size_group):
-        self.app = app
+    def __init__(self, app, large_icon):
         super(AppEntry, self).__init__()
+        self.app = app
 
         self.connect('realize', self._on_realize)
+        if large_icon:
+            icon_size = Gtk.IconSize.DND
+        else:
+            icon_size = Gtk.IconSize.LARGE_TOOLBAR
+
         pixbuf = self.render_icon(app.icon, icon_size)
         image = Gtk.Image.new_from_pixbuf(pixbuf)
+        image.props.margin_left = 6
         name = Gtk.Label.new(app.fullname)
         desc = Gtk.Label.new(app.description)
 
@@ -54,7 +91,6 @@ class AppEntry(Gtk.FlowBoxChild):
         desc.set_lines(2)
         desc.set_xalign(0)
         desc.set_yalign(0)
-        size_group.add_widget(desc)
 
         name.set_xalign(0)
         desc.set_ellipsize(Pango.EllipsizeMode.END)
@@ -62,58 +98,221 @@ class AppEntry(Gtk.FlowBoxChild):
         desc.get_style_context().add_class('subtitle')
 
         grid = Gtk.Grid()
-        grid.set_row_spacing(0)
-        grid.set_column_spacing(12)
+        grid.props.margin = 6
 
         grid.attach(image, 0, 0, 1, 2)
         grid.attach(name, 1, 0, 1, 1)
-        grid.attach(desc, 1, 1, 1, 1)
-        self.add(grid)
+        if large_icon:
+            grid.attach(desc, 1, 1, 1, 1)
+            grid.set_column_spacing(12)
+        else:
+            grid.set_tooltip_text(app.description)
+            grid.set_column_spacing(6)
+
+        # This event is here for a hover effect on the widget
+        event_box = Gtk.EventBox()
+        event_box.add_events(Gdk.EventMask.ENTER_NOTIFY_MASK | Gdk.EventMask.LEAVE_NOTIFY_MASK)
+        event_box.connect('enter-notify-event', self._on_hover, True)
+        event_box.connect('leave-notify-event', self._on_hover, False)
+        event_box.add(grid)
+        self.add(event_box)
 
     def _on_realize(self, widget):
         display = Gdk.Display.get_default()
         cursor = Gdk.Cursor.new_for_display(display, Gdk.CursorType.HAND1)
         self.get_window().set_cursor(cursor)
 
+    def _on_hover(self, widget, event, hover):
+        if hover:
+            self.get_style_context().add_class('active')
+        else:
+            self.get_style_context().remove_class('active')
 
-@GObject.type_register
-class AppGrid(Gtk.ScrolledWindow):
+
+class AppGrid(Gtk.FlowBox):
     __gtype_name__ = 'AppGrid'
 
     gsignal('app-selected', object)
 
-    def __init__(self, window, large_icons=False):
-        self._current_row = None
-        if large_icons:
-            icon_size = Gtk.IconSize.DIALOG
-        else:
-            icon_size = Gtk.IconSize.DND
-
+    def __init__(self, window, apps, size_group, large_icons=False, min_children=2, max_children=5):
+        self.window = window
         super(AppGrid, self).__init__()
 
-        box = Gtk.FlowBox()
-        box.set_homogeneous(True)
-        box.connect('child-activated', self._on_row_activated)
+        self.set_row_spacing(3)
+        self.set_column_spacing(3)
 
-        self.box = box
-        self.add(box)
+        self.set_homogeneous(True)
+        self.set_min_children_per_line(min_children)
+        self.set_max_children_per_line(max_children)
+        self.connect('child-activated', self._on_row_activated)
 
-        sg = Gtk.SizeGroup.new(Gtk.SizeGroupMode.BOTH)
-
-        for app in window.get_available_applications():
-            entry = AppEntry(app, icon_size, sg)
-            box.add(entry)
-            if window.current_app == app:
-                self._current_row = entry
+        for app in apps:
+            entry = AppEntry(app, large_icons)
+            size_group.add_widget(entry)
+            self.add(entry)
 
     def update_selection(self):
-        if self._current_row:
-            self.box.select_child(self._current_row)
-            self._current_row.grab_focus()
+        self.unselect_all()
+        for entry in self.get_children():
+            if entry.app.name == self.window.current_app.app_name:
+                self.select_child(entry)
+                break
 
     def _on_row_activated(self, listbox, row):
-        self._current_row = row
         self.emit('app-selected', row.app)
+
+        cur = self.window.current_app
+        if cur and cur.can_change_application():
+            self.window.run_application(row.app.name, hide=True)
+
+
+class AppSection(Gtk.Grid):
+    def __init__(self, window, name, apps, size_group, large_icons, max_children):
+        super(AppSection, self).__init__()
+        self.set_column_spacing(6)
+        self.set_column_spacing(6)
+        label = Gtk.Label(name)
+        label.set_xalign(0)
+        label.get_style_context().add_class('h1')
+        if large_icons:
+            label.props.margin_bottom = 6
+        self.grid = AppGrid(window, apps, size_group, large_icons=large_icons,
+                            max_children=max_children)
+        sep = Gtk.Separator()
+        sep.set_hexpand(True)
+
+        self.attach(label, 0, 0, 1, 1)
+        self.attach(sep, 1, 0, 1, 1)
+        self.attach(self.grid, 0, 1, 2, 1)
+
+
+class Apps(Gtk.Box):
+
+    sections = [
+        (_('Sales'), [
+            'pos', 'sales', 'till', 'services', 'delivery'
+        ]),
+        (_('Operations'), [
+            'stock', 'purchase', 'production', 'inventory',
+        ]),
+        (_('Finances'), [
+            'payable', 'receivable', 'financial'
+        ]),
+        (_('Others'), [
+            'admin', 'calendar', 'link',
+        ]),
+    ]
+
+    def __init__(self, window, large_icons=True, max_children=5):
+        super(Apps, self).__init__(orientation=Gtk.Orientation.VERTICAL)
+        app_map = {}
+        for app in window.get_available_applications():
+            app_map[app.name] = app
+
+        sg = Gtk.SizeGroup.new(Gtk.SizeGroupMode.BOTH)
+        for section, app_names in self.sections:
+            apps = [app_map.get(name) for name in app_names if name in app_map]
+            if not apps:
+                continue
+            self.pack_start(AppSection(window, section, apps, sg, large_icons,
+                                       max_children), False, False, 6)
+
+        self.show_all()
+
+        self.boxes = self.get_flowboxes()
+        for box in self.boxes:
+            box.connect('selected-children-changed', self._on_selection_changed)
+
+    def get_flowboxes(self):
+        return [child.grid for child in self.get_children()]
+
+    def update_selection(self):
+        for box in self.get_flowboxes():
+            box.update_selection()
+
+    def _on_selection_changed(self, box):
+        selection = box.get_selected_children()
+        if not selection:
+            return
+
+        for other in self.boxes:
+            if other != box:
+                other.unselect_all()
+
+
+class Shortcut(Gtk.FlowBoxChild):
+    __gtype_name__ = 'Shortcut'
+
+    def __init__(self, window, icon_name, title, subtitle, action):
+        self.window = window
+        super(Shortcut, self).__init__()
+        self.connect('realize', self._on_realize)
+
+        image = Gtk.Image.new_from_icon_name(icon_name or 'starred', Gtk.IconSize.BUTTON)
+
+        name = Gtk.Label.new(title)
+        name.set_xalign(0)
+        name.get_style_context().add_class('title')
+
+        grid = Gtk.Grid()
+        grid.set_row_spacing(0)
+        grid.set_column_spacing(12)
+
+        grid.attach(image, 0, 0, 1, 2)
+        grid.attach(name, 1, 0, 1, 1)
+        grid.set_tooltip_text(subtitle)
+
+        self.action_name = action
+        event_box = Gtk.EventBox()
+        event_box.add_events(Gdk.EventMask.ENTER_NOTIFY_MASK | Gdk.EventMask.LEAVE_NOTIFY_MASK)
+        event_box.connect('enter-notify-event', self._on_hover, True)
+        event_box.connect('leave-notify-event', self._on_hover, False)
+        event_box.add(grid)
+        self.add(event_box)
+
+    def _on_realize(self, widget):
+        display = Gdk.Display.get_default()
+        cursor = Gdk.Cursor.new_for_display(display, Gdk.CursorType.HAND1)
+        self.get_window().set_cursor(cursor)
+
+    def _on_hover(self, widget, event, hover):
+        if hover:
+            self.get_style_context().add_class('active')
+        else:
+            self.get_style_context().remove_class('active')
+
+
+class ShortcutGrid(Gtk.FlowBox):
+    __gtype_name__ = 'ShortcutGrid'
+
+    gsignal('shortcut-selected', object)
+
+    def __init__(self, window, large_icons=False, min_children=1, max_children=3):
+        super(ShortcutGrid, self).__init__()
+
+        self.set_homogeneous(True)
+        self.set_min_children_per_line(min_children)
+        self.set_max_children_per_line(max_children)
+        self.set_row_spacing(6)
+        self.set_column_spacing(6)
+        self.set_valign(Gtk.Align.START)
+        # Re-enable this once we implement actual shortcuts
+        #self.connect('child-activated', self._on_row_activated)
+
+        shortcuts = [
+            (None, _('New sale'), _('Create a new quote for a sale'),
+             'stoq.preferences'),
+            (None, _('New sale with WO'), _('Create a new sale with work order'),
+             'launch.sales'),
+            (None, _('Products'), _('Open product search'),
+             'launch.sales'),
+        ]
+        for (icon, title, subtitle, action) in shortcuts:
+            short = Shortcut(window, icon, title, subtitle, action)
+            self.add(short)
+
+    def _on_row_activated(self, listbox, row):
+        self.emit('shortcut-selected', row.app)
 
 
 class PopoverMenu(Gtk.Popover):
@@ -123,56 +322,54 @@ class PopoverMenu(Gtk.Popover):
 
         super(PopoverMenu, self).__init__()
         self.set_relative_to(window.home_button)
+        self.set_size_request(750, 500)
 
-        self.apps = AppGrid(window)
-        self.apps.connect('app-selected', self._on_app_selected)
-        self.apps.set_size_request(650, 350)
-        self.apps.show_all()
+        self.stack = Gtk.Stack()
+        self.stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
+        self.switcher = Gtk.StackSwitcher()
+        self.switcher.set_halign(Gtk.Align.CENTER)
+        self.switcher.set_stack(self.stack)
+        self.switcher.set_homogeneous(True)
 
-        self.add(self.apps)
+        close_btn = window.create_button('fa-home-symbolic', action='launch.launcher')
+        close_btn.set_halign(Gtk.Align.START)
+        close_btn.set_relief(Gtk.ReliefStyle.NONE)
+
+        overlay = Gtk.Overlay()
+        overlay.add(self.switcher)
+        overlay.add_overlay(close_btn)
+
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        box.pack_start(overlay, False, False, 6)
+        box.pack_start(self.stack, True, True, 6)
+        box.set_size_request(500, -1)
+
+        self.apps = Apps(window, large_icons=False, max_children=3)
+        self.shortcuts = ShortcutGrid(window, max_children=1)
+        section = Section(_('Shortcuts'))
+        section.set_vexpand(False)
+
+        apps_box = Gtk.Box()
+        apps_box.pack_start(self.apps, True, True, 6)
+        sc_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        sc_box.pack_start(section, False, False, 6)
+        sc_box.pack_start(self.shortcuts, True, True, 6)
+        apps_box.pack_start(sc_box, False, False, 6)
+
+        sw = Gtk.ScrolledWindow()
+        sw.add(apps_box)
+        self.stack.add_titled(sw, 'apps', _('Applications'))
+
+        from stoq.gui.shell.statusbar import StatusBox
+        self.status = StatusBox()
+        self.stack.add_titled(self.status, 'messages', _('Messages'))
+
+        box.show_all()
+        self.add(box)
+
+        self.counter = NotificationCounter(self.switcher.get_children()[-1])
 
     def toggle(self):
         self.set_visible(not self.is_visible())
         self.apps.update_selection()
-
-    def _on_app_selected(self, widget, app):
-        self.toggle()
-
-        cur = self._window.current_app
-        if cur and cur.can_change_application():
-            self._window.run_application(app.name, hide=True)
-
-
-class SideMenu(Gtk.Box):
-    def __init__(self, window):
-        self._window = window
-        super(SideMenu, self).__init__()
-
-        self.revealer = Gtk.Revealer()
-        self.revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_RIGHT)
-        self.menu = Gtk.ListBox()
-        self.menu.connect('row-activated', self._on_row_activated)
-
-        sw = Gtk.ScrolledWindow()
-        sw.set_size_request(350, 350)
-        sw.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
-        sw.add(self.menu)
-
-        self.revealer.add(sw)
-        self.revealer.set_reveal_child(False)
-
-        for app in self._window.get_available_applications():
-            self.menu.add(AppEntry(app))
-
-        self.add(self.revealer)
-
-    def toggle(self):
-        reveal = self.revealer.get_reveal_child()
-        self.revealer.set_reveal_child(not reveal)
-
-    def _on_row_activated(self, listbox, row):
-        self.toggle()
-
-        cur = self._window.current_app
-        if cur and cur.can_change_application():
-            self._window.run_application(row.app.name, hide=True)
+        self.switcher.grab_focus()

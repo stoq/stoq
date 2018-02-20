@@ -29,9 +29,7 @@ from decimal import Decimal
 
 from gi.repository import Gtk, GObject
 from kiwi import ValueUnset
-from kiwi.environ import environ
 from kiwi.python import enum
-from kiwi.ui.pixbufutils import pixbuf_from_string
 from kiwi.ui.widgets.checkbutton import ProxyCheckButton
 from kiwi.ui.widgets.combo import ProxyComboBox
 from kiwi.ui.widgets.entry import ProxyDateEntry
@@ -289,8 +287,8 @@ class DateSearchFilter(SearchFilter):
         """
         pos = len(self.mode) + 1
         for name, option_type in [
-            (_('Custom day'), DateSearchFilter.Type.USER_DAY),
-            (_('Custom interval'), DateSearchFilter.Type.USER_INTERVAL)]:
+                (_('Custom day'), DateSearchFilter.Type.USER_DAY),
+                (_('Custom interval'), DateSearchFilter.Type.USER_INTERVAL)]:
 
             self.mode.insert_item(pos, name, option_type)
             pos += 1
@@ -680,11 +678,8 @@ class StringSearchFilter(SearchFilter):
         self.entry = Gtk.Entry()
         self.entry.set_placeholder_text(_("Search"))
         self.entry.props.secondary_icon_sensitive = False
-        data = environ.get_resource_string('stoq', 'pixmaps',
-                                           'stoq-funnel-16x16.png')
-        image = pixbuf_from_string(data)
-        self.entry.set_icon_from_pixbuf(Gtk.EntryIconPosition.PRIMARY,
-                                        image)
+        self.entry.set_icon_from_icon_name(Gtk.EntryIconPosition.PRIMARY,
+                                           'fa-filter-symbolic')
         self.entry.set_icon_tooltip_text(Gtk.EntryIconPosition.PRIMARY,
                                          _("Add a filter"))
         self.entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY,
@@ -741,7 +736,7 @@ class StringSearchFilter(SearchFilter):
         elif icon_pos == Gtk.EntryIconPosition.PRIMARY:
             # We don't need create popup filters if haven't search columns.
             if (not self._container or not hasattr(self._container, 'menu') or
-                not self._container.menu):
+                    not self._container.menu):
                 return
             self._container.menu.popup(None, None, None,
                                        self._position_filter_menu, 0, event.time)

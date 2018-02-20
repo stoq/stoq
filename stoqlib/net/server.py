@@ -102,13 +102,12 @@ class ServerProxy(object):
 
             address = config.get('General', 'serveraddress')
             if not address:
-                with api.new_store() as store:
-                    query = ("SELECT client_addr FROM pg_stat_activity "
-                             "WHERE application_name LIKE ? AND "
-                             "      datname = ? "
-                             "LIMIT 1")
-                    params = [u'stoqserver%', str(db_settings.dbname)]
-                    res = store.execute(query, params=params).get_one()
+                query = ("SELECT client_addr FROM pg_stat_activity "
+                         "WHERE application_name LIKE ? AND "
+                         "      datname = ? "
+                         "LIMIT 1")
+                params = [u'stoqserver%', str(db_settings.dbname)]
+                res = api.get_default_store().execute(query, params=params).get_one()
 
                 if res:
                     # When stoqserver is located in another machine

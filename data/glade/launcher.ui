@@ -8,76 +8,88 @@
     <property name="window_position">center</property>
     <property name="destroy_with_parent">True</property>
     <child>
-      <object class="GtkBox" id="main_box">
+      <object class="GtkViewport" id="viewport1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
         <child>
-          <object class="GtkBox" id="box1">
+          <object class="GtkBox" id="main_box">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="border_width">18</property>
             <property name="orientation">vertical</property>
             <child>
-              <object class="GtkScrolledWindow" id="scrolledwindow1">
+              <object class="GtkBox" id="box1">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="border_width">0</property>
-                <property name="overlay_scrolling">False</property>
+                <property name="can_focus">False</property>
+                <property name="border_width">18</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkViewport" id="viewport1">
+                  <object class="GtkScrolledWindow" id="scrolledwindow1">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="border_width">0</property>
+                    <property name="overlay_scrolling">False</property>
                     <child>
-                      <object class="GtkBox" id="box2">
+                      <object class="GtkViewport" id="viewport2">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="halign">center</property>
                         <child>
-                          <object class="GtkBox" id="app_box">
+                          <object class="GtkBox" id="box2">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">center</property>
-                            <property name="orientation">vertical</property>
                             <property name="spacing">18</property>
                             <child>
-                              <placeholder/>
+                              <object class="GtkBox" id="app_box">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">center</property>
+                                <property name="orientation">vertical</property>
+                                <property name="spacing">18</property>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
                             </child>
                             <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
+                              <object class="GtkBox" id="side_box">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="orientation">vertical</property>
+                                <property name="spacing">18</property>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
                             </child>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkBox" id="side_box">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="orientation">vertical</property>
-                            <property name="spacing">18</property>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
                   </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
                 </child>
               </object>
               <packing>
@@ -87,11 +99,6 @@
               </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
       </object>
     </child>

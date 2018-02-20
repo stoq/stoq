@@ -364,11 +364,11 @@ class CalendarApp(ShellApp):
         self.main_vbox.pack_start(self._calendar, True, True, 0)
 
         self.nav_header = ButtonGroup([
-            self.window._create_button('fa-arrow-left-symbolic', action='calendar.Back'),
-            self.window._create_button('fa-calendar-symbolic',
-                                       action='calendar.Today',
-                                       tooltip=_('Today')),
-            self.window._create_button('fa-arrow-right-symbolic', action='calendar.Forward')
+            self.window.create_button('fa-arrow-left-symbolic', action='calendar.Back'),
+            self.window.create_button('fa-calendar-symbolic',
+                                      action='calendar.Today',
+                                      tooltip=_('Today')),
+            self.window.create_button('fa-arrow-right-symbolic', action='calendar.Forward')
         ])
 
         self.month_button = Gtk.ToggleButton.new_with_label(_('Month'))

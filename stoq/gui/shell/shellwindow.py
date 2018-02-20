@@ -46,6 +46,7 @@ from stoqlib.gui.utils.help import show_contents, show_section
 from stoqlib.gui.utils.introspection import introspect_slaves
 from stoqlib.gui.utils.logo import render_logo_pixbuf
 from stoqlib.gui.utils.openbrowser import open_browser
+from stoqlib.gui.widgets.notification import NotificationCounter
 from stoqlib.lib.interfaces import IAppInfo, IApplicationDescriptions
 from stoqlib.lib.message import error, yesno
 from stoqlib.lib.permissions import PermissionManager
@@ -164,7 +165,6 @@ class ShellWindow(Delegate):
         self.shell = shell
         self.app = app
         self.in_ui_test = False
-        self.tool_items = []
         self.options = options
         self.store = store
         self._pre_launcher_init()
@@ -202,8 +202,12 @@ class ShellWindow(Delegate):
         for app in self.get_available_applications():
             action = Gio.SimpleAction.new(app.name, None)
             action.connect('activate', callback, app.name)
-
             group.add_action(action)
+
+        # Also add the launcher app
+        action = Gio.SimpleAction.new('launcher', None)
+        action.connect('activate', callback, 'launcher')
+        group.add_action(action)
 
     def _create_menu(self, actions):
         model = Gio.Menu()
@@ -228,7 +232,7 @@ class ShellWindow(Delegate):
         self.main_vbox.pack_start(self.application_box, True, True, 0)
         self.application_box.show()
 
-        self.side_menu = PopoverMenu(self)
+        self.stoq_menu = PopoverMenu(self)
         self.main_vbox.show_all()
 
         self.statusbar = self._create_statusbar()
@@ -448,10 +452,10 @@ class ShellWindow(Delegate):
         screen_width = screen.get_width()
 
         if height == -1 or y > screen_height:
-            height = min(int(screen_height * 0.75), 600)
+            height = min(int(screen_height * 0.75), 650)
 
         if width == -1 or y > screen_width:
-            width = min(int(screen_width * 0.75), 1200)
+            width = min(int(screen_width * 0.75), 800)
 
         # Setup window position according to the settings file, but if settings file
         # indicates values out of the screen, move the window to the outermost position
@@ -523,7 +527,7 @@ class ShellWindow(Delegate):
 
     def _empty_message_area(self):
         area = self.statusbar.message_area
-        for child in area.get_children()[1:-1]:
+        for child in area.get_children()[1:]:
             child.destroy()
 
     def _shutdown_application(self, restart=False, force=False):
@@ -591,8 +595,8 @@ class ShellWindow(Delegate):
         if self.options.debug:
             self.add_debug_ui()
 
-    def _create_button(self, icon, label=None, menu_model=None, menu=False,
-                       action=None, tooltip=None, style_class=None, toggle=False):
+    def create_button(self, icon, label=None, menu_model=None, menu=False, action=None,
+                      tooltip=None, style_class=None, toggle=False, icon_size=Gtk.IconSize.BUTTON):
         if menu_model or menu:
             button = Gtk.MenuButton()
         elif toggle:
@@ -604,7 +608,7 @@ class ShellWindow(Delegate):
         button.add(box)
 
         if icon:
-            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
+            image = Gtk.Image.new_from_icon_name(icon, icon_size)
             box.pack_start(image, False, False, 0)
         if label:
             label = Gtk.Label.new(label)
@@ -631,9 +635,9 @@ class ShellWindow(Delegate):
         self.toplevel.set_titlebar(self.header_bar)
 
         # Right side
-        self.close_btn = self._create_button('fa-power-off-symbolic', action='stoq.quit')
+        self.close_btn = self.create_button('fa-power-off-symbolic', action='stoq.quit')
         self.close_btn.set_relief(Gtk.ReliefStyle.NONE)
-        self.min_btn = self._create_button('fa-window-minimize-symbolic')
+        self.min_btn = self.create_button('fa-window-minimize-symbolic')
         self.min_btn.set_relief(Gtk.ReliefStyle.NONE)
         #self.header_bar.pack_end(self.close_btn)
         #self.header_bar.pack_end(self.min_btn)
@@ -644,33 +648,34 @@ class ShellWindow(Delegate):
 
         self.user_menu = builder.get_object('app-menu')
         self.help_section = builder.get_object('help-section')
-        self.user_button = self._create_button('fa-cog-symbolic',
-                                               menu_model=self.user_menu)
+        self.user_button = self.create_button('fa-cog-symbolic',
+                                              menu_model=self.user_menu)
         self.search_menu = Gio.Menu()
-        self.search_button = self._create_button('fa-search-symbolic',
-                                                 _('Searches'),
-                                                 menu_model=self.search_menu)
+        self.search_button = self.create_button('fa-search-symbolic', _('Searches'),
+                                                menu_model=self.search_menu)
         self.main_menu = Gio.Menu()
-        self.menu_button = self._create_button('fa-bars-symbolic', _('Actions'),
-                                               menu_model=self.main_menu)
+        self.menu_button = self.create_button('fa-bars-symbolic', _('Actions'),
+                                              menu_model=self.main_menu)
 
         self.header_bar.pack_end(
             ButtonGroup([self.menu_button, self.search_button, self.user_button]))
 
-        self.sign_button = self._create_button('', _('Sign now'), style_class='suggested-action')
+        self.sign_button = self.create_button('', _('Sign now'), style_class='suggested-action')
         #self.header_bar.pack_end(self.sign_button)
 
         # Left side
-        self.home_button = self._create_button(STOQ_LAUNCHER, style_class='suggested-action')
+        self.home_button = self.create_button(STOQ_LAUNCHER, style_class='suggested-action')
         self.new_menu = Gio.Menu()
-        self.new_button = self._create_button('fa-plus-symbolic',
-                                              _('New'), menu_model=self.new_menu)
+        self.new_button = self.create_button('fa-plus-symbolic', _('New'),
+                                             menu_model=self.new_menu)
 
         self.header_bar.pack_start(
             ButtonGroup([self.home_button, self.new_button, ]))
 
         self.domain_header = None
         self.header_bar.show_all()
+
+        self.notifications = NotificationCounter(self.home_button, blink=True)
 
     def _create_actions(self):
         # Gloabl actions avaiable at any time from all applications
@@ -798,6 +803,7 @@ class ShellWindow(Delegate):
         image.set_size_request(16, 16)
 
     def show_app(self, app, app_window, **params):
+        self.stoq_menu.set_visible(False)
         app_window.get_parent().remove(app_window)
         self.application_box.add(app_window)
         self.application_box.set_child_packing(app_window, True, True, 0,
@@ -874,10 +880,6 @@ class ShellWindow(Delegate):
             self.current_app = None
 
         self._empty_message_area()
-        for item in self.tool_items:
-            item.destroy()
-        self.tool_items = []
-
         if not empty:
             self.run_application(app_name=u'launcher')
 
@@ -928,8 +930,8 @@ class ShellWindow(Delegate):
         for (icon, label, action, in_header) in options:
             if not in_header:
                 continue
-            buttons.append(self._create_button(icon, action=action,
-                                               tooltip=label))
+            buttons.append(self.create_button(icon, action=action,
+                                              tooltip=label))
         self.domain_header = ButtonGroup(buttons)
         self.domain_header.show_all()
         self.header_bar.pack_start(self.domain_header)
@@ -1109,7 +1111,7 @@ class ShellWindow(Delegate):
         self.get_toplevel().destroy()
 
     def on_home_button__clicked(self, action):
-        self.side_menu.toggle()
+        self.stoq_menu.toggle()
 
     # View
 

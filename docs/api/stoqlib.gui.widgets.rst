@@ -57,6 +57,14 @@ widgets Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`notification` Module
+--------------------------
+
+.. automodule:: stoqlib.gui.widgets.notification
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`processview` Module
 -------------------------
 

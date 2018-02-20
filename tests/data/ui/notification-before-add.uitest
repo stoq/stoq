@@ -1,0 +1,5 @@
+widget: Box
+GtkBox(orientation=horizontal): hidden
+  GtkLabel(): 'label before', hidden
+  GtkLabel(): 'Teste', hidden
+  GtkLabel(): 'label after', hidden
