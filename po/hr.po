@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-15 02:10-0200\n"
-"PO-Revision-Date: 2018-02-15 04:10+0000\n"
+"POT-Creation-Date: 2018-02-20 02:10-0300\n"
+"PO-Revision-Date: 2018-02-20 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Croatian (http://www.transifex.com/async/stoq/language/hr/)\n"
 "MIME-Version: 1.0\n"
@@ -395,16 +395,16 @@ msgstr ""
 #: ../data/glade/TransporterDataSlave.ui.h:3
 #: ../data/glade/UserStatusSlave.ui.h:2 ../plugins/books/booksdomain.py:44
 #: ../plugins/books/booksdomain.py:67 ../plugins/ecf/ecfdomain.py:220
-#: ../plugins/ecf/ecfprinterdialog.py:332
+#: ../plugins/ecf/ecfprinterdialog.py:335
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:3
 #: ../stoqlib/domain/devices.py:206 ../stoqlib/domain/payment/method.py:123
-#: ../stoqlib/domain/person.py:657 ../stoqlib/domain/person.py:776
-#: ../stoqlib/domain/person.py:1212 ../stoqlib/domain/person.py:1255
-#: ../stoqlib/domain/person.py:1417 ../stoqlib/domain/person.py:1471
-#: ../stoqlib/domain/person.py:1514 ../stoqlib/domain/person.py:1644
-#: ../stoqlib/domain/person.py:1687 ../stoqlib/domain/person.py:1837
-#: ../stoqlib/domain/person.py:1924 ../stoqlib/domain/person.py:2317
-#: ../stoqlib/domain/person.py:2368 ../stoqlib/domain/station.py:114
+#: ../stoqlib/domain/person.py:664 ../stoqlib/domain/person.py:783
+#: ../stoqlib/domain/person.py:1219 ../stoqlib/domain/person.py:1262
+#: ../stoqlib/domain/person.py:1424 ../stoqlib/domain/person.py:1478
+#: ../stoqlib/domain/person.py:1521 ../stoqlib/domain/person.py:1651
+#: ../stoqlib/domain/person.py:1694 ../stoqlib/domain/person.py:1844
+#: ../stoqlib/domain/person.py:1931 ../stoqlib/domain/person.py:2324
+#: ../stoqlib/domain/person.py:2375 ../stoqlib/domain/station.py:114
 #: ../stoqlib/domain/test/test_devices.py:159
 #: ../stoqlib/domain/test/test_person.py:1140
 #: ../stoqlib/domain/test/test_person.py:1159
@@ -427,13 +427,13 @@ msgstr ""
 #: ../data/glade/UserStatusSlave.ui.h:3 ../plugins/books/booksdomain.py:45
 #: ../plugins/books/booksdomain.py:68 ../plugins/ecf/ecfdomain.py:221
 #: ../stoqlib/domain/devices.py:207 ../stoqlib/domain/payment/method.py:124
-#: ../stoqlib/domain/person.py:658 ../stoqlib/domain/person.py:777
-#: ../stoqlib/domain/person.py:894 ../stoqlib/domain/person.py:1213
-#: ../stoqlib/domain/person.py:1256 ../stoqlib/domain/person.py:1418
-#: ../stoqlib/domain/person.py:1472 ../stoqlib/domain/person.py:1515
-#: ../stoqlib/domain/person.py:1645 ../stoqlib/domain/person.py:1688
-#: ../stoqlib/domain/person.py:1838 ../stoqlib/domain/person.py:1925
-#: ../stoqlib/domain/person.py:2319 ../stoqlib/domain/person.py:2370
+#: ../stoqlib/domain/person.py:665 ../stoqlib/domain/person.py:784
+#: ../stoqlib/domain/person.py:901 ../stoqlib/domain/person.py:1220
+#: ../stoqlib/domain/person.py:1263 ../stoqlib/domain/person.py:1425
+#: ../stoqlib/domain/person.py:1479 ../stoqlib/domain/person.py:1522
+#: ../stoqlib/domain/person.py:1652 ../stoqlib/domain/person.py:1695
+#: ../stoqlib/domain/person.py:1845 ../stoqlib/domain/person.py:1932
+#: ../stoqlib/domain/person.py:2326 ../stoqlib/domain/person.py:2377
 #: ../stoqlib/domain/station.py:115 ../stoqlib/domain/test/test_devices.py:161
 #: ../stoqlib/domain/test/test_person.py:1096
 #: ../stoqlib/domain/test/test_person.py:1142
@@ -471,6 +471,7 @@ msgstr "Fax:"
 
 #: ../data/glade/BranchDialog.ui.h:5
 #: ../data/glade/CompanyDocumentsSlave.ui.h:4
+#: ../data/glade/IndividualDocuments.ui.h:8
 #: ../data/glade/InventoryAdjustmentEditor.ui.h:4
 msgid "State Registry:"
 msgstr ""
@@ -714,6 +715,7 @@ msgid "Doing business as:"
 msgstr ""
 
 #: ../data/glade/CompanyDocumentsSlave.ui.h:3
+#: ../data/glade/IndividualDocuments.ui.h:9
 msgid "City Registry:"
 msgstr ""
 
@@ -5242,11 +5244,11 @@ msgstr ""
 msgid "Could not find a %s printer connected to %s"
 msgstr ""
 
-#: ../plugins/ecf/ecfprinterdialog.py:243
+#: ../plugins/ecf/ecfprinterdialog.py:246
 msgid "This printer is already known to the system"
 msgstr ""
 
-#: ../plugins/ecf/ecfprinterdialog.py:329 ../stoq/gui/pos.py:786
+#: ../plugins/ecf/ecfprinterdialog.py:332 ../stoq/gui/pos.py:786
 #: ../stoq/gui/stock.py:268 ../stoqlib/gui/dialogs/initialstockdialog.py:112
 #: ../stoqlib/gui/dialogs/sellabledialog.py:203
 #: ../stoqlib/gui/search/productsearch.py:256
@@ -5258,20 +5260,20 @@ msgstr ""
 msgid "Model"
 msgstr ""
 
-#: ../plugins/ecf/ecfprinterdialog.py:330
+#: ../plugins/ecf/ecfprinterdialog.py:333
 msgid "Serial"
 msgstr ""
 
-#: ../plugins/ecf/ecfprinterdialog.py:331 ../stoqlib/gui/dialogs/devices.py:44
+#: ../plugins/ecf/ecfprinterdialog.py:334 ../stoqlib/gui/dialogs/devices.py:44
 #: ../stoqlib/gui/editors/stationeditor.py:40
 msgid "Computer"
 msgstr ""
 
-#: ../plugins/ecf/ecfprinterdialog.py:345
+#: ../plugins/ecf/ecfprinterdialog.py:348
 msgid "Cant edit a virtual printer"
 msgstr ""
 
-#: ../plugins/ecf/ecfprinterdialog.py:352 ../plugins/ecf/ecfui.py:207
+#: ../plugins/ecf/ecfprinterdialog.py:355 ../plugins/ecf/ecfui.py:207
 msgid "Fiscal Printers"
 msgstr ""
 
@@ -5525,7 +5527,7 @@ msgstr ""
 msgid "The CNPJ is not valid."
 msgstr ""
 
-#: ../plugins/nfe/nfegenerator.py:196 ../stoqlib/domain/person.py:834
+#: ../plugins/nfe/nfegenerator.py:196 ../stoqlib/domain/person.py:841
 #, python-format
 msgid "The CNPJ of %s is not valid."
 msgstr ""
@@ -9212,140 +9214,144 @@ msgstr ""
 msgid "Stoq"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:253
+#: ../stoq/gui/shell/shellwindow.py:250
 #, python-format
 msgid "User: %s"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:254
+#: ../stoq/gui/shell/shellwindow.py:251
 #, python-format
 msgid "Computer: %s"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:263
+#: ../stoq/gui/shell/shellwindow.py:260
 msgid "About Stoq"
 msgstr ""
 
 #. Title
-#: ../stoq/gui/shell/shellwindow.py:331
+#: ../stoq/gui/shell/shellwindow.py:328
 msgid "You have pending plugins."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:337
+#: ../stoq/gui/shell/shellwindow.py:334
 msgid ""
 "The following plugins need to be enabled: <b>{}</b>.\n"
 "\n"
 "You can do it by registering on <a href=\"{}\">Stoq.link</a>."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:350
+#: ../stoq/gui/shell/shellwindow.py:347
 msgid "Use my own data"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:351
+#: ../stoq/gui/shell/shellwindow.py:348
 msgid "You are using Stoq with example data."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:352
+#: ../stoq/gui/shell/shellwindow.py:349
 #, python-format
 msgid ""
 "Some features are limited due to fiscal reasons. Click on '%s' to remove the"
 " limitations."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:385
+#: ../stoq/gui/shell/shellwindow.py:382
 #, python-format
 msgid "There is %s client doing birthday today!"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:386
+#: ../stoq/gui/shell/shellwindow.py:383
 #, python-format
 msgid "There are %s clients doing birthday today!"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:388
+#: ../stoq/gui/shell/shellwindow.py:385
 msgid "Check the calendar"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:408
+#: ../stoq/gui/shell/shellwindow.py:405
 #, python-format
 msgid "Welcome to Stoq version %s!"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:410
+#: ../stoq/gui/shell/shellwindow.py:407
 msgid "See what's new"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:418
+#: ../stoq/gui/shell/shellwindow.py:415
 msgid ""
 "You are currently using an <b>unstable version</b> of Stoq that is under development,\n"
 "be aware that it may behave incorrectly, crash or even loose your data.\n"
 "<b>Do not use in production.</b>"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:488
+#: ../stoq/gui/shell/shellwindow.py:485
 #, python-format
 msgid "Release date: %s"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:644
+#: ../stoq/gui/shell/shellwindow.py:651
 msgid "Searches"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:647
-msgid "Ações"
+#: ../stoq/gui/shell/shellwindow.py:654
+msgid "Actions"
 msgstr ""
 
 #: ../stoq/gui/shell/shellwindow.py:660
+msgid "Sign now"
+msgstr ""
+
+#: ../stoq/gui/shell/shellwindow.py:667
 msgid "New"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:706
+#: ../stoq/gui/shell/shellwindow.py:713
 #, python-format
 msgid ""
 "This user lacks credentials \n"
 "for application %s"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:891
+#: ../stoq/gui/shell/shellwindow.py:911
 msgid "Introspect slaves"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:892
+#: ../stoq/gui/shell/shellwindow.py:912
 msgid "Remove settings cache"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:897
+#: ../stoq/gui/shell/shellwindow.py:917
 msgid "Debug"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:922
+#: ../stoq/gui/shell/shellwindow.py:942
 #: ../stoqlib/gui/search/searchdialog.py:299
 msgid "Export to spreadsheet..."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:927
+#: ../stoq/gui/shell/shellwindow.py:947
 msgid "Print this report..."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1046
+#: ../stoq/gui/shell/shellwindow.py:1066
 msgid ""
 "This will enable production mode and finish the demonstration. Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1049
+#: ../stoq/gui/shell/shellwindow.py:1069
 msgid "Enable production mode"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1049
+#: ../stoq/gui/shell/shellwindow.py:1069
 msgid "Continue testing"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1161
+#: ../stoq/gui/shell/shellwindow.py:1184
 msgid "Learn More..."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1162
+#: ../stoq/gui/shell/shellwindow.py:1185
 #, python-format
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr ""
@@ -10527,115 +10533,115 @@ msgstr ""
 msgid "Cohabitation"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:701
+#: ../stoqlib/domain/person.py:708
 #, python-format
 msgid "The CPF of %s is not valid"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:891
+#: ../stoqlib/domain/person.py:898
 msgid "Solvent"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:892
+#: ../stoqlib/domain/person.py:899
 msgid "Indebted"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:893
+#: ../stoqlib/domain/person.py:900
 msgid "Insolvent"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1174
+#: ../stoqlib/domain/person.py:1181
 #, python-format
 msgid "The available credit for this client (%s) is not enough."
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1187
+#: ../stoqlib/domain/person.py:1194
 msgid "It is not possible to sell for clients with late payments."
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1191
+#: ../stoqlib/domain/person.py:1198
 msgid ""
 "It is not possible to sell with store credit for clients with late payments."
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1214
+#: ../stoqlib/domain/person.py:1221
 msgid "Blocked"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1355
+#: ../stoqlib/domain/person.py:1362
 msgid "Normal"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1356
+#: ../stoqlib/domain/person.py:1363
 msgid "Away"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1357
+#: ../stoqlib/domain/person.py:1364
 msgid "Vacation"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1358
+#: ../stoqlib/domain/person.py:1365
 msgid "Off"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1561
+#: ../stoqlib/domain/person.py:1568
 msgid "Invalid user or password"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1565
+#: ../stoqlib/domain/person.py:1572
 msgid "This user does not have access to this branch."
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1611 ../stoqlib/domain/test/test_person.py:1010
+#: ../stoqlib/domain/person.py:1618 ../stoqlib/domain/test/test_person.py:1010
 #, python-format
 msgid "User '%s' logged in on '%s'"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1616 ../stoqlib/domain/test/test_person.py:1016
+#: ../stoqlib/domain/person.py:1623 ../stoqlib/domain/test/test_person.py:1016
 #, python-format
 msgid "User '%s' logged in"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1623 ../stoqlib/domain/test/test_person.py:1028
+#: ../stoqlib/domain/person.py:1630 ../stoqlib/domain/test/test_person.py:1028
 #, python-format
 msgid "User '%s' logged out from '%s'"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1628 ../stoqlib/domain/test/test_person.py:1034
+#: ../stoqlib/domain/person.py:1635 ../stoqlib/domain/test/test_person.py:1034
 #, python-format
 msgid "User '%s' logged out"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1743
+#: ../stoqlib/domain/person.py:1750
 #, python-format
 msgid "Created branch '%s'"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1799
+#: ../stoqlib/domain/person.py:1806
 msgid "Globally"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1800
+#: ../stoqlib/domain/person.py:1807
 msgid "By Salesperson"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1801
+#: ../stoqlib/domain/person.py:1808
 msgid "By Sellable"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1802
+#: ../stoqlib/domain/person.py:1809
 msgid "By Payment Method"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1803
+#: ../stoqlib/domain/person.py:1810
 msgid "By Base Sellable Category"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1804
+#: ../stoqlib/domain/person.py:1811
 msgid "By Sellable Category"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:1805
+#: ../stoqlib/domain/person.py:1812
 msgid "By Sale Total"
 msgstr ""
 
@@ -11487,7 +11493,7 @@ msgstr ""
 
 #: ../stoqlib/gui/dialogs/branchdialog.py:114
 #: ../stoqlib/gui/templates/companytemplate.py:55
-#: ../stoqlib/gui/templates/individualtemplate.py:61
+#: ../stoqlib/gui/templates/individualtemplate.py:63
 #: ../stoqlib/gui/wizards/personwizard.py:159
 #, python-format
 msgid "%s is not valid."
@@ -15883,12 +15889,12 @@ msgstr ""
 msgid "A company with this %s already exists"
 msgstr ""
 
-#: ../stoqlib/gui/templates/individualtemplate.py:65
+#: ../stoqlib/gui/templates/individualtemplate.py:67
 #, python-format
 msgid "A person with this %s already exists"
 msgstr ""
 
-#: ../stoqlib/gui/templates/individualtemplate.py:192
+#: ../stoqlib/gui/templates/individualtemplate.py:194
 msgid "Birth date must be less than today"
 msgstr ""
 
