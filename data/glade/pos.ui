@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
 <interface>
-  <requires lib="gtk+" version="2.24"/>
-  <!-- interface-requires kiwiwidgets 0.0 -->
-  <!-- interface-naming-policy toplevel-contextual -->
+  <requires lib="gtk+" version="3.0"/>
+  <requires lib="kiwiwidgets" version="0.0"/>
   <object class="GtkAdjustment" id="adjustment1">
     <property name="upper">99999</property>
     <property name="value">1</property>
@@ -55,8 +55,8 @@
                               <object class="GtkLabel" id="label2">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="xalign">0</property>
                                 <property name="label" translatable="yes">Barcode:</property>
+                                <property name="xalign">0</property>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
@@ -70,11 +70,8 @@
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">●</property>
                                 <property name="width_chars">16</property>
-                                <property name="invisible_char_set">True</property>
                                 <property name="primary_icon_activatable">False</property>
                                 <property name="secondary_icon_activatable">False</property>
-                                <property name="primary_icon_sensitive">True</property>
-                                <property name="secondary_icon_sensitive">True</property>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
@@ -86,8 +83,8 @@
                               <object class="ProxyLabel" id="kiwilabel2">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="xalign">1</property>
                                 <property name="label" translatable="yes">Quantity:</property>
+                                <property name="xalign">1</property>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
@@ -102,11 +99,8 @@
                                 <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
                                 <property name="xalign">1</property>
-                                <property name="invisible_char_set">True</property>
                                 <property name="primary_icon_activatable">False</property>
                                 <property name="secondary_icon_activatable">False</property>
-                                <property name="primary_icon_sensitive">True</property>
-                                <property name="secondary_icon_sensitive">True</property>
                                 <property name="adjustment">adjustment1</property>
                                 <property name="digits">2</property>
                                 <property name="data_type">Decimal</property>
@@ -139,11 +133,7 @@
                                 <property name="width_chars">7</property>
                                 <property name="xalign">1</property>
                                 <property name="truncate_multiline">True</property>
-                                <property name="invisible_char_set">True</property>
-                                <property name="primary_icon_activatable">True</property>
                                 <property name="secondary_icon_activatable">False</property>
-                                <property name="primary_icon_sensitive">True</property>
-                                <property name="secondary_icon_sensitive">True</property>
                                 <property name="adjustment">adjustment2</property>
                                 <property name="digits">2</property>
                                 <property name="numeric">True</property>
@@ -163,18 +153,18 @@
                                 <property name="spacing">6</property>
                                 <child>
                                   <object class="GtkButton" id="add_button">
+                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Add a product or service by barcode</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
                                     <child>
                                       <object class="GtkImage" id="image2">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="stock">gtk-add</property>
-                                        <property name="icon-size">1</property>
+                                        <property name="icon_size">1</property>
                                       </object>
                                     </child>
                                   </object>
@@ -186,17 +176,17 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="advanced_search">
+                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Search for products and services by barcode or name</property>
-                                    <property name="use_action_appearance">False</property>
                                     <child>
                                       <object class="GtkImage" id="image3">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="stock">gtk-find</property>
-                                        <property name="icon-size">1</property>
+                                        <property name="icon_size">1</property>
                                       </object>
                                     </child>
                                   </object>
@@ -278,10 +268,10 @@
                       <object class="ProxyLabel" id="sellable_description">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="xalign">0</property>
                         <property name="use_markup">True</property>
                         <property name="justify">right</property>
                         <property name="ellipsize">middle</property>
+                        <property name="xalign">0</property>
                         <property name="data_type">str</property>
                         <property name="model_attribute">description</property>
                         <attributes>
@@ -423,8 +413,6 @@
                             <property name="truncate_multiline">True</property>
                             <property name="primary_icon_activatable">False</property>
                             <property name="secondary_icon_activatable">False</property>
-                            <property name="primary_icon_sensitive">True</property>
-                            <property name="secondary_icon_sensitive">True</property>
                             <property name="data_type">object</property>
                             <property name="model_attribute">sale_token</property>
                           </object>
@@ -606,10 +594,10 @@
                                 <property name="spacing">6</property>
                                 <child>
                                   <object class="GtkButton" id="save_button">
+                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <property name="use_action_appearance">False</property>
                                     <child>
                                       <object class="GtkAlignment" id="alignment3">
                                         <property name="visible">True</property>
@@ -656,10 +644,10 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="checkout_button">
+                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <property name="use_action_appearance">False</property>
                                     <child>
                                       <object class="GtkAlignment" id="alignment37">
                                         <property name="visible">True</property>
@@ -706,10 +694,10 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="delivery_button">
+                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <property name="use_action_appearance">False</property>
                                     <child>
                                       <object class="GtkAlignment" id="alignment36">
                                         <property name="visible">True</property>
@@ -722,7 +710,7 @@
                                               <object class="GtkImage" id="image5">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">False</property>
-                                                <property name="stock">stoq-delivery</property>
+                                                <property name="icon_name">stoq-delivery</property>
                                               </object>
                                               <packing>
                                                 <property name="expand">True</property>
@@ -756,10 +744,10 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="edit_item_button">
+                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <property name="use_action_appearance">False</property>
                                     <child>
                                       <object class="GtkAlignment" id="alignment8">
                                         <property name="visible">True</property>
@@ -806,10 +794,10 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="remove_item_button">
+                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <property name="use_action_appearance">False</property>
                                     <child>
                                       <object class="GtkAlignment" id="alignment16">
                                         <property name="visible">True</property>
@@ -856,10 +844,10 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="client_button">
+                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <property name="use_action_appearance">False</property>
                                     <child>
                                       <object class="GtkAlignment" id="alignment4">
                                         <property name="visible">True</property>
@@ -872,7 +860,7 @@
                                               <object class="GtkImage" id="image8">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">False</property>
-                                                <property name="stock">stoq-clients</property>
+                                                <property name="icon_name">stoq-clients</property>
                                               </object>
                                               <packing>
                                                 <property name="expand">True</property>
@@ -922,9 +910,9 @@
                           <object class="ProxyLabel" id="order_total_label">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="use_markup">True</property>
                             <property name="xalign">1</property>
                             <property name="yalign">1</property>
-                            <property name="use_markup">True</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
