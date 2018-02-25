@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-20 02:10-0300\n"
-"PO-Revision-Date: 2018-02-20 05:10+0000\n"
+"POT-Creation-Date: 2018-02-24 02:10-0300\n"
+"PO-Revision-Date: 2018-02-24 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -772,8 +772,8 @@ msgstr "Pagamentos"
 #: ../data/glade/ProductStockHistoryDialog.ui.h:4
 #: ../data/glade/TillDailyMovementDialog.ui.h:2
 #: ../data/template/till/sales.html:2 ../plugins/nfe/nfeui.py:160
-#: ../stoq/gui/sales.py:104 ../stoq/lib/applist.py:59
-#: ../stoqlib/gui/dialogs/clientdetails.py:141
+#: ../stoq/gui/sales.py:104 ../stoq/gui/widgets.py:192
+#: ../stoq/lib/applist.py:59 ../stoqlib/gui/dialogs/clientdetails.py:141
 #: ../stoqlib/gui/search/salesearch.py:211 ../stoqlib/lib/parameters.py:250
 #: ../stoqlib/lib/parameters.py:283 ../stoqlib/lib/parameters.py:292
 #: ../stoqlib/lib/parameters.py:300 ../stoqlib/lib/parameters.py:310
@@ -1182,13 +1182,13 @@ msgstr "Data final:"
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:6
 #: ../data/glade/OnSaleInfoSlave.ui.h:4 ../data/glade/QualityTestEditor.ui.h:3
-#: ../stoqlib/gui/search/searchfilters.py:176
+#: ../stoqlib/gui/search/searchfilters.py:174
 msgid "From:"
 msgstr "De:"
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:7
 #: ../data/glade/OnSaleInfoSlave.ui.h:5 ../data/glade/QualityTestEditor.ui.h:4
-#: ../stoqlib/gui/search/searchfilters.py:186
+#: ../stoqlib/gui/search/searchfilters.py:184
 msgid "To:"
 msgstr "Até:"
 
@@ -2963,7 +2963,7 @@ msgstr "Identificador:"
 #: ../data/glade/StockDecreaseDetails.ui.h:8
 #: ../data/glade/SupplierDetailsDialog.ui.h:6
 #: ../data/glade/TransferOrderDetails.ui.h:10 ../stoq/gui/admin.py:123
-#: ../stoqlib/gui/dialogs/clientdetails.py:258
+#: ../stoq/gui/widgets.py:307 ../stoqlib/gui/dialogs/clientdetails.py:258
 #: ../stoqlib/lib/parameters.py:186 ../stoqlib/lib/parameters.py:193
 #: ../stoqlib/lib/parameters.py:200 ../stoqlib/lib/parameters.py:207
 #: ../stoqlib/lib/parameters.py:215
@@ -4849,8 +4849,8 @@ msgstr "Número da nota fiscal"
 
 #: ../data/template/transfer/transfer.html:23
 #: ../data/template/transfer/transfer.html:51
-#: ../stoq/gui/shell/statusbar.py:272 ../stoq/lib/status.py:57
-#: ../stoqlib/lib/formatters.py:173
+#: ../stoq/gui/shell/statusbar.py:304 ../stoqlib/lib/formatters.py:173
+#: ../stoqlib/lib/status.py:57
 msgid "N/A"
 msgstr "N/A"
 
@@ -6649,8 +6649,8 @@ msgid ""
 "archive"
 msgstr "Você deve definir um gerente para esta filial antes de gerar o arquivo sintegra"
 
-#: ../stoq/gui/admin.py:311 ../stoq/lib/status.py:250
-#: ../stoq/lib/status.py:290
+#: ../stoq/gui/admin.py:311 ../stoqlib/lib/status.py:250
+#: ../stoqlib/lib/status.py:290
 msgid "Online features are not available in trial mode"
 msgstr "Recursos online não estão disponíveis na versão de testes"
 
@@ -6792,7 +6792,7 @@ msgstr "Configurar certificados..."
 msgid "Admin help"
 msgstr "Ajuda do admin"
 
-#: ../stoq/gui/admin.py:463 ../stoq/lib/status.py:357
+#: ../stoq/gui/admin.py:463 ../stoqlib/lib/status.py:357
 msgid "Configure"
 msgstr "Configurar"
 
@@ -7710,31 +7710,12 @@ msgstr "produtos"
 msgid "No products found in the inventory."
 msgstr "Nenhum produto encontrado no inventário"
 
-#: ../stoq/gui/launcher.py:137
-msgid "Applications"
-msgstr ""
-
-#: ../stoq/gui/launcher.py:144 ../stoqlib/gui/editors/preferenceseditor.py:147
+#: ../stoq/gui/launcher.py:52 ../stoq/gui/widgets.py:349
+#: ../stoqlib/gui/editors/preferenceseditor.py:147
 msgid "Shortcuts"
 msgstr "Atalhos"
 
-#: ../stoq/gui/launcher.py:147
-msgid "New sale"
-msgstr ""
-
-#: ../stoq/gui/launcher.py:147 ../stoq/gui/sales.py:136
-msgid "Create a new quote for a sale"
-msgstr "Cria uma nova cotação para uma venda"
-
-#: ../stoq/gui/launcher.py:149
-msgid "New sale with work order"
-msgstr ""
-
-#: ../stoq/gui/launcher.py:149
-msgid "Create a new sale with WO"
-msgstr ""
-
-#: ../stoq/gui/launcher.py:156
+#: ../stoq/gui/launcher.py:56 ../stoq/gui/widgets.py:365
 msgid "Messages"
 msgstr ""
 
@@ -8636,6 +8617,10 @@ msgstr "Um erro aconteceu ao gerar o CNAB"
 msgid "Sale quote..."
 msgstr "Cotação de venda..."
 
+#: ../stoq/gui/sales.py:136 ../stoq/gui/widgets.py:303
+msgid "Create a new quote for a sale"
+msgstr "Cria uma nova cotação para uma venda"
+
 #: ../stoq/gui/sales.py:138
 msgid "Create a new quote for a sale with work orders"
 msgstr "Cria uma nova cotação para uma venda com ordem de serviço"
@@ -9219,148 +9204,148 @@ msgid ""
 "While that inventory is open, you will be unable to do operations that modify your stock."
 msgstr "Há um processo de inventário aberto neste momento.\nEnquanto esse inventário estiver aberto, você não será capaz de realizar operações que modifiquem seu estoque."
 
-#: ../stoq/gui/shell/shellwindow.py:138 ../stoqlib/gui/utils/printing.py:264
+#: ../stoq/gui/shell/shellwindow.py:139 ../stoqlib/gui/utils/printing.py:264
 msgid "Stoq"
 msgstr "Stoq"
 
-#: ../stoq/gui/shell/shellwindow.py:250
+#: ../stoq/gui/shell/shellwindow.py:254
 #, python-format
 msgid "User: %s"
 msgstr "Usuário: %s"
 
-#: ../stoq/gui/shell/shellwindow.py:251
+#: ../stoq/gui/shell/shellwindow.py:255
 #, python-format
 msgid "Computer: %s"
 msgstr "Computador: %s"
 
-#: ../stoq/gui/shell/shellwindow.py:260
+#: ../stoq/gui/shell/shellwindow.py:264
 msgid "About Stoq"
 msgstr "Sobre o Stoq"
 
 #. Title
-#: ../stoq/gui/shell/shellwindow.py:328
+#: ../stoq/gui/shell/shellwindow.py:332
 msgid "You have pending plugins."
 msgstr "Você possui plugins pendentes."
 
-#: ../stoq/gui/shell/shellwindow.py:334
+#: ../stoq/gui/shell/shellwindow.py:338
 msgid ""
 "The following plugins need to be enabled: <b>{}</b>.\n"
 "\n"
 "You can do it by registering on <a href=\"{}\">Stoq.link</a>."
 msgstr "Os seguintes plugins precisam ser habilitados: <b>{}</b>.\n\nVocê pode fazer isso se registrando em <a href=\"{}\">Stoq.link</a>."
 
-#: ../stoq/gui/shell/shellwindow.py:347
+#: ../stoq/gui/shell/shellwindow.py:351
 msgid "Use my own data"
 msgstr "Usar meus próprios dados"
 
-#: ../stoq/gui/shell/shellwindow.py:348
+#: ../stoq/gui/shell/shellwindow.py:352
 msgid "You are using Stoq with example data."
 msgstr "Você está usando o Stoq com dados de exemplo."
 
-#: ../stoq/gui/shell/shellwindow.py:349
+#: ../stoq/gui/shell/shellwindow.py:353
 #, python-format
 msgid ""
 "Some features are limited due to fiscal reasons. Click on '%s' to remove the"
 " limitations."
 msgstr "Algumas funcionalidades estão limitadas devido a razões fiscais. Clique em '%s' para remover as limitações."
 
-#: ../stoq/gui/shell/shellwindow.py:382
+#: ../stoq/gui/shell/shellwindow.py:386
 #, python-format
 msgid "There is %s client doing birthday today!"
 msgstr "Existe %s cliente fazendo aniversário hoje!"
 
-#: ../stoq/gui/shell/shellwindow.py:383
+#: ../stoq/gui/shell/shellwindow.py:387
 #, python-format
 msgid "There are %s clients doing birthday today!"
 msgstr "Existem %s clientes fazendo aniversário hoje!"
 
-#: ../stoq/gui/shell/shellwindow.py:385
+#: ../stoq/gui/shell/shellwindow.py:389
 msgid "Check the calendar"
 msgstr "Ver no calendário"
 
-#: ../stoq/gui/shell/shellwindow.py:405
+#: ../stoq/gui/shell/shellwindow.py:409
 #, python-format
 msgid "Welcome to Stoq version %s!"
 msgstr "Bem-vindo(a) à versão %s do Stoq!"
 
-#: ../stoq/gui/shell/shellwindow.py:407
+#: ../stoq/gui/shell/shellwindow.py:411
 msgid "See what's new"
 msgstr "Veja as novidades"
 
-#: ../stoq/gui/shell/shellwindow.py:415
+#: ../stoq/gui/shell/shellwindow.py:419
 msgid ""
 "You are currently using an <b>unstable version</b> of Stoq that is under development,\n"
 "be aware that it may behave incorrectly, crash or even loose your data.\n"
 "<b>Do not use in production.</b>"
 msgstr "Você está usando uma <b>versão instável</b> do Stoq que está em desenvolvimento,\nesteja ciente de que esta versão pode se comportar incorretamente, travar ou mesmo corromper os seus dados\n<b>Não utilize em produção.</b>"
 
-#: ../stoq/gui/shell/shellwindow.py:485
+#: ../stoq/gui/shell/shellwindow.py:489
 #, python-format
 msgid "Release date: %s"
 msgstr "Data de lançamento: %s"
 
-#: ../stoq/gui/shell/shellwindow.py:651
+#: ../stoq/gui/shell/shellwindow.py:654
 msgid "Searches"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:654
+#: ../stoq/gui/shell/shellwindow.py:657
 msgid "Actions"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:660
+#: ../stoq/gui/shell/shellwindow.py:663
 msgid "Sign now"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:667
+#: ../stoq/gui/shell/shellwindow.py:669
 msgid "New"
 msgstr "Novo"
 
-#: ../stoq/gui/shell/shellwindow.py:713
+#: ../stoq/gui/shell/shellwindow.py:718
 #, python-format
 msgid ""
 "This user lacks credentials \n"
 "for application %s"
 msgstr "Esse usuário não tem credencial \npara o aplicativo %s"
 
-#: ../stoq/gui/shell/shellwindow.py:911
+#: ../stoq/gui/shell/shellwindow.py:913
 msgid "Introspect slaves"
 msgstr "Introspectar slave"
 
-#: ../stoq/gui/shell/shellwindow.py:912
+#: ../stoq/gui/shell/shellwindow.py:914
 msgid "Remove settings cache"
 msgstr "Remover cache de preferências"
 
-#: ../stoq/gui/shell/shellwindow.py:917
+#: ../stoq/gui/shell/shellwindow.py:919
 msgid "Debug"
 msgstr "Debug"
 
-#: ../stoq/gui/shell/shellwindow.py:942
+#: ../stoq/gui/shell/shellwindow.py:944
 #: ../stoqlib/gui/search/searchdialog.py:299
 msgid "Export to spreadsheet..."
 msgstr "Exportar para planilha..."
 
-#: ../stoq/gui/shell/shellwindow.py:947
+#: ../stoq/gui/shell/shellwindow.py:949
 msgid "Print this report..."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1066
+#: ../stoq/gui/shell/shellwindow.py:1068
 msgid ""
 "This will enable production mode and finish the demonstration. Are you sure?"
 msgstr "Isto irá habilitar o modo de produção e finalizar a demonstração. Você tem certeza?"
 
-#: ../stoq/gui/shell/shellwindow.py:1069
+#: ../stoq/gui/shell/shellwindow.py:1071
 msgid "Enable production mode"
 msgstr "Habilitar modo de produção"
 
-#: ../stoq/gui/shell/shellwindow.py:1069
+#: ../stoq/gui/shell/shellwindow.py:1071
 msgid "Continue testing"
 msgstr "Continuar testando"
 
-#: ../stoq/gui/shell/shellwindow.py:1184
+#: ../stoq/gui/shell/shellwindow.py:1186
 msgid "Learn More..."
 msgstr "Saiba mais..."
 
-#: ../stoq/gui/shell/shellwindow.py:1185
+#: ../stoq/gui/shell/shellwindow.py:1187
 #, python-format
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr "<b>Está disponível uma nova versão do Stoq (%s)</b>"
@@ -9385,25 +9370,25 @@ msgstr "Alguns serviços estão em estado de alerta"
 msgid "Some services are in an error state"
 msgstr "Alguns serviços estão em estado de erro"
 
-#: ../stoq/gui/shell/statusbar.py:154
+#: ../stoq/gui/shell/statusbar.py:174
 msgid "Status not available..."
 msgstr "Status não disponível..."
 
-#: ../stoq/gui/shell/statusbar.py:167
+#: ../stoq/gui/shell/statusbar.py:187
 msgid "Only admins can execute this action"
 msgstr "Apenas administradores podem executar esta ação"
 
-#: ../stoq/gui/shell/statusbar.py:193
+#: ../stoq/gui/shell/statusbar.py:214
 #, python-format
 msgid "Executing \"%s\". This might take a while..."
 msgstr "Executando \"%s\". Isso pode levar um tempo..."
 
-#: ../stoq/gui/shell/statusbar.py:219
+#: ../stoq/gui/shell/statusbar.py:240
 #, python-format
 msgid "An error happened when executing \"%s\""
 msgstr "Um erro aconteceu ao executar \"%s\""
 
-#: ../stoq/gui/shell/statusbar.py:356
+#: ../stoq/gui/shell/statusbar.py:388
 msgid "Feedback"
 msgstr "Sugestões"
 
@@ -9801,9 +9786,41 @@ msgstr "Atualizando o Stoq"
 msgid "Welcome to Stoq"
 msgstr "Bem-vindo ao Stoq"
 
-#: ../stoq/gui/welcomedialog.py:74
+#: ../stoq/gui/welcomedialog.py:71
 msgid "_Start using Stoq"
 msgstr "_Começar a usar Stoq"
+
+#: ../stoq/gui/widgets.py:195
+msgid "Operations"
+msgstr ""
+
+#: ../stoq/gui/widgets.py:198
+msgid "Finances"
+msgstr ""
+
+#: ../stoq/gui/widgets.py:201
+msgid "Others"
+msgstr ""
+
+#: ../stoq/gui/widgets.py:303
+msgid "New sale"
+msgstr ""
+
+#: ../stoq/gui/widgets.py:305
+msgid "New sale with WO"
+msgstr ""
+
+#: ../stoq/gui/widgets.py:305
+msgid "Create a new sale with work order"
+msgstr ""
+
+#: ../stoq/gui/widgets.py:307
+msgid "Open product search"
+msgstr ""
+
+#: ../stoq/gui/widgets.py:361
+msgid "Applications"
+msgstr ""
 
 #: ../stoq/lib/applist.py:33
 msgid ""
@@ -9931,91 +9948,6 @@ msgid ""
 "Table 'system_table' does not exist.\n"
 "Consult your database administrator to solve this problem."
 msgstr "Tabela 'system_table' não existe.\n\nConsulte o seu administrador de banco de dados para resolver esse problema."
-
-#: ../stoq/lib/status.py:58
-msgid "OK"
-msgstr "OK"
-
-#: ../stoq/lib/status.py:59
-msgid "WARNING"
-msgstr "ALERTA"
-
-#: ../stoq/lib/status.py:60
-msgid "ERROR"
-msgstr "ERRO"
-
-#: ../stoq/lib/status.py:240
-msgid "Online Services"
-msgstr "Serviços online"
-
-#: ../stoq/lib/status.py:251 ../stoq/lib/status.py:291
-msgid "Online features require a subscription of Stoq.link"
-msgstr "Recursos online requerem assinatura do Stoq.Link"
-
-#: ../stoq/lib/status.py:256
-msgid "Online services (Stoq.link integration, backup, etc) not enabled..."
-msgstr "Serviços online (Integração Stoq.link, backup, etc) não estão habilitados..."
-
-#: ../stoq/lib/status.py:258 ../stoq/lib/status.py:298
-msgid ""
-"Enable the parameter \"Online Services\" on the \"Admin\" app to solve this "
-"issue"
-msgstr "Habilite o parâmetro \"Serviços online\" no aplicativo \"Administrativo\" para resolver este problema"
-
-#: ../stoq/lib/status.py:264
-msgid "Online services data hub is running fine."
-msgstr "O hub de serviços online está executando normalmente"
-
-#: ../stoq/lib/status.py:268
-msgid "Online services data hub not found..."
-msgstr "Hub de serviços online não encontrado"
-
-#: ../stoq/lib/status.py:271
-#, python-format
-msgid "Install and configure the %s package to solve this issue"
-msgstr "Instale e configure o pacote %s para resolver este problema"
-
-#: ../stoq/lib/status.py:279
-msgid "Backup"
-msgstr "Backup"
-
-#: ../stoq/lib/status.py:296
-msgid "Backup service not running because \"Online Services\" is disabled"
-msgstr "Serviço de backup não está rodando pois os \"Serviços online\" estão desabilitados"
-
-#: ../stoq/lib/status.py:309
-msgid "Backup key not configured"
-msgstr "Chave do backup não configurada"
-
-#: ../stoq/lib/status.py:310
-msgid "Click on \"Configure\" button to configure the backup key"
-msgstr "Clique no botão \"Configurar\" para criar uma chave de backup"
-
-#: ../stoq/lib/status.py:319 ../stoq/lib/status.py:325
-msgid "Could not communicate with Stoq.link"
-msgstr "Não foi possível comunicar com o Stoq.link"
-
-#: ../stoq/lib/status.py:336
-#, python-format
-msgid "Backup is late. Last backup date is %s"
-msgstr "O backup está atrasado. Última data de backup é %s"
-
-#: ../stoq/lib/status.py:338
-msgid "Check your Stoq Server logs to see if there's any problem with it"
-msgstr "Verifique os logs do seu Stoq Server por erros relacionados"
-
-#: ../stoq/lib/status.py:342
-#, python-format
-msgid "Backup is up-to-date. Last backup date is %s"
-msgstr "O backup está em dia. Última data de backup é %s"
-
-#: ../stoq/lib/status.py:347
-msgid "There's no backup data yet"
-msgstr "Ainda não existem dados de backup"
-
-#: ../stoq/lib/status.py:354
-msgid "Backup now"
-msgstr "Fazer backup agora"
 
 #: ../stoqlib/database/admin.py:75 ../stoqlib/database/admin.py:91
 #: ../stoqlib/database/admin.py:343
@@ -15137,42 +15069,42 @@ msgstr "S_elecione Itens"
 msgid "Method:"
 msgstr "Forma:"
 
-#: ../stoqlib/gui/search/searchfilters.py:231
+#: ../stoqlib/gui/search/searchfilters.py:229
 msgid "from"
 msgstr "de"
 
-#: ../stoqlib/gui/search/searchfilters.py:232
+#: ../stoqlib/gui/search/searchfilters.py:230
 msgid "to"
 msgstr "até"
 
-#: ../stoqlib/gui/search/searchfilters.py:292
+#: ../stoqlib/gui/search/searchfilters.py:290
 msgid "Custom day"
 msgstr "Dia"
 
-#: ../stoqlib/gui/search/searchfilters.py:293
+#: ../stoqlib/gui/search/searchfilters.py:291
 msgid "Custom interval"
 msgstr "Intervalo"
 
-#: ../stoqlib/gui/search/searchfilters.py:418
-#: ../stoqlib/gui/search/searchfilters.py:428
-#: ../stoqlib/gui/search/searchfilters.py:448
+#: ../stoqlib/gui/search/searchfilters.py:416
+#: ../stoqlib/gui/search/searchfilters.py:426
+#: ../stoqlib/gui/search/searchfilters.py:446
 msgid "Invalid date"
 msgstr "Data inválida"
 
-#: ../stoqlib/gui/search/searchfilters.py:681
+#: ../stoqlib/gui/search/searchfilters.py:679
 #: ../stoqlib/gui/widgets/searchentry.py:41
 msgid "Search"
 msgstr "Buscar"
 
-#: ../stoqlib/gui/search/searchfilters.py:689
+#: ../stoqlib/gui/search/searchfilters.py:684
 msgid "Add a filter"
 msgstr "Adicionar um filtro"
 
-#: ../stoqlib/gui/search/searchfilters.py:693
+#: ../stoqlib/gui/search/searchfilters.py:688
 msgid "Clear the search"
 msgstr "Limpar busca"
 
-#: ../stoqlib/gui/search/searchfilters.py:824
+#: ../stoqlib/gui/search/searchfilters.py:819
 msgid "And"
 msgstr "E"
 
@@ -18742,6 +18674,91 @@ msgstr "Você precisa ter um CNPJ cadastrado para empresa %s"
 msgid "You need to have a State Registry set on Company %s"
 msgstr "Você precisa ter uma inscrição estadual cadastrada para a empresa %s"
 
+#: ../stoqlib/lib/status.py:58
+msgid "OK"
+msgstr "OK"
+
+#: ../stoqlib/lib/status.py:59
+msgid "WARNING"
+msgstr "ALERTA"
+
+#: ../stoqlib/lib/status.py:60
+msgid "ERROR"
+msgstr "ERRO"
+
+#: ../stoqlib/lib/status.py:240
+msgid "Online Services"
+msgstr "Serviços online"
+
+#: ../stoqlib/lib/status.py:251 ../stoqlib/lib/status.py:291
+msgid "Online features require a subscription of Stoq.link"
+msgstr "Recursos online requerem assinatura do Stoq.Link"
+
+#: ../stoqlib/lib/status.py:256
+msgid "Online services (Stoq.link integration, backup, etc) not enabled..."
+msgstr "Serviços online (Integração Stoq.link, backup, etc) não estão habilitados..."
+
+#: ../stoqlib/lib/status.py:258 ../stoqlib/lib/status.py:298
+msgid ""
+"Enable the parameter \"Online Services\" on the \"Admin\" app to solve this "
+"issue"
+msgstr "Habilite o parâmetro \"Serviços online\" no aplicativo \"Administrativo\" para resolver este problema"
+
+#: ../stoqlib/lib/status.py:264
+msgid "Online services data hub is running fine."
+msgstr "O hub de serviços online está executando normalmente"
+
+#: ../stoqlib/lib/status.py:268
+msgid "Online services data hub not found..."
+msgstr "Hub de serviços online não encontrado"
+
+#: ../stoqlib/lib/status.py:271
+#, python-format
+msgid "Install and configure the %s package to solve this issue"
+msgstr "Instale e configure o pacote %s para resolver este problema"
+
+#: ../stoqlib/lib/status.py:279
+msgid "Backup"
+msgstr "Backup"
+
+#: ../stoqlib/lib/status.py:296
+msgid "Backup service not running because \"Online Services\" is disabled"
+msgstr "Serviço de backup não está rodando pois os \"Serviços online\" estão desabilitados"
+
+#: ../stoqlib/lib/status.py:309
+msgid "Backup key not configured"
+msgstr "Chave do backup não configurada"
+
+#: ../stoqlib/lib/status.py:310
+msgid "Click on \"Configure\" button to configure the backup key"
+msgstr "Clique no botão \"Configurar\" para criar uma chave de backup"
+
+#: ../stoqlib/lib/status.py:319 ../stoqlib/lib/status.py:325
+msgid "Could not communicate with Stoq.link"
+msgstr "Não foi possível comunicar com o Stoq.link"
+
+#: ../stoqlib/lib/status.py:336
+#, python-format
+msgid "Backup is late. Last backup date is %s"
+msgstr "O backup está atrasado. Última data de backup é %s"
+
+#: ../stoqlib/lib/status.py:338
+msgid "Check your Stoq Server logs to see if there's any problem with it"
+msgstr "Verifique os logs do seu Stoq Server por erros relacionados"
+
+#: ../stoqlib/lib/status.py:342
+#, python-format
+msgid "Backup is up-to-date. Last backup date is %s"
+msgstr "O backup está em dia. Última data de backup é %s"
+
+#: ../stoqlib/lib/status.py:347
+msgid "There's no backup data yet"
+msgstr "Ainda não existem dados de backup"
+
+#: ../stoqlib/lib/status.py:354
+msgid "Backup now"
+msgstr "Fazer backup agora"
+
 #: ../stoqlib/lib/xmlutils.py:128
 #, python-brace-format
 msgid "{number}) {field} is invalid"
@@ -18832,11 +18849,11 @@ msgstr "%d compra"
 msgid "%d purchases"
 msgstr "%d compras"
 
-#: ../stoqlib/net/server.py:129
+#: ../stoqlib/net/server.py:128
 msgid "Stoq server not found"
 msgstr "Servidor do Stoq não encontrado"
 
-#: ../stoqlib/net/server.py:146
+#: ../stoqlib/net/server.py:145
 msgid "Server not responding to pings"
 msgstr "Servidor não está respondendo a pings"
 
