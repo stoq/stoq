@@ -89,7 +89,17 @@ def _windows_fixes():  # pragma: no cover
     # Indicate the cert.pem location so requests can use it on verify
     # From: http://stackoverflow.com/a/33334042
     import requests
+    from raven.conf import defaults
+    from raven.transport.http import HTTPTransport
     requests.utils.DEFAULT_CA_BUNDLE_PATH = os.path.join(root, 'cacert.pem')
+    defaults.CA_BUNDLE = os.path.join(root, 'cacert.pem')
+
+    # We need to monkeypatch the default values of the constructor, since the value is
+    # 'hardcoded' once the class is first imported.
+    _defs = list(HTTPTransport.__init__.__defaults__)
+    _defs[-1] = defaults.CA_BUNDLE
+    HTTPTransport.__init__.__defaults__ = tuple(_defs)
+    print('XXX', defaults.CA_BUNDLE)
 
 
 def main(args):
