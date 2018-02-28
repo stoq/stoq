@@ -367,6 +367,13 @@ class _PaymentConfirmSlave(BaseEditor):
                 combo.select(
                     sysparam.get_object(self.store, 'IMBALANCE_ACCOUNT'))
 
+        category_account = payment.category and payment.category.account
+        if category_account:
+            if payment.payment_type == payment.TYPE_IN:
+                self.source_account.select(category_account)
+            else:
+                self.destination_account.select(category_account)
+
     def _setup_attachment_chooser(self):
         self.attachment_chooser.connect('file-set',
                                         self._on_attachment_chooser__file_set)

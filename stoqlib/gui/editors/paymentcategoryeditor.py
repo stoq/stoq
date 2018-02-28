@@ -31,6 +31,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import ColorField, ChoiceField, TextField
 
 from stoqlib.api import api
+from stoqlib.domain.account import Account
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.base.dialogs import run_dialog
@@ -61,6 +62,8 @@ class PaymentCategoryEditor(BaseEditor):
             category_type=ChoiceField(
                 _('Type'), data_type=int,
                 values=self._category_type_values, proxy=True),
+            account=ChoiceField(_('Account'),
+                                values=self._get_account_options(), proxy=True),
         )
 
     def __init__(self, store, model=None,
@@ -107,6 +110,9 @@ class PaymentCategoryEditor(BaseEditor):
     def setup_proxies(self):
         self.name.grab_focus()
         self._original_category_type = self.model.category_type
+
+    def _get_account_options(self):
+        return [(ac.description, ac) for ac in Account.get_accounts(self.store)]
 
     #
     # Kiwi Callbacks

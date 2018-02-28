@@ -26,9 +26,10 @@
 
 # pylint: enable=E1101
 
+from storm.references import Reference
 from zope.interface import implementer
 
-from stoqlib.database.properties import EnumCol, UnicodeCol
+from stoqlib.database.properties import EnumCol, UnicodeCol, IdCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 
@@ -55,6 +56,9 @@ class PaymentCategory(Domain):
 
     #: category type, payable or receivable
     category_type = EnumCol(allow_none=False, default=TYPE_PAYABLE)
+
+    account_id = IdCol()
+    account = Reference(account_id, 'Account.id')
 
     #
     # IDescribable implementation

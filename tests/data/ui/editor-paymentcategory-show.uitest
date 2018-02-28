@@ -18,6 +18,24 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Payment Category"', hid
                 item: 'Payable', selected
                 item: 'Receivable'
               GtkBox(orientation=horizontal):
+              ProxyLabel(account_lbl): 'Account:'
+              ProxyComboBox(account):
+                item: 'Assets', selected
+                item: 'Banks'
+                item: 'Equity'
+                item: 'Expenses'
+                item: 'Imbalance'
+                item: 'Income'
+                item: 'Tills'
+                item: 'Banco do Brasil'
+                item: 'Conta de Investimento'
+                item: 'Saldos Iniciais'
+                item: 'Aluguel'
+                item: 'Luz'
+                item: 'Salários'
+                item: 'Telefonia'
+                item: 'Impostos'
+              GtkBox(orientation=horizontal):
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
