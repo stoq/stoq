@@ -160,7 +160,7 @@ def threaded(original):
             try:
                 retval = original(*args, **kwargs)
             except Exception as e:
-                log.error(''.join(traceback.format_exception(*sys.exc_info())))
+                log.debug(''.join(traceback.format_exception(*sys.exc_info())))
                 return e
             return retval
 

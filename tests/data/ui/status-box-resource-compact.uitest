@@ -1,0 +1,4 @@
+widget: ResourceStatusBox
+stoq+gui+shell+statusbar+ResourceStatusBox(orientation=horizontal): hidden
+  GtkImage(img, fill=True): hidden
+  GtkLabel(lbl, fill=True): 'Reason', hidden

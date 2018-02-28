@@ -36,7 +36,6 @@ from stoqlib.gui.stockicons import (STOQ_FEEDBACK,
                                     STOQ_STATUS_OK,
                                     STOQ_STATUS_WARNING,
                                     STOQ_STATUS_ERROR)
-from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.threadutils import terminate_thread
 from stoqlib.lib.status import ResourceStatus, ResourceStatusManager
@@ -62,154 +61,105 @@ _status_mapper = {
 }
 
 
-class StatusBox(Gtk.Bin):
-    size = (650, 400)
-
-    def __init__(self, compact=False):
-        super(StatusBox, self).__init__()
+class ResourceStatusBox(Gtk.Box):
+    def __init__(self, resource, manager, compact=False):
+        self._resource = resource
         self._compact = compact
-
-        self._manager = ResourceStatusManager.get_instance()
-        self._manager.connect('status-changed',
-                              self._on_manager__status_changed)
-        self._manager.connect('action-finished',
-                              self._on_manager__action_finished)
-        self._manager.refresh_and_notify()
-
+        self._manager = manager
         user = api.get_current_user(api.get_default_store())
         self._is_admin = user.profile.check_app_permission(u'admin')
 
-        self._widgets = {}
-        self._setup_ui()
+        super(ResourceStatusBox, self).__init__(spacing=6)
+        if compact:
+            self.props.margin = 6
+        else:
+            self.props.margin = 12
 
-    #
-    #  Private
-    #
+        self.img = Gtk.Image()
+        self.pack_start(self.img, False, True, 0)
+        self.lbl = Gtk.Label()
+        self.lbl.set_xalign(0)
+        self.lbl.set_line_wrap(True)
+        self.pack_start(self.lbl, False, True, 0)
 
-    def _setup_ui(self):
-        self.vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        self.add(self.vbox)
-        self._refresh_btn = Gtk.Button.new_from_icon_name(STOQ_REFRESH, Gtk.IconSize.BUTTON)
-        self._refresh_btn.set_label(_('Refresh'))
-        self._refresh_btn.set_relief(Gtk.ReliefStyle.NONE)
+        self.buttonbox = Gtk.Box()
+        self.buttonbox.set_valign(Gtk.Align.CENTER)
+        self.buttonbox.get_style_context().add_class('linked')
+        if not compact:
+            self.pack_end(self.buttonbox, False, True, 0)
 
-        action_area = Gtk.ButtonBox()
-        if not self._compact:
-            action_area.pack_start(self._refresh_btn, True, True, 6)
-        action_area.set_layout(Gtk.ButtonBoxStyle.END)
-
-        self._refresh_btn.connect('clicked', self._on_refresh_btn__clicked)
-
-        sw = Gtk.ScrolledWindow()
-        sw.set_policy(Gtk.PolicyType.NEVER,
-                      Gtk.PolicyType.AUTOMATIC)
-        self.vbox.pack_start(sw, expand=True, fill=True, padding=0)
-        self.vbox.pack_start(action_area, expand=False, fill=True, padding=0)
-
-        viewport = Gtk.Viewport()
-        viewport.set_shadow_type(Gtk.ShadowType.NONE)
-        sw.add(viewport)
-
-        spacing = 12
-        if self._compact:
-            spacing = 2
-        vbox = Gtk.VBox(spacing=spacing)
-        vbox.props.margin = 6
-        viewport.add(vbox)
-
-        resources = self._manager.resources.items()
-        for i, (name, resource) in enumerate(resources):
-            hbox = Gtk.HBox(spacing=6)
-
-            img = Gtk.Image()
-            hbox.pack_start(img, False, True, 0)
-            lbl = Gtk.Label()
-            lbl.set_xalign(0)
-            lbl.set_line_wrap(True)
-            hbox.pack_start(lbl, False, True, 0)
-
-            buttonbox = Gtk.Box()
-            buttonbox.get_style_context().add_class('linked')
-            if not self._compact:
-                hbox.pack_end(buttonbox, False, True, 0)
-
-            self._widgets[name] = (img, lbl, buttonbox)
-            vbox.pack_start(hbox, False, True, 6)
-
-            if i < len(resources) - 1 and not self._compact:
-                separator = Gtk.HSeparator()
-                vbox.pack_start(separator, False, True, 0)
-
-        self.vbox.show_all()
-        self._update_ui()
-
-    def _update_ui(self):
+    def add_action(self, action):
         running_action = self._manager.running_action
-        self._refresh_btn.set_sensitive(running_action is None)
+        btn = Gtk.Button.new_with_label(action.label)
 
+        if running_action is not None:
+            btn.set_sensitive(False)
+
+        if action.admin_only and not self._is_admin:
+            btn.set_sensitive(False)
+            btn.set_tooltip_text(
+                _("Only admins can execute this action"))
+
+        # If the action is the running action, add a spinner together
+        # with the label to indicate that it is running
+        if action == running_action:
+            spinner = Gtk.Spinner()
+            hbox = Gtk.HBox(spacing=6)
+            child = btn.get_child()
+            btn.remove(child)
+            hbox.add(child)
+            hbox.add(spinner)
+            btn.add(hbox)
+            spinner.start()
+            hbox.show_all()
+
+        btn.show()
+        btn.connect('clicked', self._on_action_btn__clicked, action)
+        self.buttonbox.add(btn)
+        return btn
+
+    def update_ui(self):
+        resource = self._resource
+        if self._compact:
+            # Only show waring and error messages in compact mode
+            self.set_visible(resource.status in [ResourceStatus.STATUS_ERROR,
+                                                 ResourceStatus.STATUS_WARNING])
+
+        status_icon, _ignored = _status_mapper[resource.status]
         icon_size = Gtk.IconSize.LARGE_TOOLBAR
         if self._compact:
             icon_size = Gtk.IconSize.BUTTON
+        self.img.set_from_icon_name(status_icon, icon_size)
 
-        for name, resource in self._manager.resources.items():
-            img, lbl, buttonbox = self._widgets[name]
+        tooltip = ''
+        if self._compact and resource.reason:
+            text = api.escape(resource.reason)
+            tooltip = "<b>%s</b>: %s\n<i>%s</i>" % (
+                api.escape(resource.label),
+                api.escape(resource.reason),
+                api.escape(resource.reason_long))
+        elif resource.reason and resource.reason_long:
+            text = "<b>%s</b>: %s\n<i>%s</i>" % (
+                api.escape(resource.label),
+                api.escape(resource.reason),
+                api.escape(resource.reason_long))
+        elif resource.reason:
+            text = "<b>%s</b>: %s" % (
+                api.escape(resource.label),
+                api.escape(resource.reason))
+        else:
+            text = _("Status not available...")
 
-            status_icon, _ignored = _status_mapper[resource.status]
-            img.set_from_icon_name(status_icon, icon_size)
+        # Remove old actions and add new ones
+        for child in self.buttonbox.get_children():
+            self.buttonbox.remove(child)
+        for action in resource.get_actions():
+            self.add_action(action)
 
-            tooltip = ''
-            if self._compact and resource.reason:
-                text = api.escape(resource.reason)
-                tooltip = "<b>%s</b>: %s\n<i>%s</i>" % (
-                    api.escape(resource.label),
-                    api.escape(resource.reason),
-                    api.escape(resource.reason_long))
-            elif resource.reason and resource.reason_long:
-                text = "<b>%s</b>: %s\n<i>%s</i>" % (
-                    api.escape(resource.label),
-                    api.escape(resource.reason),
-                    api.escape(resource.reason_long))
-            elif resource.reason:
-                text = "<b>%s</b>: %s" % (
-                    api.escape(resource.label),
-                    api.escape(resource.reason))
-            else:
-                text = _("Status not available...")
+        self.lbl.set_markup(text)
+        self.set_tooltip_markup(tooltip)
 
-            for child in buttonbox.get_children():
-                buttonbox.remove(child)
-            for action in resource.get_actions():
-                btn = Gtk.Button.new_with_label(action.label)
-
-                if running_action is not None:
-                    btn.set_sensitive(False)
-
-                if action.admin_only and not self._is_admin:
-                    btn.set_sensitive(False)
-                    btn.set_tooltip_text(
-                        _("Only admins can execute this action"))
-
-                # If the action is the running action, add a spinner together
-                # with the label to indicate that it is running
-                if action == running_action:
-                    spinner = Gtk.Spinner()
-                    hbox = Gtk.HBox(spacing=6)
-                    child = btn.get_child()
-                    btn.remove(child)
-                    hbox.add(child)
-                    hbox.add(spinner)
-                    btn.add(hbox)
-                    spinner.start()
-                    hbox.show_all()
-
-                btn.show()
-                btn.connect('clicked', self._on_action_btn__clicked, action)
-                buttonbox.add(btn)
-
-            lbl.set_markup(text)
-            lbl.set_tooltip_markup(tooltip)
-
-    def _handle_action(self, action):
+    def _on_action_btn__clicked(self, btn, action):
         retval = self._manager.handle_action(action)
         if action.threaded:
             thread = retval
@@ -229,23 +179,100 @@ class StatusBox(Gtk.Bin):
 
             progress_dialog.stop()
 
-        self._update_ui()
+        self.update_ui()
+
+
+class StatusBox(Gtk.Bin):
+    size = (650, 400)
+
+    def __init__(self, compact=False):
+        super(StatusBox, self).__init__()
+        self._compact = compact
+
+        self._manager = ResourceStatusManager.get_instance()
+
+        self._widgets = {}
+        self._setup_ui()
+
+        self._manager.connect('status-changed', self._on_manager__status_changed)
+        self._manager.connect('action-started', self._on_manager__action_started)
+        self._manager.connect('action-finished', self._on_manager__action_finished)
+
+    #
+    #  Private
+    #
+
+    def _create_widget(self, resource_name, resource):
+        box = ResourceStatusBox(resource, self._manager, self._compact)
+
+        row = Gtk.ListBoxRow()
+        row.add(box)
+        row.set_activatable(False)
+        self.box.add(row)
+        self._widgets[resource_name] = box
+        row.show_all()
+        box.update_ui()
+
+    def _setup_ui(self):
+        self.vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        self.add(self.vbox)
+        self._refresh_btn = Gtk.Button.new_from_icon_name(STOQ_REFRESH, Gtk.IconSize.BUTTON)
+        self._refresh_btn.set_label(_('Refresh'))
+        self._refresh_btn.set_relief(Gtk.ReliefStyle.NONE)
+        self._refresh_btn.connect('clicked', self._on_refresh_btn__clicked)
+
+        action_area = Gtk.ButtonBox()
+        if not self._compact:
+            action_area.pack_start(self._refresh_btn, True, True, 6)
+        action_area.set_layout(Gtk.ButtonBoxStyle.END)
+
+        sw = Gtk.ScrolledWindow()
+        sw.set_policy(Gtk.PolicyType.NEVER,
+                      Gtk.PolicyType.AUTOMATIC)
+        self.vbox.pack_start(sw, expand=True, fill=True, padding=0)
+        self.vbox.pack_start(action_area, expand=False, fill=True, padding=0)
+
+        viewport = Gtk.Viewport()
+        viewport.set_shadow_type(Gtk.ShadowType.NONE)
+        sw.add(viewport)
+
+        self.box = Gtk.ListBox()
+        # This will remove the white background in the list
+        self.box.get_style_context().remove_class('list')
+        self.box.set_selection_mode(Gtk.SelectionMode.NONE)
+
+        def create_header(row, previous):
+            if previous:
+                row.set_header(Gtk.HSeparator())
+        if not self._compact:
+            self.box.set_header_func(create_header)
+
+        viewport.add(self.box)
+        self.vbox.show_all()
+        self.update_ui()
+
+    def update_ui(self):
+        running_action = self._manager.running_action
+        self._refresh_btn.set_sensitive(running_action is None)
+
+        for name, resource in self._manager.resources.items():
+            if name not in self._widgets:
+                self._create_widget(name, resource)
+            box = self._widgets[name]
+            box.update_ui()
 
     #
     #  Callbacks
     #
 
     def _on_manager__status_changed(self, manager, status):
-        self._update_ui()
+        self.update_ui()
+
+    def _on_manager__action_started(self, manager, action):
+        self.update_ui()
 
     def _on_manager__action_finished(self, manager, action, retval):
-        if isinstance(retval, Exception):
-            warning(_('An error happened when executing "%s"') % (action.label, ),
-                    str(retval))
-        self._update_ui()
-
-    def _on_action_btn__clicked(self, btn, action):
-        self._handle_action(action)
+        self.update_ui()
 
     def _on_refresh_btn__clicked(self, btn):
         self._manager.refresh_and_notify()
@@ -282,7 +309,6 @@ class StatusButton(Gtk.MenuButton):
 
         self.set_relief(Gtk.ReliefStyle.NONE)
         self._update_status(None)
-        self._manager.refresh_and_notify(force=True)
         self.set_popover(StatusPopover())
 
     #

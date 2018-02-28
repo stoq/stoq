@@ -35,9 +35,11 @@ from kiwi.utils import gsignal
 from stoqlib.api import api, safe_str
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.backupsettings import BackupSettingsEditor
+from stoqlib.lib.decorators import threaded
 from stoqlib.lib.threadutils import threadit, schedule_in_main_thread
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.webservice import WebService
+from stoqlib.lib.message import warning
 from stoqlib.net.server import ServerProxy, ServerError
 
 import stoq
@@ -63,14 +65,20 @@ class ResourceStatus(GObject.GObject):
     name = None
     label = None
     priority = 0
+    refresh_timeout = int(os.environ.get('STOQ_STATUS_REFRESH_TIMEOUT', 60))
 
     def __init__(self):
         super(ResourceStatus, self).__init__()
 
         assert self.name is not None
-        self.status = self.STATUS_OK
+        self.status = self.STATUS_NA
         self.reason = None
         self.reason_long = None
+        GLib.timeout_add_seconds(self.refresh_timeout, self.refresh_and_notify)
+
+        # Schedule first update for right after now. Dont call refresh_and_notify()
+        # directly as it will block the interface briefly
+        GLib.timeout_add_seconds(1, lambda: self.refresh_and_notify() and False)
 
     __hash__ = GObject.GObject.__hash__
 
@@ -104,9 +112,7 @@ class ResourceStatus(GObject.GObject):
         self.refresh()
 
         if (self.status, self.reason) != (old_status, old_reason):
-            # This is running on another so schedule the emit in the main one
-            schedule_in_main_thread(
-                self.emit, 'status-changed', self.status, self.reason)
+            self.emit('status-changed', self.status, self.reason)
 
 
 class ResourceStatusAction(object):
@@ -129,9 +135,9 @@ class ResourceStatusAction(object):
 class ResourceStatusManager(GObject.GObject):
 
     gsignal('status-changed', int)
+    gsignal('action-started', object)
     gsignal('action-finished', object, object)
 
-    REFRESH_TIMEOUT = int(os.environ.get('STOQ_STATUS_REFRESH_TIMEOUT', 60))
     _instance = None
 
     def __init__(self):
@@ -140,8 +146,6 @@ class ResourceStatusManager(GObject.GObject):
         self._lock = threading.Lock()
         self.running_action = None
         self.resources = collections.OrderedDict()
-        GLib.timeout_add_seconds(self.REFRESH_TIMEOUT,
-                                 self.refresh_and_notify)
 
     #
     #  Public API
@@ -174,6 +178,7 @@ class ResourceStatusManager(GObject.GObject):
         assert resource.name not in self.resources
         assert isinstance(resource, ResourceStatus)
         self.resources[resource.name] = resource
+        resource.connect('status-changed', self._on_resource__status_changed)
         if refresh:
             self.refresh_and_notify()
 
@@ -182,12 +187,12 @@ class ResourceStatusManager(GObject.GObject):
         # Do not run checks if we are running tests. It breaks the whole suite
         if os.environ.get('STOQ_TESTSUIT_RUNNING', '0') == '1':
             return False
-        return threadit(self._refresh_and_notify, force=force)
+        return self._refresh_and_notify(force=force)
 
     def handle_action(self, action):
         """Ask the given resource to handle the given action"""
+        self.running_action = action
         if action.threaded:
-            self.running_action = action
             return threadit(self._handle_action, action)
         else:
             return self._handle_action(action)
@@ -200,31 +205,30 @@ class ResourceStatusManager(GObject.GObject):
         return sorted(self.resources.values(), key=lambda r: r.priority)
 
     def _refresh_and_notify(self, resources=None, force=False):
-        with self._lock:
-            old_status = self.status
-
-            resources = resources or self._iter_resources()
-            for resource in resources:
-                resource.refresh_and_notify()
-
-            status = self.status
-            if status != old_status or force:
-                # This is running on another so schedule the emit in the main one
-                schedule_in_main_thread(
-                    self.emit, 'status-changed', status)
+        resources = resources or self._iter_resources()
+        for resource in resources:
+            resource.refresh_and_notify()
 
     def _handle_action(self, action):
+        schedule_in_main_thread(self.emit, 'action-started', action)
         try:
             with self._lock:
                 retval = action.callback()
         except Exception as e:
             retval = e
+            schedule_in_main_thread(
+                lambda: warning(_('An error happened when executing "%s"') %
+                                (action.label, ), str(retval)) and False)
         finally:
             self.running_action = None
             schedule_in_main_thread(self.emit, 'action-finished',
                                     action, retval)
 
         return retval
+
+    def _on_resource__status_changed(self, resource, status, message):
+        # When a resource changes its status, so do we
+        self.emit('status-changed', self.status)
 
 
 def register(resource_class, refresh=False):
@@ -244,6 +248,10 @@ class _ServerStatus(ResourceStatus):
         ResourceStatus.__init__(self)
         self._server = ServerProxy()
 
+    @threaded
+    def _check_running(self):
+        return self._server.check_running()
+
     def refresh(self):
         if stoq.trial_mode:
             self.status = ResourceStatus.STATUS_NA
@@ -259,7 +267,7 @@ class _ServerStatus(ResourceStatus):
                                  'on the "Admin" app to solve this issue')
             return
 
-        if self._server.check_running():
+        if self._check_running():
             self.status = self.STATUS_OK
             self.reason = _("Online services data hub is running fine.")
             self.reason_long = None
@@ -284,6 +292,15 @@ class _BackupStatus(ResourceStatus):
         self._webservice = WebService()
         self._server = ServerProxy()
 
+    @threaded
+    def _get_key(self):
+        return self._server.call('get_backup_key')
+
+    @threaded
+    def _get_server_status(self):
+        request = self._webservice.status()
+        return request.get_response()
+
     def refresh(self):
         if stoq.trial_mode:
             self.status = ResourceStatus.STATUS_NA
@@ -300,7 +317,7 @@ class _BackupStatus(ResourceStatus):
             return
 
         try:
-            key = self._server.call('get_backup_key')
+            key = self._get_key()
         except ServerError:
             pass
         else:
@@ -311,9 +328,8 @@ class _BackupStatus(ResourceStatus):
                                      'configure the backup key')
                 return
 
-        request = self._webservice.status()
         try:
-            response = request.get_response()
+            response = self._get_server_status()
         except Exception as e:
             self.status = self.STATUS_WARNING
             self.reason = _("Could not communicate with Stoq.link")

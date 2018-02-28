@@ -1,0 +1,6 @@
+widget: ResourceStatusBox
+stoq+gui+shell+statusbar+ResourceStatusBox(orientation=horizontal): hidden
+  GtkImage(img, fill=True): hidden
+  GtkLabel(lbl, fill=True): '<b>Mock</b>: Reason', hidden
+  GtkBox(buttonbox, orientation=horizontal, fill=True, pack-end): hidden
+    GtkButton(fill=True): 'bar', insensitive

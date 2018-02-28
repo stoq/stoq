@@ -143,13 +143,15 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
                       GtkBox(orientation=vertical):
                         GtkScrolledWindow(expand=True, fill=True):
                           GtkViewport():
-                            GtkBox(orientation=vertical):
-                              GtkBox(orientation=horizontal, fill=True, padding=6):
-                                GtkImage(fill=True):
-                                GtkLabel(fill=True): 'Status not available...'
-                              GtkBox(orientation=horizontal, fill=True, padding=6):
-                                GtkImage(fill=True):
-                                GtkLabel(fill=True): 'Status not available...'
+                            GtkListBox():
+                              GtkListBoxRow():
+                                stoq+gui+shell+statusbar+ResourceStatusBox(orientation=horizontal): hidden
+                                  GtkImage(fill=True):
+                                  GtkLabel(fill=True): 'Status not available...'
+                              GtkListBoxRow():
+                                stoq+gui+shell+statusbar+ResourceStatusBox(orientation=horizontal): hidden
+                                  GtkImage(fill=True):
+                                  GtkLabel(fill=True): 'Status not available...'
                         GtkButtonBox(orientation=horizontal, fill=True):
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden

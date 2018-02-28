@@ -63,6 +63,8 @@ class LauncherApp(ShellApp):
         for box in self.boxes:
             box.connect('selected-children-changed', self._on_selection_changed)
 
+        self.status.update_ui()
+
     #
     # Callbacks
     #
