@@ -10,8 +10,8 @@ GtkDialog(toplevel): title='Additional Addresses', hidden
               column: title='Address', expand
               column: title='City'
               column: title='State'
-              row: 'Mainstreet 138, Cidade Araci', 'Ribeirão Preto', 'SP'
-              row: 'Mainstreet 138, Cidade Araci', 'Patos de Minas', 'MG'
+              row: 'Mainstreet 138, Compl, Cidade Araci', 'Ribeirão Preto', 'SP'
+              row: 'Mainstreet 138, Compl, Cidade Araci', 'Patos de Minas', 'MG'
             GtkBox(orientation=vertical, fill=True, padding=6):
               GtkButton(fill=True): 'gtk-add'
               GtkButton(fill=True): 'gtk-remove', insensitive

@@ -2091,6 +2091,7 @@ class ClientView(Viewable):
     street = Address.street
     streetnumber = Address.streetnumber
     district = Address.district
+    complement = Address.complement
 
     tables = [
         Client,

@@ -162,16 +162,21 @@ def format_address(address, include_district=True):
     """Format the given address to a string.
 
     This expects an |address|, but any object containing the following
-    attributes would suffice: `street`, `streetnumber` and `district`
+    attributes would suffice: `street`, `streetnumber`, `district` and `complement`
     """
     if include_district:
         district = address.district
     else:
         district = None
 
-    if address.street and district:
+    if address.street and district and address.complement:
+        number = address.streetnumber or _(u'N/A')
+        return u'%s %s, %s, %s' % (address.street, number, address.complement, district)
+    elif address.street and district:
         number = address.streetnumber or _(u'N/A')
         return u'%s %s, %s' % (address.street, number, district)
+    elif address.street and address.streetnumber and address.complement:
+        return u'%s %s, %s' % (address.street, address.streetnumber, address.complement)
     elif address.street and address.streetnumber:
         return u'%s %s' % (address.street, address.streetnumber)
     elif address.street:

@@ -11,7 +11,7 @@ SALE                   5.102
                                                                                 
 CLIENT                                                                01-01-2007
                                                                                 
-MAINSTREET 138, CIDADE ARACI        CIDADE ARACI          12345-678   01-01-2007
+MAINSTREET 138, COMPL, CIDADE ARAC  CIDADE ARACI          12345-678   01-01-2007
                                                                                 
 LOS ANGELES               /                    CA                      10:30    
                                                                                 

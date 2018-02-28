@@ -52,7 +52,7 @@ GtkDialog(toplevel): title='Clients with Sale', hidden
             column: title='# Sales'
             column: title='# Items'
             column: title='Total Amount'
-            row: 'Zeca', '', '', None, '', 'Mainstreet 138, Cidade Araci', '12345-678 - Los Angeles - Californa', '', None, None, datetime.today(), 1, Decimal('3.000'), Decimal('30.00')
+            row: 'Zeca', '', '', None, '', 'Mainstreet 138, Compl, Cidade Araci', '12345-678 - Los Angeles - Californa', '', None, None, datetime.today(), 1, Decimal('3.000'), Decimal('30.00')
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):

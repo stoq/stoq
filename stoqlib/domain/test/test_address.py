@@ -138,9 +138,9 @@ class TestCityLocation(DomainTest):
 class TestAddress(DomainTest):
     def test_get_description(self):
         addr = self.create_address()
-        self.assertEqual(addr.get_description(), u'Mainstreet 138, Cidade Araci')
+        self.assertEqual(addr.get_description(), u'Mainstreet 138, Compl, Cidade Araci')
         addr.district = None
-        self.assertEqual(addr.get_description(), u'Mainstreet 138')
+        self.assertEqual(addr.get_description(), u'Mainstreet 138, Compl')
         addr.streetnumber = None
         self.assertEqual(addr.get_description(), u'Mainstreet')
         addr.street = None

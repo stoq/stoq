@@ -1815,7 +1815,7 @@ class TestSale(DomainTest):
         item.delivery = self.create_delivery()
         item.delivery.address = self.create_address()
         self.assertEqual(item.sale.get_details_str(), (u'Delivery Address: '
-                                                       u'Mainstreet 138, '
+                                                       u'Mainstreet 138, Compl, '
                                                        u'Cidade Araci'))
 
         item.delivery = None
@@ -2485,7 +2485,7 @@ class TestDelivery(DomainTest):
     def test_address_str(self):
         delivery = self.create_delivery()
         delivery.address = self.create_address()
-        self.assertEqual(delivery.address_str, u'Mainstreet 138, Cidade '
+        self.assertEqual(delivery.address_str, u'Mainstreet 138, Compl, Cidade '
                                                u'Araci')
 
         delivery.address = None

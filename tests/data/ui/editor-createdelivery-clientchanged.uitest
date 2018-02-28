@@ -27,7 +27,7 @@ GtkDialog(main_dialog.toplevel): title='Add Delivery', hidden
                 GtkBox(orientation=horizontal):
                 ProxyLabel(address_lbl): 'Address:'
                 ProxyComboEntry(address):
-                  item: 'Mainstreet02 138, Cidade Araci', selected
+                  item: 'Mainstreet02 138, Compl, Cidade Araci', selected
                 GtkBox(orientation=horizontal):
                   GtkButton(address_add_button):
                   GtkButton(address_edit_button):

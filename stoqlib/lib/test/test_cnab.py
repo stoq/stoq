@@ -88,7 +88,7 @@ class TestFebraban(DomainTest):
         self.assertEqual(
             record.as_string(),
             ('0990001300001Q 012000000000000000Dummy          '
-             '                         Mainstreet 138         '
+             '                         Mainstreet 138, Compl  '
              '                 Cidade Araci   12345678Los Ange'
              'les    Ca0000000000000000                       '
              '                 000                            '))
@@ -104,7 +104,7 @@ class TestFebraban(DomainTest):
         self.assertEqual(
             record.as_string(),
             ('0990001300001Q 011000000000000000individual     '
-             '                         Mainstreet 138         '
+             '                         Mainstreet 138, Compl  '
              '                 Cidade Araci   12345678Los Ange'
              'les    Ca0000000000000000                       '
              '                 000                            '))
@@ -153,7 +153,7 @@ class TestItau(DomainTest):
              '       I01000000013414071200000000010003410000099N'
              '14071201200000000000000000000000000000000000000000'
              '0000000000000000000200000000000000Dummy           '
-             '                        Mainstreet 138            '
+             '                        Mainstreet 138, Compl     '
              '              Cidade Araci12345678Los Angeles    C'
              'a                                  00000020 000001'))
 
@@ -173,7 +173,7 @@ class TestItau(DomainTest):
              '       I01000000914314071200000000010003410000099N'
              '14071201200000000000000000000000000000000000000000'
              '0000000000000000000100000000000000individual      '
-             '                        Mainstreet 138            '
+             '                        Mainstreet 138, Compl     '
              '              Cidade Araci12345678Los Angeles    C'
              'a                                  00000020 000001'))
 
