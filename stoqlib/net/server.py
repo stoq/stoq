@@ -99,6 +99,8 @@ class ServerProxy(object):
     def _get_proxy(self):
         if self._proxy is None:
             config = get_config()
+            if not config:
+                raise ServerError(_('Configuration not found'))
 
             address = config.get('General', 'serveraddress')
             if not address:
