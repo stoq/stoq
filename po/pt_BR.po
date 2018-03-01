@@ -4,7 +4,7 @@
 # 
 # Translators:
 # andrelcmarinho <andrelcmarinho@bol.com.br>, 2014
-# Felipe Nehmi <fhbnehmi@gmail.com>, 2017
+# Felipe Nehmi <fhbnehmi@gmail.com>, 2017-2018
 # gerga <gerga@async.com.br>, 2015
 # Herbert Silver <herbertsilver@gmail.com>, 2017
 # Johan Dahlin <jdahlin@async.com.br>, 2005
@@ -17,9 +17,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-25 02:10-0300\n"
-"PO-Revision-Date: 2018-02-25 05:10+0000\n"
-"Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
+"POT-Creation-Date: 2018-02-28 02:10-0300\n"
+"PO-Revision-Date: 2018-02-28 18:01+0000\n"
+"Last-Translator: Felipe Nehmi <fhbnehmi@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2158,7 +2158,7 @@ msgstr "Código do fornecedor:"
 
 #: ../data/glade/ProductSupplierEditor.ui.h:11
 msgid "Specific for branch:"
-msgstr ""
+msgstr "Específico para filial:"
 
 #: ../data/glade/ProductTaxSlave.ui.h:1
 msgid "ICMS Class:"
@@ -2522,7 +2522,7 @@ msgstr "Seguro ($CURRENCY):"
 #. Do not translate $CURRENCY
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:28
 msgid "ICMS ST Total ($CURRENCY):"
-msgstr ""
+msgstr "Total ICMS ST ($CURRENCY):"
 
 #: ../data/glade/ReceivingItemEditor.ui.h:1
 msgid "Receiving Order:"
@@ -6288,11 +6288,11 @@ msgstr "Detalhes óticos atualizados..."
 
 #: ../plugins/optical/opticaleditor.py:109
 msgid "Supplier information"
-msgstr ""
+msgstr "Informação do Fornecedor"
 
 #: ../plugins/optical/opticaleditor.py:119
 msgid "Supplier Order"
-msgstr ""
+msgstr "Ordem do Fornecedor"
 
 #: ../plugins/optical/opticalhistory.py:148
 msgid "Test"
@@ -6409,13 +6409,13 @@ msgstr "Curvatura"
 
 #: ../plugins/optical/opticalui.py:165
 msgid "Allow to customize the work order description"
-msgstr ""
+msgstr "Permitir alterar a descrição da ordem de serviço"
 
 #: ../plugins/optical/opticalui.py:166
 msgid ""
 "If true, it will be allowed to set a description for the work order "
 "manually. Otherwise, the identifier will be used."
-msgstr ""
+msgstr "Se ativado, será permitido definir uma descrição para ordens de serviço manualmente. Caso contrário, o identificador da ordem será usado."
 
 #. TODO: Add this same option in the domain options (popover)
 #: ../plugins/optical/opticalui.py:208 ../plugins/optical/opticalui.py:228
@@ -7316,11 +7316,11 @@ msgstr "Editar"
 
 #: ../stoq/gui/delivery.py:114
 msgid "Pick"
-msgstr ""
+msgstr "Selecionar"
 
 #: ../stoq/gui/delivery.py:115
 msgid "Pack"
-msgstr ""
+msgstr "Empacotar"
 
 #: ../stoq/gui/delivery.py:116 ../stoqlib/gui/editors/workordereditor.py:388
 msgid "Send"
@@ -7717,7 +7717,7 @@ msgstr "Atalhos"
 
 #: ../stoq/gui/launcher.py:56 ../stoq/gui/widgets.py:366
 msgid "Messages"
-msgstr ""
+msgstr "Mensagens"
 
 #. File
 #: ../stoq/gui/payable.py:81
@@ -7829,19 +7829,19 @@ msgstr "Pagar"
 
 #: ../stoq/gui/payable.py:138 ../stoq/gui/receivable.py:164
 msgid "Edit installments"
-msgstr ""
+msgstr "Editar parcelas"
 
 #: ../stoq/gui/payable.py:140 ../stoq/gui/receivable.py:166
 msgid "Cancel payment"
-msgstr ""
+msgstr "Cancelar pagamento"
 
 #: ../stoq/gui/payable.py:141 ../stoq/gui/receivable.py:167
 msgid "Set as not paid"
-msgstr ""
+msgstr "Definir como não pago"
 
 #: ../stoq/gui/payable.py:142 ../stoq/gui/receivable.py:168
 msgid "Change due date"
-msgstr ""
+msgstr "Alterar data de vencimento"
 
 #: ../stoq/gui/payable.py:144 ../stoq/gui/receivable.py:172
 #: ../stoq/gui/services.py:351 ../stoqlib/gui/wizards/loanwizard.py:465
@@ -7967,7 +7967,7 @@ msgstr "Ajuda do PDV"
 
 #: ../stoq/gui/pos.py:269
 msgid "Till operations"
-msgstr ""
+msgstr "Operações de caixa"
 
 #: ../stoq/gui/pos.py:350
 msgid ""
@@ -8268,19 +8268,19 @@ msgstr "Ajuda do Produção"
 
 #: ../stoq/gui/production.py:132
 msgid "Edit production"
-msgstr ""
+msgstr "Editar produção"
 
 #: ../stoq/gui/production.py:133
 msgid "Start production"
-msgstr ""
+msgstr "Iniciar produção"
 
 #: ../stoq/gui/production.py:134
 msgid "Finalize production"
-msgstr ""
+msgstr "Finalizar produção"
 
 #: ../stoq/gui/production.py:135
 msgid "Cancel production"
-msgstr ""
+msgstr "Cancelar produção"
 
 #: ../stoq/gui/production.py:150
 msgid "Show productions with status"
@@ -8351,7 +8351,7 @@ msgstr "Criar um novo produto"
 
 #: ../stoq/gui/purchase.py:107
 msgid "Purchase reconciliation..."
-msgstr ""
+msgstr "Conciliação de compras..."
 
 #: ../stoq/gui/purchase.py:109
 msgid "Close consigment..."
@@ -8578,11 +8578,11 @@ msgstr "Ajuda do contas a receber"
 
 #: ../stoq/gui/receivable.py:169
 msgid "Renegotiate"
-msgstr ""
+msgstr "Renegociar"
 
 #: ../stoq/gui/receivable.py:171
 msgid "Print document"
-msgstr ""
+msgstr "Imprimir documento"
 
 #: ../stoq/gui/receivable.py:198 ../stoqlib/gui/dialogs/clientdetails.py:268
 msgid "Sale date"
@@ -8774,7 +8774,7 @@ msgstr "Devolver"
 
 #: ../stoq/gui/sales.py:221
 msgid "Change client"
-msgstr ""
+msgstr "Alterar cliente"
 
 #: ../stoq/gui/sales.py:223 ../stoqlib/lib/parameters.py:436
 msgid "Change salesperson"
@@ -8879,7 +8879,7 @@ msgstr "Isso vai informar que a ordem está em espera. Você tem certeza?"
 
 #: ../stoq/gui/services.py:76
 msgid "This will set the order as uninformed. Are you sure?"
-msgstr ""
+msgstr "Isso irá definir a ordem como não informada. Tem certeza?"
 
 #: ../stoq/gui/services.py:136
 msgid "Make the change on the order's menu so you can specify a reason"
@@ -8889,7 +8889,7 @@ msgstr "Faça a alteração no menu da ordem para especificar uma razão"
 #: ../stoq/gui/services.py:172 ../stoq/gui/services.py:189
 #: ../stoqlib/domain/workorder.py:1102 ../stoqlib/domain/workorder.py:1111
 msgid "Client informed"
-msgstr ""
+msgstr "Cliente informado"
 
 #: ../stoq/gui/services.py:283
 msgid "Work order..."
@@ -8973,28 +8973,28 @@ msgstr "Ajuda do Serviços"
 
 #: ../stoq/gui/services.py:344
 msgid "Pause the work"
-msgstr ""
+msgstr "Pausar o serviço"
 
 #: ../stoq/gui/services.py:345
 msgid "Start the work"
-msgstr ""
+msgstr "Iniciar o serviço"
 
 #: ../stoq/gui/services.py:346
 msgid "Reject order"
-msgstr ""
+msgstr "Rejeitar ordem"
 
 #: ../stoq/gui/services.py:347
 msgid "Undo order rejection"
-msgstr ""
+msgstr "Desfazer rejeição de ordem"
 
 #: ../stoq/gui/services.py:348
 msgid "Repoen order"
-msgstr ""
+msgstr "Reabrir ordem"
 
 #. Separator
 #: ../stoq/gui/services.py:350
 msgid "Print quote"
-msgstr ""
+msgstr "Imprimir cotação"
 
 #. Base search with no filters
 #: ../stoq/gui/services.py:402
@@ -9286,15 +9286,15 @@ msgstr "Data de lançamento: %s"
 
 #: ../stoq/gui/shell/shellwindow.py:654
 msgid "Searches"
-msgstr ""
+msgstr "Pesquisas"
 
 #: ../stoq/gui/shell/shellwindow.py:657
 msgid "Actions"
-msgstr ""
+msgstr "Ações"
 
 #: ../stoq/gui/shell/shellwindow.py:663
 msgid "Sign now"
-msgstr ""
+msgstr "Assine agora"
 
 #: ../stoq/gui/shell/shellwindow.py:669
 msgid "New"
@@ -9326,7 +9326,7 @@ msgstr "Exportar para planilha..."
 
 #: ../stoq/gui/shell/shellwindow.py:949
 msgid "Print this report..."
-msgstr ""
+msgstr "Imprimir esse relatório..."
 
 #: ../stoq/gui/shell/shellwindow.py:1067
 msgid ""
@@ -9372,7 +9372,7 @@ msgstr "Alguns serviços estão em estado de erro"
 
 #: ../stoq/gui/shell/statusbar.py:93
 msgid "Refresh"
-msgstr ""
+msgstr "Atualizar"
 
 #: ../stoq/gui/shell/statusbar.py:177
 msgid "Status not available..."
@@ -9555,7 +9555,7 @@ msgstr "Imprimir etiquetas"
 
 #: ../stoq/gui/stock.py:209
 msgid "Manage stock"
-msgstr ""
+msgstr "Gerenciar estoque"
 
 #: ../stoq/gui/stock.py:248
 msgid "Show by:"
@@ -9796,35 +9796,35 @@ msgstr "_Começar a usar Stoq"
 
 #: ../stoq/gui/widgets.py:196
 msgid "Operations"
-msgstr ""
+msgstr "Operações"
 
 #: ../stoq/gui/widgets.py:199
 msgid "Finances"
-msgstr ""
+msgstr "Finanças"
 
 #: ../stoq/gui/widgets.py:202
 msgid "Others"
-msgstr ""
+msgstr "Outros"
 
 #: ../stoq/gui/widgets.py:304
 msgid "New sale"
-msgstr ""
+msgstr "Nova venda"
 
 #: ../stoq/gui/widgets.py:306
 msgid "New sale with WO"
-msgstr ""
+msgstr "Nova venda com OS"
 
 #: ../stoq/gui/widgets.py:306
 msgid "Create a new sale with work order"
-msgstr ""
+msgstr "Criar uma nova venda com ordem de serviço"
 
 #: ../stoq/gui/widgets.py:308
 msgid "Open product search"
-msgstr ""
+msgstr "Abrir pesquisa de produtos"
 
 #: ../stoq/gui/widgets.py:362
 msgid "Applications"
-msgstr ""
+msgstr "Aplicações"
 
 #: ../stoq/lib/applist.py:33
 msgid ""
@@ -10304,7 +10304,7 @@ msgstr "saída manual %s"
 #: ../stoqlib/domain/payment/group.py:292
 #, python-format
 msgid "receiving %s"
-msgstr ""
+msgstr "recebimento %s"
 
 #: ../stoqlib/domain/payment/method.py:196
 #, python-format
@@ -12933,7 +12933,7 @@ msgstr "O custo da entrega deve ter um valor positivo."
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:241
 msgid "Invalid License Plate"
-msgstr ""
+msgstr "Placa inválida"
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:306
 msgid "Delivery editor"
@@ -13592,7 +13592,7 @@ msgstr "Este código já existe para este fornecedor no produto '%s'"
 
 #: ../stoqlib/gui/editors/producteditor.py:274
 msgid "The product is already supplied in this branch"
-msgstr ""
+msgstr "O produto já é fornecido nesta filial"
 
 #: ../stoqlib/gui/editors/producteditor.py:291
 msgid "Product Component"
@@ -15179,7 +15179,7 @@ msgstr "Diferente de"
 
 #: ../stoqlib/gui/search/searchslave.py:170
 msgid "Find"
-msgstr ""
+msgstr "Buscar"
 
 #: ../stoqlib/gui/search/searchslave.py:237
 msgid "Nothing found."
@@ -15653,7 +15653,7 @@ msgstr "Mínimo para compras"
 #: ../stoqlib/gui/slaves/productslave.py:856
 #, python-format
 msgid "%s is already supplied by %s in all branches"
-msgstr ""
+msgstr "%s já é fornecido por %s em todas as filiais"
 
 #: ../stoqlib/gui/slaves/receivingslave.py:210
 msgid "This field cannot be negative"
@@ -16153,7 +16153,7 @@ msgstr "Cria uma nova consignação"
 
 #: ../stoqlib/gui/utils/keybindings.py:269
 msgid "Start a new purchase reconciliation"
-msgstr ""
+msgstr "Iniciar uma conciliação de compras"
 
 #: ../stoqlib/gui/utils/keybindings.py:275
 msgid "Search for product units"
@@ -16762,19 +16762,19 @@ msgstr "Você gostaria de imprimir as etiquetas para os produtos recebidos?"
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:95
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:190
 msgid "Packing Number"
-msgstr ""
+msgstr "Número do Romaneio"
 
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:107
 msgid "Products total"
-msgstr ""
+msgstr "Total dos produtos"
 
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:199
 msgid "Purchase Cost"
-msgstr ""
+msgstr "Custo da Compra"
 
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:313
 msgid "Purchase Reconciliation"
-msgstr ""
+msgstr "Conciliação de Compra"
 
 #: ../stoqlib/gui/wizards/renegotiationwizard.py:134
 msgid "Surcharge must be greater than 0"
