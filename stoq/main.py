@@ -96,10 +96,13 @@ def _windows_fixes():  # pragma: no cover
 
     # We need to monkeypatch the default values of the constructor, since the value is
     # 'hardcoded' once the class is first imported.
-    _defs = list(HTTPTransport.__init__.__defaults__)
-    _defs[-1] = defaults.CA_BUNDLE
-    HTTPTransport.__init__.__defaults__ = tuple(_defs)
-    print('XXX', defaults.CA_BUNDLE)
+    old_init = HTTPTransport.__init__
+
+    def new_init(self, *args, **kwargs):
+        old_init(self, *args, **kwargs)
+        self.ca_certs = defaults.CA_BUNDLE
+
+    HTTPTransport.__init__ = new_init
 
 
 def main(args):
