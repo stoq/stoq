@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-28 02:10-0300\n"
+"POT-Creation-Date: 2018-03-01 02:10-0300\n"
 "PO-Revision-Date: 2018-02-25 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: English (http://www.transifex.com/async/stoq/language/en/)\n"
@@ -305,7 +305,7 @@ msgstr "Product:"
 #: ../stoqlib/gui/dialogs/productstockdetails.py:304
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:118
 #: ../stoqlib/gui/search/productsearch.py:518
-#: ../stoqlib/gui/search/productsearch.py:555 ../stoqlib/lib/formatters.py:208
+#: ../stoqlib/gui/search/productsearch.py:555 ../stoqlib/lib/formatters.py:213
 msgid "Batch"
 msgstr "Batch"
 
@@ -402,8 +402,8 @@ msgstr "Branch status:"
 #: ../stoqlib/domain/person.py:1424 ../stoqlib/domain/person.py:1478
 #: ../stoqlib/domain/person.py:1521 ../stoqlib/domain/person.py:1651
 #: ../stoqlib/domain/person.py:1694 ../stoqlib/domain/person.py:1844
-#: ../stoqlib/domain/person.py:1931 ../stoqlib/domain/person.py:2324
-#: ../stoqlib/domain/person.py:2375 ../stoqlib/domain/station.py:114
+#: ../stoqlib/domain/person.py:1931 ../stoqlib/domain/person.py:2325
+#: ../stoqlib/domain/person.py:2376 ../stoqlib/domain/station.py:114
 #: ../stoqlib/domain/test/test_devices.py:159
 #: ../stoqlib/domain/test/test_person.py:1140
 #: ../stoqlib/domain/test/test_person.py:1159
@@ -432,7 +432,7 @@ msgstr "Active"
 #: ../stoqlib/domain/person.py:1479 ../stoqlib/domain/person.py:1522
 #: ../stoqlib/domain/person.py:1652 ../stoqlib/domain/person.py:1695
 #: ../stoqlib/domain/person.py:1845 ../stoqlib/domain/person.py:1932
-#: ../stoqlib/domain/person.py:2326 ../stoqlib/domain/person.py:2377
+#: ../stoqlib/domain/person.py:2327 ../stoqlib/domain/person.py:2378
 #: ../stoqlib/domain/station.py:115 ../stoqlib/domain/test/test_devices.py:161
 #: ../stoqlib/domain/test/test_person.py:1096
 #: ../stoqlib/domain/test/test_person.py:1142
@@ -4839,8 +4839,8 @@ msgstr "Invoice number"
 
 #: ../data/template/transfer/transfer.html:23
 #: ../data/template/transfer/transfer.html:51
-#: ../stoq/gui/shell/statusbar.py:310 ../stoqlib/lib/formatters.py:173
-#: ../stoqlib/lib/status.py:57
+#: ../stoq/gui/shell/statusbar.py:336 ../stoqlib/lib/formatters.py:173
+#: ../stoqlib/lib/formatters.py:176 ../stoqlib/lib/status.py:59
 msgid "N/A"
 msgstr "N/A"
 
@@ -6639,8 +6639,8 @@ msgid ""
 "archive"
 msgstr "You must define a manager to this branch before you can create a sintegra archive"
 
-#: ../stoq/gui/admin.py:311 ../stoqlib/lib/status.py:250
-#: ../stoqlib/lib/status.py:290
+#: ../stoq/gui/admin.py:311 ../stoqlib/lib/status.py:258
+#: ../stoqlib/lib/status.py:307
 msgid "Online features are not available in trial mode"
 msgstr "Online features are not available in trial mode"
 
@@ -6782,7 +6782,7 @@ msgstr "Configure certificates..."
 msgid "Admin help"
 msgstr "Admin help"
 
-#: ../stoq/gui/admin.py:463 ../stoqlib/lib/status.py:357
+#: ../stoq/gui/admin.py:463 ../stoqlib/lib/status.py:373
 msgid "Configure"
 msgstr "Configure"
 
@@ -9340,49 +9340,44 @@ msgstr "Learn More..."
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr "<b>There is a new Stoq version available (%s)</b>"
 
-#: ../stoq/gui/shell/statusbar.py:49
+#: ../stoq/gui/shell/statusbar.py:48
 msgid "Checking status..."
 msgstr "Checking status..."
 
-#: ../stoq/gui/shell/statusbar.py:52
+#: ../stoq/gui/shell/statusbar.py:51
 msgid "Status not available"
 msgstr "Status not available"
 
-#: ../stoq/gui/shell/statusbar.py:55
+#: ../stoq/gui/shell/statusbar.py:54
 msgid "Everything is running fine"
 msgstr "Everything is running fine"
 
-#: ../stoq/gui/shell/statusbar.py:58
+#: ../stoq/gui/shell/statusbar.py:57
 msgid "Some services are in a warning state"
 msgstr "Some services are in a warning state"
 
-#: ../stoq/gui/shell/statusbar.py:61
+#: ../stoq/gui/shell/statusbar.py:60
 msgid "Some services are in an error state"
 msgstr "Some services are in an error state"
 
-#: ../stoq/gui/shell/statusbar.py:93
-msgid "Refresh"
-msgstr "Refresh"
-
-#: ../stoq/gui/shell/statusbar.py:177
-msgid "Status not available..."
-msgstr "Status not available..."
-
-#: ../stoq/gui/shell/statusbar.py:190
+#: ../stoq/gui/shell/statusbar.py:101
 msgid "Only admins can execute this action"
 msgstr "Only admins can execute this action"
 
-#: ../stoq/gui/shell/statusbar.py:217
+#: ../stoq/gui/shell/statusbar.py:151
+msgid "Status not available..."
+msgstr "Status not available..."
+
+#: ../stoq/gui/shell/statusbar.py:167
 #, python-format
 msgid "Executing \"%s\". This might take a while..."
 msgstr "Executing \"%s\". This might take a while..."
 
-#: ../stoq/gui/shell/statusbar.py:243
-#, python-format
-msgid "An error happened when executing \"%s\""
-msgstr "An error happened when executing \"%s\""
+#: ../stoq/gui/shell/statusbar.py:220
+msgid "Refresh"
+msgstr "Refresh"
 
-#: ../stoq/gui/shell/statusbar.py:384
+#: ../stoq/gui/shell/statusbar.py:410
 msgid "Feedback"
 msgstr "Feedback"
 
@@ -18672,88 +18667,93 @@ msgstr "You need to have a CNPJ number set on Company %s"
 msgid "You need to have a State Registry set on Company %s"
 msgstr "You need to have a State Registry set on Company %s"
 
-#: ../stoqlib/lib/status.py:58
+#: ../stoqlib/lib/status.py:60
 msgid "OK"
 msgstr "OK"
 
-#: ../stoqlib/lib/status.py:59
+#: ../stoqlib/lib/status.py:61
 msgid "WARNING"
 msgstr "WARNING"
 
-#: ../stoqlib/lib/status.py:60
+#: ../stoqlib/lib/status.py:62
 msgid "ERROR"
 msgstr "ERROR"
 
-#: ../stoqlib/lib/status.py:240
+#: ../stoqlib/lib/status.py:220
+#, python-format
+msgid "An error happened when executing \"%s\""
+msgstr "An error happened when executing \"%s\""
+
+#: ../stoqlib/lib/status.py:244
 msgid "Online Services"
 msgstr "Online Services"
 
-#: ../stoqlib/lib/status.py:251 ../stoqlib/lib/status.py:291
+#: ../stoqlib/lib/status.py:259 ../stoqlib/lib/status.py:308
 msgid "Online features require a subscription of Stoq.link"
 msgstr "Online features require a subscription of Stoq.link"
 
-#: ../stoqlib/lib/status.py:256
+#: ../stoqlib/lib/status.py:264
 msgid "Online services (Stoq.link integration, backup, etc) not enabled..."
 msgstr "Online services (Stoq.link integration, backup, etc) not enabled..."
 
-#: ../stoqlib/lib/status.py:258 ../stoqlib/lib/status.py:298
+#: ../stoqlib/lib/status.py:266 ../stoqlib/lib/status.py:315
 msgid ""
 "Enable the parameter \"Online Services\" on the \"Admin\" app to solve this "
 "issue"
 msgstr "Enable the parameter \"Online Services\" on the \"Admin\" app to solve this issue"
 
-#: ../stoqlib/lib/status.py:264
+#: ../stoqlib/lib/status.py:272
 msgid "Online services data hub is running fine."
 msgstr "Online services data hub is running fine."
 
-#: ../stoqlib/lib/status.py:268
+#: ../stoqlib/lib/status.py:276
 msgid "Online services data hub not found..."
 msgstr "Online services data hub not found..."
 
-#: ../stoqlib/lib/status.py:271
+#: ../stoqlib/lib/status.py:279
 #, python-format
 msgid "Install and configure the %s package to solve this issue"
 msgstr "Install and configure the %s package to solve this issue"
 
-#: ../stoqlib/lib/status.py:279
+#: ../stoqlib/lib/status.py:287
 msgid "Backup"
 msgstr "Backup"
 
-#: ../stoqlib/lib/status.py:296
+#: ../stoqlib/lib/status.py:313
 msgid "Backup service not running because \"Online Services\" is disabled"
 msgstr "Backup service not running because \"Online Services\" is disabled"
 
-#: ../stoqlib/lib/status.py:309
+#: ../stoqlib/lib/status.py:326
 msgid "Backup key not configured"
 msgstr "Backup key not configured"
 
-#: ../stoqlib/lib/status.py:310
+#: ../stoqlib/lib/status.py:327
 msgid "Click on \"Configure\" button to configure the backup key"
 msgstr "Click on \"Configure\" button to configure the backup key"
 
-#: ../stoqlib/lib/status.py:319 ../stoqlib/lib/status.py:325
+#: ../stoqlib/lib/status.py:335 ../stoqlib/lib/status.py:341
 msgid "Could not communicate with Stoq.link"
 msgstr "Could not communicate with Stoq.link"
 
-#: ../stoqlib/lib/status.py:336
+#: ../stoqlib/lib/status.py:352
 #, python-format
 msgid "Backup is late. Last backup date is %s"
 msgstr "Backup is late. Last backup date is %s"
 
-#: ../stoqlib/lib/status.py:338
+#: ../stoqlib/lib/status.py:354
 msgid "Check your Stoq Server logs to see if there's any problem with it"
 msgstr "Check your Stoq Server logs to see if there's any problem with it"
 
-#: ../stoqlib/lib/status.py:342
+#: ../stoqlib/lib/status.py:358
 #, python-format
 msgid "Backup is up-to-date. Last backup date is %s"
 msgstr "Backup is up-to-date. Last backup date is %s"
 
-#: ../stoqlib/lib/status.py:347
+#: ../stoqlib/lib/status.py:363
 msgid "There's no backup data yet"
 msgstr "There's no backup data yet"
 
-#: ../stoqlib/lib/status.py:354
+#: ../stoqlib/lib/status.py:370
 msgid "Backup now"
 msgstr "Backup now"
 
