@@ -125,6 +125,21 @@ class TestSalePaymentConfirmSlave(GUITest):
         self.assertEqual(slave.penalty.read(), currency('0'))
         self.assertEqual(slave.interest.read(), currency('0'))
 
+    def test_discount(self):
+        sale = self.create_sale()
+        sale_item = self.create_sale_item(sale=sale)
+        payment = self.create_card_payment(payment_value=sale_item.price)
+        payment.identifier = 12345
+
+        payment.group = sale.group
+        card_data = payment.card_data
+        card_data.fee_value = 2
+        card_data.fare = 4
+        sale.order()
+
+        slave = SalePaymentConfirmSlave(self.store, [payment])
+        self.assertEqual(slave.discount.read(), 6)
+
 
 class TestLonelyPaymentConfirmSlave(GUITest):
     def test_create(self):

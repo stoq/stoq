@@ -503,6 +503,16 @@ class SalePaymentConfirmSlave(_PaymentConfirmSlave):
 
     def _setup_widgets(self):
         _PaymentConfirmSlave._setup_widgets(self)
+        self._update_discount()
+
+    def _update_discount(self):
+        discount = currency(0)
+        for payment in self._payments:
+            card_data = payment.card_data
+            if card_data:
+                discount += (card_data.fee_value + card_data.fare)
+
+        self.discount.update(discount)
 
     def get_till_info_msg(self):
         # TRANSLATORS: 'cash addition' is 'suprimento' in pt_BR
