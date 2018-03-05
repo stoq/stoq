@@ -2214,6 +2214,7 @@ class SupplierView(Viewable):
     street = Address.street
     streetnumber = Address.streetnumber
     district = Address.district
+    complement = Address.complement
 
     tables = [
         Supplier,
@@ -2573,6 +2574,7 @@ class PersonAddressView(Viewable):
     district = Address.district
     street = Address.street
     streetnumber = Address.streetnumber
+    complement = Address.complement
 
     clean_name = StoqNormalizeString(Person.name)
     clean_street = Coalesce(StoqNormalizeString(Address.street), u'')
