@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-01 02:10-0300\n"
-"PO-Revision-Date: 2018-02-25 05:10+0000\n"
+"POT-Creation-Date: 2018-03-04 02:10-0300\n"
+"PO-Revision-Date: 2018-03-02 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Arabic (http://www.transifex.com/async/stoq/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -3756,7 +3756,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/personmergedialog.py:300
 #: ../stoqlib/gui/editors/clientcategoryeditor.py:52
 #: ../stoqlib/gui/editors/costcentereditor.py:47
-#: ../stoqlib/gui/editors/paymentcategoryeditor.py:59
+#: ../stoqlib/gui/editors/paymentcategoryeditor.py:60
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:440
 #: ../stoqlib/gui/editors/personeditor.py:200
 #: ../stoqlib/gui/editors/producteditor.py:765
@@ -6357,7 +6357,7 @@ msgstr ""
 #: ../plugins/optical/opticalui.py:109 ../plugins/optical/opticalui.py:130
 #: ../stoqlib/gui/dialogs/paymentcategorydialog.py:55
 #: ../stoqlib/gui/dialogs/workordercategorydialog.py:45
-#: ../stoqlib/gui/editors/paymentcategoryeditor.py:60
+#: ../stoqlib/gui/editors/paymentcategoryeditor.py:61
 #: ../stoqlib/gui/editors/workordercategoryeditor.py:52
 msgid "Color"
 msgstr ""
@@ -7444,6 +7444,7 @@ msgid "All Deliveries"
 msgstr ""
 
 #: ../stoq/gui/financial.py:233 ../stoqlib/gui/editors/accounteditor.py:76
+#: ../stoqlib/gui/editors/paymentcategoryeditor.py:65
 msgid "Account"
 msgstr ""
 
@@ -11454,7 +11455,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/saledetails.py:248
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:99
 #: ../stoqlib/gui/dialogs/supplierdetails.py:136
-#: ../stoqlib/gui/editors/paymentcategoryeditor.py:62
+#: ../stoqlib/gui/editors/paymentcategoryeditor.py:63
 #: ../stoqlib/gui/search/eventsearch.py:56
 #: ../stoqlib/gui/search/taxclasssearch.py:58
 #: ../stoqlib/gui/slaves/productslave.py:777
@@ -11937,12 +11938,12 @@ msgid "A new production was created for the missing composed products"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/paymentcategorydialog.py:42
-#: ../stoqlib/gui/editors/paymentcategoryeditor.py:52
+#: ../stoqlib/gui/editors/paymentcategoryeditor.py:53
 msgid "Payable"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/paymentcategorydialog.py:44
-#: ../stoqlib/gui/editors/paymentcategoryeditor.py:53
+#: ../stoqlib/gui/editors/paymentcategoryeditor.py:54
 #: ../stoqlib/lib/parameters.py:1016
 msgid "Receivable"
 msgstr ""
@@ -12734,7 +12735,7 @@ msgid ""
 msgstr ""
 
 #: ../stoqlib/gui/editors/backupsettings.py:49
-#: ../stoqlib/gui/editors/paymentcategoryeditor.py:90
+#: ../stoqlib/gui/editors/paymentcategoryeditor.py:93
 msgid "Change"
 msgstr ""
 
@@ -13226,26 +13227,26 @@ msgstr ""
 msgid "Field can not be empty."
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentcategoryeditor.py:47
+#: ../stoqlib/gui/editors/paymentcategoryeditor.py:48
 msgid "Payment Category"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentcategoryeditor.py:88
+#: ../stoqlib/gui/editors/paymentcategoryeditor.py:91
 #, python-format
 msgid ""
 "Changing the payment type will remove this category from %s payments. Are "
 "you sure?"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentcategoryeditor.py:90
+#: ../stoqlib/gui/editors/paymentcategoryeditor.py:93
 msgid "Don't change"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentcategoryeditor.py:118
+#: ../stoqlib/gui/editors/paymentcategoryeditor.py:124
 msgid "The payment category should have name."
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymentcategoryeditor.py:122
+#: ../stoqlib/gui/editors/paymentcategoryeditor.py:128
 #, python-format
 msgid "The payment category '%s' already exists."
 msgstr ""
@@ -15383,47 +15384,47 @@ msgstr ""
 msgid "Due"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/paymentconfirmslave.py:443
+#: ../stoqlib/gui/slaves/paymentconfirmslave.py:450
 #, python-format
 msgid "Paid date must be between %s and today"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/paymentconfirmslave.py:453
+#: ../stoqlib/gui/slaves/paymentconfirmslave.py:460
 msgid "Penalty can not be less than zero"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/paymentconfirmslave.py:462
+#: ../stoqlib/gui/slaves/paymentconfirmslave.py:469
 msgid "Interest can not be less than zero"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/paymentconfirmslave.py:472
+#: ../stoqlib/gui/slaves/paymentconfirmslave.py:479
 #, python-format
 msgid "Discount can not be greater or equal than %.2f"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/paymentconfirmslave.py:475
+#: ../stoqlib/gui/slaves/paymentconfirmslave.py:482
 msgid "Discount can not be less than zero"
 msgstr ""
 
 #. TRANSLATORS: 'cash addition' is 'suprimento' in pt_BR
-#: ../stoqlib/gui/slaves/paymentconfirmslave.py:502
+#: ../stoqlib/gui/slaves/paymentconfirmslave.py:509
 msgid ""
 "Note that this operation will not generate a till entry for the money payment(s). \n"
 "If you are adding money on the till, do a cash addition in the Till applications too."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/paymentconfirmslave.py:536
+#: ../stoqlib/gui/slaves/paymentconfirmslave.py:543
 msgid "Supplier: "
 msgstr ""
 
 #. TRANSLATORS: 'cash removal' is 'sangria' in pt_BR
-#: ../stoqlib/gui/slaves/paymentconfirmslave.py:544
+#: ../stoqlib/gui/slaves/paymentconfirmslave.py:551
 msgid ""
 "Note that this operation will not generate a till entry for the money payment(s). \n"
 "If you are removing money from the till, do a cash removal in the Till application too."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/paymentconfirmslave.py:573
+#: ../stoqlib/gui/slaves/paymentconfirmslave.py:580
 #: ../stoqlib/gui/wizards/salewizard.py:601
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:112
 msgid "No cost center."
@@ -18848,11 +18849,15 @@ msgstr ""
 msgid "%d purchases"
 msgstr ""
 
-#: ../stoqlib/net/server.py:128
+#: ../stoqlib/net/server.py:103
+msgid "Configuration not found"
+msgstr ""
+
+#: ../stoqlib/net/server.py:130
 msgid "Stoq server not found"
 msgstr ""
 
-#: ../stoqlib/net/server.py:145
+#: ../stoqlib/net/server.py:147
 msgid "Server not responding to pings"
 msgstr ""
 
