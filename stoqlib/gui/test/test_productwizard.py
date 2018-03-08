@@ -274,6 +274,7 @@ class TestProducCreateWizard(GUITest):
         grid_product.ncm = '12345678'
         grid_product.pis_template = pis_template
         grid_product.cofins_template = cofins_template
+        grid_product.model = 'model'
         self.create_product_attribute(product=grid_product, attribute=grid_attribute)
 
         # We need the mocked yesno to return different values each time it
@@ -304,6 +305,7 @@ class TestProducCreateWizard(GUITest):
         self.assertEqual(template.sellable.default_sale_cfop,
                          grid_product.sellable.default_sale_cfop)
         self.assertEqual(template.ncm, '12345678')
+        self.assertEqual(template.model, 'model')
         self.assertEqual(template.cofins_template, cofins_template)
         self.assertEqual(template.pis_template, pis_template)
         self.assertEqual(template.sellable.default_sale_cfop, cfop)
