@@ -78,6 +78,13 @@ class PurchaseItem(Domain):
     base_cost = PriceCol()
 
     cost = PriceCol()
+
+    #: The ICMS ST value for the product purchased
+    icms_st_value = PriceCol(default=0)
+
+    #: The IPI value for the product purchased
+    ipi_value = PriceCol(default=0)
+
     expected_receival_date = DateTimeCol(default=None)
 
     sellable_id = IdCol()
@@ -265,7 +272,8 @@ class PurchaseOrder(Domain):
         item.order = None
         self.store.maybe_remove(item)
 
-    def add_item(self, sellable, quantity=Decimal(1), parent=None, cost=None):
+    def add_item(self, sellable, quantity=Decimal(1), parent=None, cost=None,
+                 icms_st_value=0, ipi_value=0):
         """Add a sellable to this purchase.
 
         If the sellable is part of a package (parent is not None), then the actual cost
@@ -293,7 +301,8 @@ class PurchaseOrder(Domain):
         store = self.store
         return PurchaseItem(store=store, order=self,
                             sellable=sellable, quantity=quantity, cost=cost,
-                            parent_item=parent)
+                            parent_item=parent, icms_st_value=icms_st_value,
+                            ipi_value=ipi_value)
 
     #
     # Properties

@@ -24,6 +24,7 @@
 ##
 """ Purchase receiving slaves implementation"""
 
+from kiwi.currency import currency
 from kiwi.datatypes import ValidationError, ValueUnset
 from kiwi.utils import gsignal
 from storm.exceptions import NotOneError
@@ -80,6 +81,13 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
     # BaseEditorSlave hooks
     #
 
+    def _get_receiving_items(self):
+        items = []
+        for receiving in self.model.receiving_orders:
+            for item in receiving.get_items(with_children=False):
+                items.append(item)
+        return items
+
     def _setup_transporter_entry(self):
         transporters = Transporter.get_active_transporters(self.store)
         self.transporter.prefill(api.for_combo(transporters))
@@ -114,7 +122,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         if len(self.purchases) == 1 and self.purchases[0].is_paid():
             # This widgets would make the value of the installments change.
             for widget in (self.ipi, self.discount_value, self.icms_total,
-                           self.secure_value, self.expense_value):
+                           self.icms_st_total, self.secure_value, self.expense_value):
                 widget.set_sensitive(False)
 
         # Only allow to edit the cfop if there is only one receiving for this invoice
@@ -178,6 +186,16 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
 
             self.model.supplier = purchase.supplier
             self.transporter.update(purchase.transporter)
+
+        # Prefill the IPI and ICMS ST totals based on the sum of the itens values
+        receiving_items = self._get_receiving_items()
+        ipi_total = icms_st_total = currency(0)
+        for item in receiving_items:
+            ipi_total += item.ipi_value
+            icms_st_total += item.icms_st_value
+
+        self.ipi.update(ipi_total)
+        self.icms_st_total.update(icms_st_total)
 
         self.invoice_proxy.update('total')
 

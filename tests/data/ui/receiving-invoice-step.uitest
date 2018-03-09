@@ -29,7 +29,7 @@ GtkDialog(toplevel): title='Receive Purchase Order', hidden
                 GtkLabel(label5): 'Invoice Key:'
                 ProxyEntry(invoice_key): ''
                 ProxyLabel(kiwilabel1): 'ICMS ST Total ($CURRENCY):'
-                ProxyEntry(icms_st_total): '0.00'
+                ProxyEntry(icms_st_total): '0.00', insensitive
                 GtkLabel(label9): 'C.F.O.P.:'
                 ProxyComboEntry(cfop):
                   item: '1.102 Compra para Comercializacao', selected

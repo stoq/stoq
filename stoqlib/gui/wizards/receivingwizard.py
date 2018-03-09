@@ -47,7 +47,8 @@ from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.gui.utils.printing import print_labels
 from stoqlib.lib.defaults import MAX_INT
-from stoqlib.lib.formatters import format_quantity, get_formatted_cost
+from stoqlib.lib.formatters import (format_quantity, get_formatted_cost,
+                                    get_formatted_price)
 from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -63,6 +64,8 @@ class _TemporaryReceivingItem(object):
         self.category_description = item.sellable.get_category_description()
         self.unit_description = item.sellable.unit_description
         self.cost = item.cost
+        self.ipi_value = item.ipi_value
+        self.icms_st_value = item.icms_st_value
         self.remaining_quantity = item.get_pending_quantity()
         self.storable = item.sellable.product_storable
         self.is_batch = self.storable and self.storable.is_batch
@@ -271,6 +274,10 @@ class ReceivingOrderItemStep(BaseWizardStep):
                    width=50),
             Column('cost', title=_('Cost'), data_type=currency,
                    format_func=get_formatted_cost, width=90),
+            Column('ipi_value', title=_('IPI'), data_type=currency, visible=False,
+                   format_func=get_formatted_price, editable=True, width=90),
+            Column('icms_st_value', title=_('ICMS ST'), data_type=currency,
+                   visible=False, format_func=get_formatted_price, editable=True, width=90),
             Column('total', title=_('Total'), data_type=currency, width=100)])
         # We must clear the ObjectTree before
         self.purchase_items.clear()
@@ -326,14 +333,20 @@ class ReceivingOrderItemStep(BaseWizardStep):
                     self.model.add_purchase_item(
                         item.purchase_item,
                         quantity=quantity,
-                        batch_number=batch)
+                        batch_number=batch,
+                        ipi=item.ipi_value,
+                        icms_st=item.icms_st_value)
             elif item.quantity > 0:
                 parent_item = self.model.add_purchase_item(item.purchase_item,
-                                                           item.quantity)
+                                                           item.quantity,
+                                                           ipi_value=item.ipi_value,
+                                                           icms_st_value=item.icms_st_value)
                 for child in item.children_items:
                     self.model.add_purchase_item(child.purchase_item,
                                                  quantity=child.quantity,
-                                                 parent_item=parent_item)
+                                                 parent_item=parent_item,
+                                                 ipi_value=child.ipi_value,
+                                                 icms_st_value=child.icms_st_value)
 
     def _edit_item(self, item):
         retval = run_dialog(BatchIncreaseSelectionDialog, self.wizard,
@@ -361,7 +374,7 @@ class ReceivingOrderItemStep(BaseWizardStep):
         if not isinstance(renderer, Gtk.CellRendererText):
             return text
 
-        if column.attribute == 'quantity':
+        if column.attribute in ['ipi_value', 'icms_st_value', 'quantity']:
             editable = not (obj.is_batch or obj.purchase_item.parent_item)
             renderer.set_property('editable-set', editable)
             renderer.set_property('editable', editable)
@@ -442,7 +455,7 @@ class ReceivingInvoiceStep(WizardEditorStep):
 
 class ReceivingOrderWizard(BaseWizard):
     title = _("Receive Purchase Order")
-    size = (750, 350)
+    size = (850, 350)
     need_cancel_confirmation = True
     # help_section = 'purchase-new-receival'
 

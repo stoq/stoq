@@ -15,10 +15,12 @@ GtkDialog(toplevel): title='Receive Purchase Order', hidden
               column: title='Qty to receive'
               column: title='Unit'
               column: title='Cost'
+              column: title='IPI', hidden
+              column: title='ICMS ST', hidden
               column: title='Total'
-              row: '', '', 'Description', '', Decimal('1.000'), Decimal('1.000'), '', <currency $125>, <currency $125>
-              row: '', '', 'Package', '', Decimal('1.000'), Decimal('1.000'), '', <currency $0>, <currency $0>
-                row: '', '', 'Component', '', Decimal('1.000'), Decimal('1.000'), '', <currency $125>, <currency $125>
+              row: '', '', 'Description', '', Decimal('1.000'), Decimal('1.000'), '', <currency $125>, <currency $0>, <currency $0>, <currency $125>
+              row: '', '', 'Package', '', Decimal('1.000'), Decimal('1.000'), '', <currency $0>, <currency $0>, <currency $0>, <currency $0>
+                row: '', '', 'Component', '', Decimal('1.000'), Decimal('1.000'), '', <currency $125>, <currency $0>, <currency $0>, <currency $125>
             GtkBox(step.hbox1, orientation=horizontal, fill=True):
               GtkButton(step.edit_btn): 'gtk-edit', insensitive
               GtkLabel(step.label1, expand=True, fill=True): 'Total Received:'

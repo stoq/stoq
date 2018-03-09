@@ -67,6 +67,12 @@ class ReceivingOrderItem(Domain):
     #: the cost for each |product| received
     cost = PriceCol()
 
+    #: The ICMS ST value for the product purchased
+    icms_st_value = PriceCol(default=0)
+
+    #: The IPI value for the product purchased
+    ipi_value = PriceCol(default=0)
+
     purchase_item_id = IdCol()
 
     purchase_item = Reference(purchase_item_id, 'PurchaseItem.id')
@@ -259,7 +265,7 @@ class ReceivingOrder(Domain):
                                     receiving=self)
 
     def add_purchase_item(self, item, quantity=None, batch_number=None,
-                          parent_item=None):
+                          parent_item=None, ipi_value=0, icms_st_value=0):
         """Add a |purchaseitem| on this receiving order
 
         :param item: the |purchaseitem|
@@ -299,6 +305,8 @@ class ReceivingOrder(Domain):
             batch=batch,
             quantity=quantity,
             cost=item.cost,
+            ipi_value=ipi_value,
+            icms_st_value=icms_st_value,
             purchase_item=item,
             receiving_order=self,
             parent_item=parent_item)

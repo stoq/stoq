@@ -70,6 +70,8 @@ model: PurchaseItem<2>
   base_cost: <currency $125>
   cost: <currency $125>
   expected_receival_date: None
+  icms_st_value: <currency $0>
+  ipi_value: <currency $0>
   order_id: PurchaseOrder<1>
   quantity: Decimal('8.000')
   quantity_received: Decimal('10.000')

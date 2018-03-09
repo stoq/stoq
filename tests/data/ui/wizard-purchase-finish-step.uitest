@@ -56,6 +56,8 @@ model: PurchaseItem<2>
   base_cost: <currency $125>
   cost: <currency $125>
   expected_receival_date: datetime.datetime(2010, 1, 4, 0, 0)
+  icms_st_value: <currency $0>
+  ipi_value: <currency $0>
   order_id: PurchaseOrder<1>
   quantity: Decimal('1.000')
   quantity_received: Decimal('0.000')

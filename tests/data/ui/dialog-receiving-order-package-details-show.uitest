@@ -41,7 +41,7 @@ GtkBox(vbox1, orientation=vertical):
           GtkLabel(label5): 'Invoice Key:'
           ProxyEntry(invoice_key): '', ineditable
           ProxyLabel(kiwilabel1): 'ICMS ST Total ($CURRENCY):'
-          ProxyEntry(icms_st_total): '0.00', ineditable
+          ProxyEntry(icms_st_total): '0.00', ineditable, insensitive
           GtkLabel(label9): 'C.F.O.P.:'
           ProxyComboEntry(cfop): insensitive
             item: '1.102 Compra para Comercializacao'
