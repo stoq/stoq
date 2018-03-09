@@ -23,6 +23,7 @@
 #
 
 import contextlib
+from gi.repository import Gtk
 import mock
 
 from stoqlib.domain.receiving import ReceivingInvoice
@@ -66,6 +67,13 @@ class TestPurchaseReconciliationWizard(GUITest):
         self.assertEqual(type(wizard.model), ReceivingInvoice)
         invoice = wizard.model
         invoice.identifier = 22222
+        # Test cell data func
+        renderer = Gtk.CellRendererText()
+        col = step.purchase_items.get_columns()[6]
+        item = step.purchase_items[0]
+        step._on_purchase_items__cell_data_func(col, renderer, item, 'aa')
+        self.assertTrue(renderer.get_property('editable-set'))
+        self.assertTrue(renderer.get_property('editable'))
 
         step = wizard.get_current_step()
         self.assertNotSensitive(wizard, ['next_button'])

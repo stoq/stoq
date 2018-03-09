@@ -249,7 +249,11 @@ class ProductsCostCheckStep(BaseWizardStep):
     #
 
     def _on_purchase_items__cell_data_func(self, column, renderer, obj, text):
-        renderer.set_property('sensitive', not obj.sellable.product.is_package)
+        editable = not obj.sellable.product.is_package
+        renderer.set_property('sensitive', editable)
+        if column.attribute == 'cost':
+            renderer.set_property('editable-set', editable)
+            renderer.set_property('editable', editable)
         return text
 
     def _on_purchase_items__cell_edited(self, klist, obj, column):
