@@ -148,7 +148,14 @@ def _split_parts(a):
 
 
 def sort_sellable_code(a, b):
-    return cmp(_split_parts(a), _split_parts(b))
+    a_parts = _split_parts(a)
+    b_parts = _split_parts(b)
+    a_types = [type(i) for i in a_parts]
+    b_types = [type(i) for i in b_parts]
+    if a_types == b_types:
+        return cmp(a_parts, b_parts)
+    else:
+        return cmp(a, b)
 
 
 #
