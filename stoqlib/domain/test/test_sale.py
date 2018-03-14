@@ -2832,11 +2832,16 @@ class TestSaleView(DomainTest):
         self.add_product(sale)
         self.add_payments(sale)
 
-        sresults = self.store.find(SaleView, identifier=1138)
+        sale = self.create_sale()
+        sale.identifier = 1139
+        self.add_product(sale)
+        self.add_payments(sale, method_type='trade')
+
+        sresults = self.store.find(SaleView, SaleView.identifier.is_in([1138, 1139]))
         postresults = SaleView.post_search_callback(sresults)
-        self.assertEqual(postresults[0], ('count', 'sum'))
+        self.assertEqual(postresults[0], ('count', 'sum', 'net_sum'))
         self.assertEqual(self.store.execute(postresults[1]).get_one(),
-                         (1, Decimal("10")))
+                         (2, Decimal("20"), Decimal("10")))
 
     def test_find_by_branch(self):
         sale = self.create_sale()

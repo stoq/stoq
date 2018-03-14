@@ -105,6 +105,9 @@ class SearchResultListView(ObjectList):
     def get_selected_item(self):
         return self.get_selected()
 
+    def lazy_search_enabled(self):
+        return self._lazy_updater is not None
+
     #
     # Callbacks
     #

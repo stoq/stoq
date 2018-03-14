@@ -61,6 +61,7 @@ from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.utils.keybindings import get_accels
+from stoqlib.gui.widgets.lazyobjectlist import LazySummaryLabel
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
@@ -120,7 +121,9 @@ class SalesApp(ShellApp):
     def __init__(self, window, store=None):
         self.summary_label = None
         self._visible_date_col = None
+        self._extra_summary = None
         ShellApp.__init__(self, window, store=store)
+        self.search.connect('search-completed', self._on_search_completed)
 
     #
     # Application
@@ -282,7 +285,7 @@ class SalesApp(ShellApp):
 
     def get_columns(self):
         self._status_col = SearchColumn('status_name', title=_('Status'),
-                                        data_type=str, width=80, visible=False,
+                                        data_type=str, width=80, visible=True,
                                         search_attribute='status',
                                         valid_values=self._get_status_values())
 
@@ -329,19 +332,36 @@ class SalesApp(ShellApp):
             SearchColumn('total_quantity', title=_('Items'),
                          data_type=decimal.Decimal, width=60,
                          format_func=format_quantity),
-            SearchColumn('total', title=_('Total'), data_type=currency,
-                         width=120, search_attribute='_total')])
+            SearchColumn('total', title=_('Gross total'), data_type=currency,
+                         width=120, search_attribute='_total'),
+            SearchColumn('net_total', title=_('Net total'), data_type=currency,
+                         width=120, search_attribute='_net_total')])
         return cols
 
     #
     # Private
     #
 
-    def _create_summary_label(self):
-        self.search.set_summary_label(column='total',
-                                      label='<b>Total:</b>',
+    def _create_summary_labels(self):
+        parent = self.get_statusbar_message_area()
+        self.search.set_summary_label(column='net_total',
+                                      label=('<b>%s</b>' %
+                                             api.escape(_('Gross total:'))),
                                       format='<b>%s</b>',
-                                      parent=self.get_statusbar_message_area())
+                                      parent=parent)
+        # Add an extra summary beyond the main one
+        # XXX: Should we modify the summary api to make it support more than one
+        # summary value? This is kind of ugly
+        if self._extra_summary:
+            parent.remove(self._extra_summary)
+
+        self._extra_summary = LazySummaryLabel(klist=self.search.result_view,
+                                               column='net_total',
+                                               label=('<b>%s</b>' %
+                                                      api.escape(_('Net total:'))),
+                                               value_format='<b>%s</b>')
+        parent.pack_start(self._extra_summary, False, False, 0)
+        self._extra_summary.show()
 
     def _setup_widgets(self):
         self._setup_slaves()
@@ -420,7 +440,7 @@ class SalesApp(ShellApp):
         self.results.set_columns(self.search.columns)
         # Adding summary label again and make it properly aligned with the
         # new columns setup
-        self._create_summary_label()
+        self._create_summary_labels()
 
     def _get_status_values(self):
         items = [(value, key) for key, value in Sale.statuses.items()]
@@ -658,3 +678,14 @@ class SalesApp(ShellApp):
 
     def on_sale_toolbar__sale_returned(self, widget, sale):
         self.refresh()
+
+    # Search
+
+    def _on_search_completed(self, *args):
+        if not (self.search.result_view.lazy_search_enabled()
+                and len(self.search.result_view)):
+            return
+
+        post = self.search.result_view.get_model().get_post_data()
+        if post is not None:
+            self._extra_summary.update_total(post.net_sum)

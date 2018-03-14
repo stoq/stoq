@@ -34,7 +34,7 @@ from decimal import Decimal
 from kiwi.currency import currency
 from kiwi.python import Settable
 from stoqdrivers.enum import TaxType
-from storm.expr import (And, Avg, Count, LeftJoin, Join, Max,
+from storm.expr import (And, Avg, Count, LeftJoin, Join, Max, In,
                         Or, Sum, Alias, Select, Cast, Eq, Coalesce)
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
@@ -2386,6 +2386,15 @@ _SaleItemSummary = Select(columns=[SaleItem.sale_id,
                           group_by=[SaleItem.sale_id])
 SaleItemSummary = Alias(_SaleItemSummary, '_sale_item')
 
+_TradeAndCreditTotal = Select(columns=[Payment.group_id,
+                                       Alias(Sum(Payment.value), 'total')],
+                              tables=[Payment,
+                                      LeftJoin(PaymentMethod,
+                                               PaymentMethod.id == Payment.method_id)],
+                              where=In(PaymentMethod.method_name, ['credit', 'trade']),
+                              group_by=[Payment.group_id])
+TradeAndCreditTotal = Alias(_TradeAndCreditTotal, '_trade_credit_total')
+
 
 class SaleView(Viewable):
     """Stores general information about sales
@@ -2497,9 +2506,13 @@ class SaleView(Viewable):
     _total = Coalesce(Field('_sale_item', 'subtotal'), 0) - \
         Sale.discount_value + Sale.surcharge_value + v_ipi
 
+    #: the total of the sale without trades and credit values
+    _net_total = _total - Coalesce(Field('_trade_credit_total', 'total'), 0)
+
     tables = [
         Sale,
         LeftJoin(SaleItemSummary, Field('_sale_item', 'sale_id') == Sale.id),
+        LeftJoin(TradeAndCreditTotal, Field('_trade_credit_total', 'group_id') == Sale.group_id),
         LeftJoin(Branch, Sale.branch_id == Branch.id),
         LeftJoin(Client, Sale.client_id == Client.id),
         LeftJoin(SalesPerson, Sale.salesperson_id == SalesPerson.id),
@@ -2516,8 +2529,9 @@ class SaleView(Viewable):
 
     @classmethod
     def post_search_callback(cls, sresults):
-        select = sresults.get_select_expr(Count(1), Sum(cls._total))
-        return ('count', 'sum'), select
+        select = sresults.get_select_expr(Count(1), Sum(cls._total),
+                                          Sum(cls._net_total))
+        return ('count', 'sum', 'net_sum'), select
 
     #
     # Class methods
@@ -2573,6 +2587,10 @@ class SaleView(Viewable):
     @property
     def total(self):
         return currency(self._total)
+
+    @property
+    def net_total(self):
+        return currency(self._net_total)
 
     @property
     def open_date_as_string(self):
