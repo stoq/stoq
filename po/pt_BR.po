@@ -12,14 +12,15 @@
 # Marciel Leal <marcielmanoel15@gmail.com>, 2015,2017
 # Rafael Neri <rafepel@gmail.com>, 2014
 # Ronaldo Maia <romaia@async.com.br>, 2014-2016
+# Ronaldo Maia <romaia@async.com.br>, 2018
 # Thiago Bellini Ribeiro <hackedbellini@gmail.com>, 2014-2017
 msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-04 02:10-0300\n"
-"PO-Revision-Date: 2018-03-02 05:10+0000\n"
-"Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
+"POT-Creation-Date: 2018-03-14 02:10-0300\n"
+"PO-Revision-Date: 2018-03-14 14:35+0000\n"
+"Last-Translator: Ronaldo Maia <romaia@async.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -344,7 +345,7 @@ msgstr "Lote"
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:126
 #: ../stoqlib/gui/editors/deliveryeditor.py:211
 #: ../stoqlib/gui/editors/deliveryeditor.py:403
-#: ../stoqlib/gui/editors/producteditor.py:672
+#: ../stoqlib/gui/editors/producteditor.py:673
 #: ../stoqlib/gui/search/loansearch.py:85
 #: ../stoqlib/gui/search/productsearch.py:599
 #: ../stoqlib/gui/search/productsearch.py:644
@@ -412,8 +413,8 @@ msgstr "Situação da filial:"
 #: ../stoqlib/domain/person.py:1424 ../stoqlib/domain/person.py:1478
 #: ../stoqlib/domain/person.py:1521 ../stoqlib/domain/person.py:1651
 #: ../stoqlib/domain/person.py:1694 ../stoqlib/domain/person.py:1844
-#: ../stoqlib/domain/person.py:1931 ../stoqlib/domain/person.py:2325
-#: ../stoqlib/domain/person.py:2376 ../stoqlib/domain/station.py:114
+#: ../stoqlib/domain/person.py:1931 ../stoqlib/domain/person.py:2326
+#: ../stoqlib/domain/person.py:2377 ../stoqlib/domain/station.py:114
 #: ../stoqlib/domain/test/test_devices.py:159
 #: ../stoqlib/domain/test/test_person.py:1140
 #: ../stoqlib/domain/test/test_person.py:1159
@@ -442,7 +443,7 @@ msgstr "Ativo"
 #: ../stoqlib/domain/person.py:1479 ../stoqlib/domain/person.py:1522
 #: ../stoqlib/domain/person.py:1652 ../stoqlib/domain/person.py:1695
 #: ../stoqlib/domain/person.py:1845 ../stoqlib/domain/person.py:1932
-#: ../stoqlib/domain/person.py:2327 ../stoqlib/domain/person.py:2378
+#: ../stoqlib/domain/person.py:2328 ../stoqlib/domain/person.py:2379
 #: ../stoqlib/domain/station.py:115 ../stoqlib/domain/test/test_devices.py:161
 #: ../stoqlib/domain/test/test_person.py:1096
 #: ../stoqlib/domain/test/test_person.py:1142
@@ -2077,7 +2078,7 @@ msgstr "<b>Extra</b>"
 #: ../stoqlib/gui/dialogs/missingitemsdialog.py:72
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:215
 #: ../stoqlib/gui/editors/producteditor.py:351
-#: ../stoqlib/gui/editors/producteditor.py:619
+#: ../stoqlib/gui/editors/producteditor.py:620
 #: ../stoqlib/gui/search/personsearch.py:399
 #: ../stoqlib/gui/search/productsearch.py:149
 #: ../stoqlib/gui/search/salesearch.py:270
@@ -2641,7 +2642,7 @@ msgstr "Itens devolvidos"
 #: ../stoqlib/gui/dialogs/saledetails.py:295
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:172
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:224
-#: ../stoqlib/gui/editors/producteditor.py:677
+#: ../stoqlib/gui/editors/producteditor.py:678
 #: ../stoqlib/gui/editors/workordereditor.py:282
 #: ../stoqlib/gui/search/stockdecreasesearch.py:99
 msgid "Reason"
@@ -3768,7 +3769,7 @@ msgstr "Custo estimado"
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:60
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:440
 #: ../stoqlib/gui/editors/personeditor.py:200
-#: ../stoqlib/gui/editors/producteditor.py:765
+#: ../stoqlib/gui/editors/producteditor.py:766
 #: ../stoqlib/gui/editors/saleeditor.py:404
 #: ../stoqlib/gui/editors/sellableeditor.py:78
 #: ../stoqlib/gui/editors/workordercategoryeditor.py:51
@@ -3977,7 +3978,7 @@ msgstr "Operações de crédito"
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:122
 #: ../stoqlib/gui/editors/deliveryeditor.py:207
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:103
-#: ../stoqlib/gui/editors/producteditor.py:766
+#: ../stoqlib/gui/editors/producteditor.py:767
 #: ../stoqlib/gui/editors/saleeditor.py:405
 #: ../stoqlib/gui/search/consignmentsearch.py:52
 #: ../stoqlib/gui/search/loansearch.py:79
@@ -4561,7 +4562,7 @@ msgstr "Itens do pedido de compra"
 #: ../stoqlib/gui/dialogs/sellabledialog.py:179
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:124
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:128
-#: ../stoqlib/gui/editors/producteditor.py:681
+#: ../stoqlib/gui/editors/producteditor.py:682
 #: ../stoqlib/gui/search/productsearch.py:276
 #: ../stoqlib/gui/search/servicesearch.py:97
 #: ../stoqlib/gui/slaves/productslave.py:847
@@ -6188,7 +6189,7 @@ msgstr "Data de confirmação"
 #: ../stoqlib/gui/dialogs/manufacturerdialog.py:42
 #: ../stoqlib/gui/dialogs/saledetails.py:272
 #: ../stoqlib/gui/dialogs/sellabledialog.py:209
-#: ../stoqlib/gui/editors/producteditor.py:758
+#: ../stoqlib/gui/editors/producteditor.py:759
 #: ../stoqlib/gui/search/productsearch.py:254
 #: ../stoqlib/gui/search/productsearch.py:472
 #: ../stoqlib/gui/search/productsearch.py:549
@@ -6610,7 +6611,7 @@ msgstr "Cargos"
 
 #: ../stoq/gui/admin.py:126 ../stoqlib/gui/dialogs/sellabledialog.py:89
 #: ../stoqlib/gui/editors/producteditor.py:456
-#: ../stoqlib/gui/editors/producteditor.py:589
+#: ../stoqlib/gui/editors/producteditor.py:590
 msgid "Taxes"
 msgstr "Impostos"
 
@@ -9394,7 +9395,7 @@ msgstr "Sugestões"
 
 #: ../stoq/gui/stock.py:78 ../stoq/lib/applist.py:61
 #: ../stoqlib/gui/dialogs/missingitemsdialog.py:76
-#: ../stoqlib/gui/editors/producteditor.py:659
+#: ../stoqlib/gui/editors/producteditor.py:660
 #: ../stoqlib/gui/search/consignmentsearch.py:56
 #: ../stoqlib/gui/search/productsearch.py:282
 #: ../stoqlib/gui/search/sellablesearch.py:365
@@ -13621,49 +13622,49 @@ msgstr "O preço deste produto consiste da soma dos preços de seus componentes 
 msgid "Pack content"
 msgstr "Conteúdo do pacote"
 
-#: ../stoqlib/gui/editors/producteditor.py:566
+#: ../stoqlib/gui/editors/producteditor.py:567
 msgid "Cost must be greater than the sum of the components."
 msgstr "O custo deve ser maior que do que a soma dos componentes."
 
-#: ../stoqlib/gui/editors/producteditor.py:588
+#: ../stoqlib/gui/editors/producteditor.py:589
 msgid "Components"
 msgstr "Componentes"
 
-#: ../stoqlib/gui/editors/producteditor.py:590
+#: ../stoqlib/gui/editors/producteditor.py:591
 msgid "Quality"
 msgstr "Qualidade"
 
-#: ../stoqlib/gui/editors/producteditor.py:612
+#: ../stoqlib/gui/editors/producteditor.py:613
 msgid "Cost cannot be zero or negative."
 msgstr "Custo não pode ser zero ou negativo."
 
-#: ../stoqlib/gui/editors/producteditor.py:642
+#: ../stoqlib/gui/editors/producteditor.py:643
 #: ../stoqlib/gui/editors/sellableeditor.py:272
 msgid "Images"
 msgstr "Imagens"
 
-#: ../stoqlib/gui/editors/producteditor.py:658
+#: ../stoqlib/gui/editors/producteditor.py:659
 msgid "Adjust stock quantity"
 msgstr "Ajustar a quantidade de estoque"
 
-#: ../stoqlib/gui/editors/producteditor.py:746
+#: ../stoqlib/gui/editors/producteditor.py:747
 msgid "This value cannot be negative"
 msgstr "O valor não pode ser negativo"
 
-#: ../stoqlib/gui/editors/producteditor.py:753
+#: ../stoqlib/gui/editors/producteditor.py:754
 msgid "You cannot decrease stock from other branches"
 msgstr "Você não pode diminuir o estoque de outra filial"
 
-#: ../stoqlib/gui/editors/producteditor.py:782
+#: ../stoqlib/gui/editors/producteditor.py:783
 msgid "The manufacturer should have a name."
 msgstr "O fabricante deve ter um nome."
 
-#: ../stoqlib/gui/editors/producteditor.py:786
+#: ../stoqlib/gui/editors/producteditor.py:787
 #, python-format
 msgid "The manufacturer '%s' already exists."
 msgstr "O fabricante '%s' já existe."
 
-#: ../stoqlib/gui/editors/producteditor.py:791
+#: ../stoqlib/gui/editors/producteditor.py:792
 #, python-format
 msgid "The code '%s' already exists"
 msgstr "O código '%s' já existe"
@@ -15416,24 +15417,24 @@ msgid "Discount can not be less than zero"
 msgstr "Desconto não pode ser menor que zero"
 
 #. TRANSLATORS: 'cash addition' is 'suprimento' in pt_BR
-#: ../stoqlib/gui/slaves/paymentconfirmslave.py:509
+#: ../stoqlib/gui/slaves/paymentconfirmslave.py:519
 msgid ""
 "Note that this operation will not generate a till entry for the money payment(s). \n"
 "If you are adding money on the till, do a cash addition in the Till applications too."
 msgstr "Note que esta operação não vai gerar um registro de caixa pelo pagamento em dinheiro(s). \nSe você está suprindo o caixa, faça um suprimento no aplicativo Caixa também."
 
-#: ../stoqlib/gui/slaves/paymentconfirmslave.py:543
+#: ../stoqlib/gui/slaves/paymentconfirmslave.py:553
 msgid "Supplier: "
 msgstr "Fornecedor: "
 
 #. TRANSLATORS: 'cash removal' is 'sangria' in pt_BR
-#: ../stoqlib/gui/slaves/paymentconfirmslave.py:551
+#: ../stoqlib/gui/slaves/paymentconfirmslave.py:561
 msgid ""
 "Note that this operation will not generate a till entry for the money payment(s). \n"
 "If you are removing money from the till, do a cash removal in the Till application too."
 msgstr "Note que esta operação não vai gerar um registro de caixa pelo pagamento em dinheiro(s). \nSe você está fazendo uma sangria, faça uma sangria no aplicativo Caixa também."
 
-#: ../stoqlib/gui/slaves/paymentconfirmslave.py:580
+#: ../stoqlib/gui/slaves/paymentconfirmslave.py:590
 #: ../stoqlib/gui/wizards/salewizard.py:601
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:112
 msgid "No cost center."
@@ -16768,7 +16769,7 @@ msgstr "Total dos produtos"
 msgid "Purchase Cost"
 msgstr "Custo da Compra"
 
-#: ../stoqlib/gui/wizards/reconciliationwizard.py:313
+#: ../stoqlib/gui/wizards/reconciliationwizard.py:317
 msgid "Purchase Reconciliation"
 msgstr "Conciliação de Compra"
 
@@ -18860,7 +18861,7 @@ msgstr "%d compras"
 
 #: ../stoqlib/net/server.py:103
 msgid "Configuration not found"
-msgstr ""
+msgstr "Configuração não encontrada"
 
 #: ../stoqlib/net/server.py:130
 msgid "Stoq server not found"
