@@ -26,8 +26,15 @@
 from gi.repository import Gtk, Gdk, Pango
 from kiwi.utils import gsignal
 
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.api import api
+from stoqlib.domain.inventory import Inventory
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.widgets.notification import NotificationCounter
+from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
+from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
+from stoqlib.lib.message import warning
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -244,8 +251,9 @@ class Apps(Gtk.Box):
 class Shortcut(Gtk.FlowBoxChild):
     __gtype_name__ = 'Shortcut'
 
-    def __init__(self, window, icon_name, title, subtitle, action):
+    def __init__(self, window, icon_name, title, subtitle, callback):
         self.window = window
+        self.callback = callback
         super(Shortcut, self).__init__()
         self.connect('realize', self._on_realize)
 
@@ -263,7 +271,6 @@ class Shortcut(Gtk.FlowBoxChild):
         grid.attach(name, 1, 0, 1, 1)
         grid.set_tooltip_text(subtitle)
 
-        self.action_name = action
         event_box = Gtk.EventBox()
         event_box.add_events(Gdk.EventMask.ENTER_NOTIFY_MASK | Gdk.EventMask.LEAVE_NOTIFY_MASK)
         event_box.connect('enter-notify-event', self._on_hover, True)
@@ -286,9 +293,8 @@ class Shortcut(Gtk.FlowBoxChild):
 class ShortcutGrid(Gtk.FlowBox):
     __gtype_name__ = 'ShortcutGrid'
 
-    gsignal('shortcut-selected', object)
-
     def __init__(self, window, large_icons=False, min_children=1, max_children=3):
+        self.window = window
         super(ShortcutGrid, self).__init__()
 
         self.set_homogeneous(True)
@@ -297,23 +303,48 @@ class ShortcutGrid(Gtk.FlowBox):
         self.set_row_spacing(6)
         self.set_column_spacing(6)
         self.set_valign(Gtk.Align.START)
-        # Re-enable this once we implement actual shortcuts
-        #self.connect('child-activated', self._on_row_activated)
+        self.connect('child-activated', self._on_row_activated)
 
         shortcuts = [
             (None, _('New sale'), _('Create a new quote for a sale'),
-             'stoq.preferences'),
+             self.new_sale),
             (None, _('New sale with WO'), _('Create a new sale with work order'),
-             'launch.sales'),
+             self.new_sale_with_wo),
             (None, _('Products'), _('Open product search'),
-             'launch.sales'),
+             self.search_products),
         ]
         for (icon, title, subtitle, action) in shortcuts:
             short = Shortcut(window, icon, title, subtitle, action)
             self.add(short)
 
     def _on_row_activated(self, listbox, row):
-        self.emit('shortcut-selected', row.app)
+        row.callback()
+
+    def new_sale(self):
+        store = self.window.store
+        if Inventory.has_open(store, api.get_current_branch(store)):
+            warning(_("You cannot create a quote with an open inventory."))
+            return
+
+        with api.new_store() as store:
+            run_dialog(SaleQuoteWizard, None, store)
+
+    def new_sale_with_wo(self):
+        store = self.window.store
+        if Inventory.has_open(store, api.get_current_branch(store)):
+            warning(_("You cannot create a quote with an open inventory."))
+            return
+
+        with api.new_store() as store:
+            run_dialog(WorkOrderQuoteWizard, None, store)
+
+    def search_products(self):
+        with api.new_store() as store:
+            profile = api.get_current_user(store).profile
+            can_create = (profile.check_app_permission('admin') or
+                          profile.check_app_permission('purchase'))
+            run_dialog(ProductSearch, None, store, hide_footer=True, hide_toolbar=not can_create,
+                       hide_cost_column=not can_create)
 
 
 class PopoverMenu(Gtk.Popover):
