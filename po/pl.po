@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-14 02:10-0300\n"
-"PO-Revision-Date: 2018-03-02 05:10+0000\n"
+"POT-Creation-Date: 2018-03-18 02:10-0300\n"
+"PO-Revision-Date: 2018-03-17 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Polish (http://www.transifex.com/async/stoq/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -3577,7 +3577,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:136
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:468
 #: ../stoqlib/gui/wizards/purchasewizard.py:291
-#: ../stoqlib/gui/wizards/receivingwizard.py:261
+#: ../stoqlib/gui/wizards/receivingwizard.py:264
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:195
 #: ../stoqlib/gui/wizards/renegotiationwizard.py:89
 #: ../stoqlib/gui/wizards/salequotewizard.py:410
@@ -3995,7 +3995,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/productionwizard.py:181
 #: ../stoqlib/gui/wizards/productionwizard.py:255
 #: ../stoqlib/gui/wizards/purchasewizard.py:290
-#: ../stoqlib/gui/wizards/receivingwizard.py:257
+#: ../stoqlib/gui/wizards/receivingwizard.py:260
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:191
 #: ../stoqlib/gui/wizards/salequotewizard.py:406
 #: ../stoqlib/gui/wizards/salereturnwizard.py:214
@@ -4123,7 +4123,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/productionwizard.py:182
 #: ../stoqlib/gui/wizards/productionwizard.py:256
 #: ../stoqlib/gui/wizards/purchasewizard.py:293
-#: ../stoqlib/gui/wizards/receivingwizard.py:263
+#: ../stoqlib/gui/wizards/receivingwizard.py:266
 #: ../stoqlib/gui/wizards/salequotewizard.py:417
 #: ../stoqlib/gui/wizards/salewizard.py:442
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:266
@@ -4212,7 +4212,7 @@ msgstr ""
 #: ../stoqlib/gui/widgets/accounttree.py:88
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:88
 #: ../stoqlib/gui/wizards/purchasewizard.py:303
-#: ../stoqlib/gui/wizards/receivingwizard.py:274
+#: ../stoqlib/gui/wizards/receivingwizard.py:281
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:203
 #: ../stoqlib/gui/wizards/salequotewizard.py:444
 #: ../stoqlib/gui/wizards/salereturnwizard.py:238
@@ -4276,7 +4276,7 @@ msgstr ""
 #: ../stoqlib/gui/search/productsearch.py:558
 #: ../stoqlib/gui/search/returnedsalesearch.py:170
 #: ../stoqlib/gui/search/salesearch.py:319
-#: ../stoqlib/gui/wizards/receivingwizard.py:265
+#: ../stoqlib/gui/wizards/receivingwizard.py:268
 msgid "Qty"
 msgstr ""
 
@@ -4561,7 +4561,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:87
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:475
 #: ../stoqlib/gui/wizards/purchasewizard.py:301
-#: ../stoqlib/gui/wizards/receivingwizard.py:272
+#: ../stoqlib/gui/wizards/receivingwizard.py:275
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:201
 #: ../stoqlib/gui/wizards/salequotewizard.py:425
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:276
@@ -4626,7 +4626,7 @@ msgstr ""
 #: ../data/template/return_sale/sale-notes.html:3
 #: ../data/template/sale/sale-notes.html:7
 #: ../plugins/optical/tests/test_optical_wizard.py:115
-#: ../stoqlib/gui/slaves/receivingslave.py:220
+#: ../stoqlib/gui/slaves/receivingslave.py:238
 #: ../stoqlib/gui/wizards/loanwizard.py:181
 #: ../stoqlib/gui/wizards/salequotewizard.py:210
 msgid "Additional Information"
@@ -4684,7 +4684,7 @@ msgstr ""
 #: ../stoqlib/gui/search/servicesearch.py:91
 #: ../stoqlib/gui/slaves/workorderslave.py:258
 #: ../stoqlib/gui/wizards/loanwizard.py:345
-#: ../stoqlib/gui/wizards/receivingwizard.py:259
+#: ../stoqlib/gui/wizards/receivingwizard.py:262
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:193
 #: ../stoqlib/gui/wizards/salequotewizard.py:408
 #: ../stoqlib/gui/wizards/salereturnwizard.py:216
@@ -4742,7 +4742,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:195
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:353
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:470
-#: ../stoqlib/gui/wizards/receivingwizard.py:146
+#: ../stoqlib/gui/wizards/receivingwizard.py:149
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:99
 msgid "Supplier"
 msgstr ""
@@ -5177,7 +5177,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:85
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:140
 #: ../stoqlib/gui/wizards/purchasewizard.py:299
-#: ../stoqlib/gui/wizards/receivingwizard.py:270
+#: ../stoqlib/gui/wizards/receivingwizard.py:273
 #: ../stoqlib/gui/wizards/salequotewizard.py:421
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:270
 #: ../stoqlib/reporting/product.py:129
@@ -6467,7 +6467,7 @@ msgstr ""
 #: ../stoqlib/gui/fiscalprinter.py:584 ../stoqlib/gui/fiscalprinter.py:592
 #: ../stoqlib/gui/test/test_salequote_wizard.py:109
 #: ../stoqlib/gui/wizards/loanwizard.py:465
-#: ../stoqlib/gui/wizards/receivingwizard.py:460
+#: ../stoqlib/gui/wizards/receivingwizard.py:473
 #: ../stoqlib/gui/wizards/salequotewizard.py:733
 #: ../stoqlib/gui/wizards/salereturnwizard.py:544
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:436
@@ -7666,7 +7666,7 @@ msgstr ""
 
 #: ../stoq/gui/inventory.py:150 ../stoq/gui/production.py:164
 #: ../stoqlib/domain/inventory.py:249 ../stoqlib/domain/loan.py:271
-#: ../stoqlib/domain/production.py:81 ../stoqlib/domain/purchase.py:202
+#: ../stoqlib/domain/production.py:81 ../stoqlib/domain/purchase.py:209
 #: ../stoqlib/domain/sellable.py:396 ../stoqlib/domain/till.py:92
 msgid "Closed"
 msgstr ""
@@ -8285,7 +8285,7 @@ msgstr ""
 #: ../stoq/gui/production.py:166 ../stoq/gui/services.py:625
 #: ../stoqlib/domain/inventory.py:250 ../stoqlib/domain/loan.py:272
 #: ../stoqlib/domain/payment/payment.py:144 ../stoqlib/domain/production.py:82
-#: ../stoqlib/domain/purchase.py:201 ../stoqlib/domain/returnedsale.py:279
+#: ../stoqlib/domain/purchase.py:208 ../stoqlib/domain/returnedsale.py:279
 #: ../stoqlib/domain/sale.py:580 ../stoqlib/domain/sale.py:912
 #: ../stoqlib/domain/stockdecrease.py:248 ../stoqlib/domain/transfer.py:219
 #: ../stoqlib/domain/workorder.py:601
@@ -8467,7 +8467,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/supplierdetails.py:116
 #: ../stoqlib/gui/search/receivingsearch.py:68
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:122
-#: ../stoqlib/gui/wizards/receivingwizard.py:141
+#: ../stoqlib/gui/wizards/receivingwizard.py:144
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:94
 msgid "Purchase #"
 msgstr ""
@@ -9050,7 +9050,7 @@ msgstr ""
 msgid "Not delivered"
 msgstr ""
 
-#: ../stoq/gui/services.py:621 ../stoqlib/domain/purchase.py:198
+#: ../stoq/gui/services.py:621 ../stoqlib/domain/purchase.py:205
 #: ../stoqlib/domain/returnedsale.py:277 ../stoqlib/domain/till.py:90
 #: ../stoqlib/domain/transfer.py:216
 msgid "Pending"
@@ -9536,7 +9536,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/purchasedetails.py:182
 #: ../stoqlib/gui/dialogs/receivingdialog.py:87
 #: ../stoqlib/gui/editors/sellableeditor.py:253
-#: ../stoqlib/gui/wizards/receivingwizard.py:460
+#: ../stoqlib/gui/wizards/receivingwizard.py:473
 msgid "Print labels"
 msgstr ""
 
@@ -9686,7 +9686,7 @@ msgstr ""
 
 #: ../stoq/gui/till.py:219 ../stoqlib/gui/dialogs/productstockdetails.py:203
 #: ../stoqlib/gui/search/salesearch.py:90
-#: ../stoqlib/gui/wizards/receivingwizard.py:142
+#: ../stoqlib/gui/wizards/receivingwizard.py:145
 msgid "Date Started"
 msgstr ""
 
@@ -10374,7 +10374,7 @@ msgstr ""
 
 #: ../stoqlib/domain/payment/payment.py:143
 #: ../stoqlib/domain/payment/renegotiation.py:63
-#: ../stoqlib/domain/purchase.py:199 ../stoqlib/domain/returnedsale.py:278
+#: ../stoqlib/domain/purchase.py:206 ../stoqlib/domain/returnedsale.py:278
 #: ../stoqlib/domain/sale.py:911 ../stoqlib/domain/stockdecrease.py:247
 msgid "Confirmed"
 msgstr ""
@@ -10763,118 +10763,118 @@ msgstr ""
 msgid "Can not consume this quantity."
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:197 ../stoqlib/domain/sale.py:909
+#: ../stoqlib/domain/purchase.py:204 ../stoqlib/domain/sale.py:909
 msgid "Quoting"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:200
+#: ../stoqlib/domain/purchase.py:207
 #: ../stoqlib/gui/search/consignmentsearch.py:58
 #: ../stoqlib/gui/wizards/consignmentwizard.py:153
 msgid "Consigned"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:208 ../stoqlib/domain/sale.py:590
+#: ../stoqlib/domain/purchase.py:215 ../stoqlib/domain/sale.py:590
 msgid "FOB"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:209 ../stoqlib/domain/sale.py:589
+#: ../stoqlib/domain/purchase.py:216 ../stoqlib/domain/sale.py:589
 msgid "CIF"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:263
+#: ../stoqlib/domain/purchase.py:270
 msgid ""
 "Argument item must have an order attribute associated with the current "
 "purchase instance"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:375
+#: ../stoqlib/domain/purchase.py:384
 #, python-format
 msgid "%s Money Returned for Purchase %s"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:431
+#: ../stoqlib/domain/purchase.py:440
 #, python-format
 msgid ""
 "Invalid order status, it should be ORDER_PENDING or ORDER_CONSIGNED, got %s"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:448
+#: ../stoqlib/domain/purchase.py:457
 #, python-format
 msgid "Order %s, total value %2.2f, supplier '%s' is now confirmed"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:456
+#: ../stoqlib/domain/purchase.py:465
 #, python-format
 msgid "Invalid order status, it should be ORDER_PENDING, got %s"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:466
+#: ../stoqlib/domain/purchase.py:475
 #, python-format
 msgid "Invalid status, it should be confirmed got %s instead"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:471
+#: ../stoqlib/domain/purchase.py:480
 #, python-format
 msgid "Order %s, total value %2.2f, supplier '%s' is now closed"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:489
+#: ../stoqlib/domain/purchase.py:498
 msgid "This item is not pending, hence cannot be received"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:493
+#: ../stoqlib/domain/purchase.py:502
 #, python-format
 msgid ""
 "The quantity that you want to receive is greater than the total quantity of "
 "this item %r"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:504
+#: ../stoqlib/domain/purchase.py:513
 #, python-format
 msgid "There is no purchase item for sellable %r"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:528
+#: ../stoqlib/domain/purchase.py:537
 #, python-format
 msgid "Invalid freight_type, got %d"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:563
+#: ../stoqlib/domain/purchase.py:572
 msgid "Purchase total can not be lesser than zero"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:656
+#: ../stoqlib/domain/purchase.py:665
 #, python-format
 msgid "Got an unexpected status value: %s"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:727
+#: ../stoqlib/domain/purchase.py:736
 msgid "You can not remove an item which does not belong to this group."
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:748
+#: ../stoqlib/domain/purchase.py:757
 #: ../stoqlib/domain/test/test_purchase.py:634
 #, python-format
 msgid "quote number %s"
 msgstr ""
 
-#: ../stoqlib/domain/receiving.py:470
+#: ../stoqlib/domain/receiving.py:478
 msgid "FOB - Freight value on a new payment"
 msgstr ""
 
-#: ../stoqlib/domain/receiving.py:471
+#: ../stoqlib/domain/receiving.py:479
 msgid "FOB - Freight value on installments"
 msgstr ""
 
-#: ../stoqlib/domain/receiving.py:472
+#: ../stoqlib/domain/receiving.py:480
 msgid "CIF - Freight value is unknown"
 msgstr ""
 
-#: ../stoqlib/domain/receiving.py:473
+#: ../stoqlib/domain/receiving.py:481
 msgid "CIF - Freight value highlighted on invoice"
 msgstr ""
 
-#: ../stoqlib/domain/receiving.py:687
+#: ../stoqlib/domain/receiving.py:695
 #, python-format
 msgid "Freight for receiving %s"
 msgstr ""
@@ -12275,7 +12275,7 @@ msgid "Purchase Details"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:197
-#: ../stoqlib/gui/wizards/receivingwizard.py:152
+#: ../stoqlib/gui/wizards/receivingwizard.py:155
 msgid "Qty Received"
 msgstr ""
 
@@ -13108,7 +13108,7 @@ msgid "Automatic adjustment"
 msgstr ""
 
 #: ../stoqlib/gui/editors/inventoryadjustmenteditor.py:194
-#: ../stoqlib/gui/slaves/receivingslave.py:228
+#: ../stoqlib/gui/slaves/receivingslave.py:246
 #: ../stoqlib/gui/wizards/salewizard.py:832 ../stoqlib/lib/invoice.py:351
 msgid "Invoice number must be between 1 and 999999999"
 msgstr ""
@@ -13183,6 +13183,7 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/invoiceitemeditor.py:93
 #: ../stoqlib/gui/search/fiscalsearch.py:53
+#: ../stoqlib/gui/wizards/receivingwizard.py:277
 #: ../stoqlib/gui/wizards/salequotewizard.py:438
 msgid "IPI"
 msgstr ""
@@ -15642,25 +15643,25 @@ msgstr ""
 msgid "%s is already supplied by %s in all branches"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/receivingslave.py:210
+#: ../stoqlib/gui/slaves/receivingslave.py:228
 msgid "This field cannot be negative"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/receivingslave.py:239
+#: ../stoqlib/gui/slaves/receivingslave.py:257
 #, python-format
 msgid "Invoice %d already exists for supplier %s."
 msgstr ""
 
-#: ../stoqlib/gui/slaves/receivingslave.py:273
+#: ../stoqlib/gui/slaves/receivingslave.py:291
 msgid "Discount must be greater than zero"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/receivingslave.py:275
+#: ../stoqlib/gui/slaves/receivingslave.py:293
 #, python-format
 msgid "Discount must be less than %s"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/receivingslave.py:298
+#: ../stoqlib/gui/slaves/receivingslave.py:316
 msgid "Invalid key"
 msgstr ""
 
@@ -16702,7 +16703,7 @@ msgid "Total Ordered:"
 msgstr ""
 
 #: ../stoqlib/gui/wizards/purchasewizard.py:297
-#: ../stoqlib/gui/wizards/receivingwizard.py:145
+#: ../stoqlib/gui/wizards/receivingwizard.py:148
 msgid "Expected Receival"
 msgstr ""
 
@@ -16718,30 +16719,34 @@ msgstr ""
 msgid "Edit Order"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/receivingwizard.py:149
+#: ../stoqlib/gui/wizards/receivingwizard.py:152
 msgid "Qty Ordered"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/receivingwizard.py:155
+#: ../stoqlib/gui/wizards/receivingwizard.py:158
 msgid "Order Total"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/receivingwizard.py:240
+#: ../stoqlib/gui/wizards/receivingwizard.py:243
 msgid ""
 "Before proceeding you need to adjust quantities for the batch products "
 "(highlighted in red)"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/receivingwizard.py:267
+#: ../stoqlib/gui/wizards/receivingwizard.py:270
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:197
 msgid "Qty to receive"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/receivingwizard.py:444
+#: ../stoqlib/gui/wizards/receivingwizard.py:279
+msgid "ICMS ST"
+msgstr ""
+
+#: ../stoqlib/gui/wizards/receivingwizard.py:457
 msgid "Receive Purchase Order"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/receivingwizard.py:459
+#: ../stoqlib/gui/wizards/receivingwizard.py:472
 msgid "Do you want to print the labels for the received products?"
 msgstr ""
 
