@@ -757,6 +757,26 @@ class TestWorkOrder(DomainTest):
 
         self.assertTrue(wo.is_informed())
 
+    def test_can_inform_client(self):
+        wo = self.create_workorder()
+        # Wrong statuses
+        self.assertFalse(wo.can_inform_client())
+
+        wo.approve()
+        self.assertFalse(wo.can_inform_client())
+
+        wo.work()
+        self.assertFalse(wo.can_inform_client())
+
+        # With informed_date
+        wo.client_informed_date = localdate(2018, 2, 2)
+        wo.finish()
+        self.assertFalse(wo.can_inform_client())
+
+        # Can inform
+        wo.client_informed_date = None
+        self.assertTrue(wo.can_inform_client())
+
     @mock.patch('stoqlib.domain.workorder.localnow')
     def test_inform_client(self, localnow):
         localnow.return_value = localdate(2018, 1, 1)

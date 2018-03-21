@@ -73,6 +73,7 @@ cancel_question = _(u"This will cancel the selected order. Any reserved items "
                     u"will return to stock. Are you sure?")
 waiting_question = _(u"This will inform the order that we are waiting. "
                      u"Are you sure?")
+inform_question = _(u"How the client was informed?")
 uninform_question = _(u"This will set the order as uninformed. "
                       u"Are you sure?")
 
@@ -122,6 +123,8 @@ class WorkOrderResultKanbanView(KanbanView):
                 store.retval = False
                 return
 
+            # FIXME Redo this logic, it wont unset if the user go further back on
+            # status
             if work_order.status == new_status:
                 if work_order.client_informed_date:
                     work_order.unset_client_informed(reason)
@@ -139,9 +142,17 @@ class WorkOrderResultKanbanView(KanbanView):
 
         return store.retval
 
-    def _set_client_informed(self, view, new_status):
+    def _set_client_informed(self, view):
         # Drag and drop on the same Column
         if view.work_order.client_informed_date:
+            return
+
+        rv = run_dialog(NoteEditor, None,
+                        view.work_order.store,
+                        model=Note(),
+                        label_text=inform_question,
+                        mandatory=True)
+        if not rv:
             return
 
         with api.new_store() as store:
@@ -150,7 +161,7 @@ class WorkOrderResultKanbanView(KanbanView):
             if not work_order.is_finished():
                 work_order.change_status(WorkOrder.STATUS_WORK_FINISHED)
 
-            work_order.inform_client()
+            work_order.inform_client(rv.notes)
 
     # ISearchResultView
 
@@ -220,7 +231,7 @@ class WorkOrderResultKanbanView(KanbanView):
     def _on__item_dragged(self, kanban, column, work_order_view):
         new_status = column.value
         if new_status == 'client_informed_date':
-            self._set_client_informed(work_order_view, new_status)
+            self._set_client_informed(work_order_view)
             return True
 
         # Moving through the |work_order|.status will remove the
@@ -318,6 +329,7 @@ class ServicesApp(ShellApp):
             ("Pause", None, _(u"Pause the work...")),
             ("Work", None, _(u"Start the work...")),
             ("Reject", None, _(u"Reject order...")),
+            ("InformClient", None, _(u"Inform client...")),
             ("UndoRejection", None, _(u"Undo order rejection...")),
             ("Reopen", None, _(u"Reopen order...")),
         ]
@@ -344,6 +356,7 @@ class ServicesApp(ShellApp):
             ('', _('Pause the work'), 'services.Pause', False),
             ('', _('Start the work'), 'services.Work', False),
             ('', _('Reject order'), 'services.Reject', False),
+            ('', _('Inform client'), 'services.InformClient', False),
             ('', _('Undo order rejection'), 'services.UndoRejection', False),
             ('', _('Repoen order'), 'services.Reopen', False),
             # Separator
@@ -606,6 +619,7 @@ class ServicesApp(ShellApp):
                 (self.UndoRejection, has_selected and wo.can_undo_rejection()),
                 (self.Pause, has_selected and wo.can_pause()),
                 (self.Work, has_selected and wo.can_work()),
+                (self.InformClient, has_selected and wo.can_inform_client()),
                 (self.Reopen, has_selected and wo.can_reopen())]:
             self.set_sensitive([widget], value)
             # Some of those options are mutually exclusive (except Approve,
@@ -752,6 +766,22 @@ class ServicesApp(ShellApp):
 
         self._update_view(select_item=selection)
 
+    def _inform_client(self):
+        selection = self.search.get_selected_item()
+        rv = self._run_notes_editor(reason=inform_question)
+        if not rv:
+            return
+
+        with api.new_store() as store:
+            work_order = store.fetch(selection.work_order)
+            # Make the work_order go through all the status
+            if not work_order.is_finished():
+                work_order.change_status(WorkOrder.STATUS_WORK_FINISHED)
+
+            work_order.inform_client(rv.notes)
+
+        self._update_view(select_item=selection)
+
     def _undo_rejection(self):
         msg_text = _(u"This will undo the rejection of the order. "
                      u"Are you sure?")
@@ -805,9 +835,9 @@ class ServicesApp(ShellApp):
         self._update_view()
         self._update_filters()
 
-    def _run_notes_editor(self, msg_text, mandatory):
+    def _run_notes_editor(self, msg_text=u'', mandatory=True, reason=_('Reason')):
         return self.run_dialog(NoteEditor, self.store, model=Note(),
-                               message_text=msg_text, label_text=_(u"Reason"),
+                               message_text=msg_text, label_text=reason,
                                mandatory=mandatory)
 
     #
@@ -894,6 +924,9 @@ class ServicesApp(ShellApp):
 
     def on_Pause__activate(self, action):
         self._pause_order()
+
+    def on_InformClient__activate(self, action):
+        self._inform_client()
 
     def on_Work__activate(self, action):
         self._work()

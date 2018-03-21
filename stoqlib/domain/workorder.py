@@ -980,6 +980,13 @@ class WorkOrder(Domain):
         """
         return self.is_rejected and not self.is_in_transport()
 
+    def can_inform_client(self):
+        """Checks if the object can be set as informed
+
+        :returns: ``True`` if can, ``False``otherwis:
+        """
+        return not self.client_informed_date and self.status == self.STATUS_WORK_FINISHED
+
     def reject(self, reason):
         """Setter for the :obj:`.is_rejected` flag
 
@@ -1096,13 +1103,13 @@ class WorkOrder(Domain):
             self.execution_branch = branch
         self._change_status(self.STATUS_WORK_FINISHED)
 
-    def inform_client(self):
+    def inform_client(self, notes=''):
         assert self.is_finished()
         self.client_informed_date = localnow()
         WorkOrderHistory.add_entry(self.store, self, what=_("Client informed"),
                                    old_value=_("No"),
                                    new_value=_("Yes"),
-                                   notes="")
+                                   notes=notes)
 
     def unset_client_informed(self, reason):
         informed_date = self.client_informed_date
