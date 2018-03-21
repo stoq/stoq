@@ -505,7 +505,8 @@ class SearchDialog(BasicDialog):
             # FIXME: This is making the filters set by the user be respected
             # when exporting the results.
             executer = self.search.get_query_executer()
-            data = executer.search(limit=-1)
+            states = [(sf.get_state()) for sf in self.search.get_search_filters()]
+            data = executer.search(states, limit=-1)
         else:
             # The results are already unlimited, let the exporter get the data
             # from the objectlist
