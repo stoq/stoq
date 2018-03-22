@@ -18,9 +18,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-18 02:10-0300\n"
-"PO-Revision-Date: 2018-03-17 05:10+0000\n"
-"Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
+"POT-Creation-Date: 2018-03-20 02:10-0300\n"
+"PO-Revision-Date: 2018-03-20 13:51+0000\n"
+"Last-Translator: Ronaldo Maia <romaia@async.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4302,7 +4302,7 @@ msgstr "Ordem de serviço"
 #: ../data/template/optical/prescription.html:17 ../stoq/gui/services.py:341
 #: ../stoq/gui/services.py:601 ../stoqlib/gui/editors/deliveryeditor.py:213
 msgid "Deliver"
-msgstr "Entrega"
+msgstr "Entregar"
 
 #: ../data/template/optical/prescription.html:22
 msgid "Desc"
@@ -6324,12 +6324,12 @@ msgstr "Óculos"
 #. Translators: Lente Oftálmica
 #: ../plugins/optical/opticalslave.py:123 ../plugins/optical/opticalui.py:111
 msgid "Glass Lenses"
-msgstr "Lentes de óculos"
+msgstr "Lente oftálmica"
 
 #. Translators: Lente de Contato
 #: ../plugins/optical/opticalslave.py:125 ../plugins/optical/opticalui.py:122
 msgid "Contact Lenses"
-msgstr "Lentes de contato"
+msgstr "Lente de contato"
 
 #: ../plugins/optical/opticalslave.py:333
 #: ../plugins/optical/opticalslave.py:345
@@ -7305,7 +7305,7 @@ msgstr "Cancelar o item selecionado"
 
 #: ../stoq/gui/delivery.py:109
 msgid "Delivery help"
-msgstr "Ajuda"
+msgstr "Ajuda do entregas"
 
 #: ../stoq/gui/delivery.py:113 ../stoq/gui/financial.py:373
 #: ../stoq/gui/purchase.py:223 ../stoq/gui/sales.py:215
@@ -7935,7 +7935,7 @@ msgstr "Confirmar..."
 
 #: ../stoq/gui/pos.py:235
 msgid "Create delivery..."
-msgstr "Criar entrega..."
+msgstr "Nova entrega..."
 
 #. Search
 #: ../stoq/gui/pos.py:239 ../stoq/gui/till.py:110
@@ -16750,7 +16750,7 @@ msgstr "Qtde a receber"
 
 #: ../stoqlib/gui/wizards/receivingwizard.py:279
 msgid "ICMS ST"
-msgstr ""
+msgstr "ICMS ST"
 
 #: ../stoqlib/gui/wizards/receivingwizard.py:457
 msgid "Receive Purchase Order"
