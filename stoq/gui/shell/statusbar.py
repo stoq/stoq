@@ -238,7 +238,7 @@ class StatusBox(Gtk.Bin):
 
         self.box = Gtk.ListBox()
         # This will remove the white background in the list
-        self.box.get_style_context().remove_class('list')
+        self.box.get_style_context().add_class('transparent')
         self.box.set_selection_mode(Gtk.SelectionMode.NONE)
 
         def create_header(row, previous):

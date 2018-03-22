@@ -70,6 +70,7 @@ class Section(Gtk.Box):
 
         sep = Gtk.Separator()
         sep.set_hexpand(True)
+        sep.set_valign(Gtk.Align.CENTER)
         self.pack_start(label, False, False, 6)
         self.pack_start(sep, True, True, 6)
 
@@ -187,6 +188,7 @@ class AppSection(Gtk.Grid):
         self.grid = AppGrid(window, apps, size_group, large_icons=large_icons,
                             max_children=max_children)
         sep = Gtk.Separator()
+        sep.set_valign(Gtk.Align.CENTER)
         sep.set_hexpand(True)
 
         self.attach(label, 0, 0, 1, 1)
