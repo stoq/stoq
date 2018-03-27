@@ -292,7 +292,8 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         with mock.patch('plugins.optical.opticalui.run_dialog') as run_dialog:
             wo.approve()
             run_dialog.return_value = Settable(supplier=supplier,
-                                               supplier_order='1111')
+                                               supplier_order='1111',
+                                               item=work_item)
             wo.work()
             results = PurchaseOrder.find_by_work_order(wo.store, wo)
             self.assertEquals(len(list(results)), 1)

@@ -108,11 +108,18 @@ class OpticalSupplierEditor(BaseEditor):
     model_type = Settable
     title = _('Supplier information')
 
+    def __init__(self, store, order):
+        self.items = [(i.sellable.get_description(), i) for i in order.get_items()
+                      if not i.purchase_item]
+        super(OpticalSupplierEditor, self).__init__(store)
+
     @cached_property()
     def fields(self):
         suppliers = api.for_combo(self.store.find(Supplier), empty='')
 
         return collections.OrderedDict(
+            item=ChoiceField(_('Item'), mandatory=True, use_entry=True, proxy=True,
+                             values=self.items),
             # FIXME change to an appropiate name
             supplier=ChoiceField(_('Supplier'), mandatory=True, use_entry=True,
                                  proxy=True, values=suppliers),
@@ -125,4 +132,8 @@ class OpticalSupplierEditor(BaseEditor):
     #
 
     def create_model(self, store):
-        return Settable(supplier=None, supplier_order="")
+        item = None
+        # If there is only one item, select it.
+        if len(self.items) == 1:
+            item = self.items[0][1]
+        return Settable(supplier=None, supplier_order="", item=item)

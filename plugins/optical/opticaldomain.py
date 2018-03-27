@@ -226,13 +226,6 @@ class OpticalProduct(Domain):
     def get_from_product(cls, product):
         return product.store.find(cls, product=product).one()
 
-    #
-    # Public API
-    #
-
-    def is_glass_lens(self):
-        return self.optical_type == self.TYPE_GLASS_LENSES
-
 
 class OpticalWorkOrder(Domain):
     """This holds the necessary information to execute an work order for optical
@@ -398,18 +391,17 @@ class OpticalWorkOrder(Domain):
         if not work_order.sale:
             return False
 
-        results = OpticalWorkOrderItemsView.find_by_order(self.work_order.store,
-                                                          self.work_order)
-        # We may want to improve this check later
-        if PurchaseOrder.find_by_work_order(work_order.store, work_order).any():
-            return False
+        purchases = [i.purchase_item for i in work_order.get_items()]
+        # If there are any item in this work order that was not purchased yet, then we
+        # can still create a purchase
+        return None in purchases
 
-        return any(item.optical_product.is_glass_lens() for item in results)
-
-    def create_purchase(self, supplier):
+    def create_purchase(self, supplier, work_order_item):
         """Create a purchase
 
         :param supplier: the |supplier| of that purchase
+        :param work_order_item: The work order item that a purchase is being created
+        for.
         """
         store = self.work_order.store
         purchase = PurchaseOrder(store=store,
@@ -418,15 +410,12 @@ class OpticalWorkOrder(Domain):
                                  responsible=api.get_current_user(store),
                                  branch=api.get_current_branch(store),
                                  work_order=self.work_order)
-        results = OpticalWorkOrderItemsView.find_by_order(self.work_order.store,
-                                                          self.work_order)
-        for view in results:
-            if not view.optical_product.is_glass_lens():
-                continue
-            purchase_item = purchase.add_item(view.sellable,
-                                              quantity=view.work_order_item.quantity,
-                                              cost=view.sellable.cost)
-            view.work_order_item.purchase_item = purchase_item
+
+        # Add the sellable to the purchase
+        purchase_item = purchase.add_item(work_order_item.sellable,
+                                          quantity=work_order_item.quantity,
+                                          cost=work_order_item.sellable.cost)
+        work_order_item.purchase_item = purchase_item
 
         purchase.confirm()
         return purchase

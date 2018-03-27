@@ -28,7 +28,7 @@ import mock
 from stoqlib.domain.person import Person
 from stoqlib.gui.test.uitestutils import GUITest
 
-from ..opticaldomain import OpticalMedic
+from ..opticaldomain import OpticalMedic, OpticalProduct
 from ..opticaleditor import (MedicEditor, OpticalWorkOrderEditor,
                              OpticalSupplierEditor)
 from .test_optical_domain import OpticalDomainTest
@@ -82,12 +82,26 @@ class TestOpticalWorkOrderEditor(GUITest, OpticalDomainTest):
 class TestOpticalSupplierEditor(GUITest, OpticalDomainTest):
 
     def test_show(self):
-        editor = OpticalSupplierEditor(self.store)
+        product = self.create_product()
+        opt_type = OpticalProduct.TYPE_GLASS_LENSES
+        optical_product = self.create_optical_product(optical_type=opt_type)
+        optical_product.product = product
+        wo = self.create_workorder()
+        wo.add_sellable(product.sellable)
+
+        editor = OpticalSupplierEditor(self.store, wo)
         self.check_editor(editor, 'editor-supplier-create')
 
     def test_validation(self):
         supplier = self.create_supplier()
-        editor = OpticalSupplierEditor(self.store)
+        product = self.create_product()
+        opt_type = OpticalProduct.TYPE_GLASS_LENSES
+        optical_product = self.create_optical_product(optical_type=opt_type)
+        optical_product.product = product
+        wo = self.create_workorder()
+        wo.add_sellable(product.sellable)
+
+        editor = OpticalSupplierEditor(self.store, wo)
 
         # The information of this editor are mandatory
         self.assertFalse(editor.main_dialog.ok_button.get_sensitive())

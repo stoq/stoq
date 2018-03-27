@@ -7,10 +7,16 @@ GtkDialog(main_dialog.toplevel): title='Supplier information', hidden
         GtkEventBox(): slave BasicForm is attached
           GtkAlignment(toplevel):
             GtkTable():
+              ProxyLabel(item_lbl): 'Item:'
+              ProxyComboEntry(item):
+                item: 'Description', selected
+              GtkBox(orientation=horizontal):
               ProxyLabel(supplier_lbl): 'Supplier:'
               ProxyComboEntry(supplier): mandatory
                 item: ''
                 item: 'Cia de Roupas São Carlos'
+                item: 'Supplier'
+                item: 'Supplier (1)'
               GtkBox(orientation=horizontal):
               ProxyLabel(supplier_order_lbl): 'Supplier Order:'
               ProxyEntry(supplier_order): '', mandatory

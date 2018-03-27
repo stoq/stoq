@@ -331,17 +331,17 @@ class OpticalUI(object):
             return
 
         if optical_wo.can_create_purchase():
-            rv = run_dialog(OpticalSupplierEditor, None, order.store)
+            rv = run_dialog(OpticalSupplierEditor, None, order.store, order)
             if not rv:
                 return False
 
             order.supplier_order = rv.supplier_order
-            optical_wo.create_purchase(rv.supplier)
+            optical_wo.create_purchase(rv.supplier, rv.item)
             return
 
-        purchase = PurchaseOrder.find_by_work_order(order.store, order).one()
-        if optical_wo.can_receive_purchase(purchase):
-            optical_wo.receive_purchase(purchase, reserve=True)
+        for purchase in PurchaseOrder.find_by_work_order(order.store, order):
+            if optical_wo.can_receive_purchase(purchase):
+                optical_wo.receive_purchase(purchase, reserve=True)
 
     #
     # Callbacks
