@@ -64,6 +64,7 @@ class Section(Gtk.Box):
 
     def __init__(self, title):
         super(Section, self).__init__()
+        self.set_name('Section')
         label = Gtk.Label.new(title)
         label.set_xalign(0)
         label.get_style_context().add_class('h1')
@@ -80,6 +81,7 @@ class AppEntry(Gtk.FlowBoxChild):
 
     def __init__(self, app, large_icon):
         super(AppEntry, self).__init__()
+        self.set_name('AppEntry')
         self.app = app
 
         self.connect('realize', self._on_realize)

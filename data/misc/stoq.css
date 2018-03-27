@@ -67,20 +67,24 @@ KanbanView {
     background-color: transparent;
 }
 
-Shortcut .subtitle,
-AppEntry .subtitle {
+#Shortcut .subtitle,
+#AppEntry .subtitle {
     font-size: 0.75em;
     color: mix (@theme_fg_color, @theme_bg_color, 0.25);
 }
 
-Shortcut.active,
-AppEntry.active {
+#Shortcut.active,
+#AppEntry.active {
     background: mix(@theme_bg_color, @theme_selected_bg_color, 0.25);
 }
 
-Shortcut:selected .subtitle,
-AppEntry:selected .subtitle {
+#Shortcut:selected .subtitle,
+#AppEntry:selected .subtitle {
     color: @theme_color;
+}
+
+label.tour {
+    font-size: 1.2em;
 }
 
 .visualmode {
