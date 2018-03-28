@@ -866,14 +866,17 @@ class PurchaseReceivingView(Viewable):
     invoice_total = ReceivingInvoice.invoice_total
     packing_number = ReceivingOrder.packing_number
     status = ReceivingOrder.status
+    branch_id = ReceivingOrder.branch_id
+
     purchase_identifier = PurchaseOrder.identifier
     purchase_identifier_str = Cast(PurchaseOrder.identifier, 'text')
-    branch_id = ReceivingOrder.branch_id
+    purchase_group = PurchaseOrder.group_id
+    purchase_date = PurchaseOrder.confirm_date
+
     purchase_responsible_name = _PurchaseResponsible.name
     responsible_name = _Responsible.name
     supplier_name = _Supplier.name
     supplier_id = Supplier.id
-    purchase_group = PurchaseOrder.group_id
     _subtotal = Coalesce(Field('_receiving_item', 'subtotal'), 0)
 
     tables = [

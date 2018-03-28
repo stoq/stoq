@@ -66,6 +66,8 @@ class PurchaseReceivingSearch(SearchDialog):
 
     def get_columns(self):
         return [IdentifierColumn('purchase_identifier', _('Purchase #')),
+                SearchColumn('purchase_date', _('Purchase date'),
+                             data_type=datetime.date, width=110),
                 SearchColumn('receival_date', _('Receival date'),
                              data_type=datetime.date, sorted=True, width=110),
                 SearchColumn('supplier_name', _('Supplier'), data_type=str,

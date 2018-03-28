@@ -24,14 +24,15 @@ GtkDialog(toplevel): title='Purchase Receiving Search', hidden
                 stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
           SearchResultListView(results, expand=True, fill=True):
             column: title='Purchase #'
+            column: title='Purchase date'
             column: title='Receival date'
             column: title='Supplier', expand
             column: title='Responsible', hidden, expand
             column: title='Purchaser', hidden, expand
             column: title='Invoice #'
             column: title='Invoice total'
-            row: 81954, datetime.datetime(2012, 1, 1, 0, 0), 'Mark', 'Administrator', 'Administrator', 222, <currency $0>
-            row: 78526, datetime.datetime(2012, 2, 2, 0, 0), 'Dominique', 'Administrator', 'Administrator', 222, <currency $0>
+            row: 81954, datetime.datetime(2012, 1, 15, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), 'Mark', 'Administrator', 'Administrator', 222, <currency $0>
+            row: 78526, None, datetime.datetime(2012, 2, 2, 0, 0), 'Dominique', 'Administrator', 'Administrator', 222, <currency $0>
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(print_holder, expand=True, fill=True):

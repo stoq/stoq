@@ -31,7 +31,7 @@ from decimal import Decimal
 from kiwi.currency import currency
 from kiwi.python import Settable
 from storm.expr import (Alias, And, Cast, Coalesce, Count, Eq, Join, LeftJoin,
-                        Select, Sum)
+                        Select, Sum, Min)
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
@@ -44,11 +44,11 @@ from stoqlib.database.runtime import get_current_user
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
+from stoqlib.domain.interfaces import IContainer, IDescribable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import (StockTransactionHistory, Storable,
                                     ProductStockItem)
-from stoqlib.domain.interfaces import IContainer, IDescribable
 from stoqlib.domain.person import (Person, Branch, Company, Supplier,
                                    Transporter, LoginUser)
 from stoqlib.domain.sellable import Sellable, SellableUnit
@@ -225,6 +225,7 @@ class PurchaseOrder(Domain):
     quote_deadline = DateTimeCol(default=None)
     expected_receival_date = DateTimeCol(default_factory=localnow)
     expected_pay_date = DateTimeCol(default_factory=localnow)
+    # XXX This column is not being used anywhere
     receival_date = DateTimeCol(default=None)
     confirm_date = DateTimeCol(default=None)
     notes = UnicodeCol(default=u'')
@@ -842,6 +843,16 @@ _ItemSummary = Select(columns=[PurchaseItem.order_id,
                       group_by=[PurchaseItem.order_id])
 PurchaseItemSummary = Alias(_ItemSummary, '_purchase_item')
 
+from stoqlib.domain.receiving import ReceivingOrder, PurchaseReceivingMap
+_ReceivingOrder = Select(columns=[Alias(Min(ReceivingOrder.receival_date), 'receival_date'),
+                                  Alias(PurchaseReceivingMap.purchase_id, 'purchase_id')],
+                         tables=[PurchaseReceivingMap,
+                                 LeftJoin(ReceivingOrder,
+                                          ReceivingOrder.id == PurchaseReceivingMap.receiving_id)],
+                         group_by=[PurchaseReceivingMap.purchase_id])
+
+PurchaseReceivingSummary = Alias(_ReceivingOrder, '_receiving_order')
+
 
 class PurchaseOrderView(Viewable):
     """General information about purchase orders
@@ -883,7 +894,6 @@ class PurchaseOrderView(Viewable):
     quote_deadline = PurchaseOrder.quote_deadline
     expected_receival_date = PurchaseOrder.expected_receival_date
     expected_pay_date = PurchaseOrder.expected_pay_date
-    receival_date = PurchaseOrder.receival_date
     confirm_date = PurchaseOrder.confirm_date
     salesperson_name = NullIf(PurchaseOrder.salesperson_name, u'')
     expected_freight = PurchaseOrder.expected_freight
@@ -897,6 +907,8 @@ class PurchaseOrderView(Viewable):
     branch_name = Coalesce(NullIf(Company.fancy_name, u''), Person_Branch.name)
     responsible_name = Person_Responsible.name
 
+    receival_date = Field('_receiving_order', 'receival_date')
+
     ordered_quantity = Field('_purchase_item', 'ordered_quantity')
     received_quantity = Field('_purchase_item', 'received_quantity')
     subtotal = Field('_purchase_item', 'subtotal')
@@ -907,6 +919,9 @@ class PurchaseOrderView(Viewable):
         PurchaseOrder,
         Join(PurchaseItemSummary,
              Field('_purchase_item', 'order_id') == PurchaseOrder.id),
+
+        LeftJoin(PurchaseReceivingSummary,
+                 Field('_receiving_order', 'purchase_id') == PurchaseOrder.id),
 
         LeftJoin(Supplier, PurchaseOrder.supplier_id == Supplier.id),
         LeftJoin(Transporter, PurchaseOrder.transporter_id == Transporter.id),

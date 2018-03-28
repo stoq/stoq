@@ -101,6 +101,7 @@ class PurchaseImporter(CSVImporter):
                                              invoice_number=int(data.invoice),
                                              transporter=transporter)
         receiving_order = ReceivingOrder(responsible=login_user,
+                                         receival_date=self.parse_date(data.due_date),
                                          invoice_number=int(data.invoice),
                                          branch=branch,
                                          receiving_invoice=receiving_invoice,

@@ -46,9 +46,11 @@ class TestReceivingOrderSearch(GUITest):
         order_b = self.create_receiving_order(purchase_order=purchase_order_b)
 
         purchase_order_a.identifier = 81954
+        purchase_order_a.confirm_date = localdatetime(2012, 1, 15)
         order_a.receival_date = localdatetime(2012, 1, 1)
 
         purchase_order_b.identifier = 78526
+        purchase_order_a.confirm_date = localdatetime(2012, 1, 15)
         order_b.receival_date = localdatetime(2012, 2, 2)
 
     def _show_search(self):
