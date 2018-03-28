@@ -150,8 +150,11 @@ class TestInvoiceItemIcms(DomainTest):
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item_icms.csosn = 500
         sale_item_icms.p_cred_sn = Decimal("3.10")
+        sale_item_icms.p_fcp_st = 1
+        sale_item_icms.p_icms_st = 1
         sale_item_icms.update_values(sale_item)
         self.assertFalse(sale_item_icms.v_cred_icms_sn)
+        self.assertEqual(sale_item_icms.p_st, 2)
 
     def test_update_values_simples(self):
         # Test for CSOSN 900. This should get v_icms and v_icms_st calculated
@@ -160,9 +163,13 @@ class TestInvoiceItemIcms(DomainTest):
         sale_item_icms.csosn = 900
         sale_item_icms.p_icms = 1
         sale_item_icms.p_icms_st = 2
+        sale_item_icms.p_fcp = 1
+        sale_item_icms.p_fcp_st = 2
         sale_item_icms.update_values(sale_item)
         self.assertEqual(sale_item_icms.v_icms, Decimal("2"))
         self.assertEqual(sale_item_icms.v_icms_st, Decimal("2"))
+        self.assertEqual(sale_item_icms.v_fcp, Decimal("2"))
+        self.assertEqual(sale_item_icms.v_fcp_st, Decimal("2"))
 
     def test_update_values_normal(self):
         sale_item_icms = self.create_invoice_item_icms()
@@ -179,10 +186,14 @@ class TestInvoiceItemIcms(DomainTest):
         sale_item_icms.p_mva_st = 10
         sale_item_icms.v_bc_st = 10
         sale_item_icms.p_icms_st = 10
+        sale_item_icms.p_fcp_st = 2
         sale_item_icms.v_icms = 10
+        sale_item_icms.v_fcp = 2
         sale_item_icms.v_icms_st = 10
+        sale_item_icms.v_fcp_st = 2
         sale_item_icms.p_red_bc = 10
         sale_item_icms.p_icms = 10
+        sale_item_icms.p_fcp = 2
         sale_item_icms.p_v_bc = 10
         sale_item_icms.p_red_bc = 10
         sale_item_icms.update_values(sale_item)
@@ -215,7 +226,10 @@ class TestInvoiceItemIcms(DomainTest):
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item.sale.branch.crt = 0
         sale_item_icms.cst = 60
+        sale_item_icms.p_fcp_st = 1
+        sale_item_icms.p_icms_st = 1
         sale_item_icms.update_values(sale_item)
+        self.assertEqual(sale_item_icms.p_st, 2)
 
         sale_item_icms = self.create_invoice_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)

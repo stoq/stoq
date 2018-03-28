@@ -107,9 +107,14 @@ class TemporarySaleItem(object):
         self.can_remove_child = can_remove
         self.can_remove = can_remove and not parent_item
         if sellable.product:
-            self.location = sellable.product.location
+            product = sellable.product
+            self.location = product.location
+            self.ipi_template = product.ipi_template
+            self.icms_template = product.icms_template
         else:
             self.location = ''
+            self.ipi_template = None
+            self.icms_template = None
 
         if price is None:
             price = sellable.price
@@ -152,9 +157,20 @@ class TemporarySaleItem(object):
 
     @property
     def total(self):
+        # Calculate the item price considering IPI and ICMS ST values
+        price = self.price
+        if self.ipi_template:
+            price += self.price * (self.ipi_template.p_ipi or Decimal(0)) / 100
+        if self.icms_template:
+            if self.icms_template.bc_st_include_ipi:
+                base = price
+            else:
+                base = self.price
+            price += base * (self.icms_template.p_icms_st or Decimal(0)) / 100
+            price += base * (self.icms_template.p_fcp_st or Decimal(0)) / 100
         # Sale items are suposed to have only 2 digits, but the value price
         # * quantity may have more than 2, so we need to round it.
-        return quantize(currency(self.price * self.quantity))
+        return quantize(currency(price * self.quantity))
 
     @property
     def quantity_unit(self):

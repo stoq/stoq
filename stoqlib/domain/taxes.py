@@ -127,6 +127,10 @@ class BaseICMS(BaseTax):
     bc_include_ipi = BoolCol(default=True)
     bc_st_include_ipi = BoolCol(default=True)
 
+    # Funco de Combate à Pobreza
+    p_fcp = PercentCol(default=None)
+    p_fcp_st = PercentCol(default=None)
+
     # Simples Nacional
     csosn = IntCol(default=None)
     p_cred_sn = PercentCol(default=None)
@@ -280,6 +284,14 @@ class InvoiceItemIcms(BaseICMS):
     v_bc_st = PriceCol(default=None)
     v_icms_st = PriceCol(default=None)
 
+    # Fundo de Combate à Pobreza
+    v_fcp = PriceCol(default=None)
+    v_fcp_st = PriceCol(default=None)
+    v_fcp_st_ret = PriceCol(default=None)
+
+    # Alíquota suportada pelo Consumidor Final (FCP + ICMS)
+    p_st = PercentCol(default=None)
+
     # Simples Nacional
     v_cred_icms_sn = PriceCol(default=None)
 
@@ -306,6 +318,11 @@ class InvoiceItemIcms(BaseICMS):
         if self.v_icms is not None and self.v_icms_st is not None:
             self.v_icms_st -= self.v_icms
 
+        if self.v_bc_st is not None and self.p_fcp_st is not None:
+            self.v_fcp_st = self.v_bc_st * self.p_fcp_st / 100
+        if self.v_fcp is not None and self.v_fcp_st is not None:
+            self.v_fcp_st -= self.v_fcp
+
     def _calc_normal(self, invoice_item):
         self.v_bc = quantize(invoice_item.price * invoice_item.quantity)
 
@@ -317,6 +334,9 @@ class InvoiceItemIcms(BaseICMS):
 
         if self.p_icms is not None and self.v_bc is not None:
             self.v_icms = self.v_bc * self.p_icms / 100
+
+        if self.p_fcp is not None and self.v_bc is not None:
+            self.v_fcp = self.v_bc * self.p_fcp / 100
 
     def _update_normal(self, invoice_item):
         """Atualiza os dados de acordo com os calculos do Regime Tributário
@@ -350,6 +370,9 @@ class InvoiceItemIcms(BaseICMS):
         elif self.cst == 60:
             self.v_bc_st_ret = 0
             self.v_icms_st_ret = 0
+            self.v_fcp_st_ret = 0
+            if self.p_fcp_st is not None and self.p_icms_st is not None:
+                self.p_st = self.p_fcp_st + self.p_icms_st
 
         elif self.cst in (70, 90):
             self._calc_normal(invoice_item)
@@ -359,6 +382,9 @@ class InvoiceItemIcms(BaseICMS):
         if self.csosn in [300, 400, 500]:
             self.v_bc_st_ret = 0
             self.v_icms_st_ret = 0
+            self.v_fcp_st_ret = 0
+            if self.p_fcp_st is not None and self.p_icms_st is not None:
+                self.p_st = self.p_fcp_st + self.p_icms_st
 
         if self.csosn in [101, 201]:
             if self.p_cred_sn is None:

@@ -81,6 +81,10 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Stock decrease item"', 
               ProxySpinButton(p_icms_st): '0.00', insensitive
               GtkLabel(p_icms_label): 'Alíquota ICMS:'
               ProxySpinButton(p_icms): '0.00', insensitive
+              GtkLabel(p_fcp_st_label): 'Alíquota FCP ST:'
+              ProxySpinButton(p_fcp_st): '0.00', insensitive
+              GtkLabel(p_fcp_label): 'Alíquota FCP:'
+              ProxySpinButton(p_fcp): '0.00', insensitive
               GtkLabel(p_red_bc_st_label): '% Redução BC ICMS ST:'
               ProxySpinButton(p_red_bc_st): '0.00', insensitive
               GtkLabel(p_red_bc_label): '% Redução BC ICMS'
@@ -97,6 +101,10 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Stock decrease item"', 
               ProxyEntry(v_icms): '', ineditable, insensitive
               GtkLabel(v_icms_st_label): 'ICMS ST:'
               ProxyEntry(v_icms_st): '', ineditable, insensitive
+              GtkLabel(v_fcp_label): 'FCP:'
+              ProxyEntry(v_fcp): '', ineditable, insensitive
+              GtkLabel(v_fcp_st_label): 'FCP ST:'
+              ProxyEntry(v_fcp_st): '', ineditable, insensitive
               GtkLabel(label1): '<b>Simples Nacional</b>'
               GtkLabel(p_cred_sn_label): 'Alíquota ICMS SN:'
               ProxySpinButton(p_cred_sn): '0.00', insensitive
@@ -108,6 +116,8 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Stock decrease item"', 
               ProxyEntry(v_icms_st_ret): '', insensitive
               GtkLabel(v_cred_icms_sn_label): 'Valor ICMS SN:'
               ProxyEntry(v_cred_icms_sn): '', insensitive
+              GtkLabel(v_fcp_st_ret_label): 'FCP ST Retido:'
+              ProxyEntry(v_fcp_st_ret): '', insensitive
           GtkEventBox(): slave InvoiceItemIpiSlave is attached
             GtkBox(vbox1, orientation=vertical):
               GtkTable(table1, fill=True):

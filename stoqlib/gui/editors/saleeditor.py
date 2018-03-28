@@ -236,6 +236,9 @@ class SaleQuoteItemSlave(BaseEditorSlave):
         total = self.model.price * self.quantity_model.quantity
         if self.model.ipi_info:
             total += self.model.ipi_info.v_ipi
+        if self.model.icms_info:
+            total += self.model.icms_info.v_icms_st or 0
+            total += self.model.icms_info.v_fcp_st or 0
         self.total.update(currency(total))
 
     def _validate_quantity(self, new_quantity, allow_zero=False):

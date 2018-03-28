@@ -166,9 +166,10 @@ class BaseICMSSlave(BaseTaxSlave):
 
     combo_widgets = ['cst', 'csosn', 'orig', 'mod_bc', 'mod_bc_st']
     percentage_widgets = ['p_icms', 'p_mva_st', 'p_red_bc_st', 'p_icms_st',
-                          'p_red_bc', 'p_cred_sn']
+                          'p_red_bc', 'p_cred_sn', 'p_fcp', 'p_fcp_st']
     value_widgets = ['v_bc', 'v_icms', 'v_bc_st', 'v_icms_st',
-                     'v_cred_icms_sn', 'v_bc_st_ret', 'v_icms_st_ret']
+                     'v_cred_icms_sn', 'v_bc_st_ret', 'v_icms_st_ret', 'v_fcp',
+                     'v_fcp_st', 'v_fcp_st_ret']
     bool_widgets = ['bc_include_ipi', 'bc_st_include_ipi']
     date_widgets = ['p_cred_sn_valid_until']
     all_widgets = (combo_widgets + percentage_widgets + value_widgets +
@@ -177,10 +178,11 @@ class BaseICMSSlave(BaseTaxSlave):
     simples_widgets = ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
                        'p_icms_st', 'v_bc_st', 'v_icms_st', 'p_cred_sn',
                        'p_cred_sn_valid_until' 'v_cred_icms_sn', 'v_bc_st_ret',
-                       'v_icms_st_ret'],
+                       'v_icms_st_ret', 'v_fcp_st_ret'],
 
     normal_widgets = ['orig', 'cst', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
-                      'p_icms_st', 'v_bc_st', 'v_icms_st', 'bc_st_include_ipi',
+                      'p_icms_st', 'p_fcp', 'p_fcp_st', 'v_fcp', 'v_fcp_st',
+                      'v_bc_st', 'v_icms_st', 'bc_st_include_ipi',
                       'mod_bc', 'p_icms', 'v_bc', 'v_icms', 'p_red_bc',
                       'bc_include_ipi', 'bc_st_include_ipi']
 
@@ -265,20 +267,22 @@ class BaseICMSSlave(BaseTaxSlave):
 
     MAP_VALID_WIDGETS = {
         0: ['orig', 'cst', 'mod_bc', 'p_icms', 'v_bc', 'v_icms',
-            'bc_include_ipi'],
+            'bc_include_ipi', 'p_fcp', 'v_fcp'],
         10: ['orig', 'cst', 'mod_bc', 'p_icms', 'mod_bc_st', 'p_mva_st',
              'p_red_bc_st', 'p_icms_st', 'v_bc', 'v_icms', 'v_bc_st',
-             'v_icms_st', 'bc_include_ipi', 'bc_st_include_ipi'],
+             'v_icms_st', 'bc_include_ipi', 'bc_st_include_ipi', 'p_fcp',
+             'p_fcp_st', 'v_fcp', 'v_fcp_st'],
         20: ['orig', 'cst', 'mod_bc', 'p_icms', 'p_red_bc', 'v_bc',
-             'v_icms', 'bc_include_ipi'],
+             'v_icms', 'bc_include_ipi', 'p_fcp', 'v_fcp'],
         30: ['orig', 'cst', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
-             'p_icms_st', 'v_bc_st', 'v_icms_st', 'bc_st_include_ipi'],
+             'p_icms_st', 'v_bc_st', 'v_icms_st', 'bc_st_include_ipi',
+             'p_fcp_st', 'v_fcp_st'],
         40: ['orig', 'cst'],
         41: ['orig', 'cst'],  # Same tag
         50: ['orig', 'cst'],
         51: ['orig', 'cst', 'mod_bc', 'p_red_bc', 'p_icms', 'v_bc',
-             'v_icms', 'bc_st_include_ipi'],
-        60: ['orig', 'cst', 'v_bc_st', 'v_icms_st'],
+             'v_icms', 'bc_st_include_ipi', 'p_fcp', 'v_fcp'],
+        60: ['orig', 'cst', 'v_bc_st', 'v_icms_st', 'v_fcp_st'],
         70: normal_widgets,
         90: normal_widgets,
         # Simples Nacional
@@ -287,18 +291,18 @@ class BaseICMSSlave(BaseTaxSlave):
         102: ['orig', 'csosn'],
         103: ['orig', 'csosn'],
         201: ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
-              'p_icms_st', 'v_bc_st', 'v_icms_st', 'p_cred_sn',
-              'p_cred_sn_valid_until', 'v_cred_icms_sn'],
+              'p_icms_st', 'v_bc_st', 'v_icms_st', 'p_cred_sn', 'p_fcp_st',
+              'v_fcp_st', 'p_cred_sn_valid_until', 'v_cred_icms_sn'],
         202: ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
-              'p_icms_st', 'v_bc_st', 'v_icms_st'],
+              'p_icms_st', 'v_bc_st', 'v_icms_st', 'p_fcp_st', 'v_fcp_st'],
         203: ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
-              'p_icms_st', 'v_bc_st', 'v_icms_st'],
+              'p_icms_st', 'v_bc_st', 'v_icms_st', 'p_fcp_st', 'v_fcp_st'],
         300: ['orig', 'csosn'],
         400: ['orig', 'csosn'],
-        500: ['orig', 'csosn', 'v_bc_st_ret', 'v_icms_st_ret'],
+        500: ['orig', 'csosn', 'v_bc_st_ret', 'v_icms_st_ret', 'v_fcp_st_ret'],
         900: ['orig', 'csosn', 'mod_bc', 'v_bc', 'p_red_bc', 'p_icms', 'v_icms',
               'mod_bc_st', 'p_mva_st', 'p_red_bc_st', 'v_bc_st', 'p_icms_st',
-              'v_icms_st', 'p_cred_sn', 'v_cred_icms_sn']
+              'v_icms_st', 'p_cred_sn', 'v_cred_icms_sn', 'p_fcp_st', 'v_fcp_st']
     }
 
     def setup_proxies(self):

@@ -12,7 +12,7 @@
       <object class="GtkTable" id="table1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="n_rows">14</property>
+        <property name="n_rows">16</property>
         <property name="n_columns">4</property>
         <property name="column_spacing">6</property>
         <property name="row_spacing">6</property>
@@ -78,92 +78,6 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="p_red_bc_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xalign">1</property>
-            <property name="label">% Redução BC ICMS</property>
-          </object>
-          <packing>
-            <property name="top_attach">6</property>
-            <property name="bottom_attach">7</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="v_bc_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xalign">1</property>
-            <property name="label">BC ICMS:</property>
-          </object>
-          <packing>
-            <property name="top_attach">8</property>
-            <property name="bottom_attach">9</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="v_icms_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xalign">1</property>
-            <property name="label">ICMS:</property>
-          </object>
-          <packing>
-            <property name="top_attach">9</property>
-            <property name="bottom_attach">10</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="label1">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xalign">0</property>
-            <property name="label">&lt;b&gt;Simples Nacional&lt;/b&gt;</property>
-            <property name="use_markup">True</property>
-          </object>
-          <packing>
-            <property name="right_attach">4</property>
-            <property name="top_attach">10</property>
-            <property name="bottom_attach">11</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="p_cred_sn_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xalign">1</property>
-            <property name="label">Alíquota ICMS SN:</property>
-          </object>
-          <packing>
-            <property name="top_attach">11</property>
-            <property name="bottom_attach">12</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="p_cred_sn_valid_until_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xalign">1</property>
-            <property name="label">Alíquota válida até:</property>
-          </object>
-          <packing>
-            <property name="top_attach">12</property>
-            <property name="bottom_attach">13</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="v_cred_icms_sn_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xalign">1</property>
-            <property name="label">Valor ICMS SN:</property>
-          </object>
-          <packing>
-            <property name="top_attach">13</property>
-            <property name="bottom_attach">14</property>
-          </packing>
-        </child>
-        <child>
           <object class="ProxyComboBox" id="cst">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -222,6 +136,7 @@
         <child>
           <object class="ProxySpinButton" id="p_icms">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
@@ -234,121 +149,6 @@
             <property name="right_attach">2</property>
             <property name="top_attach">5</property>
             <property name="bottom_attach">6</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxySpinButton" id="p_red_bc">
-            <property name="visible">True</property>
-            <property name="primary_icon_activatable">False</property>
-            <property name="secondary_icon_activatable">False</property>
-            <property name="primary_icon_sensitive">True</property>
-            <property name="secondary_icon_sensitive">True</property>
-            <property name="data_type">Decimal</property>
-            <property name="model_attribute">p_red_bc</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-            <property name="top_attach">6</property>
-            <property name="bottom_attach">7</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyEntry" id="v_bc">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="editable">False</property>
-            <property name="invisible_char"> </property>
-            <property name="xalign">1</property>
-            <property name="invisible_char_set">True</property>
-            <property name="primary_icon_activatable">False</property>
-            <property name="secondary_icon_activatable">False</property>
-            <property name="primary_icon_sensitive">True</property>
-            <property name="secondary_icon_sensitive">True</property>
-            <property name="data_type">currency</property>
-            <property name="model_attribute">v_bc</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-            <property name="top_attach">8</property>
-            <property name="bottom_attach">9</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyEntry" id="v_icms">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="editable">False</property>
-            <property name="invisible_char"> </property>
-            <property name="xalign">1</property>
-            <property name="invisible_char_set">True</property>
-            <property name="primary_icon_activatable">False</property>
-            <property name="secondary_icon_activatable">False</property>
-            <property name="primary_icon_sensitive">True</property>
-            <property name="secondary_icon_sensitive">True</property>
-            <property name="data_type">currency</property>
-            <property name="model_attribute">v_icms</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-            <property name="top_attach">9</property>
-            <property name="bottom_attach">10</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxySpinButton" id="p_cred_sn">
-            <property name="visible">True</property>
-            <property name="invisible_char"> </property>
-            <property name="invisible_char_set">True</property>
-            <property name="primary_icon_activatable">False</property>
-            <property name="secondary_icon_activatable">False</property>
-            <property name="primary_icon_sensitive">True</property>
-            <property name="secondary_icon_sensitive">True</property>
-            <property name="data_type">Decimal</property>
-            <property name="model_attribute">p_cred_sn</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-            <property name="top_attach">11</property>
-            <property name="bottom_attach">12</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyDateEntry" id="p_cred_sn_valid_until">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="data_type">date</property>
-            <property name="model_attribute">p_cred_sn_valid_until</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-            <property name="top_attach">12</property>
-            <property name="bottom_attach">13</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyEntry" id="v_cred_icms_sn">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="invisible_char"> </property>
-            <property name="xalign">1</property>
-            <property name="invisible_char_set">True</property>
-            <property name="primary_icon_activatable">False</property>
-            <property name="secondary_icon_activatable">False</property>
-            <property name="primary_icon_sensitive">True</property>
-            <property name="secondary_icon_sensitive">True</property>
-            <property name="data_type">currency</property>
-            <property name="model_attribute">v_cred_icms_sn</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-            <property name="top_attach">13</property>
-            <property name="bottom_attach">14</property>
           </packing>
         </child>
         <child>
@@ -380,90 +180,6 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="p_red_bc_st_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xalign">1</property>
-            <property name="label">% Redução BC ICMS ST:</property>
-          </object>
-          <packing>
-            <property name="left_attach">2</property>
-            <property name="right_attach">3</property>
-            <property name="top_attach">5</property>
-            <property name="bottom_attach">6</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="p_mva_st_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xalign">1</property>
-            <property name="label">% MVA ICMS ST:</property>
-          </object>
-          <packing>
-            <property name="left_attach">2</property>
-            <property name="right_attach">3</property>
-            <property name="top_attach">6</property>
-            <property name="bottom_attach">7</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="v_bc_st_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xalign">1</property>
-            <property name="label">BC ICMS ST:</property>
-          </object>
-          <packing>
-            <property name="left_attach">2</property>
-            <property name="right_attach">3</property>
-            <property name="top_attach">8</property>
-            <property name="bottom_attach">9</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="v_icms_st_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xalign">1</property>
-            <property name="label">ICMS ST:</property>
-          </object>
-          <packing>
-            <property name="left_attach">2</property>
-            <property name="right_attach">3</property>
-            <property name="top_attach">9</property>
-            <property name="bottom_attach">10</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="v_bc_st_ret_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xalign">1</property>
-            <property name="label">BC ICMS ST Retido:</property>
-          </object>
-          <packing>
-            <property name="left_attach">2</property>
-            <property name="right_attach">3</property>
-            <property name="top_attach">11</property>
-            <property name="bottom_attach">12</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="v_icms_st_ret_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="xalign">1</property>
-            <property name="label">ICMS ST Retido:</property>
-          </object>
-          <packing>
-            <property name="left_attach">2</property>
-            <property name="right_attach">3</property>
-            <property name="top_attach">12</property>
-            <property name="bottom_attach">13</property>
-          </packing>
-        </child>
-        <child>
           <object class="ProxyComboBox" id="mod_bc_st">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -480,6 +196,7 @@
         <child>
           <object class="ProxySpinButton" id="p_icms_st">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>
@@ -492,162 +209,6 @@
             <property name="right_attach">4</property>
             <property name="top_attach">4</property>
             <property name="bottom_attach">5</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxySpinButton" id="p_red_bc_st">
-            <property name="visible">True</property>
-            <property name="primary_icon_activatable">False</property>
-            <property name="secondary_icon_activatable">False</property>
-            <property name="primary_icon_sensitive">True</property>
-            <property name="secondary_icon_sensitive">True</property>
-            <property name="data_type">Decimal</property>
-            <property name="model_attribute">p_red_bc_st</property>
-          </object>
-          <packing>
-            <property name="left_attach">3</property>
-            <property name="right_attach">4</property>
-            <property name="top_attach">5</property>
-            <property name="bottom_attach">6</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxySpinButton" id="p_mva_st">
-            <property name="visible">True</property>
-            <property name="primary_icon_activatable">False</property>
-            <property name="secondary_icon_activatable">False</property>
-            <property name="primary_icon_sensitive">True</property>
-            <property name="secondary_icon_sensitive">True</property>
-            <property name="data_type">Decimal</property>
-            <property name="model_attribute">p_mva_st</property>
-          </object>
-          <packing>
-            <property name="left_attach">3</property>
-            <property name="right_attach">4</property>
-            <property name="top_attach">6</property>
-            <property name="bottom_attach">7</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyEntry" id="v_bc_st">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="editable">False</property>
-            <property name="invisible_char"> </property>
-            <property name="xalign">1</property>
-            <property name="invisible_char_set">True</property>
-            <property name="primary_icon_activatable">False</property>
-            <property name="secondary_icon_activatable">False</property>
-            <property name="primary_icon_sensitive">True</property>
-            <property name="secondary_icon_sensitive">True</property>
-            <property name="data_type">currency</property>
-            <property name="model_attribute">v_bc_st</property>
-          </object>
-          <packing>
-            <property name="left_attach">3</property>
-            <property name="right_attach">4</property>
-            <property name="top_attach">8</property>
-            <property name="bottom_attach">9</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyEntry" id="v_icms_st">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="editable">False</property>
-            <property name="invisible_char"> </property>
-            <property name="xalign">1</property>
-            <property name="invisible_char_set">True</property>
-            <property name="primary_icon_activatable">False</property>
-            <property name="secondary_icon_activatable">False</property>
-            <property name="primary_icon_sensitive">True</property>
-            <property name="secondary_icon_sensitive">True</property>
-            <property name="data_type">currency</property>
-            <property name="model_attribute">v_icms_st</property>
-          </object>
-          <packing>
-            <property name="left_attach">3</property>
-            <property name="right_attach">4</property>
-            <property name="top_attach">9</property>
-            <property name="bottom_attach">10</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyEntry" id="v_bc_st_ret">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="invisible_char"> </property>
-            <property name="xalign">1</property>
-            <property name="invisible_char_set">True</property>
-            <property name="primary_icon_activatable">False</property>
-            <property name="secondary_icon_activatable">False</property>
-            <property name="primary_icon_sensitive">True</property>
-            <property name="secondary_icon_sensitive">True</property>
-            <property name="data_type">currency</property>
-            <property name="model_attribute">v_bc_st_ret</property>
-          </object>
-          <packing>
-            <property name="left_attach">3</property>
-            <property name="right_attach">4</property>
-            <property name="top_attach">11</property>
-            <property name="bottom_attach">12</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyEntry" id="v_icms_st_ret">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="invisible_char"> </property>
-            <property name="xalign">1</property>
-            <property name="invisible_char_set">True</property>
-            <property name="primary_icon_activatable">False</property>
-            <property name="secondary_icon_activatable">False</property>
-            <property name="primary_icon_sensitive">True</property>
-            <property name="secondary_icon_sensitive">True</property>
-            <property name="data_type">currency</property>
-            <property name="model_attribute">v_icms_st_ret</property>
-          </object>
-          <packing>
-            <property name="left_attach">3</property>
-            <property name="right_attach">4</property>
-            <property name="top_attach">12</property>
-            <property name="bottom_attach">13</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyCheckButton" id="bc_include_ipi">
-            <property name="label">Incluir IPI na BC</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">False</property>
-            <property name="use_action_appearance">False</property>
-            <property name="draw_indicator">True</property>
-            <property name="data_type">bool</property>
-            <property name="model_attribute">bc_include_ipi</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-            <property name="top_attach">7</property>
-            <property name="bottom_attach">8</property>
-          </packing>
-        </child>
-        <child>
-          <object class="ProxyCheckButton" id="bc_st_include_ipi">
-            <property name="label">Incluir IPI na BC ST</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">False</property>
-            <property name="use_action_appearance">False</property>
-            <property name="draw_indicator">True</property>
-            <property name="data_type">bool</property>
-            <property name="model_attribute">bc_st_include_ipi</property>
-          </object>
-          <packing>
-            <property name="left_attach">3</property>
-            <property name="right_attach">4</property>
-            <property name="top_attach">7</property>
-            <property name="bottom_attach">8</property>
           </packing>
         </child>
         <child>
@@ -670,7 +231,566 @@
           </packing>
         </child>
         <child>
-          <placeholder/>
+          <object class="GtkLabel" id="v_cred_icms_sn_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label">Valor ICMS SN:</property>
+          </object>
+          <packing>
+            <property name="top_attach">15</property>
+            <property name="bottom_attach">16</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="v_cred_icms_sn">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char"> </property>
+            <property name="xalign">1</property>
+            <property name="truncate_multiline">True</property>
+            <property name="invisible_char_set">True</property>
+            <property name="primary_icon_activatable">True</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">currency</property>
+            <property name="model_attribute">v_cred_icms_sn</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">15</property>
+            <property name="bottom_attach">16</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="p_cred_sn_valid_until_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label">Alíquota válida até:</property>
+          </object>
+          <packing>
+            <property name="top_attach">14</property>
+            <property name="bottom_attach">15</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyDateEntry" id="p_cred_sn_valid_until">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="data_type">date</property>
+            <property name="model_attribute">p_cred_sn_valid_until</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">14</property>
+            <property name="bottom_attach">15</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="v_icms_st_ret_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label">ICMS ST Retido:</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">14</property>
+            <property name="bottom_attach">15</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="v_icms_st_ret">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char"> </property>
+            <property name="xalign">1</property>
+            <property name="truncate_multiline">True</property>
+            <property name="invisible_char_set">True</property>
+            <property name="primary_icon_activatable">True</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">currency</property>
+            <property name="model_attribute">v_icms_st_ret</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">14</property>
+            <property name="bottom_attach">15</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="p_cred_sn_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label">Alíquota ICMS SN:</property>
+          </object>
+          <packing>
+            <property name="top_attach">13</property>
+            <property name="bottom_attach">14</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxySpinButton" id="p_cred_sn">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char"> </property>
+            <property name="xalign">1</property>
+            <property name="truncate_multiline">True</property>
+            <property name="invisible_char_set">True</property>
+            <property name="primary_icon_activatable">True</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="numeric">True</property>
+            <property name="data_type">Decimal</property>
+            <property name="model_attribute">p_cred_sn</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">13</property>
+            <property name="bottom_attach">14</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="v_bc_st_ret_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label">BC ICMS ST Retido:</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">13</property>
+            <property name="bottom_attach">14</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="v_bc_st_ret">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char"> </property>
+            <property name="xalign">1</property>
+            <property name="truncate_multiline">True</property>
+            <property name="invisible_char_set">True</property>
+            <property name="primary_icon_activatable">True</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">currency</property>
+            <property name="model_attribute">v_bc_st_ret</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">13</property>
+            <property name="bottom_attach">14</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">0</property>
+            <property name="label">&lt;b&gt;Simples Nacional&lt;/b&gt;</property>
+            <property name="use_markup">True</property>
+          </object>
+          <packing>
+            <property name="right_attach">4</property>
+            <property name="top_attach">12</property>
+            <property name="bottom_attach">13</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="v_fcp_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label">FCP:</property>
+          </object>
+          <packing>
+            <property name="top_attach">11</property>
+            <property name="bottom_attach">12</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="v_fcp">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="editable">False</property>
+            <property name="invisible_char"> </property>
+            <property name="xalign">1</property>
+            <property name="truncate_multiline">True</property>
+            <property name="invisible_char_set">True</property>
+            <property name="primary_icon_activatable">True</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">currency</property>
+            <property name="model_attribute">v_fcp</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">11</property>
+            <property name="bottom_attach">12</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="v_fcp_st_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label">FCP ST:</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">11</property>
+            <property name="bottom_attach">12</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="v_fcp_st">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="editable">False</property>
+            <property name="invisible_char"> </property>
+            <property name="xalign">1</property>
+            <property name="truncate_multiline">True</property>
+            <property name="invisible_char_set">True</property>
+            <property name="primary_icon_activatable">True</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">currency</property>
+            <property name="model_attribute">v_fcp_st</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">11</property>
+            <property name="bottom_attach">12</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="v_icms_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label">ICMS:</property>
+          </object>
+          <packing>
+            <property name="top_attach">10</property>
+            <property name="bottom_attach">11</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="v_icms">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="editable">False</property>
+            <property name="invisible_char"> </property>
+            <property name="xalign">1</property>
+            <property name="truncate_multiline">True</property>
+            <property name="invisible_char_set">True</property>
+            <property name="primary_icon_activatable">True</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">currency</property>
+            <property name="model_attribute">v_icms</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">10</property>
+            <property name="bottom_attach">11</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="v_icms_st_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label">ICMS ST:</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">10</property>
+            <property name="bottom_attach">11</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="v_icms_st">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="editable">False</property>
+            <property name="invisible_char"> </property>
+            <property name="xalign">1</property>
+            <property name="truncate_multiline">True</property>
+            <property name="invisible_char_set">True</property>
+            <property name="primary_icon_activatable">True</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">currency</property>
+            <property name="model_attribute">v_icms_st</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">10</property>
+            <property name="bottom_attach">11</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="v_bc_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label">BC ICMS:</property>
+          </object>
+          <packing>
+            <property name="top_attach">9</property>
+            <property name="bottom_attach">10</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="v_bc">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="editable">False</property>
+            <property name="invisible_char"> </property>
+            <property name="xalign">1</property>
+            <property name="truncate_multiline">True</property>
+            <property name="invisible_char_set">True</property>
+            <property name="primary_icon_activatable">True</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">currency</property>
+            <property name="model_attribute">v_bc</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">9</property>
+            <property name="bottom_attach">10</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="v_bc_st_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label">BC ICMS ST:</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">9</property>
+            <property name="bottom_attach">10</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="v_bc_st">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="editable">False</property>
+            <property name="invisible_char"> </property>
+            <property name="xalign">1</property>
+            <property name="truncate_multiline">True</property>
+            <property name="invisible_char_set">True</property>
+            <property name="primary_icon_activatable">True</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">currency</property>
+            <property name="model_attribute">v_bc_st</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">9</property>
+            <property name="bottom_attach">10</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyCheckButton" id="bc_include_ipi">
+            <property name="label">Incluir IPI na BC</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="use_action_appearance">False</property>
+            <property name="draw_indicator">True</property>
+            <property name="data_type">bool</property>
+            <property name="model_attribute">bc_include_ipi</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">8</property>
+            <property name="bottom_attach">9</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyCheckButton" id="bc_st_include_ipi">
+            <property name="label">Incluir IPI na BC ST</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="use_action_appearance">False</property>
+            <property name="draw_indicator">True</property>
+            <property name="data_type">bool</property>
+            <property name="model_attribute">bc_st_include_ipi</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">8</property>
+            <property name="bottom_attach">9</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="p_red_bc_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label">% Redução BC ICMS</property>
+          </object>
+          <packing>
+            <property name="top_attach">7</property>
+            <property name="bottom_attach">8</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxySpinButton" id="p_red_bc">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">•</property>
+            <property name="xalign">1</property>
+            <property name="truncate_multiline">True</property>
+            <property name="primary_icon_activatable">True</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="numeric">True</property>
+            <property name="data_type">Decimal</property>
+            <property name="model_attribute">p_red_bc</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">7</property>
+            <property name="bottom_attach">8</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="p_mva_st_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label">% MVA ICMS ST:</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">7</property>
+            <property name="bottom_attach">8</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxySpinButton" id="p_mva_st">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">•</property>
+            <property name="xalign">1</property>
+            <property name="truncate_multiline">True</property>
+            <property name="primary_icon_activatable">True</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="numeric">True</property>
+            <property name="data_type">Decimal</property>
+            <property name="model_attribute">p_mva_st</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">7</property>
+            <property name="bottom_attach">8</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxySpinButton" id="p_fcp">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">•</property>
+            <property name="xalign">1</property>
+            <property name="truncate_multiline">True</property>
+            <property name="invisible_char_set">True</property>
+            <property name="primary_icon_activatable">True</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="numeric">True</property>
+            <property name="data_type">Decimal</property>
+            <property name="model_attribute">p_fcp</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">6</property>
+            <property name="bottom_attach">7</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="p_red_bc_st_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label">% Redução BC ICMS ST:</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">6</property>
+            <property name="bottom_attach">7</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxySpinButton" id="p_red_bc_st">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">•</property>
+            <property name="xalign">1</property>
+            <property name="truncate_multiline">True</property>
+            <property name="primary_icon_activatable">True</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="numeric">True</property>
+            <property name="data_type">Decimal</property>
+            <property name="model_attribute">p_red_bc_st</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">6</property>
+            <property name="bottom_attach">7</property>
+          </packing>
         </child>
         <child>
           <placeholder/>
@@ -679,7 +799,89 @@
           <placeholder/>
         </child>
         <child>
-          <placeholder/>
+          <object class="GtkLabel" id="p_fcp_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label">Alíquota FCP:</property>
+          </object>
+          <packing>
+            <property name="top_attach">6</property>
+            <property name="bottom_attach">7</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="p_fcp_st_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label">Alíquota FCP ST:</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">5</property>
+            <property name="bottom_attach">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxySpinButton" id="p_fcp_st">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">•</property>
+            <property name="xalign">1</property>
+            <property name="truncate_multiline">True</property>
+            <property name="invisible_char_set">True</property>
+            <property name="primary_icon_activatable">True</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="numeric">True</property>
+            <property name="data_type">Decimal</property>
+            <property name="model_attribute">p_fcp_st</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">5</property>
+            <property name="bottom_attach">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="v_fcp_st_ret_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">1</property>
+            <property name="label">FCP ST Retido:</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">15</property>
+            <property name="bottom_attach">16</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="v_fcp_st_ret">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char"> </property>
+            <property name="xalign">1</property>
+            <property name="truncate_multiline">True</property>
+            <property name="invisible_char_set">True</property>
+            <property name="primary_icon_activatable">True</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">currency</property>
+            <property name="model_attribute">v_fcp_st_ret</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">15</property>
+            <property name="bottom_attach">16</property>
+          </packing>
         </child>
       </object>
     </child>
