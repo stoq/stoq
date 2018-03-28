@@ -230,13 +230,18 @@ class OpticalUI(object):
     def _add_services_menus(self, services_app):
         actions = [
             ('OpticalDetails', None, _(u'Edit optical details...'),
-             None, None,
-             self._on_OpticalDetails__activate),
+             None, None, self._on_OpticalDetails__activate),
+            ('OpticalNewPurchase', None, _(u'Create new purchase...'),
+             None, None, self._on_OpticalNewPurchase__activate),
         ]
         services_app.add_ui_actions(actions)
 
-        # TODO: Add this same option in the domain options (popover)
         services_app.window.add_extra_items([services_app.OpticalDetails], _('Optical'))
+        options = services_app.get_domain_options()
+        options.append(('', actions[0][2], 'services.OpticalDetails', True))
+        options.append(('', actions[1][2], 'services.OpticalNewPurchase', True))
+        # Recreate the app popover with the new options
+        services_app.create_popover(options)
 
         services_app.search.connect(
             'result-selection-changed',
@@ -380,5 +385,22 @@ class OpticalUI(object):
             work_order = store.fetch(wo_view.work_order)
             run_dialog(OpticalWorkOrderEditor, None, store, work_order)
 
+    def _on_OpticalNewPurchase__activate(self, action, parameter):
+        wo_view = self._current_app.search.get_selected_item()
+        with api.new_store() as store:
+            order = store.fetch(wo_view.work_order)
+            rv = run_dialog(OpticalSupplierEditor, None, store, order)
+            if not rv:
+                return False
+
+            order.supplier_order = rv.supplier_order
+            optical_wo = OpticalWorkOrder.find_by_work_order(store, order)
+            optical_wo.create_purchase(rv.supplier, rv.item)
+
     def _on_ServicesApp__result_selection_changed(self, search, app):
-        app.set_sensitive([app.OpticalDetails], bool(search.get_selected_item()))
+        wo_view = search.get_selected_item()
+        optical_wo = wo_view and OpticalWorkOrder.find_by_work_order(wo_view.store,
+                                                                     wo_view.work_order)
+        app.set_sensitive([app.OpticalDetails], bool(wo_view))
+        app.set_sensitive([app.OpticalNewPurchase],
+                          bool(optical_wo) and optical_wo.can_create_purchase())

@@ -25,13 +25,14 @@
 import contextlib
 from gi.repository import Gtk
 import mock
+from kiwi.python import Settable
 
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.workorder import WorkOrderCategory
+from stoqlib.domain.workorder import WorkOrderCategory, WorkOrder
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
@@ -48,7 +49,7 @@ from stoq.gui.services import ServicesApp
 
 from ..medicssearch import OpticalMedicSearch, MedicSalesSearch
 from ..opticaldomain import OpticalProduct
-from ..opticaleditor import MedicEditor, OpticalWorkOrderEditor
+from ..opticaleditor import MedicEditor, OpticalWorkOrderEditor, OpticalSupplierEditor
 from ..opticalhistory import OpticalPatientDetails
 from ..opticalreport import OpticalWorkOrderReceiptReport
 from ..opticalui import OpticalUI
@@ -242,6 +243,81 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         run_dialog.assert_called_once_with(OpticalWorkOrderEditor, None,
                                            self.store, work_order)
 
+    @mock.patch('plugins.optical.opticalui.api.new_store')
+    @mock.patch('plugins.optical.opticalui.run_dialog')
+    def test_new_purchase_cancel(self, run_dialog, new_store):
+        new_store.return_value = self.store
+
+        sale = self.create_sale()
+        product = self.create_product()
+        work_order = self.create_workorder()
+        work_order.status = WorkOrder.STATUS_WORK_IN_PROGRESS
+        work_order.sale = sale
+        work_order.add_sellable(product.sellable)
+        self.create_optical_work_order(work_order)
+        app = self.create_app(ServicesApp, u'services')
+        app.search.refresh()
+
+        for wo_view in app.search.results:
+            if wo_view.work_order == work_order:
+                break
+
+        self.assertIsNotNone(wo_view)
+        app.search.results.select(wo_view)
+
+        action = app.OpticalNewPurchase
+        run_dialog.return_value = False
+        with contextlib.nested(
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')):
+            self.activate(action)
+
+        run_dialog.assert_called_once_with(OpticalSupplierEditor, None,
+                                           self.store, work_order)
+
+    @mock.patch('plugins.optical.opticalui.api.new_store')
+    @mock.patch('plugins.optical.opticalui.run_dialog')
+    def test_new_purchase_confirm(self, run_dialog, new_store):
+        new_store.return_value = self.store
+
+        supplier = self.create_supplier()
+        sale = self.create_sale()
+        product = self.create_product()
+        work_order = self.create_workorder()
+        work_order.status = WorkOrder.STATUS_WORK_IN_PROGRESS
+        work_order.sale = sale
+        work_item = work_order.add_sellable(product.sellable)
+        self.create_optical_work_order(work_order)
+        app = self.create_app(ServicesApp, u'services')
+        app.search.refresh()
+
+        for wo_view in app.search.results:
+            if wo_view.work_order == work_order:
+                break
+
+        self.assertIsNotNone(wo_view)
+        app.search.results.select(wo_view)
+
+        # Before the action, there are no purchase orders for this work order
+        results = PurchaseOrder.find_by_work_order(self.store, work_order)
+        self.assertEquals(results.count(), 0)
+
+        action = app.OpticalNewPurchase
+        run_dialog.return_value = Settable(supplier=supplier,
+                                           supplier_order='1111',
+                                           item=work_item)
+        with contextlib.nested(
+                mock.patch.object(self.store, 'commit'),
+                mock.patch.object(self.store, 'close')):
+            self.activate(action)
+
+        run_dialog.assert_called_once_with(OpticalSupplierEditor, None,
+                                           self.store, work_order)
+
+        # Now there should be one purchase order
+        results = PurchaseOrder.find_by_work_order(self.store, work_order)
+        self.assertEquals(results.count(), 1)
+
     @mock.patch('plugins.optical.opticalui.print_report')
     def test_print_report_event(self, print_report):
 
@@ -265,7 +341,6 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
                                              [optical_wo.work_order])
 
     def test_work_order_change_status(self):
-        from kiwi.python import Settable
         supplier = self.create_supplier()
         product = self.create_product()
         opt_type = OpticalProduct.TYPE_GLASS_LENSES
