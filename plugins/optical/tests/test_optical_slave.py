@@ -283,6 +283,30 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
         slave.re_distance_cylindrical.update(Decimal("4.0"))
         self.assertEqual(slave.re_near_cylindrical.get_value(), 4.0)
 
+    def test_spherical_value_changed(self):
+        workorder = self.create_workorder()
+        slave = WorkOrderOpticalSlave(self.store, workorder)
+
+        # Left
+        slave.le_near_spherical.update(Decimal("1"))
+        self.assertEqual(slave.le_addition.get_value(), 1)
+
+        slave.le_near_spherical.update(Decimal("0.25"))
+        self.assertEqual(slave.le_addition.get_value(), 0.25)
+
+        slave.le_near_spherical.update(Decimal("-0.25"))
+        self.assertEqual(slave.le_addition.get_value(), 0)
+
+        # Right
+        slave.re_near_spherical.update(Decimal("1"))
+        self.assertEqual(slave.re_addition.get_value(), 1)
+
+        slave.re_near_spherical.update(Decimal("0.25"))
+        self.assertEqual(slave.re_addition.get_value(), 0.25)
+
+        slave.re_near_spherical.update(Decimal("-0.25"))
+        self.assertEqual(slave.re_addition.get_value(), 0)
+
     def test_update(self):
         workorder = self.create_workorder()
         slave = WorkOrderOpticalSlave(self.store, workorder)

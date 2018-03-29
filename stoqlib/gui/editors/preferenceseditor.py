@@ -56,6 +56,7 @@ class _PreferencesModel(object):
     language = _PrefField('user-locale')
     toolbar_style = _PrefField('toolbar-style')
     spreadsheet = _PrefField('spreadsheet-action')
+    launcher_screen = _PrefField('launcher-screen')
 
     #
     #  Private
@@ -77,7 +78,8 @@ class PreferencesEditor(BaseEditor):
     size = (600, 400)
     proxy_widgets = ['toolbar_style',
                      'language',
-                     'spreadsheet']
+                     'spreadsheet',
+                     'launcher_screen']
 
     def __init__(self, store, *args, **kwargs):
         BaseEditor.__init__(self, store, *args, **kwargs)
@@ -124,6 +126,7 @@ class PreferencesEditor(BaseEditor):
         self._prefill_toolbar_style_combo()
         self._prefill_language_combo()
         self._prefill_spreadsheet()
+        self._prefill_launcher_screen()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     def setup_slaves(self):
@@ -165,6 +168,12 @@ class PreferencesEditor(BaseEditor):
             (_("English (United States)"), 'en_US'),
             (_("Portuguese"), 'pt'),
             (_("Portuguese (Brazil)"), 'pt_BR'),
+        ])
+
+    def _prefill_launcher_screen(self):
+        self.launcher_screen.prefill([
+            (_("Applications"), None),
+            (_("My Work Orders"), 'my-work-orders'),
         ])
 
     def _prefill_spreadsheet(self):

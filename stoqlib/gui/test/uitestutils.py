@@ -40,6 +40,7 @@ from storm.info import get_cls_info
 
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.database.testsuite import test_system_notifier
+from stoqlib.gui.actions.base import BaseActions
 from stoqlib.gui.search.searchresultview import SearchResultListView
 from stoqlib.gui.stockicons import register
 from stoqlib.lib.countries import countries
@@ -606,7 +607,11 @@ class GUITest(DomainTest):
 
     def assertSensitive(self, dialog, attributes):
         for attr in attributes:
-            value = getattr(dialog, attr)
+            if isinstance(dialog, BaseActions):
+                value = dialog.get_action(attr)
+            else:
+                value = getattr(dialog, attr)
+
             # If the widget is sensitive, we also expect it to be visible
             if isinstance(value, Gio.Action):
                 if not value.get_enabled():

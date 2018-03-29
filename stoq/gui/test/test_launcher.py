@@ -33,6 +33,12 @@ class TestLauncher(BaseGUITest):
         app = self.create_app(LauncherApp, u'launcher')
         self.check_app(app, u'launcher')
 
+    def test_initial_work_orders(self):
+        with self.user_setting({'launcher-screen': 'my-work-orders'}):
+            app = self.create_app(LauncherApp, u'launcher')
+            self.check_app(app, u'launcher-work-orders')
+        self.window.hide_app(empty=True)
+
     def test_open_admin(self):
         self._test_open_app('admin')
 
@@ -91,3 +97,7 @@ class TestLauncher(BaseGUITest):
         assert found, 'App %s not found' % app_name
         emit.assert_called_once_with(self.window.current_app.app_name,
                                      self.window.current_app)
+
+        # Deactivate the app to let it clean up what's necessary
+        self.window.hide_app(empty=True)
+        self.window.close()

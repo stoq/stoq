@@ -26,7 +26,9 @@
 
 from gi.repository import Gtk
 
+from stoqlib.api import api
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.widgets.workorder import WorkOrderList
 
 from stoq.gui.shell.shellapp import ShellApp
 from stoq.gui.widgets import Apps, ShortcutGrid, Section
@@ -47,7 +49,12 @@ class LauncherApp(ShellApp):
         self.main_box.get_style_context().add_class(Gtk.STYLE_CLASS_VIEW)
 
         self.app_grid = Apps(self.window)
-        self.app_box.pack_start(self.app_grid, False, False, 0)
+        launcher_screen = api.user_settings.get('launcher-screen', None)
+        if launcher_screen == 'my-work-orders':
+            main_widget = WorkOrderList(self.window.store)
+        else:
+            main_widget = self.app_grid
+        self.app_box.pack_start(main_widget, False, False, 0)
 
         self.side_box.pack_start(Section(_('Shortcuts')), False, False, 0)
         self.sc_grid = ShortcutGrid(self.window)

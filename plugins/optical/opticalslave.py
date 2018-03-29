@@ -470,6 +470,10 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
             # But we still need to update the near field.
             near = addition and (distance + addition)
             getattr(self, eye + '_near_spherical').update(near)
+        elif last == ['near_spherical']:
+            # Only near is set, assume distance is zero and set the addition
+            widget = getattr(self, eye + '_addition')
+            widget.update(near - distance)
 
         if field == 'addition' and addition == 0:
             if near:

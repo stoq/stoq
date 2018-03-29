@@ -121,3 +121,33 @@ label.tour {
 .h1 {
     font-size: 1.25em;
 }
+
+.tag {
+    padding: 2px 4px;
+    border-radius: 5px;
+}
+
+#WorkOrderRow {
+    border-radius: 3px;
+}
+
+/*
+ *  Work order status tags
+ */
+
+.tag.waiting {
+    color: white;
+    background: #a40000;
+}
+
+.tag.in-progress {
+    color: white;
+    background: #204a87;
+}
+
+.tag.finished {
+    color: white;
+    background: #4e9a06;
+}
+/*
+*/

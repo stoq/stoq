@@ -79,7 +79,7 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
                 GtkBox(orientation=vertical, pack-end):
                   GtkMenuSectionBox(orientation=vertical, fill=True):
                     GtkBox(orientation=vertical, pack-end):
-                      GtkModelButton(fill=True): Work order...
+                      GtkModelButton(fill=True): Work order..., insensitive
     stoq+gui+widgets+ButtonGroup():
       GtkButton(): insensitive
       GtkButton(): insensitive
@@ -104,8 +104,8 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
                       GtkModelButton(fill=True): Export to spreadsheet...
                   GtkMenuSectionBox(orientation=vertical, fill=True):
                     GtkBox(orientation=vertical, pack-end):
-                      GtkModelButton(fill=True): Send orders...
-                      GtkModelButton(fill=True): Receive orders...
+                      GtkModelButton(fill=True): Send orders..., insensitive
+                      GtkModelButton(fill=True): Receive orders..., insensitive
                   GtkMenuSectionBox(orientation=vertical, fill=True):
                     GtkBox(orientation=vertical, pack-end):
                       GtkModelButton(fill=True): View as Kanban

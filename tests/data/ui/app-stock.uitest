@@ -53,7 +53,7 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
           GtkLabel(expand=True, fill=True): 'Test Statusbar test'
           GtkVSeparator():
           GtkButton(): 'Feedback'
-        SummaryLabel(summary_label):
+        LazySummaryLabel(summary_label):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Stock Total:</b>'
           GtkLabel(): '<b>31.0</b>'
   GtkHeaderBar():

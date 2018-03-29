@@ -209,6 +209,18 @@ class ShellWindow(Delegate):
         action.connect('activate', callback, 'launcher')
         group.add_action(action)
 
+    def _create_menu2(self, actions):
+        model = Gio.Menu()
+        for action in actions or []:
+            if isinstance(action, list):
+                section = self._create_menu(action)
+                model.append_section(None, section)
+            else:
+                label, name = action
+                item = Gio.MenuItem.new(label, name)
+                model.append_item(item)
+        return model
+
     def _create_menu(self, actions):
         model = Gio.Menu()
         for action in actions or []:
@@ -939,6 +951,9 @@ class ShellWindow(Delegate):
     def add_new_items(self, actions, label=None):
         self.new_menu.append_section(label, self._create_menu(actions))
 
+    def add_new_items2(self, actions, label=None):
+        self.new_menu.append_section(label, self._create_menu2(actions))
+
     def add_export_items(self, actions=None):
         self._export_menu = self._create_menu(actions)
         self._export_menu.insert(0, _('Export to spreadsheet...'), 'stoq.export')
@@ -949,8 +964,17 @@ class ShellWindow(Delegate):
         self._print_menu.insert(0, _('Print this report...'), 'stoq.print')
         self.main_menu.append_section(None, self._print_menu)
 
+    def add_print_items2(self, actions=None):
+        self._print_menu = self._create_menu2(actions)
+        self._print_menu.insert(0, _('Print this report...'), 'stoq.print')
+        self.main_menu.append_section(None, self._print_menu)
+
     def add_extra_items(self, actions=None, label=None):
         self._extra_items = self._create_menu(actions)
+        self.main_menu.append_section(label, self._extra_items)
+
+    def add_extra_items2(self, actions=None, label=None):
+        self._extra_items = self._create_menu2(actions)
         self.main_menu.append_section(label, self._extra_items)
 
     def add_search_items(self, actions, label=None):

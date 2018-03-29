@@ -237,7 +237,12 @@ class Shell(object):
         self._login = None
         self._options = options
         self._user = None
-        self._app = Gtk.Application()
+
+        app = Gtk.Application.get_default()
+        if not app:
+            app = Gtk.Application()
+            Gtk.Application.set_default(app)
+        self._app = app
         self._app.connect('activate', self._on_app__activate)
         self.windows = []
 

@@ -97,6 +97,14 @@ widgets Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`section` Module
+---------------------
+
+.. automodule:: stoqlib.gui.widgets.section
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`splash` Module
 --------------------
 
@@ -109,6 +117,14 @@ widgets Package
 ---------------------
 
 .. automodule:: stoqlib.gui.widgets.webview
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`workorder` Module
+-----------------------
+
+.. automodule:: stoqlib.gui.widgets.workorder
     :members:
     :undoc-members:
     :show-inheritance:

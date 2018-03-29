@@ -240,6 +240,29 @@ class DomainTest(unittest.TestCase, ExampleCreator):
         tracer.remove()
 
     @contextlib.contextmanager
+    def user_setting(self, new_settings):
+        """
+        Updates a set of user settings within a context.
+        The values will be reverted when leaving the scope.
+        kwargs contains a dictionary of parameter name->value
+        """
+        from stoqlib.lib.settings import get_settings
+        settings = get_settings()
+        old_values = {}
+        for key, value in new_settings.items():
+            old_values[key] = settings.get(key, None)
+            settings.set(key, value)
+
+        try:
+            yield
+        finally:
+            for param, value in old_values.items():
+                if value is None:
+                    settings.remove(key)
+                else:
+                    settings.set(key, value)
+
+    @contextlib.contextmanager
     def sysparam(self, **kwargs):
         """
         Updates a set of system parameters within a context.

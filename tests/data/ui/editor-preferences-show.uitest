@@ -10,7 +10,7 @@ GtkDialog(main_dialog.toplevel): title='Add Preferences', hidden
               GtkAlignment(alignment1):
                 GtkBox(vbox1, orientation=vertical):
                   ProxyLabel(notice_lbl): 'Some of these options will only take effect after you restart Stoq.'
-                  GtkTable(table1, expand=True, fill=True):
+                  GtkTable(table1, fill=True):
                     ProxyLabel(toolbar_style_lbl): 'Toolbar style:'
                     ProxyComboBox(toolbar_style):
                       item: 'System default'
@@ -31,6 +31,10 @@ GtkDialog(main_dialog.toplevel): title='Add Preferences', hidden
                     ProxyComboBox(spreadsheet):
                       item: 'Ask (default)', selected
                       item: 'Save to disk'
+                    GtkLabel(___object_1___): 'Launcher screen:'
+                    ProxyComboBox(launcher_screen):
+                      item: 'Applications', selected
+                      item: 'My Work Orders'
           GtkEventBox():
             GtkBox(_main_vbox, orientation=vertical):
               GtkBox(vbox, orientation=vertical, expand=True, fill=True):

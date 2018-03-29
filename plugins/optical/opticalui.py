@@ -37,6 +37,8 @@ from stoqlib.domain.product import Product, ProductManufacturer
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.workorder import WorkOrder
+from stoqlib.gui.actions.base import BaseActions, action
+from stoqlib.gui.actions.workorder import WorkOrderActions
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
@@ -49,12 +51,14 @@ from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searchextension import SearchExtension
 from stoqlib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.gui.utils.printing import print_report
+from stoqlib.gui.widgets.workorder import WorkOrderRow
 from stoqlib.gui.wizards.personwizard import PersonRoleWizard
 from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import ParameterDetails, sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.sale import SaleOrderReport
+
 from stoq.gui.services import ServicesApp
 
 from .medicssearch import OpticalMedicSearch, MedicSalesSearch
@@ -158,6 +162,35 @@ class ServicesSearchExtention(SearchExtension):
         ]
 
 
+class OpticalWorkOrderActions(BaseActions):
+    group_name = 'optical_work_order'
+
+    def set_model(self, model):
+        self.model = model
+        optical_wo = model and OpticalWorkOrder.find_by_work_order(model.store, model)
+        self.set_action_enabled('OpticalDetails', bool(optical_wo))
+        self.set_action_enabled('OpticalNewPurchase',
+                                optical_wo and optical_wo.can_create_purchase())
+
+    @action('OpticalDetails')
+    def optical_details(self, work_order):
+        with api.new_store() as store:
+            work_order = store.fetch(work_order)
+            run_dialog(OpticalWorkOrderEditor, None, store, work_order)
+
+    @action('OpticalNewPurchase')
+    def optical_new_purchase(self, work_order):
+        with api.new_store() as store:
+            order = store.fetch(work_order)
+            rv = run_dialog(OpticalSupplierEditor, None, store, order)
+            if not rv:
+                return False
+
+            order.supplier_order = rv.supplier_order
+            optical_wo = OpticalWorkOrder.find_by_work_order(store, order)
+            optical_wo.create_purchase(rv.supplier, rv.item)
+
+
 params = [
     ParameterDetails(
         u'CUSTOM_WORK_ORDER_DESCRIPTION',
@@ -185,6 +218,17 @@ class OpticalUI(object):
             ('plugin.optical.pre_sale', ''),
             ('plugin.optical.search_medics', ''),
         ])
+
+        # Whenever the model of WorkOrderActions change, we should also change ours
+        actions = WorkOrderActions.get_instance()
+        actions.connect('model-set', self._on_work_order_actions__model_set)
+
+        # Add a new option to the WorkOrderRow options menu
+        WorkOrderRow.options.append((_('Create new purchase...'),
+                                     'optical_work_order.OpticalNewPurchase'))
+
+    def _on_work_order_actions__model_set(self, actions, model):
+        OpticalWorkOrderActions.get_instance().set_model(model)
 
     @classmethod
     def get_instance(cls):
@@ -228,24 +272,17 @@ class OpticalUI(object):
         ], _('Optical'))
 
     def _add_services_menus(self, services_app):
-        actions = [
-            ('OpticalDetails', None, _(u'Edit optical details...'),
-             None, None, self._on_OpticalDetails__activate),
-            ('OpticalNewPurchase', None, _(u'Create new purchase...'),
-             None, None, self._on_OpticalNewPurchase__activate),
-        ]
-        services_app.add_ui_actions(actions)
+        services_app.window.add_extra_items2([
+            (_(u'Edit optical details...'), 'optical_work_order.OpticalDetails'),
+        ], _('Optical'))
 
-        services_app.window.add_extra_items([services_app.OpticalDetails], _('Optical'))
         options = services_app.get_domain_options()
-        options.append(('', actions[0][2], 'services.OpticalDetails', True))
-        options.append(('', actions[1][2], 'services.OpticalNewPurchase', True))
+        options.append(('', _('Edit optical details...'), 'optical_work_order.OpticalDetails',
+                        False))
+        options.append(('', _('Create new purchase...'), 'optical_work_order.OpticalNewPurchase',
+                        False))
         # Recreate the app popover with the new options
         services_app.create_popover(options)
-
-        services_app.search.connect(
-            'result-selection-changed',
-            self._on_ServicesApp__result_selection_changed, services_app)
 
     def _fix_work_order_editor(self, editor, model, store):
         slave = WorkOrderOpticalSlave(store, model, show_finish_date=False,
@@ -336,12 +373,14 @@ class OpticalUI(object):
             return
 
         if optical_wo.can_create_purchase():
-            rv = run_dialog(OpticalSupplierEditor, None, order.store, order)
+            with api.new_store() as store:
+                rv = run_dialog(OpticalSupplierEditor, None, store, order)
             if not rv:
-                return False
+                # Return None to let the status be changed without creating a purchase order
+                return
 
             order.supplier_order = rv.supplier_order
-            optical_wo.create_purchase(rv.supplier, rv.item)
+            optical_wo.create_purchase(order.store.fetch(rv.supplier), order.store.fetch(rv.item))
             return
 
         for purchase in PurchaseOrder.find_by_work_order(order.store, order):
@@ -377,30 +416,3 @@ class OpticalUI(object):
         store = api.new_store()
         run_dialog(MedicSalesSearch, None, store, hide_footer=True)
         store.rollback()
-
-    def _on_OpticalDetails__activate(self, action, parameter):
-        wo_view = self._current_app.search.get_selected_item()
-
-        with api.new_store() as store:
-            work_order = store.fetch(wo_view.work_order)
-            run_dialog(OpticalWorkOrderEditor, None, store, work_order)
-
-    def _on_OpticalNewPurchase__activate(self, action, parameter):
-        wo_view = self._current_app.search.get_selected_item()
-        with api.new_store() as store:
-            order = store.fetch(wo_view.work_order)
-            rv = run_dialog(OpticalSupplierEditor, None, store, order)
-            if not rv:
-                return False
-
-            order.supplier_order = rv.supplier_order
-            optical_wo = OpticalWorkOrder.find_by_work_order(store, order)
-            optical_wo.create_purchase(rv.supplier, rv.item)
-
-    def _on_ServicesApp__result_selection_changed(self, search, app):
-        wo_view = search.get_selected_item()
-        optical_wo = wo_view and OpticalWorkOrder.find_by_work_order(wo_view.store,
-                                                                     wo_view.work_order)
-        app.set_sensitive([app.OpticalDetails], bool(wo_view))
-        app.set_sensitive([app.OpticalNewPurchase],
-                          bool(optical_wo) and optical_wo.can_create_purchase())
