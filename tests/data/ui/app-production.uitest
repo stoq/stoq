@@ -23,9 +23,6 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
                       GtkLabel(): 'matching:'
                       ProxyComboBox(padding=6): hidden
                         item: 'Contains All Words'
-                        item: 'Contains Exactly'
-                        item: 'Identical to'
-                        item: 'Does Not Contain', selected
                       GtkEntry(search_entry, padding=6): ''
                     stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
               SearchResultListView(results, expand=True, fill=True):

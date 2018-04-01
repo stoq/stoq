@@ -693,11 +693,9 @@ class StringSearchFilter(SearchFilter):
         self.pack_start(self.entry, False, False, 6)
         self.entry.show()
 
-        for option in [ContainsAll,
-                       ContainsExactly,
-                       IdenticalTo,
-                       DoesNotContain]:
-            self._add_option(option)
+        # Default filter will be only contains all. When advanced filter is enabled it will add
+        # other options
+        self._add_option(ContainsAll)
         self.mode.select_item_by_position(0)
 
     def _add_option(self, option_type):
@@ -774,6 +772,8 @@ class StringSearchFilter(SearchFilter):
     def enable_advanced(self):
         # Do not show the funnel icon if its an advanced filter
         self.entry.set_icon_from_pixbuf(Gtk.EntryIconPosition.PRIMARY, None)
+        for option in [ContainsExactly, IdenticalTo, DoesNotContain]:
+            self._add_option(option)
         self.mode.show()
 
     def set_label(self, label):

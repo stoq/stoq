@@ -20,9 +20,6 @@ GtkDialog(toplevel): title='Client Search', hidden
                   GtkLabel(): 'matching:'
                   ProxyComboBox(padding=6): hidden
                     item: 'Contains All Words', selected
-                    item: 'Contains Exactly'
-                    item: 'Identical to'
-                    item: 'Does Not Contain'
                   GtkEntry(search_entry, padding=6): ''
                 stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
               DateSearchFilter():

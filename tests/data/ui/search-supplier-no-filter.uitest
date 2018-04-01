@@ -12,9 +12,6 @@ GtkDialog(toplevel): title='Supplier Search', hidden
                   GtkLabel(): 'Suppliers Matching:'
                   ProxyComboBox(padding=6): hidden
                     item: 'Contains All Words', selected
-                    item: 'Contains Exactly'
-                    item: 'Identical to'
-                    item: 'Does Not Contain'
                   GtkEntry(search_entry, padding=6): ''
                 stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
           SearchResultListView(results, expand=True, fill=True):
