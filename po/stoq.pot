@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-23 02:10-0300\n"
-"PO-Revision-Date: 2018-03-23 05:10+0000\n"
+"POT-Creation-Date: 2018-03-30 02:10-0300\n"
+"PO-Revision-Date: 2018-03-30 05:10+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: English (http://www.transifex.com/async/stoq/language/en/)\n"
 "MIME-Version: 1.0\n"
@@ -762,7 +762,7 @@ msgstr "Payments"
 #: ../data/glade/ProductStockHistoryDialog.ui.h:4
 #: ../data/glade/TillDailyMovementDialog.ui.h:2
 #: ../data/template/till/sales.html:2 ../plugins/nfe/nfeui.py:160
-#: ../stoq/gui/sales.py:103 ../stoq/gui/widgets.py:202
+#: ../stoq/gui/sales.py:103 ../stoq/gui/widgets.py:204
 #: ../stoq/lib/applist.py:59 ../stoqlib/gui/dialogs/clientdetails.py:141
 #: ../stoqlib/gui/search/salesearch.py:211 ../stoqlib/lib/parameters.py:250
 #: ../stoqlib/lib/parameters.py:283 ../stoqlib/lib/parameters.py:292
@@ -2953,7 +2953,7 @@ msgstr "Identifier:"
 #: ../data/glade/StockDecreaseDetails.ui.h:8
 #: ../data/glade/SupplierDetailsDialog.ui.h:6
 #: ../data/glade/TransferOrderDetails.ui.h:10 ../stoq/gui/admin.py:123
-#: ../stoq/gui/widgets.py:315 ../stoqlib/gui/dialogs/clientdetails.py:258
+#: ../stoq/gui/widgets.py:317 ../stoqlib/gui/dialogs/clientdetails.py:258
 #: ../stoqlib/lib/parameters.py:186 ../stoqlib/lib/parameters.py:193
 #: ../stoqlib/lib/parameters.py:200 ../stoqlib/lib/parameters.py:207
 #: ../stoqlib/lib/parameters.py:215
@@ -4141,6 +4141,7 @@ msgstr "Category"
 #: ../data/template/sale/sale-items.html:23
 #: ../data/template/stock_decrease/stock_decrease-items.html:7
 #: ../data/template/workorder/workorder-items.html:6
+#: ../plugins/optical/opticaleditor.py:121
 #: ../stoqlib/gui/search/returnedsalesearch.py:169
 #: ../stoqlib/gui/search/transfersearch.py:179
 msgid "Item"
@@ -4728,7 +4729,7 @@ msgstr "Payment Value"
 
 #. FIXME change to an appropiate name
 #: ../data/template/till/purchases.html:11
-#: ../plugins/optical/opticaleditor.py:117 ../stoq/gui/payable.py:171
+#: ../plugins/optical/opticaleditor.py:124 ../stoq/gui/payable.py:171
 #: ../stoq/gui/purchase.py:266 ../stoqlib/domain/uiform.py:150
 #: ../stoqlib/gui/dialogs/productstockdetails.py:187
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:132
@@ -5719,7 +5720,7 @@ msgstr "What cleaning product did you use?"
 #. TRANSLATORS: Traduzir como 'Anamnese'
 #: ../plugins/optical/glade/PatientHistory.ui.h:42
 #: ../plugins/optical/glade/PatientHistoryDialog.ui.h:3
-#: ../plugins/optical/opticalhistory.py:55 ../plugins/optical/opticalui.py:274
+#: ../plugins/optical/opticalhistory.py:55 ../plugins/optical/opticalui.py:279
 msgid "Patient History"
 msgstr "Patient History"
 
@@ -6210,46 +6211,46 @@ msgstr "Batch Date"
 msgid "%s (upid: %s)"
 msgstr "%s (upid: %s)"
 
-#: ../plugins/optical/opticaldomain.py:269
+#: ../plugins/optical/opticaldomain.py:262
 msgid "Ophtalmic"
 msgstr "Ophtalmic"
 
-#: ../plugins/optical/opticaldomain.py:270
+#: ../plugins/optical/opticaldomain.py:263
 msgid "Contact"
 msgstr "Contact"
 
 #. Translators: Aro fechado
-#: ../plugins/optical/opticaldomain.py:275
+#: ../plugins/optical/opticaldomain.py:268
 msgid "Closed ring"
 msgstr "Closed ring"
 
 #. Translators: Fio de nylon
-#: ../plugins/optical/opticaldomain.py:278
+#: ../plugins/optical/opticaldomain.py:271
 msgid "Nylon String"
 msgstr "Nylon String"
 
 #. Translators: 3 preças
-#: ../plugins/optical/opticaldomain.py:281
+#: ../plugins/optical/opticaldomain.py:274
 msgid "3 pieces"
 msgstr "3 pieces"
 
-#: ../plugins/optical/opticaldomain.py:472
+#: ../plugins/optical/opticaldomain.py:461
 msgid "First User"
 msgstr "First User"
 
-#: ../plugins/optical/opticaldomain.py:473
+#: ../plugins/optical/opticaldomain.py:462
 msgid "Second User"
 msgstr "Second User"
 
-#: ../plugins/optical/opticaldomain.py:474
+#: ../plugins/optical/opticaldomain.py:463
 msgid "Ex-User"
 msgstr "Ex-User"
 
-#: ../plugins/optical/opticaldomain.py:609
+#: ../plugins/optical/opticaldomain.py:598
 msgid "Left Eye"
 msgstr "Left Eye"
 
-#: ../plugins/optical/opticaldomain.py:610
+#: ../plugins/optical/opticaldomain.py:599
 msgid "Right Eye"
 msgstr "Right Eye"
 
@@ -6279,7 +6280,7 @@ msgstr "Optical details updated..."
 msgid "Supplier information"
 msgstr "Supplier information"
 
-#: ../plugins/optical/opticaleditor.py:119
+#: ../plugins/optical/opticaleditor.py:126
 msgid "Supplier Order"
 msgstr "Supplier Order"
 
@@ -6406,7 +6407,6 @@ msgid ""
 "manually. Otherwise, the identifier will be used."
 msgstr "If true, it will be allowed to set a description for the work order manually. Otherwise, the identifier will be used."
 
-#. TODO: Add this same option in the domain options (popover)
 #: ../plugins/optical/opticalui.py:208 ../plugins/optical/opticalui.py:228
 #: ../plugins/optical/opticalui.py:239
 msgid "Optical"
@@ -6428,12 +6428,16 @@ msgstr "Medics sold items..."
 msgid "Edit optical details..."
 msgstr "Edit optical details..."
 
-#: ../plugins/optical/opticalui.py:255 ../stoqlib/gui/search/callsearch.py:86
+#: ../plugins/optical/opticalui.py:234
+msgid "Create new purchase..."
+msgstr "Create new purchase..."
+
+#: ../plugins/optical/opticalui.py:260 ../stoqlib/gui/search/callsearch.py:86
 #: ../stoqlib/gui/utils/keybindings.py:57
 msgid "Print"
 msgstr "Print"
 
-#: ../plugins/optical/opticalui.py:264
+#: ../plugins/optical/opticalui.py:269
 msgid "You cannot create a pre-sale with an open inventory."
 msgstr "You cannot create a pre-sale with an open inventory."
 
@@ -7700,12 +7704,12 @@ msgstr "products"
 msgid "No products found in the inventory."
 msgstr "No products found in the inventory."
 
-#: ../stoq/gui/launcher.py:52 ../stoq/gui/widgets.py:383
+#: ../stoq/gui/launcher.py:52 ../stoq/gui/widgets.py:385
 #: ../stoqlib/gui/editors/preferenceseditor.py:147
 msgid "Shortcuts"
 msgstr "Shortcuts"
 
-#: ../stoq/gui/launcher.py:56 ../stoq/gui/widgets.py:399
+#: ../stoq/gui/launcher.py:56 ../stoq/gui/widgets.py:401
 msgid "Messages"
 msgstr "Messages"
 
@@ -8607,7 +8611,7 @@ msgstr "An error ocurred while generating the CNAB"
 msgid "Sale quote..."
 msgstr "Sale quote..."
 
-#: ../stoq/gui/sales.py:137 ../stoq/gui/widgets.py:311
+#: ../stoq/gui/sales.py:137 ../stoq/gui/widgets.py:313
 msgid "Create a new quote for a sale"
 msgstr "Create a new quote for a sale"
 
@@ -8856,8 +8860,8 @@ msgstr "Confirmed in the last 28 days"
 msgid "Expired quotes"
 msgstr "Expired quotes"
 
-#: ../stoq/gui/sales.py:482 ../stoq/gui/widgets.py:328
-#: ../stoq/gui/widgets.py:337
+#: ../stoq/gui/sales.py:482 ../stoq/gui/widgets.py:330
+#: ../stoq/gui/widgets.py:339
 msgid "You cannot create a quote with an open inventory."
 msgstr "You cannot create a quote with an open inventory."
 
@@ -9808,35 +9812,35 @@ msgstr "Welcome to Stoq"
 msgid "_Start using Stoq"
 msgstr "_Start using Stoq"
 
-#: ../stoq/gui/widgets.py:205
+#: ../stoq/gui/widgets.py:207
 msgid "Operations"
 msgstr "Operations"
 
-#: ../stoq/gui/widgets.py:208
+#: ../stoq/gui/widgets.py:210
 msgid "Finances"
 msgstr "Finances"
 
-#: ../stoq/gui/widgets.py:211
+#: ../stoq/gui/widgets.py:213
 msgid "Others"
 msgstr "Others"
 
-#: ../stoq/gui/widgets.py:311
+#: ../stoq/gui/widgets.py:313
 msgid "New sale"
 msgstr "New sale"
 
-#: ../stoq/gui/widgets.py:313
+#: ../stoq/gui/widgets.py:315
 msgid "New sale with WO"
 msgstr "New sale with WO"
 
-#: ../stoq/gui/widgets.py:313
+#: ../stoq/gui/widgets.py:315
 msgid "Create a new sale with work order"
 msgstr "Create a new sale with work order"
 
-#: ../stoq/gui/widgets.py:315
+#: ../stoq/gui/widgets.py:317
 msgid "Open product search"
 msgstr "Open product search"
 
-#: ../stoq/gui/widgets.py:395
+#: ../stoq/gui/widgets.py:397
 msgid "Applications"
 msgstr "Applications"
 
