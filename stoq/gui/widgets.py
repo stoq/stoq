@@ -30,6 +30,7 @@ from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.widgets.notification import NotificationCounter
 from stoqlib.gui.widgets.section import Section
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
@@ -296,6 +297,8 @@ class ShortcutGrid(Gtk.FlowBox):
              self.new_sale_with_wo),
             (None, _('Products'), _('Open product search'),
              self.search_products),
+            (None, _('Clients'), _('Open client search'),
+             self.search_client),
         ]
         for (icon, title, subtitle, action) in shortcuts:
             short = Shortcut(window, icon, title, subtitle, action)
@@ -329,6 +332,10 @@ class ShortcutGrid(Gtk.FlowBox):
                           profile.check_app_permission('purchase'))
             run_dialog(ProductSearch, None, store, hide_footer=True, hide_toolbar=not can_create,
                        hide_cost_column=not can_create)
+
+    def search_client(self):
+        with api.new_store() as store:
+            run_dialog(ClientSearch, None, store)
 
 
 class PopoverMenu(Gtk.Popover):

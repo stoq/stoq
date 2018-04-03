@@ -34,6 +34,11 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
                           GtkGrid():
                             GtkLabel(): 'Products'
                             GtkImage():
+                      Shortcut():
+                        GtkEventBox():
+                          GtkGrid():
+                            GtkLabel(): 'Clients'
+                            GtkImage():
                     Section():
                       GtkLabel(padding=6): 'Messages'
                       GtkSeparator(expand=True, fill=True, padding=6):

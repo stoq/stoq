@@ -23,7 +23,7 @@
 
 from gi.repository import Gtk, Gdk, Gio
 
-from storm.expr import Or
+from storm.expr import And, Eq, Ne
 
 from stoqlib.api import api
 from stoqlib.domain.workorder import WorkOrderView, WorkOrder
@@ -39,7 +39,6 @@ class WorkOrderRow(Gtk.ListBoxRow):
     options = [
         (_('Details'), 'work_order.Details'),
         (_('Edit'), 'work_order.Edit'),
-        (_('Print quote'), 'work_order.PrintQuote'),
         (_('Print receipt'), 'work_order.PrintReceipt'),
     ]
 
@@ -71,19 +70,23 @@ class WorkOrderRow(Gtk.ListBoxRow):
         self.show_all()
 
     def _create_ui(self, model):
-        self.client = self._new_label(api.escape(model.client_name), expand=True)
+        client = '<b>%s</b>: %s' % (_('Client'), api.escape(model.client_name))
         due_date = ''
         if model.estimated_finish:
             due_date = '%s: %s' % (_('Due date'),
                                    api.escape(model.estimated_finish.strftime('%x')))
 
-        self.due_date = self._new_label(due_date, xalign=1)
-
         identifier = '<b>%s</b>' % api.escape(str(model.identifier))
+        salesperson = '<b>%s</b>:' % _('Salesperson')
         if model.sale:
             identifier += ' (%s <a href="#">%s</a>)' % (_('Sale'),
                                                         api.escape(str(model.sale_identifier)))
+            salesperson += ' %s' % api.escape(model.sale.get_salesperson_name())
+
+        self.due_date = self._new_label(due_date, xalign=1)
+        self.client = self._new_label(client, expand=True)
         self.identifier = self._new_label(identifier, expand=True, halign=Gtk.Align.START)
+        self.salesperson = self._new_label(salesperson, expand=False, halign=Gtk.Align.START)
         self.status = self._new_label('%s' % api.escape(model.status_str),
                                       xalign=1, halign=Gtk.Align.END)
         self.status.get_style_context().add_class('tag')
@@ -108,6 +111,7 @@ class WorkOrderRow(Gtk.ListBoxRow):
         grid.set_column_spacing(3)
 
         grid.attach(self.identifier, 0, 0, 1, 1)
+        grid.attach(self.salesperson, 0, 1, 1, 1)
         grid.attach(self.client, 0, 2, 1, 1)
         grid.attach(eb, 1, 0, 1, 1)
         grid.attach(self.due_date, 1, 2, 1, 1)
@@ -231,9 +235,9 @@ class WorkOrderList(Gtk.Box):
             row.set_header(Gtk.Separator())
 
     def _get_orders(self):
-        person = api.get_current_user(self.store).person
-        query = Or(WorkOrderView._PersonEmployee.id == person.id,
-                   WorkOrderView._PersonSalesPerson.id == person.id)
+        branch = api.get_current_branch(self.store)
+        query = And(Ne(WorkOrderView.sale_id, None),
+                    Eq(WorkOrderView.branch_id, branch.id))
         result = WorkOrderView.find_pending(self.store).find(query)
         return result.order_by(WorkOrder.estimated_finish, WorkOrder.status)
 
