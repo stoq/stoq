@@ -232,6 +232,15 @@ class SaleIsExternalEvent(Event):
     """
 
 
+class SaleConfirmedRemoteEvent(Event):
+    """Emitted after a remote |sale| was confirmed.
+
+    :param sale: The same that was confirmed
+    :param document: The client document. Can be used for fiscal information
+        in case the client wasn't specified in the sale
+    """
+
+
 class SaleItemBeforeDecreaseStockEvent(Event):
     """
     This event is emitted when a |saleitem| is about to decrease the stock
