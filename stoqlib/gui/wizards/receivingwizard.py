@@ -334,8 +334,8 @@ class ReceivingOrderItemStep(BaseWizardStep):
                         item.purchase_item,
                         quantity=quantity,
                         batch_number=batch,
-                        ipi=item.ipi_value,
-                        icms_st=item.icms_st_value)
+                        ipi_value=item.ipi_value,
+                        icms_st_value=item.icms_st_value)
             elif item.quantity > 0:
                 parent_item = self.model.add_purchase_item(item.purchase_item,
                                                            item.quantity,
