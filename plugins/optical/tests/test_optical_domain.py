@@ -162,7 +162,7 @@ class OpticalWorkOrderTest(OpticalDomainTest):
         optical_wo.work_order.add_sellable(optical_prod2.product.sellable)
         wo.status = WorkOrder.STATUS_WORK_IN_PROGRESS
 
-        purchase = optical_wo.create_purchase(supplier, item1)
+        purchase = optical_wo.create_purchase(supplier, item1, False)
         for item in purchase.get_items():
             # This item should not be in the purchase
             self.assertNotEqual(item.sellable, optical_prod2.product.sellable)
@@ -214,7 +214,7 @@ class OpticalWorkOrderTest(OpticalDomainTest):
         wo_item2.sale_item = sale_item2
         wo.status = WorkOrder.STATUS_WORK_IN_PROGRESS
 
-        purchase = optical_wo.create_purchase(supplier, wo_item1)
+        purchase = optical_wo.create_purchase(supplier, wo_item1, False)
         optical_wo.reserve_products(purchase)
 
 

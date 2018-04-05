@@ -188,7 +188,7 @@ class OpticalWorkOrderActions(BaseActions):
 
             order.supplier_order = rv.supplier_order
             optical_wo = OpticalWorkOrder.find_by_work_order(store, order)
-            optical_wo.create_purchase(rv.supplier, rv.item)
+            optical_wo.create_purchase(rv.supplier, rv.item, rv.is_freebie)
 
 
 params = [
@@ -380,7 +380,9 @@ class OpticalUI(object):
                 return
 
             order.supplier_order = rv.supplier_order
-            optical_wo.create_purchase(order.store.fetch(rv.supplier), order.store.fetch(rv.item))
+            optical_wo.create_purchase(order.store.fetch(rv.supplier),
+                                       order.store.fetch(rv.item),
+                                       rv.is_freebie)
             return
 
         for purchase in PurchaseOrder.find_by_work_order(order.store, order):

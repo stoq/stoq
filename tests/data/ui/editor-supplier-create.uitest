@@ -21,6 +21,8 @@ GtkDialog(main_dialog.toplevel): title='Supplier information', hidden
               ProxyLabel(supplier_order_lbl): 'Supplier Order:'
               ProxyEntry(supplier_order): '', mandatory
               GtkBox(orientation=horizontal):
+              ProxyCheckButton(is_freebie): 'Freebie'
+              GtkBox(orientation=horizontal):
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

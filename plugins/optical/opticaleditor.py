@@ -24,7 +24,7 @@
 
 import collections
 
-from kiwi.ui.forms import ChoiceField, TextField
+from kiwi.ui.forms import BoolField, ChoiceField, TextField
 from kiwi.python import Settable
 
 from stoqlib.api import api
@@ -124,6 +124,7 @@ class OpticalSupplierEditor(BaseEditor):
             supplier=ChoiceField(_('Supplier'), mandatory=True, use_entry=True,
                                  proxy=True, values=suppliers),
             supplier_order=TextField(_('Supplier Order'), mandatory=True, proxy=True),
+            is_freebie=BoolField(_('Freebie'), proxy=True),
         )
     confirm_widgets = ('supplier_order', )
 
@@ -136,4 +137,4 @@ class OpticalSupplierEditor(BaseEditor):
         # If there is only one item, select it.
         if len(self.items) == 1:
             item = self.items[0][1]
-        return Settable(supplier=None, supplier_order="", item=item)
+        return Settable(supplier=None, supplier_order="", item=item, is_freebie=False)

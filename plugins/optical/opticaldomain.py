@@ -396,13 +396,15 @@ class OpticalWorkOrder(Domain):
         # can still create a purchase
         return None in purchases
 
-    def create_purchase(self, supplier, work_order_item):
+    def create_purchase(self, supplier, work_order_item, is_freebie):
         """Create a purchase
 
         :param supplier: the |supplier| of that purchase
         :param work_order_item: The work order item that a purchase is being created
         for.
+        :param is_freebie: indicates if the item is a freebie
         """
+        sellable = work_order_item.sellable
         store = self.work_order.store
         purchase = PurchaseOrder(store=store,
                                  status=PurchaseOrder.ORDER_PENDING,
@@ -410,11 +412,20 @@ class OpticalWorkOrder(Domain):
                                  responsible=api.get_current_user(store),
                                  branch=api.get_current_branch(store),
                                  work_order=self.work_order)
+        if is_freebie:
+            purchase.notes = _('The product %s is a freebie') % sellable.description
+            # FIXME We may want the cost 0, but as it is we wont be able to
+            # receive this purchase without changing the receiving. We must
+            # evaluate the consequences of changing the receiving a little bit
+            # further in order to change that behavior.
+            cost = decimal.Decimal('0.01')
+        else:
+            cost = sellable.cost
 
         # Add the sellable to the purchase
-        purchase_item = purchase.add_item(work_order_item.sellable,
+        purchase_item = purchase.add_item(sellable,
                                           quantity=work_order_item.quantity,
-                                          cost=work_order_item.sellable.cost)
+                                          cost=cost)
         work_order_item.purchase_item = purchase_item
 
         purchase.confirm()

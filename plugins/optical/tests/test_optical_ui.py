@@ -313,7 +313,8 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         action = OpticalWorkOrderActions.get_instance().get_action('OpticalNewPurchase')
         run_dialog.return_value = Settable(supplier=supplier,
                                            supplier_order='1111',
-                                           item=work_item)
+                                           item=work_item,
+                                           is_freebie=True)
         with contextlib.nested(
                 mock.patch.object(self.store, 'commit'),
                 mock.patch.object(self.store, 'close')):
@@ -377,7 +378,8 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
             wo.approve()
             run_dialog.return_value = Settable(supplier=supplier,
                                                supplier_order='1111',
-                                               item=work_item)
+                                               item=work_item,
+                                               is_freebie=False)
             wo.work()
             results = PurchaseOrder.find_by_work_order(wo.store, wo)
             self.assertEquals(len(list(results)), 1)
