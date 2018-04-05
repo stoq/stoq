@@ -49,7 +49,7 @@ from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.decorators import public
 from stoqlib.lib.formatters import (format_quantity, format_sellable_description,
                                     get_formatted_percentage)
-from stoqlib.lib.message import yesno
+from stoqlib.lib.message import info, yesno
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
@@ -638,6 +638,10 @@ class SaleQuotePaymentStep(WizardEditorStep):
     def post_init(self):
         self.register_validate_function(self._validation_func)
         self.force_validation()
+        missing_value = self.slave.get_missing_change_value()
+        if missing_value < 0:
+            info(_(u"Your payments total is greater than the sale total. Maybe"
+                   " you want to correct them."))
 
     def setup_slaves(self):
         register_payment_slaves()

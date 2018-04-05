@@ -1274,8 +1274,8 @@ class MultipleMethodSlave(BaseEditorSlave):
     def _update_missing_or_change_value(self):
         # The total value may be less than total received.
 
-        value = self._get_missing_change_value(with_new_payment=True)
-        missing_value = self._get_missing_change_value(with_new_payment=False)
+        value = self.get_missing_change_value(with_new_payment=True)
+        missing_value = self.get_missing_change_value(with_new_payment=False)
 
         self.missing_value.update(abs(missing_value))
 
@@ -1291,7 +1291,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         else:
             self.missing.set_text(_('Difference:'))
 
-    def _get_missing_change_value(self, with_new_payment=False):
+    def get_missing_change_value(self, with_new_payment=False):
         received = self.received_value.read()
 
         if received == ValueUnset:
@@ -1545,11 +1545,9 @@ class MultipleMethodSlave(BaseEditorSlave):
         if not self.is_valid:
             return False
 
-        missing_value = self._get_missing_change_value()
+        missing_value = self.get_missing_change_value()
         if self._require_total_value and missing_value != 0:
             return False
-
-        assert missing_value >= 0, missing_value
 
         return True
 
