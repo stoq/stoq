@@ -137,9 +137,9 @@ class WorkOrderActions(BaseActions):
     @action('FinishOrClose')
     def finish_or_deliver_order(self, work_order):
         if work_order.status == WorkOrder.STATUS_WORK_FINISHED:
-            self.close_order()
+            self.close_order(work_order)
         else:
-            self.finish_order()
+            self.finish_order(work_order)
 
     @action('Finish')
     def finish_order(self, work_order):
