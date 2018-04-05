@@ -69,7 +69,7 @@ class _TemporaryReceivingDetails:
     received_freight = currency(0)
     received_freight_type = u''
 
-    def __init__(self, orders):
+    def __init__(self, purchase, receivings):
         freight_type_map = {
             ReceivingInvoice.FREIGHT_FOB_PAYMENT: PurchaseOrder.FREIGHT_FOB,
             ReceivingInvoice.FREIGHT_FOB_INSTALLMENTS: PurchaseOrder.FREIGHT_FOB,
@@ -77,22 +77,21 @@ class _TemporaryReceivingDetails:
             ReceivingInvoice.FREIGHT_CIF_INVOICE: PurchaseOrder.FREIGHT_CIF
         }
         freight_names = PurchaseOrder.freight_types
-        freight_types = []
+        freight_types = set()
 
-        if orders.count():
+        if receivings.count():
             discount = surcharge = freight = subtotal = total = quantity = 0
-            for order in orders:
-                discount += order.total_discounts
-                surcharge += order.total_surcharges
-                if order.receiving_invoice:
-                    freight += order.receiving_invoice.freight_total
-                subtotal += order.products_total
-                total += order.total
-                quantity += order.total_quantity
+            for receiving in receivings:
+                discount += receiving.total_discounts
+                surcharge += receiving.total_surcharges
+                if receiving.receiving_invoice:
+                    freight += receiving.receiving_invoice.freight_total
+                subtotal += receiving.products_total
+                total += receiving.total
+                quantity += receiving.total_quantity
 
-                # If first time used, append to the list of used types
-                if freight_type_map[order.freight_type] not in freight_types:
-                    freight_types.append(freight_type_map[order.freight_type])
+                freight_types.add(freight_type_map.get(receiving.freight_type,
+                                                       purchase.freight_type))
 
             self.total_discounts = currency(discount)
             self.total_surcharges = currency(surcharge)
@@ -102,7 +101,7 @@ class _TemporaryReceivingDetails:
             self.receiving_quantity = quantity
 
             if len(freight_types) == 1:
-                self.received_freight_type = freight_names[freight_types[0]]
+                self.received_freight_type = freight_names[freight_types.pop()]
             else:
                 self.received_freight_type = _(u'Mixed Freights')
 
@@ -256,7 +255,7 @@ class PurchaseDetailsDialog(BaseEditor):
         self.add_proxy(self.model, PurchaseDetailsDialog.proxy_widgets)
         if self.model.group:
             self.add_proxy(self.model.group, PurchaseDetailsDialog.payment_proxy)
-        self.add_proxy(_TemporaryReceivingDetails(self._receiving_orders),
+        self.add_proxy(_TemporaryReceivingDetails(self.model, self._receiving_orders),
                        PurchaseDetailsDialog.receiving_proxy)
 
     def on_export_csv__clicked(self, button):

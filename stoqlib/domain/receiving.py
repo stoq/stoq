@@ -391,7 +391,7 @@ class ReceivingOrder(Domain):
     def freight_type(self):
         if self.receiving_invoice:
             return self.receiving_invoice.freight_type
-        return self.purchase_orders.any().freight_type
+        return None
 
     @property
     def branch_name(self):

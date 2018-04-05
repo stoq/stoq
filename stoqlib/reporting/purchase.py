@@ -28,7 +28,7 @@ from stoqlib.lib.formatters import get_formatted_price
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.report import ObjectListReport, HTMLReport
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.domain.receiving import ReceivingOrder
+from stoqlib.domain.receiving import ReceivingInvoice
 
 _ = stoqlib_gettext
 
@@ -68,24 +68,23 @@ class PurchaseOrderReport(HTMLReport):
 
         freight_names = PurchaseOrder.freight_types
         freight_type_map = {
-            ReceivingOrder.FREIGHT_FOB_PAYMENT: PurchaseOrder.FREIGHT_FOB,
-            ReceivingOrder.FREIGHT_FOB_INSTALLMENTS: PurchaseOrder.FREIGHT_FOB,
-            ReceivingOrder.FREIGHT_CIF_UNKNOWN: PurchaseOrder.FREIGHT_CIF,
-            ReceivingOrder.FREIGHT_CIF_INVOICE: PurchaseOrder.FREIGHT_CIF
+            ReceivingInvoice.FREIGHT_FOB_PAYMENT: PurchaseOrder.FREIGHT_FOB,
+            ReceivingInvoice.FREIGHT_FOB_INSTALLMENTS: PurchaseOrder.FREIGHT_FOB,
+            ReceivingInvoice.FREIGHT_CIF_UNKNOWN: PurchaseOrder.FREIGHT_CIF,
+            ReceivingInvoice.FREIGHT_CIF_INVOICE: PurchaseOrder.FREIGHT_CIF
         }
-        freight_types = []
+        freight_types = set()
 
         freight = 0
-        for order in self.receiving_orders:
-            freight += order.freight_total
-
-            # If first time used, append to the list of used types
-            if freight_type_map[order.freight_type] not in freight_types:
-                freight_types.append(freight_type_map[order.freight_type])
+        for receiving in self.receiving_orders:
+            if receiving.receiving_invoice:
+                freight += receiving.receiving_invoice.freight_total
+            freight_types.add(freight_type_map.get(receiving.freight_type,
+                                                   self.order.freight_type))
 
         freight_value = get_formatted_price(freight)
         if len(freight_types) == 1:
-            received_freight = _(u"%s (%s)") % (freight_names[freight_types[0]],
+            received_freight = _(u"%s (%s)") % (freight_names[freight_types.pop()],
                                                 freight_value)
         else:
             received_freight = _(u'Mixed (%s)') % freight_value

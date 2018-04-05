@@ -354,11 +354,12 @@ class PurchaseOrder(Domain):
 
         This will return a list of valid payments for this purchase, that
         is, all payments on the payment group that were not cancelled.
-        If you need to get the cancelled too, use self.group.payments.
+        If you need to get the cancelled too, use self.group.payments. If this
+        purchase does not have a payment group, return a empty list.
 
         :returns: a list of |payment|
         """
-        return self.group.get_valid_payments()
+        return self.group.get_valid_payments() if self.group else []
 
     #
     # Private

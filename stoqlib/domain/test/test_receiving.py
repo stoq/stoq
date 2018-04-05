@@ -303,11 +303,9 @@ class TestReceivingOrder(DomainTest):
         self.assertEqual(receiving_order.total_quantity, Decimal('7'))
 
     def test_get_freight_type(self):
-        purchase = self.create_purchase_order()
-        purchase.freight_type = purchase.FREIGHT_FOB
-        receiving = self.create_receiving_order(purchase_order=purchase)
+        receiving = self.create_receiving_order()
         receiving.receiving_invoice = None
-        self.assertEqual(receiving.freight_type, purchase.FREIGHT_FOB)
+        self.assertEqual(receiving.freight_type, None)
         invoice = self.create_receiving_invoice()
         invoice.freight_type = invoice.FREIGHT_FOB_PAYMENT
         receiving.receiving_invoice = invoice
