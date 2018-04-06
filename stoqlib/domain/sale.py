@@ -74,8 +74,7 @@ from stoqlib.domain.product import (Product, ProductHistory, Storable,
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.domain.service import Service
-from stoqlib.domain.taxes import (check_tax_info_presence, InvoiceItemIpi,
-                                  InvoiceItemIcms)
+from stoqlib.domain.taxes import check_tax_info_presence, InvoiceItemIpi
 from stoqlib.exceptions import SellError, StockError, DatabaseInconsistency
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.defaults import quantize, DECIMAL_PRECISION
@@ -466,13 +465,10 @@ class SaleItem(Domain):
     def get_total(self):
         # Sale items are suposed to have only 2 digits, but the value price
         # * quantity may have more than 2, so we need to round it.
-        total = self.price * self.quantity
         if self.ipi_info:
-            total += self.ipi_info.v_ipi
-        if self.icms_info:
-            total += self.icms_info.v_icms_st or 0
-            total += self.icms_info.v_fcp_st or 0
-        return currency(quantize(total))
+            return currency(quantize(self.price * self.quantity +
+                                     self.ipi_info.v_ipi))
+        return currency(quantize(self.price * self.quantity))
 
     def get_quantity_unit_string(self):
         return u"%s %s" % (format_quantity(self.quantity),
@@ -2381,16 +2377,12 @@ class ReturnedSaleItemsView(Viewable):
 
 _SaleItemSummary = Select(columns=[SaleItem.sale_id,
                                    Alias(Sum(InvoiceItemIpi.v_ipi), 'v_ipi'),
-                                   Alias(Sum(InvoiceItemIcms.v_icms_st), 'v_icms_st'),
-                                   Alias(Sum(InvoiceItemIcms.v_fcp_st), 'v_fcp_st'),
                                    Alias(Sum(SaleItem.quantity), 'total_quantity'),
                                    Alias(Sum(Round(SaleItem.quantity * SaleItem.price,
                                                    DECIMAL_PRECISION)), 'subtotal')],
                           tables=[SaleItem,
                                   LeftJoin(InvoiceItemIpi,
-                                           InvoiceItemIpi.id == SaleItem.ipi_info_id),
-                                  LeftJoin(InvoiceItemIcms,
-                                           InvoiceItemIcms.id == SaleItem.icms_info_id)],
+                                           InvoiceItemIpi.id == SaleItem.ipi_info_id)],
                           group_by=[SaleItem.sale_id])
 SaleItemSummary = Alias(_SaleItemSummary, '_sale_item')
 
@@ -2504,19 +2496,15 @@ class SaleView(Viewable):
     # Summaries
     v_ipi = Coalesce(Field('_sale_item', 'v_ipi'), 0)
 
-    v_icms_st = Coalesce(Field('_sale_item', 'v_icms_st'), 0)
-
-    v_fcp_st = Coalesce(Field('_sale_item', 'v_fcp_st'), 0)
-
     #: the sum of all items in the sale
-    _subtotal = Coalesce(Field('_sale_item', 'subtotal'), 0) + v_ipi + v_icms_st + v_fcp_st
+    _subtotal = Coalesce(Field('_sale_item', 'subtotal'), 0) + v_ipi
 
     #: the items total quantity for the sale
     total_quantity = Coalesce(Field('_sale_item', 'total_quantity'), 0)
 
     #: the subtotal - discount + charge
     _total = Coalesce(Field('_sale_item', 'subtotal'), 0) - \
-        Sale.discount_value + Sale.surcharge_value + v_ipi + v_icms_st + v_fcp_st
+        Sale.discount_value + Sale.surcharge_value + v_ipi
 
     #: the total of the sale without trades and credit values
     _net_total = _total - Coalesce(Field('_trade_credit_total', 'total'), 0)
