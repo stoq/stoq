@@ -2436,6 +2436,8 @@ class SaleView(Viewable):
     #: The name of the current token holding the sale
     token_name = SaleToken.name
 
+    token_str = Concat('[', token_code, '] ', token_name)
+
     #: the sale invoice number
     invoice_number = Invoice.invoice_number
 
@@ -2524,7 +2526,7 @@ class SaleView(Viewable):
         LeftJoin(Company_Client, Company_Client.person_id == Person_Client.id),
         LeftJoin(Person_SalesPerson, SalesPerson.person_id == Person_SalesPerson.id),
 
-        LeftJoin(SaleToken, SaleToken.sale_id == Sale.id),
+        LeftJoin(SaleToken, SaleToken.id == Sale.sale_token_id),
     ]
 
     @classmethod
@@ -2547,10 +2549,6 @@ class SaleView(Viewable):
     #
     # Properties
     #
-
-    @property
-    def token_str(self):
-        return self.token.description if self.token else ''
 
     @property
     def returned_sales(self):

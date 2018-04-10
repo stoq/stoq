@@ -1268,6 +1268,7 @@ class ReturnedSalesView(Viewable):
     status = ReturnedSale.status
 
     sale_id = Sale.id
+    sale_identifier = Sale.identifier
     sale_identifier_str = Cast(Sale.identifier, 'text')
 
     new_sale_id = NewSale.id
@@ -1294,10 +1295,6 @@ class ReturnedSalesView(Viewable):
         LeftJoin(NewClient, NewClient.id == NewSale.client_id),
         LeftJoin(NewPersonClient, NewPersonClient.id == NewClient.person_id),
     ]
-
-    @property
-    def sale_identifier(self):
-        return self.sale.identifier
 
     @property
     def new_sale(self):
