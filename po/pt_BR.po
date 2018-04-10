@@ -18,9 +18,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-07 02:11-0300\n"
-"PO-Revision-Date: 2018-04-07 05:11+0000\n"
-"Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
+"POT-Creation-Date: 2018-04-09 02:11-0300\n"
+"PO-Revision-Date: 2018-04-09 12:22+0000\n"
+"Last-Translator: Felipe Nehmi <fhbnehmi@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14949,7 +14949,7 @@ msgstr "Pesquisa de histórico de compras"
 
 #: ../stoqlib/gui/search/receivingsearch.py:69
 msgid "Purchase date"
-msgstr ""
+msgstr "Data da compra"
 
 #: ../stoqlib/gui/search/receivingsearch.py:71
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:97
