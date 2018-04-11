@@ -202,7 +202,7 @@ class CalendarView(WebView):
         if kwargs['method'] == 'changeView':
             view = kwargs['view']
             if view == 'basicDay':
-                self.app.ViewDay.set_active(True)
+                self.app.day_button.set_active(True)
                 jsdate = urllib.parse.unquote(kwargs['date'])
                 date = parse_javascript_date(jsdate)
                 self._calendar_run('gotoDate', date.year, date.month, date.day)
