@@ -71,44 +71,44 @@ MENU_XML = """
       <attribute name="label" translatable="yes">{username}</attribute>
       <item>
         <attribute name="action">stoq.preferences</attribute>
-        <attribute name="label" translatable="yes">Preferences...</attribute>
+        <attribute name="label" translatable="yes">{preferences}</attribute>
       </item>
       <item>
         <attribute name="action">stoq.change_password</attribute>
-        <attribute name="label" translatable="yes">Change password...</attribute>
+        <attribute name="label" translatable="yes">{password}</attribute>
       </item>
       <item>
         <attribute name="action">stoq.sign_out</attribute>
-        <attribute name="label" translatable="yes">Sign out...</attribute>
+        <attribute name="label" translatable="yes">{signout}</attribute>
       </item>
     </section>
     <section id='help-section'>
-      <attribute name="label" translatable="yes">Help</attribute>
+      <attribute name="label" translatable="yes">{help}</attribute>
       <item>
         <attribute name="action">stoq.HelpContents</attribute>
-        <attribute name="label" translatable="yes">Contents</attribute>
+        <attribute name="label" translatable="yes">{contents}</attribute>
       </item>
       <item>
         <attribute name="action">stoq.HelpTranslate</attribute>
-        <attribute name="label" translatable="yes">Translate Stoq...</attribute>
+        <attribute name="label" translatable="yes">{translate}</attribute>
       </item>
       <item>
         <attribute name="action">stoq.HelpSupport</attribute>
-        <attribute name="label" translatable="yes">Get support online...</attribute>
+        <attribute name="label" translatable="yes">{get_support}</attribute>
       </item>
       <item>
         <attribute name="action">stoq.HelpChat</attribute>
-        <attribute name="label" translatable="yes">Online chat...</attribute>
+        <attribute name="label" translatable="yes">{chat}</attribute>
       </item>
       <item>
         <attribute name="action">stoq.HelpAbout</attribute>
-        <attribute name="label" translatable="yes">About</attribute>
+        <attribute name="label" translatable="yes">{about}</attribute>
       </item>
     </section>
     <section>
       <item>
         <attribute name="action">stoq.quit</attribute>
-        <attribute name="label" translatable="yes">Quit</attribute>
+        <attribute name="label" translatable="yes">{quit}</attribute>
       </item>
     </section>
   </menu>
@@ -639,7 +639,12 @@ class ShellWindow(Delegate):
     def _create_headerbar(self):
         # User/help menu
         user = api.get_current_user(self.store)
-        xml = MENU_XML.format(username=api.escape(user.get_description()))
+        xml = MENU_XML.format(username=api.escape(user.get_description()),
+                              preferences=_('Preferences...'), password=_('Change password...'),
+                              signout=_('Sign out...'), help=_('Help'),
+                              contents=_('Contents'), translate=_('Translate Stoq...'),
+                              get_support=_('Get support online...'), chat=_('Online chat...'),
+                              about=_('About'), quit=_('Quit'))
         builder = Gtk.Builder.new_from_string(xml, -1)
 
         # Header bar
