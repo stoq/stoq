@@ -809,8 +809,8 @@ class NumberSearchFilter(SearchFilter):
         self.mode.show()
 
         self.start = Gtk.SpinButton(climb_rate=1.0)
-        self.start.get_adjustment().step_increment = 1.0
-        self.start.set_range(-MAX_INT - 1, MAX_INT)
+        self.start.set_adjustment(Gtk.Adjustment(lower=-MAX_INT - 1, upper=MAX_INT,
+                                                 step_increment=1))
         self.pack_start(self.start, False, False, 6)
         self.start.show()
         self.start.connect_after('activate', self._on_entry__activate)
@@ -820,8 +820,8 @@ class NumberSearchFilter(SearchFilter):
         self.and_label.show()
 
         self.end = Gtk.SpinButton(climb_rate=1.0)
-        self.end.get_adjustment().step_increment = 1.0
-        self.end.set_range(-MAX_INT - 1, MAX_INT)
+        self.start.set_adjustment(Gtk.Adjustment(lower=-MAX_INT - 1, upper=MAX_INT,
+                                                 step_increment=1))
         self.pack_start(self.end, False, False, 6)
         self.end.show()
         self.end.connect_after('activate', self._on_entry__activate)
