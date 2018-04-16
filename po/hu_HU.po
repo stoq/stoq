@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-09 02:11-0300\n"
-"PO-Revision-Date: 2018-04-07 05:11+0000\n"
+"POT-Creation-Date: 2018-04-15 02:11-0300\n"
+"PO-Revision-Date: 2018-04-13 05:11+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Hungarian (Hungary) (http://www.transifex.com/async/stoq/language/hu_HU/)\n"
 "MIME-Version: 1.0\n"
@@ -3400,9 +3400,9 @@ msgstr ""
 #: ../stoqlib/gui/search/personsearch.py:181
 #: ../stoqlib/gui/search/personsearch.py:408
 #: ../stoqlib/gui/search/personsearch.py:458
-#: ../stoqlib/gui/search/returnedsalesearch.py:93
-#: ../stoqlib/gui/search/returnedsalesearch.py:135
-#: ../stoqlib/gui/search/returnedsalesearch.py:171
+#: ../stoqlib/gui/search/returnedsalesearch.py:92
+#: ../stoqlib/gui/search/returnedsalesearch.py:133
+#: ../stoqlib/gui/search/returnedsalesearch.py:169
 #: ../stoqlib/gui/search/salesearch.py:92
 #: ../stoqlib/gui/search/salesearch.py:312
 #: ../stoqlib/gui/search/salesearch.py:363
@@ -4036,9 +4036,9 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/productstockdetails.py:273
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:128
 #: ../stoqlib/gui/search/receivingsearch.py:75
-#: ../stoqlib/gui/search/returnedsalesearch.py:99
-#: ../stoqlib/gui/search/returnedsalesearch.py:141
-#: ../stoqlib/gui/search/returnedsalesearch.py:177
+#: ../stoqlib/gui/search/returnedsalesearch.py:98
+#: ../stoqlib/gui/search/returnedsalesearch.py:139
+#: ../stoqlib/gui/search/returnedsalesearch.py:175
 #: ../stoqlib/gui/wizards/loanwizard.py:231
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:101
 #: ../stoqlib/reporting/stockdecrease.py:55
@@ -4066,7 +4066,7 @@ msgstr ""
 #: ../stoqlib/gui/search/productsearch.py:547
 #: ../stoqlib/gui/search/productsearch.py:641
 #: ../stoqlib/gui/search/productsearch.py:688
-#: ../stoqlib/gui/search/returnedsalesearch.py:101
+#: ../stoqlib/gui/search/returnedsalesearch.py:100
 #: ../stoqlib/gui/search/salesearch.py:193
 #: ../stoqlib/gui/search/salesearch.py:274
 #: ../stoqlib/gui/search/salesearch.py:467
@@ -4155,7 +4155,7 @@ msgstr ""
 #: ../data/template/stock_decrease/stock_decrease-items.html:7
 #: ../data/template/workorder/workorder-items.html:6
 #: ../plugins/optical/opticaleditor.py:121
-#: ../stoqlib/gui/search/returnedsalesearch.py:169
+#: ../stoqlib/gui/search/returnedsalesearch.py:167
 #: ../stoqlib/gui/search/transfersearch.py:179
 msgid "Item"
 msgstr ""
@@ -4286,7 +4286,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/saledetails.py:274
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:120
 #: ../stoqlib/gui/search/productsearch.py:558
-#: ../stoqlib/gui/search/returnedsalesearch.py:170
+#: ../stoqlib/gui/search/returnedsalesearch.py:168
 #: ../stoqlib/gui/search/salesearch.py:319
 #: ../stoqlib/gui/wizards/receivingwizard.py:268
 msgid "Qty"
@@ -4329,7 +4329,7 @@ msgstr ""
 #: ../stoqlib/gui/search/commissionsearch.py:131
 #: ../stoqlib/gui/search/deliverysearch.py:83
 #: ../stoqlib/gui/search/returnedsalesearch.py:88
-#: ../stoqlib/gui/search/returnedsalesearch.py:133
+#: ../stoqlib/gui/search/returnedsalesearch.py:132
 #: ../stoqlib/gui/search/salesearch.py:88
 #: ../stoqlib/gui/search/salesearch.py:350
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:118
@@ -4413,8 +4413,8 @@ msgstr ""
 #: ../stoqlib/gui/search/personsearch.py:321
 #: ../stoqlib/gui/search/personsearch.py:358
 #: ../stoqlib/gui/search/productsearch.py:263
-#: ../stoqlib/gui/search/returnedsalesearch.py:90
-#: ../stoqlib/gui/search/returnedsalesearch.py:166
+#: ../stoqlib/gui/search/returnedsalesearch.py:89
+#: ../stoqlib/gui/search/returnedsalesearch.py:164
 #: ../stoqlib/gui/search/salesearch.py:352
 #: ../stoqlib/gui/search/salesearch.py:471
 #: ../stoqlib/gui/search/transfersearch.py:137
@@ -4630,9 +4630,9 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/clientdetails.py:222
 #: ../stoqlib/gui/dialogs/productstockdetails.py:300
 #: ../stoqlib/gui/dialogs/tilldailymovement.py:139
-#: ../stoqlib/gui/search/returnedsalesearch.py:95
-#: ../stoqlib/gui/search/returnedsalesearch.py:137
-#: ../stoqlib/gui/search/returnedsalesearch.py:173
+#: ../stoqlib/gui/search/returnedsalesearch.py:94
+#: ../stoqlib/gui/search/returnedsalesearch.py:135
+#: ../stoqlib/gui/search/returnedsalesearch.py:171
 msgid "Return Date"
 msgstr ""
 
@@ -4844,9 +4844,9 @@ msgid "Verified by"
 msgstr ""
 
 #: ../data/template/transfer/transfer.html:22
-#: ../stoqlib/gui/search/returnedsalesearch.py:103
-#: ../stoqlib/gui/search/returnedsalesearch.py:145
-#: ../stoqlib/gui/search/returnedsalesearch.py:181
+#: ../stoqlib/gui/search/returnedsalesearch.py:102
+#: ../stoqlib/gui/search/returnedsalesearch.py:143
+#: ../stoqlib/gui/search/returnedsalesearch.py:179
 #: ../stoqlib/lib/invoice.py:1116
 msgid "Invoice number"
 msgstr ""
@@ -9227,68 +9227,108 @@ msgstr ""
 msgid "Release date: %s"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:666
+#: ../stoq/gui/shell/shellwindow.py:643
+msgid "Preferences..."
+msgstr ""
+
+#: ../stoq/gui/shell/shellwindow.py:643
+msgid "Change password..."
+msgstr ""
+
+#: ../stoq/gui/shell/shellwindow.py:644
+msgid "Sign out..."
+msgstr ""
+
+#: ../stoq/gui/shell/shellwindow.py:644
+msgid "Help"
+msgstr ""
+
+#: ../stoq/gui/shell/shellwindow.py:645
+msgid "Contents"
+msgstr ""
+
+#: ../stoq/gui/shell/shellwindow.py:645
+msgid "Translate Stoq..."
+msgstr ""
+
+#: ../stoq/gui/shell/shellwindow.py:646
+msgid "Get support online..."
+msgstr ""
+
+#: ../stoq/gui/shell/shellwindow.py:646
+msgid "Online chat..."
+msgstr ""
+
+#: ../stoq/gui/shell/shellwindow.py:647
+msgid "About"
+msgstr ""
+
+#: ../stoq/gui/shell/shellwindow.py:647 ../stoqlib/database/runtime.py:722
+msgid "Quit"
+msgstr ""
+
+#: ../stoq/gui/shell/shellwindow.py:671
 msgid "Searches"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:669
+#: ../stoq/gui/shell/shellwindow.py:674
 msgid "Actions"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:675
+#: ../stoq/gui/shell/shellwindow.py:680
 msgid "Sign now"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:681
+#: ../stoq/gui/shell/shellwindow.py:686
 msgid "New"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:730
+#: ../stoq/gui/shell/shellwindow.py:735
 #, python-format
 msgid ""
 "This user lacks credentials \n"
 "for application %s"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:925
+#: ../stoq/gui/shell/shellwindow.py:930
 msgid "Introspect slaves"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:926
+#: ../stoq/gui/shell/shellwindow.py:931
 msgid "Remove settings cache"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:931
+#: ../stoq/gui/shell/shellwindow.py:936
 msgid "Debug"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:959
+#: ../stoq/gui/shell/shellwindow.py:964
 #: ../stoqlib/gui/search/searchdialog.py:299
 msgid "Export to spreadsheet..."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:964 ../stoq/gui/shell/shellwindow.py:969
+#: ../stoq/gui/shell/shellwindow.py:969 ../stoq/gui/shell/shellwindow.py:974
 msgid "Print this report..."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1091
+#: ../stoq/gui/shell/shellwindow.py:1096
 msgid ""
 "This will enable production mode and finish the demonstration. Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1094
+#: ../stoq/gui/shell/shellwindow.py:1099
 msgid "Enable production mode"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1094
+#: ../stoq/gui/shell/shellwindow.py:1099
 msgid "Continue testing"
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1209
+#: ../stoq/gui/shell/shellwindow.py:1214
 msgid "Learn More..."
 msgstr ""
 
-#: ../stoq/gui/shell/shellwindow.py:1210
+#: ../stoq/gui/shell/shellwindow.py:1215
 #, python-format
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr ""
@@ -10015,10 +10055,6 @@ msgstr ""
 
 #: ../stoqlib/database/runtime.py:722
 msgid "Register computer"
-msgstr ""
-
-#: ../stoqlib/database/runtime.py:722
-msgid "Quit"
 msgstr ""
 
 #: ../stoqlib/database/runtime.py:733
@@ -11533,8 +11569,8 @@ msgstr ""
 
 #: ../stoqlib/gui/dialogs/clientdetails.py:219
 #: ../stoqlib/gui/dialogs/productstockdetails.py:287
-#: ../stoqlib/gui/search/returnedsalesearch.py:132
-#: ../stoqlib/gui/search/returnedsalesearch.py:165
+#: ../stoqlib/gui/search/returnedsalesearch.py:131
+#: ../stoqlib/gui/search/returnedsalesearch.py:163
 msgid "Returned #"
 msgstr ""
 
@@ -14963,25 +14999,25 @@ msgstr ""
 msgid "Item #"
 msgstr ""
 
-#: ../stoqlib/gui/search/returnedsalesearch.py:97
-#: ../stoqlib/gui/search/returnedsalesearch.py:139
-#: ../stoqlib/gui/search/returnedsalesearch.py:175
+#: ../stoqlib/gui/search/returnedsalesearch.py:96
+#: ../stoqlib/gui/search/returnedsalesearch.py:137
+#: ../stoqlib/gui/search/returnedsalesearch.py:173
 msgid "Return Reason"
 msgstr ""
 
-#: ../stoqlib/gui/search/returnedsalesearch.py:123
+#: ../stoqlib/gui/search/returnedsalesearch.py:122
 msgid "Pending Returned Sale Search"
 msgstr ""
 
-#: ../stoqlib/gui/search/returnedsalesearch.py:143
+#: ../stoqlib/gui/search/returnedsalesearch.py:141
 msgid "Returned on Branch"
 msgstr ""
 
-#: ../stoqlib/gui/search/returnedsalesearch.py:157
+#: ../stoqlib/gui/search/returnedsalesearch.py:155
 msgid "Returned Sale Item Search"
 msgstr ""
 
-#: ../stoqlib/gui/search/returnedsalesearch.py:179
+#: ../stoqlib/gui/search/returnedsalesearch.py:177
 msgid "Return branch"
 msgstr ""
 
