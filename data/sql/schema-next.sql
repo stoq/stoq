@@ -122,7 +122,8 @@ CREATE TABLE event (
 CREATE TABLE transaction_entry (
     id serial NOT NULL PRIMARY KEY,
     te_time timestamp NOT NULL,
-    dirty boolean DEFAULT TRUE
+    dirty boolean DEFAULT TRUE,
+    metadata jsonb
 );
 
 --
