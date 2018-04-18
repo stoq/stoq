@@ -2,7 +2,7 @@
 
 Summary: A powerful retail system
 Name: stoq
-Version: 1.11
+Version: 3.0
 Release: 1
 License: GPL
 Group: System Environment/Libraries
@@ -10,23 +10,23 @@ URL: http://www.stoq.com.br/
 Source: http://download.stoq.com.br/sources/1.0/stoq-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: postgresql >= 8.4
-Requires: pygtk2 >= 2.20
-Requires: pypoppler >= 0.12.1
+Requires: pygtk3 >= 3.10
+Requires: pypoppler >= 0.24
 Requires: python-abi = %(%{__python} -c "import sys; print sys.version[:3]")
 Requires: python-dateutil >= 1.4.1
 Requires: python-imaging >= 1.1.5
-Requires: python-gudev >= 147
-Requires: python-kiwi >= 1.9.30
+Requires: python-gudev >= 204
+Requires: python3-kiwi >= 3.0.1
 Requires: python-mako >= 0.2.5
 Requires: python-psycopg2 >= 2.0.5
 Requires: python-storm >= 0.19
 Requires: python-reportlab >= 2.4
 Requires: python-zope-interface >= 3.0.1
-Requires: stoqdrivers >= 0.9.14
+Requires: python3-stoqdrivers >= 1.4.1
 Requires: pywebkitgtk >= 1.1.7
-Requires: python-xlwt >= 0.7.2
+Requires: python-xlwt >= 1.2.0
 Requires: iso-codes >= 3.12
-BuildRequires: python-kiwi >= 1.9.28
+BuildRequires: python3-kiwi >= 3.0.1
 BuildArch: noarch
 
 %description

@@ -30,7 +30,7 @@ from stoq.lib.dependencies import DependencyChecker
 dc = DependencyChecker()
 dc.text_mode = True
 # We don't need latest kiwi in here
-dc.check_kiwi((1, 9, 26))
+dc.check_kiwi((3, 0, 0))
 
 #
 # Package installation

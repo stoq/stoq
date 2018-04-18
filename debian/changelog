@@ -1,3 +1,9 @@
+stoq (3.0~rc1) xenial; urgency=medium
+
+  * 3.0 Release Candidate 1
+
+ -- Felipe Nehmi <felipe@async.com.br>  Wed, 18 Apr 2018 10:16:51 -0300
+
 stoq (3.0~beta5) xenial; urgency=medium
 
   * Release 3.0 beta 5
