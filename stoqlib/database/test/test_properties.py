@@ -26,36 +26,38 @@ __tests__ = 'stoqlib/database/properties.py'
 
 from lxml import etree
 
-from stoqlib.database.properties import XmlCol
+from stoqlib.database.properties import XmlCol, JsonCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.test.domaintest import DomainTest
 
 
-class XmlTable(Domain):
-    __storm_table__ = 'xml_table'
+class TestTable(Domain):
+    __storm_table__ = 'test_table'
     data = XmlCol()
+    json = JsonCol()
 
 
-class TestSelect(DomainTest):
+class TestColumns(DomainTest):
 
     @classmethod
     def setUpClass(cls):
         DomainTest.setUpClass()
         RECREATE_SQL = """
-        DROP TABLE IF EXISTS xml_table;
+        DROP TABLE IF EXISTS test_table;
 
-        CREATE TABLE xml_table (
+        CREATE TABLE test_table (
             id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
             te_id bigint UNIQUE REFERENCES transaction_entry(id),
-            data xml
+            data xml,
+            json jsonb
         );
         """
         cls.store.execute(RECREATE_SQL)
         cls.store.commit()
 
     def test_xml(self):
-        xml_table = XmlTable()
-        xml_table.data = etree.fromstring("""
+        obj = TestTable()
+        obj.data = etree.fromstring("""
         <?xml version="1.0" encoding="UTF-8"?>
         <note>
           <to>Nihey</to>
@@ -66,17 +68,37 @@ class TestSelect(DomainTest):
         """.strip().encode())
 
         # Write the XML into the database
-        self.store.add(xml_table)
+        self.store.add(obj)
         self.store.commit()
 
         # Retrieve the XML from the database
-        self.store.reload(xml_table)
-        self.assertTrue(isinstance(xml_table.data, etree._Element))
+        self.store.reload(obj)
+        self.assertTrue(isinstance(obj.data, etree._Element))
 
         # Check if putting a Null valued XML would be OK
-        xml_table.data = None
+        obj.data = None
         self.store.commit()
 
         # Retrieve the null valued XML
-        self.store.reload(xml_table)
-        self.assertIsNone(xml_table.data)
+        self.store.reload(obj)
+        self.assertIsNone(obj.data)
+
+    def test_json(self):
+        obj = TestTable()
+        obj.json = dict(foo=1, bar=['any', 'type', 1, None], other={1: 2, 3: 4})
+
+        # Write the object into the database
+        self.store.add(obj)
+        self.store.commit()
+
+        # Retrieve the object from the database
+        self.store.reload(obj)
+        self.assertTrue(isinstance(obj.json, dict))
+
+        # Check if erasing the value is possible
+        obj.json = None
+        self.store.commit()
+
+        # Retrieve the null valued XML
+        self.store.reload(obj)
+        self.assertIsNone(obj.json)

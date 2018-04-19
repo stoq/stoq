@@ -29,7 +29,7 @@
 from storm.store import AutoReload
 
 from stoqlib.database.orm import ORMObject
-from stoqlib.database.properties import DateTimeCol, IntCol, BoolCol
+from stoqlib.database.properties import DateTimeCol, IntCol, BoolCol, JsonCol
 
 
 class SystemTable(ORMObject):
@@ -70,6 +70,8 @@ class TransactionEntry(ORMObject):
 
     #: last time this object was modified
     te_time = DateTimeCol(allow_none=False)
+
+    metadata = JsonCol()
 
     #: It this object was modified since the last time it was synced
     #: After the object is synced, this property will be set to ``False``, so

@@ -25,6 +25,7 @@ import datetime
 import decimal
 import warnings
 from lxml import etree
+import json
 
 from kiwi.currency import currency
 
@@ -186,6 +187,22 @@ class XmlVariable(EncodedValueVariable):
 
 class XmlCol(SimpleProperty):
     variable_class = XmlVariable
+
+
+class JsonVariable(EncodedValueVariable):
+
+    def _loads(self, value):
+        # This already comes from database as a json.
+        return value
+
+    def _dumps(self, value):
+        if value is None:
+            return None
+        return json.dumps(value)
+
+
+class JsonCol(SimpleProperty):
+    variable_class = JsonVariable
 
 
 # Columns, we're keeping the Col suffix to avoid clashes between
