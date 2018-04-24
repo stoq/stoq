@@ -69,7 +69,7 @@ class PluginDescription(object):
         else:
             plugin_path = os.path.dirname(os.path.dirname(filename))
             self.plugin_path = plugin_path
-            config.read(filename)
+            config.read(filename, encoding='utf8')
 
         self.name = os.path.basename(filename).split('.')[0]
         self.entry = config.get('Plugin', 'Module')
