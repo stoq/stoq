@@ -160,6 +160,11 @@ class ArrayAgg(NamedFunc):
     name = "array_agg"
 
 
+class JsonField(BinaryOper):
+    __slots__ = ()
+    oper = "->>"
+
+
 class Contains(BinaryOper):
     __slots__ = ()
     oper = " @> "
