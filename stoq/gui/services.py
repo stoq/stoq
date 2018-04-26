@@ -81,6 +81,13 @@ class WorkOrderResultKanbanView(KanbanView):
         (WorkOrder.STATUS_WORK_IN_PROGRESS, WorkOrder.STATUS_WORK_WAITING),
     ]
 
+    status_columns = [
+        WorkOrder.STATUS_OPENED,
+        WorkOrder.STATUS_WORK_WAITING,
+        WorkOrder.STATUS_WORK_IN_PROGRESS,
+        WorkOrder.STATUS_WORK_FINISHED
+    ]
+
     def _ask_reason(self, work_order, new_status):
         if (work_order.status, new_status) not in self.need_reason:
             return None
@@ -153,14 +160,7 @@ class WorkOrderResultKanbanView(KanbanView):
 
     def attach(self, search, columns):
         self.connect('item-dragged', self._on__item_dragged)
-        statuses = [
-            WorkOrder.STATUS_OPENED,
-            WorkOrder.STATUS_WORK_WAITING,
-            WorkOrder.STATUS_WORK_IN_PROGRESS,
-            WorkOrder.STATUS_WORK_FINISHED
-        ]
-
-        for status in statuses:
+        for status in self.status_columns:
             name = WorkOrder.statuses[status]
             column = KanbanViewColumn(title=name, value=status)
             self.add_column(column)
@@ -174,6 +174,9 @@ class WorkOrderResultKanbanView(KanbanView):
         pass
 
     def search_completed(self, results):
+        # We are only interested in the workorders whose status are in one of our
+        # columns
+        results = results.find(WorkOrder.status.is_in(self.status_columns))
         for work_order_view in results.order_by(WorkOrder.open_date):
             work_order = work_order_view.work_order
             status_name = WorkOrder.statuses.get(work_order.status)
