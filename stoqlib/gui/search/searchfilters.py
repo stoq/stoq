@@ -750,8 +750,10 @@ class StringSearchFilter(SearchFilter):
 
     def set_state(self, text, mode=None):
         self.entry.set_text(text)
-        if mode is not None:
-            self.mode.select_item_by_position(mode)
+        for i in self.mode.get_model_items().values():
+            if i.mode == mode:
+                self.mode.select_item_by_data(i)
+                break
 
     def get_title_label(self):
         return self.title_label
