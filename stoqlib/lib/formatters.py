@@ -220,3 +220,65 @@ def format_sellable_description(sellable, batch=None):
 
 def raw_document(document):
     return ''.join(c for c in document if c.isdigit())
+
+
+class TextTable(object):
+    """Formats a textual table with columns
+
+    Sample usage:
+
+    >>> table = TextTable(28, ('A', 'B', 'Column'))
+    >>> table.append((u'Desc', 1234, 'asd'))
+    >>> table.append((u'Really Long Desc', 1, 'qwe'))
+    >>> print(str(table))
+    A                  B  Column
+    ----------------------------
+    Desc            1234     asd
+    Really Long...     1     qwe
+    ----------------------------
+
+    """
+
+    def __init__(self, width, titles=None, separators=True):
+        self._width = width
+        self._titles = titles
+        self._items = []
+        self._separators = separators
+        self._sizes = []
+        if titles:
+            self._sizes = [len(str(i)) for i in self._titles]
+
+    def append(self, item):
+        self._items.append(item)
+        if not self._sizes:
+            self._sizes = [0] * len(item)
+
+        for i, value in enumerate(item):
+            self._sizes[i] = max(self._sizes[i], len(str(value)))
+
+    def _organize(self, item):
+        column_separator = '  '
+        # First column will always expand and be left aligned
+        right_size = sum(self._sizes[1:])
+        right_size += (len(self._sizes) - 1) * len(column_separator)
+        if len(item[0]) > self._width - right_size:
+            parts = [item[0][:self._width - right_size - 3] + '...']
+        else:
+            parts = [item[0].ljust(self._width - right_size)]
+
+        # All other columns will be right aligned
+        for i, value in enumerate(item[1:], 1):
+            parts.append(str(value).rjust(self._sizes[i]))
+        return column_separator.join(parts)
+
+    def __str__(self):
+        lines = []
+        if self._titles:
+            lines.append(self._organize(self._titles))
+        if self._separators:
+            lines.append('-' * self._width)
+        for item in self._items:
+            lines.append(self._organize(item))
+        if self._separators:
+            lines.append('-' * self._width)
+        return u'\n'.join(lines)
