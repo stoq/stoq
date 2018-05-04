@@ -14,7 +14,7 @@ Package: stoq
 Architecture: all
 Provides: stoqlib, stoq-docs, stoqdoc
 Replaces: stoqlib (<< 1.0), stoq-docs (<< 1.0), stoqdoc (<< 1.0), stoq (<< 2.1.90)
-Breaks: stoqlib (<< 1.0), stoq (<< 2.1.90), python-weasyprint, python-pyphen, python-raven
+Breaks: stoqlib (<< 1.0), stoq (<< 2.1.90), python-weasyprint, python-pyphen, python-raven, python-qrcode
 Depends: ${misc:Depends}, ${python:Depends},
  python3-zope.interface (>= 3.5.2) | python3-zopeinterface (>= 3.2.1),
  python3-kiwi (>= 3.0), python3-psycopg2 (>= 2.0.5), python3-stoqdrivers (>= 1.4),
