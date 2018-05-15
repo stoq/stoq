@@ -334,7 +334,7 @@ class ImageGallerySlave(BaseEditorSlave):
 
         # Remove slaves of removed images
         for removed in slaves.values():
-            slave.disconnect_by_func(self._on_image_slave__image_changed)
+            removed.disconnect_by_func(self._on_image_slave__image_changed)
 
         self._organize(force=True)
 
