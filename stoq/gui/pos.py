@@ -265,8 +265,9 @@ class PosApp(ShellApp):
     def create_ui(self):
         self.window.add_extra_items([self.DetailsViewer, self.LoanClose,
                                      self.WorkOrderClose])
-        self.window.add_extra_items([self.TillOpen, self.TillVerify,
-                                     self.TillClose], label=_('Till operations'))
+        if not sysparam.get_bool('POS_SEPARATE_CASHIER'):
+            self.window.add_extra_items([self.TillOpen, self.TillVerify,
+                                         self.TillClose], label=_('Till operations'))
         self.window.add_extra_items([self.ConfirmOrder, self.CancelOrder,
                                      self.NewDelivery], label=_('Sale'))
         self.window.add_new_items([self.NewTrade, self.PaymentReceive])
