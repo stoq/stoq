@@ -28,7 +28,7 @@ from kiwi.utils import gsignal
 from stoqlib.gui.base.dialogs import run_dialog
 
 
-def action(name):
+def action(name, require_model=True):
     """Action decorator
 
     Add this to a method of a `BaseActions` subclass to mark that method as an action.
@@ -37,7 +37,7 @@ def action(name):
     """
     def wraper(function):
         # FIXME: shortcuts
-        function.__action_spec__ = (name, )
+        function.__action_spec__ = (name, require_model)
         return function
 
     return wraper
@@ -78,8 +78,8 @@ class BaseActions(GObject.GObject):
         for key in dir(self):
             callback = getattr(self, key)
             if hasattr(callback, '__action_spec__'):
-                name, = callback.__action_spec__
-                self.add_action(name, callback)
+                name, require_model = callback.__action_spec__
+                self.add_action(name, callback, require_model)
 
         self._register_action_group()
 
@@ -102,15 +102,17 @@ class BaseActions(GObject.GObject):
                 app.disconnect(self._conn_id)
             self._conn_id = app.connect('window-added', _window_added)
 
-    def _wrapper_callback(self, action, parameter, original_callback):
-        # XXX: We are passing self.model to all callbacks, even if they do not need it.
-        original_callback(self.model)
+    def _wrapper_callback(self, action, parameter, original_callback, require_model):
+        args = []
+        if require_model:
+            args.append(self.model)
+        original_callback(*args)
 
-    def add_action(self, name, callback):
+    def add_action(self, name, callback, require_model):
         action = Gio.SimpleAction.new(name, None)
         # Don't connect the original callback directly so we can better handle the parameter
         # argument Gio.Action uses.
-        action.connect('activate', self._wrapper_callback, callback)
+        action.connect('activate', self._wrapper_callback, callback, require_model)
         self.group.add_action(action)
         self._actions[name] = action
 

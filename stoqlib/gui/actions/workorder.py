@@ -87,7 +87,7 @@ class WorkOrderActions(BaseActions):
     #   Actions
     #
 
-    @action('NewOrder')
+    @action('NewOrder', require_model=False)
     def new_order(self, category=None, available_categories=None):
         with api.new_store() as store:
             work_order = self.run_dialog(WorkOrderEditor, store,
