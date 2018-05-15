@@ -336,7 +336,7 @@ class WorkOrdersTab(DetailsTab):
     def _format_state_icon(self, item, data):
         stock_id, tooltip = get_workorder_state_icon(item.work_order)
         if stock_id is not None:
-            return render_icon(stock_id)
+            return render_icon(stock_id, Gtk.IconSize.MENU)
 
 
 class PaymentsTab(DetailsTab):
