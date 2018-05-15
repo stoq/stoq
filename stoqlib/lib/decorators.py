@@ -12,10 +12,8 @@ import functools
 import logging
 import os
 import queue
-import sys
 import threading
 import _thread as thread
-import traceback
 
 log = logging.getLogger(__name__)
 
@@ -160,7 +158,6 @@ def threaded(original):
             try:
                 retval = original(*args, **kwargs)
             except Exception as e:
-                log.debug(''.join(traceback.format_exception(*sys.exc_info())))
                 return e
             return retval
 
