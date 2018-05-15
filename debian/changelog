@@ -2,6 +2,8 @@ stoq (3.0~rc4) xenial; urgency=medium
 
   * 3.0 rc4
 
+ -- Ronaldo Maia <romaia@async.com.br>  Thu, 26 Apr 2018 18:15:19 -0300
+
 stoq (3.0~rc3) xenial; urgency=medium
 
   * 3.0 RC 3
