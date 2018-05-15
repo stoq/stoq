@@ -1,4 +1,8 @@
-stoq (3.0~rc3) UNRELEASED; urgency=medium
+stoq (3.0~rc4) xenial; urgency=medium
+
+  * 3.0 rc4
+
+stoq (3.0~rc3) xenial; urgency=medium
 
   * 3.0 RC 3
 
