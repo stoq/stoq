@@ -191,8 +191,8 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         receiving_items = self._get_receiving_items()
         ipi_total = icms_st_total = currency(0)
         for item in receiving_items:
-            ipi_total += item.ipi_value
-            icms_st_total += item.icms_st_value
+            ipi_total += item.ipi_value or 0
+            icms_st_total += item.icms_st_value or 0
 
         self.ipi.update(ipi_total)
         self.icms_st_total.update(icms_st_total)
