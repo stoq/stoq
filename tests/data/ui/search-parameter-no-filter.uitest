@@ -45,6 +45,7 @@ GtkBox(vbox1, orientation=vertical):
     row: 'Products', 'Max size for product barcodes', '14'
     row: 'Products', 'Default PIS template', ''
     row: 'Products', 'Default COFINS template', ''
+    row: 'Products', 'Label columns', ''
     row: 'Purchase', 'Suggested supplier', 'Cia de Roupas São Carlos'
     row: 'Purchase', 'Suggested unit', ''
     row: 'Purchase', 'Default Receiving C.F.O.P.', '1.102 Compra para Comercializacao'

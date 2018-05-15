@@ -219,6 +219,13 @@ _details = [
         'taxes.ProductCofinsTemplate'),
 
     ParameterDetails(
+        u'LABEL_COLUMNS',
+        _(u'Products'),
+        _(u'Label columns'),
+        _(u'Which columns we should print on label'),
+        str, initial=u''),
+
+    ParameterDetails(
         u'MAIN_COMPANY',
         _(u'General'),
         _(u'Primary company'),

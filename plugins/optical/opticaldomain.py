@@ -227,6 +227,9 @@ class OpticalProduct(Domain):
         return product.store.find(cls, product=product).one()
 
 
+Product.optical = Reference('id', 'OpticalProduct.product_id', on_remote=True)
+
+
 class OpticalWorkOrder(Domain):
     """This holds the necessary information to execute an work order for optical
     stores.

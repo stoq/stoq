@@ -75,7 +75,7 @@ class PrintLabelEditor(BaseEditor):
         sellable = self.sellable
         return Settable(barcode=sellable.barcode, code=sellable.code,
                         description=sellable.description, price=sellable.price,
-                        quantity=Decimal('1'), skip=Decimal('0'))
+                        quantity=Decimal('1'), skip=Decimal('0'), sellable=sellable)
 
 
 class SkipLabelsEditor(BaseEditor):

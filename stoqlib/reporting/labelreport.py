@@ -28,12 +28,27 @@ import os
 import tempfile
 
 from kiwi.python import strip_accents
+from kiwi.accessor import kgetattr
 
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.process import Process
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+
+
+def _parse_row(sellable, columns):
+    data = []
+    for col in columns:
+        value = kgetattr(sellable, col)
+        if value is None:
+            value = ''
+        elif isinstance(value, str):
+            value = strip_accents(value)
+
+        data.append(value)
+
+    return data
 
 
 class LabelReport(object):
@@ -45,12 +60,21 @@ class LabelReport(object):
         self.skip = skip
         self.temp = temp
         self.rows = []
+        columns = sysparam.get_string('LABEL_COLUMNS')
+        columns = columns.split(',')
         for model in models:
             for i in range(int(model.quantity)):
-                # XXX: glabels is not working with unicode caracters
-                desc = strip_accents(model.description)
-                self.rows.append([model.code, model.barcode, desc,
-                                  model.price])
+                if columns:
+                    from stoqlib.domain.sellable import Sellable
+                    if not isinstance(model, Sellable):
+                        model = model.sellable
+                    self.rows.append(_parse_row(model, columns))
+                else:
+                    # XXX: glabels is not working with unicode caracters
+                    desc = strip_accents(model.description)
+                    self.rows.append([model.code, model.barcode, desc,
+                                      model.price])
+        # assert False
 
     def save(self):
         temp_csv = tempfile.NamedTemporaryFile(suffix='.csv', delete=False, mode='w')

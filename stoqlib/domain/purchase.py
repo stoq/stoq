@@ -630,7 +630,7 @@ class PurchaseOrder(Domain):
             sellable = purchase_item.sellable
             label_data = Settable(barcode=sellable.barcode, code=sellable.code,
                                   description=sellable.description,
-                                  price=sellable.price,
+                                  price=sellable.price, sellable=sellable,
                                   quantity=purchase_item.quantity)
             yield label_data
 
