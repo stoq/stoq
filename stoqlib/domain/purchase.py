@@ -556,7 +556,7 @@ class PurchaseOrder(Domain):
 
     @property
     def responsible_name(self):
-        return self.responsible.get_description()
+        return self.responsible and self.responsible.get_description() or ''
 
     @property
     def purchase_subtotal(self):
