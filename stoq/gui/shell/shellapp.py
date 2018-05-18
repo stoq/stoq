@@ -207,12 +207,8 @@ class ShellApp(GladeDelegate):
         if self.search_spec is None:  # pragma no cover
             raise NotImplementedError
 
-        if self.results.get_selection_mode() == Gtk.SelectionMode.MULTIPLE:
-            results = self.results.get_selected_rows() or list(self.search.get_last_results())
-        else:
-            # There are not multiple selection.
-            # We should print the entire list.
-            results = list(self.search.get_last_results())
+        # Print all the results
+        results = list(self.search.get_last_results())
         self.print_report(self.report_table, self.results, results)
 
     def export_spreadsheet_activate(self):

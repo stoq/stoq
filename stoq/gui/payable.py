@@ -126,6 +126,7 @@ class PayableApp(BaseAccountWindow):
         self.set_sensitive([self.Pay], False)
         self.set_sensitive([self.PrintReceipt], False)
 
+        self.window.add_print_items()
         self.window.add_new_items([self.AddPayment])
         self.window.add_search_items([self.BillCheckSearch,
                                       self.PaymentCategories,
