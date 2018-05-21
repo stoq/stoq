@@ -45,7 +45,7 @@
                 % else:
                 <td>${ item.order.identifier }</td>
                 % endif
-                <td>${ format_price(item.sale_item.price) }</td>
+                <td>${ format_price(item.sale_item.base_price) }</td>
                 <td>${ format_price(item.sale_item.get_total()) }</td>
               </tr>
             % endfor
@@ -93,8 +93,8 @@
         <table class="details" id="sale_payments">
             <thead>
                 <tr>
-                    <td>${ _("Method") }</td>
-                    <td>${ _("Value") }</td>
+                    <td>${ _("Payment") }</td>
+                    <td></td>
                 </tr>
             </thead>
             <tbody>
@@ -104,10 +104,10 @@
                     <td>${ value }</td>
                 </tr>
                 % endfor
-                % if report.sale.get_total_to_pay():
+                % if report.remaining_to_pay():
                   <tr>
                       <td>${ _("Missing") }</td>
-                      <td>${ report.sale.get_total_to_pay() }</td>
+                      <td>${ report.remaining_to_pay() }</td>
                   </tr>
                 % endif
             </tbody>
