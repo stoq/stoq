@@ -29,6 +29,7 @@ from gi.repository import Gtk, Gdk
 from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
+from stoqlib.domain.workorder import WorkOrderView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.editors.noteeditor import NoteEditor
@@ -207,9 +208,30 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     def _create_model(self, store):
         model = store.find(OpticalWorkOrder,
                            work_order=self._workorder).one()
-        if model is None:
-            model = OpticalWorkOrder(work_order=self._workorder, store=store,
-                                     patient=self._description)
+        if model is not None:
+            return model
+
+        model = OpticalWorkOrder(work_order=self._workorder, store=store,
+                                 patient=self._description)
+
+        client = self._workorder.client
+        # In case the user open a work_order on Services app
+        if not client:
+            return model
+
+        # At this point we already created a new work_order, so we need to
+        # disconsider the one we just created
+        client_wo = client.get_client_work_orders(ignore=self._workorder)
+        view = client_wo.order_by(WorkOrderView.work_order.open_date).last()
+
+        # We wont have a view if its the the first work_order we are creating
+        if not view:
+            return model
+
+        opt_wo = view.work_order.optical_work_order
+        if opt_wo:
+            opt_wo.copy(model)
+
         return model
 
     def _setup_widgets(self):

@@ -1048,13 +1048,18 @@ class Client(Domain):
         return self.store.find(SoldServicesView,
                                client_id=self.id).order_by(SoldServicesView.estimated_fix_date)
 
-    def get_client_work_orders(self):
+    def get_client_work_orders(self, ignore=None):
         """Returns the :class:'stoqlib.domain.WorkOrderView'  associated with a client
+
+        :param ignore: a |work_order| we should ignore.
         :returns: a sequence of :class:'stoqlib.domain.WorkOrderView'
         """
         from stoqlib.domain.workorder import WorkOrderView
-        return self.store.find(WorkOrderView,
-                               WorkOrderView.client.id == self.id)
+        query = WorkOrderView.client.id == self.id
+        if ignore:
+            query = And(query,
+                        WorkOrderView.id != ignore.id)
+        return self.store.find(WorkOrderView, query)
 
     def get_client_products(self, with_children=True):
         """Returns a list of products from SoldProductsView with products

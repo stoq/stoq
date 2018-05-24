@@ -395,3 +395,23 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
             workorder = self.create_workorder()
             slave = WorkOrderOpticalSlave(self.store, workorder)
             self.assertFalse(slave.patient.get_visible())
+
+    def test_copy_wo(self):
+        client = self.create_client()
+        workorder = self.create_workorder(client=client)
+        opt_wo = self.create_optical_work_order(work_order=workorder)
+        opt_wo.le_distance_spherical = Decimal("1.25")
+        opt_wo.re_distance_spherical = Decimal("1.50")
+
+        slave = WorkOrderOpticalSlave(self.store, workorder)
+        self.assertEqual(slave.le_distance_spherical.read(), Decimal("1.25"))
+        self.assertEqual(slave.re_distance_spherical.read(), Decimal("1.50"))
+
+    def test_copy_wo_without_client(self):
+        workorder = self.create_workorder()
+        workorder.client = None
+
+        slave = WorkOrderOpticalSlave(self.store, workorder)
+        # Since there is no client the slave should be without any information
+        self.assertEqual(slave.le_distance_spherical.read(), Decimal("0"))
+        self.assertEqual(slave.re_distance_spherical.read(), Decimal("0"))

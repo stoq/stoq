@@ -227,9 +227,6 @@ class OpticalProduct(Domain):
         return product.store.find(cls, product=product).one()
 
 
-Product.optical = Reference('id', 'OpticalProduct.product_id', on_remote=True)
-
-
 class OpticalWorkOrder(Domain):
     """This holds the necessary information to execute an work order for optical
     stores.
@@ -456,6 +453,24 @@ class OpticalWorkOrder(Domain):
             to_reserve = sale_item.quantity - sale_item.quantity_decreased
             if to_reserve > 0:
                 sale_item.reserve(quantize(to_reserve))
+
+    def copy(self, target):
+        """Make a copy of self into a target |work_order|
+
+        :param target: a |work_order|
+        """
+        props = ['lens_type', 'le_distance_spherical', 'le_distance_cylindrical',
+                 'le_distance_axis', 'le_distance_prism', 'le_distance_base',
+                 'le_distance_height', 'le_distance_pd', 'le_addition',
+                 'le_near_spherical', 'le_near_cylindrical', 'le_near_axis',
+                 'le_near_pd', 're_distance_spherical', 're_distance_cylindrical',
+                 're_distance_axis', 're_distance_prism', 're_distance_base',
+                 're_distance_height', 're_distance_pd', 're_addition',
+                 're_near_spherical', 're_near_cylindrical', 're_near_axis', 're_near_pd']
+
+        for prop in props:
+            value = getattr(self, prop)
+            setattr(target, prop, value)
 
 
 class OpticalPatientHistory(Domain):
@@ -878,3 +893,8 @@ class OpticalWorkOrderItemsView(Viewable):
         :param work_order: |work_order|
         """
         return store.find(cls, work_order_id=work_order.id)
+
+
+Product.optical = Reference('id', 'OpticalProduct.product_id', on_remote=True)
+WorkOrder.optical_work_order = Reference('id', 'OpticalWorkOrder.work_order_id',
+                                         on_remote=True)

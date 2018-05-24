@@ -534,6 +534,9 @@ class TestClient(_PersonFacetTest, DomainTest):
         result_client_name = result.client.person.name
         self.assertEqual(result_client_name, u'Client Test')
 
+        result = client.get_client_work_orders(ignore=workorder).one()
+        self.assertIsNone(result)
+
     def test_get_client_products(self):
         client = self.create_client(name=u'Client Test')
         self.assertIsNone(client.get_client_products().one())
