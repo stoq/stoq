@@ -69,6 +69,7 @@ class ShellBootstrap(object):
         # log file itself, which means we cannot depend on the config or
         # anything else
         self._prepare_logfiles()
+        self._setup_venv()
         self._set_app_info()
         self._check_dependencies()
         self._setup_exception_hook()
@@ -183,6 +184,38 @@ class ShellBootstrap(object):
         info.set("ver", stoq_ver)
         info.set("log", self._log_filename)
         provide_utility(IAppInfo, info)
+
+    def _setup_venv(self):
+        from stoqlib.lib.osutils import get_application_dir
+        import venv
+
+        stoqdir = get_application_dir("stoq")
+        env_dir = os.path.join(stoqdir, 'venv')
+        if not os.path.exists(env_dir):
+            log.info('creating venv at %s', env_dir)
+            venv.create(env_dir, system_site_packages=True, with_pip=True)
+            log.info('creating venv done')
+
+        # This is exactly what activate_this.py does
+        old_os_path = os.environ.get('PATH', '')
+        os.environ['PATH'] = os.path.join(env_dir, 'bin') + os.pathsep + old_os_path
+        if sys.platform == 'win32':
+            site_packages = os.path.join(env_dir, 'Lib', 'site-packages')
+        else:
+            site_packages = os.path.join(env_dir, 'lib', 'python%s' % sys.version[:3],
+                                         'site-packages')
+        prev_sys_path = list(sys.path)
+        import site
+        site.addsitedir(site_packages)
+        sys.real_prefix = sys.prefix
+        sys.prefix = env_dir
+        # Move the added items to the front of the path:
+        new_sys_path = []
+        for item in list(sys.path):
+            if item not in prev_sys_path:
+                new_sys_path.append(item)
+                sys.path.remove(item)
+        sys.path[:0] = new_sys_path
 
     def _check_dependencies(self):
         from stoq.lib.dependencies import check_dependencies
