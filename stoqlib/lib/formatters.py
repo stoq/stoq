@@ -239,7 +239,8 @@ class TextTable(object):
 
     """
 
-    def __init__(self, width, titles=None, separators=True):
+    def __init__(self, width, titles=None, expand_col=0, separators=True):
+        self._expand_col = expand_col
         self._width = width
         self._titles = titles
         self._items = []
@@ -258,17 +259,22 @@ class TextTable(object):
 
     def _organize(self, item):
         column_separator = '  '
-        # First column will always expand and be left aligned
-        right_size = sum(self._sizes[1:])
-        right_size += (len(self._sizes) - 1) * len(column_separator)
-        if len(item[0]) > self._width - right_size:
-            parts = [item[0][:self._width - right_size - 3] + '...']
-        else:
-            parts = [item[0].ljust(self._width - right_size)]
+        # space required by all columns that don't expand
+        fixed_size = sum([size for (index, size) in enumerate(self._sizes)
+                          if index != self._expand_col])
+        fixed_size += (len(self._sizes) - 1) * len(column_separator)
 
-        # All other columns will be right aligned
-        for i, value in enumerate(item[1:], 1):
-            parts.append(str(value).rjust(self._sizes[i]))
+        parts = []
+        for i, value in enumerate(item):
+            if i == self._expand_col:
+                # This column adjusts it self to the avaiable space
+                if len(value) > self._width - fixed_size:
+                    parts.append(value[:self._width - fixed_size - 3] + '...')
+                else:
+                    parts.append(value.ljust(self._width - fixed_size))
+            else:
+                parts.append(str(value).rjust(self._sizes[i]))
+
         return column_separator.join(parts)
 
     def __str__(self):
