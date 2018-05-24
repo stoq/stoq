@@ -193,7 +193,11 @@ class ShellBootstrap(object):
         env_dir = os.path.join(stoqdir, 'venv')
         if not os.path.exists(env_dir):
             log.info('creating venv at %s', env_dir)
-            venv.create(env_dir, system_site_packages=True, with_pip=True)
+            if platform.system() == 'Windows':
+                # On windows, pip will be included as an egg
+                venv.create(env_dir, system_site_packages=True)
+            else:
+                venv.create(env_dir, system_site_packages=True, with_pip=True)
             log.info('creating venv done')
 
         # This is exactly what activate_this.py does
