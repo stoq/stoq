@@ -325,6 +325,11 @@ class ShortcutGrid(Gtk.FlowBox):
         with api.new_store() as store:
             run_dialog(WorkOrderQuoteWizard, None, store)
 
+        if store.committed:
+            # We are unable to just refresh the ui, so 'deactivate' and
+            # 'activate' the launcher to mimic the refresh
+            self.window.switch_application('launcher')
+
     def search_products(self):
         with api.new_store() as store:
             profile = api.get_current_user(store).profile
