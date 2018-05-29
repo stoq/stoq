@@ -216,3 +216,7 @@ class TestParameter(DomainTest):
     def test_default_area_code(self):
         param = self.sparam.get_int('DEFAULT_AREA_CODE')
         self.assertTrue(isinstance(param, int), type(param))
+
+    def test_default_label_columns(self):
+        param = self.sparam.get_string('LABEL_COLUMNS')
+        self.assertEqual(param, 'code,barcode,description,price')

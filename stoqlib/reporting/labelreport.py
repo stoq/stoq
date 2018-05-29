@@ -30,6 +30,7 @@ import tempfile
 from kiwi.python import strip_accents
 from kiwi.accessor import kgetattr
 
+from stoqlib.domain.sellable import Sellable
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.process import Process
 from stoqlib.lib.translation import stoqlib_gettext
@@ -44,6 +45,7 @@ def _parse_row(sellable, columns):
         if value is None:
             value = ''
         elif isinstance(value, str):
+            # XXX: glabels is not working with unicode caracters
             value = strip_accents(value)
 
         data.append(value)
@@ -64,16 +66,9 @@ class LabelReport(object):
         columns = columns.split(',')
         for model in models:
             for i in range(int(model.quantity)):
-                if columns:
-                    from stoqlib.domain.sellable import Sellable
-                    if not isinstance(model, Sellable):
-                        model = model.sellable
-                    self.rows.append(_parse_row(model, columns))
-                else:
-                    # XXX: glabels is not working with unicode caracters
-                    desc = strip_accents(model.description)
-                    self.rows.append([model.code, model.barcode, desc,
-                                      model.price])
+                if not isinstance(model, Sellable):
+                    model = model.sellable
+                self.rows.append(_parse_row(model, columns))
         # assert False
 
     def save(self):

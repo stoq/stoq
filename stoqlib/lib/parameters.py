@@ -223,7 +223,7 @@ _details = [
         _(u'Products'),
         _(u'Label columns'),
         _(u'Which columns we should print on label'),
-        str, initial=u''),
+        str, initial=u'code,barcode,description,price'),
 
     ParameterDetails(
         u'MAIN_COMPANY',
