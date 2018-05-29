@@ -222,7 +222,7 @@
  "stoqlib/gui/widgets/searchfilterbutton.py": 82,
  "stoqlib/gui/widgets/splash.py": 25,
  "stoqlib/gui/widgets/webview.py": 50.77,
- "stoqlib/gui/widgets/workorder.py": 28,
+ "stoqlib/gui/widgets/workorder.py": 25,
  "stoqlib/gui/wizards/abstractwizard.py": 84.41,
  "stoqlib/gui/wizards/inventorywizard.py": 28,
  "stoqlib/gui/wizards/loanwizard.py": 88.67,

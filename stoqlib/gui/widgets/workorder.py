@@ -92,10 +92,6 @@ class WorkOrderRow(Gtk.ListBoxRow):
         self.status.get_style_context().add_class('tag')
         self.status.get_style_context().add_class(model.status)
 
-        eb = Gtk.EventBox()
-        eb.set_halign(Gtk.Align.END)
-        eb.add(self.status)
-
         button = Gtk.Button()
         button.connect('clicked', self._on_button__clicked)
         button.set_relief(Gtk.ReliefStyle.NONE)
@@ -105,6 +101,21 @@ class WorkOrderRow(Gtk.ListBoxRow):
         image = Gtk.Image.new_from_icon_name('view-more-symbolic', Gtk.IconSize.BUTTON)
         box.pack_start(image, False, False, 0)
 
+        hbox = Gtk.HBox(spacing=6)
+        informed_date = model.work_order.client_informed_date
+        if informed_date:
+            informed_image = Gtk.Image.new_from_icon_name('call-start-symbolic',
+                                                          Gtk.IconSize.BUTTON)
+            formatted_date = api.escape(informed_date.strftime('%x'))
+            informed_image.set_tooltip_text(_('Client informed %s') % formatted_date)
+            hbox.pack_start(informed_image, True, True, 0)
+            hbox.set_halign(Gtk.Align.END)
+
+        eb = Gtk.EventBox()
+        eb.set_halign(Gtk.Align.END)
+        eb.add(self.status)
+        hbox.add(eb)
+
         grid = Gtk.Grid()
         grid.props.margin = 5
         grid.set_row_spacing(1)
@@ -113,7 +124,7 @@ class WorkOrderRow(Gtk.ListBoxRow):
         grid.attach(self.identifier, 0, 0, 1, 1)
         grid.attach(self.salesperson, 0, 1, 1, 1)
         grid.attach(self.client, 0, 2, 1, 1)
-        grid.attach(eb, 1, 0, 1, 1)
+        grid.attach(hbox, 1, 0, 1, 1)
         grid.attach(self.due_date, 1, 2, 1, 1)
         grid.attach(button, 3, 0, 1, 3)
         self.add(grid)
@@ -123,7 +134,7 @@ class WorkOrderRow(Gtk.ListBoxRow):
         self.identifier.connect('activate_link', self._on_sale__clicked)
 
     def _new_label(self, markup, expand=False, xalign=0, halign=Gtk.Align.FILL):
-        label = Gtk.Label(markup)
+        label = Gtk.Label(label=markup)
         label.set_use_markup(True)
         label.set_xalign(xalign)
         label.set_halign(halign)
@@ -228,7 +239,7 @@ class WorkOrderList(Gtk.Box):
         if before:
             before_age = _age(before.model.estimated_finish)
         if row_age != before_age:
-            label = Gtk.Label(row_age)
+            label = Gtk.Label(label=row_age)
             label.props.margin = 6
             row.set_header(label)
         else:
