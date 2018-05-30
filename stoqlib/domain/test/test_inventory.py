@@ -104,11 +104,11 @@ class TestInventory(DomainTest):
         self.assertEqual(set(i[4] for i in data),
                          set([None, batch1, batch2]))
 
-    def test_add_storable(self):
+    def test_add_product(self):
         inventory = self.create_inventory()
         sellable = self.create_sellable()
         storable = self.create_storable(product=sellable.product)
-        result = inventory.add_storable(storable, 10)
+        result = inventory.add_product(sellable.product, 10)
 
         item = self.store.find(InventoryItem, product=sellable.product).one()
         self.assertEqual(result, item)
@@ -116,7 +116,7 @@ class TestInventory(DomainTest):
         storable.is_batch = True
         batch = self.create_storable_batch(storable=storable,
                                            batch_number=u'1')
-        item = inventory.add_storable(storable, 5, batch_number=u'1')
+        item = inventory.add_product(sellable.product, 5, batch_number=u'1')
         result = self.store.find(InventoryItem, batch=batch).one()
         self.assertEqual(item, result)
 
@@ -292,18 +292,22 @@ class TestInventoryItem(DomainTest):
         item.inventory.status = Inventory.STATUS_OPEN
         self.assertEqual(item.adjust(invoice_number=invoice_number), None)
 
+        # Make the produc without stock control
         for i in storable.get_stock_items():
             for transaction_history in i.transactions:
                 self.store.remove(transaction_history)
             self.store.remove(i)
         self.store.remove(storable)
+        item.product.manage_stock = False
 
         item.is_adjusted = False
         item.inventory.status = Inventory.STATUS_OPEN
-        with self.assertRaises(TypeError) as error:
-            item.adjust(invoice_number=invoice_number)
-        expected = "The adjustment item must be a storable product."
-        self.assertEqual(str(error.exception), expected)
+        # There is no storable.
+        self.assertEqual(item.product.storable, None)
+
+        # After adjusting, the storable should be created, and there is one stock item.
+        item.adjust(invoice_number=invoice_number)
+        self.assertEqual(item.product.storable.get_stock_items().count(), 1)
 
     def test_get_code(self):
         item = self.create_inventory_item()

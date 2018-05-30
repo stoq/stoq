@@ -52,7 +52,7 @@ class _TemporaryInventoryItem(object):
         self.description = sellable.description
         self.category_description = sellable.get_category_description()
         self.storable = storable
-        self.is_batch = self.storable.is_batch
+        self.is_batch = storable and self.storable.is_batch
         self.batches = {}
         self.changed = False
         if batch_number is not None:
@@ -117,15 +117,34 @@ class InventoryCountTypeStep(BaseWizardStep):
 
     def _read_import_file(self):
         data = {}
+        not_found = set()
         with open(self.import_file.get_filename()) as fh:
             for line in fh:
-                try:
-                    barcode, quantity = line[:-1].split(',')
-                    data[barcode] = int(quantity)
-                except ValueError:
-                    warning(_('It was not possible to import inventory count.'
-                              ' Check file format'))
-                    return
+                # The line should have 1 or 2 parts
+                parts = line[:-1].split(',')
+                assert 1 <= len(parts) <= 2
+
+                if len(parts) == 2:
+                    barcode, quantity = parts
+                elif len(parts) == 1:
+                    barcode = parts[0]
+                    if not barcode:
+                        continue
+                    quantity = 1
+
+                sellable = self.store.find(Sellable, barcode=str(barcode)).one()
+                if not sellable:
+                    sellable = self.store.find(Sellable, code=str(barcode)).one()
+
+                if not sellable:
+                    not_found.add(barcode)
+                    continue
+
+                data.setdefault(sellable, 0)
+                data[sellable] += int(quantity)
+
+        if not_found:
+            warning(_('Some barcodes were not found'), ', '.join(not_found))
 
         self.wizard.imported_count = data
 
@@ -136,7 +155,12 @@ class InventoryCountTypeStep(BaseWizardStep):
     def next_step(self):
         self.wizard.temporary_items.clear()
         if self.import_count.get_active():
-            self._read_import_file()
+            try:
+                self._read_import_file()
+            except Exception:
+                warning(_('It was not possible to import inventory count.'
+                          ' Check file format'))
+                return
         return InventoryCountItemStep(self.wizard, self,
                                       self.store, self.wizard.model)
 
@@ -213,12 +237,15 @@ class InventoryCountItemStep(SellableItemStep):
         self.force_validation()
 
     def get_order_item(self, sellable, cost, quantity, batch=None, parent=None):
-        if sellable not in self._inventory_sellables:
-            return
-
         item = self.wizard.temporary_items.get(sellable, None)
-        # We populated all items on get_saved_items, so this should not be None
-        assert item is not None
+        if item is None:
+            # The item selected is not in the inventory. Add it now
+            product = sellable.product
+            storable = product.storable
+            current_quantity = storable.get_balance_for_branch(self.model.branch)
+            self.model.add_product(product, current_quantity)
+            item = _TemporaryInventoryItem(sellable, storable, 0)
+            self.wizard.temporary_items[sellable] = item
 
         if batch is not None:
             assert isinstance(batch, str)
@@ -243,7 +270,7 @@ class InventoryCountItemStep(SellableItemStep):
                 continue
             else:
                 quantity = (item.counted_quantity or
-                            self.wizard.imported_count.pop(sellable.barcode, 0))
+                            self.wizard.imported_count.pop(sellable, 0))
                 tmp_item = _TemporaryInventoryItem(sellable, storable, quantity)
                 tmp_item.changed = item.counted_quantity is not None or quantity
                 self.wizard.temporary_items[sellable] = tmp_item
@@ -253,14 +280,16 @@ class InventoryCountItemStep(SellableItemStep):
         # There are counted itens in the imported file that were not in the
         # original inventory items. This means that this item was never stored
         # in this branch.
-        for barcode, quantity in self.wizard.imported_count.items():
+        for sellable, quantity in self.wizard.imported_count.items():
             if not quantity:
                 continue
-            sellable = self.store.find(Sellable, barcode=str(barcode)).one()
-            storable = sellable.product.storable
-            item = self.model.add_storable(storable, 0)
+            product = sellable.product
+            storable = product.storable
+            current_quantity = storable.get_balance_for_branch(self.model.branch)
+            item = self.model.add_product(product, current_quantity)
             tmp_item = _TemporaryInventoryItem(sellable, storable, quantity)
             self.wizard.temporary_items[sellable] = tmp_item
+            tmp_item.changed = True
             yield tmp_item
 
     def get_batch_items(self):

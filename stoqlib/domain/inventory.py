@@ -161,8 +161,11 @@ class InventoryItem(Domain):
         assert not self.is_adjusted
         storable = self.product.storable
         if storable is None:
-            raise TypeError(
-                "The adjustment item must be a storable product.")
+            # This item is in the inventory but is not an storable. We should register the initial
+            # stock
+            self.product.set_as_storable_product(self.actual_quantity, self.inventory.branch)
+            self.is_adjusted = True
+            return
 
         adjustment_qty = self.actual_quantity - self.recorded_quantity
         if not adjustment_qty:
@@ -313,8 +316,8 @@ class Inventory(Domain):
     # Public API
     #
 
-    def add_storable(self, storable, quantity,
-                     batch_number=None, batch=None):
+    def add_product(self, product, quantity,
+                    batch_number=None, batch=None):
         """Add a storable to this inventory.
 
         The parameters product, storable and batch are passed here to avoid
@@ -329,13 +332,13 @@ class Inventory(Domain):
         :param batch: the corresponding batch to the batch_number
         """
         if batch_number is not None and not batch:
+            assert product.storable
             batch = StorableBatch.get_or_create(self.store,
-                                                storable=storable,
+                                                storable=product.storable,
                                                 batch_number=batch_number)
 
-        product = storable.product
         sellable = product.sellable
-        self.validate_batch(batch, sellable, storable=storable)
+        self.validate_batch(batch, sellable, storable=product.storable)
         return InventoryItem(store=self.store,
                              product=product,
                              batch=batch,
@@ -463,8 +466,8 @@ class Inventory(Domain):
         store = self.store
         tables = [InventoryItem,
                   Join(Product, Product.id == InventoryItem.product_id),
-                  Join(Storable, Storable.id == Product.id),
                   Join(Sellable, Sellable.id == Product.id),
+                  LeftJoin(Storable, Storable.id == Product.id),
                   LeftJoin(StorableBatch, StorableBatch.id == InventoryItem.batch_id)]
         return store.using(*tables).find(
             (InventoryItem, Storable, Product, Sellable, StorableBatch),
@@ -527,9 +530,9 @@ class Inventory(Domain):
                 # tend to grow to very large proportions and we are duplicating
                 # everyone here
                 if batch and stock_item:
-                    inventory.add_storable(storable, quantity, batch=batch)
+                    inventory.add_product(product, quantity, batch=batch)
             else:
-                inventory.add_storable(storable, quantity)
+                inventory.add_product(product, quantity)
         return inventory
 
 
