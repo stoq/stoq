@@ -177,7 +177,7 @@
           <object class="GtkLabel" id="label6">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">&lt;a href="https://async.freshdesk.com/support/solutions/articles/4000102725-esqueci-minha-senha-"&gt;Forgot your password?&lt;/a&gt;</property>
+            <property name="label" translatable="yes">&lt;a href="https://async.freshdesk.com/support/solutions/articles/4000114978-esqueci-minha-senha-do-stoq"&gt;Forgot your password?&lt;/a&gt;</property>
             <property name="use_markup">True</property>
           </object>
           <packing>
