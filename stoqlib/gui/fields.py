@@ -540,7 +540,7 @@ class AttachmentField(Field):
                 return
 
         data = open(filename, 'rb').read()
-        mimetype = Gio.content_type_guess(filename, data)
+        mimetype = Gio.content_type_guess(filename, data)[0]
         if self.attachment is None:
             self.attachment = Attachment(store=self.store)
         self.attachment.name = str(os.path.basename(filename))
