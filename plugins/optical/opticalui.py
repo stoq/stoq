@@ -115,8 +115,7 @@ class ProductSearchExtention(SearchExtension):
             (_('Glass Lenses'), [
                 ('gl_photosensitive', _('Photosensitive'), str, False),
                 ('gl_anti_glare', _('Anti Glare'), str, False),
-                ('gl_refraction_index', _('Refraction Index'), decimal.Decimal,
-                 False),
+                ('gl_refraction_index', _('Refraction Index'), str, False),
                 ('gl_classification', _('Classification'), str, False),
                 ('gl_addition', _('Addition'), str, False),
                 ('gl_diameter', _('Diameter'), str, False),
