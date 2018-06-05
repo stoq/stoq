@@ -69,7 +69,10 @@ class ShellBootstrap(object):
         # log file itself, which means we cannot depend on the config or
         # anything else
         self._prepare_logfiles()
-        self._setup_venv()
+        try:
+            self._setup_venv()
+        except Exception:
+            log.info('Failed to create venv')
         self._set_app_info()
         self._check_dependencies()
         self._setup_exception_hook()
