@@ -1,0 +1,63 @@
+  <section id="items">
+    <h3>${ _("Purchase Ordered Items") }</h3>
+    <table class="list">
+      <thead>
+        <tr>
+          <td>${ _("Code") }</td>
+          <td>${ _("Item") }</td>
+          <td>${ _("Price") }</td>
+          % if report.receiving_orders:
+          <td>${ _("Received") }</td>
+          % endif
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          % if report.receiving_orders:
+            <td></td>
+          % endif
+        </tr>
+      </tfoot>
+
+      <tbody >
+        <%
+          purchased = 0
+          received = 0
+          value_purchased = 0
+          value_received = 0
+        %>
+        % for item in report.order.get_items():
+          <%
+            purchased += item.quantity
+            received += item.quantity_received
+            value_purchased += item.get_total()
+            value_received += item.get_received_total()
+          %>
+          <tr>
+            <td>${ item.sellable.code }</td>
+            <td>${ item.sellable.get_description() }</td>
+            <td>${ format_cost(item.sellable.price) }</td>
+            % if report.receiving_orders:
+            <td>${ format_quantity(item.quantity_received) } ${ item.sellable.unit_description }</td>
+            % endif
+          </tr>
+        % endfor
+      </tbody>
+
+      <tbody class="summary">
+        <tr >
+          <td></td>
+          <td></td>
+          <td>${ _("Total:") }</td>
+          % if report.receiving_orders:
+          <td>${ format_quantity(received) }</td>
+          % endif
+        </tr>
+      </tbody>
+    </table>
+  </section>
+

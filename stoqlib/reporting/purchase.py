@@ -94,6 +94,23 @@ class PurchaseOrderReport(HTMLReport):
         return _("Purchase Order #%s") % self.order.identifier
 
 
+class PurchaseOrderItemReport(HTMLReport):
+    template_filename = 'purchase/simple-purchase.html'
+    title = _("Purchase Order Item")
+
+    def __init__(self, filename, order):
+        self.order = order
+        self.receiving_orders = list(order.get_receiving_orders())
+        HTMLReport.__init__(self, filename)
+
+    def get_subtitle(self):
+        return _("Purchase Order # %s") % self.order.identifier
+
+    def get_invoice_number(self):
+        return ', '.join(str(receiving.invoice_number)
+                         for receiving in self.order.get_receiving_orders())
+
+
 class PurchaseQuoteReport(HTMLReport):
     """A quote report to be sent to suppliers
     """

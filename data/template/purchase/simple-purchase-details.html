@@ -1,0 +1,28 @@
+  <section>
+    <table class="details">
+      <tbody>
+        <tr>
+          <td>${ _("Invoice number:")}</td>
+          <td>${ report.get_invoice_number()}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>${ _("Branch:") }</td>
+          <td>${ report.order.branch_name }</td>
+          <td>${ _("Open Date:") }</td>
+          <td>${ report.order.get_open_date_as_string() }</td>
+        </tr>
+        <tr>
+          <td>${ _("Supplier:") }</td>
+          <td>${ report.order.supplier_name }</td>
+          <td>${ _("Expectd Receival Date:") }</td>
+          % if report.order.expected_receival_date:
+            <td>${ report.order.expected_receival_date.strftime('%x') }</td>
+          % else:
+            <td>${ _("Not Specified") }</td>
+          % endif
+        </tr>
+      </tbody>
+    </table>
+  </section>

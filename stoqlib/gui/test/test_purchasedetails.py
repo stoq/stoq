@@ -31,7 +31,9 @@ from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate
-from stoqlib.reporting.purchase import PurchaseOrderReport, PurchaseQuoteReport
+from stoqlib.reporting.purchase import (PurchaseOrderReport,
+                                        PurchaseQuoteReport,
+                                        PurchaseOrderItemReport)
 
 
 class TestPurchaseDetailsDialog(GUITest):
@@ -79,11 +81,31 @@ class TestPurchaseDetailsDialog(GUITest):
         self.click(dialog.print_button)
         print_report.assert_called_once_with(PurchaseQuoteReport, order)
 
-        # Normal order
         print_report.reset_mock()
+        # # Normal order
         order.status = PurchaseOrder.ORDER_PENDING
         self.click(dialog.print_button)
         print_report.assert_called_once_with(PurchaseOrderReport, order)
+
+    @mock.patch('stoqlib.gui.dialogs.purchasedetails.print_report')
+    def test_print_item(self, print_report):
+        order = self.create_purchase_order()
+        dialog = PurchaseDetailsDialog(self.store, order)
+        self.assertSensitive(dialog, ['print_button'])
+
+        order.status = PurchaseOrder.ORDER_PENDING
+        self.click(dialog.print_button)
+        print_report.assert_called_once_with(PurchaseOrderReport, order)
+
+    @mock.patch('stoqlib.gui.dialogs.purchasedetails.print_report')
+    def test_print_details_simple(self, print_report):
+        order = self.create_purchase_order()
+        dialog = PurchaseDetailsDialog(self.store, order)
+        self.assertSensitive(dialog, ['print_items_button'])
+
+        order.status = PurchaseOrder.ORDER_PENDING
+        self.click(dialog.print_items_button)
+        print_report.assert_called_once_with(PurchaseOrderItemReport, order)
 
     @mock.patch('stoqlib.gui.utils.printing.warning')
     @mock.patch('stoqlib.gui.dialogs.purchasedetails.run_dialog')

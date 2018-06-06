@@ -1,0 +1,30 @@
+<%inherit file="../base/base.html" />
+<%namespace file="../base/base.html" import="header, setup_margin_labels" />
+
+<%block name="extra_meta">
+  <link rel="stylesheet" href="base/payment-list.css" type="text/css" />
+  ${ setup_margin_labels(title) }
+
+  <style>
+    #items .list td:nth-child(4),
+    #items .list td:nth-child(5),
+    #items .list td:nth-child(6),
+    #items .list td:nth-child(7),
+    #items .list td:nth-child(8) {
+      text-align: right;
+    }
+  </style>
+</%block>
+
+<div class="page">
+  ${ header(complete_header, title, report.get_subtitle(), notes) }
+  <%include file="simple-purchase-details.html" />
+  <%include file="simple-purchase-items.html" />
+  <%include file="purchase-notes.html" />
+  <section class="signatures">
+    <p>&nbsp;</p> <!-- little trick to make the signatures be in
+                   a new page if there is not enough space -->
+    <span class="signature">${ _("Receive responsible")} </span>
+    <span class="signature">${ _("Send responsible")} </span>
+  </section>
+</div>

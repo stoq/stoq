@@ -44,7 +44,9 @@ from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, QuantityColumn
 from stoqlib.gui.utils.printing import print_labels, print_report
-from stoqlib.reporting.purchase import PurchaseOrderReport, PurchaseQuoteReport
+from stoqlib.reporting.purchase import (PurchaseOrderReport,
+                                        PurchaseQuoteReport,
+                                        PurchaseOrderItemReport)
 
 _ = stoqlib_gettext
 
@@ -271,3 +273,6 @@ class PurchaseDetailsDialog(BaseEditor):
         label_data = run_dialog(SkipLabelsEditor, self, self.store)
         if label_data:
             print_labels(label_data, self.store, self.model)
+
+    def on_print_items_button__clicked(self, button):
+        print_report(PurchaseOrderItemReport, self.model)
