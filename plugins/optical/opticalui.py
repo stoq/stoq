@@ -28,12 +28,15 @@ import logging
 
 from gi.repository import Gtk
 from storm.expr import LeftJoin
+from storm.info import ClassAlias
+
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_default_store
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.events import WorkOrderStatusChangedEvent
 from stoqlib.domain.product import Product, ProductManufacturer
+from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.workorder import WorkOrder
@@ -68,8 +71,7 @@ from .opticalhistory import OpticalPatientDetails
 from .opticalreport import OpticalWorkOrderReceiptReport
 from .opticalslave import ProductOpticSlave, WorkOrderOpticalSlave
 from .opticalwizard import OpticalSaleQuoteWizard, MedicRoleWizard
-from .opticaldomain import (OpticalProduct,
-                            OpticalWorkOrder)
+from .opticaldomain import (OpticalProduct, OpticalWorkOrder, OpticalMedic)
 
 
 _ = stoqlib_gettext
@@ -145,19 +147,26 @@ class ProductSearchExtention(SearchExtension):
 
 
 class ServicesSearchExtention(SearchExtension):
+    PersonMedic = ClassAlias(Person, 'person_medic')
+
     spec_attributes = dict(
-        manufacturer_name=ProductManufacturer.name
+        manufacturer_name=ProductManufacturer.name,
+        medic_name=PersonMedic.name,
     )
     spec_joins = [
         LeftJoin(Product, Product.id == Sellable.id),
         LeftJoin(ProductManufacturer,
-                 Product.manufacturer_id == ProductManufacturer.id)
+                 Product.manufacturer_id == ProductManufacturer.id),
+        LeftJoin(OpticalWorkOrder, OpticalWorkOrder.work_order_id == WorkOrder.id),
+        LeftJoin(OpticalMedic, OpticalWorkOrder.medic_id == OpticalMedic.id),
+        LeftJoin(PersonMedic, PersonMedic.id == OpticalMedic.person_id),
     ]
 
     def get_columns(self):
         return [
             SearchColumn('manufacturer_name', title=_('Manufacturer'), data_type=str,
-                         visible=False)
+                         visible=False),
+            SearchColumn('medic_name', title=_('Medic'), data_type=str, visible=False),
         ]
 
 
