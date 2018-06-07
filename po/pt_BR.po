@@ -18,8 +18,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-02 02:10-0300\n"
-"PO-Revision-Date: 2018-06-01 05:10+0000\n"
+"POT-Creation-Date: 2018-06-06 02:11-0300\n"
+"PO-Revision-Date: 2018-06-06 05:11+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -358,7 +358,7 @@ msgstr "Lote"
 #: ../stoqlib/gui/slaves/productslave.py:759
 #: ../stoqlib/gui/slaves/workorderslave.py:77
 #: ../stoqlib/gui/slaves/workorderslave.py:265
-#: ../stoqlib/gui/wizards/inventorywizard.py:295
+#: ../stoqlib/gui/wizards/inventorywizard.py:324
 #: ../stoqlib/gui/wizards/productionwizard.py:186
 #: ../stoqlib/gui/wizards/productionwizard.py:260
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:138
@@ -384,7 +384,7 @@ msgid "Missing quantity:"
 msgstr "Quantidade faltante:"
 
 #: ../data/glade/BatchSelectionDialog.ui.h:6
-#: ../stoqlib/gui/wizards/inventorywizard.py:181
+#: ../stoqlib/gui/wizards/inventorywizard.py:205
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:192
 msgid "Total quantity:"
 msgstr "Quantidade total:"
@@ -3588,7 +3588,7 @@ msgstr "Forma"
 #: ../stoqlib/gui/slaves/productslave.py:775
 #: ../stoqlib/gui/slaves/workorderslave.py:260
 #: ../stoqlib/gui/wizards/consignmentwizard.py:151
-#: ../stoqlib/gui/wizards/inventorywizard.py:292
+#: ../stoqlib/gui/wizards/inventorywizard.py:321
 #: ../stoqlib/gui/wizards/loanwizard.py:347
 #: ../stoqlib/gui/wizards/productionwizard.py:184
 #: ../stoqlib/gui/wizards/productionwizard.py:258
@@ -4013,7 +4013,7 @@ msgstr "Operações de crédito"
 #: ../stoqlib/gui/slaves/workorderslave.py:256
 #: ../stoqlib/gui/widgets/accounttree.py:77
 #: ../stoqlib/gui/wizards/consignmentwizard.py:150
-#: ../stoqlib/gui/wizards/inventorywizard.py:291
+#: ../stoqlib/gui/wizards/inventorywizard.py:320
 #: ../stoqlib/gui/wizards/loanwizard.py:343
 #: ../stoqlib/gui/wizards/productionwizard.py:181
 #: ../stoqlib/gui/wizards/productionwizard.py:255
@@ -4142,7 +4142,7 @@ msgstr "Data de expiração"
 #: ../stoqlib/gui/slaves/sellableslave.py:66
 #: ../stoqlib/gui/slaves/sellableslave.py:85
 #: ../stoqlib/gui/widgets/queryentry.py:627
-#: ../stoqlib/gui/wizards/inventorywizard.py:294
+#: ../stoqlib/gui/wizards/inventorywizard.py:323
 #: ../stoqlib/gui/wizards/productionwizard.py:182
 #: ../stoqlib/gui/wizards/productionwizard.py:256
 #: ../stoqlib/gui/wizards/purchasewizard.py:293
@@ -4305,7 +4305,7 @@ msgstr "Qtde"
 
 #: ../data/template/optical/prescription.html:10
 #: ../data/template/optical/workorderdetails.html:8
-#: ../plugins/optical/opticalreport.py:34 ../plugins/optical/opticalui.py:197
+#: ../plugins/optical/opticalreport.py:34 ../plugins/optical/opticalui.py:196
 #: ../stoq/gui/calendar.py:287 ../stoqlib/gui/editors/workordereditor.py:65
 #: ../stoqlib/lib/parameters.py:954 ../stoqlib/lib/parameters.py:962
 #: ../stoqlib/reporting/workorder.py:43
@@ -5745,7 +5745,7 @@ msgstr "Qual produto de assepsia usava?"
 #. TRANSLATORS: Traduzir como 'Anamnese'
 #: ../plugins/optical/glade/PatientHistory.ui.h:42
 #: ../plugins/optical/glade/PatientHistoryDialog.ui.h:3
-#: ../plugins/optical/opticalhistory.py:55 ../plugins/optical/opticalui.py:316
+#: ../plugins/optical/opticalhistory.py:55 ../plugins/optical/opticalui.py:315
 msgid "Patient History"
 msgstr "Anamnese"
 
@@ -5947,7 +5947,7 @@ msgstr "Entregue ao cliente"
 
 #: ../plugins/optical/glade/PatientTest.ui.h:20
 #: ../plugins/optical/glade/WorkOrderOpticalSlave.ui.h:13
-#: ../plugins/optical/opticalui.py:132
+#: ../plugins/optical/opticalui.py:131
 msgid "Cylindrical"
 msgstr "Cilíndrico"
 
@@ -6074,7 +6074,7 @@ msgid "Spherical"
 msgstr "Esférica"
 
 #: ../plugins/optical/glade/WorkOrderOpticalSlave.ui.h:14
-#: ../plugins/optical/opticalui.py:133
+#: ../plugins/optical/opticalui.py:132
 msgid "Axis"
 msgstr "Eixo"
 
@@ -6084,7 +6084,7 @@ msgid "PD"
 msgstr "DNP"
 
 #: ../plugins/optical/glade/WorkOrderOpticalSlave.ui.h:17
-#: ../plugins/optical/opticalui.py:123 ../stoq/gui/pos.py:789
+#: ../plugins/optical/opticalui.py:122 ../stoq/gui/pos.py:789
 #: ../stoqlib/domain/uiform.py:137
 #: ../stoqlib/gui/dialogs/sellabledialog.py:205
 msgid "Height"
@@ -6099,7 +6099,7 @@ msgid "Base"
 msgstr "Base"
 
 #: ../plugins/optical/glade/WorkOrderOpticalSlave.ui.h:20
-#: ../plugins/optical/opticalui.py:121 ../plugins/optical/opticalui.py:131
+#: ../plugins/optical/opticalui.py:120 ../plugins/optical/opticalui.py:130
 #: ../stoqlib/gui/widgets/calculator.py:153
 msgid "Addition"
 msgstr "Adição"
@@ -6196,7 +6196,7 @@ msgstr "Na filial:"
 msgid "Confirm date"
 msgstr "Data de confirmação"
 
-#: ../plugins/optical/medicssearch.py:130 ../plugins/optical/opticalui.py:160
+#: ../plugins/optical/medicssearch.py:130 ../plugins/optical/opticalui.py:159
 #: ../stoq/gui/pos.py:784 ../stoq/gui/stock.py:263
 #: ../stoqlib/domain/uiform.py:142
 #: ../stoqlib/gui/dialogs/initialstockdialog.py:110
@@ -6350,7 +6350,7 @@ msgid "Glass Lenses"
 msgstr "Lente oftálmica"
 
 #. Translators: Lente de Contato
-#: ../plugins/optical/opticalslave.py:126 ../plugins/optical/opticalui.py:126
+#: ../plugins/optical/opticalslave.py:126 ../plugins/optical/opticalui.py:125
 msgid "Contact Lenses"
 msgstr "Lente de contato"
 
@@ -6383,11 +6383,11 @@ msgstr "Tipo de Óculos"
 msgid "Size"
 msgstr "Tamanho"
 
-#: ../plugins/optical/opticalui.py:112 ../plugins/optical/opticalui.py:129
+#: ../plugins/optical/opticalui.py:112 ../plugins/optical/opticalui.py:128
 msgid "Lens Type"
 msgstr "Tipo de lente"
 
-#: ../plugins/optical/opticalui.py:113 ../plugins/optical/opticalui.py:134
+#: ../plugins/optical/opticalui.py:113 ../plugins/optical/opticalui.py:133
 #: ../stoqlib/gui/dialogs/paymentcategorydialog.py:55
 #: ../stoqlib/gui/dialogs/workordercategorydialog.py:45
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:61
@@ -6407,72 +6407,72 @@ msgstr "Antirreflexo"
 msgid "Refraction Index"
 msgstr "Índice de Refração"
 
-#: ../plugins/optical/opticalui.py:120 ../plugins/optical/opticalui.py:128
+#: ../plugins/optical/opticalui.py:119 ../plugins/optical/opticalui.py:127
 msgid "Classification"
 msgstr "Classificação"
 
-#: ../plugins/optical/opticalui.py:122
+#: ../plugins/optical/opticalui.py:121
 msgid "Diameter"
 msgstr "Diâmetro"
 
-#: ../plugins/optical/opticalui.py:124
+#: ../plugins/optical/opticalui.py:123
 msgid "Availability"
 msgstr "Disponibilidade"
 
-#: ../plugins/optical/opticalui.py:127
+#: ../plugins/optical/opticalui.py:126
 msgid "Degree"
 msgstr "Grau"
 
-#: ../plugins/optical/opticalui.py:130
+#: ../plugins/optical/opticalui.py:129
 msgid "Discard"
 msgstr "Descarte"
 
-#: ../plugins/optical/opticalui.py:135
+#: ../plugins/optical/opticalui.py:134
 msgid "Curvature"
 msgstr "Curvatura"
 
-#: ../plugins/optical/opticalui.py:198
+#: ../plugins/optical/opticalui.py:197
 msgid "Allow to customize the work order description"
 msgstr "Permitir alterar a descrição da ordem de serviço"
 
-#: ../plugins/optical/opticalui.py:199
+#: ../plugins/optical/opticalui.py:198
 msgid ""
 "If true, it will be allowed to set a description for the work order "
 "manually. Otherwise, the identifier will be used."
 msgstr "Se ativado, será permitido definir uma descrição para ordens de serviço manualmente. Caso contrário, o identificador da ordem será usado."
 
 #. Add a new option to the WorkOrderRow options menu
-#: ../plugins/optical/opticalui.py:227 ../plugins/optical/opticalui.py:282
+#: ../plugins/optical/opticalui.py:226 ../plugins/optical/opticalui.py:281
 msgid "Create new purchase..."
 msgstr "Criar um novo pedido de compra..."
 
-#: ../plugins/optical/opticalui.py:252 ../plugins/optical/opticalui.py:272
-#: ../plugins/optical/opticalui.py:277
+#: ../plugins/optical/opticalui.py:251 ../plugins/optical/opticalui.py:271
+#: ../plugins/optical/opticalui.py:276
 msgid "Optical"
 msgstr "Ótico"
 
-#: ../plugins/optical/opticalui.py:253 ../stoq/gui/sales.py:138
+#: ../plugins/optical/opticalui.py:252 ../stoq/gui/sales.py:138
 msgid "Sale with work order..."
 msgstr "Venda com ordem de serviço..."
 
-#: ../plugins/optical/opticalui.py:256
+#: ../plugins/optical/opticalui.py:255
 msgid "Medics..."
 msgstr "Médicos..."
 
-#: ../plugins/optical/opticalui.py:259
+#: ../plugins/optical/opticalui.py:258
 msgid "Medics sold items..."
 msgstr "Itens vendidos por médico..."
 
-#: ../plugins/optical/opticalui.py:276 ../plugins/optical/opticalui.py:280
+#: ../plugins/optical/opticalui.py:275 ../plugins/optical/opticalui.py:279
 msgid "Edit optical details..."
 msgstr "Editar detalhes óticos..."
 
-#: ../plugins/optical/opticalui.py:297 ../stoqlib/gui/search/callsearch.py:86
+#: ../plugins/optical/opticalui.py:296 ../stoqlib/gui/search/callsearch.py:86
 #: ../stoqlib/gui/utils/keybindings.py:57
 msgid "Print"
 msgstr "Imprimir"
 
-#: ../plugins/optical/opticalui.py:306
+#: ../plugins/optical/opticalui.py:305
 msgid "You cannot create a pre-sale with an open inventory."
 msgstr "Você não pode criar uma pré-venda com um inventário aberto."
 
@@ -7003,7 +7003,7 @@ msgid "View"
 msgstr "Visualizar"
 
 #: ../stoq/gui/calendar.py:369 ../stoqlib/gui/search/searchoptions.py:77
-#: ../stoqlib/gui/widgets/workorder.py:218
+#: ../stoqlib/gui/widgets/workorder.py:229
 msgid "Today"
 msgstr "Hoje"
 
@@ -7687,7 +7687,7 @@ msgid "Inventory #"
 msgstr "Inventário #"
 
 #: ../stoq/gui/inventory.py:147 ../stoq/gui/production.py:162
-#: ../stoq/gui/purchase.py:262 ../stoqlib/domain/inventory.py:248
+#: ../stoq/gui/purchase.py:262 ../stoqlib/domain/inventory.py:251
 #: ../stoqlib/domain/loan.py:270 ../stoqlib/domain/production.py:77
 #: ../stoqlib/domain/sale.py:908 ../stoqlib/domain/stockdecrease.py:246
 #: ../stoqlib/domain/till.py:91 ../stoqlib/domain/workorder.py:176
@@ -7703,7 +7703,7 @@ msgid "Date Opened"
 msgstr "Data de abertura"
 
 #: ../stoq/gui/inventory.py:150 ../stoq/gui/production.py:164
-#: ../stoqlib/domain/inventory.py:249 ../stoqlib/domain/loan.py:271
+#: ../stoqlib/domain/inventory.py:252 ../stoqlib/domain/loan.py:271
 #: ../stoqlib/domain/production.py:81 ../stoqlib/domain/purchase.py:209
 #: ../stoqlib/domain/sellable.py:396 ../stoqlib/domain/till.py:92
 msgid "Closed"
@@ -8322,7 +8322,7 @@ msgid "Production #"
 msgstr "Produção #"
 
 #: ../stoq/gui/production.py:166 ../stoq/gui/services.py:570
-#: ../stoqlib/domain/inventory.py:250 ../stoqlib/domain/loan.py:272
+#: ../stoqlib/domain/inventory.py:253 ../stoqlib/domain/loan.py:272
 #: ../stoqlib/domain/payment/payment.py:144 ../stoqlib/domain/production.py:82
 #: ../stoqlib/domain/purchase.py:208 ../stoqlib/domain/returnedsale.py:279
 #: ../stoqlib/domain/sale.py:580 ../stoqlib/domain/sale.py:912
@@ -9094,14 +9094,14 @@ msgstr "Em transporte"
 msgid "Rejected"
 msgstr "Rejeitada"
 
-#: ../stoq/gui/shell/bootstrap.py:121
+#: ../stoq/gui/shell/bootstrap.py:124
 #, python-format
 msgid ""
 "Could not set locale to %s. Make sure that you have the packages for this "
 "locale installed."
 msgstr "Não foi possível setar a localização para %s. Tenha certeza de ter instalado os pacotes para esta localização."
 
-#: ../stoq/gui/shell/bootstrap.py:422
+#: ../stoq/gui/shell/bootstrap.py:425
 msgid "There was an error quering the database"
 msgstr "Ocorreu um erro ao realizar uma consulta na base de dados"
 
@@ -13605,7 +13605,7 @@ msgid "Portuguese (Brazil)"
 msgstr "Português (Brasil)"
 
 #: ../stoqlib/gui/editors/preferenceseditor.py:176
-#: ../stoqlib/gui/widgets/workorder.py:196
+#: ../stoqlib/gui/widgets/workorder.py:207
 msgid "My Work Orders"
 msgstr "Minhas ordens de serviço"
 
@@ -15175,7 +15175,7 @@ msgid "And"
 msgstr "E"
 
 #: ../stoqlib/gui/search/searchoptions.py:69
-#: ../stoqlib/gui/widgets/workorder.py:216
+#: ../stoqlib/gui/widgets/workorder.py:227
 msgid "Yesterday"
 msgstr "Ontem"
 
@@ -16558,23 +16558,28 @@ msgstr "Criar"
 msgid "Version %s"
 msgstr "Versão %s"
 
-#: ../stoqlib/gui/widgets/workorder.py:212
+#: ../stoqlib/gui/widgets/workorder.py:110
+#, python-format
+msgid "Client informed %s"
+msgstr ""
+
+#: ../stoqlib/gui/widgets/workorder.py:223
 msgid "More than one week"
 msgstr "Há mais de uma semana"
 
-#: ../stoqlib/gui/widgets/workorder.py:214
+#: ../stoqlib/gui/widgets/workorder.py:225
 msgid "More than two days"
 msgstr "Há mais de dois dias"
 
-#: ../stoqlib/gui/widgets/workorder.py:220
+#: ../stoqlib/gui/widgets/workorder.py:231
 msgid "Tomorrow"
 msgstr "Amanhã"
 
-#: ../stoqlib/gui/widgets/workorder.py:222
+#: ../stoqlib/gui/widgets/workorder.py:233
 msgid "Next 7 days"
 msgstr "Próximos 7 dias"
 
-#: ../stoqlib/gui/widgets/workorder.py:224
+#: ../stoqlib/gui/widgets/workorder.py:235
 msgid "Future"
 msgstr "Futuro"
 
@@ -16624,11 +16629,15 @@ msgstr "Fechamento de consignação"
 msgid "The batch '%s' does not exist"
 msgstr "O lote '%s' não existe"
 
-#: ../stoqlib/gui/wizards/inventorywizard.py:126
+#: ../stoqlib/gui/wizards/inventorywizard.py:147
+msgid "Some barcodes were not found"
+msgstr ""
+
+#: ../stoqlib/gui/wizards/inventorywizard.py:161
 msgid "It was not possible to import inventory count. Check file format"
 msgstr "Não foi possível importar a contagem do inventário. Verifique o formato do arquivo"
 
-#: ../stoqlib/gui/wizards/inventorywizard.py:377
+#: ../stoqlib/gui/wizards/inventorywizard.py:406
 msgid "Inventory product counting"
 msgstr "Contando produtos de inventário"
 
@@ -19056,11 +19065,11 @@ msgstr "entrada de inventário"
 msgid "inventory entries"
 msgstr "entradas de inventário"
 
-#: ../stoqlib/reporting/labelreport.py:55
+#: ../stoqlib/reporting/labelreport.py:57
 msgid "Labels to print"
 msgstr "Etiquetas a imprimir"
 
-#: ../stoqlib/reporting/labelreport.py:89
+#: ../stoqlib/reporting/labelreport.py:84
 msgid "Template file for printing labels was not found."
 msgstr "Arquivo de modelo para impressão de etiquetas não foi encontrado."
 
