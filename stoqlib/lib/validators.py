@@ -109,7 +109,7 @@ def validate_area_code(code):
 def validate_cpf(cpf):
     cpf = ''.join(re.findall(r'\d', str(cpf)))
 
-    if not cpf or len(cpf) < 11:
+    if not cpf or len(cpf) != 11:
         return False
 
     # FIXME: use modulo11 from algorithms.py

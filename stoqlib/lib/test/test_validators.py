@@ -75,6 +75,8 @@ class TestValidators(DomainTest):
         self.assertFalse(validate_cpf(''))
         self.assertFalse(validate_cpf(None))
         self.assertFalse(validate_cpf('15948726375'))
+        # A number with more than 11 digits. Ex: a CNPJ
+        self.assertFalse(validate_cpf('45.997.418/0001-53'))
 
     def test_validate_c_n_p_j(self):
         self.assertTrue(validate_cnpj('11222333000181'))
