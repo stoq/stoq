@@ -23,7 +23,7 @@
 
 from gi.repository import Gtk, Gdk, Gio
 
-from storm.expr import And, Eq, Ne
+from storm.expr import Eq
 
 from stoqlib.api import api
 from stoqlib.domain.workorder import WorkOrderView, WorkOrder
@@ -82,6 +82,9 @@ class WorkOrderRow(Gtk.ListBoxRow):
             identifier += ' (%s <a href="#">%s</a>)' % (_('Sale'),
                                                         api.escape(str(model.sale_identifier)))
             salesperson += ' %s' % api.escape(model.sale.get_salesperson_name())
+        else:
+            employee = model.work_order.quote_responsible
+            salesperson += ' %s' % api.escape(employee.person.name)
 
         self.due_date = self._new_label(due_date, xalign=1)
         self.client = self._new_label(client, expand=True)
@@ -248,8 +251,7 @@ class WorkOrderList(Gtk.Box):
 
     def _get_orders(self):
         branch = api.get_current_branch(self.store)
-        query = And(Ne(WorkOrderView.sale_id, None),
-                    Eq(WorkOrderView.branch_id, branch.id))
+        query = Eq(WorkOrderView.branch_id, branch.id)
         result = WorkOrderView.find_pending(self.store).find(query)
         return result.order_by(WorkOrder.estimated_finish, WorkOrder.status)
 

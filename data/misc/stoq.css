@@ -135,6 +135,10 @@ label.tour {
  *  Work order status tags
  */
 
+.tag.opened {
+    color: white;
+    background: #a40000;
+}
 .tag.waiting {
     color: white;
     background: #a40000;
