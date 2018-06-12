@@ -90,7 +90,18 @@ class WorkOrderRow(Gtk.ListBoxRow):
         self.status = self._new_label('%s' % api.escape(model.status_str),
                                       xalign=1, halign=Gtk.Align.END)
         self.status.get_style_context().add_class('tag')
-        self.status.get_style_context().add_class(model.status)
+        hbox = Gtk.HBox(spacing=6)
+        informed_date = model.work_order.client_informed_date
+        if informed_date:
+            self.status.get_style_context().add_class('client-informed')
+            informed_image = Gtk.Image.new_from_icon_name('call-start-symbolic',
+                                                          Gtk.IconSize.BUTTON)
+            formatted_date = api.escape(informed_date.strftime('%x'))
+            informed_image.set_tooltip_text(_('Client informed %s') % formatted_date)
+            hbox.pack_start(informed_image, True, True, 0)
+            hbox.set_halign(Gtk.Align.END)
+        else:
+            self.status.get_style_context().add_class(model.status)
 
         button = Gtk.Button()
         button.connect('clicked', self._on_button__clicked)
@@ -100,16 +111,6 @@ class WorkOrderRow(Gtk.ListBoxRow):
         button.add(box)
         image = Gtk.Image.new_from_icon_name('view-more-symbolic', Gtk.IconSize.BUTTON)
         box.pack_start(image, False, False, 0)
-
-        hbox = Gtk.HBox(spacing=6)
-        informed_date = model.work_order.client_informed_date
-        if informed_date:
-            informed_image = Gtk.Image.new_from_icon_name('call-start-symbolic',
-                                                          Gtk.IconSize.BUTTON)
-            formatted_date = api.escape(informed_date.strftime('%x'))
-            informed_image.set_tooltip_text(_('Client informed %s') % formatted_date)
-            hbox.pack_start(informed_image, True, True, 0)
-            hbox.set_halign(Gtk.Align.END)
 
         eb = Gtk.EventBox()
         eb.set_halign(Gtk.Align.END)

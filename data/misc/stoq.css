@@ -142,10 +142,15 @@ label.tour {
 
 .tag.in-progress {
     color: white;
-    background: #204a87;
+    background: #ff8c00;
 }
 
 .tag.finished {
+    color: white;
+    background: #204a87;
+}
+
+.tag.client-informed {
     color: white;
     background: #4e9a06;
 }
