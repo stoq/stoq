@@ -35,7 +35,7 @@ from kiwi.currency import currency
 from kiwi.python import Settable
 from stoqdrivers.enum import TaxType
 from storm.expr import (And, Avg, Count, LeftJoin, Join, Max, In,
-                        Or, Sum, Alias, Select, Cast, Eq, Coalesce)
+                        Or, Sum, Alias, Select, Cast, Eq, Coalesce, Ne)
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
@@ -2948,3 +2948,48 @@ class SoldItemsByClient(Viewable):
                 Sale.status == Sale.STATUS_ORDERED)
 
     group_by = [id, Person.id, Product, sellable_category, Sellable.id]
+
+
+_Payments = Select(
+    columns=[Payment.group_id,
+             Alias(Sum(Payment.value), 'value')],
+    tables=[Payment, Join(PaymentMethod, PaymentMethod.id == Payment.method_id)],
+    where=And(Payment.status != Payment.STATUS_CANCELLED,
+              Payment.payment_type == Payment.TYPE_IN,
+              PaymentMethod.method_name == u'credit'),
+    group_by=[Payment.group_id])
+
+
+class SoldItemsBySalesperson(Viewable):
+    id = Sellable.id
+    code = Sellable.code
+    description = Sellable.description
+
+    category = SellableCategory.description
+    batch_number = Coalesce(StorableBatch.batch_number, u'')
+
+    brand = Product.brand
+
+    branch_name = Company.fancy_name
+    salesperson_name = Person.name
+
+    quantity = Sum(SaleItem.quantity)
+    total = Sum(SaleItem.quantity * SaleItem.price)
+
+    tables = [
+        Sellable,
+        LeftJoin(Product, Product.id == Sellable.id),
+        LeftJoin(SellableCategory, Sellable.category_id == SellableCategory.id),
+        Join(SaleItem, SaleItem.sellable_id == Sellable.id),
+        Join(Sale, SaleItem.sale_id == Sale.id),
+        LeftJoin(StorableBatch, StorableBatch.id == SaleItem.batch_id),
+        Join(Branch, Sale.branch_id == Branch.id),
+        Join(Company, Branch.person_id == Company.person_id),
+        Join(SalesPerson, SalesPerson.id == Sale.salesperson_id),
+        Join(Person, Person.id == SalesPerson.person_id),
+    ]
+
+    clause = And(Ne(Sale.confirm_date, None),
+                 Sale.status != Sale.STATUS_CANCELLED)
+    group_by = [id, branch_name, code, description, category, batch_number,
+                salesperson_name, brand]

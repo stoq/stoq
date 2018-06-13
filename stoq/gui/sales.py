@@ -56,6 +56,7 @@ from stoqlib.gui.search.salespersonsearch import SalesPersonSalesSearch
 from stoqlib.gui.search.salesearch import (SalesByPaymentMethodSearch,
                                            SoldItemsByBranchSearch,
                                            SoldItemsByClientSearch,
+                                           SoldItemsBySalespersonSearch,
                                            UnconfirmedSaleItemsSearch)
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
@@ -191,6 +192,9 @@ class SalesApp(ShellApp):
             ("SearchSoldItemsByClient", None, _("Sold items by client..."),
              None,
              _("Search for products sold by client")),
+            ("SearchSoldItemsBySalesperson", None, _("Sold items by salesperson.."),
+             None,
+             _("Search for products sold by salesperson")),
 
 
             # Sale
@@ -250,7 +254,7 @@ class SalesApp(ShellApp):
              self.SearchCommission, self.SearchSalesPersonSales])
         self.window.add_search_items(
             [self.SearchUnconfirmedSaleItems, self.SearchSoldItemsByBranch,
-             self.SearchSoldItemsByClient])
+             self.SearchSoldItemsByClient, self.SearchSoldItemsBySalesperson])
         self.window.add_search_items(
             [self.LoanSearch, self.LoanSearchItems])
 
@@ -657,6 +661,9 @@ class SalesApp(ShellApp):
 
     def on_SearchSoldItemsByClient__activate(self, action):
         self.run_dialog(SoldItemsByClientSearch, self.store)
+
+    def on_SearchSoldItemsBySalesperson__activate(self, action):
+        self.run_dialog(SoldItemsBySalespersonSearch, self.store)
 
     # Toolbar
 

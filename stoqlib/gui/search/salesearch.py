@@ -34,6 +34,7 @@ from kiwi.ui.objectlist import Column
 from storm.expr import Count, And
 
 from stoqlib.api import api
+from stoqlib.enums import SearchFilterPosition
 from stoqlib.domain.sale import (Sale,
                                  SaleView,
                                  SalePaymentMethodView,
@@ -319,6 +320,43 @@ class SoldItemsByClientSearch(SearchDialog):
             QuantityColumn('quantity', title=_('Qty'), use_having=True),
             SearchColumn('price', title=_('Avg price'), data_type=currency,
                          use_having=True),
+            SearchColumn('total', title=_('Total'), data_type=currency,
+                         use_having=True)
+        ]
+        return columns
+
+
+class SoldItemsBySalespersonSearch(SearchDialog):
+    from stoqlib.domain.sale import SoldItemsBySalesperson
+    title = _(u'Search for Items sold by Salesperson')
+    size = (800, 450)
+    search_spec = SoldItemsBySalesperson
+    unlimited_results = True
+
+    branch_filter_column = Sale.branch_id
+
+    def setup_widgets(self):
+        self.add_csv_button(_('Sale items'), _('sale items'))
+
+    def create_filters(self):
+        self.set_text_field_columns(['salesperson_name', 'description', 'code'])
+
+        self._date_filter = DateSearchFilter("Data:")
+        self.add_filter(self._date_filter, SearchFilterPosition.BOTTOM,
+                        columns=[Sale.confirm_date])
+
+    def get_columns(self):
+        columns = [
+            SearchColumn('salesperson_name', title=_('Salesperson'), data_type=str),
+            SearchColumn('code', title=_('Code'), data_type=str, sorted=True,
+                         order=Gtk.SortType.DESCENDING),
+            SearchColumn('description', title=_('Description'),
+                         data_type=str, expand=True),
+            Column('brand', title=_('Brand'), data_type=str),
+            Column('batch_number', title=_('Batch'), data_type=str, visible=False),
+            SearchColumn('category', title=_('Category'), data_type=str,
+                         visible=False),
+            QuantityColumn('quantity', title=_('Qty'), use_having=True),
             SearchColumn('total', title=_('Total'), data_type=currency,
                          use_having=True)
         ]
