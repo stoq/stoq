@@ -41,7 +41,9 @@ from stoqlib.database.properties import (PriceCol, DateTimeCol, UnicodeCol,
 from stoqlib.database.runtime import get_current_station
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
+from stoqlib.domain.payment.card import CreditCardData
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.person import Person, LoginUser
 from stoqlib.domain.station import BranchStation
 from stoqlib.exceptions import TillError
@@ -86,10 +88,15 @@ class Till(Domain):
     #: financial operations can be done in this store.
     STATUS_CLOSED = u'closed'
 
+    #: after the till is closed, it can optionally be verified by a different user
+    #: (usually a manager or supervisor)
+    STATUS_VERIFIED = u'verified'
+
     statuses = collections.OrderedDict([
         (STATUS_PENDING, _(u'Pending')),
         (STATUS_OPEN, _(u'Opened')),
         (STATUS_CLOSED, _(u'Closed')),
+        (STATUS_VERIFIED, _(u'Verified')),
     ])
 
     status = EnumCol(default=STATUS_PENDING)
@@ -106,6 +113,9 @@ class Till(Domain):
     #: When the till was closed or None if it has not yet been closed
     closing_date = DateTimeCol(default=None)
 
+    #: When the till was verifyed or None if it's not yet verified
+    verify_date = DateTimeCol(default=None)
+
     station_id = IdCol()
 
     #: the |branchstation| associated with the till, eg the computer
@@ -115,14 +125,16 @@ class Till(Domain):
     observations = UnicodeCol(default=u"")
 
     responsible_open_id = IdCol()
-
     #: The responsible for opening the till
     responsible_open = Reference(responsible_open_id, "LoginUser.id")
 
     responsible_close_id = IdCol()
-
     #: The responsible for closing the till
     responsible_close = Reference(responsible_close_id, "LoginUser.id")
+
+    responsible_verify_id = IdCol()
+    #: The responsible for verifying the till
+    responsible_verify = Reference(responsible_verify_id, "LoginUser.id")
 
     #
     # Classmethods
@@ -303,7 +315,6 @@ class Till(Domain):
         :returns: the cash amount on the till
         :rtype: currency
         """
-        from stoqlib.domain.payment.method import PaymentMethod
         store = self.store
         money = PaymentMethod.get_by_name(store, u'money')
 
@@ -343,6 +354,36 @@ class Till(Domain):
             TillEntry, And(TillEntry.value < 0,
                            TillEntry.till_id == self.id))
         return currency(results.sum(TillEntry.value) or 0)
+
+    def get_day_summary(self):
+        """Get the summary of this till for closing.
+
+        When using a blind closing process, this will create TillSummary entries that
+        will save the values all payment methods used.
+        """
+        money_method = PaymentMethod.get_by_name(self.store, u'money')
+        day_history = {}
+        # Keys are (method, provider, card_type), provider and card_type may be None if
+        # payment was not with card
+        day_history[(money_method, None, None)] = self.initial_cash_amount
+
+        for entry in self.get_entries():
+            provider = card_type = None
+            payment = entry.payment
+            method = payment.method if payment else money_method
+            if payment and payment.card_data:
+                provider = payment.card_data.provider
+                card_type = payment.card_data.card_type
+
+            key = (method, provider, card_type)
+            day_history.setdefault(key, 0)
+            day_history[key] += entry.value
+
+        summary = []
+        for (method, prodiver, card_type), value in day_history.items():
+            summary.append(TillSummary(till=self, method=method, provider=provider,
+                                       card_type=card_type, system_value=value))
+        return summary
 
     #
     # Private
@@ -412,6 +453,47 @@ class TillEntry(Domain):
     @property
     def branch_name(self):
         return self.branch.get_description()
+
+
+class TillSummary(Domain):
+    """A TillSummary is a summary of the state of all payment methods when the till was
+    closed.
+    """
+    __storm_table__ = 'till_summary'
+
+    #: The value that was registerd in Stoq when the till was closed.
+    system_value = PriceCol()
+
+    #: The value the user informed when closing the till. This can be different than the
+    #: system value when using a blind till closing process (where the user does not
+    #: know the system value)
+    user_value = PriceCol()
+
+    #: When using a blind closing process, this is the value that the manager verified
+    #: that actually was on the till. All values can differ.
+    verify_value = PriceCol()
+
+    method_id = IdCol(allow_none=False)
+    #: The method this item is for
+    method = Reference(method_id, 'PaymentMethod.id')
+
+    provider_id = IdCol(allow_none=True)
+    provider = Reference(provider_id, 'CreditProvider.id')
+
+    card_type = EnumCol(allow_none=True)
+
+    till_id = IdCol(allow_none=False)
+    #: the |till| this item takes part of
+    till = Reference(till_id, 'Till.id')
+
+    @property
+    def description(self):
+        if not self.card_type:
+            return self.method.get_description()
+
+        return '%s %s %s' % (self.method.get_description(),
+                             self.provider.short_name,
+                             CreditCardData.short_desc[self.card_type])
 
 
 class TillClosedView(Viewable):

@@ -18,13 +18,14 @@ GtkDialog(main_dialog.toplevel): title='Closing Opened Till', hidden
             SummaryLabel(fill=True):
               GtkLabel(expand=True, fill=True, padding=6): '<b>Total balance:</b>'
               GtkLabel(): '$0.00'
-          GtkTable(table1, fill=True):
-            GtkLabel(label18): 'Float Remaining:'
-            ProxyLabel(balance): '<span >$0.00</span>'
-            ProxyLabel(label17): 'Amount Removed ($CURRENCY):'
+          GtkGrid(totals_grid, fill=True):
             ProxyEntry(value): '0.00'
-            GtkLabel(label1): 'Observations:'
-            GtkViewport(viewport1):
+            ProxyLabel(label17): 'Amount Removed ($CURRENCY):'
+            ProxyLabel(balance): '<span >$0.00</span>'
+            GtkLabel(label18): 'Float Remaining:'
+          GtkBox(box1, orientation=vertical, fill=True):
+            GtkLabel(label1, fill=True): 'Observations:'
+            GtkViewport(viewport1, expand=True, fill=True):
               GtkScrolledWindow(scrolledwindow1):
                 ProxyTextView(observations):
       GtkBox(orientation=horizontal, fill=True):

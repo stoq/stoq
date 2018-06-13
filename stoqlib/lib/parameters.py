@@ -411,6 +411,15 @@ _details = [
         int, initial=0, range=(0, 22)),
 
     ParameterDetails(
+        u'TILL_BLIND_CLOSING',
+        _('Till'),
+        _('Use blind closing for till'),
+        _('When set, the user will perform a blind till closing, ie, he will not know '
+          'the values that are supposed to be in the till and will only inform the '
+          'quantity he counted for each payment method'),
+        bool, initial=False),
+
+    ParameterDetails(
         u'CONFIRM_SALES_ON_TILL',
         _(u'Sales'),
         _(u'Confirm sales in Till'),

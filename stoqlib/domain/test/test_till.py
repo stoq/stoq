@@ -324,3 +324,35 @@ class TestTillEntry(DomainTest):
         person.company.fancy_name = None
         self.assertNotEqual(entry.branch_name, u'Test Shop')
         self.assertEqual(entry.branch_name, u'Test')
+
+
+class TestTillSummary(DomainTest):
+
+    def test_description_money(self):
+        till = self.create_till()
+        till.open_till()
+        payment = self.create_payment()
+        payment.due_date = till.opening_date
+        payment.set_pending()
+        TillEntry(description=u'test', value=payment.value, till=till,
+                  branch=till.station.branch, payment=payment, store=self.store)
+
+        summary = till.get_day_summary()
+        self.assertEqual(len(summary), 1)
+        self.assertEqual(summary[0].description, 'Money')
+
+    def test_description_card(self):
+        till = self.create_till()
+        till.open_till()
+        till.initial_cash_amount = 0
+        payment = self.create_card_payment(provider_id='VISA')
+        payment.due_date = till.opening_date
+        payment.set_pending()
+        TillEntry(description=u'test', value=payment.value, till=till,
+                  branch=till.station.branch, payment=payment, store=self.store)
+
+        summary = till.get_day_summary()
+        self.assertEqual(len(summary), 2)  # There are two, since money is always there.
+
+        card_summary = [i for i in summary if i.method.method_name == 'card'][0]
+        self.assertEqual(card_summary.description, 'Card VISA Credit')

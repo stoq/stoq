@@ -76,7 +76,7 @@ _tables = [
                 "UserBranchAccess"]),
     ('synchronization', ["BranchSynchronization"]),
     ('station', ["BranchStation"]),
-    ('till', ["Till", "TillEntry"]),
+    ('till', ["Till", "TillEntry", 'TillSummary']),
     ('payment.card', ["CreditProvider", "CreditCardData", 'CardPaymentDevice',
                       'CardOperationCost']),
     ('payment.category', ["PaymentCategory"]),

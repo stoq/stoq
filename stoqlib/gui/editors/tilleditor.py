@@ -208,6 +208,7 @@ class TillClosingEditor(BaseEditor):
             assert self.till
         self._close_db = close_db
         self._close_ecf = close_ecf
+        self._blind_close = sysparam.get_bool('TILL_BLIND_CLOSING')
         BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
@@ -221,14 +222,17 @@ class TillClosingEditor(BaseEditor):
         self.value.update(value)
 
         self.day_history.set_columns(self._get_columns())
-        self.day_history.connect('row-activated', lambda olist, row: self.confirm())
-        self.day_history.add_list(self._get_day_history())
-        summary_day_history = SummaryLabel(
-            klist=self.day_history,
-            column='value',
-            label='<b>%s</b>' % api.escape(_(u'Total balance:')))
-        summary_day_history.show()
-        self.day_history_box.pack_start(summary_day_history, False, True, 0)
+        if not self._blind_close:
+            self.day_history.add_list(self._get_day_history())
+            summary_day_history = SummaryLabel(
+                klist=self.day_history,
+                column='system_value',
+                label='<b>%s</b>' % api.escape(_(u'Total balance:')))
+            summary_day_history.show()
+            self.day_history_box.pack_start(summary_day_history, False, True, 0)
+        else:
+            self.totals_grid.hide()
+            self.day_history.add_list(self.till.get_day_summary())
 
     def _get_day_history(self):
         if not self.till:
@@ -248,19 +252,24 @@ class TillClosingEditor(BaseEditor):
                 else:
                     desc = _(u'Cash Out')
 
-            if desc in day_history.keys():
-                day_history[desc] += entry.value
-            else:
-                day_history[desc] = entry.value
+            day_history.setdefault(desc, 0)
+            day_history[desc] += entry.value
 
         for description, value in day_history.items():
-            yield Settable(description=description, value=value)
+            yield Settable(description=description, system_value=value, user_value=0)
 
     def _get_columns(self):
-        return [Column('description', title=_('Description'), data_type=str,
-                       width=300, sorted=True),
-                ColoredColumn('value', title=_('Amount'), data_type=currency,
-                              color='red', data_func=lambda x: x < 0)]
+        cols = [Column('description', title=_('Description'), data_type=str,
+                       width=300, sorted=True)]
+        if self._blind_close:
+            cols.append(
+                Column('user_value', title=_('Amount'), data_type=currency,
+                       editable=True))
+        else:
+            cols.append(
+                ColoredColumn('system_value', title=_('Amount'), data_type=currency,
+                              color='red', data_func=lambda x: x < 0))
+        return cols
 
     #
     # BaseEditorSlave
@@ -276,6 +285,12 @@ class TillClosingEditor(BaseEditor):
                                     TillClosingEditor.proxy_widgets)
 
     def validate_confirm(self):
+        if self._blind_close:
+            for item in self.day_history:
+                if item.user_value is None:
+                    warning(_("You must fill all the values"))
+                    return False
+
         till = self.model.till
         removed = abs(self.model.value)
         if removed and removed > till.get_balance():

@@ -1562,6 +1562,7 @@ class TestPersonMerging(DomainTest):
             'UPDATE stock_transaction_history SET responsible_id=%s WHERE stock_transaction_history.responsible_id = %s',  # nopep8
             'UPDATE till SET responsible_close_id=%s WHERE till.responsible_close_id = %s',  # nopep8
             'UPDATE till SET responsible_open_id=%s WHERE till.responsible_open_id = %s',  # nopep8
+            'UPDATE till SET responsible_verify_id=%s WHERE till.responsible_verify_id = %s',  # nopep8
             'UPDATE work_order_history SET user_id=%s WHERE work_order_history.user_id = %s',  # nopep8
             'UPDATE work_order_package SET receive_responsible_id=%s WHERE work_order_package.receive_responsible_id = %s',  # nopep8
             'UPDATE work_order_package SET send_responsible_id=%s WHERE work_order_package.send_responsible_id = %s',  # nopep8

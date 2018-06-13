@@ -100,6 +100,7 @@ GtkBox(vbox1, orientation=vertical):
     row: 'Smart lists', 'Load items intelligently from the database', 'Yes'
     row: 'Stock', 'Default C.F.O.P. for Stock Decreases', '5.949 Outra saída de mercadoria ou prestação de serviço não especificado'
     row: 'Till', 'Till tolerance for closing', '0'
+    row: 'Till', 'Use blind closing for till', 'No'
     row: 'Till', 'Show total received payments of the day on till', 'No'
     row: 'Work order', 'Defect detected template for work orders', ''
     row: 'Work order', 'Notice that will be added to the work order report', ''
