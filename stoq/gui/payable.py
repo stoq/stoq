@@ -156,7 +156,7 @@ class PayableApp(BaseAccountWindow):
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'supplier_name',
-                                     'identifier_str'])
+                                     'identifier_str', 'invoice_numbers'])
         self.create_main_filter()
 
     def get_columns(self):
@@ -167,6 +167,7 @@ class PayableApp(BaseAccountWindow):
                 Column('color', title=_('Description'), width=20,
                        data_type=GdkPixbuf.Pixbuf, format_func=render_pixbuf,
                        column='description'),
+                SearchColumn('invoice_numbers', title=_('Invoice Numbers'), data_type=str),
                 Column('comments_number', title=_(u'Comments'),
                        visible=False),
                 SearchColumn('supplier_name', title=_('Supplier'),

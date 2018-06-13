@@ -32,7 +32,7 @@ from storm.expr import (And, Count, Join, LeftJoin, Or, Sum, Alias,
                         Select, Cast)
 from storm.info import ClassAlias
 
-from stoqlib.database.expr import Date, Field
+from stoqlib.database.expr import Date, Field, ArrayAgg, ArrayToString
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.payment.card import (CreditProvider,
@@ -46,6 +46,7 @@ from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.person import Person, Branch, Company
 from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.receiving import (PurchaseReceivingMap, ReceivingInvoice, ReceivingOrder)
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.parameters import sysparam
@@ -267,8 +268,23 @@ class InPaymentView(BasePaymentView):
         return False
 
 
+_InvoiceNumberSummary = Alias(Select(
+    columns=[Alias(PurchaseOrder.group_id, 'group_id'),
+             Alias(ArrayToString(ArrayAgg(ReceivingInvoice.invoice_number), ', '),
+                   'invoice_numbers')],
+    tables=[
+        PurchaseOrder,
+        Join(PurchaseReceivingMap, PurchaseOrder.id == PurchaseReceivingMap.purchase_id),
+        Join(ReceivingOrder, ReceivingOrder.id == PurchaseReceivingMap.receiving_id),
+        Join(ReceivingInvoice, ReceivingOrder.receiving_invoice_id == ReceivingInvoice.id),
+    ],
+    group_by=[PurchaseOrder.group_id]), '_invoice_number_summary')
+
+
 class OutPaymentView(BasePaymentView):
     supplier_name = Person.name
+
+    invoice_numbers = Field('_invoice_number_summary', 'invoice_numbers')
 
     _count_tables = BasePaymentView._count_tables[:]
     _count_tables.append(
@@ -279,6 +295,8 @@ class OutPaymentView(BasePaymentView):
     tables.extend([
         LeftJoin(Person,
                  Person.id == BasePaymentView.PaymentGroup_Sale.recipient_id),
+        LeftJoin(_InvoiceNumberSummary, Field('_invoice_number_summary', 'group_id') ==
+                 PaymentGroup.id),
     ])
 
     clause = (Payment.payment_type == Payment.TYPE_OUT)

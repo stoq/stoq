@@ -160,6 +160,11 @@ class ArrayAgg(NamedFunc):
     name = "array_agg"
 
 
+class ArrayToString(NamedFunc):
+    __slots__ = ()
+    name = "array_to_string"
+
+
 class RowNumber(NamedFunc):
     __slots__ = ()
     name = "ROW_NUMBER"

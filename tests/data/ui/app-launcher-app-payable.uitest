@@ -32,6 +32,7 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
                 column: title='Payment #'
                 column: title='Description', expand
                 column: title='Description'
+                column: title='Invoice Numbers'
                 column: title='Comments', hidden
                 column: title='Supplier'
                 column: title='Open date', hidden
@@ -41,7 +42,7 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
                 column: title='Value'
                 column: title='Paid'
                 column: title='Category', hidden
-                row: 1, '1/1 Money for order 00001', None, None, 'Cia de Roupas São Carlos', datetime.datetime(2008, 1, 1, 0, 0), datetime.datetime(2008, 1, 1, 0, 0), None, 'To Pay', <currency $7,930>, None, None
+                row: 1, '1/1 Money for order 00001', None, '1', None, 'Cia de Roupas São Carlos', datetime.datetime(2008, 1, 1, 0, 0), datetime.datetime(2008, 1, 1, 0, 0), None, 'To Pay', <currency $7,930>, None, None
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkBox(orientation=horizontal):
