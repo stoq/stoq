@@ -13,5 +13,6 @@ GtkBox(vbox1, orientation=vertical):
     row: 'Accounts', 'Parent till account', 'Tills'
     row: 'Accounts', 'Imbalance account', 'Imbalance'
     row: 'Accounts', "Sales' payments account", ''
+    row: 'Payments', 'Block payments from/to the imbalance account', 'No'
   GtkButtonBox(hbuttonbox1, orientation=horizontal, fill=True):
     GtkButton(edit_button): 'gtk-edit', insensitive

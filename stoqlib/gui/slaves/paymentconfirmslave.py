@@ -47,6 +47,7 @@ from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.utils.filters import get_filters_for_attachment
 from stoqlib.lib.dateutils import localtoday
+from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -437,6 +438,16 @@ class _PaymentConfirmSlave(BaseEditor):
 
     def get_account_destination_combo(self):
         raise NotImplementedError
+
+    def validate_confirm(self):
+        if not sysparam.get_bool('BLOCK_PAYMENT_FOR_IMBALANCE_ACCOUNT'):
+            return True
+
+        accounts = [self.source_account.get_selected(), self.destination_account.get_selected()]
+        if sysparam.get_object(self.store, 'IMBALANCE_ACCOUNT') in accounts:
+            warning(_('You must inform the source and destination accounts'))
+            return False
+        return True
 
     #
     # Callbacks

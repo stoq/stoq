@@ -765,6 +765,14 @@ _details = [
         bool, initial=False, is_editable=False),
 
     ParameterDetails(
+        'BLOCK_PAYMENT_FOR_IMBALANCE_ACCOUNT',
+        _('Payments'),
+        _('Block payments from/to the imbalance account'),
+        _('When set, the user will be required to inform both source and destination '
+          'accounts that are different than the imbalance account'),
+        bool, initial=False),
+
+    ParameterDetails(
         u'BLOCK_INCOMPLETE_PURCHASE_PAYMENTS',
         _(u'Payments'),
         _(u'Block incomplete purchase payments'),

@@ -187,7 +187,7 @@
  "stoqlib/gui/slaves/commissionslave.py": 60.56,
  "stoqlib/gui/slaves/employeeslave.py": 86.03,
  "stoqlib/gui/slaves/imageslave.py": 60.09,
- "stoqlib/gui/slaves/paymentconfirmslave.py": 82.16,
+ "stoqlib/gui/slaves/paymentconfirmslave.py": 81,
  "stoqlib/gui/slaves/paymentslave.py": 81.69,
  "stoqlib/gui/slaves/productionslave.py": 75.21,
  "stoqlib/gui/slaves/productslave.py": 78.27,
