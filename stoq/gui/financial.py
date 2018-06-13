@@ -645,6 +645,8 @@ class FinancialApp(ShellApp):
         return True
 
     def _can_delete_account(self):
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
+            return False
         if not self._is_accounts_tab():
             return False
 
@@ -664,6 +666,8 @@ class FinancialApp(ShellApp):
         return False
 
     def _can_delete_transaction(self):
+        if api.sysparam.get_bool('SYNCHRONIZED_MODE'):
+            return False
         if not self._is_transaction_tab():
             return False
 
