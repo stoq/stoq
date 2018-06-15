@@ -54,10 +54,10 @@ GtkDialog(main_dialog.toplevel): title='Purchase Details', hidden
                 column: title='Qty'
                 column: title='Cost'
                 column: title='Total'
-                row: 'Description', Decimal('8.000'), <currency $125>, Decimal('1000.00000000000')
+                row: 'Description', Decimal('8.000'), <currency $135>, <currency $1,080>
               SummaryLabel(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total</b>'
-                GtkLabel(): '<b>$1,000.00</b>'
+                GtkLabel(): '<b>$1,080.00</b>'
             GtkBox(received_vbox, orientation=vertical):
               ObjectList(received_items, expand=True, fill=True):
                 column: title='Description', expand
@@ -65,7 +65,7 @@ GtkDialog(main_dialog.toplevel): title='Purchase Details', hidden
                 column: title='Cost'
                 column: title='Total'
                 column: title='Current Stock'
-                row: 'Description', Decimal('0.000'), <currency $125>, Decimal('0E-11'), None
+                row: 'Description', Decimal('0.000'), <currency $135>, <currency $0>, None
               GtkButtonBox(hbuttonbox2, orientation=horizontal, fill=True):
                 GtkButton(export_received): 'Export to spreadsheet'
               GtkTable(table2):

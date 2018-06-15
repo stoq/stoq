@@ -120,6 +120,14 @@ class ReceivingOrderItem(Domain):
     def description(self):
         return self.sellable.description
 
+    @property
+    def cost_with_ipi(self):
+        return currency(quantize(self.cost + self.unit_ipi_value))
+
+    @property
+    def unit_ipi_value(self):
+        """The Ipi value must be shared through the items"""
+        return currency(quantize(self.ipi_value / self.quantity))
     #
     # Accessors
     #
@@ -137,8 +145,15 @@ class ReceivingOrderItem(Domain):
         cost = self.purchase_item.cost
         return currency(quantize(self.quantity * cost))
 
-    def get_received_total(self):
-        return currency(quantize(self.quantity * self.cost))
+    def get_total_with_ipi(self):
+        cost = self.purchase_item.cost
+        ipi_value = self.ipi_value
+        return currency(quantize(self.quantity * cost + ipi_value))
+
+    def get_received_total(self, with_ipi=False):
+
+        ipi = self.ipi_value if with_ipi else 0
+        return currency(quantize((self.quantity * self.cost) + ipi))
 
     def get_quantity_unit_string(self):
         unit = self.sellable.unit
@@ -162,9 +177,10 @@ class ReceivingOrderItem(Domain):
         storable = self.sellable.product_storable
         purchase = self.purchase_item.order
         if storable is not None:
+            cost = self.cost + (self.ipi_value / self.quantity)
             storable.increase_stock(self.quantity, branch,
                                     StockTransactionHistory.TYPE_RECEIVED_PURCHASE,
-                                    self.id, self.cost, batch=self.batch)
+                                    self.id, cost, batch=self.batch)
         purchase.increase_quantity_received(self.purchase_item, self.quantity)
         ProductHistory.add_received_item(store, branch, self)
 
@@ -407,6 +423,12 @@ class ReceivingOrder(Domain):
         return currency(total)
 
     @property
+    def product_total_with_ipi(self):
+        total = sum((item.get_received_total(with_ipi=True)
+                     for item in self.get_items()), currency(0))
+        return currency(total)
+
+    @property
     def receival_date_str(self):
         return self.receival_date.strftime("%x")
 
@@ -435,7 +457,7 @@ class ReceivingOrder(Domain):
     def total(self):
         """Fetch the total, including discount and surcharge for purchase order
         """
-        total = self.products_total
+        total = self.product_total_with_ipi
         total -= self.total_discounts
         total += self.total_surcharges
 

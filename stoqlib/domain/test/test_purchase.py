@@ -85,6 +85,12 @@ class TestPurchaseItem(DomainTest):
         total_received = item.get_received_total()
         self.assertEqual(total_received, currency(received * item.cost))
 
+    def test_unit_ipi_value(self):
+        item = self.create_purchase_order_item()
+        item.quantity = 3
+        item.ipi_value = 30
+        self.assertEqual(item.unit_ipi_value, 10)
+
     def test_get_pending_quantity(self):
         # Default value of item.quantity is 8
         item = self.create_purchase_order_item()

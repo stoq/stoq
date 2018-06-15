@@ -50,6 +50,7 @@ class TestPurchaseDetailsDialog(GUITest):
 
         # Product
         purchase_item = self.create_purchase_order_item(order)
+        purchase_item.ipi_value = 80
 
         # New receiving
         receiving_order = self.create_receiving_order(purchase_order=order)

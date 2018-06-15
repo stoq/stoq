@@ -117,17 +117,26 @@ class PurchaseItem(Domain):
         Domain.__init__(self, store=store, **kw)
 
     #
+    # Properties
+    #
+
+    @property
+    def unit_ipi_value(self):
+        """Calculate the ipi for each unit of the item"""
+        return currency(quantize(self.ipi_value / self.quantity))
+
+    #
     # Accessors
     #
 
     def get_total(self):
-        return currency(self.quantity * self.cost)
+        return currency((self.quantity * self.cost) + self.ipi_value)
 
     def get_total_sold(self):
         return currency(self.quantity_sold * self.cost)
 
     def get_received_total(self):
-        return currency(self.quantity_received * self.cost)
+        return currency((self.quantity_received * self.cost) + self.ipi_value)
 
     def has_been_received(self):
         return self.quantity_received >= self.quantity
@@ -524,10 +533,12 @@ class PurchaseOrder(Domain):
         to the costs specified in the order.
         """
         for item in self.get_items():
-            item.sellable.cost = item.cost
+            # Since the only way the item have ipi_value is through importer of
+            # a xml from stoqlink, and the cost will be always without ipi
+            item.sellable.cost = item.cost + item.unit_ipi_value
             product = item.sellable.product
             product_supplier = product.get_product_supplier_info(self.supplier)
-            product_supplier.base_cost = item.cost
+            product_supplier.base_cost = item.cost + item.unit_ipi_value
 
     @property
     def status_str(self):
@@ -653,7 +664,8 @@ class PurchaseOrder(Domain):
         receiving = ReceivingOrder(self.store, branch=self.branch)
         receiving.add_purchase(self)
         for item in self.get_items():
-            receiving.add_purchase_item(item, quantity=item.quantity)
+            receiving.add_purchase_item(item, quantity=item.quantity,
+                                        ipi_value=item.ipi_value)
 
         return receiving
 
@@ -792,14 +804,15 @@ class PurchaseItemView(Viewable):
     purchase_item = PurchaseItem
 
     id = PurchaseItem.id
-    cost = PurchaseItem.cost
+    ipi_value = PurchaseItem.ipi_value
+    purchase_cost = PurchaseItem.cost
     quantity = PurchaseItem.quantity
     quantity_received = PurchaseItem.quantity_received
     quantity_sold = PurchaseItem.quantity_sold
     quantity_returned = PurchaseItem.quantity_returned
-    total = PurchaseItem.cost * PurchaseItem.quantity
-    total_received = PurchaseItem.cost * PurchaseItem.quantity_received
-    total_sold = PurchaseItem.cost * PurchaseItem.quantity_sold
+    total_item = (PurchaseItem.cost * PurchaseItem.quantity) + ipi_value
+    total_item_received = (PurchaseItem.cost * PurchaseItem.quantity_received) + ipi_value
+    total_sold = (PurchaseItem.cost * PurchaseItem.quantity_sold) + ipi_value
     current_stock = Sum(ProductStockItem.quantity)
 
     purchase_id = PurchaseOrder.id
@@ -820,6 +833,20 @@ class PurchaseItemView(Viewable):
 
     group_by = [PurchaseItem.id, Sellable.id, PurchaseOrder.id, SellableUnit.id]
 
+    @property
+    def cost(self):
+        return currency(self.purchase_cost + self.purchase_item.unit_ipi_value)
+
+    @property
+    def total(self):
+        return currency(self.total_item)
+
+    @property
+    def total_received(self):
+        # If the item isnt received, we shouldnt be showing the ipi value
+        return currency(self.total_item_received
+                        if self.quantity_received else currency(0))
+
     @classmethod
     def find_by_purchase(cls, store, purchase):
         return store.find(cls, purchase_id=purchase.id)
@@ -837,8 +864,9 @@ class PurchaseItemView(Viewable):
 _ItemSummary = Select(columns=[PurchaseItem.order_id,
                                Alias(Sum(PurchaseItem.quantity), 'ordered_quantity'),
                                Alias(Sum(PurchaseItem.quantity_received), 'received_quantity'),
-                               Alias(Sum(PurchaseItem.quantity *
-                                     PurchaseItem.cost), 'subtotal')],
+                               Alias(Sum(PurchaseItem.ipi_value), 'ipi_value'),
+                               Alias(Sum((PurchaseItem.quantity *
+                                     PurchaseItem.cost) + PurchaseItem.ipi_value), 'subtotal')],
                       tables=[PurchaseItem],
                       group_by=[PurchaseItem.order_id])
 PurchaseItemSummary = Alias(_ItemSummary, '_purchase_item')

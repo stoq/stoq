@@ -75,7 +75,7 @@ class ReceivingOrderDetailsDialog(BaseEditor):
         value_format = '<b>%s</b>'
         total_label = value_format % api.escape(_("Total:"))
         products_summary_label = SummaryLabel(klist=self.product_list,
-                                              column='total',
+                                              column='total_with_ipi',
                                               label=total_label,
                                               value_format=value_format)
 
@@ -95,10 +95,10 @@ class ReceivingOrderDetailsDialog(BaseEditor):
                 Column("quantity_unit_string", title=_("Quantity"),
                        data_type=str, width=90,
                        justify=Gtk.Justification.RIGHT),
-                Column("cost", title=_("Cost"), width=80,
+                Column("cost_with_ipi", title=_("Cost"), width=80,
                        format_func=get_formatted_cost, data_type=currency,
                        justify=Gtk.Justification.RIGHT),
-                Column("total", title=_("Total"), justify=Gtk.Justification.RIGHT,
+                Column("total_with_ipi", title=_("Total"), justify=Gtk.Justification.RIGHT,
                        data_type=currency, width=100)]
 
     #

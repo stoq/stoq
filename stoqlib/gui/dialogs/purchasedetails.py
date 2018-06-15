@@ -88,7 +88,7 @@ class _TemporaryReceivingDetails:
                 surcharge += receiving.total_surcharges
                 if receiving.receiving_invoice:
                     freight += receiving.receiving_invoice.freight_total
-                subtotal += receiving.products_total
+                subtotal += receiving.product_total_with_ipi
                 total += receiving.total
                 quantity += receiving.total_quantity
 

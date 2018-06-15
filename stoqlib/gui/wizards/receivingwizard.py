@@ -46,7 +46,7 @@ from stoqlib.gui.events import ReceivingOrderWizardFinishEvent
 from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
 from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.gui.utils.printing import print_labels
-from stoqlib.lib.defaults import MAX_INT
+from stoqlib.lib.defaults import MAX_INT, quantize
 from stoqlib.lib.formatters import (format_quantity, get_formatted_cost,
                                     get_formatted_price)
 from stoqlib.lib.message import yesno, warning
@@ -63,7 +63,7 @@ class _TemporaryReceivingItem(object):
         self.description = item.sellable.description
         self.category_description = item.sellable.get_category_description()
         self.unit_description = item.sellable.unit_description
-        self.cost = item.cost
+        self.cost = currency(quantize(item.cost + item.unit_ipi_value))
         self.ipi_value = item.ipi_value
         self.icms_st_value = item.icms_st_value
         self.remaining_quantity = item.get_pending_quantity()
