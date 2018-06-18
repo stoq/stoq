@@ -24,6 +24,7 @@
 
 import mock
 
+from stoqlib.api import api
 from stoqlib.database.viewable import Viewable
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.search.sellablesearch import (SellableSearch,
@@ -62,12 +63,16 @@ class BaseTest(object):
         self.assertTrue(issubclass(retval[0], Viewable))
 
     def test_sellable_search(self):
-        viewable, query = self.step.get_sellable_view_query()
-        hide_toolbar = not self.step.sellable_editable
-        search = self.search_class(self.store, search_spec=viewable,
-                                   search_query=query, hide_toolbar=hide_toolbar)
-        search.search.refresh()
-        self.check_search(search, self.search_name)
+        user = api.get_current_user(self.store)
+        with mock.patch.object(user.profile, 'check_app_permission') as has_acess:
+            # We dont want to change the behavior of all tests
+            has_acess.side_effect = [False]
+            viewable, query = self.step.get_sellable_view_query()
+            hide_toolbar = not self.step.sellable_editable
+            search = self.search_class(self.store, search_spec=viewable,
+                                       search_query=query, hide_toolbar=hide_toolbar)
+            search.search.refresh()
+            self.check_search(search, self.search_name)
 
     @mock.patch('stoqlib.gui.wizards.abstractwizard.SellableItemStep._run_advanced_search')
     def test_barcode_activate_(self, advanced_search):
@@ -106,6 +111,18 @@ class TestPurchaseItemStep(BaseTest, GUITest):
     step_class = PurchaseItemStep
     search_class = PurchaseSellableSearch
     search_name = 'item-step-purchase-wizard'
+
+    def test_sellable_search(self):
+        user = api.get_current_user(self.store)
+        with mock.patch.object(user.profile, 'check_app_permission') as has_acess:
+            # We dont want to change the behavior of all tests
+            has_acess.side_effect = [True]
+            viewable, query = self.step.get_sellable_view_query()
+            hide_toolbar = not self.step.sellable_editable
+            search = self.search_class(self.store, search_spec=viewable,
+                                       search_query=query, hide_toolbar=hide_toolbar)
+            search.search.refresh()
+            self.check_search(search, self.search_name)
 
 
 class TestSaleQuoteItemStep(BaseTest, GUITest):

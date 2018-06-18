@@ -34,7 +34,7 @@ from stoqlib.api import api
 from stoqlib.database.orm import ORMObject
 from stoqlib.domain.product import ProductSupplierInfo, Product
 from stoqlib.domain.sellable import Sellable
-from stoqlib.domain.views import SellableFullStockView
+from stoqlib.domain.views import (SellableFullStockView)
 from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.search.searchcolumns import (AccessorColumn, SearchColumn,
@@ -159,6 +159,12 @@ class SellableSearch(SearchEditor):
                                 data_type=str, visible=False),
                    SearchColumn('model', title=_('Model'),
                                 data_type=str, visible=False)]
+
+        user = api.get_current_user(self.store)
+        if user.profile.check_app_permission('purchase'):
+            columns.append(SearchColumn('cost',
+                                        title=_(u'Cost'),
+                                        data_type=currency, visible=True))
 
         if hasattr(self.search_spec, 'price'):
             columns.append(SearchColumn('price',

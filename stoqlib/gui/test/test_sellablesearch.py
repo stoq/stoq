@@ -28,6 +28,7 @@ import mock
 
 from stoq.gui.pos import TemporarySaleItem
 
+from stoqlib.api import api
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.gui.editors.producteditor import ProductEditor
@@ -46,13 +47,16 @@ class TestSellableSearch(GUITest):
         return search
 
     def test_search(self):
-        search = self._show_search()
+        user = api.get_current_user(self.store)
+        with mock.patch.object(user.profile, 'check_app_permission') as has_acess:
+            has_acess.side_effect = [False]
+            search = self._show_search()
 
-        self.check_search(search, 'sellable-no-filter')
+            self.check_search(search, 'sellable-no-filter')
 
-        search.set_searchbar_search_string('cal')
-        search.search.refresh()
-        self.check_search(search, 'sellable-string-filter')
+            search.set_searchbar_search_string('cal')
+            search.search.refresh()
+            self.check_search(search, 'sellable-string-filter')
 
 
 class TestSaleSellableSearch(GUITest):
@@ -62,24 +66,27 @@ class TestSaleSellableSearch(GUITest):
         self.create_storable(product=sellable.product)
         sale_item = TemporarySaleItem(sellable=sellable, quantity=1)
 
-        search = SaleSellableSearch(self.store,
-                                    sale_items=[sale_item], quantity=1)
+        user = api.get_current_user(self.store)
+        with mock.patch.object(user.profile, 'check_app_permission') as has_acess:
+            has_acess.side_effect = [False]
+            search = SaleSellableSearch(self.store,
+                                        sale_items=[sale_item], quantity=1)
 
-        self.assertRaises(TypeError, SaleSellableSearch, self.store,
-                          sale_items=[sale_item],
-                          selection_mode=Gtk.SelectionMode.MULTIPLE)
-        self.assertRaises(TypeError, SaleSellableSearch, self.store,
-                          sale_items=[sale_item], quantity=None)
+            self.assertRaises(TypeError, SaleSellableSearch, self.store,
+                              sale_items=[sale_item],
+                              selection_mode=Gtk.SelectionMode.MULTIPLE)
+            self.assertRaises(TypeError, SaleSellableSearch, self.store,
+                              sale_items=[sale_item], quantity=None)
 
-        search = SaleSellableSearch(self.store)
-        search.search.refresh()
-        self.check_search(search, 'sale-sellable-no-filter')
+            search = SaleSellableSearch(self.store)
+            search.search.refresh()
+            self.check_search(search, 'sale-sellable-no-filter')
 
-        search = SaleSellableSearch(self.store, info_message='test')
-        set_message.assert_called_once_with('test')
+            search = SaleSellableSearch(self.store, info_message='test')
+            set_message.assert_called_once_with('test')
 
-        search = SaleSellableSearch(self.store, search_str='cal')
-        self.check_search(search, 'sale-sellable-string-filter')
+            search = SaleSellableSearch(self.store, search_str='cal')
+            self.check_search(search, 'sale-sellable-string-filter')
 
 
 class TestPurchaseSellableSearch(GUITest):
