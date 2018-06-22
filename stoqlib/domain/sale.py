@@ -273,9 +273,15 @@ class SaleItem(Domain):
 
     @property
     def item_discount(self):
-        if self.price < self.base_price:
-            return self.base_price - self.price
-        return Decimal('0')
+        product = self.sellable.product
+        if product and product.is_package:
+            price = sum([quantize(child.price * child.quantity)
+                         for child in self.children_items])
+            discount = max(0, self.base_price * self.quantity - price)
+        else:
+            discount = self.base_price - self.price
+
+        return Decimal(discount)
 
     @property
     def parent(self):

@@ -2381,6 +2381,22 @@ class TestSaleItem(DomainTest):
         item.price = 150
         self.assertEqual(item.item_discount, 0)
 
+    def test_item_discount_with_package(self):
+        product = self.create_product(description='package', price=0,
+                                      is_package=True)
+        product2 = self.create_product(description='component', price=100)
+        package = self.create_sale_item(sellable=product.sellable)
+        package.base_price = 90
+        package.price = 0
+        component = self.create_sale_item(sellable=product2.sellable, parent_item=package)
+        # Simulating actual discount on package items
+        component.base_price = 90
+        component.price = 80
+        self.assertEqual(package.item_discount, 10)
+        # Testing without package discount
+        component.price = 90
+        self.assertEqual(package.item_discount, 0)
+
     def test_returned_quantity(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
