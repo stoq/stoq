@@ -31,7 +31,11 @@ import time
 import traceback
 import os
 
-from gi.repository import GObject
+try:
+    from gi.repository import GObject
+    has_gi = True
+except ImportError:
+    has_gi = False
 from kiwi.component import get_utility
 from kiwi.utils import gsignal
 
@@ -238,45 +242,48 @@ def has_tracebacks():
     return bool(_tracebacks)
 
 
-class ReportSubmitter(GObject.GObject):
-    gsignal('failed', object)
-    gsignal('submitted', object)
+if has_gi:
+    class ReportSubmitter(GObject.GObject):
+        gsignal('failed', object)
+        gsignal('submitted', object)
 
-    def __init__(self):
-        GObject.GObject.__init__(self)
+        def __init__(self):
+            GObject.GObject.__init__(self)
 
-        self._count = 0
-        self._api = WebService()
-        self.report = collect_report()
+            self._count = 0
+            self._api = WebService()
+            self.report = collect_report()
 
-    def _done(self, args):
-        self.emit('submitted', args)
+        def _done(self, args):
+            self.emit('submitted', args)
 
-    def _error(self, args):
-        self.emit('failed', args)
+        def _error(self, args):
+            self.emit('failed', args)
 
-    def submit(self):
-        return self._api.bug_report(self.report,
-                                    callback=self._on_report__callback,
-                                    errback=self._on_report__errback)
+        def submit(self):
+            return self._api.bug_report(self.report,
+                                        callback=self._on_report__callback,
+                                        errback=self._on_report__errback)
 
-    def _on_report__callback(self, response):
-        if response.status_code == 200:
-            self._on_success(response.json())
-        else:
-            self._on_error()
+        def _on_report__callback(self, response):
+            if response.status_code == 200:
+                self._on_success(response.json())
+            else:
+                self._on_error()
 
-    def _on_report__errback(self, failure):
-        self._on_error(failure)
+        def _on_report__errback(self, failure):
+            self._on_error(failure)
 
-    def _on_error(self, data=None):
-        log.info('Failed to report bug: %r count=%d' % (data, self._count))
-        if self._count < _N_TRIES:
-            self.submit()
-        else:
-            schedule_in_main_thread(self.emit, 'failed', data)
-        self._count += 1
+        def _on_error(self, data=None):
+            log.info('Failed to report bug: %r count=%d' % (data, self._count))
+            if self._count < _N_TRIES:
+                self.submit()
+            else:
+                schedule_in_main_thread(self.emit, 'failed', data)
+            self._count += 1
 
-    def _on_success(self, data):
-        log.info('Finished sending bugreport: %r' % (data, ))
-        schedule_in_main_thread(self.emit, 'submitted', data)
+        def _on_success(self, data):
+            log.info('Finished sending bugreport: %r' % (data, ))
+            schedule_in_main_thread(self.emit, 'submitted', data)
+else:
+    ReportSubmitter = None
