@@ -26,6 +26,7 @@ import unittest
 from decimal import Decimal
 
 import mock
+
 from stoqlib.domain.account import Account
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
@@ -35,7 +36,8 @@ from stoqlib.gui.editors.paymenteditor import (_ONCE, InPaymentEditor,
                                                OutPaymentEditor,
                                                LonelyPaymentDetailsDialog)
 from stoqlib.gui.test.uitestutils import GUITest
-from stoqlib.lib.dateutils import INTERVALTYPE_WEEK, localdate, localtoday
+from stoqlib.lib.dateutils import (INTERVALTYPE_WEEK, INTERVALTYPE_MONTH,
+                                   localdate, localtoday)
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -56,6 +58,22 @@ class TestPaymentEditor(GUITest):
         self.assertEqual(editor.model.value, 0)
         self.assertEqual(editor.model.category, None)
         self.check_editor(editor, 'editor-in-payment-create')
+
+    @mock.patch('stoqlib.gui.editors.paymenteditor.get_current_branch')
+    def test_create_for_another_branch(self, current_branch):
+        branch = self.create_branch()
+
+        with self.sysparam(SYNCHRONIZED_MODE=True):
+            editor = OutPaymentEditor(self.store)
+            current_branch.return_value = branch
+            editor.description.update('Payment name')
+            editor.value.update(100)
+            editor.due_date.update(localdate(2015, 1, 1).date())
+            editor.repeat.update(INTERVALTYPE_MONTH)
+            editor.end_date.update(localdate(2016, 1, 10).date())
+            editor.main_dialog.confirm()
+
+        self.assertEquals(editor.model.identifier, -1)
 
     def test_edit_paid_out_payment(self):
         payment = self.create_payment()

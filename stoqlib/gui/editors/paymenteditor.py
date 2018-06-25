@@ -32,6 +32,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import BoolField, ChoiceField, DateField, PriceField, TextField
 
 from stoqlib.api import api
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.account import Account
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.group import PaymentGroup
@@ -169,6 +170,10 @@ class _PaymentEditor(BaseEditor):
 
         self.model.attachment = self.fields['attachment'].attachment
 
+        other_branch = self._is_for_another_branch()
+        if other_branch:
+            self.model.identifier = Payment.get_temporary_identifier(self.store)
+
         self.store.add(self.model.group)
         self.store.add(self.model)
 
@@ -176,7 +181,8 @@ class _PaymentEditor(BaseEditor):
             Payment.create_repeated(self.store, self.model,
                                     self.repeat.get_selected(),
                                     self.model.due_date.date(),
-                                    self.end_date.get_date())
+                                    self.end_date.get_date(),
+                                    temporary_identifiers=other_branch)
 
     # Private
 
@@ -267,6 +273,15 @@ class _PaymentEditor(BaseEditor):
         method = self.method.get_selected()
         self.person.set_property('mandatory',
                                  method.operation.require_person(payment_type))
+
+    def _is_for_another_branch(self):
+        if not api.sysparam.get_bool('SYNCHRONIZED_MODE'):
+            return False
+
+        if self.model.branch == get_current_branch(self.store):
+            return False
+
+        return True
 
     #
     # Kiwi Callbacks

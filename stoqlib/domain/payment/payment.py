@@ -270,7 +270,8 @@ class Payment(Domain):
         self.store.remove(self)
 
     @classmethod
-    def create_repeated(cls, store, payment, repeat_type, start_date, end_date):
+    def create_repeated(cls, store, payment, repeat_type, start_date, end_date,
+                        temporary_identifiers=False):
         """Create a set of repeated payments.
         Given a type of interval (*repeat_type*), a start date and an end_date,
         this creates a list of payments for that interval.
@@ -282,6 +283,8 @@ class Payment(Domain):
         :param repeat_type: the kind of repetition (weekly, monthly etc)
         :param start_date: the date to start this repetition
         :param end_date: the date to end this repetition
+        :param temporary_identifiers: If the payments should be created with temporary
+          identifiers
         :returns: a list of repeated payments
         """
         dates = create_date_interval(interval_type=repeat_type,
@@ -296,7 +299,11 @@ class Payment(Domain):
 
         payments = []
         for i, date in enumerate(dates[1:]):
+            temporary_identifier = None
+            if temporary_identifiers:
+                temporary_identifier = Payment.get_temporary_identifier(store)
             p = Payment(open_date=payment.open_date,
+                        identifier=temporary_identifier,
                         branch=payment.branch,
                         payment_type=payment.payment_type,
                         status=payment.status,

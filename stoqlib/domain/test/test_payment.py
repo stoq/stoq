@@ -343,6 +343,16 @@ class TestPayment(DomainTest):
         self.assertEqual(payments[0].description, u'2/12 Rent')
         self.assertEqual(payments[10].description, u'12/12 Rent')
 
+    def test_create_repeated_with_temporary_identifier(self):
+        payment = self.create_payment()
+        payment.description = u'temporary'
+        payments = Payment.create_repeated(self.store, payment,
+                                           INTERVALTYPE_MONTH,
+                                           localdate(2012, 1, 1).date(),
+                                           localdate(2012, 3, 1).date(),
+                                           temporary_identifiers=True)
+        (self.assertTrue(p.identifier < 0) for p in payments)
+
     def test_set_not_paid(self):
         sale = self.create_sale()
         self.add_product(sale)
