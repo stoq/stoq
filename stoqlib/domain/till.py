@@ -380,7 +380,7 @@ class Till(Domain):
             day_history[key] += entry.value
 
         summary = []
-        for (method, prodiver, card_type), value in day_history.items():
+        for (method, provider, card_type), value in day_history.items():
             summary.append(TillSummary(till=self, method=method, provider=provider,
                                        card_type=card_type, system_value=value))
         return summary
