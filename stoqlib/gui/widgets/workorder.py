@@ -84,7 +84,8 @@ class WorkOrderRow(Gtk.ListBoxRow):
             salesperson += ' %s' % api.escape(model.sale.get_salesperson_name())
         else:
             employee = model.work_order.quote_responsible
-            salesperson += ' %s' % api.escape(employee.person.name)
+            if employee:
+                salesperson += ' %s' % api.escape(employee.person.name)
 
         self.due_date = self._new_label(due_date, xalign=1)
         self.client = self._new_label(client, expand=True)
