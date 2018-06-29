@@ -241,6 +241,15 @@ class SaleConfirmedRemoteEvent(Event):
     """
 
 
+class SaleCancelCouponEvent(Event):
+    """Emitted after we cancel the sale's coupon
+
+    The coupon can be ecf or sat
+
+    :param sale: The sale we are cancelling the coupon
+    """
+
+
 class SaleItemBeforeDecreaseStockEvent(Event):
     """
     This event is emitted when a |saleitem| is about to decrease the stock
