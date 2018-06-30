@@ -67,7 +67,6 @@ class DeviceSettingsEditor(BaseEditor):
         if station is not None and not isinstance(station, BranchStation):
             raise TypeError("station should be a BranchStation")
 
-        self._device_manager = DeviceManager()
         self._branch_station = station
         # This attribute is set to True when setup_proxies is finished
         self._is_initialized = False
@@ -97,7 +96,7 @@ class DeviceSettingsEditor(BaseEditor):
     def setup_device_port_combo(self):
         items = [(_("Choose..."), None)]
         items.extend([(str(device.device_name), str(device.device_name))
-                      for device in self._device_manager.get_serial_devices()])
+                      for device in DeviceManager.get_serial_devices()])
         items.extend(self._get_usb_devices())
 
         if is_developer_mode():

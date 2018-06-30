@@ -156,7 +156,7 @@ class ShellBootstrap(object):
 
         # We want developers to see deprecation warnings.
         from stoqlib.lib.environment import is_developer_mode
-        if is_developer_mode():
+        if is_developer_mode() and not self._options.quiet:
             import warnings
             if self._options.non_fatal_warnings:
                 action = "default"

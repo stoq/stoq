@@ -44,6 +44,10 @@ def get_shell(args):
                      action="store_true",
                      dest="autoreload",
                      help='Autoreload application when source is modified')
+    group.add_option('', '--quiet',
+                     action="store_true",
+                     dest="quiet",
+                     help='Be quiet about warnings')
     group.add_option('', '--fatal-warnings',
                      action="store_false",
                      dest="non_fatal_warnings",

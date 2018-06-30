@@ -76,7 +76,6 @@ class ECFEditor(BaseEditor):
                      'user_number', 'register_date', 'register_cro']
 
     def __init__(self, store, model=None):
-        self._device_manager = DeviceManager()
         BaseEditor.__init__(self, store, model)
         self.progress_dialog = ProgressDialog()
         self.progress_dialog.connect('cancel',
@@ -229,7 +228,7 @@ class ECFEditor(BaseEditor):
 
     def _populate_serial_ports(self):
         values = []
-        for device in self._device_manager.get_serial_devices():
+        for device in DeviceManager.get_serial_devices():
             values.append(device.device_name)
         if not self.model.device_name in values:
             values.append(self.model.device_name)
