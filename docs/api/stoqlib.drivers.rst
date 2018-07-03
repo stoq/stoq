@@ -17,14 +17,6 @@ drivers Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`scale` Module
--------------------
-
-.. automodule:: stoqlib.drivers.scale
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Subpackages
 -----------
 

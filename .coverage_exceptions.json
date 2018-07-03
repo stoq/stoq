@@ -56,7 +56,6 @@
  "stoqlib/database/settings.py": 53.00,
  "stoqlib/database/tables.py": 93.75,
  "stoqlib/drivers/cheque.py": 38.46,
- "stoqlib/drivers/scale.py": 50.00,
  "stoqlib/exceptions.py": 94.29,
  "stoqlib/exporters/xlsexporter.py": 93.57,
  "stoqlib/gui/actions/base.py": 90,

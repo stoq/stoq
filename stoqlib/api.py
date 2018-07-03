@@ -40,6 +40,7 @@ from stoqlib.database.runtime import (get_current_branch,
 from stoqlib.database.settings import db_settings
 from stoqlib.domain.person import Branch
 from stoqlib.gui.events import CanSeeAllBranches
+from stoqlib.lib.devicemanager import DeviceManager
 from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.parameters import sysparam
@@ -79,6 +80,10 @@ class StoqAPI(object):
     @property
     def user_settings(self):
         return get_settings()
+
+    @property
+    def device_manager(self):
+        return DeviceManager.get_instance()
 
     def is_developer_mode(self):
         return is_developer_mode()

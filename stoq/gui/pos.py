@@ -38,13 +38,11 @@ from storm.expr import And, Lower
 
 from stoqdrivers.enum import UnitType
 from stoqlib.api import api
-from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import Transporter, Client
 from stoqlib.domain.product import StorableBatch
 from stoqlib.domain.sale import Delivery, Sale, SaleToken
 from stoqlib.domain.sellable import Sellable
-from stoqlib.drivers.scale import read_scale_info
 from stoqlib.exceptions import StoqlibError, TaxError
 from stoqlib.gui.events import (POSConfirmSaleEvent,
                                 CloseLoanWizardFinishEvent,
@@ -203,7 +201,6 @@ class PosApp(ShellApp):
         # Cant use self._coupon to verify if there is a sale, since
         # CONFIRM_SALES_ON_TILL doesnt create a coupon
         self._sale_started = False
-        self._scale_settings = DeviceSettings.get_scale_settings(self.store)
 
     #
     # Application
@@ -822,7 +819,7 @@ class PosApp(ShellApp):
         return quantity
 
     def _read_scale(self, sellable):
-        data = read_scale_info(self.store)
+        data = api.device_manager.scale.read_data()
         self.quantity.set_value(data.weight)
 
     def _run_advanced_search(self, message=None, confirm_quantity=False):
@@ -935,7 +932,7 @@ class PosApp(ShellApp):
             # configured for this station, go and check what the scale says.
             if (sellable and sellable.unit and
                     sellable.unit.unit_index == UnitType.WEIGHT and
-                    self._scale_settings):
+                    api.device_manager.scale):
                 self._read_scale(sellable)
 
         storable = sellable.product_storable

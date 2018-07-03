@@ -33,7 +33,6 @@ from stoqdrivers.scales.base import get_supported_scales
 from stoqlib.api import api
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.station import BranchStation
-from stoqlib.drivers.scale import read_scale_info
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.devicemanager import DeviceManager
 from stoqlib.lib.environment import is_developer_mode
@@ -255,8 +254,8 @@ class DeviceSettingsEditor(BaseEditor):
     def on_test_button__clicked(self, button):
         driver = self.model.get_interface()
         if self.model.type == DeviceSettings.NON_FISCAL_PRINTER_DEVICE:
-            with driver.open():
-                driver.print_line(TEST_MESSAGE)
+            driver.open()
+            driver.print_line(TEST_MESSAGE)
         elif self.model.type == DeviceSettings.SCALE_DEVICE:
-            data = read_scale_info(self.store, self.model)
+            data = driver.read_data()
             warning(str(data.weight))

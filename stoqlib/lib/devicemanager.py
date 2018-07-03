@@ -25,8 +25,11 @@
 """Device handling, probing hardware
 """
 
+import atexit
 import operator
 
+from stoqlib.database.runtime import get_default_store, get_current_station
+from stoqlib.domain.devices import DeviceSettings
 from stoqlib.lib.translation import locale_sorted
 
 
@@ -52,6 +55,8 @@ class DeviceManager(object):
     def __init__(self):
         assert not DeviceManager._instance
         DeviceManager._instance = self
+        self._printer = None
+        self._scale = None
 
     @classmethod
     def get_instance(cls):
@@ -68,3 +73,27 @@ class DeviceManager(object):
         from serial.tools.list_ports import comports
         ports = [SerialDevice(p.device) for p in comports()]
         return locale_sorted(ports, key=operator.attrgetter('device_name'))
+
+    @classmethod
+    def _get_interface(cls, iface):
+        store = get_default_store()
+        station = get_current_station(store)
+        device = DeviceSettings.get_by_station_and_type(store, station, iface)
+        if not device:
+            return None
+        return device.get_interface()
+
+    @property
+    def printer(self):
+        if not self._printer:
+            self._printer = self._get_interface(DeviceSettings.NON_FISCAL_PRINTER_DEVICE)
+            if self._printer:
+                self._printer.open()
+                atexit.register(self._printer.close)
+        return self._printer
+
+    @property
+    def scale(self):
+        if not self._scale:
+            self._scale = self._get_interface(DeviceSettings.SCALE_DEVICE)
+        return self._scale
