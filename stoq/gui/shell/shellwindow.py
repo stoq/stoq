@@ -1159,7 +1159,7 @@ class ShellWindow(Delegate):
         self._show_uri("https://www.transifex.com/projects/p/stoq")
 
     def on_HelpChat__activate(self, action, parameter):
-        self._show_uri("http://chat.stoq.com.br/")
+        self._show_uri("http://www.stoq.com.br/")
 
     def on_HelpSupport__activate(self, action, parameter):
         self._show_uri("http://www.stoq.com.br/suporte")
