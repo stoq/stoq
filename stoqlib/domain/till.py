@@ -49,6 +49,7 @@ from stoqlib.domain.station import BranchStation
 from stoqlib.exceptions import TillError
 from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -201,12 +202,16 @@ class Till(Domain):
         if self.status == Till.STATUS_OPEN:
             raise TillError(_('Till is already open'))
 
-        # Make sure that the till has not been opened today
-        today = localtoday().date()
-        if not self.store.find(Till,
-                               And(Date(Till.opening_date) >= today,
-                                   Till.station_id == self.station.id)).is_empty():
-            raise TillError(_("A till has already been opened today"))
+        manager = get_plugin_manager()
+        # The restriction to only allow opening the till only once per day comes from
+        # the (soon to be obsolete) ECF devices.
+        if manager.is_active('ecf'):
+            # Make sure that the till has not been opened today
+            today = localtoday().date()
+            if not self.store.find(Till,
+                                   And(Date(Till.opening_date) >= today,
+                                       Till.station_id == self.station.id)).is_empty():
+                raise TillError(_("A till has already been opened today"))
 
         last_till = self._get_last_closed_till()
         if last_till:

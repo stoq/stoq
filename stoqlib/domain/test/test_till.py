@@ -25,6 +25,7 @@
 
 import datetime
 from decimal import Decimal
+import mock
 
 from kiwi.currency import currency
 
@@ -35,6 +36,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.dateutils import localnow, localtoday
+from stoqlib.lib.pluginmanager import PluginManager
 
 __tests__ = 'stoqlib/domain/till.py'
 
@@ -90,7 +92,9 @@ class TestTill(DomainTest):
         till.open_till()
         till.close_till()
 
-        self.assertRaises(TillError, till.open_till)
+        with mock.patch.object(PluginManager, 'is_active') as is_active:
+            is_active.return_value = True
+            self.assertRaises(TillError, till.open_till)
 
     def test_till_close(self):
         station = self.create_station()

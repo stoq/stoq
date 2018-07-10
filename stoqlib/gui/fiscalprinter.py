@@ -161,8 +161,10 @@ class FiscalPrinterHelper(GObject.GObject):
         :returns: True if the till was closed, otherwise False
         """
         is_partial = not close_db and not close_ecf
+        manager = get_plugin_manager()
 
-        if not is_partial and not self._previous_day:
+        # This behavior is only because of ECF
+        if not is_partial and not self._previous_day and manager.is_active('ecf'):
             if not yesno(_("You can only close the till once per day. "
                            "You won't be able to make any more sales today.\n\n"
                            "Close the till?"),
