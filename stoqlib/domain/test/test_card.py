@@ -196,6 +196,41 @@ class TestOperationCost(DomainTest):
 
 
 class TestCreditCardData(DomainTest):
+    def test_is_credit_debit(self):
+        device = self.create_card_device(description=u'MAQ1')
+        provider = self.create_credit_provider(u'PRO1')
+        # Credit card
+        credit_card = self.create_credit_card_data(device=device,
+                                                   provider=provider,
+                                                   payment_value=1000)
+        self.assertTrue(credit_card.is_credit())
+        self.assertFalse(credit_card.is_debit())
+
+        # Debit card
+        credit_card.card_type = CreditCardData.TYPE_DEBIT
+        self.assertFalse(credit_card.is_credit())
+        self.assertTrue(credit_card.is_debit())
+
+    def test_get_description(self):
+        device = self.create_card_device(description=u'MAQ1')
+        provider = self.create_credit_provider(u'PRO1')
+        # Credit card
+        credit_card = self.create_credit_card_data(device=device,
+                                                   provider=provider,
+                                                   payment_value=1000)
+        self.assertEqual(credit_card.get_description(), 'PRO1 Credit')
+
+        # Another provider name
+        provider.short_name = 'PRO2'
+        self.assertEqual(credit_card.get_description(), 'PRO2 Credit')
+
+        # Debit
+        credit_card.card_type = CreditCardData.TYPE_DEBIT
+        self.assertEqual(credit_card.get_description(), 'PRO2 Debit')
+
+        credit_card.card_type = CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE
+        self.assertEqual(credit_card.get_description(), 'PRO2 Credit Inst. Store')
+
     def test_update_card_data(self):
         device = self.create_card_device(description=u'MAQ1')
         provider = self.create_credit_provider(u'PRO1')

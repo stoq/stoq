@@ -37,7 +37,7 @@ from stoqlib.database.properties import (UnicodeCol, DateTimeCol,
                                          PriceCol, QuantityCol, IdentifierCol,
                                          IdCol, EnumCol)
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.base import Domain
+from stoqlib.domain.base import Domain, IdentifiableDomain
 from stoqlib.domain.events import StockOperationConfirmedEvent
 from stoqlib.domain.fiscal import Invoice, FiscalBookEntry
 from stoqlib.domain.interfaces import IContainer, IInvoiceItem, IInvoice
@@ -244,7 +244,7 @@ class ReturnedSaleItem(Domain):
 
 @implementer(IContainer)
 @implementer(IInvoice)
-class ReturnedSale(Domain):
+class ReturnedSale(IdentifiableDomain):
     """Holds information about a returned |sale|.
 
     This can be:
@@ -330,6 +330,10 @@ class ReturnedSale(Domain):
 
     #: the |branch| in which this return happened
     branch = Reference(branch_id, 'Branch.id')
+
+    station_id = IdCol(allow_none=False)
+    #: The station this object was created at
+    station = Reference(station_id, 'BranchStation.id')
 
     #: a list of all items returned in this return
     returned_items = ReferenceSet('id', 'ReturnedSaleItem.returned_sale_id')

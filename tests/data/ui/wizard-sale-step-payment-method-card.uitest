@@ -128,7 +128,7 @@ model: SaleItem<7>
   sellable_id: Sellable<5>
 
 model: CreditCardData<8>
-  auth: 1234
+  auth: '1234'
   card_type: 'credit'
   entrance_value: <currency $0>
   fare: <currency $0>

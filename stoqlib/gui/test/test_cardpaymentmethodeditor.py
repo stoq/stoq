@@ -173,7 +173,7 @@ class TestCardPaymentDetailsEditor(GUITest):
         card_payment = self.create_credit_card_data(card_data_old.provider,
                                                     card_data_old.device,
                                                     payment_value=payment_value)
-        card_payment.auth = 654321
+        card_payment.auth = '654321'
 
         card_payment.fee = card_data_old.fee
         card_payment.fare = card_data_old.fare
@@ -191,7 +191,7 @@ class TestCardPaymentDetailsEditor(GUITest):
         # Verify if the original card data was loaded correctly
         self.assertEqual(editor.device.get_selected(), card_payment.device)
         self.assertEqual(editor.provider.get_selected(), card_payment.provider)
-        self.assertEqual(int(editor.auth.get_text()), card_payment.auth)
+        self.assertEqual(editor.auth.get_text(), card_payment.auth)
 
         self.assertEqual(card_payment.fee, card_data_old.fee)
         self.assertEqual(card_payment.fee_value, card_data_old.fee_value)
@@ -211,7 +211,7 @@ class TestCardPaymentDetailsEditor(GUITest):
         # Verify if the changes were saved into the model correctly
         self.assertEqual(card_payment.device, card_data_new.device)
         self.assertEqual(card_payment.provider, card_data_new.provider)
-        self.assertEqual(card_payment.auth, 123456)
+        self.assertEqual(card_payment.auth, '123456')
         self.assertEqual(card_payment.fee, card_data_new.fee)
         self.assertEqual(card_payment.fee_value, card_data_new.fee_value)
         self.assertEqual(card_payment.fare, card_data_new.fare)

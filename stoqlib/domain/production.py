@@ -36,7 +36,7 @@ from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                          QuantityCol, BoolCol, IdentifierCol,
                                          IdCol, EnumCol)
 from stoqlib.database.viewable import Viewable
-from stoqlib.domain.base import Domain
+from stoqlib.domain.base import Domain, IdentifiableDomain
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.interfaces import IContainer, IDescribable
 from stoqlib.lib.dateutils import localnow, localtoday
@@ -48,7 +48,7 @@ _ = stoqlib_gettext
 
 @implementer(IContainer)
 @implementer(IDescribable)
-class ProductionOrder(Domain):
+class ProductionOrder(IdentifiableDomain):
     """Production Order object implementation.
     """
 
@@ -115,6 +115,10 @@ class ProductionOrder(Domain):
 
     #: branch this production belongs to
     branch = Reference(branch_id, 'Branch.id')
+
+    station_id = IdCol(allow_none=False)
+    #: The station this object was created at
+    station = Reference(station_id, 'BranchStation.id')
 
     produced_items = ReferenceSet('id', 'ProductionProducedItem.order_id')
 

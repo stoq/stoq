@@ -263,7 +263,7 @@ class TestConfirmSaleWizard(GUITest):
         self._go_to_next()
 
         # XXX: The step could provide an api to get the slave.
-        self.step._method_slave.auth_number.update(1234)
+        self.step._method_slave.auth_number.update('1234')
 
         # Finish the checkout
         with mock.patch.object(self.store, 'commit'):
@@ -506,14 +506,12 @@ class TestSalesPersonStep(GUITest):
         # After selecting the client1, the option store credit should be available
         salespersonstep.client_gadget.set_value(client1)
         self.check_wizard(wizard=wizard,
-                          ui_test_name=
-                          'wizard-sales-person-step-with-store-credit-radio')
+                          ui_test_name='wizard-sales-person-step-with-store-credit-radio')
 
         # selecting the client2 should disable the store credit again.
         salespersonstep.client_gadget.set_value(client2)
         self.check_wizard(wizard=wizard,
-                          ui_test_name=
-                          'wizard-sales-person-step-without-store-credit-radio')
+                          ui_test_name='wizard-sales-person-step-without-store-credit-radio')
 
         # De-selecting the client should not break, and also disable the methods
         # IE, they should be just like when the dialog was opened

@@ -53,7 +53,7 @@ from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi import ValueUnset
 from kiwi.ui.objectlist import Column
-from kiwi.ui.forms import ChoiceField, IntegerField
+from kiwi.ui.forms import ChoiceField, TextField
 
 from stoqlib.api import api
 from stoqlib.domain.account import Account
@@ -371,7 +371,7 @@ class CardPaymentDetailsEditor(BaseEditor):
                                values=device_values),
             provider=ChoiceField(_('Provider'), proxy=True, mandatory=True,
                                  values=provider_values),
-            auth=IntegerField(_('Authorization'), proxy=True, mandatory=True)
+            auth=TextField(_('Authorization'), proxy=True, mandatory=True)
         )
 
     def on_confirm(self):

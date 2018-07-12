@@ -35,7 +35,7 @@ from storm.references import Reference, ReferenceSet
 from stoqlib.database.properties import (PriceCol, QuantityCol, IntCol,
                                          DateTimeCol, UnicodeCol, IdentifierCol,
                                          IdCol, EnumCol)
-from stoqlib.domain.base import Domain
+from stoqlib.domain.base import Domain, IdentifiableDomain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
@@ -196,7 +196,7 @@ class ReceivingOrderItem(Domain):
         return self.receiving_order.packing_number
 
 
-class ReceivingOrder(Domain):
+class ReceivingOrder(IdentifiableDomain):
     """Receiving order definition.
     """
 
@@ -240,6 +240,10 @@ class ReceivingOrder(Domain):
     branch_id = IdCol()
     branch = Reference(branch_id, 'Branch.id')
 
+    station_id = IdCol(allow_none=False)
+    #: The station this object was created at
+    station = Reference(station_id, 'BranchStation.id')
+
     receiving_invoice_id = IdCol(default=None)
     receiving_invoice = Reference(receiving_invoice_id, 'ReceivingInvoice.id')
 
@@ -249,7 +253,7 @@ class ReceivingOrder(Domain):
                                    'PurchaseOrder.id')
 
     def __init__(self, store=None, **kw):
-        Domain.__init__(self, store=store, **kw)
+        super(ReceivingOrder, self).__init__(store=store, **kw)
         # These miss default parameters and needs to be set before
         # cfop, which triggers an implicit flush.
         self.branch = kw.pop('branch', None)
@@ -487,7 +491,7 @@ class PurchaseReceivingMap(Domain):
     receiving = Reference(receiving_id, 'ReceivingOrder.id')
 
 
-class ReceivingInvoice(Domain):
+class ReceivingInvoice(IdentifiableDomain):
 
     __storm_table__ = 'receiving_invoice'
 
@@ -549,6 +553,10 @@ class ReceivingInvoice(Domain):
 
     branch_id = IdCol()
     branch = Reference(branch_id, 'Branch.id')
+
+    station_id = IdCol(allow_none=False)
+    #: The station this object was created at
+    station = Reference(station_id, 'BranchStation.id')
 
     supplier_id = IdCol()
     supplier = Reference(supplier_id, 'Supplier.id')

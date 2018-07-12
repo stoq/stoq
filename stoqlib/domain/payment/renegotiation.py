@@ -34,7 +34,7 @@ from zope.interface import implementer
 from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.properties import (PriceCol, UnicodeCol, IdentifierCol,
                                          IntCol, DateTimeCol, IdCol)
-from stoqlib.domain.base import Domain
+from stoqlib.domain.base import IdentifiableDomain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.group import PaymentGroup
@@ -49,7 +49,7 @@ _ = stoqlib_gettext
 #
 
 @implementer(IContainer)
-class PaymentRenegotiation(Domain):
+class PaymentRenegotiation(IdentifiableDomain):
     """Class for payments renegotiations
     """
 
@@ -82,6 +82,9 @@ class PaymentRenegotiation(Domain):
     client_id = IdCol(default=None)
     client = Reference(client_id, 'Client.id')
     branch_id = IdCol(default=None)
+    station_id = IdCol(allow_none=False)
+    #: The station this object was created at
+    station = Reference(station_id, 'BranchStation.id')
     branch = Reference(branch_id, 'Branch.id')
     group_id = IdCol()
     group = Reference(group_id, 'PaymentGroup.id')

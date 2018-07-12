@@ -42,7 +42,7 @@ from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
 from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.database.viewable import Viewable
 from stoqlib.exceptions import InvalidStatus, NeedReason
-from stoqlib.domain.base import Domain
+from stoqlib.domain.base import Domain, IdentifiableDomain
 from stoqlib.domain.events import (SaleStatusChangedEvent,
                                    SaleItemBeforeDecreaseStockEvent,
                                    SaleItemBeforeIncreaseStockEvent,
@@ -535,7 +535,7 @@ class WorkOrderItem(Domain):
 
 
 @implementer(IContainer)
-class WorkOrder(Domain):
+class WorkOrder(IdentifiableDomain):
     """Represents a work order
 
     Normally, this is a maintenance task, like:
@@ -672,6 +672,10 @@ class WorkOrder(Domain):
     branch_id = IdCol()
     #: the |branch| where this order was created and responsible for it
     branch = Reference(branch_id, 'Branch.id')
+
+    station_id = IdCol(allow_none=False)
+    #: The station this object was created at
+    station = Reference(station_id, 'BranchStation.id')
 
     current_branch_id = IdCol()
     #: the actual branch where the order is. Can differ from

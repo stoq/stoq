@@ -363,12 +363,12 @@ class CreditCardData(Domain):
     fee_value = PriceCol(default=0)
 
     #: this is used by the tef plugin.
-    nsu = IntCol(default=None)
+    nsu = UnicodeCol(default=None)
 
     #: The authorization number returned by the payment device. This will be
     #: returned automatically by the tef plugin, but needs to be manually
     #: informed if not using the plugin.
-    auth = IntCol(default=None)
+    auth = UnicodeCol(default=None)
 
     #: the number of installments, used by the tef plugin
     installments = IntCol(default=1)
@@ -376,6 +376,18 @@ class CreditCardData(Domain):
     #: the value of the first installment (when installments > 1), used by the
     #: tef plugin
     entrance_value = PriceCol(default=0)
+
+    def is_credit(self):
+        return self.card_type in (self.TYPE_CREDIT, self.TYPE_CREDIT_INSTALLMENTS_STORE,
+                                  self.TYPE_CREDIT_INSTALLMENTS_PROVIDER)
+
+    def is_debit(self):
+        return self.card_type in (self.TYPE_DEBIT, self.TYPE_DEBIT_PRE_DATED)
+
+    def get_description(self):
+        type_desc = CreditCardData.short_desc[self.card_type]
+        desc = u'%s %s' % (self.provider.short_name, type_desc)
+        return desc
 
     def update_card_data(self, device, provider,
                          card_type, installments):

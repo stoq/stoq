@@ -50,7 +50,7 @@ from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.address import Address, CityLocation
-from stoqlib.domain.base import Domain
+from stoqlib.domain.base import Domain, IdentifiableDomain
 from stoqlib.domain.costcenter import CostCenter
 from stoqlib.domain.event import Event
 from stoqlib.domain.events import (SaleStatusChangedEvent,
@@ -828,7 +828,7 @@ class Delivery(Domain):
 
 @implementer(IContainer)
 @implementer(IInvoice)
-class Sale(Domain):
+class Sale(IdentifiableDomain):
     """Sale logic, the process of selling a |sellable| to a |client|.
 
     * calculates the sale price including discount/interest/markup
@@ -1001,6 +1001,10 @@ class Sale(Domain):
 
     #: the |branch| this sale belongs to
     branch = Reference(branch_id, 'Branch.id')
+
+    station_id = IdCol(allow_none=False)
+    #: The station this object was created at
+    station = Reference(station_id, 'BranchStation.id')
 
     transporter_id = IdCol(default=None)
 

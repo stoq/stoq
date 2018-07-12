@@ -193,7 +193,7 @@ class CardPaymentSearch(SearchEditor):
                 SearchColumn('fee', title=_(u'% Fee'), data_type=Decimal,
                              visible=False),
                 SearchColumn('fee_calc', title=_(u'Fee'), data_type=currency),
-                SearchColumn('auth', title=_(u'Authorization'), data_type=int,
+                SearchColumn('auth', title=_(u'Authorization'), data_type=str,
                              visible=False)]
 
     def row_activate(self, obj):

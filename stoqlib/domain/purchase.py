@@ -42,7 +42,7 @@ from stoqlib.database.properties import (DateTimeCol, UnicodeCol,
                                          IdentifierCol, IdCol, EnumCol)
 from stoqlib.database.runtime import get_current_user
 from stoqlib.database.viewable import Viewable
-from stoqlib.domain.base import Domain
+from stoqlib.domain.base import Domain, IdentifiableDomain
 from stoqlib.domain.event import Event
 from stoqlib.domain.interfaces import IContainer, IDescribable
 from stoqlib.domain.payment.method import PaymentMethod
@@ -197,7 +197,7 @@ class PurchaseItem(Domain):
 
 
 @implementer(IContainer)
-class PurchaseOrder(Domain):
+class PurchaseOrder(IdentifiableDomain):
     """Purchase and order definition."""
 
     __storm_table__ = 'purchase_order'
@@ -250,6 +250,10 @@ class PurchaseOrder(Domain):
     supplier = Reference(supplier_id, 'Supplier.id')
     branch_id = IdCol()
     branch = Reference(branch_id, 'Branch.id')
+
+    station_id = IdCol(allow_none=False)
+    #: The station this object was created at
+    station = Reference(station_id, 'BranchStation.id')
     transporter_id = IdCol(default=None)
     transporter = Reference(transporter_id, 'Transporter.id')
     responsible_id = IdCol()
@@ -686,7 +690,7 @@ class PurchaseOrder(Domain):
 
 
 @implementer(IDescribable)
-class Quotation(Domain):
+class Quotation(IdentifiableDomain):
     __storm_table__ = 'quotation'
 
     #: A numeric identifier for this object. This value should be used instead of
@@ -700,6 +704,10 @@ class Quotation(Domain):
     purchase = Reference(purchase_id, 'PurchaseOrder.id')
     branch_id = IdCol()
     branch = Reference(branch_id, 'Branch.id')
+
+    station_id = IdCol(allow_none=False)
+    #: The station this object was created at
+    station = Reference(station_id, 'BranchStation.id')
 
     def get_description(self):
         supplier = self.purchase.supplier.person.name
@@ -726,7 +734,7 @@ class Quotation(Domain):
 
 @implementer(IContainer)
 @implementer(IDescribable)
-class QuoteGroup(Domain):
+class QuoteGroup(IdentifiableDomain):
 
     __storm_table__ = 'quote_group'
 
@@ -737,6 +745,10 @@ class QuoteGroup(Domain):
 
     branch_id = IdCol()
     branch = Reference(branch_id, 'Branch.id')
+
+    station_id = IdCol(allow_none=False)
+    #: The station this object was created at
+    station = Reference(station_id, 'BranchStation.id')
 
     #
     # IContainer

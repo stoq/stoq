@@ -345,7 +345,7 @@ class TestReport(ReportTest):
             provider=provider,
             payment_type=Payment.TYPE_IN,
             payment_value=sale.get_sale_subtotal())
-        card_data1.auth = 1234
+        card_data1.auth = '1234'
         card_data1.card_type = CreditCardData.TYPE_CREDIT
         card_data1.payment.group = sale.group
         card_data1.payment.branch = sale.branch
@@ -356,7 +356,7 @@ class TestReport(ReportTest):
             provider=provider,
             payment_type=Payment.TYPE_IN,
             payment_value=sale.get_sale_subtotal())
-        card_data2.auth = 1234
+        card_data2.auth = '1234'
         card_data2.card_type = CreditCardData.TYPE_DEBIT
 
         card_data2.payment.group = sale.group

@@ -49,6 +49,10 @@ class BranchStation(Domain):
     branch_id = IdCol()
     branch = Reference(branch_id, 'Branch.id')
 
+    #: An code for this station. Will be used when formatting identifier codes (for a sale, for
+    #: instance)
+    code = UnicodeCol(default='')
+
     # Public
 
     @classmethod

@@ -40,7 +40,7 @@ from stoqlib.database.properties import (PriceCol, DateTimeCol, UnicodeCol,
                                          IdentifierCol, IdCol, EnumCol)
 from stoqlib.database.runtime import get_current_station
 from stoqlib.database.viewable import Viewable
-from stoqlib.domain.base import Domain
+from stoqlib.domain.base import Domain, IdentifiableDomain
 from stoqlib.domain.payment.card import CreditCardData
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.method import PaymentMethod
@@ -61,7 +61,7 @@ log = logging.getLogger(__name__)
 #
 
 
-class Till(Domain):
+class Till(IdentifiableDomain):
     """The Till describes the financial operations of a specific day.
 
     The operations that are recorded in a Till:
@@ -100,6 +100,9 @@ class Till(Domain):
         (STATUS_VERIFIED, _(u'Verified')),
     ])
 
+    #: A sequencial number that identifies this till.
+    identifier = IdentifierCol()
+
     status = EnumCol(default=STATUS_PENDING)
 
     #: The total amount we had the moment the till was opened.
@@ -118,10 +121,13 @@ class Till(Domain):
     verify_date = DateTimeCol(default=None)
 
     station_id = IdCol()
-
     #: the |branchstation| associated with the till, eg the computer
     #: which opened it.
     station = Reference(station_id, 'BranchStation.id')
+
+    branch_id = IdCol()
+    #: the branch this till is from
+    branch = Reference(branch_id, 'Branch.id')
 
     observations = UnicodeCol(default=u"")
 
@@ -409,7 +415,7 @@ class Till(Domain):
                          store=self.store)
 
 
-class TillEntry(Domain):
+class TillEntry(IdentifiableDomain):
     """A TillEntry is a representing cash added or removed in a |till|.
      * A positive value represents addition.
      * A negative value represents removal.
@@ -444,6 +450,10 @@ class TillEntry(Domain):
 
     #: |branch| that received or gave money
     branch = Reference(branch_id, 'Branch.id')
+
+    station_id = IdCol(allow_none=False)
+    #: The station this object was created at
+    station = Reference(station_id, 'BranchStation.id')
 
     @property
     def time(self):

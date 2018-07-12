@@ -42,7 +42,7 @@ from stoqlib.database.interfaces import (
     ICurrentBranch, ICurrentBranchStation, ICurrentUser)
 from stoqlib.database.runtime import new_store, get_default_store
 from stoqlib.database.settings import db_settings
-from stoqlib.domain.person import Branch, LoginUser, Person
+from stoqlib.domain.person import Branch, LoginUser, Person, Company
 from stoqlib.domain.station import BranchStation
 from stoqlib.importers.stoqlibexamples import create
 from stoqlib.lib.interfaces import IApplicationDescriptions, ISystemNotifier
@@ -133,6 +133,7 @@ def _provide_current_station(station_name=None, branch_name=None):
         branches = store.find(Branch)
         if branches.count() == 0:
             person = Person(name=u"test", store=store)
+            Company(person=person, store=store)
             branch = Branch(person=person, store=store)
         else:
             branch = branches[0]

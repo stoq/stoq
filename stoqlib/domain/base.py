@@ -40,6 +40,7 @@ from storm.store import AutoReload, PENDING_ADD, PENDING_REMOVE
 from stoqlib.database.expr import CharLength, Field, LPad, UnionAll
 from stoqlib.database.orm import ORMObject
 from stoqlib.database.properties import IntCol, IdCol, UnicodeCol, Identifier
+from stoqlib.database.runtime import get_current_station, get_current_branch
 from stoqlib.domain.events import DomainMergeEvent
 from stoqlib.domain.system import TransactionEntry
 
@@ -558,3 +559,27 @@ class Domain(ORMObject):
         if batch.storable != storable:
             raise ValueError('Given batch %r and storable %r are not related' %
                              (batch, storable))
+
+
+class IdentifiableDomain(Domain):
+    """A base class for domain classes that have an identifier.
+
+    The identifier is a sequencial number that uniquely identify the object for user (in a readable
+    form).
+
+    The identifier is composed of three parts:
+        - The sequencial number
+        - The branch that the object belongs to
+        - The station that it was created at. Note that the station the objectwas created at does
+          not necessary belong to the branch the object belongs to
+    """
+
+    def __init__(self, *args, **kwargs):
+        if not kwargs.get('station_id', None) and not kwargs.get('station', None):
+            # Use the station_id, since the object is not from the same store.
+            kwargs['station_id'] = get_current_station().id
+        if (not kwargs.get('branch_id', None) and not kwargs.get('branch', None)
+                and type(self).__name__ != 'TransferOrder'):
+            # Add a branch_id if None was provided
+            kwargs['branch_id'] = get_current_branch().id
+        super(IdentifiableDomain, self).__init__(*args, **kwargs)

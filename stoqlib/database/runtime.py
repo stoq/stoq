@@ -797,7 +797,7 @@ def get_current_user(store):
 
 
 @public(since="1.5.0")
-def get_current_branch(store):
+def get_current_branch(store=None):
     """Fetches the current branch company.
 
     :param store: a store
@@ -806,12 +806,13 @@ def get_current_branch(store):
     """
 
     branch = get_utility(ICurrentBranch, None)
-    if branch is not None:
+    if branch is not None and store is not None:
         return store.fetch(branch)
+    return branch
 
 
 @public(since="1.5.0")
-def get_current_station(store):
+def get_current_station(store=None):
     """Fetches the current station (computer) which we are running on
 
     :param store: a store
@@ -819,5 +820,6 @@ def get_current_station(store):
     :rtype: BranchStation or ``None``
     """
     station = get_utility(ICurrentBranchStation, None)
-    if station is not None:
+    if station is not None and store is not None:
         return store.fetch(station)
+    return station

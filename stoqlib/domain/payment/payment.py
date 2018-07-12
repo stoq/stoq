@@ -45,7 +45,7 @@ from stoqlib.database.properties import (DateTimeCol, BoolCol,
                                          PriceCol, UnicodeCol, IdentifierCol,
                                          IdCol, EnumCol)
 from stoqlib.domain.account import AccountTransaction
-from stoqlib.domain.base import Domain
+from stoqlib.domain.base import Domain, IdentifiableDomain
 from stoqlib.domain.event import Event
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.dateutils import create_date_interval, localnow, localtoday
@@ -55,7 +55,7 @@ _ = stoqlib_gettext
 log = logging.getLogger(__name__)
 
 
-class Payment(Domain):
+class Payment(IdentifiableDomain):
     """Payment, a transfer of money between a |branch| and |client| or a
     |supplier|.
 
@@ -205,6 +205,10 @@ class Payment(Domain):
     #: will make the payment
     branch = Reference(branch_id, 'Branch.id')
 
+    station_id = IdCol(allow_none=False)
+    #: The station this object was created at
+    station = Reference(station_id, 'BranchStation.id')
+
     method_id = IdCol()
 
     #: |paymentmethod| for this payment
@@ -249,7 +253,7 @@ class Payment(Domain):
             raise TypeError('You must provide a value argument')
         if not 'base_value' in kw or not kw['base_value']:
             kw['base_value'] = kw['value']
-        Domain.__init__(self, store=store, **kw)
+        super(Payment, self).__init__(store=store, **kw)
 
     def _check_status(self, status, operation_name):
         fmt = 'Invalid status for %s operation: %s'

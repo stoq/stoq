@@ -32,6 +32,7 @@ GtkDialog(toplevel): title='Receive Quote Wizard', hidden
 model: Quotation<1>
   group_id: NoneType<2>
   purchase_id: PurchaseOrder<3>
+  station_id: NoneType<2>
 
 model: None
 model: PurchaseOrder<3>

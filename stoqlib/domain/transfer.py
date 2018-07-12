@@ -40,7 +40,7 @@ from stoqlib.database.properties import (DateTimeCol, IdCol, IdentifierCol,
                                          UnicodeCol, EnumCol)
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable
-from stoqlib.domain.base import Domain
+from stoqlib.domain.base import Domain, IdentifiableDomain
 from stoqlib.domain.events import StockOperationConfirmedEvent
 from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
@@ -202,7 +202,7 @@ class TransferOrderItem(Domain):
 
 @implementer(IContainer)
 @implementer(IInvoice)
-class TransferOrder(Domain):
+class TransferOrder(IdentifiableDomain):
     """ Transfer Order class
     """
     __storm_table__ = 'transfer_order'
@@ -242,6 +242,10 @@ class TransferOrder(Domain):
 
     #: Comments of a transfer
     comments = UnicodeCol()
+
+    station_id = IdCol(allow_none=False)
+    #: The station this object was created at
+    station = Reference(station_id, 'BranchStation.id')
 
     source_branch_id = IdCol()
 

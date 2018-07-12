@@ -90,7 +90,7 @@ class IdentifierCol(Int):
         # This will get the column definition or the variable
         data = super(IdentifierCol, self).__get__(obj, cls)
         # if there is an object, then its the variable
-        if obj and hasattr(obj, 'branch'):
+        if obj and getattr(obj, 'branch', None):
             data.prefix = obj.branch.acronym or ''
         return data
 

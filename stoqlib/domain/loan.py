@@ -44,7 +44,7 @@ from stoqlib.database.expr import Round
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, PriceCol,
                                          QuantityCol, IdentifierCol,
                                          IdCol, EnumCol)
-from stoqlib.domain.base import Domain
+from stoqlib.domain.base import Domain, IdentifiableDomain
 from stoqlib.domain.events import StockOperationConfirmedEvent
 from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.interfaces import IContainer, IInvoice, IInvoiceItem
@@ -235,7 +235,7 @@ class LoanItem(Domain):
 
 @implementer(IContainer)
 @implementer(IInvoice)
-class Loan(Domain):
+class Loan(IdentifiableDomain):
     """
     A loan is a collection of |sellable| that is being loaned
     to a |client|, the items are expected to be either be
@@ -304,6 +304,10 @@ class Loan(Domain):
     #: branch where the loan was done
     branch_id = IdCol()
     branch = Reference(branch_id, 'Branch.id')
+
+    station_id = IdCol(allow_none=False)
+    #: The station this object was created at
+    station = Reference(station_id, 'BranchStation.id')
 
     #: :class:`user <stoqlib.domain.person.LoginUser>` of the system
     #: that made the loan

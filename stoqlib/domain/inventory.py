@@ -36,7 +36,7 @@ from stoqlib.database.properties import (QuantityCol, PriceCol, DateTimeCol,
                                          IdCol, BoolCol, EnumCol)
 from stoqlib.database.expr import StatementTimestamp
 from stoqlib.database.viewable import Viewable
-from stoqlib.domain.base import Domain
+from stoqlib.domain.base import Domain, IdentifiableDomain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.person import LoginUser, Person, Branch
 from stoqlib.domain.product import (StockTransactionHistory, StorableBatch, Product,
@@ -210,7 +210,7 @@ class InventoryItem(Domain):
         return self.product_cost * self.actual_quantity
 
 
-class Inventory(Domain):
+class Inventory(IdentifiableDomain):
     """ The Inventory handles the logic related to creating inventories
     for the available |product| (or a group of) in a certain |branch|.
 
@@ -285,6 +285,10 @@ class Inventory(Domain):
     branch_id = IdCol(allow_none=False)
     #: branch where the inventory process was done
     branch = Reference(branch_id, 'Branch.id')
+
+    station_id = IdCol(allow_none=False)
+    #: The station this object was created at
+    station = Reference(station_id, 'BranchStation.id')
 
     cancel_responsible_id = IdCol()
     #: The responsible for cancelling this inventory. At the moment, the

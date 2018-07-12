@@ -36,7 +36,7 @@ from stoqlib.database.properties import (UnicodeCol, DateTimeCol, PriceCol,
                                          QuantityCol, IdentifierCol,
                                          IdCol, EnumCol)
 from stoqlib.database.runtime import get_current_user, get_current_branch
-from stoqlib.domain.base import Domain
+from stoqlib.domain.base import Domain, IdentifiableDomain
 from stoqlib.domain.events import StockOperationConfirmedEvent
 from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.interfaces import IContainer, IInvoice, IInvoiceItem
@@ -223,7 +223,7 @@ class StockDecreaseItem(Domain):
 
 @implementer(IContainer)
 @implementer(IInvoice)
-class StockDecrease(Domain):
+class StockDecrease(IdentifiableDomain):
     """Stock Decrease object implementation.
 
     Stock Decrease is when the user need to manually decrease the stock
@@ -286,6 +286,10 @@ class StockDecrease(Domain):
 
     #: branch where the sale was done
     branch = Reference(branch_id, 'Branch.id')
+
+    station_id = IdCol(allow_none=False)
+    #: The station this object was created at
+    station = Reference(station_id, 'BranchStation.id')
 
     #: person who is receiving
     person_id = IdCol()
