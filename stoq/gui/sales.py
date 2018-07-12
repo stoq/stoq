@@ -227,7 +227,7 @@ class SalesApp(ShellApp):
         if api.sysparam.get_bool('CHANGE_CLIENT_AFTER_CONFIRMED'):
             options.append(('', _('Change client'), 'sales.ChangeClient', False))
         if api.sysparam.get_bool('CHANGE_SALESPERSON_AFTER_CONFIRMED'):
-            options.append(('', _('Change salesperson'), 'sales.ChangeSalespeson', False))
+            options.append(('', _('Change salesperson'), 'sales.ChangeSalesperson', False))
 
         return options
 
