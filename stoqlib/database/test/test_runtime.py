@@ -182,15 +182,15 @@ class StoqlibStoreTest(DomainTest):
         store.rollback()
 
     def test_dirty_flag(self):
-        # Creating an object should set its dirty flag to True
+        # Creating an object should set its sync_status to 0 (not synced)
         store = new_store()
         obj = WillBeCommitted(store=store)
         obj_id = obj.id
         store.commit()
-        self.assertTrue(obj.te.dirty)
+        self.assertEqual(obj.te.sync_status, '0')
 
         # Reset the flag to test changing the object
-        obj.te.dirty = False
+        obj.te.sync_status = '1'
         store.commit()
         store.close()
 
@@ -198,13 +198,13 @@ class StoqlibStoreTest(DomainTest):
         store = new_store()
         obj = store.get(WillBeCommitted, obj_id)
 
-        # The flag must be False
-        self.assertFalse(obj.te.dirty)
+        # The bit must still be set to 1
+        self.assertEqual(obj.te.sync_status, '1')
 
         # Changing the object and commiting should update the flag
         obj.test_var = u'asd'
         store.commit()
-        self.assertTrue(obj.te.dirty)
+        self.assertEqual(obj.te.sync_status, '0')
         store.close()
 
     def test_rollback_to_savepoint(self):

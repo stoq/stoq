@@ -29,7 +29,7 @@
 from storm.store import AutoReload
 
 from stoqlib.database.orm import ORMObject
-from stoqlib.database.properties import DateTimeCol, IntCol, BoolCol, JsonCol
+from stoqlib.database.properties import DateTimeCol, IntCol, JsonCol, BitStringCol
 
 
 class SystemTable(ORMObject):
@@ -73,8 +73,11 @@ class TransactionEntry(ORMObject):
 
     metadata = JsonCol()
 
-    #: It this object was modified since the last time it was synced
-    #: After the object is synced, this property will be set to ``False``, so
-    #: that when the next sync begins, only the objects that are **dirty** will be
-    #: processed
-    dirty = BoolCol(default=True)
+    #: A bit string that stores information about this object syncronization status.
+    #: a bit with value '0' means the object was changed and need to be sent to the server/client.
+    #: a bit with value '1' means this object is already synced with the server/client.
+    #: Note that on the client this column will have a size of 1. On the server it may vary
+    sync_status = BitStringCol(default=AutoReload)
+
+    #: For use of the sync conector
+    te_server = DateTimeCol()

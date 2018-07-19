@@ -205,6 +205,19 @@ class JsonCol(SimpleProperty):
     variable_class = JsonVariable
 
 
+class BitStringVariable(EncodedValueVariable):
+
+    def _loads(self, value):
+        return value
+
+    def _dumps(self, value):
+        return value
+
+
+class BitStringCol(SimpleProperty):
+    variable_class = BitStringVariable
+
+
 # Columns, we're keeping the Col suffix to avoid clashes between
 # decimal.Decimal and storm.properties.Decimal
 BLOBCol = RawStr

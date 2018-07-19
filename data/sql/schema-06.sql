@@ -93,6 +93,27 @@ CREATE TYPE delivery_freight_type AS ENUM ('cif', 'fob', '3rdparty');
 CREATE TYPE certificate_type AS ENUM ('pkcs11', 'pkcs12');
 
 --
+-- Functions that should be created only once
+--
+
+-- Updates the transaction entry for the given id
+CREATE OR REPLACE FUNCTION update_te(te_id bigint) RETURNS void AS $$
+BEGIN
+    UPDATE transaction_entry SET te_time = STATEMENT_TIMESTAMP(), dirty = true WHERE id = $1;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Returns a default te_id for the domain tables
+CREATE OR REPLACE FUNCTION new_te() RETURNS integer AS $$
+    DECLARE te_id integer;
+BEGIN
+    INSERT INTO transaction_entry (te_time, dirty) VALUES (STATEMENT_TIMESTAMP(), true) RETURNING id INTO te_id;
+    RETURN te_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
+--
 -- Tables that are not syncronized
 --
 

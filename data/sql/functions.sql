@@ -64,22 +64,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
--- Returns a default te_id for the domain tables
-CREATE OR REPLACE FUNCTION new_te() RETURNS integer AS $$
-    DECLARE te_id integer;
-BEGIN
-    INSERT INTO transaction_entry (te_time, dirty) VALUES (STATEMENT_TIMESTAMP(), true) RETURNING id INTO te_id;
-    RETURN te_id;
-END;
-$$ LANGUAGE plpgsql;
-
--- Updates the transaction entry for the given id
-CREATE OR REPLACE FUNCTION update_te(te_id bigint) RETURNS void AS $$
-BEGIN
-    UPDATE transaction_entry SET te_time = STATEMENT_TIMESTAMP(), dirty = true WHERE id = $1;
-END;
-$$ LANGUAGE plpgsql;
-
 CREATE OR REPLACE FUNCTION validate_stock_item() RETURNS trigger AS $$
 DECLARE
     count_ int;
