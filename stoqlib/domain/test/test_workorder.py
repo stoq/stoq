@@ -566,8 +566,7 @@ class TestWorkOrder(DomainTest):
             self.assertFalse(workorder.can_finish())
             workorder.current_branch = old_branch
 
-            if status in [WorkOrder.STATUS_WORK_IN_PROGRESS,
-                          WorkOrder.STATUS_WORK_WAITING]:
+            if status in [WorkOrder.STATUS_WORK_IN_PROGRESS]:
                 self.assertTrue(workorder.can_finish())
             else:
                 self.assertFalse(workorder.can_finish())
@@ -629,8 +628,7 @@ class TestWorkOrder(DomainTest):
             with mock.patch.object(workorder, 'is_in_transport', new=lambda: True):
                 self.assertFalse(workorder.can_reject())
 
-            if status in [WorkOrder.STATUS_WORK_WAITING,
-                          WorkOrder.STATUS_WORK_IN_PROGRESS,
+            if status in [WorkOrder.STATUS_WORK_IN_PROGRESS,
                           WorkOrder.STATUS_WORK_FINISHED]:
                 self.assertTrue(workorder.can_reject())
             else:
@@ -653,6 +651,7 @@ class TestWorkOrder(DomainTest):
     def test_reject(self):
         workorder = self.create_workorder()
         workorder.approve()
+        workorder.work()
         self.assertFalse(workorder.is_rejected)
         workorder.reject(reason=u'Reject reason')
         self.assertTrue(workorder.is_rejected)
@@ -660,6 +659,7 @@ class TestWorkOrder(DomainTest):
     def test_undo_rejection(self):
         workorder = self.create_workorder()
         workorder.approve()
+        workorder.work()
         workorder.reject(reason=u'Reject reason')
         self.assertTrue(workorder.is_rejected)
         workorder.undo_rejection(u'Undo reject reason')
@@ -914,6 +914,7 @@ class TestWorkOrder(DomainTest):
                     mock.patch.object(work_order, 'reopen'),
                     mock.patch.object(work_order, 'cancel')) as (reopen, cancel):
                 work_order.approve()
+                work_order.work()
                 work_order.finish()
                 sale.cancel(u"Test sale cancellation")
                 reopen.assert_called_once_with(

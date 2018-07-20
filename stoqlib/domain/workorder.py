@@ -930,8 +930,7 @@ class WorkOrder(IdentifiableDomain):
         # FIXME: We should not be calling get_current_branch on domain
         if self.current_branch != get_current_branch(self.store):
             return False
-        return self.status in [self.STATUS_WORK_IN_PROGRESS,
-                               self.STATUS_WORK_WAITING]
+        return self.status in [self.STATUS_WORK_IN_PROGRESS]
 
     def can_close(self):
         """Checks if this work order can delivery
@@ -973,8 +972,7 @@ class WorkOrder(IdentifiableDomain):
         if self.is_rejected or self.is_in_transport():
             return False
 
-        return self.status in [self.STATUS_WORK_WAITING,
-                               self.STATUS_WORK_IN_PROGRESS,
+        return self.status in [self.STATUS_WORK_IN_PROGRESS,
                                self.STATUS_WORK_FINISHED]
 
     def can_undo_rejection(self):

@@ -28,7 +28,6 @@ from storm.expr import Eq
 from stoqlib.api import api
 from stoqlib.domain.workorder import WorkOrderView, WorkOrder
 from stoqlib.gui.actions.workorder import WorkOrderActions
-from stoqlib.gui.actions.sale import SaleActions
 from stoqlib.gui.widgets.section import Section
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -79,8 +78,6 @@ class WorkOrderRow(Gtk.ListBoxRow):
         identifier = '<b>%s</b>' % api.escape(str(model.identifier))
         salesperson = '<b>%s</b>:' % _('Salesperson')
         if model.sale:
-            identifier += ' (%s <a href="#">%s</a>)' % (_('Sale'),
-                                                        api.escape(str(model.sale_identifier)))
             salesperson += ' %s' % api.escape(model.sale.get_salesperson_name())
         else:
             employee = model.work_order.quote_responsible
@@ -107,15 +104,6 @@ class WorkOrderRow(Gtk.ListBoxRow):
         else:
             self.status.get_style_context().add_class(model.status)
 
-        button = Gtk.Button()
-        button.connect('clicked', self._on_button__clicked)
-        button.set_relief(Gtk.ReliefStyle.NONE)
-        button.set_valign(Gtk.Align.CENTER)
-        box = Gtk.HBox(spacing=6)
-        button.add(box)
-        image = Gtk.Image.new_from_icon_name('view-more-symbolic', Gtk.IconSize.BUTTON)
-        box.pack_start(image, False, False, 0)
-
         eb = Gtk.EventBox()
         eb.set_halign(Gtk.Align.END)
         eb.add(self.status)
@@ -131,12 +119,10 @@ class WorkOrderRow(Gtk.ListBoxRow):
         grid.attach(self.client, 0, 2, 1, 1)
         grid.attach(hbox, 1, 0, 1, 1)
         grid.attach(self.due_date, 1, 2, 1, 1)
-        grid.attach(button, 3, 0, 1, 3)
         self.add(grid)
 
         eb.connect('realize', self._on_realize)
         eb.connect('button-release-event', self._on_status__clicked)
-        self.identifier.connect('activate_link', self._on_sale__clicked)
 
     def _new_label(self, markup, expand=False, xalign=0, halign=Gtk.Align.FILL):
         label = Gtk.Label(label=markup)
@@ -159,38 +145,22 @@ class WorkOrderRow(Gtk.ListBoxRow):
         if event.button != 1:
             return
         self.actions.set_model(self.model.work_order)
-        model = Gio.Menu()
+        status_model = Gio.Menu()
         for spec in self.state_changes:
             action = self.actions.get_action(spec[1].split('.')[1])
             # Only add the action if its enabled. This will look better since there are a lot of
             # status changes that can happen
             if action.get_enabled():
-                model.append_item(Gio.MenuItem.new(spec[0], spec[1]))
-        popover = Gtk.Popover.new_from_model(widget, model)
-        popover.set_position(Gtk.PositionType.BOTTOM)
-        popover.show()
-        return True
+                status_model.append_item(Gio.MenuItem.new(spec[0], spec[1]))
 
-    def _on_sale__clicked(self, widget, uri):
-        sale_actions = SaleActions.get_instance()
-        sale_actions.set_model(self.model.sale)
-
-        model = Gio.Menu()
-        for spec in self.sale_options:
-            model.append_item(Gio.MenuItem.new(spec[0], spec[1]))
-        popover = Gtk.Popover.new_from_model(widget, model)
-        popover.set_position(Gtk.PositionType.BOTTOM)
-        popover.show()
-        return True
-
-    def _on_button__clicked(self, widget):
-        self.actions.set_model(self.model.work_order)
-        model = Gio.Menu()
+        wo_options = Gio.Menu()
         for spec in self.options:
-            model.append_item(Gio.MenuItem.new(spec[0], spec[1]))
-        popover = Gtk.Popover.new_from_model(widget, model)
+            wo_options.append_item(Gio.MenuItem.new(spec[0], spec[1]))
+        status_model.append_item(Gio.MenuItem.new_section(None, wo_options))
+        popover = Gtk.Popover.new_from_model(widget, status_model)
         popover.set_position(Gtk.PositionType.BOTTOM)
         popover.show()
+        return True
 
 
 class WorkOrderList(Gtk.Box):
@@ -204,7 +174,10 @@ class WorkOrderList(Gtk.Box):
         super(WorkOrderList, self).__init__(orientation=Gtk.Orientation.VERTICAL)
         self.set_size_request(600, -1)
         self.list_box = Gtk.ListBox()
+        # Only activate with a double-click
+        self.list_box.set_property('activate_on_single_click', False)
         self.list_box.set_header_func(self._header_func)
+        self.list_box.connect('row-activated', self._on_list_box__row_activated)
 
         for row in self._get_orders():
             self.list_box.add(WorkOrderRow(row))
@@ -273,3 +246,6 @@ class WorkOrderList(Gtk.Box):
 
     def _on_actions__model_edited(self, actions, order):
         self._update_view()
+
+    def _on_list_box__row_activated(self, action, order):
+        order.actions.details(order.model.work_order)
