@@ -104,25 +104,34 @@ UPDATE quote_group SET station_id = foo.id
 ALTER TABLE quote_group DROP CONSTRAINT quote_group_identifier_branch_id_key;
 ALTER TABLE quote_group ADD UNIQUE (identifier, branch_id, station_id);
 
-UPDATE receiving_invoice SET station_id = foo.id
-    FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
-        FROM branch_station LEFT JOIN till ON branch_station.id = till.station_id) as foo
-    WHERE receiving_invoice.station_id IS NULL AND foo.branch_id = receiving_invoice.branch_id AND foo.rank = 1;
--- There may be some receiving_invoice without a branch!
-UPDATE receiving_invoice SET station_id = receiving_order.station_id
-    FROM receiving_order
-    WHERE receiving_order.receiving_invoice_id = receiving_invoice.id AND receiving_invoice.station_id IS NULL;
--- This table never got this unique key
--- ALTER TABLE receiving_invoice DROP CONSTRAINT receiving_invoice_identifier_branch_id_key;
-ALTER TABLE receiving_invoice ADD UNIQUE (identifier, branch_id, station_id);
-
-
 UPDATE receiving_order SET station_id = foo.id
     FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
         FROM branch_station LEFT JOIN till ON branch_station.id = till.station_id) as foo
     WHERE receiving_order.station_id IS NULL AND foo.branch_id = receiving_order.branch_id AND foo.rank = 1;
 ALTER TABLE receiving_order DROP CONSTRAINT receiving_order_identifier_branch_id_key;
 ALTER TABLE receiving_order ADD UNIQUE (identifier, branch_id, station_id);
+
+
+UPDATE receiving_invoice SET station_id = foo.id
+    FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
+        FROM branch_station LEFT JOIN till ON branch_station.id = till.station_id) as foo
+    WHERE receiving_invoice.station_id IS NULL AND foo.branch_id = receiving_invoice.branch_id AND foo.rank = 1;
+
+-- There may be some receiving_invoice without a branch!
+UPDATE receiving_invoice SET station_id = receiving_order.station_id
+    FROM receiving_order
+    WHERE receiving_order.receiving_invoice_id = receiving_invoice.id AND receiving_invoice.station_id IS NULL;
+
+-- While we are at it, add a not null to receiving_invoice.branch_id
+UPDATE receiving_invoice SET branch_id = receiving_order.branch_id
+    FROM receiving_order
+    WHERE receiving_order.receiving_invoice_id = receiving_invoice.id AND receiving_invoice.branch_id IS NULL;
+ALTER TABLE receiving_invoice ALTER branch_id SET NOT NULL;
+
+
+-- This table never got this unique key
+-- ALTER TABLE receiving_invoice DROP CONSTRAINT receiving_invoice_identifier_branch_id_key;
+ALTER TABLE receiving_invoice ADD UNIQUE (identifier, branch_id, station_id);
 
 UPDATE returned_sale SET station_id = foo.id
     FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
