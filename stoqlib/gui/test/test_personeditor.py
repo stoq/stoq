@@ -162,6 +162,23 @@ class TestClientEditor(_BasePersonEditorTest):
         self.check_editor(editor, 'client-editor-salesperson-user')
         provide_utility(ICurrentUser, admin_user, replace=True)
 
+    def test_validate_email(self):
+        client = self.create_client()
+        editor = ClientEditor(self.store, client,
+                              role_type=Person.ROLE_INDIVIDUAL)
+
+        slave = editor._person_slave
+        # Without symbol @
+        slave.email.update('stoq.com.br')
+        self.assertInvalid(slave, ['email'])
+
+        # Without a dot afer @
+        slave.email.update('stoq@com')
+        self.assertInvalid(slave, ['email'])
+
+        slave.email.update('stoq@stoq.com.br')
+        self.assertValid(slave, ['email'])
+
 
 class TestUserEditor(_BasePersonEditorTest):
     editor = UserEditor

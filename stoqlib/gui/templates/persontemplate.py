@@ -26,6 +26,8 @@
 
 from gi.repository import Gtk
 
+from kiwi.datatypes import ValidationError
+
 from stoqlib.domain.person import Company, Individual, Person, Supplier
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import run_dialog
@@ -39,6 +41,7 @@ from stoqlib.gui.slaves.addressslave import AddressSlave
 from stoqlib.gui.templates.companytemplate import CompanyEditorTemplate
 from stoqlib.gui.templates.individualtemplate import IndividualEditorTemplate
 from stoqlib.gui.utils.databaseform import DatabaseForm
+from stoqlib.lib.validators import validate_email
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -156,6 +159,13 @@ class _PersonEditorTemplate(BaseEditorSlave):
     def on_credit_check_history_button__clicked(self, button):
         run_dialog(CreditCheckHistorySearch, self._parent, self.store,
                    client=self.model.client, reuse_store=not self.visual_mode)
+
+    def on_email__validate(self, widget, value):
+        if not value:
+            return
+
+        if not validate_email(value):
+            return ValidationError(_("Invalid email"))
 
     #
     # Private API
