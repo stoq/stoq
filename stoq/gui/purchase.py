@@ -247,7 +247,8 @@ class PurchaseApp(ShellApp):
         self.set_sensitive(self._inventory_widgets, False)
 
     def create_filters(self):
-        self.set_text_field_columns(['supplier_name', 'identifier_str'])
+        self.set_text_field_columns(['supplier_name', 'identifier_str',
+                                     'invoice_numbers'])
         self.status_filter = ComboSearchFilter(_('Show orders'),
                                                self._get_status_values())
         self.add_filter(self.status_filter, SearchFilterPosition.TOP, ['status'])
@@ -259,6 +260,8 @@ class PurchaseApp(ShellApp):
                              data_type=str, search_attribute='status',
                              valid_values=self._get_status_values(),
                              visible=False),
+                SearchColumn('invoice_numbers', title=_('Invoice'), width=100,
+                             data_type=str, visible=False),
                 SearchColumn('open_date', title=_('Opened'),
                              long_title=_('Date Opened'), width=90,
                              data_type=datetime.date, sorted=True,

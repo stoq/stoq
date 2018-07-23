@@ -36,7 +36,8 @@ from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
-from stoqlib.database.expr import Date, Field, NullIf, TransactionTimestamp
+from stoqlib.database.expr import (Date, Field, NullIf, TransactionTimestamp,
+                                   ArrayAgg, ArrayToString)
 from stoqlib.database.properties import (DateTimeCol, UnicodeCol,
                                          PriceCol, BoolCol, QuantityCol,
                                          IdentifierCol, IdCol, EnumCol)
@@ -873,23 +874,31 @@ class PurchaseItemView(Viewable):
 # functions require group by for every other column, and grouping all the
 # columns in PurchaseOrderView is extremelly slow, as it requires sorting all
 # those columns
-_ItemSummary = Select(columns=[PurchaseItem.order_id,
-                               Alias(Sum(PurchaseItem.quantity), 'ordered_quantity'),
-                               Alias(Sum(PurchaseItem.quantity_received), 'received_quantity'),
-                               Alias(Sum(PurchaseItem.ipi_value), 'ipi_value'),
-                               Alias(Sum((PurchaseItem.quantity *
-                                     PurchaseItem.cost) + PurchaseItem.ipi_value), 'subtotal')],
-                      tables=[PurchaseItem],
-                      group_by=[PurchaseItem.order_id])
+from stoqlib.domain.receiving import ReceivingOrder, ReceivingInvoice, PurchaseReceivingMap
+_ItemSummary = Select(
+    columns=[PurchaseItem.order_id,
+             Alias(Sum(PurchaseItem.quantity), 'ordered_quantity'),
+             Alias(Sum(PurchaseItem.quantity_received), 'received_quantity'),
+             Alias(Sum(PurchaseItem.ipi_value), 'ipi_value'),
+             Alias(Sum((PurchaseItem.quantity *
+                       PurchaseItem.cost) + PurchaseItem.ipi_value), 'subtotal')],
+    tables=[PurchaseItem],
+    group_by=[PurchaseItem.order_id])
 PurchaseItemSummary = Alias(_ItemSummary, '_purchase_item')
 
-from stoqlib.domain.receiving import ReceivingOrder, PurchaseReceivingMap
-_ReceivingOrder = Select(columns=[Alias(Min(ReceivingOrder.receival_date), 'receival_date'),
-                                  Alias(PurchaseReceivingMap.purchase_id, 'purchase_id')],
-                         tables=[PurchaseReceivingMap,
-                                 LeftJoin(ReceivingOrder,
-                                          ReceivingOrder.id == PurchaseReceivingMap.receiving_id)],
-                         group_by=[PurchaseReceivingMap.purchase_id])
+_ReceivingOrder = Select(
+    columns=[Alias(Min(ReceivingOrder.receival_date), 'receival_date'),
+             Alias(ArrayToString(ArrayAgg(ReceivingInvoice.invoice_number), ', '),
+                   'invoice_numbers'),
+             Alias(PurchaseReceivingMap.purchase_id, 'purchase_id')],
+    tables=[
+        PurchaseReceivingMap,
+        LeftJoin(ReceivingOrder, ReceivingOrder.id == PurchaseReceivingMap.receiving_id),
+        LeftJoin(ReceivingInvoice, ReceivingOrder.receiving_invoice == ReceivingInvoice.id),
+
+    ],
+
+    group_by=[PurchaseReceivingMap.purchase_id])
 
 PurchaseReceivingSummary = Alias(_ReceivingOrder, '_receiving_order')
 
@@ -949,6 +958,7 @@ class PurchaseOrderView(Viewable):
 
     receival_date = Field('_receiving_order', 'receival_date')
 
+    invoice_numbers = Field('_receiving_order', 'invoice_numbers')
     ordered_quantity = Field('_purchase_item', 'ordered_quantity')
     received_quantity = Field('_purchase_item', 'received_quantity')
     subtotal = Field('_purchase_item', 'subtotal')
