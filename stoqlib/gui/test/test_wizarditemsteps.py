@@ -74,7 +74,7 @@ class BaseTest(object):
             search.search.refresh()
             self.check_search(search, self.search_name)
 
-    @mock.patch('stoqlib.gui.wizards.abstractwizard.SellableItemStep._run_advanced_search')
+    @mock.patch('stoqlib.gui.wizards.abstractwizard.SellableItemStep.run_advanced_search')
     def test_barcode_activate_(self, advanced_search):
         self.step.barcode.set_text('invalid barcode')
         self.step.barcode.activate()

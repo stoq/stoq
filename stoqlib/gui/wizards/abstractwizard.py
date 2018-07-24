@@ -143,12 +143,6 @@ class SellableItemSlave(BaseEditorSlave):
     #: If ``None``, the calculator will not be attached
     calculator_mode = None
 
-    #: If we should add the sellable on the list when activating the barcode.
-    #: This is useful when the barcode is supposed to work with barcode
-    #: readers. Note that, if the sellable with the given barcode wasn't found,
-    #: it'll just be cleared and no error message will be displayed
-    add_sellable_on_barcode_activate = False
-
     #: If we should make visible a label showing the stock and the minimum
     #: quantity of a sellable when one is selected. Note that sellables
     #: without storables (e.g. services) won't have them shown anyway
@@ -600,7 +594,7 @@ class SellableItemSlave(BaseEditorSlave):
         self.summary.show()
         self.slave.list_vbox.pack_start(self.summary, False, True, 0)
 
-    def _run_advanced_search(self, search_str=None):
+    def run_advanced_search(self, search_str=None):
         table, query = self.get_sellable_view_query()
         ret = run_dialog(self.sellable_search, self.get_parent(),
                          self.store,
@@ -714,21 +708,13 @@ class SellableItemSlave(BaseEditorSlave):
         used to filter the results.
         """
         sellable, batch = self._get_sellable_and_batch()
-
         if not sellable:
-            if self.add_sellable_on_barcode_activate:
-                return
-            search_str = str(self.barcode.get_text())
-            self._run_advanced_search(search_str)
+            search_str = self.barcode.get_text()
+            self.run_advanced_search(search_str)
             return
 
         self.sellable_selected(sellable, batch=batch)
-
-        if (self.add_sellable_on_barcode_activate and
-                self.add_sellable_button.get_sensitive()):
-            self._add_sellable()
-        else:
-            self.quantity.grab_focus()
+        self.quantity.grab_focus()
 
     #
     #  Callbacks

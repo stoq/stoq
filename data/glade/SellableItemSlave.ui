@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
 <interface>
-  <requires lib="gtk+" version="2.16"/>
-  <!-- interface-requires kiwiwidgets 0.0 -->
-  <!-- interface-naming-policy toplevel-contextual -->
+  <requires lib="gtk+" version="3.12"/>
+  <requires lib="kiwiwidgets" version="0.0"/>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="value">1</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment2">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkWindow" id="SellableItemSlave">
     <property name="default_width">440</property>
     <property name="default_height">250</property>
-    <property name="mnemonics_visible">False</property>
     <child>
       <object class="GtkVBox" id="item_vbox">
         <property name="visible">True</property>
@@ -19,14 +29,17 @@
             <property name="column_spacing">5</property>
             <property name="row_spacing">5</property>
             <child>
+              <placeholder/>
+            </child>
+            <child>
               <object class="GtkHBox" id="hbox2">
                 <property name="visible">True</property>
                 <property name="spacing">5</property>
                 <child>
                   <object class="ProxyLabel" id="item_lbl">
                     <property name="visible">True</property>
-                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Item:</property>
+                    <property name="xalign">1</property>
                     <property name="data_type">str</property>
                     <property name="model_attribute">item_lbl</property>
                   </object>
@@ -39,10 +52,10 @@
                 <child>
                   <object class="ProxyEntry" id="barcode">
                     <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="can_default">True</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -52,14 +65,14 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="product_button">
+                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="receives_default">False</property>
-                    <property name="use_action_appearance">False</property>
                     <child>
                       <object class="GtkImage" id="image2">
                         <property name="visible">True</property>
                         <property name="stock">gtk-find</property>
-                        <property name="icon-size">1</property>
+                        <property name="icon_size">1</property>
                       </object>
                     </child>
                   </object>
@@ -75,10 +88,10 @@
               <object class="ProxyLabel" id="sellable_description">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="xalign">0</property>
                 <property name="wrap">True</property>
                 <property name="selectable">True</property>
                 <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
                 <property name="data_type">str</property>
                 <property name="model_attribute">sellable_description</property>
               </object>
@@ -91,8 +104,8 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel2">
                 <property name="visible">True</property>
-                <property name="xalign">1</property>
                 <property name="label" translatable="yes">Quantity:</property>
+                <property name="xalign">1</property>
                 <property name="model_attribute">kiwilabel2</property>
               </object>
               <packing>
@@ -104,8 +117,8 @@
             <child>
               <object class="GtkLabel" id="minimum_quantity_lbl">
                 <property name="visible">True</property>
-                <property name="xalign">1</property>
                 <property name="label" translatable="yes">Minimum:</property>
+                <property name="xalign">1</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -117,10 +130,9 @@
             <child>
               <object class="ProxySpinButton" id="quantity">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="primary_icon_activatable">False</property>
                 <property name="secondary_icon_activatable">False</property>
-                <property name="primary_icon_sensitive">True</property>
-                <property name="secondary_icon_sensitive">True</property>
                 <property name="adjustment">adjustment1</property>
                 <property name="digits">2</property>
                 <property name="data_type">Decimal</property>
@@ -151,10 +163,10 @@
               <object class="ProxyLabel" id="unit_label">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="xalign">0</property>
                 <property name="selectable">True</property>
                 <property name="width_chars">2</property>
                 <property name="max_width_chars">2</property>
+                <property name="xalign">0</property>
                 <property name="data_type">str</property>
                 <property name="model_attribute">unit_label</property>
               </object>
@@ -167,8 +179,8 @@
             <child>
               <object class="ProxyLabel" id="cost_label">
                 <property name="visible">True</property>
-                <property name="xalign">1</property>
                 <property name="label" translatable="yes">Cost:</property>
+                <property name="xalign">1</property>
                 <property name="model_attribute">cost_label</property>
               </object>
               <packing>
@@ -180,8 +192,8 @@
             <child>
               <object class="GtkLabel" id="stock_quantity_lbl">
                 <property name="visible">True</property>
-                <property name="xalign">1</property>
                 <property name="label" translatable="yes">Stock:</property>
+                <property name="xalign">1</property>
               </object>
               <packing>
                 <property name="left_attach">4</property>
@@ -193,10 +205,8 @@
             <child>
               <object class="ProxySpinButton" id="cost">
                 <property name="visible">True</property>
-                <property name="primary_icon_activatable">True</property>
+                <property name="can_focus">True</property>
                 <property name="secondary_icon_activatable">False</property>
-                <property name="primary_icon_sensitive">True</property>
-                <property name="secondary_icon_sensitive">True</property>
                 <property name="adjustment">adjustment2</property>
                 <property name="digits">2</property>
                 <property name="data_type">currency</property>
@@ -225,15 +235,15 @@
             </child>
             <child>
               <object class="GtkButton" id="add_sellable_button">
+                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="yalign">0</property>
                 <child>
                   <object class="GtkImage" id="image1">
                     <property name="visible">True</property>
                     <property name="stock">gtk-add</property>
-                    <property name="icon-size">1</property>
+                    <property name="icon_size">1</property>
                   </object>
                 </child>
               </object>
@@ -246,9 +256,6 @@
             <child>
               <placeholder/>
             </child>
-            <child>
-              <placeholder/>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -257,8 +264,70 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEventBox" id="list_holder">
+          <object class="GtkOverlay" id="overlay">
             <property name="visible">True</property>
+            <child>
+              <object class="GtkEventBox" id="list_holder">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="pass_through">True</property>
+                <property name="index">-1</property>
+              </packing>
+            </child>
+            <child type="overlay">
+              <object class="GtkBox" id="box">
+                <property name="visible">True</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <child>
+                  <object class="GtkBox" id="warning_box">
+                    <property name="visible">True</property>
+                    <property name="valign">center</property>
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel" id="warning_label">
+                        <property name="visible">True</property>
+                        <property name="justify">center</property>
+                        <property name="track_visited_links">False</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                          <attribute name="scale" value="2.5"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="dismiss_label">
+                        <property name="visible">True</property>
+                        <property name="use_markup">True</property>
+                        <property name="justify">center</property>
+                        <property name="track_visited_links">False</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="index">1</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -268,16 +337,5 @@
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkAdjustment" id="adjustment1">
-    <property name="upper">100</property>
-    <property name="value">1</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="adjustment2">
-    <property name="upper">100</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
   </object>
 </interface>

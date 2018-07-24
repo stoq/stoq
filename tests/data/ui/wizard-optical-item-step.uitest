@@ -24,38 +24,43 @@ GtkDialog(toplevel): title='Sale with work order', hidden
             ProxyLabel(step.minimum_quantity): '<span >0.0</span>', hidden
             GtkLabel(step.stock_quantity_lbl): 'Stock:', hidden
             ProxyLabel(step.stock_quantity): '<span >0.0</span>', hidden
-          GtkEventBox(step.list_holder, expand=True, fill=True): slave AdditionListSlave is attached
-            GtkBox(vbox1, orientation=vertical):
-              GtkBox(list_vbox, orientation=vertical, expand=True, fill=True):
-                ObjectTree(klist, expand=True, fill=True):
-                  column: title='Code', hidden
-                  column: title='Barcode', hidden
-                  column: title='Description', expand
-                  column: title='Owner'
-                  column: title='Quantity'
-                  column: title='Original Price'
-                  column: title='Sale Price'
-                  column: title='Discount'
-                  column: title='Total'
-                  row: '', '12345680', 'Description', 'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
-                  row: '', '12345678', 'Description', 'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
-                  row: '', '12345679', 'Description', 'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
-                  row: '', '12345681', 'Description', 'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
-                  row: '', '666', 'Package', 'Patient', Decimal('1.000'), <currency $10>, <currency $0>, 0, <currency $0>
-                    row: '', '', 'Component', 'Patient', Decimal('5.000'), <currency $10>, <currency $2>, Decimal('80.0'), <currency $10>
-                SummaryLabel(step.summary, fill=True):
-                  GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
-                  GtkLabel(): '<b>$50.00</b>'
-              GtkBox(hbox1, orientation=horizontal, fill=True):
-                GtkBox(button_box, orientation=horizontal):
-                  GtkButton(add_button): hidden
-                  GtkButton(edit_button): insensitive
-                  GtkButton(delete_button): insensitive
-                  GtkButton(step.discount_btn, pack-end): 'Apply discount'
-                  GtkButton(step.delivery_btn, pack-end): 'Add delivery'
-                GtkBox(message_hbox, orientation=horizontal, expand=True, fill=True):
-                  GtkLabel(message_label, expand=True, fill=True): '<b>Not enough stock. Estimated time to obtain missing items: 0 days.</b>'
-                  GtkButton(message_details_button, fill=True): 'Details'
+          GtkOverlay(step.overlay, expand=True, fill=True):
+            GtkEventBox(step.list_holder): slave AdditionListSlave is attached
+              GtkBox(vbox1, orientation=vertical):
+                GtkBox(list_vbox, orientation=vertical, expand=True, fill=True):
+                  ObjectTree(klist, expand=True, fill=True):
+                    column: title='Code', hidden
+                    column: title='Barcode', hidden
+                    column: title='Description', expand
+                    column: title='Owner'
+                    column: title='Quantity'
+                    column: title='Original Price'
+                    column: title='Sale Price'
+                    column: title='Discount'
+                    column: title='Total'
+                    row: '', '12345680', 'Description', 'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
+                    row: '', '12345678', 'Description', 'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
+                    row: '', '12345679', 'Description', 'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
+                    row: '', '12345681', 'Description', 'Patient', Decimal('1.000'), <currency $10>, <currency $10>, 0, <currency $10>
+                    row: '', '666', 'Package', 'Patient', Decimal('1.000'), <currency $10>, <currency $0>, 0, <currency $0>
+                      row: '', '', 'Component', 'Patient', Decimal('5.000'), <currency $10>, <currency $2>, Decimal('80.0'), <currency $10>
+                  SummaryLabel(step.summary, fill=True):
+                    GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
+                    GtkLabel(): '<b>$50.00</b>'
+                GtkBox(hbox1, orientation=horizontal, fill=True):
+                  GtkBox(button_box, orientation=horizontal):
+                    GtkButton(add_button): hidden
+                    GtkButton(edit_button): insensitive
+                    GtkButton(delete_button): insensitive
+                    GtkButton(step.discount_btn, pack-end): 'Apply discount'
+                    GtkButton(step.delivery_btn, pack-end): 'Add delivery'
+                  GtkBox(message_hbox, orientation=horizontal, expand=True, fill=True):
+                    GtkLabel(message_label, expand=True, fill=True): '<b>Not enough stock. Estimated time to obtain missing items: 0 days.</b>'
+                    GtkButton(message_details_button, fill=True): 'Details'
+            GtkBox(step.box, orientation=horizontal):
+              GtkBox(step.warning_box, orientation=vertical, fill=True):
+                GtkLabel(step.warning_label, fill=True):
+                GtkLabel(step.dismiss_label, fill=True):
       ProxyLabel(notification_lbl, fill=True):
       GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
         GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):

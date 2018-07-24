@@ -24,8 +24,11 @@
 
 __tests__ = 'stoqlib.gui.wizards.inventorywizard'
 
+from decimal import Decimal
+
 from stoqlib.gui.test.uitestutils import GUITest
-from stoqlib.gui.wizards.inventorywizard import _InventoryBatchSelectionDialog
+from stoqlib.gui.wizards.inventorywizard import (InventoryCountWizard,
+                                                 _InventoryBatchSelectionDialog)
 
 
 class TestInventoryBatchSelectionDialog(GUITest):
@@ -43,3 +46,32 @@ class TestInventoryBatchSelectionDialog(GUITest):
         self.assertTrue(entry.is_valid())
         entry.update(u'124')
         self.assertFalse(entry.is_valid())
+
+
+class TestInventoryCountWizard(GUITest):
+    def test_assisted_count(self):
+        product = self.create_product(code='1')
+        self.create_storable(product=product)
+        inventory = self.create_inventory()
+        self.create_inventory_item(inventory=self.create_inventory(), product=product)
+
+        wizard = InventoryCountWizard(self.store, model=inventory)
+        type_step = wizard.get_current_step()
+        type_step.assisted_count.set_active(True)
+        self.click(wizard.next_button)
+
+        count_step = wizard.get_current_step()
+        count_step.barcode.update('12')
+        self.activate(count_step.barcode)
+        # The warning_label should be overlaying the list changing
+        overlay = count_step.overlay.get_overlay_pass_through(count_step.box)
+        self.assertFalse(overlay)
+        self.assertEqual(count_step.warning_label.get_text(), 'Product not found')
+        self.assertEqual(count_step.warning_label.get_property('opacity'), Decimal(1))
+
+        # The item is found, the overlay should be off
+        count_step.barcode.update('1')
+        self.activate(count_step.barcode)
+        overlay = count_step.overlay.get_overlay_pass_through(count_step.box)
+        self.assertTrue(overlay)
+        self.assertEqual(count_step.warning_label.get_property('opacity'), Decimal(0))

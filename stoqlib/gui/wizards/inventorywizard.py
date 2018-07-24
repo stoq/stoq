@@ -25,7 +25,7 @@
 import decimal
 import logging
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 
@@ -207,7 +207,6 @@ class InventoryCountItemStep(SellableItemStep):
     sellable_editable = False
     stock_labels_visible = False
     batch_selection_dialog = _InventoryBatchSelectionDialog
-    add_sellable_on_barcode_activate = True
 
     #
     #  SellableItemStep
@@ -235,6 +234,21 @@ class InventoryCountItemStep(SellableItemStep):
         self.slave.klist.set_cell_data_func(self._on_klist__cell_data_func)
 
         self.force_validation()
+
+    def run_advanced_search(self, search_str=None):
+        # In assisted inventory counting the user will probably use a barcode
+        # reader, so if the product was not found, show a message saying so
+        # instead of running a advanced search
+        self._show_error_message()
+        self.barcode.grab_focus()
+
+    def sellable_selected(self, sellable, batch=None):
+        super(InventoryCountItemStep, self).sellable_selected(sellable, batch)
+        if not self.proxy.model.sellable:
+            return
+
+        self._hide_error_message()
+        self._add_sellable()
 
     def get_order_item(self, sellable, cost, quantity, batch=None, parent=None):
         item = self.wizard.temporary_items.get(sellable, None)
@@ -353,9 +367,31 @@ class InventoryCountItemStep(SellableItemStep):
             return ''
         return format_quantity(item.quantity)
 
+    def _show_error_message(self):
+        self.overlay.set_overlay_pass_through(self.box, False)
+        self.list_holder.set_property('opacity', decimal.Decimal('0.2'))
+        self.warning_label.set_property('opacity', decimal.Decimal('1'))
+        self.dismiss_label.set_property('opacity', decimal.Decimal('1'))
+        self.warning_label.set_text(_("Product not found"))
+        self.dismiss_label.set_text(' <a href="#">%s</a>' % (_("Dismiss")))
+        self.dismiss_label.set_use_markup(True)
+        Gdk.beep()
+
+    def _hide_error_message(self):
+        self.overlay.set_overlay_pass_through(self.box, True)
+        self.list_holder.set_property('opacity', decimal.Decimal('1'))
+        self.warning_label.set_property('opacity', decimal.Decimal('0'))
+        self.dismiss_label.set_property('opacity', decimal.Decimal('0'))
+        # Just a precaution
+        self.warning_label.set_text("")
+        self.dismiss_label.set_text("")
+
     #
     #  Callbacks
     #
+
+    def on_dismiss_link__activate_link(self, widget, url):
+        self._hide_error_message()
 
     def _on_klist__cell_data_func(self, column, renderer, item, text):
         if column.attribute == 'quantity':
@@ -397,6 +433,9 @@ class InventoryCountItemStep(SellableItemStep):
         barcode = widget.get_text()
         log.info('Inventory barcode activate: %s', barcode)
         self._try_get_sellable()
+
+    def on_hide_message_button__clicked(self, foo):
+        self._hide_error_message()
 
 
 class InventoryCountWizard(BaseWizard):

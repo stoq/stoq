@@ -21,30 +21,35 @@ GtkDialog(toplevel): title='New Consignment', hidden
             ProxyLabel(step.minimum_quantity): '<span >0.0</span>', hidden
             GtkLabel(step.stock_quantity_lbl): 'Stock:', hidden
             ProxyLabel(step.stock_quantity): '<span >0.0</span>', hidden
-          GtkEventBox(step.list_holder, expand=True, fill=True): slave AdditionListSlave is attached
-            GtkBox(vbox1, orientation=vertical):
-              GtkBox(list_vbox, orientation=vertical, expand=True, fill=True):
-                ObjectTree(klist, expand=True, fill=True):
-                  column: title='Code'
-                  column: title='Description', expand
-                  column: title='Category', hidden
-                  column: title='Quantity'
-                  column: title='Expected Receival', hidden
-                  column: title='Unit'
-                  column: title='Cost'
-                  column: title='Total'
-                  row: '', 'Description', '', Decimal('1.000'), datetime.datetime(2012, 1, 2, 0, 0), '', <currency $125>, <currency $125>
-                SummaryLabel(step.summary, fill=True):
-                  GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
-                  GtkLabel(): '<b>$125.00</b>'
-              GtkBox(hbox1, orientation=horizontal, fill=True):
-                GtkBox(button_box, orientation=horizontal):
-                  GtkButton(add_button): hidden
-                  GtkButton(edit_button): insensitive
-                  GtkButton(delete_button): insensitive
-                GtkBox(message_hbox, orientation=horizontal, expand=True, fill=True): hidden
-                  GtkLabel(message_label, expand=True, fill=True):
-                  GtkButton(message_details_button, fill=True): 'Details'
+          GtkOverlay(step.overlay, expand=True, fill=True):
+            GtkEventBox(step.list_holder): slave AdditionListSlave is attached
+              GtkBox(vbox1, orientation=vertical):
+                GtkBox(list_vbox, orientation=vertical, expand=True, fill=True):
+                  ObjectTree(klist, expand=True, fill=True):
+                    column: title='Code'
+                    column: title='Description', expand
+                    column: title='Category', hidden
+                    column: title='Quantity'
+                    column: title='Expected Receival', hidden
+                    column: title='Unit'
+                    column: title='Cost'
+                    column: title='Total'
+                    row: '', 'Description', '', Decimal('1.000'), datetime.datetime(2012, 1, 2, 0, 0), '', <currency $125>, <currency $125>
+                  SummaryLabel(step.summary, fill=True):
+                    GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
+                    GtkLabel(): '<b>$125.00</b>'
+                GtkBox(hbox1, orientation=horizontal, fill=True):
+                  GtkBox(button_box, orientation=horizontal):
+                    GtkButton(add_button): hidden
+                    GtkButton(edit_button): insensitive
+                    GtkButton(delete_button): insensitive
+                  GtkBox(message_hbox, orientation=horizontal, expand=True, fill=True): hidden
+                    GtkLabel(message_label, expand=True, fill=True):
+                    GtkButton(message_details_button, fill=True): 'Details'
+            GtkBox(step.box, orientation=horizontal):
+              GtkBox(step.warning_box, orientation=vertical, fill=True):
+                GtkLabel(step.warning_label, fill=True):
+                GtkLabel(step.dismiss_label, fill=True):
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkBox(hbox1, orientation=horizontal, fill=True, pack-end):
         GtkButtonBox(buttonbox, orientation=horizontal, expand=True, fill=True, pack-end):

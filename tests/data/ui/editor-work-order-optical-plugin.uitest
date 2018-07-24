@@ -98,28 +98,33 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                       ProxyLabel(minimum_quantity): '<span >0.0</span>', hidden
                       GtkLabel(stock_quantity_lbl): 'Stock:', hidden
                       ProxyLabel(stock_quantity): '<span >0.0</span>', hidden
-                    GtkEventBox(list_holder, expand=True, fill=True): slave AdditionListSlave is attached
-                      GtkBox(vbox1, orientation=vertical):
-                        GtkBox(list_vbox, orientation=vertical, expand=True, fill=True):
-                          ObjectTree(klist, expand=True, fill=True):
-                            column: title='Code', hidden
-                            column: title='Barcode', hidden
-                            column: title='Description', expand
-                            column: title='Price'
-                            column: title='Quantity'
-                            column: title='Consumed quantity'
-                            column: title='Total'
-                          SummaryLabel(summary, fill=True):
-                            GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
-                            GtkLabel(): '<b>$0.00</b>'
-                        GtkBox(hbox1, orientation=horizontal, fill=True):
-                          GtkBox(button_box, orientation=horizontal):
-                            GtkButton(add_button): hidden
-                            GtkButton(edit_button): insensitive
-                            GtkButton(delete_button): hidden, insensitive
-                          GtkBox(message_hbox, orientation=horizontal, expand=True, fill=True):
-                            GtkLabel(message_label, expand=True, fill=True): 'This order is related to a sale. Edit the sale if you need to change the items'
-                            GtkButton(message_details_button, fill=True): 'Details', hidden
+                    GtkOverlay(overlay, expand=True, fill=True):
+                      GtkEventBox(list_holder): slave AdditionListSlave is attached
+                        GtkBox(vbox1, orientation=vertical):
+                          GtkBox(list_vbox, orientation=vertical, expand=True, fill=True):
+                            ObjectTree(klist, expand=True, fill=True):
+                              column: title='Code', hidden
+                              column: title='Barcode', hidden
+                              column: title='Description', expand
+                              column: title='Price'
+                              column: title='Quantity'
+                              column: title='Consumed quantity'
+                              column: title='Total'
+                            SummaryLabel(summary, fill=True):
+                              GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+                              GtkLabel(): '<b>$0.00</b>'
+                          GtkBox(hbox1, orientation=horizontal, fill=True):
+                            GtkBox(button_box, orientation=horizontal):
+                              GtkButton(add_button): hidden
+                              GtkButton(edit_button): insensitive
+                              GtkButton(delete_button): hidden, insensitive
+                            GtkBox(message_hbox, orientation=horizontal, expand=True, fill=True):
+                              GtkLabel(message_label, expand=True, fill=True): 'This order is related to a sale. Edit the sale if you need to change the items'
+                              GtkButton(message_details_button, fill=True): 'Details', hidden
+                      GtkBox(box, orientation=horizontal):
+                        GtkBox(warning_box, orientation=vertical, fill=True):
+                          GtkLabel(warning_label, fill=True):
+                          GtkLabel(dismiss_label, fill=True):
             GtkEventBox(history_holder): slave WorkOrderHistorySlave is attached
               GtkAlignment(toplevel):
                 GtkBox(vbox1, orientation=vertical):
