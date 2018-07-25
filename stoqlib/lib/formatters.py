@@ -239,12 +239,14 @@ class TextTable(object):
 
     """
 
-    def __init__(self, width, titles=None, expand_col=0, separators=True):
+    def __init__(self, width, titles=None, expand_col=0, separators=True,
+                 format_func=None):
         self._expand_col = expand_col
         self._width = width
         self._titles = titles
         self._items = []
         self._separators = separators
+        self._format_func = format_func
         self._sizes = []
         if titles:
             self._sizes = [len(str(i)) for i in self._titles]
@@ -275,6 +277,8 @@ class TextTable(object):
             else:
                 parts.append(str(value).rjust(self._sizes[i]))
 
+        if self._format_func:
+            parts = self._format_func(parts)
         return column_separator.join(parts)
 
     def __str__(self):
