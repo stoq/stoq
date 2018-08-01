@@ -31,6 +31,7 @@ from stoqlib.domain.costcenter import CostCenterEntry
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
+from stoqlib.domain.sellable import Sellable
 from stoqlib.enums import LatePaymentPolicy, ChangeSalespersonPolicy
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
@@ -106,6 +107,28 @@ class TestConfirmSaleWizard(GUITest):
 
         self._check_wizard('wizard-sale-done-sold')
         self.assertEqual(self.sale.payments[0].method.method_name, u'money')
+
+    @mock.patch('stoqlib.gui.wizards.salewizard.warning')
+    def test_finish_with_unaivable_items(self, warning):
+        sale = self.create_sale()
+        sale.identifier = 1234
+        sellable = self.create_sellable()
+        self.create_sale_item(sale, sellable=sellable)
+        sellable.status = Sellable.STATUS_CLOSED
+
+        self.wizard = ConfirmSaleWizard(self.store, sale,
+                                        subtotal=sale.get_total_sale_amount(),
+                                        total_paid=0)
+        self.step = self.wizard.get_current_step()
+        self.assertEqual(sale.status, Sale.STATUS_ORDERED)
+        with contextlib.nested(mock.patch.object(self.store, 'commit'),
+                               mock.patch.object(self.wizard, 'close')) as (commit, close):
+            self._go_to_next()
+            self.assertEqual(close.call_count, 1)
+            message = ("Description is not available for sale. Try making it "
+                       "available first or change it on sale and then try again.")
+            warning.assert_called_once_with(message)
+            self.assertEqual(sale.status, Sale.STATUS_ORDERED)
 
     def test_money_payment_with_trade(self):
         # A trade just passes total_paid=value for the trade value (ie, the

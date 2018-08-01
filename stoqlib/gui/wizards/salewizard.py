@@ -951,6 +951,15 @@ class ConfirmSaleWizard(BaseWizard):
             run_dialog(MissingItemsDialog, self, self.model, missing)
             return False
 
+        for item in self.model.get_items():
+            sellable = item.sellable
+            if not sellable.is_available():
+                self.close()
+                warning(_("%s is not available for sale. Try making it "
+                          "available first or change it on sale and then try again.") % (
+                    sellable.get_description()))
+                return False
+
         group = self.model.group
         # FIXME: This is set too late on Sale.confirm(). If PaymentGroup don't
         #        have a payer, we won't be able to print bills/booklets.
