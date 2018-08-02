@@ -1,0 +1,27 @@
+# Tanca SAT
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="0525", MODE="0666", SYMLINK+="ttyTS0"
+
+# Ingenico PinPads
+# also adding ircomm1 to make it safer when using NTK TEF plugin, since it has a hardcoded list of
+# devices that can be used. ircomm1 is '29' on that list
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="079b", ATTRS{idProduct}=="0028", MODE="0666", SYMLINK+="pinpad ircomm1"
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="079b", ATTRS{idProduct}=="006d", MODE="0666", SYMLINK+="pinpad ircomm1"
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="079b", ATTRS{idProduct}=="0081", MODE="0666", SYMLINK+="pinpad ircomm1"
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="079b", ATTRS{idProduct}=="006e", MODE="0666", SYMLINK+="pinpad ircomm1"
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="079b", ATTRS{idProduct}=="0029", MODE="0666", SYMLINK+="pinpad ircomm1"
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="079b", ATTRS{idProduct}=="0088", MODE="0666", SYMLINK+="pinpad ircomm1"
+
+# Verifone pinpads
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="11ca", ATTRS{idProduct}=="0219", MODE="0666", SYMLINK+="pinpad ircomm1"
+
+
+# Bematech (0b1b)
+#       MP4200
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="0b1b", ATTRS{idProduct}=="0003", MODE="0666", SYMLINK+="bematechMP4200"
+#       SAT RB2000
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="0b1b", ATTRS{idProduct}=="0109", MODE="0666", SYMLINK+="bematechRB2000"
+
+# Epson usb printers
+SUBSYSTEM=="usb", ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0e03", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0a5f", ATTRS{idProduct}=="000a", MODE="0666"
+

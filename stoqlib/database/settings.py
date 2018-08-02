@@ -417,12 +417,12 @@ class DatabaseSettings(object):
                         _database_drop(super_store, dbname)
                     log.info("Dropped database %s" % (dbname, ))
                     break
-                except Exception as e:
+                except Exception:
                     # time.sleep(1)
                     raise
             else:
                 if _database_exists(super_store, dbname):
-                    raise e
+                    raise AssertionError('Database exists')
         finally:
             super_store.close()
 
@@ -767,7 +767,7 @@ class DatabaseSettings(object):
                 log.info("Error getting pg version: %s" % (client_version, ))
                 return
 
-            cvs = tuple(map(int, client_version.split('.'))[:3])
+            cvs = tuple(list(map(int, client_version.split('.')))[:3])
 
             if svs != cvs:
                 server_version = '.'.join(map(str, svs))
