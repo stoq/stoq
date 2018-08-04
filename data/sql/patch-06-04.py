@@ -35,9 +35,25 @@ $$ LANGUAGE plpgsql;
 """
 
 tables_query = """
-SELECT c.relname as rule_table
-FROM pg_rewrite r JOIN pg_class c ON r.ev_class = c.oid
-WHERE r.rulename = 'update_te';
+SELECT DISTINCT
+    src_pg_class.relname AS srctable
+FROM pg_constraint
+JOIN pg_class AS src_pg_class
+    ON src_pg_class.oid = pg_constraint.conrelid
+JOIN pg_class AS ref_pg_class
+    ON ref_pg_class.oid = pg_constraint.confrelid
+JOIN pg_attribute AS src_pg_attribute
+    ON src_pg_class.oid = src_pg_attribute.attrelid
+JOIN pg_attribute AS ref_pg_attribute
+    ON ref_pg_class.oid = ref_pg_attribute.attrelid, generate_series(0,10) pos(n)
+WHERE
+    contype = 'f'
+    AND ref_pg_class.relname = 'transaction_entry'
+    AND ref_pg_attribute.attname = 'id'
+    AND src_pg_attribute.attnum = pg_constraint.conkey[n]
+    AND ref_pg_attribute.attnum = pg_constraint.confkey[n]
+    AND NOT src_pg_attribute.attisdropped
+    AND NOT ref_pg_attribute.attisdropped
 """
 
 
@@ -45,8 +61,7 @@ def apply_patch(store):
     store.execute(rules_query)
     tables = store.execute(tables_query).get_all()
 
-    for (table,) in tables + [('product_cofins_template',), ('invoice_item_pis',),
-                              ('invoice_item_cofins',), ('product_pis_template',)]:
+    for (table,) in tables:
         store.execute(query.format(table=table))
 
     # Drop the old functions
