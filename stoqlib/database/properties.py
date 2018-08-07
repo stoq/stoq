@@ -177,8 +177,9 @@ class XmlVariable(EncodedValueVariable):
         return etree.fromstring(value)
 
     def _dumps(self, value):
-        if value is None:
-            return None
+        if value is None or isinstance(value, str):
+            return value
+
         string = etree.tostring(value, encoding='unicode')
         if isinstance(string, bytes):  # pragma: nocover
             string = string.decode()
