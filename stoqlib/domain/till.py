@@ -488,6 +488,8 @@ class TillSummary(Domain):
     #: that actually was on the till. All values can differ.
     verify_value = PriceCol()
 
+    notes = UnicodeCol()
+
     method_id = IdCol(allow_none=False)
     #: The method this item is for
     method = Reference(method_id, 'PaymentMethod.id')
