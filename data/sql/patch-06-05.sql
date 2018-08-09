@@ -1,2 +1,2 @@
-ALTER TABLE till ADD COLUMN notes text;
+ALTER TABLE till_summary ADD COLUMN notes text;
 
