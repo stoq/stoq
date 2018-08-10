@@ -45,6 +45,7 @@ UPDATE sale SET station_id = foo.id
     FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
         FROM branch_station LEFT JOIN till ON branch_station.id = till.station_id) as foo
     WHERE sale.station_id IS NULL AND foo.branch_id = sale.branch_id AND foo.rank = 1;
+UPDATE sale SET station_id = foo.id FROM (SELECT id FROM branch_station ORDER BY te_id LIMIT 1) as foo WHERE station_id IS NULL;
 ALTER TABLE sale DROP CONSTRAINT sale_identifier_branch_id_key;
 ALTER TABLE sale ADD UNIQUE (identifier, branch_id, station_id);
 
@@ -52,6 +53,7 @@ UPDATE inventory SET station_id = foo.id
     FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
         FROM branch_station LEFT JOIN till ON branch_station.id = till.station_id) as foo
     WHERE inventory.station_id IS NULL AND foo.branch_id = inventory.branch_id AND foo.rank = 1;
+UPDATE inventory SET station_id = foo.id FROM (SELECT id FROM branch_station ORDER BY te_id LIMIT 1) as foo WHERE station_id IS NULL;
 ALTER TABLE inventory DROP CONSTRAINT inventory_identifier_branch_id_key;
 ALTER TABLE inventory ADD UNIQUE (identifier, branch_id, station_id);
 
@@ -59,6 +61,7 @@ UPDATE loan SET station_id = foo.id
     FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
         FROM branch_station LEFT JOIN till ON branch_station.id = till.station_id) as foo
     WHERE loan.station_id IS NULL AND foo.branch_id = loan.branch_id AND foo.rank = 1;
+UPDATE loan SET station_id = foo.id FROM (SELECT id FROM branch_station ORDER BY te_id LIMIT 1) as foo WHERE station_id IS NULL;
 ALTER TABLE loan DROP CONSTRAINT loan_identifier_branch_id_key;
 ALTER TABLE loan ADD UNIQUE (identifier, branch_id, station_id);
 
@@ -66,6 +69,7 @@ UPDATE payment SET station_id = foo.id
     FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
         FROM branch_station LEFT JOIN till ON branch_station.id = till.station_id) as foo
     WHERE payment.station_id IS NULL AND foo.branch_id = payment.branch_id AND foo.rank = 1;
+UPDATE payment SET station_id = foo.id FROM (SELECT id FROM branch_station ORDER BY te_id LIMIT 1) as foo WHERE station_id IS NULL;
 ALTER TABLE payment DROP CONSTRAINT payment_identifier_branch_id_key;
 ALTER TABLE payment ADD UNIQUE (identifier, branch_id, station_id);
 
@@ -73,6 +77,7 @@ UPDATE payment_renegotiation SET station_id = foo.id
     FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
         FROM branch_station LEFT JOIN till ON branch_station.id = till.station_id) as foo
     WHERE payment_renegotiation.station_id IS NULL AND foo.branch_id = payment_renegotiation.branch_id AND foo.rank = 1;
+UPDATE payment_renegotiation SET station_id = foo.id FROM (SELECT id FROM branch_station ORDER BY te_id LIMIT 1) as foo WHERE station_id IS NULL;
 ALTER TABLE payment_renegotiation DROP CONSTRAINT payment_renegotiation_identifier_branch_id_key;
 ALTER TABLE payment_renegotiation ADD UNIQUE (identifier, branch_id, station_id);
 
@@ -80,6 +85,7 @@ UPDATE production_order SET station_id = foo.id
     FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
         FROM branch_station LEFT JOIN till ON branch_station.id = till.station_id) as foo
     WHERE production_order.station_id IS NULL AND foo.branch_id = production_order.branch_id AND foo.rank = 1;
+UPDATE production_order SET station_id = foo.id FROM (SELECT id FROM branch_station ORDER BY te_id LIMIT 1) as foo WHERE station_id IS NULL;
 ALTER TABLE production_order DROP CONSTRAINT production_order_identifier_branch_id_key;
 ALTER TABLE production_order ADD UNIQUE (identifier, branch_id, station_id);
 
@@ -87,6 +93,7 @@ UPDATE purchase_order SET station_id = foo.id
     FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
         FROM branch_station LEFT JOIN till ON branch_station.id = till.station_id) as foo
     WHERE purchase_order.station_id IS NULL AND foo.branch_id = purchase_order.branch_id AND foo.rank = 1;
+UPDATE purchase_order SET station_id = foo.id FROM (SELECT id FROM branch_station ORDER BY te_id LIMIT 1) as foo WHERE station_id IS NULL;
 ALTER TABLE purchase_order DROP CONSTRAINT purchase_order_identifier_branch_id_key;
 ALTER TABLE purchase_order ADD UNIQUE (identifier, branch_id, station_id);
 
@@ -94,6 +101,7 @@ UPDATE quotation SET station_id = foo.id
     FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
         FROM branch_station LEFT JOIN till ON branch_station.id = till.station_id) as foo
     WHERE quotation.station_id IS NULL AND foo.branch_id = quotation.branch_id AND foo.rank = 1;
+UPDATE quotation SET station_id = foo.id FROM (SELECT id FROM branch_station ORDER BY te_id LIMIT 1) as foo WHERE station_id IS NULL;
 ALTER TABLE quotation DROP CONSTRAINT quotation_identifier_branch_id_key;
 ALTER TABLE quotation ADD UNIQUE (identifier, branch_id, station_id);
 
@@ -101,6 +109,7 @@ UPDATE quote_group SET station_id = foo.id
     FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
         FROM branch_station LEFT JOIN till ON branch_station.id = till.station_id) as foo
     WHERE quote_group.station_id IS NULL AND foo.branch_id = quote_group.branch_id AND foo.rank = 1;
+UPDATE quote_group SET station_id = foo.id FROM (SELECT id FROM branch_station ORDER BY te_id LIMIT 1) as foo WHERE station_id IS NULL;
 ALTER TABLE quote_group DROP CONSTRAINT quote_group_identifier_branch_id_key;
 ALTER TABLE quote_group ADD UNIQUE (identifier, branch_id, station_id);
 
@@ -108,6 +117,7 @@ UPDATE receiving_order SET station_id = foo.id
     FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
         FROM branch_station LEFT JOIN till ON branch_station.id = till.station_id) as foo
     WHERE receiving_order.station_id IS NULL AND foo.branch_id = receiving_order.branch_id AND foo.rank = 1;
+UPDATE receiving_order SET station_id = foo.id FROM (SELECT id FROM branch_station ORDER BY te_id LIMIT 1) as foo WHERE station_id IS NULL;
 ALTER TABLE receiving_order DROP CONSTRAINT receiving_order_identifier_branch_id_key;
 ALTER TABLE receiving_order ADD UNIQUE (identifier, branch_id, station_id);
 
@@ -116,6 +126,7 @@ UPDATE receiving_invoice SET station_id = foo.id
     FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
         FROM branch_station LEFT JOIN till ON branch_station.id = till.station_id) as foo
     WHERE receiving_invoice.station_id IS NULL AND foo.branch_id = receiving_invoice.branch_id AND foo.rank = 1;
+UPDATE receiving_invoice SET station_id = foo.id FROM (SELECT id FROM branch_station ORDER BY te_id LIMIT 1) as foo WHERE station_id IS NULL;
 
 -- There may be some receiving_invoice without a branch!
 UPDATE receiving_invoice SET station_id = receiving_order.station_id
@@ -137,6 +148,7 @@ UPDATE returned_sale SET station_id = foo.id
     FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
         FROM branch_station LEFT JOIN till ON branch_station.id = till.station_id) as foo
     WHERE returned_sale.station_id IS NULL AND foo.branch_id = returned_sale.branch_id AND foo.rank = 1;
+UPDATE returned_sale SET station_id = foo.id FROM (SELECT id FROM branch_station ORDER BY te_id LIMIT 1) as foo WHERE station_id IS NULL;
 ALTER TABLE returned_sale DROP CONSTRAINT returned_sale_identifier_branch_id_key;
 ALTER TABLE returned_sale ADD UNIQUE (identifier, branch_id, station_id);
 
@@ -144,6 +156,7 @@ UPDATE stock_decrease SET station_id = foo.id
     FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
         FROM branch_station LEFT JOIN till ON branch_station.id = till.station_id) as foo
     WHERE stock_decrease.station_id IS NULL AND foo.branch_id = stock_decrease.branch_id AND foo.rank = 1;
+UPDATE stock_decrease SET station_id = foo.id FROM (SELECT id FROM branch_station ORDER BY te_id LIMIT 1) as foo WHERE station_id IS NULL;
 ALTER TABLE stock_decrease DROP CONSTRAINT stock_decrease_identifier_branch_id_key;
 ALTER TABLE stock_decrease ADD UNIQUE (identifier, branch_id, station_id);
 
@@ -151,6 +164,7 @@ UPDATE work_order SET station_id = foo.id
     FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
         FROM branch_station LEFT JOIN till ON branch_station.id = till.station_id) as foo
     WHERE work_order.station_id IS NULL AND foo.branch_id = work_order.branch_id AND foo.rank = 1;
+UPDATE work_order SET station_id = foo.id FROM (SELECT id FROM branch_station ORDER BY te_id LIMIT 1) as foo WHERE station_id IS NULL;
 ALTER TABLE work_order DROP CONSTRAINT work_order_identifier_branch_id_key;
 ALTER TABLE work_order ADD UNIQUE (identifier, branch_id, station_id);
 
@@ -158,6 +172,7 @@ UPDATE transfer_order SET station_id = foo.id
     FROM (SELECT branch_station.id, branch_station.branch_id, rank() OVER (partition by branch_station.branch_id order by opening_date desc)
         FROM branch_station LEFT JOIN till ON branch_station.id = till.station_id) as foo
     WHERE transfer_order.station_id IS NULL AND foo.branch_id = transfer_order.source_branch_id AND foo.rank = 1;
+UPDATE transfer_order SET station_id = foo.id FROM (SELECT id FROM branch_station ORDER BY te_id LIMIT 1) as foo WHERE station_id IS NULL;
 ALTER TABLE transfer_order DROP CONSTRAINT transfer_order_identifier_source_branch_id_key;
 ALTER TABLE transfer_order ADD UNIQUE (identifier, source_branch_id, station_id);
 
