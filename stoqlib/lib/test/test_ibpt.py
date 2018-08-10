@@ -49,7 +49,7 @@ class TestCalculateTaxForItem(DomainTest):
         self.assertEqual(state, Decimal("0"))
 
         msg = generate_ibpt_message(sale.services, include_services=True)
-        expected_msg = ("Trib aprox R$: 6.72 Federal e 0.00 Estadual\n"
+        expected_msg = ("Tributos aproximados: R$ 6.72 Federal e R$ 0.00 Estadual\n"
                         "Fonte: IBPT/empresometro.com.br A5G7R1")
         self.assertEqual(msg, expected_msg)
 
@@ -67,7 +67,7 @@ class TestCalculateTaxForItem(DomainTest):
         self.assertEqual(state, Decimal("0"))
 
         msg = generate_ibpt_message(items)
-        expected_msg = ("Trib aprox R$: 0.00 Federal e 0.00 Estadual\n"
+        expected_msg = ("Tributos aproximados: R$ 0.00 Federal e R$ 0.00 Estadual\n"
                         "Fonte:  0")
         self.assertEqual(msg, expected_msg)
 
@@ -84,7 +84,7 @@ class TestCalculateTaxForItem(DomainTest):
         self.assertEqual(state, Decimal("0"))
 
         msg = generate_ibpt_message(items)
-        expected_msg = ("Trib aprox R$: 0.00 Federal e 0.00 Estadual\n"
+        expected_msg = ("Tributos aproximados: R$ 0.00 Federal e R$ 0.00 Estadual\n"
                         "Fonte:  0")
         self.assertEqual(msg, expected_msg)
 
@@ -110,7 +110,7 @@ class TestCalculateTaxForItem(DomainTest):
         self.assertEqual(state, Decimal("18"))
 
         msg = generate_ibpt_message(items)
-        expected_msg = ("Trib aprox R$: 4.20 Federal e 18.00 Estadual\n"
+        expected_msg = ("Tributos aproximados: R$ 4.20 Federal e R$ 18.00 Estadual\n"
                         "Fonte: IBPT/empresometro.com.br A5G7R1")
         self.assertEqual(msg, expected_msg)
 

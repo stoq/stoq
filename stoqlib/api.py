@@ -220,6 +220,7 @@ class StoqAPI(object):
         options.autoreload = False
         options.login_username = u'admin'
         options.non_fatal_warnings = False
+        options.quiet = True
         shell = boot_shell(options, initial=False)
         shell._dbconn.connect()
         shell._do_login()

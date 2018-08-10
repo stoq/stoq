@@ -32,7 +32,7 @@ import logging
 from kiwi.currency import currency
 from storm.expr import And, Eq, Join, LeftJoin, Or
 from storm.info import ClassAlias
-from storm.references import Reference
+from storm.references import Reference, ReferenceSet
 
 from stoqlib.database.runtime import get_current_user
 from stoqlib.database.expr import Date, TransactionTimestamp
@@ -143,6 +143,8 @@ class Till(IdentifiableDomain):
     #: The responsible for verifying the till
     responsible_verify = Reference(responsible_verify_id, "LoginUser.id")
 
+    summary = ReferenceSet('id', 'TillSummary.till_id')
+
     #
     # Classmethods
     #
@@ -233,6 +235,7 @@ class Till(IdentifiableDomain):
         self.opening_date = TransactionTimestamp()
         self.status = Till.STATUS_OPEN
         self.responsible_open = get_current_user(self.store)
+        assert self.responsible_open is not None
 
     def close_till(self, observations=u""):
         """This method close the current till operation with the confirmed
@@ -254,6 +257,7 @@ class Till(IdentifiableDomain):
         self.status = Till.STATUS_CLOSED
         self.observations = observations
         self.responsible_close = get_current_user(self.store)
+        assert self.responsible_open is not None
 
     def add_entry(self, payment):
         """
@@ -366,6 +370,7 @@ class Till(IdentifiableDomain):
                            TillEntry.till_id == self.id))
         return currency(results.sum(TillEntry.value) or 0)
 
+    # FIXME: Rename to create_day_summary
     def get_day_summary(self):
         """Get the summary of this till for closing.
 
@@ -376,7 +381,7 @@ class Till(IdentifiableDomain):
         day_history = {}
         # Keys are (method, provider, card_type), provider and card_type may be None if
         # payment was not with card
-        day_history[(money_method, None, None)] = self.initial_cash_amount
+        day_history[(money_method, None, None)] = 0
 
         for entry in self.get_entries():
             provider = card_type = None
