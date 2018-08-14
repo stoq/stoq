@@ -808,6 +808,26 @@ class TestWorkOrder(DomainTest):
         wo.inform_client()
         wo.unset_client_informed("teste")
 
+    def test_can_check_order(self):
+        wo = self.create_workorder()
+        employee = self.create_employee()
+        self.assertFalse(wo.can_check_order())
+
+        wo.status = WorkOrder.STATUS_WORK_FINISHED
+        self.assertTrue(wo.can_check_order())
+        wo.check_responsible = employee
+        self.assertFalse(wo.can_check_order())
+
+    def test_check_order(self):
+        wo = self.create_workorder()
+        wo.status = WorkOrder.STATUS_WORK_FINISHED
+        employee = self.create_employee()
+
+        with self.assertRaises(AssertionError):
+            wo.check_order(None)
+
+        wo.check_order(employee, notes="Test checking order")
+
     def test_reopen(self):
         workorder = self.create_workorder()
         workorder.approve()

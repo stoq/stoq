@@ -312,6 +312,7 @@ class ServicesApp(ShellApp):
             ('', _('Pause the work'), 'work_order.Pause', False),
             ('', _('Start the work'), 'work_order.Work', False),
             ('', _('Reject order'), 'work_order.Reject', False),
+            ('', _('Check order'), 'work_order.CheckOrder', False),
             ('', _('Inform client'), 'work_order.InformClient', False),
             ('', _('Undo order rejection'), 'work_order.UndoRejection', False),
             ('', _('Repoen order'), 'work_order.Reopen', False),

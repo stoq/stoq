@@ -29,7 +29,8 @@ from stoqlib.domain.workorder import WorkOrder
 from stoqlib.gui.actions.base import BaseActions, action
 from stoqlib.gui.editors.noteeditor import NoteEditor, Note
 from stoqlib.gui.editors.workordereditor import (WorkOrderEditor,
-                                                 WorkOrderPackageSendEditor)
+                                                 WorkOrderPackageSendEditor,
+                                                 WorkOrderCheckEditor)
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.workorderpackagewizard import WorkOrderPackageReceiveWizard
 from stoqlib.lib.message import yesno
@@ -67,6 +68,7 @@ class WorkOrderActions(BaseActions):
         self.set_action_enabled('UndoRejection', model and model.can_undo_rejection()),
         self.set_action_enabled('Pause', model and model.can_pause()),
         self.set_action_enabled('Work', model and model.can_work()),
+        self.set_action_enabled('CheckOrder', model and model.can_check_order()),
         self.set_action_enabled('InformClient', model and model.can_inform_client()),
         self.set_action_enabled('Reopen', model and model.can_reopen())
         self.set_action_enabled('PrintReceipt', model and model.is_finished())
@@ -215,6 +217,18 @@ class WorkOrderActions(BaseActions):
         with api.new_store() as store:
             work_order = store.fetch(work_order)
             work_order.reject(reason=rv.notes)
+
+        self.emit('model-edited', work_order)
+
+    @action('CheckOrder')
+    def check_order(self, work_order):
+        with api.new_store() as store:
+            rv = self.run_dialog(WorkOrderCheckEditor, store)
+            if not rv:
+                return
+
+            work_order = store.fetch(work_order)
+            work_order.check_order(rv.responsible, rv.notes)
 
         self.emit('model-edited', work_order)
 

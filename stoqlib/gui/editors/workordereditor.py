@@ -23,17 +23,20 @@
 ##
 ##
 
+import collections
 import datetime
 
 from gi.repository import Gtk, GdkPixbuf
 
 from storm.expr import In
+from kiwi.python import Settable
 from kiwi.ui.gadgets import render_pixbuf
+from kiwi.ui.forms import ChoiceField, TextField
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
-from stoqlib.domain.person import Branch
+from stoqlib.domain.person import Branch, LoginUser
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderPackage,
                                       WorkOrderApprovedAndFinishedView)
@@ -49,6 +52,7 @@ from stoqlib.gui.slaves.workorderslave import (WorkOrderOpeningSlave,
                                                WorkOrderHistorySlave)
 from stoqlib.gui.utils.iconutils import get_workorder_state_icon, render_icon
 from stoqlib.gui.widgets.queryentry import ClientEntryGadget
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.message import warning
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext
@@ -475,3 +479,22 @@ class WorkOrderPackageSendEditor(BaseEditor):
         model = self.workorders.get_selected().work_order
         run_dialog(WorkOrderEditor, self, self.store,
                    model=model, visual_mode=True)
+
+
+class WorkOrderCheckEditor(BaseEditor):
+    title = _('Check order')
+    model_type = Settable
+    confirm_widgets = ['responsible']
+
+    @cached_property()
+    def fields(self):
+        user = api.for_combo(self.store.find(LoginUser), empty='')
+        return collections.OrderedDict(
+            responsible=ChoiceField(_("Responsible"), mandatory=True,
+                                    use_entry=True, proxy=True,
+                                    values=user),
+            notes=TextField(_('Notes'), proxy=True),
+        )
+
+    def create_model(self, store):
+        return Settable(responsible=None, notes="")

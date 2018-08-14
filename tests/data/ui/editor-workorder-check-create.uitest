@@ -1,0 +1,30 @@
+editor: WorkOrderCheckEditor
+GtkDialog(main_dialog.toplevel): title='Check order', hidden
+  GtkBox(main_dialog._main_vbox, orientation=vertical):
+    GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6):
+        GtkEventBox(): slave BasicForm is attached
+          GtkAlignment(toplevel):
+            GtkTable():
+              ProxyLabel(responsible_lbl): 'Responsible:'
+              ProxyComboEntry(responsible): mandatory
+                item: ''
+                item: 'Administrator'
+                item: 'Cleusa Blanc Ferreira Norbiato'
+                item: 'Deivis Alexandre Junior'
+                item: 'Maria Aparecida Ardana'
+                item: 'Osvaldo Denadai Marin'
+              GtkBox(orientation=horizontal):
+              ProxyLabel(notes_lbl): 'Notes:'
+              ProxyEntry(notes): ''
+              GtkBox(orientation=horizontal):
+      GtkBox(orientation=horizontal, fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, padding=6, pack-end):
+    GtkBox(orientation=horizontal, fill=True, pack-end):
+      GtkButtonBox(main_dialog.action_area, orientation=horizontal, fill=True, pack-end):
+        GtkButton(main_dialog.cancel_button, expand=True, fill=True, padding=6): 'gtk-cancel'
+        GtkButton(main_dialog.ok_button, expand=True, fill=True, padding=6): 'gtk-ok', insensitive

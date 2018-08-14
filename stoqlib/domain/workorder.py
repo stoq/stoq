@@ -696,6 +696,10 @@ class WorkOrder(IdentifiableDomain):
     #: the |employee| responsible for the execution of the work
     execution_responsible = Reference(execution_responsible_id, 'Employee.id')
 
+    check_responsible_id = IdCol(default=None)
+    #: the |employee| that checked the work order for quality assurance
+    check_responsible = Reference(check_responsible_id, 'Employee.id')
+
     client_id = IdCol(default=None)
     #: the |client|, owner of the equipment
     client = Reference(client_id, 'Client.id')
@@ -989,6 +993,13 @@ class WorkOrder(IdentifiableDomain):
         """
         return not self.client_informed_date and self.status == self.STATUS_WORK_FINISHED
 
+    def can_check_order(self):
+        """Check if the object can be set as checked
+
+        :returns: ``True``if can, ``False`` otherwise
+        """
+        return not self.check_responsible and self.status == self.STATUS_WORK_FINISHED
+
     def reject(self, reason):
         """Setter for the :obj:`.is_rejected` flag
 
@@ -1121,6 +1132,14 @@ class WorkOrder(IdentifiableDomain):
                                    old_value=_("Yes"),
                                    new_value=_("No"),
                                    notes=reason)
+
+    def check_order(self, responsible, notes=""):
+        assert responsible, responsible
+        self.check_responsible = responsible
+        WorkOrderHistory.add_entry(self.store, self, what=_("Order checked"),
+                                   old_value=_("No"),
+                                   new_value=_("Yes"),
+                                   notes=notes)
 
     def reopen(self, reason):
         """Reopens the work order

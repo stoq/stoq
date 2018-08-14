@@ -28,7 +28,8 @@ from stoqlib.api import api
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderHistory)
 from stoqlib.gui.editors.workordereditor import (WorkOrderEditor,
-                                                 WorkOrderPackageSendEditor)
+                                                 WorkOrderPackageSendEditor,
+                                                 WorkOrderCheckEditor)
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdatetime
 from stoqlib.lib.parameters import sysparam
@@ -348,3 +349,18 @@ class TestWorkOrderPackageSendEditor(GUITest):
         self.assertFalse(editor.validate_confirm())
         warning.assert_called_once_with(
             u"You need to select at least one work order")
+
+
+class TestWorkOrderCheckEditor(GUITest):
+    def test_create(self):
+        editor = WorkOrderCheckEditor(self.store)
+        self.check_editor(editor, 'editor-workorder-check-create')
+
+    def test_confirm(self):
+        user = self.create_user()
+        editor = WorkOrderCheckEditor(self.store)
+
+        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
+
+        editor.responsible.update(user)
+        self.assertSensitive(editor.main_dialog, ['ok_button'])

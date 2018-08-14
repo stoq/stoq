@@ -1433,6 +1433,7 @@ class TestPersonMerging(DomainTest):
         'UPDATE transfer_order SET cancel_responsible_id=%s WHERE transfer_order.cancel_responsible_id = %s',  # nopep8
         'UPDATE transfer_order SET destination_responsible_id=%s WHERE transfer_order.destination_responsible_id = %s',  # nopep8
         'UPDATE transfer_order SET source_responsible_id=%s WHERE transfer_order.source_responsible_id = %s',  # nopep8
+        'UPDATE work_order SET check_responsible_id=%s WHERE work_order.check_responsible_id = %s',  # nopep8
         'UPDATE work_order SET execution_responsible_id=%s WHERE work_order.execution_responsible_id = %s',  # nopep8
         'UPDATE work_order SET quote_responsible_id=%s WHERE work_order.quote_responsible_id = %s',  # nopep8
     ]

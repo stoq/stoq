@@ -54,6 +54,7 @@ class WorkOrderRow(Gtk.ListBoxRow):
         (_('Pause the work'), 'work_order.Pause'),
         (_('Start the work'), 'work_order.Work'),
         (_('Reject order'), 'work_order.Reject'),
+        (_('Check order'), 'work_order.CheckOrder'),
         (_('Inform client'), 'work_order.InformClient'),
         (_('Undo order rejection'), 'work_order.UndoRejection'),
         (_('Repoen order'), 'work_order.Reopen'),
