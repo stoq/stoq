@@ -2738,7 +2738,8 @@ class SalePaymentMethodView(SaleView):
     @classmethod
     def find_by_payment_method(cls, store, method):
         if method:
-            results = store.find(cls, Payment.method == method)
+            results = store.find(cls, And(Payment.method == method,
+                                          Payment.status != Payment.STATUS_CANCELLED))
         else:
             results = store.find(cls)
 
