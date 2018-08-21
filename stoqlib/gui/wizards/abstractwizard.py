@@ -564,6 +564,7 @@ class SellableItemSlave(BaseEditorSlave):
         # 10 for the length of MAX_INT and 1 for comma
         self.cost.set_max_length(10 + cost_digits + 1)
         self.add_sellable_button.set_sensitive(False)
+        self.overlay.set_overlay_pass_through(self.box, True)
         self.unit_label.set_bold(True)
 
         for widget in [self.quantity, self.cost]:

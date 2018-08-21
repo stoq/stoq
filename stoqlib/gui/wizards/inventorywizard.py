@@ -434,8 +434,9 @@ class InventoryCountItemStep(SellableItemStep):
         log.info('Inventory barcode activate: %s', barcode)
         self._try_get_sellable()
 
-    def on_hide_message_button__clicked(self, foo):
+    def on_dismiss_label__activate_link(self, label, link):
         self._hide_error_message()
+        return True
 
 
 class InventoryCountWizard(BaseWizard):
