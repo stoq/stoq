@@ -14,6 +14,10 @@ SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="079b"
 # Verifone pinpads
 SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="11ca", ATTRS{idProduct}=="0219", MODE="0666", SYMLINK+="pinpad ircomm1"
 
+# Gertec pinpads
+# PPC920
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="1753", ATTRS{idProduct}=="c902", MODE="0666", SYMLINK+="pinpad ircomm1"
+
 
 # Bematech (0b1b)
 #       MP4200
@@ -24,4 +28,10 @@ SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="0b1b"
 # Epson usb printers
 SUBSYSTEM=="usb", ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0e03", MODE="0666"
 SUBSYSTEM=="usb", ATTRS{idVendor}=="0a5f", ATTRS{idProduct}=="000a", MODE="0666"
+
+# SNBC ( totem bacio)
+SUBSYSTEM=="usb", ATTRS{idVendor}=="154f", ATTRS{idProduct}=="1300", MODE="0666"
+
+
+
 
