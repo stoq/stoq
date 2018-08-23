@@ -723,7 +723,7 @@ def _register_branch_station(caller_store, station_name):
             raise SystemExit
 
         from stoqlib.gui.utils.login import LoginHelper
-        h = LoginHelper(username="admin")
+        h = LoginHelper()
         try:
             user = h.validate_user()
         except LoginError as e:

@@ -406,6 +406,7 @@ class CheckECFStateEvent(Event):
 # Till events
 #
 
+# XXX: This are actually gui events
 @public(since="1.5.0")
 class TillOpenEvent(Event):
     """
@@ -422,6 +423,24 @@ class TillCloseEvent(Event):
 
     :param till: the closed |till|
     :param previous_day: if the |till| wasn't closed previously
+    """
+
+
+@public(since="3.1.0")
+class TillOpenedEvent(Event):
+    """
+    This event is emitted when a |till| is closed
+
+    :param till: the closed |till|
+    """
+
+
+@public(since="3.1.0")
+class TillClosedEvent(Event):
+    """
+    This event is emitted when a |till| is closed
+
+    :param till: the closed |till|
     """
 
 

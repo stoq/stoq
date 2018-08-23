@@ -41,6 +41,7 @@ from stoqlib.database.properties import (PriceCol, DateTimeCol, UnicodeCol,
 from stoqlib.database.runtime import get_current_station
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain, IdentifiableDomain
+from stoqlib.domain.events import TillOpenedEvent, TillClosedEvent
 from stoqlib.domain.payment.card import CreditCardData
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.method import PaymentMethod
@@ -236,6 +237,7 @@ class Till(IdentifiableDomain):
         self.status = Till.STATUS_OPEN
         self.responsible_open = get_current_user(self.store)
         assert self.responsible_open is not None
+        TillOpenedEvent.emit(self)
 
     def close_till(self, observations=u""):
         """This method close the current till operation with the confirmed
@@ -258,6 +260,7 @@ class Till(IdentifiableDomain):
         self.observations = observations
         self.responsible_close = get_current_user(self.store)
         assert self.responsible_open is not None
+        TillClosedEvent.emit(self)
 
     def add_entry(self, payment):
         """
