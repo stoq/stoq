@@ -51,9 +51,13 @@ class TestInventoryBatchSelectionDialog(GUITest):
 class TestInventoryCountWizard(GUITest):
     def test_assisted_count(self):
         product = self.create_product(code='1')
+        product_without_stock = self.create_product(code='2')
+        product_without_stock.manage_stock = False
         self.create_storable(product=product)
         inventory = self.create_inventory()
         self.create_inventory_item(inventory=self.create_inventory(), product=product)
+        self.create_inventory_item(inventory=self.create_inventory(),
+                                   product=product_without_stock)
 
         wizard = InventoryCountWizard(self.store, model=inventory)
         type_step = wizard.get_current_step()
@@ -71,6 +75,12 @@ class TestInventoryCountWizard(GUITest):
 
         # The item is found, the overlay should be off
         count_step.barcode.update('1')
+        self.activate(count_step.barcode)
+        overlay = count_step.overlay.get_overlay_pass_through(count_step.box)
+        self.assertTrue(overlay)
+        self.assertEqual(count_step.warning_label.get_property('opacity'), Decimal(0))
+
+        count_step.barcode.update('2')
         self.activate(count_step.barcode)
         overlay = count_step.overlay.get_overlay_pass_through(count_step.box)
         self.assertTrue(overlay)

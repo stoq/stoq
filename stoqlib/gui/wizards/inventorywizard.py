@@ -256,7 +256,9 @@ class InventoryCountItemStep(SellableItemStep):
             # The item selected is not in the inventory. Add it now
             product = sellable.product
             storable = product.storable
-            current_quantity = storable.get_balance_for_branch(self.model.branch)
+            current_quantity = 0
+            if storable:
+                current_quantity = storable.get_balance_for_branch(self.model.branch)
             self.model.add_product(product, current_quantity)
             item = _TemporaryInventoryItem(sellable, storable, 0)
             self.wizard.temporary_items[sellable] = item
@@ -299,7 +301,9 @@ class InventoryCountItemStep(SellableItemStep):
                 continue
             product = sellable.product
             storable = product.storable
-            current_quantity = storable.get_balance_for_branch(self.model.branch)
+            current_quantity = 0
+            if storable:
+                current_quantity = storable.get_balance_for_branch(self.model.branch)
             item = self.model.add_product(product, current_quantity)
             tmp_item = _TemporaryInventoryItem(sellable, storable, quantity)
             self.wizard.temporary_items[sellable] = tmp_item
