@@ -248,6 +248,7 @@ class InventoryCountItemStep(SellableItemStep):
             return
 
         self._hide_error_message()
+        Gdk.beep()
         self._add_sellable()
 
     def get_order_item(self, sellable, cost, quantity, batch=None, parent=None):
@@ -379,7 +380,6 @@ class InventoryCountItemStep(SellableItemStep):
         self.warning_label.set_text(_("Product not found"))
         self.dismiss_label.set_text(' <a href="#">%s</a>' % (_("Dismiss")))
         self.dismiss_label.set_use_markup(True)
-        Gdk.beep()
 
     def _hide_error_message(self):
         self.overlay.set_overlay_pass_through(self.box, True)
@@ -449,6 +449,7 @@ class InventoryCountWizard(BaseWizard):
     size = (800, 450)
     title = _('Inventory product counting')
     help_section = 'inventory-count'
+    need_cancel_confirmation = True
 
     def __init__(self, store, model):
         self.temporary_items = {}
