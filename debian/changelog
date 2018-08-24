@@ -1,3 +1,9 @@
+stoq (3.1~rc4) xenial; urgency=medium
+
+  * Release 3.1~rc4
+
+ -- Ronaldo Maia <romaia@async.com.br>  Fri, 24 Aug 2018 00:09:36 -0300
+
 stoq (3.1~rc3) xenial; urgency=medium
 
   * 3.1 rc3
