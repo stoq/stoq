@@ -140,9 +140,7 @@ class GnuCashXMLImporter(Importer):
         try:
             return datetime.datetime.strptime(data, '%Y-%m-%d %H:%M:%S')
         except ValueError as e:
-            pass
-
-        log.info("Couldn't parse date: %r - %r" % (data, e))
+            log.info("Couldn't parse date: %r - %r" % (data, e))
         return None
 
     def _get_text(self, node, tag, default=None):

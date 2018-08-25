@@ -64,6 +64,9 @@ class ResourceStatus(GObject.GObject):
 
     name = None
     label = None
+    status = STATUS_NA
+    reason = None
+    reason_long = None
     priority = 0
     refresh_timeout = int(os.environ.get('STOQ_STATUS_REFRESH_TIMEOUT', 60))
 
@@ -71,9 +74,6 @@ class ResourceStatus(GObject.GObject):
         super(ResourceStatus, self).__init__()
 
         assert self.name is not None
-        self.status = self.STATUS_NA
-        self.reason = None
-        self.reason_long = None
         GLib.timeout_add_seconds(self.refresh_timeout, self.refresh_and_notify)
 
         # Schedule first update for right after now. Dont call refresh_and_notify()
@@ -156,6 +156,7 @@ class ResourceStatusManager(GObject.GObject):
         """Get the manager singleton instance"""
         if cls._instance is None:
             cls._instance = cls()
+            cls._register_messages()
         return cls._instance
 
     @property
@@ -200,6 +201,22 @@ class ResourceStatusManager(GObject.GObject):
     #
     #  Private
     #
+
+    @classmethod
+    def _register_messages(cls):
+        from stoqlib.domain.message import Message
+        with api.new_store() as store:
+            messages = Message.find_active(store)
+            for msg in messages:
+                @register
+                class Foo(ResourceStatus):
+                    name = msg.id
+                    label = _('Message')
+                    status = ResourceStatus.STATUS_WARNING
+                    reason = msg.content
+
+                    def refresh(self):
+                        pass
 
     def _iter_resources(self):
         return sorted(self.resources.values(), key=lambda r: r.priority)

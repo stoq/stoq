@@ -162,6 +162,7 @@ _tables = [
                    'WorkOrderHistory']),
     ('event', ['Event']),
     ('certificate', ['Certificate']),
+    ('message', ['Message']),
 ]
 
 # table name (e.g. "Person") -> class

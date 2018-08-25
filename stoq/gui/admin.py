@@ -47,6 +47,7 @@ from stoqlib.gui.editors.personeditor import UserEditor
 from stoqlib.gui.search.costcentersearch import CostCenterSearch
 from stoqlib.gui.search.eventsearch import EventSearch
 from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
+from stoqlib.gui.search.messagesearch import MessageSearch
 from stoqlib.gui.search.parametersearch import ParameterSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.gridsearch import (GridGroupSearch,
@@ -385,6 +386,7 @@ class AdminApp(ShellApp):
             ("SearchComputer", None, _('Computers...'),
              group.get('search_computers')),
             ("SearchTaxTemplate", None, _('Tax Classes...')),
+            ("SearchMessages", None, _("Messages...")),
             ("ConfigureMenu", None, _("_Configure")),
             ("ConfigureDevices", None, _("Devices..."),
              group.get('config_devices')),
@@ -450,6 +452,7 @@ class AdminApp(ShellApp):
             self.SearchEvents,
             self.SearchCostCenters,
             self.SearchDuplicatedPersons,
+            self.SearchMessages,
         ])
 
         self.window.add_extra_items(
@@ -492,3 +495,6 @@ class AdminApp(ShellApp):
 
     def on_SearchDuplicatedPersons__activate(self, action):
         self.run_dialog(PersonMergeDialog, self.store)
+
+    def on_SearchMessages__activate(self, action):
+        self.run_dialog(MessageSearch, self.store)

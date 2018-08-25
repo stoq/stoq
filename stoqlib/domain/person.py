@@ -1591,6 +1591,21 @@ class LoginUser(Domain):
         """Returns a list of all active |loginusers|"""
         return store.find(cls, is_active=True)
 
+    @classmethod
+    def get_active_items(cls, store):
+        """
+        Return a list of active items (name, id)
+
+        :param store: a store
+        :returns: the items
+        """
+        join1 = LeftJoin(Person, Person.id == cls.person_id)
+        items = store.using(cls, join1).find((
+            Person.name,
+            cls.id),
+            Eq(cls.is_active, True))
+        return locale_sorted(items, key=operator.itemgetter(0))
+
     def get_associated_branches(self):
         """ Returns all the |branches| which the user has access
         """

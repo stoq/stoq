@@ -105,6 +105,14 @@ search Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`messagesearch` Module
+------------------------
+
+.. automodule:: stoqlib.gui.search.messagesearch
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`parametersearch` Module
 -----------------------------
 

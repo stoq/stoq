@@ -37,6 +37,7 @@ _ = stoqlib_gettext
 class TestUserProfile(DomainTest):
     """C{UserProfile} TestCase
     """
+
     def test_add_application_reference(self):
         profile = UserProfile(store=self.store, name=u"foo")
         assert profile.profile_settings.count() == 0
@@ -57,10 +58,15 @@ class TestUserProfile(DomainTest):
         self.assertTrue(isinstance(profile2, UserProfile))
         self.assertIn(profile2, self.store.find(UserProfile))
 
+    def test_get_description(self):
+        profile = UserProfile(store=self.store, name=u"profile name")
+        self.assertEqual(profile.get_description(), 'profile name')
+
 
 class TestProfileSettings(DomainTest):
     """{ProfileSettings} TestCase
     """
+
     def get_foreign_key_data(self):
         return [UserProfile(store=self.store, name=u'Manager')]
 

@@ -1050,6 +1050,12 @@ class TestUser(_PersonFacetTest, DomainTest):
         self.assertFalse(user in active_users)
         self.assertEqual(active_users.count(), active_users_count)
 
+    def test_get_active_items(self):
+        user = self.create_user()
+        user.person.name = 'Aaron'
+        items = LoginUser.get_active_items(self.store)
+        self.assertEqual(items[0][0], 'Aaron')
+
 
 class TestBranch(_PersonFacetTest, DomainTest):
     facet = Branch
@@ -1546,6 +1552,8 @@ class TestPersonMerging(DomainTest):
             'UPDATE inventory SET responsible_id=%s WHERE inventory.responsible_id = %s',  # nopep8
             'UPDATE loan SET cancel_responsible_id=%s WHERE loan.cancel_responsible_id = %s',  # nopep8
             'UPDATE loan SET responsible_id=%s WHERE loan.responsible_id = %s',  # nopep8
+            'UPDATE message SET created_by_id=%s WHERE message.created_by_id = %s',  # nopep8
+            'UPDATE message SET user_id=%s WHERE message.user_id = %s',  # nopep8
             'UPDATE payment_comment SET author_id=%s WHERE payment_comment.author_id = %s',  # nopep8
             'UPDATE payment_renegotiation SET responsible_id=%s WHERE payment_renegotiation.responsible_id = %s',  # nopep8
             'UPDATE production_item_quality_result SET tested_by_id=%s WHERE production_item_quality_result.tested_by_id = %s',  # nopep8

@@ -129,6 +129,13 @@ domain Package
     :members:
     :show-inheritance:
 
+:mod:`message`
+-----------
+
+.. automodule:: stoqlib.domain.message
+    :members:
+    :show-inheritance:
+
 :mod:`parameter`
 ----------------
 

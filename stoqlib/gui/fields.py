@@ -271,7 +271,7 @@ class PersonField(DomainChoiceField):
 
     def populate(self, person_id):
         from stoqlib.domain.person import (Client, Supplier, Transporter,
-                                           SalesPerson, Branch)
+                                           SalesPerson, Branch, LoginUser)
         store = get_store_for_field(self)
         person_type = self.person_type
         if person_type == Supplier:
@@ -289,6 +289,9 @@ class PersonField(DomainChoiceField):
         elif person_type == Branch:
             self.add_button.set_tooltip_text(_("Add a new branch"))
             self.edit_button.set_tooltip_text(_("Edit the selected branch"))
+        elif person_type == LoginUser:
+            self.add_button.set_tooltip_text(_("Add a new user"))
+            self.edit_button.set_tooltip_text(_("Edit the selected user"))
         else:
             raise AssertionError(self.person_type)
 
@@ -435,6 +438,21 @@ class GridGroupField(DomainChoiceField):
         from stoqlib.gui.base.dialogs import run_dialog
         return run_dialog(GridGroupEditor, None, store, gridgroup,
                           visual_mode=not self.can_edit)
+
+
+class UserProfileField(DomainChoiceField):
+    """A domain choice field for selecting a |gridgroup|
+
+    More information about this class on :class:`DomainChoiceField`
+    """
+
+    default_overrides = DomainChoiceField.default_overrides.copy()
+    default_overrides.update(use_entry=True, can_add=False, can_edit=False)
+
+    def populate(self, profile):
+        from stoqlib.domain.profile import UserProfile
+        store = get_store_for_field(self)
+        self.prefill(api.for_combo(store.find(UserProfile)), profile)
 
 
 class AttachmentField(Field):

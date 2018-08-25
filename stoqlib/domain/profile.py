@@ -131,6 +131,9 @@ class UserProfile(Domain):
             profile = store.find(cls).any()
         return profile
 
+    def get_description(self):
+        return self.name
+
     def add_application_reference(self, app_name, has_permission=False):
         return ProfileSettings(
             store=self.store,
