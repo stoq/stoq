@@ -85,7 +85,7 @@ class TestClientEditor(_BasePersonEditorTest):
         # 1: select user/branch/station (normally cached)
         # 4: transaction_entry
         # 4: insert person/individual/client/address
-        # 1: select individual
+        # 2: select individual
         # 2: select company
         # 1: select address
         # 1: select client
@@ -97,7 +97,7 @@ class TestClientEditor(_BasePersonEditorTest):
         # 2: select payment
         # 1: select current user
         # 1: select app permissions for the user
-        self.assertEqual(tracer.count, 21)
+        self.assertEqual(tracer.count, 22)
 
     def test_create_individual(self):
         editor = ClientEditor(self.store, role_type=Person.ROLE_INDIVIDUAL)
@@ -178,6 +178,16 @@ class TestClientEditor(_BasePersonEditorTest):
 
         slave.email.update('stoq@stoq.com.br')
         self.assertValid(slave, ['email'])
+
+    def test_individual_responsible(self):
+        client = self.create_client()
+        client2 = self.create_client()
+        editor = ClientEditor(self.store, client, role_type=Person.ROLE_INDIVIDUAL)
+
+        slave = editor.individual_slave
+        slave.details_slave.person_gadget.set_value(client2)
+
+        self.check_editor(editor, 'client-editor-with-responsible')
 
 
 class TestUserEditor(_BasePersonEditorTest):

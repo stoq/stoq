@@ -93,6 +93,11 @@ GtkDialog(toplevel): title='New Supplier', hidden
                           GtkRadioButton(expand=True): 'Female'
                         GtkLabel(): 'Birth Date:'
                         ProxyDateEntry(): None
+                        GtkLabel(): 'Responsible:'
+                        GtkBox(orientation=horizontal):
+                          ProxyEntry(expand=True, fill=True): ''
+                          GtkButton(): insensitive
+                          GtkButton(): insensitive
                         GtkLabel(): 'Occupation:'
                         ProxyEntry(): ''
                         GtkLabel(): 'Birth Country:'

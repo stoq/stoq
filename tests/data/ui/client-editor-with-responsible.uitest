@@ -1,45 +1,19 @@
-editor: UserEditor
-GtkDialog(main_dialog.toplevel): title='Add ', hidden
+editor: ClientEditor
+GtkDialog(main_dialog.toplevel): title='Edit Details of "Client"', hidden
   GtkBox(main_dialog._main_vbox, orientation=vertical):
     GtkBox(main_dialog.vbox, orientation=vertical, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
-      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave UserEditor is attached
+      GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave ClientEditor is attached
         GtkBox(toplevel, orientation=horizontal):
           GtkEventBox(main_holder, expand=True, fill=True): slave IndividualEditorTemplate is attached
             GtkBox(toplevel, orientation=horizontal):
               GtkEventBox(main_holder, expand=True, fill=True): slave _PersonEditorTemplate is attached
                 GtkBox(vbox1, orientation=vertical):
                   GtkNotebook(person_notebook, expand=True, fill=True):
-                    GtkEventBox(): slave UserDetailsSlave is attached
-                      GtkAlignment(toplevel):
-                        GtkTable(table1):
-                          GtkLabel(username_lbl): 'Username:'
-                          ProxyEntry(username): '', mandatory
-                          GtkEventBox(password_holder): slave PasswordEditorSlave is attached
-                            GtkTable(toplevel):
-                              GtkLabel(password_lbl): 'Password:'
-                              ProxyEntry(password): '', mandatory
-                              GtkLabel(confirm_password_lbl): 'Confirm password:'
-                              ProxyEntry(confirm_password): '', mandatory
-                          GtkLabel(profile_lbl): 'Profile:'
-                          ProxyComboBox(profile):
-                            item: 'Administrator'
-                            item: 'Manager'
-                            item: 'Salesperson', selected
-                          ProxyLabel(role_lbl): 'Role:'
-                          ProxyComboBox(role):
-                            item: 'No Role', selected
-                            item: 'Diretor'
-                            item: 'Financeiro'
-                            item: 'Gerente'
-                            item: 'Salesperson'
-                            item: 'Secretário'
-                            item: 'System Administrator'
-                          GtkButton(change_password_button): hidden
                     GtkBox(identification_tab, orientation=vertical):
                       GtkTable(table1, fill=True):
                         GtkLabel(name_lbl): 'Name:'
-                        ProxyEntry(name): '', mandatory
+                        ProxyEntry(name): 'Client'
                         GtkLabel(phone_number_lbl): 'Phone Number:'
                         ProxyEntry(phone_number): ''
                         GtkLabel(email_lbl): 'E-mail:'
@@ -51,7 +25,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                       GtkBox(hbox2, orientation=horizontal, fill=True):
                         GtkLabel(label5, expand=True, fill=True):
                         GtkButton(contact_info_button, fill=True): 'Co_ntacts...'
-                        GtkButton(credit_check_history_button, fill=True): 'Credit Check History...', hidden
+                        GtkButton(credit_check_history_button, fill=True): 'Credit Check History...'
                         GtkButton(calls_button, fill=True): 'Calls...'
                       GtkHSeparator(hseparator1, fill=True):
                       GtkEventBox(address_holder, fill=True): slave AddressSlave is attached
@@ -100,12 +74,19 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                       GtkFrame(company_frame, fill=True): hidden
                         GtkEventBox(company_holder):
                     GtkBox(details_tab, orientation=vertical):
-                      GtkEventBox(person_status_holder, fill=True): slave UserStatusSlave is attached
-                        GtkTable(toplevel):
-                          GtkLabel(label1): 'Status:'
-                          ProxyRadioButton(active_check): 'Active', active
-                          ProxyRadioButton(inactive_check): 'Inactive'
-                          GtkLabel(label2):
+                      GtkEventBox(person_status_holder, fill=True): slave ClientStatusSlave is attached
+                        GtkBox(vbox1, orientation=vertical):
+                          GtkTable(table1, expand=True, fill=True):
+                            GtkLabel(label1): 'Financial Status:'
+                            ProxyComboBox(statuses_combo):
+                              item: 'Solvent', selected
+                              item: 'Indebted'
+                              item: 'Insolvent'
+                              item: 'Inactive'
+                            GtkLabel(label3): 'Category:'
+                            ProxyComboBox(category_combo):
+                              item: '', selected
+                          GtkHSeparator(hseparator1, fill=True):
                       GtkEventBox(details_holder, fill=True): slave _IndividualDetailsSlave is attached
                         GtkBox(vbox1, orientation=vertical):
                           GtkTable(table2, fill=True):
@@ -118,7 +99,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                             ProxyDateEntry(birth_date): None
                             GtkLabel(label): 'Responsible:'
                             GtkBox(orientation=horizontal):
-                              ProxyEntry(responsible, expand=True, fill=True): ''
+                              ProxyEntry(responsible, expand=True, fill=True): 'Client'
                               GtkButton(): insensitive
                               GtkButton(): insensitive
                             GtkLabel(occupation_lbl): 'Occupation:'
@@ -151,23 +132,27 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                           GtkLabel(observations_label, fill=True): 'Observations:'
                           GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
                             ProxyTextView(notes):
-                    GtkEventBox(): slave UserBranchAccessSlave is attached
-                      GtkBox(vbox1, orientation=vertical):
-                        GtkBox(hbox1, orientation=horizontal, fill=True):
-                          GtkLabel(model_name_label, fill=True): 'Branch:'
-                          ProxyComboEntry(target_combo, expand=True, fill=True): invalid
-                            item: 'Moda Stoq'
-                            item: 'Stoq Elite Fashion'
-                          GtkButton(add_button, fill=True): 'gtk-add', insensitive
-                        GtkBox(model_vbox, orientation=vertical, expand=True, fill=True):
-                          ListContainer(relations_list, expand=True, fill=True):
-                            GtkBox(orientation=vertical, expand=True, fill=True, padding=6):
-                              ObjectList(expand=True, fill=True):
-                                column: title='Branch Name', expand
-                              GtkBox(orientation=horizontal, fill=True):
-                                GtkButton(fill=True): 'gtk-add', hidden
-                                GtkButton(fill=True): 'gtk-remove', insensitive
-                                GtkButton(fill=True): 'gtk-edit', hidden, insensitive
+                    GtkEventBox(): slave ClientCreditSlave is attached
+                      GtkBox(toplevel, orientation=horizontal):
+                        GtkFrame(frame2, expand=True, fill=True, padding=6):
+                          GtkAlignment(alignment2):
+                            GtkTable(table3):
+                              GtkLabel(label1): 'Salary:'
+                              ProxyEntry(salary): '0.00'
+                              GtkButton(salary_history_button):
+                              ProxyLabel(kiwilabel1): 'Credit Limit ($CURRENCY):'
+                              ProxyEntry(credit_limit): '0.00'
+                              GtkLabel(label2): 'Available Credit:'
+                              ProxyLabel(remaining_store_credit): '<span >$0.00</span>'
+                          GtkLabel(label3): '<b>Store Credit</b>'
+                        GtkFrame(frame1, expand=True, fill=True):
+                          GtkAlignment(alignment1):
+                            GtkTable(table1):
+                              GtkLabel(label5): 'Available:'
+                              ProxyLabel(credit_account_balance): '<span >$0.00</span>'
+                              GtkButton(credit_transactions_button):
+                              GtkButton(print_credit_letter): 'gtk-print'
+                          GtkLabel(label6): '<b>Credit</b>'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True, padding=6):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

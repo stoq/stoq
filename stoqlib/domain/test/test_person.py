@@ -1429,6 +1429,10 @@ class TestPersonMerging(DomainTest):
         'UPDATE stock_decrease SET person_id=%s WHERE stock_decrease.person_id = %s',
     ]
 
+    individual_updates = [
+        'UPDATE individual SET responsible_id=%s WHERE individual.responsible_id = %s',
+    ]
+
     employee_updates = [
         'UPDATE employee_role_history SET is_active=%s'
         ' WHERE employee_role_history.employee_id = %s',
@@ -1525,7 +1529,9 @@ class TestPersonMerging(DomainTest):
         emp = self.create_employee()
         emp2 = self.create_employee()
 
-        tracer = StoqlibUpdateTracer(self.employee_updates + self.person_updates)
+        tracer = StoqlibUpdateTracer(self.individual_updates +
+                                     self.employee_updates +
+                                     self.person_updates)
         with tracer:
             emp.person.merge_with(emp2.person)
 
@@ -1582,8 +1588,10 @@ class TestPersonMerging(DomainTest):
             'UPDATE optical_patient_test SET responsible_id=%s WHERE optical_patient_test.responsible_id = %s',  # nopep8
             'UPDATE optical_patient_visual_acuity SET responsible_id=%s WHERE optical_patient_visual_acuity.responsible_id = %s',  # nopep8
         ]
-        tracer = StoqlibUpdateTracer([access_query] + sorted(expected_updates)
-                                     + self.person_updates)
+        tracer = StoqlibUpdateTracer(self.individual_updates +
+                                     [access_query] +
+                                     sorted(expected_updates) +
+                                     self.person_updates)
         with tracer:
             facet.person.merge_with(facet2.person)
 
@@ -1601,7 +1609,10 @@ class TestPersonMerging(DomainTest):
         expected_updates = [
             'UPDATE sale SET salesperson_id=%s WHERE sale.salesperson_id = %s',
         ]
-        tracer = StoqlibUpdateTracer(expected_updates + self.employee_updates + self.person_updates)
+        tracer = StoqlibUpdateTracer(self.individual_updates +
+                                     expected_updates +
+                                     self.employee_updates +
+                                     self.person_updates)
         with tracer:
             facet.person.merge_with(facet2.person)
 

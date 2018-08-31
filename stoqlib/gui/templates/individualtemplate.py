@@ -25,10 +25,11 @@
 
 from kiwi.datatypes import ValidationError
 from kiwi.python import AttributeForwarder
+from kiwi.utils import gsignal
 
 from stoqlib.api import api
 from stoqlib.domain.address import CityLocation
-from stoqlib.domain.person import Individual
+from stoqlib.domain.person import Individual, IndividualView
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.slaves.addressslave import CityLocationMixin
 from stoqlib.lib.dateutils import localtoday
@@ -51,6 +52,10 @@ class _IndividualDocuments(BaseEditorSlave):
         self.document_l10n = api.get_l10n_field('person_document')
         self.cpf_lbl.set_label(self.document_l10n.label + ':')
         self.cpf.set_mask(self.document_l10n.entry_mask)
+        # FIXME We dont have the Forms to control if the widget should be
+        # mandatory or not, when we implement this feature we must make it
+        # respect whats in the Forms
+        # self.cpf.set_property('mandatory', not bool(self.model.responsible))
         self.proxy = self.add_proxy(self.model,
                                     _IndividualDocuments.proxy_widgets)
 
@@ -78,12 +83,13 @@ class _IndividualDetailsModel(AttributeForwarder):
         'marital_status',
         'get_marital_statuses',
         'birth_location',
-        'gender'
+        'gender',
+        'responsible',
     ]
 
     def __init__(self, target, store):
         """
-        :param model: an Individial
+        :param target: an Individial
         :param store: a store
         """
         AttributeForwarder.__init__(self, target)
@@ -96,8 +102,7 @@ class _IndividualDetailsModel(AttributeForwarder):
         self.country = target.birth_location.country
 
     def is_married(self):
-        return (self.target.marital_statuses ==
-                Individual.STATUS_MARRIED)
+        return self.target.marital_statuses == Individual.STATUS_MARRIED
 
     def is_male(self):
         return self.target.gender == Individual.GENDER_MALE
@@ -137,16 +142,28 @@ class _IndividualDetailsSlave(BaseEditorSlave, CityLocationMixin):
         'city',
         'country',
         'state',
+        'responsible',
     ]
+    gsignal('responsible-changed', object)
 
     def _setup_widgets(self):
+        from stoqlib.gui.widgets.queryentry import IndividualEntryGadget
         self.unregistered_check.set_active(self.model.is_none())
         self.male_check.set_active(self.model.is_male())
         self.female_check.set_active(self.model.is_female())
         self.marital_status.prefill(self.model.get_marital_statuses())
+        # Do not fill the combo with the current Individual as responsible
+        individual = self.store.find(IndividualView, IndividualView.id != self.model.target.id)
+        self.person_gadget = IndividualEntryGadget(
+            store=self.store,
+            entry=self.responsible,
+            initial_value=self.model.responsible,
+            search_clause=IndividualView.id != self.model.target.id
+        )
+        self.responsible.prefill(api.for_combo(individual))
 
     def _update_marital_status(self):
-        if self.model.is_married():
+        if self.marital_status.read() == Individual.STATUS_MARRIED:
             self.spouse_lbl.show()
             self.spouse_name.show()
         else:
@@ -193,6 +210,9 @@ class _IndividualDetailsSlave(BaseEditorSlave, CityLocationMixin):
         if date > localtoday().date():
             return ValidationError(_(u"Birth date must be less than today"))
 
+    def after_responsible__content_changed(self, *args):
+        self.emit('responsible-changed', self.responsible.read())
+
 
 class IndividualEditorTemplate(BaseEditorSlave):
     model_type = Individual
@@ -227,3 +247,7 @@ class IndividualEditorTemplate(BaseEditorSlave):
         self.details_slave = self._person_slave.attach_model_slave(
             'details_holder', _IndividualDetailsSlave,
             _IndividualDetailsModel(self.model, self.store))
+
+    def on_details_slave__responsible_changed(self, *args):
+        has_responsible = bool(self.details_slave.responsible.read())
+        self.documents_slave.cpf.set_property('mandatory', not has_responsible)

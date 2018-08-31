@@ -83,6 +83,11 @@ GtkDialog(toplevel): title='New Medic', hidden
                           GtkRadioButton(expand=True): 'Female'
                         GtkLabel(): 'Birth Date:'
                         ProxyDateEntry(): datetime.date(1970, 1, 1)
+                        GtkLabel(): 'Responsible:'
+                        GtkBox(orientation=horizontal):
+                          ProxyEntry(expand=True, fill=True): ''
+                          GtkButton(): insensitive
+                          GtkButton(): insensitive
                         GtkLabel(): 'Occupation:'
                         ProxyEntry(): ''
                         GtkLabel(): 'Birth Country:'

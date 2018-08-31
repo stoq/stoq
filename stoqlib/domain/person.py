@@ -647,6 +647,8 @@ class Individual(Domain):
 
     is_active = BoolCol(default=True)
 
+    responsible_id = IdCol()
+    responsible = Reference(responsible_id, 'Individual.id')
     #
     # IActive
     #
@@ -2575,6 +2577,21 @@ class ClientsWithCreditView(Viewable):
     ]
 
     clause = Or(credit_spent > 0, credit_received > 0)
+
+
+class IndividualView(Viewable):
+    id = Individual.id
+
+    name = Person.name
+    cpf = Individual.cpf
+
+    tables = [
+        Individual,
+        LeftJoin(Person, Person.id == Individual.person_id),
+    ]
+
+    def get_description(self):
+        return self.name
 
 
 class PersonAddressView(Viewable):

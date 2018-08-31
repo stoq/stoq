@@ -33,7 +33,7 @@ from stoqlib.api import api
 from stoqlib.database.expr import Position, StoqNormalizeString
 from stoqlib.database.queryexecuter import QueryExecuter
 from stoqlib.domain.person import (Client, ClientView, Supplier, SupplierView,
-                                   Person, PersonAddressView)
+                                   Person, PersonAddressView, Individual)
 from stoqlib.domain.sale import SaleToken, SaleTokenView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
@@ -479,6 +479,8 @@ class QueryEntryGadget(object):
             'finish', lambda o: self._popup.add_items(o.get_result()))
 
     def _run_search(self):
+        if not self.search_class:
+            return
         if not self.advanced_search:
             return
 
@@ -680,6 +682,56 @@ class SupplierEntryGadget(PersonEntryGadget):
     search_columns = [SupplierView.name, SupplierView.fancy_name,
                       SupplierView.phone_number, SupplierView.mobile_number,
                       SupplierView.cpf, SupplierView.rg_number]
+
+
+class IndividualEntryGadget(QueryEntryGadget):
+    from stoqlib.domain.person import IndividualView
+
+    LOADING_ITEMS_TEXT = _('Loading individuals...')
+    NEW_ITEM_TEXT = _('Create a new individual with this name...')
+    NEW_ITEM_TOOLTIP = _('Create a new individual')
+    EDIT_ITEM_TOOLTIP = _('Edit the selected individual')
+    INFO_ITEM_TOOLTIP = _('See info about the selected individual')
+    item_editor = None
+    item_info_dialog = None
+    person_type = Individual
+    search_spec = IndividualView
+    search_columns = [IndividualView.name, IndividualView.cpf]
+
+    def __init__(self, entry, store, initial_value=None,
+                 parent=None, run_editor=None,
+                 edit_button=None, info_button=None, search_clause=None):
+        country = api.sysparam.get_string('COUNTRY_SUGGESTED')
+        self._person_l10n = api.get_l10n_field('person_document', country)
+
+        super(IndividualEntryGadget, self).__init__(
+            entry, store, initial_value=initial_value,
+            parent=parent, run_editor=run_editor,
+            edit_button=edit_button, info_button=info_button,
+            search_clause=search_clause)
+
+    def get_object_from_item(self, item):
+        return item and self.store.find(self.person_type, id=item.id).one()
+
+    def describe_item(self, person_view):
+        details = []
+        for label, value in [
+                (self._person_l10n.label, person_view.cpf)]:
+            if not value:
+                continue
+            details.append('%s: %s' % (label, api.escape(value)))
+
+        name = "<big>%s</big>" % (api.escape(person_view.get_description()), )
+        if details:
+            short = name + '\n<span size="small">%s</span>' % (
+                api.escape(', '.join(details[:1])))
+            complete = name + '\n<span size="small">%s</span>' % (
+                api.escape('\n'.join(details)))
+        else:
+            short = name
+            complete = name
+
+        return short, complete
 
 
 class SaleTokenEntryGadget(QueryEntryGadget):

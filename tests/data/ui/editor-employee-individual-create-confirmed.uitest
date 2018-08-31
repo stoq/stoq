@@ -110,6 +110,11 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                               GtkRadioButton(female_check, expand=True): 'Female'
                             GtkLabel(label1): 'Birth Date:'
                             ProxyDateEntry(birth_date): None
+                            GtkLabel(label): 'Responsible:'
+                            GtkBox(orientation=horizontal):
+                              ProxyEntry(responsible, expand=True, fill=True): ''
+                              GtkButton(): insensitive
+                              GtkButton(): insensitive
                             GtkLabel(occupation_lbl): 'Occupation:'
                             ProxyEntry(occupation): ''
                             GtkLabel(label2): 'Birth Country:'
