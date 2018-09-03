@@ -37,7 +37,7 @@ class NoteSlave(BaseEditorSlave):
     gladefile = 'NoteSlave'
     proxy_widgets = ('notes', )
 
-    def __init__(self, store, model, visual_mode=False):
+    def __init__(self, store, model, visual_mode=False, ui_form_name=None):
         self.model = model
         self.model_type = self.model_type or type(model)
         BaseEditorSlave.__init__(self, store, self.model,

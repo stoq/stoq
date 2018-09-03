@@ -39,7 +39,8 @@ from stoqlib.domain.event import Event
 from stoqlib.domain.person import (Calls, ContactInfo, ClientView, EmployeeView,
                                    SupplierView, TransporterView, BranchView,
                                    UserView, CreditCheckHistoryView, CallsView,
-                                   ClientSalaryHistoryView, PersonAddressView)
+                                   ClientSalaryHistoryView, PersonAddressView,
+                                   IndividualView)
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.exampledata import ExampleCreator
 from stoqlib.domain.fiscal import CfopData
@@ -1387,6 +1388,14 @@ class TestClientSalaryHistoryView(DomainTest):
         result = ClientSalaryHistoryView.find_by_client(store=self.store,
                                                         client=client).count()
         self.assertTrue(result)
+
+
+class TestIndividualView(DomainTest):
+    def test_get_description(self):
+        person = self.create_person(name='Foo')
+        self.create_individual(person=person)
+        view = self.store.find(IndividualView, name='Foo').one()
+        self.assertEqual(view.get_description(), 'Foo')
 
 
 class StoqlibUpdateTracer(BaseStatementTracer):

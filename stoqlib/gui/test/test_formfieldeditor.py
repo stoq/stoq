@@ -51,10 +51,10 @@ class TestFormFieldEditor(GUITest):
 
         dialog = FormFieldEditor(self.store)
         dialog.forms.select(client_form)
-        self.assertEqual(list(dialog.fields.get_cell_contents())[7][2], True)
+        self.assertEqual(list(dialog.fields.get_cell_contents())[8][2], True)
         setattr(field, 'mandatory', False)
         dialog.fields.refresh()
-        self.assertEqual(list(dialog.fields.get_cell_contents())[7][2], False)
+        self.assertEqual(list(dialog.fields.get_cell_contents())[8][2], False)
         self.assertEqual(field2.mandatory, True)
         dialog.confirm()
 

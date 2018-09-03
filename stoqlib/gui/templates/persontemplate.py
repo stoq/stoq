@@ -117,9 +117,11 @@ class _PersonEditorTemplate(BaseEditorSlave):
     def attach_role_slave(self, slave):
         self.attach_slave('role_holder', slave)
 
-    def attach_model_slave(self, name, slave_type, slave_model):
+    def attach_model_slave(self, name, slave_type, slave_model,
+                           ui_form_name=None):
         slave = slave_type(self.store, slave_model,
-                           visual_mode=self.visual_mode)
+                           visual_mode=self.visual_mode,
+                           ui_form_name=ui_form_name)
         self.attach_slave(name, slave)
         return slave
 
@@ -302,7 +304,8 @@ class BasePersonRoleEditor(BaseEditor):
             slave = IndividualEditorTemplate(self.store,
                                              model=individual,
                                              person_slave=self._person_slave,
-                                             visual_mode=self.visual_mode)
+                                             visual_mode=self.visual_mode,
+                                             ui_form_name=self.ui_form_name)
             self.individual_slave = slave
             self.main_slave = slave
 

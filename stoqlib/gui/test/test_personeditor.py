@@ -91,6 +91,7 @@ class TestClientEditor(_BasePersonEditorTest):
         # 1: select client
         # 1: select client category
         # 1: select ui form
+        # 1: select ui field
         # 1: select address
         # 4: select city location
         # 1: update individual
@@ -185,7 +186,7 @@ class TestClientEditor(_BasePersonEditorTest):
         editor = ClientEditor(self.store, client, role_type=Person.ROLE_INDIVIDUAL)
 
         slave = editor.individual_slave
-        slave.details_slave.person_gadget.set_value(client2)
+        slave.details_slave.person_gadget.set_value(client2.person.individual)
 
         self.check_editor(editor, 'client-editor-with-responsible')
 
