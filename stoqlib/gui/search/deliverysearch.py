@@ -81,7 +81,8 @@ class DeliverySearch(SearchEditor):
 
     def get_columns(self):
         return [IdentifierColumn('identifier', title=_('Sale #'),
-                                 order=Gtk.SortType.DESCENDING),
+                                 order=Gtk.SortType.DESCENDING,
+                                 sorted=True),
                 SearchColumn('status_str', title=_('Status'), data_type=str,
                              search_attribute='status',
                              valid_values=self._get_status_values()),
