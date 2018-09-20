@@ -14,7 +14,7 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
                   ProxySpinButton(expand=True, fill=True): '1.000', insensitive
                   GtkLabel(expand=True, fill=True): 'Price:', hidden
                   ProxySpinButton(expand=True, fill=True): '0.00', hidden, insensitive
-                  GtkButtonBox(orientation=horizontal, expand=True, fill=True):
+                  GtkButtonBox(orientation=horizontal, expand=True, fill=True): insensitive
                     GtkButton(): insensitive
                     GtkButton():
                 GtkLabel(expand=True, fill=True):
@@ -63,7 +63,7 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
                     GtkButton(): insensitive
                     GtkButton(): insensitive
                     GtkButton(): insensitive
-                    GtkButton():
+                    GtkButton(): insensitive
                 ProxyLabel(expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $0.00</span>'
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden

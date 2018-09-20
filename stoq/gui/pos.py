@@ -688,6 +688,9 @@ class PosApp(ShellApp):
         self.till_status_label.set_markup(text)
 
         self.set_sensitive([self.TillOpen], closed)
+        self.set_sensitive([self.client_button,
+                            self.item_button_box],
+                           self._till_open)
         self.set_sensitive([self.TillVerify, self.NewTrade,
                             self.LoanClose, self.WorkOrderClose],
                            not closed and not blocked)
