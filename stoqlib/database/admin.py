@@ -213,8 +213,8 @@ def _ensure_card_providers():
     from stoqlib.domain.payment.card import CreditProvider, CardPaymentDevice
 
     providers = {u'VISA': u'VISA',
-                 u'MASTER': u'MASTERCARD',
-                 u'AMEX': u'AMERICAN EXPRESS'}
+                 u'MASTER': u'MASTER',
+                 u'AMEX': u'AMEX'}
     store = new_store()
     for short_name, provider_id in providers.items():
         provider = CreditProvider.get_provider_by_provider_id(provider_id, store)

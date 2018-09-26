@@ -437,6 +437,15 @@ _details = [
         bool, initial=False),
 
     ParameterDetails(
+        u'DEFAULT_TABLE_PRICE',
+        _('Sales'),
+        _('Default table price'),
+        _('Default table price that will be used when selling products. This table price will be '
+          'used instead of the default price configured in the product/service. Useful when a '
+          'branch should have a special price for the products.'),
+        'person.ClientCategory', allow_none=True),
+
+    ParameterDetails(
         u'POS_ALLOW_CHANGE_PRICE',
         _(u'POS'),
         _(u'Allow to change sellable price in POS app'),

@@ -561,6 +561,11 @@ class Sellable(Domain):
         if self.is_on_sale():
             return self.on_sale_price
         else:
+            category = sysparam.get_object(self.store, 'DEFAULT_TABLE_PRICE')
+            if category:
+                info = self.get_category_price_info(category)
+                if info:
+                    return info.price
             return self.base_price
 
     @price.setter

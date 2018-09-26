@@ -17,6 +17,8 @@ SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="11ca"
 # Gertec pinpads
 # PPC920
 SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="1753", ATTRS{idProduct}=="c902", MODE="0666", SYMLINK+="pinpad ircomm1"
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="1753", ATTRS{idProduct}=="c902", MODE="0666", SYMLINK+="pinpad ircomm1"
+
 
 
 # Bematech (0b1b)

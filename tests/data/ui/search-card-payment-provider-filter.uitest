@@ -23,8 +23,8 @@ GtkDialog(toplevel): title='Card Payment Search', hidden
               ComboSearchFilter(provider_filter):
                 GtkLabel(): 'Provider:'
                 ProxyComboBox(padding=6):
-                  item: 'Any', selected
-                  item: 'AMEX'
+                  item: 'Any'
+                  item: 'AMEX', selected
                   item: 'MASTER'
                   item: 'VISA'
           SearchResultListView(results, expand=True, fill=True):
@@ -43,10 +43,7 @@ GtkDialog(toplevel): title='Card Payment Search', hidden
             column: title='% Fee', hidden
             column: title='Fee'
             column: title='Authorization', hidden
-            row: 55555, 'Test payment', 'credit', 'Dane Cook', 'Cielo', 'VISA', datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 1, 1, 0, 0), None, 'Preview', <currency $10>, <currency $0>, Decimal('0.00'), <currency $0>, None
             row: 66666, 'Test payment', 'credit', 'Carmen Sandiego', 'Cielo', 'AMEX', datetime.datetime(2012, 2, 2, 0, 0), datetime.datetime(2012, 2, 2, 0, 0), None, 'Preview', <currency $10>, <currency $0>, Decimal('0.00'), <currency $0>, None
-            row: 77777, 'Test payment', 'credit', None, 'Cielo', 'VISA', datetime.datetime(2012, 3, 3, 0, 0), datetime.datetime(2012, 3, 3, 0, 0), None, 'Preview', <currency $10>, <currency $0>, Decimal('0.00'), <currency $0>, None
-            row: 88888, 'Test payment', 'credit', None, 'Cielo', 'VISA', datetime.datetime(2012, 4, 4, 0, 0), datetime.datetime(2012, 4, 4, 0, 0), None, 'Preview', <currency $10>, <currency $0>, Decimal('0.00'), <currency $0>, None
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):

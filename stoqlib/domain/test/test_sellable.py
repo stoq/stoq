@@ -806,6 +806,17 @@ class TestSellable(DomainTest):
         self.assertEqual(sellable.get_price_for_category(category1), 155)
         self.assertEqual(sellable.get_price_for_category(category2), 100)
 
+    def test_default_category_price(self):
+        sellable = self.create_sellable(price=100)
+        category = self.create_client_category(u'Cat 1')
+        ClientCategoryPrice(sellable=sellable, category=category, price=155, store=self.store)
+
+        self.assertEqual(sellable.price, 100)
+        with self.sysparam(DEFAULT_TABLE_PRICE=category):
+            # Setting the parameter DEFAULT_TABLE_PRICE will change the sellable price if that
+            # sellable has a special price for that category
+            self.assertEqual(sellable.price, 155)
+
     def test_remove_category_price(self):
         category_price = self.create_client_category_price()
 

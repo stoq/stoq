@@ -53,7 +53,7 @@ class TestPaymentSearch(GUITest):
         pay.identifier = 55555
 
         pay = self.create_card_payment(date=datetime.datetime(2012, 2, 2),
-                                       provider_id=u'AMERICAN EXPRESS')
+                                       provider_id=u'AMEX')
         client = self.create_client(name=u'Carmen Sandiego')
         sale = self.create_sale(client=client)
         pay.group = sale.group

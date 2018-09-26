@@ -65,6 +65,7 @@ GtkBox(vbox1, orientation=vertical):
     row: 'Sales', 'Show cost column in sales', 'No'
     row: 'Sales', 'Confirm sales in Till', 'No'
     row: 'Sales', 'Requires quantity confirmation after barcode activation', 'No'
+    row: 'Sales', 'Default table price', ''
     row: 'Sales', 'Change salesperson', 'Disallowed'
     row: 'Sales', 'Return policy on sales', "Client's choice"
     row: 'Sales', 'Allow sale return from clients without document', 'Yes'
