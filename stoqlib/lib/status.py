@@ -140,6 +140,8 @@ class ResourceStatusManager(GObject.GObject):
 
     _instance = None
 
+    _messages_registered = False
+
     def __init__(self):
         super(ResourceStatusManager, self).__init__()
 
@@ -156,7 +158,7 @@ class ResourceStatusManager(GObject.GObject):
         """Get the manager singleton instance"""
         if cls._instance is None:
             cls._instance = cls()
-            cls._register_messages()
+        cls._try_register_messages()
         return cls._instance
 
     @property
@@ -203,9 +205,16 @@ class ResourceStatusManager(GObject.GObject):
     #
 
     @classmethod
-    def _register_messages(cls):
+    def _try_register_messages(cls):
+        if cls._messages_registered:
+            return
+
         from stoqlib.domain.message import Message
         with api.new_store() as store:
+            # We cannot setup correctly if the user or branch are not setup yet.
+            if not api.get_current_user(store) or not api.get_current_branch(store):
+                return
+
             messages = Message.find_active(store)
             for msg in messages:
                 @register
@@ -217,6 +226,7 @@ class ResourceStatusManager(GObject.GObject):
 
                     def refresh(self):
                         pass
+        cls._messages_registered = True
 
     def _iter_resources(self):
         return sorted(self.resources.values(), key=lambda r: r.priority)
