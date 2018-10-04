@@ -73,7 +73,10 @@ def autoreload_object(obj, obj_store=False):
     :param obj_store: if we should also autoreload the current store
         of the object
     """
-    for store in _stores:
+    # Since _stores is a weakref, copy it to a list to avoid it changing size during iteration
+    # (specially when running threaded operations).
+    stores = list(_stores)
+    for store in stores:
         if not obj_store and Store.of(obj) is store:
             continue
 

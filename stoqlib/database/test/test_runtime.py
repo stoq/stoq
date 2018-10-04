@@ -28,7 +28,7 @@ import mock
 
 from stoqlib.database.exceptions import InterfaceError
 from stoqlib.database.properties import UnicodeCol
-from stoqlib.database.runtime import new_store, StoqlibStore
+from stoqlib.database.runtime import new_store, StoqlibStore, autoreload_object
 from stoqlib.domain.base import Domain
 from stoqlib.domain.person import Person, Client, ClientView
 from stoqlib.domain.test.domaintest import DomainTest
@@ -300,6 +300,21 @@ class StoqlibStoreTest(DomainTest):
         self.assertRaises(InterfaceError, store.fetch, None)
         self.assertRaises(InterfaceError, store.savepoint, 'XXX')
         self.assertRaises(InterfaceError, store.rollback_to_savepoint, 'XXX')
+
+    def test_autoreload(self):
+        # Create 3 stores.
+        store1 = new_store()
+        store2 = new_store()
+
+        obj1 = WillBeCommitted(store=store1, test_var='ID1')
+        store1.commit()
+
+        obj2 = store2.get(WillBeCommitted, obj1.id)
+        obj2
+
+        store2.close()
+
+        autoreload_object(obj1)
 
     def test_transaction_commit_hook(self):
         # Dummy will only be asserted for creation on the first commit.
