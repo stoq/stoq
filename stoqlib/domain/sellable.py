@@ -183,6 +183,13 @@ class SellableCategory(Domain):
     #: The category description
     description = UnicodeCol()
 
+    #: A color that will be used in reports and interface for this category
+    color = UnicodeCol()
+
+    #: The sort order of this category. Usefull when you need a category to appear before all other
+    #: categories
+    sort_order = IntCol(default=0)
+
     #: Define the suggested markup when calculating the sellable's price.
     suggested_markup = PercentCol(default=0)
 
@@ -430,6 +437,15 @@ class Sellable(Domain):
 
     #: commission to pay after selling this sellable
     commission = PercentCol(default=0)
+
+    #: A sort order to override default alphabetic order in lists.
+    sort_order = IntCol()
+
+    #: If this is a favorite sellable
+    favorite = BoolCol()
+
+    #: Some keywords for this sellable.
+    keywords = UnicodeCol()
 
     #: notes for the sellable
     notes = UnicodeCol(default=u'')

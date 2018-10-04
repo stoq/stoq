@@ -36,4 +36,14 @@ SUBSYSTEM=="usb", ATTRS{idVendor}=="154f", ATTRS{idProduct}=="1300", MODE="0666"
 
 
 
+# FIXME:
+# Elgin i9 modo usb
+# Bus 001 Device 007: ID 20d1:7008
+#
+# Elgin i9 modo serial
+# Bus 001 Device 010: ID 067b:2303 Prolific Technology, Inc. PL2303 Serial Port
+#
+# SAT Elgin
+# Bus 001 Device 005: ID 0525:a4a6 Netchip Technology, Inc. Linux-USB Serial Gadget
+
 

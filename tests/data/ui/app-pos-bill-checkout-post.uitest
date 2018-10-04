@@ -200,12 +200,15 @@ model: Sellable<5>
   cost: <currency $199>
   cost_last_updated: datetime.today()
   description: 'Vestido Vadalena'
+  favorite: False
+  keywords: None
   max_discount: Decimal('0.00')
   notes: ''
   on_sale_end_date: None
   on_sale_price: <currency $0>
   on_sale_start_date: None
   price_last_updated: datetime.today()
+  sort_order: 0
   status: 'available'
 
 model: ProductStockItem<6>

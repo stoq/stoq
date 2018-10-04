@@ -75,6 +75,10 @@ class DeviceSettings(Domain):
     #: The baudrate of the device
     baudrate = IntCol(default=9600)
 
+    #: If this device has a inverted drawer logic (When this device is a printer, and the printer
+    # has a drawer connected)
+    drawer_inverted = BoolCol(default=False)
+
     station_id = IdCol()
     #: The station this device is connected to.
     station = Reference(station_id, 'BranchStation.id')

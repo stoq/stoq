@@ -1517,7 +1517,10 @@ class TestPersonMerging(DomainTest):
         supplier = self.create_supplier()
         supplier2 = self.create_supplier()
 
-        cnpj_query = 'UPDATE company SET cnpj=%s WHERE company.id = %s'
+        company_query = [
+            'UPDATE company SET parent_id=%s WHERE company.parent_id = %s',
+            'UPDATE company SET cnpj=%s WHERE company.id = %s'
+        ]
         info_query = (
             'UPDATE product_supplier_info SET supplier_id=%s'
             ' WHERE product_supplier_info.supplier_id = %s AND product_supplier_info.product_id'
@@ -1529,7 +1532,7 @@ class TestPersonMerging(DomainTest):
             'UPDATE purchase_order SET supplier_id=%s WHERE purchase_order.supplier_id = %s',
             'UPDATE receiving_invoice SET supplier_id=%s WHERE receiving_invoice.supplier_id = %s',
         ]
-        tracer = StoqlibUpdateTracer([cnpj_query, info_query] + expected_updates
+        tracer = StoqlibUpdateTracer(company_query + [info_query] + expected_updates
                                      + self.person_updates)
         with tracer:
             supplier.person.merge_with(supplier2.person)
@@ -1630,6 +1633,7 @@ class TestPersonMerging(DomainTest):
         facet2 = self.create_transporter()
 
         expected_updates = [
+            'UPDATE company SET parent_id=%s WHERE company.parent_id = %s',
             'UPDATE delivery SET transporter_id=%s WHERE delivery.transporter_id = %s',
             'UPDATE purchase_order SET transporter_id=%s WHERE purchase_order.transporter_id = %s',
             'UPDATE receiving_invoice SET transporter_id=%s WHERE receiving_invoice.transporter_id = %s',  # nopep8

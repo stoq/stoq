@@ -72,6 +72,9 @@ class Image(Domain):
     #: The date that this image was uploaded to the database
     create_date = DateTimeCol(default_factory=StatementTimestamp)
 
+    #: Some keywords for this image
+    keywords = UnicodeCol(default=u'')
+
     #: Some notes about the image
     notes = UnicodeCol(default=u'')
 
@@ -86,6 +89,10 @@ class Image(Domain):
     sellable_id = IdCol(default=None)
     #: The |sellable| that this image belongs to
     sellable = Reference(sellable_id, 'Sellable.id')
+
+    station_type_id = IdCol(default=None)
+    #: The station type this image should be used instead of the main image.
+    station_type = Reference(station_type_id, 'StationType.id')
 
     #
     #  Public API

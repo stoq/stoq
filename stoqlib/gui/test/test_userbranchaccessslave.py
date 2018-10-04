@@ -24,10 +24,14 @@
 
 import mock
 
+from stoqlib.domain.certificate import Certificate
 from stoqlib.gui.editors.personeditor import UserEditor
 from stoqlib.gui.slaves.userbranchaccessslave import UserBranchAccessSlave
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.translation import stoqlib_gettext
+
+# pyflakes
+Certificate
 
 _ = stoqlib_gettext
 

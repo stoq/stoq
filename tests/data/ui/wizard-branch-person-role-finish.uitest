@@ -111,6 +111,7 @@ model: Branch<1>
   can_execute_foreign_work_orders: False
   crt: 1
   is_active: True
+  name: None
   person_id: Person<2>
 
 model: Person<2>

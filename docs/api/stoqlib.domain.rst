@@ -136,6 +136,13 @@ domain Package
     :members:
     :show-inheritance:
 
+:mod:`overrides`
+----------------
+
+.. automodule:: stoqlib.domain.overrides
+    :members:
+    :show-inheritance:
+
 :mod:`parameter`
 ----------------
 

@@ -186,6 +186,7 @@ model: Branch<2>
   can_execute_foreign_work_orders: False
   crt: 1
   is_active: True
+  name: None
 
 model: UserBranchAccess<3>
   branch_id: Branch<2>

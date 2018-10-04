@@ -37,6 +37,12 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+class StationType(Domain):
+    __storm_table__ = 'station_type'
+
+    name = UnicodeCol()
+
+
 @implementer(IActive)
 class BranchStation(Domain):
     """Defines a computer which access Stoqlib database and lives in a
@@ -52,6 +58,10 @@ class BranchStation(Domain):
     #: An code for this station. Will be used when formatting identifier codes (for a sale, for
     #: instance)
     code = UnicodeCol(default='')
+
+    type_id = IdCol()
+    #: The type of this station (like a self-checkout or regular point of sale)
+    type = Reference(type_id, 'StationType.id')
 
     # Public
 

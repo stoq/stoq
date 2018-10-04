@@ -768,6 +768,11 @@ class Company(Domain):
 
     is_active = BoolCol(default=True)
 
+    parent_id = IdCol()
+    #: The parent company of this company. When set, the parent company data will be used to emit
+    #: fiscal documents
+    parent = Reference(parent_id, 'Company.id')
+
     #
     # IActive
     #
@@ -1674,6 +1679,10 @@ class Branch(Domain):
         (STATUS_INACTIVE, _(u'Inactive')),
     ])
 
+    #: The name of this branch. Usually, a internal name to differenciate from other companies of
+    #: the same franchise (like the name of the location).
+    name = UnicodeCol()
+
     person_id = IdCol()
 
     #: the |person|
@@ -1698,6 +1707,10 @@ class Branch(Domain):
 
     #: if this branch can execute |workorders| that belongs to other branches
     can_execute_foreign_work_orders = BoolCol(default=False)
+
+    certificate_id = IdCol()
+    #: the |certificate| this branch should use
+    certificate = Reference(certificate_id, 'Certificate.id')
 
     #
     # IActive
