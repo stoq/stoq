@@ -711,7 +711,7 @@ def new_store():
 #
 # User methods
 #
-def _register_branch_station(caller_store, station_name):
+def _register_branch_station(caller_store, station_name, confirm=True):
     from gi.repository import Gtk
     from stoqlib.lib.parameters import sysparam
 
@@ -742,7 +742,7 @@ def _register_branch_station(caller_store, station_name):
     return caller_store.fetch(station)
 
 
-def set_current_branch_station(store, station_name):
+def set_current_branch_station(store, station_name, confirm=True):
     """Registers the current station and the branch of the station
     as the current branch for the system
     :param store: a store
@@ -760,7 +760,7 @@ def set_current_branch_station(store, station_name):
     from stoqlib.domain.station import BranchStation
     station = store.find(BranchStation, name=station_name).one()
     if station is None:
-        station = _register_branch_station(store, station_name)
+        station = _register_branch_station(store, station_name, confirm=confirm)
 
     if not station.is_active:
         error(_("The computer <u>%s</u> is not active in Stoq") %
