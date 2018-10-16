@@ -357,10 +357,10 @@ class TestWorkOrderCheckEditor(GUITest):
         self.check_editor(editor, 'editor-workorder-check-create')
 
     def test_confirm(self):
-        user = self.create_user()
+        employee = self.create_employee()
         editor = WorkOrderCheckEditor(self.store)
 
         self.assertNotSensitive(editor.main_dialog, ['ok_button'])
 
-        editor.responsible.update(user)
+        editor.responsible.update(employee)
         self.assertSensitive(editor.main_dialog, ['ok_button'])

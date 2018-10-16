@@ -36,7 +36,7 @@ from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
-from stoqlib.domain.person import Branch, LoginUser
+from stoqlib.domain.person import Branch, Employee
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderPackage,
                                       WorkOrderApprovedAndFinishedView)
@@ -488,7 +488,7 @@ class WorkOrderCheckEditor(BaseEditor):
 
     @cached_property()
     def fields(self):
-        user = api.for_combo(self.store.find(LoginUser), empty='')
+        user = api.for_combo(self.store.find(Employee), empty='')
         return collections.OrderedDict(
             responsible=ChoiceField(_("Responsible"), mandatory=True,
                                     use_entry=True, proxy=True,

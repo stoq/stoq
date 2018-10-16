@@ -94,7 +94,7 @@ class WorkOrderRow(Gtk.ListBoxRow):
         self.status.get_style_context().add_class('tag')
         hbox = Gtk.HBox(spacing=6)
         informed_date = model.work_order.client_informed_date
-        if informed_date:
+        if model.status == model.work_order.STATUS_WORK_FINISHED and informed_date:
             self.status.get_style_context().add_class('client-informed')
             informed_image = Gtk.Image.new_from_icon_name('call-start-symbolic',
                                                           Gtk.IconSize.BUTTON)
