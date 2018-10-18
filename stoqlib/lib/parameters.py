@@ -1053,6 +1053,15 @@ _details = [
         str, initial=uuid4().hex),
 
     ParameterDetails(
+        u'ALLOW_SAME_SELLABLE_IN_A_ROW',
+        _(u'Inventory'),
+        _(u'This will indicates if an assisted inventory should allow the same '
+          u'sellable to be read in a row'),
+        _(u'If this parameter is not set, it wont let the user to count any '
+          u'sellable twice in a row when using assisted count inventory'),
+        bool, initial=True),
+
+    ParameterDetails(
         u'SHOW_FULL_DATETIME_ON_RECEIVABLE',
         _(u'Receivable'),
         _(u'Show full time of the sale on receivable payments'),

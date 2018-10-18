@@ -38,7 +38,7 @@ from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.dialogs.batchselectiondialog import BatchSelectionDialog
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.lib.defaults import MAX_INT
-from stoqlib.lib.message import warning
+from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -249,7 +249,28 @@ class InventoryCountItemStep(SellableItemStep):
 
         self._hide_error_message()
         Gdk.beep()
-        self._add_sellable()
+        self._add_sellable(reset_proxy=False)
+
+    def try_get_sellable(self, grab_focus=True):
+        sellable, batch = self._get_sellable_and_batch()
+        if not sellable:
+            search_str = self.barcode.get_text()
+            self.run_advanced_search(search_str)
+            return
+
+        if not self.wizard.can_count_twice and self.proxy.model.sellable == sellable:
+            retval = yesno(_('The same product was just counted, do you want to '
+                             'count another one?'), Gtk.ResponseType.NO,
+                           _('Yes'), _('No'))
+            if not retval:
+                # Restoring the sensitivity of the button
+                self.quantity.set_sensitive(False)
+                self.add_sellable_button.set_sensitive(False)
+                self.barcode.grab_focus()
+                return
+        self.sellable_selected(sellable)
+        self.quantity.set_sensitive(grab_focus)
+        self.add_sellable_button.set_sensitive(grab_focus)
 
     def get_order_item(self, sellable, cost, quantity, batch=None, parent=None):
         item = self.wizard.temporary_items.get(sellable, None)
@@ -436,7 +457,7 @@ class InventoryCountItemStep(SellableItemStep):
     def on_barcode__activate(self, widget):
         barcode = widget.get_text()
         log.info('Inventory barcode activate: %s', barcode)
-        self._try_get_sellable()
+        self.try_get_sellable(grab_focus=False)
 
     def on_dismiss_label__activate_link(self, label, link):
         self._hide_error_message()
@@ -455,6 +476,7 @@ class InventoryCountWizard(BaseWizard):
         self.temporary_items = {}
         self.imported_count = {}
         self.manual_count = True
+        self.can_count_twice = api.sysparam.get_bool('ALLOW_SAME_SELLABLE_IN_A_ROW')
 
         first_step = InventoryCountTypeStep(store, self, previous=None)
         BaseWizard.__init__(self, store, first_step, model)

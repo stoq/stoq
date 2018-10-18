@@ -211,11 +211,15 @@ class SellableItemSlave(BaseEditorSlave):
     # Public API
     #
 
-    def add_sellable(self, sellable, parent=None):
+    def add_sellable(self, sellable, parent=None, reset_proxy=True):
         """Add a sellable to the current step
 
         This will call step.get_order_item to create the correct item for the
         current model, and this created item will be returned.
+
+        :param sellable: the |sellable| we are adding
+        :param parent: the |sellable|'s parent we are adding
+        :param reset_proxy: indicate if we want to clear the proxy model right away
         """
         quantity = self.get_quantity()
         value = self.cost.read()
@@ -255,7 +259,7 @@ class SellableItemSlave(BaseEditorSlave):
 
         self.update_total()
 
-        if len(order_items):
+        if reset_proxy and len(order_items):
             self._reset_sellable()
 
         # After an item is added, reset manager to None so the discount is only
@@ -551,6 +555,30 @@ class SellableItemSlave(BaseEditorSlave):
         """
         return {}
 
+    def try_get_sellable(self, grab_focus=True):
+        """Try to get the sellable based on the barcode typed
+        This will try to get the sellable using the barcode the user entered.
+
+           If one is not found, than an advanced search will be displayed for
+        the user, and the string he typed in the barcode entry will be
+        used to filter the results.
+
+        :param grab_focus: indicate if the focus should go to the quantity
+                           widget
+        """
+        sellable, batch = self._get_sellable_and_batch()
+        if not sellable:
+            search_str = self.barcode.get_text()
+            self.run_advanced_search(search_str)
+            return
+
+        self.sellable_selected(sellable, batch=batch)
+
+        if grab_focus:
+            self.quantity.grab_focus()
+        self.quantity.set_sensitive(grab_focus)
+        self.add_sellable_button.set_sensitive(grab_focus)
+
     #
     #  Private
     #
@@ -683,13 +711,13 @@ class SellableItemSlave(BaseEditorSlave):
 
         return sellable, batch
 
-    def _add_sellable(self):
+    def _add_sellable(self, reset_proxy=True):
         sellable = self.proxy.model.sellable
         assert sellable
 
         sellable = self.store.fetch(sellable)
 
-        self.add_sellable(sellable)
+        self.add_sellable(sellable, reset_proxy=reset_proxy)
         self.barcode.grab_focus()
 
     def _reset_sellable(self):
@@ -700,22 +728,6 @@ class SellableItemSlave(BaseEditorSlave):
         for widget in [self.minimum_quantity_lbl, self.minimum_quantity,
                        self.stock_quantity, self.stock_quantity_lbl]:
             widget.set_visible(self.stock_labels_visible and visible)
-
-    def _try_get_sellable(self):
-        """Try to get the sellable based on the barcode typed
-        This will try to get the sellable using the barcode the user entered.
-           If one is not found, than an advanced search will be displayed for
-        the user, and the string he typed in the barcode entry will be
-        used to filter the results.
-        """
-        sellable, batch = self._get_sellable_and_batch()
-        if not sellable:
-            search_str = self.barcode.get_text()
-            self.run_advanced_search(search_str)
-            return
-
-        self.sellable_selected(sellable, batch=batch)
-        self.quantity.grab_focus()
 
     #
     #  Callbacks
@@ -741,10 +753,10 @@ class SellableItemSlave(BaseEditorSlave):
         self._add_sellable()
 
     def on_product_button__clicked(self, button):
-        self._try_get_sellable()
+        self.try_get_sellable()
 
     def on_barcode__activate(self, widget):
-        self._try_get_sellable()
+        self.try_get_sellable()
 
     def on_quantity__activate(self, entry):
         if self.add_sellable_button.get_sensitive():

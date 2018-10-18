@@ -24,7 +24,9 @@
 
 __tests__ = 'stoqlib.gui.wizards.inventorywizard'
 
+import mock
 from decimal import Decimal
+from gi.repository import Gtk
 
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.inventorywizard import (InventoryCountWizard,
@@ -85,3 +87,57 @@ class TestInventoryCountWizard(GUITest):
         overlay = count_step.overlay.get_overlay_pass_through(count_step.box)
         self.assertTrue(overlay)
         self.assertEqual(count_step.warning_label.get_property('opacity'), Decimal(0))
+
+    @mock.patch('stoqlib.gui.wizards.inventorywizard.yesno')
+    def test_assisted_count_allow_same_sellable(self, yesno):
+        product = self.create_product(code='1', stock=1, description='Foo')
+        product2 = self.create_product(code='2', stock=1, description='Bar')
+        inventory = self.create_inventory()
+        self.create_inventory_item(inventory=inventory, product=product)
+        self.create_inventory_item(inventory=inventory, product=product2)
+
+        with self.sysparam(ALLOW_SAME_SELLABLE_IN_A_ROW=False):
+            wizard = InventoryCountWizard(self.store, model=inventory)
+            type_step = wizard.get_current_step()
+            type_step.assisted_count.set_active(True)
+            self.click(wizard.next_button)
+            count_step = wizard.get_current_step()
+            count_step.barcode.update('1')
+            self.activate(count_step.barcode)
+            yesno.assert_not_called()
+
+            count_step.barcode.update('2')
+            self.activate(count_step.barcode)
+            yesno.assert_not_called()
+
+            count_step.barcode.update('2')
+            self.activate(count_step.barcode)
+            yesno.assert_called_once_with('The same product was just counted, do '
+                                          'you want to count another one?',
+                                          Gtk.ResponseType.NO, 'Yes', 'No')
+
+    @mock.patch('stoqlib.gui.wizards.inventorywizard.yesno')
+    def test_assisted_count_disallow_same_sellable(self, yesno):
+        product = self.create_product(code='1', stock=1, description='Foo')
+        product2 = self.create_product(code='2', stock=1, description='Bar')
+        inventory = self.create_inventory()
+        self.create_inventory_item(inventory=inventory, product=product)
+        self.create_inventory_item(inventory=inventory, product=product2)
+
+        with self.sysparam(ALLOW_SAME_SELLABLE_IN_A_ROW=True):
+            wizard = InventoryCountWizard(self.store, model=inventory)
+            type_step = wizard.get_current_step()
+            type_step.assisted_count.set_active(True)
+            self.click(wizard.next_button)
+            count_step = wizard.get_current_step()
+            count_step.barcode.update('1')
+            self.activate(count_step.barcode)
+            yesno.assert_not_called()
+
+            count_step.barcode.update('2')
+            self.activate(count_step.barcode)
+            yesno.assert_not_called()
+
+            count_step.barcode.update('2')
+            self.activate(count_step.barcode)
+            yesno.assert_not_called()

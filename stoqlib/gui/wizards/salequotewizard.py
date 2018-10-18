@@ -312,7 +312,7 @@ class SaleQuoteItemStep(SellableItemStep):
         else:
             self.slave.clear_message()
 
-    def add_sellable(self, sellable, parent=None):
+    def add_sellable(self, sellable, parent=None, reset_proxy=True):
         price = sellable.get_price_for_category(self.model.client_category)
         new_price = self.cost.read()
 
@@ -329,7 +329,8 @@ class SaleQuoteItemStep(SellableItemStep):
                 original_price=price,
                 new_price=new_price)
 
-        SellableItemStep.add_sellable(self, sellable, parent=parent)
+        SellableItemStep.add_sellable(self, sellable, parent=parent,
+                                      reset_proxy=reset_proxy)
         self.update_total()
 
     def get_order_item(self, sellable, price, quantity, batch=None, parent=None):

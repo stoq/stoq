@@ -31,6 +31,7 @@ GtkBox(vbox1, orientation=vertical):
     row: 'General', 'Automatic logout after inactivity period', '0'
     row: 'General', 'Client birthday notification', 'Yes'
     row: 'General', 'User hash', '6f33a354e3104fcbae0f7b08087136d4'
+    row: 'Inventory', 'This will indicates if an assisted inventory should allow the same sellable to be read in a row', 'Yes'
     row: 'Loan', 'Printing of promissory notes on loans', 'No'
     row: 'Loan', 'Notice that will be added to the loan report', 'I inform and sign up to receive the items in full working order and I am aware of the responsability that I have for returning them, as well as the return of the amounts involved, in case of loss, damage or any event that make the product unusable.'
     row: 'Payments', 'Block payments from/to the imbalance account', 'No'
