@@ -74,7 +74,7 @@ from stoqlib.database.properties import (BoolCol, DateTimeCol,
                                          UnicodeCol, IdCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.database.runtime import get_current_station, get_current_branch
-from stoqlib.domain.address import Address
+from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.interfaces import IDescribable, IActive
@@ -2330,10 +2330,15 @@ class BranchView(Viewable):
     id = Branch.id
     acronym = Branch.acronym
     is_active = Branch.is_active
+    crt = Branch.crt
     person_id = Person.id
     name = Person.name
-    fancy_name = Company.fancy_name
     phone_number = Person.phone_number
+    cnpj = Company.cnpj
+    state_registry = Company.state_registry
+    fancy_name = Company.fancy_name
+    city = CityLocation.city
+    state = CityLocation.state
     manager_name = Manager_Person.name
 
     tables = [
@@ -2341,6 +2346,8 @@ class BranchView(Viewable):
         Join(Person, Person.id == Branch.person_id),
         LeftJoin(Company, Company.person_id == Person.id),
         LeftJoin(Employee, Branch.manager_id == Employee.id),
+        Join(Address, Person.id == Address.person_id),
+        Join(CityLocation, Address.city_location_id == CityLocation.id),
         LeftJoin(Manager_Person, Employee.person_id == Manager_Person.id),
     ]
 

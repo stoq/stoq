@@ -310,15 +310,21 @@ class BranchSearch(BasePersonSearch):
 
     def get_columns(self):
         return [SearchColumn('name', _('Name'), str, expand=True, sorted=True),
-                SearchColumn('fancy_name', _('Fancy name'), str, expand=True,
+                SearchColumn('fancy_name', _('Fancy name'), str, visible=False,
+                             width=140),
+                SearchColumn('acronym', _('Acronym'), str, visible=True,
+                             width=100),
+                SearchColumn('phone_number', _('Phone Number'), str, width=170,
                              visible=False),
-                SearchColumn('acronym', _('Acronym'), data_type=str,
-                             visible=False),
-                SearchColumn('phone_number', _('Phone Number'), str,
-                             width=150),
-                SearchColumn('manager_name', _('Manager'), str,
+                SearchColumn('manager_name', _('Manager'), str, visible=False,
                              width=250),
-                Column('status_str', _('Status'), data_type=str)]
+                Column('status_str', _('Status'), data_type=str, visible=False),
+                SearchColumn('cnpj', _('CNPJ'), str, visible=True, width=140),
+                SearchColumn('state_registry', _('State Registry'), str,
+                             visible=False, width=120),
+                SearchColumn('crt', _('Tax Policy'), int, visible=False),
+                SearchColumn('city', _('City'), str, visible=False, width=140),
+                SearchColumn('state', _('State'), str, visible=False, width=100)]
 
     def get_editor_model(self, branch_view):
         return branch_view.branch

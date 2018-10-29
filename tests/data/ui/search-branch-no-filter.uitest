@@ -22,15 +22,20 @@ GtkDialog(toplevel): title='Branch Search', hidden
                 stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
           SearchResultListView(results, expand=True, fill=True):
             column: title='Name', expand
-            column: title='Fancy name', hidden, expand
-            column: title='Acronym', hidden
-            column: title='Phone Number'
-            column: title='Manager'
-            column: title='Status'
-            row: 'Dante', 'Dante shop', None, '12345678', None, 'Active'
-            row: 'Las Vegas', 'Las Vegas shop', None, '12345678', None, 'Active'
-            row: 'Stoq Comércio Ltda ME', 'Stoq Elite Fashion', None, '33227766', None, 'Active'
-            row: 'Stoq Roupas e Acessórios Ltda', 'Moda Stoq', None, '48763983', None, 'Active'
+            column: title='Fancy name', hidden
+            column: title='Acronym'
+            column: title='Phone Number', hidden
+            column: title='Manager', hidden
+            column: title='Status', hidden
+            column: title='CNPJ'
+            column: title='State Registry', hidden
+            column: title='Tax Policy', hidden
+            column: title='City', hidden
+            column: title='State', hidden
+            row: 'Dante', 'Dante shop', None, '12345678', None, 'Active', '', '', 1, 'Los Angeles', 'Californa'
+            row: 'Las Vegas', 'Las Vegas shop', None, '12345678', None, 'Active', '', '', 1, 'Los Angeles', 'Californa'
+            row: 'Stoq Comércio Ltda ME', 'Stoq Elite Fashion', None, '33227766', None, 'Active', '24.198.774/7323-16', '128373623638', 1, 'Sertãozinho', 'SP'
+            row: 'Stoq Roupas e Acessórios Ltda', 'Moda Stoq', None, '48763983', None, 'Active', '24.198.774/7322-35', '982737266222', 1, 'São Carlos', 'SP'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):

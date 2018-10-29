@@ -22,12 +22,17 @@ GtkDialog(toplevel): title='Branch Search', hidden
                 stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
           SearchResultListView(results, expand=True, fill=True):
             column: title='Name', expand
-            column: title='Fancy name', hidden, expand
-            column: title='Acronym', hidden
-            column: title='Phone Number'
-            column: title='Manager'
-            column: title='Status'
-            row: 'Dante', 'Dante shop', None, '12345678', None, 'Active'
+            column: title='Fancy name', hidden
+            column: title='Acronym'
+            column: title='Phone Number', hidden
+            column: title='Manager', hidden
+            column: title='Status', hidden
+            column: title='CNPJ'
+            column: title='State Registry', hidden
+            column: title='Tax Policy', hidden
+            column: title='City', hidden
+            column: title='State', hidden
+            row: 'Dante', 'Dante shop', None, '12345678', None, 'Active', '', '', 1, 'Los Angeles', 'Californa'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):
