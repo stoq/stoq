@@ -98,12 +98,13 @@ from stoqlib.database.expr import (Field, TransactionTimestamp,
 from stoqlib.database.properties import (BoolCol, DateTimeCol, DecimalCol,
                                          EnumCol, IdCol, IntCol, PercentCol,
                                          PriceCol, QuantityCol, UnicodeCol)
-from stoqlib.database.runtime import get_current_user, autoreload_object
+from stoqlib.database.runtime import get_current_user, autoreload_object, get_current_branch
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent, ProductStockUpdateEvent)
 from stoqlib.domain.interfaces import IDescribable
+from stoqlib.domain.overrides import ProductBranchOverride
 from stoqlib.domain.person import Person, Branch
 from stoqlib.domain.sellable import Sellable
 from stoqlib.exceptions import StockError
@@ -178,7 +179,6 @@ class ProductSupplierInfo(Domain):
 
     @classmethod
     def find_by_product_supplier(cls, store, product, supplier):
-        from stoqlib.database.runtime import get_current_branch
         current_branch = get_current_branch(store)
         supplier_infos = store.find(cls, And(cls.product == product,
                                              cls.supplier == supplier,
@@ -323,25 +323,25 @@ class Product(Domain):
     icms_template_id = IdCol(default=None)
 
     #: the :class:`stoqlib.domain.taxes.ProductIcmsTemplate` tax for *self*
-    icms_template = Reference(icms_template_id, 'ProductIcmsTemplate.id')
+    _icms_template = Reference(icms_template_id, 'ProductIcmsTemplate.id')
 
     #: Id of IPI tax in product tax template
     ipi_template_id = IdCol(default=None)
 
     #: the :class:`stoqlib.domain.taxes.ProductIpiTemplate` tax for *self*
-    ipi_template = Reference(ipi_template_id, 'ProductIpiTemplate.id')
+    _ipi_template = Reference(ipi_template_id, 'ProductIpiTemplate.id')
 
     #: Id of PIS tax in product tax template
     pis_template_id = IdCol(default=None)
 
     #: the :class:`stoqlib.domain.taxes.ProductPisTemplate` tax for *self*
-    pis_template = Reference(pis_template_id, 'ProductPisTemplate.id')
+    _pis_template = Reference(pis_template_id, 'ProductPisTemplate.id')
 
     #: Id of COFINS tax in product tax template
     cofins_template_id = IdCol(default=None)
 
     #: the :class:`stoqlib.domain.taxes.ProductCofinsTemplate` tax for *self*
-    cofins_template = Reference(cofins_template_id, 'ProductCofinsTemplate.id')
+    _cofins_template = Reference(cofins_template_id, 'ProductCofinsTemplate.id')
 
     #: Used for composed products only
     quality_tests = ReferenceSet('id', 'ProductQualityTest.product_id')
@@ -410,6 +410,50 @@ class Product(Domain):
     def product_type_str(self):
         return self.product_types[self.product_type]
 
+    @property
+    def icms_template(self):
+        override = ProductBranchOverride.find_product(self)
+        if override:
+            return override.icms_template or self._icms_template
+        return self._icms_template
+
+    @icms_template.setter
+    def icms_template(self, value):
+        self._icms_template = value
+
+    @property
+    def ipi_template(self):
+        override = ProductBranchOverride.find_product(self)
+        if override:
+            return override.ipi_template or self._ipi_template
+        return self._ipi_template
+
+    @ipi_template.setter
+    def ipi_template(self, value):
+        self._ipi_template = value
+
+    @property
+    def pis_template(self):
+        override = ProductBranchOverride.find_product(self)
+        if override:
+            return override.pis_template or self._pis_template
+        return self._pis_template
+
+    @pis_template.setter
+    def pis_template(self, value):
+        self._pis_template = value
+
+    @property
+    def cofins_template(self):
+        override = ProductBranchOverride.find_product(self)
+        if override:
+            return override.cofins_template or self._cofins_template
+        return self._cofins_template
+
+    @cofins_template.setter
+    def cofins_template(self, value):
+        self._cofins_template = value
+
     #
     # Private
     #
@@ -466,7 +510,6 @@ class Product(Domain):
         self.manage_stock = True
 
         if not branch:
-            from stoqlib.database.runtime import get_current_branch
             branch = get_current_branch(store=self.store)
 
         # TODO: Instead of register an initial stock, we must consider the product history.

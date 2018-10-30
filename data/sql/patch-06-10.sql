@@ -59,7 +59,7 @@ CREATE RULE update_te AS ON UPDATE TO sellable_branch_override DO ALSO SELECT up
 
 
 CREATE TABLE product_branch_override (
-    id uuid PRIMARY KEY REFERENCES sellable(id) ON UPDATE CASCADE DEFAULT uuid_generate_v1(),
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     location text,
@@ -75,7 +75,7 @@ CREATE TABLE product_branch_override (
 CREATE RULE update_te AS ON UPDATE TO product_branch_override DO ALSO SELECT update_te(old.te_id, 'product_branch_override');
 
 CREATE TABLE storable_branch_override (
-    id uuid PRIMARY KEY REFERENCES sellable(id) ON UPDATE CASCADE DEFAULT uuid_generate_v1(),
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     minimum_quantity numeric(20, 3) DEFAULT 0
@@ -90,7 +90,7 @@ CREATE RULE update_te AS ON UPDATE TO storable_branch_override DO ALSO SELECT up
 
 
 CREATE TABLE service_branch_override (
-    id uuid PRIMARY KEY REFERENCES sellable(id) ON UPDATE CASCADE DEFAULT uuid_generate_v1(),
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id) DEFAULT new_te(),
 
     city_taxation_code text,
