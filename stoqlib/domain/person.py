@@ -2333,6 +2333,8 @@ class BranchView(Viewable):
     crt = Branch.crt
     person_id = Person.id
     name = Person.name
+    person_name = Person.name
+    branch_name = Branch.name
     phone_number = Person.phone_number
     cnpj = Company.cnpj
     state_registry = Company.state_registry
@@ -2356,7 +2358,7 @@ class BranchView(Viewable):
     #
 
     def get_description(self):
-        return self.name
+        return self.person_name
 
     #
     # Public API

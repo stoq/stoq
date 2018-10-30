@@ -289,7 +289,7 @@ class BranchSearch(BasePersonSearch):
     editor_class = BranchEditor
     search_spec = BranchView
     search_label = _('matching')
-    text_field_columns = [BranchView.name, BranchView.acronym,
+    text_field_columns = [BranchView.person_name, BranchView.acronym,
                           BranchView.phone_number]
 
     #
