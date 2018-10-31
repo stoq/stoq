@@ -52,7 +52,7 @@ class Async(object):
     im = 42244
 
 # A simple object representing who wrote this software
-async = Async()
+company = Async()
 
 
 class StoqlibCATGenerator(object):
@@ -117,7 +117,7 @@ class StoqlibCATGenerator(object):
 
     def _add_registers(self):
         appinfo = get_utility(IAppInfo)
-        self.cat.add_software_house(async, appinfo.get('name'),
+        self.cat.add_software_house(company, appinfo.get('name'),
                                     appinfo.get('version'))
 
         self._add_ecf_identification()

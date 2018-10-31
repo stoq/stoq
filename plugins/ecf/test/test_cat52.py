@@ -33,7 +33,7 @@ from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.unittestutils import get_tests_datadir
 
 from ecf.cat52 import CATFile
-from ecf.catgenerator import async
+from ecf.catgenerator import company
 from ecf.ecfdomain import ECFPrinter, FiscalSaleHistory
 
 
@@ -88,7 +88,7 @@ class Cat52Test(DomainTest):
         f.software_version = '6.6.6'  # kiko sends <3
 
         appinfo = get_utility(IAppInfo)
-        f.add_software_house(async, appinfo.get('name'),
+        f.add_software_house(company, appinfo.get('name'),
                              appinfo.get('version'))
         # Cant call add_ecf_identification, since it depends on a
         # conected printer
