@@ -289,8 +289,8 @@ class BranchSearch(BasePersonSearch):
     editor_class = BranchEditor
     search_spec = BranchView
     search_label = _('matching')
-    text_field_columns = [BranchView.person_name, BranchView.acronym,
-                          BranchView.phone_number]
+    text_field_columns = [BranchView.branch_name, BranchView.person_name,
+                          BranchView.acronym, BranchView.phone_number]
 
     #
     # SearchEditor Hooks
@@ -309,9 +309,10 @@ class BranchSearch(BasePersonSearch):
         self.search.add_filter(status_filter, SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [SearchColumn('name', _('Name'), str, expand=True, sorted=True),
+        return [SearchColumn('person_name', _('Name'), str, expand=True, sorted=True),
                 SearchColumn('fancy_name', _('Fancy name'), str, visible=False,
                              width=140),
+                SearchColumn('branch_name', _('Branch Name'), str, width=100, visible=True),
                 SearchColumn('acronym', _('Acronym'), str, visible=True,
                              width=100),
                 SearchColumn('phone_number', _('Phone Number'), str, width=170,

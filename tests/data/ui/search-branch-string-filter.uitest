@@ -23,6 +23,7 @@ GtkDialog(toplevel): title='Branch Search', hidden
           SearchResultListView(results, expand=True, fill=True):
             column: title='Name', expand
             column: title='Fancy name', hidden
+            column: title='Branch Name'
             column: title='Acronym'
             column: title='Phone Number', hidden
             column: title='Manager', hidden
@@ -32,7 +33,7 @@ GtkDialog(toplevel): title='Branch Search', hidden
             column: title='Tax Policy', hidden
             column: title='City', hidden
             column: title='State', hidden
-            row: 'Dante', 'Dante shop', None, '12345678', None, 'Active', '', '', 1, 'Los Angeles', 'Californa'
+            row: 'Dante', 'Dante shop', None, None, '12345678', None, 'Active', '', '', 1, 'Los Angeles', 'Californa'
       GtkBox(orientation=horizontal, fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True, padding=6): slave SearchEditorToolBar is attached
           GtkBox(toplevel, orientation=horizontal):
