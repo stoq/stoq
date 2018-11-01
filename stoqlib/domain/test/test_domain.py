@@ -98,8 +98,11 @@ def orm_get_unittest_value(klass, test, tables_dict, name, column):
             return None
         if isinstance(column._remote_key, str):
             cls = tables_dict[column._remote_key.split('.')[0]]
-        else:
+        elif isinstance(column._remote_key, tuple):
             cls = column._remote_key[0].cls
+        else:
+            cls = column._remote_key.cls
+
         if cls.__name__ == 'LoginUser':
             # Avoid unique problems on domains that defines 2 references
             # to LoginUser (e.g. WorkOrder)

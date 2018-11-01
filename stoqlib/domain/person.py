@@ -75,6 +75,7 @@ from stoqlib.database.properties import (BoolCol, DateTimeCol,
 from stoqlib.database.viewable import Viewable
 from stoqlib.database.runtime import get_current_station, get_current_branch
 from stoqlib.domain.address import Address, CityLocation
+from stoqlib.domain.certificate import Certificate
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.interfaces import IDescribable, IActive
@@ -1710,7 +1711,7 @@ class Branch(Domain):
 
     certificate_id = IdCol()
     #: the |certificate| this branch should use
-    certificate = Reference(certificate_id, 'Certificate.id')
+    certificate = Reference(certificate_id, Certificate.id)
 
     #
     # IActive
