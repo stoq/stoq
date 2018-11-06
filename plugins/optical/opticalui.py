@@ -71,7 +71,7 @@ from .opticalhistory import OpticalPatientDetails
 from .opticalreport import OpticalWorkOrderReceiptReport
 from .opticalslave import ProductOpticSlave, WorkOrderOpticalSlave
 from .opticalwizard import OpticalSaleQuoteWizard, MedicRoleWizard
-from .opticaldomain import (OpticalProduct, OpticalWorkOrder, OpticalMedic)
+from .opticaldomain import OpticalProduct, OpticalWorkOrder, OpticalMedic
 
 
 _ = stoqlib_gettext
@@ -294,7 +294,7 @@ class OpticalUI(object):
 
     def _fix_work_order_editor(self, editor, model, store):
         slave = WorkOrderOpticalSlave(store, model, show_finish_date=False,
-                                      visual_mode=editor.visual_mode)
+                                      visual_mode=editor.visual_mode, parent=editor)
         editor.add_extra_tab('Ótico', slave)
 
         def _print_report(button):

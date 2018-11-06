@@ -32,7 +32,6 @@ from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate
 
 from ..opticaldomain import OpticalWorkOrder
-from ..opticaleditor import MedicEditor
 from ..opticalslave import MedicDetailsSlave, WorkOrderOpticalSlave
 from .test_optical_domain import OpticalDomainTest
 
@@ -67,22 +66,6 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
         slave = WorkOrderOpticalSlave(self.store, workorder, visual_mode=True)
 
         self.check_slave(slave, 'work-order-optical-slave-visual-mode')
-
-    def test_run_medic_editor(self):
-        medic = self.create_optical_medic()
-        workorder = self.create_workorder()
-        slave = WorkOrderOpticalSlave(self.store, workorder)
-        name = 'plugins.optical.opticalslave.run_person_role_dialog'
-        with mock.patch(name) as run_person_role_dialog:
-            run_person_role_dialog.return_value = medic
-            self.click(slave.medic_create)
-            args, kwargs = run_person_role_dialog.call_args
-            parent = slave.get_toplevel().get_toplevel()
-            assert args[0] == MedicEditor
-            assert args[1] == parent
-            assert kwargs['visual_mode'] is True
-
-        self.check_slave(slave, 'work-order-optical-slave-create-medic')
 
     def test_focus_event(self):
         workorder = self.create_workorder()
@@ -218,18 +201,6 @@ class WorkOrderOpticalSlaveTest(GUITest, OpticalDomainTest):
         # Can be edited without changing the estimated_finish
         res2 = slave.estimated_finish.emit("validate", localdate(2015, 4, 2))
         self.assertEqual(res2, None)
-
-    def test_medic_details(self):
-        medic = self.create_optical_medic()
-        workorder = self.create_workorder()
-        slave = WorkOrderOpticalSlave(self.store, workorder)
-        slave.medic_combo.select(medic)
-        name = 'plugins.optical.opticalslave.run_dialog'
-        with mock.patch(name) as run_dialog:
-            self.click(slave.medic_details)
-            parent = slave.get_toplevel().get_toplevel()
-            run_dialog.assert_called_once_with(MedicEditor, parent, slave.store,
-                                               slave.model.medic, visual_mode=True)
 
     def test_axis_value_changed(self):
         workorder = self.create_workorder()

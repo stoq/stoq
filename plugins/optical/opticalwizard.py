@@ -80,6 +80,7 @@ class OpticalWorkOrderStep(WorkOrderQuoteWorkOrderStep):
 
     def __init__(self, store, wizard, previous, model):
         self._current_work_order = 0
+        self._parent = wizard
         WorkOrderQuoteWorkOrderStep.__init__(self, store, wizard, previous, model)
 
     def next_step(self):
@@ -93,7 +94,8 @@ class OpticalWorkOrderStep(WorkOrderQuoteWorkOrderStep):
             self._current_work_order += 1
         return WorkOrderOpticalSlave(self.store, work_order,
                                      show_finish_date=True,
-                                     description=desc)
+                                     description=desc,
+                                     parent=self._parent)
 
 
 class OpticalItemStep(WorkOrderQuoteItemStep):

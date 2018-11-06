@@ -19,6 +19,7 @@
  "plugins/nfe/nfegenerator.py": 86.7,
  "plugins/nfe/nfeplugin.py": 82.61,
  "plugins/nfe/nfeui.py": 86.30,
+ "plugins/optical/opticalslave.py": 96.00,
  "stoq/dbadmin.py": 11.78,
  "stoq/gui/accounts.py": 69.54,
  "stoq/gui/admin.py": 91,

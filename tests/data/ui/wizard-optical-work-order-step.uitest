@@ -10,8 +10,10 @@ GtkDialog(toplevel): title='Sale with work order', hidden
               GtkBox(vbox1, orientation=vertical):
                 GtkTable(table1, fill=True):
                   GtkLabel(label3): 'Medic:'
-                  ProxyComboEntry(medic_combo):
-                    item: 'Medic (upid: 1234)', selected
+                  GtkBox(orientation=horizontal):
+                    ProxyEntry(medic_combo, expand=True, fill=True): 'Medic (upid: 1234)'
+                    GtkButton():
+                    GtkButton(): insensitive
                   GtkBox(hbox1, orientation=horizontal):
                     GtkButton(medic_create, expand=True, fill=True):
                     GtkButton(medic_details, expand=True, fill=True):

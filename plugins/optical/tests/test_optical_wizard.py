@@ -121,7 +121,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         step = wizard.get_current_step()
         slave = step.slaves['WO 1']
         slave.patient.update('Patient')
-        slave.medic_combo.update(medic)
+        slave.medic_gadget.set_value(medic)
         slave.estimated_finish.update(localdate(2020, 1, 5))
 
         sale = wizard.model
@@ -281,7 +281,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         step = wizard.get_current_step()
         for slave in step.slaves.values():
             slave.patient.update('Patient')
-            slave.medic_combo.update(medic)
+            slave.medic_gadget.set_value(medic)
             slave.estimated_finish.update(localdate(2020, 1, 5))
 
         self.click(wizard.next_button)
@@ -323,7 +323,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         step = wizard.get_current_step()
         for slave in step.slaves.values():
             slave.patient.update('Patient')
-            slave.medic_combo.update(medic)
+            slave.medic_gadget.set_value(medic)
             slave.estimated_finish.update(localdate(2020, 1, 5))
 
         self.click(wizard.next_button)
@@ -378,7 +378,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         step = wizard.get_current_step()
         slave = step.slaves['WO 1']
         slave.patient.update('Patient')
-        slave.medic_combo.update(medic)
+        slave.medic_gadget.set_value(medic)
         slave.estimated_finish.update(localdate(2020, 1, 5))
 
         # Third Step: Products

@@ -34,12 +34,13 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.utils.iconutils import render_icon
-from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.gui.widgets.queryentry import PersonEntryGadget
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
-from .opticaldomain import OpticalWorkOrder, OpticalProduct, OpticalMedic
+from .opticaldomain import (OpticalWorkOrder, OpticalProduct, OpticalMedic,
+                            OpticalMedicView)
 from .opticaleditor import MedicEditor
 _ = stoqlib_gettext
 
@@ -185,7 +186,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     }
 
     def __init__(self, store, workorder, show_finish_date=False,
-                 visual_mode=False, description=u""):
+                 visual_mode=False, description=u"", parent=None):
         """
         :param workorder: The |workorder| this slave is editing. We will
           actually edit another object, but the |workorder| will be used to
@@ -194,6 +195,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
           work order should be editable in this slave.
         """
         self._update_level = 0
+        self.parent = parent
         self._focus_change = False
         self._show_finish_date = show_finish_date
         self._workorder = workorder
@@ -241,10 +243,17 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
                        key, value in OpticalWorkOrder.frame_types.items()]
         self.lens_type.prefill(sorted(lens_types))
         self.frame_type.prefill(sorted(frame_types))
-        self._medic_combo_prefill()
         if not sysparam.get_bool('CUSTOM_WORK_ORDER_DESCRIPTION'):
             self.patient.hide()
             self.label1.hide()
+        self._setup_medic_gadget()
+
+    def _setup_medic_gadget(self):
+        self.medic_gadget = OpticalMedicEntryGadget(
+            entry=self.medic_combo,
+            store=self.store,
+            initial_value=self.model.medic,
+            parent=self.parent)
 
     def _setup_adjustments(self):
         """This will setup the adjustments for the prescription widgets, and
@@ -286,20 +295,6 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
             widget.connect('event', self._on_event)
 
         return widget_names
-
-    def _run_medic_editor(self, medic=None, visual_mode=False):
-        with api.new_store() as store:
-            parent = self.get_toplevel().get_toplevel()
-            medic = run_person_role_dialog(MedicEditor, parent, store, medic,
-                                           visual_mode=True)
-        if medic:
-            self._medic_combo_prefill()
-            medic = self.store.fetch(medic)
-            self.medic_combo.select(medic)
-
-    def _medic_combo_prefill(self):
-        medics = self.store.find(OpticalMedic)
-        self.medic_combo.prefill(api.for_person_combo(medics))
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -401,19 +396,6 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
             # FIXME change the string of this validation error
             return ValidationError(_(u'Estimated finish date cannot be in the '
                                      'past.'))
-
-    def on_medic_create__clicked(self, button):
-        self._run_medic_editor()
-
-    def on_medic_combo__content_changed(self, combo):
-        self.medic_details.set_sensitive(bool(self.medic_combo.read()))
-
-    def on_medic_details__clicked(self, button):
-        medic = self.model.medic
-        parent = self.get_toplevel().get_toplevel()
-        run_dialog(MedicEditor, parent, self.store, medic, visual_mode=True)
-
-    # Distance axis == Near axis WHEN addition != 0
 
     def on_le_near_axis__value_changed(self, widget):
         if self.model.le_addition:
@@ -543,3 +525,39 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
                         title=_('Observations'))
         if not rv:
             self.store.rollback_to_savepoint('before_run_notes_editor')
+
+
+class OpticalMedicEntryGadget(PersonEntryGadget):
+    LOADING_ITEMS_TEXT = _("Loading medics...")
+    NEW_ITEM_TEXT = _('Create a new medic with this name...')
+    LOADING_ITEMS_TEXT = _('Loading medics...')
+    NEW_ITEM_TEXT = _('Create a new medic medic with this name...')
+    NEW_ITEM_TOOLTIP = _('Create a new medic')
+    EDIT_ITEM_TOOLTIP = _('Edit the selected medic')
+    INFO_ITEM_TOOLTIP = _('See info about the selected medic')
+    item_editor = MedicEditor
+    item_info_dialog = None
+    person_type = OpticalMedic
+    search_spec = OpticalMedicView
+    search_columns = [OpticalMedicView.name, OpticalMedicView.crm_number]
+
+    def get_object_from_item(self, item):
+        return item and self.store.find(OpticalMedic, person_id=item.id).one()
+
+    def describe_item(self, view):
+        details = []
+        for label, value in [(_("Name"), view.name), (_("CRM"), view.crm_number)]:
+            if not value:
+                continue
+            details.append('%s: %s' % (label, api.escape(value)))
+        name = "<big>%s</big>" % (api.escape(view.name), )
+        if details:
+            short = name + '\n<span size="small">%s</span>' % (
+                api.escape(', '.join(details[:1])))
+            complete = name + '\n<span size="small">%s</span>' % (
+                api.escape('\n'.join(details)))
+        else:
+            short = name
+            complete = name
+
+        return short, complete

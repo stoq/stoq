@@ -2,11 +2,13 @@ slave: WorkOrderOpticalSlave
 GtkBox(vbox1, orientation=vertical):
   GtkTable(table1, fill=True):
     GtkLabel(label3): 'Medic:'
-    ProxyComboEntry(medic_combo): insensitive
-      item: ''
+    GtkBox(orientation=horizontal):
+      ProxyEntry(medic_combo, expand=True, fill=True): '', ineditable, insensitive
+      GtkButton(): insensitive
+      GtkButton(): insensitive
     GtkBox(hbox1, orientation=horizontal):
       GtkButton(medic_create, expand=True, fill=True): insensitive
-      GtkButton(medic_details, expand=True, fill=True): insensitive
+      GtkButton(medic_details, expand=True, fill=True):
     GtkLabel(label11): 'Lens type:'
     ProxyComboBox(lens_type): insensitive
       item: 'Contact'
