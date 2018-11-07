@@ -36,7 +36,8 @@ from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import DomainMergeEvent
 from stoqlib.domain.person import Person, Company, Branch
-from stoqlib.domain.product import Product, StorableBatch, ProductManufacturer
+from stoqlib.domain.product import (Product, StorableBatch, ProductManufacturer,
+                                    ProductSupplierInfo)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import SaleItem, Sale
 from stoqlib.domain.sellable import Sellable, SellableCategory
@@ -406,11 +407,12 @@ class OpticalWorkOrder(Domain):
         """
         sellable = work_order_item.sellable
         store = self.work_order.store
+        current_branch = api.get_current_branch(store)
         purchase = PurchaseOrder(store=store,
                                  status=PurchaseOrder.ORDER_PENDING,
                                  supplier=supplier,
                                  responsible=api.get_current_user(store),
-                                 branch=api.get_current_branch(store),
+                                 branch=current_branch,
                                  work_order=self.work_order)
         if is_freebie:
             purchase.notes = _('The product %s is a freebie') % sellable.description
@@ -420,7 +422,9 @@ class OpticalWorkOrder(Domain):
             # further in order to change that behavior.
             cost = decimal.Decimal('0.01')
         else:
-            cost = sellable.cost
+            psi = ProductSupplierInfo.find_by_product_supplier(store, sellable.product,
+                                                               supplier)
+            cost = psi.base_cost if psi else sellable.cost
 
         # Add the sellable to the purchase
         purchase_item = purchase.add_item(sellable,

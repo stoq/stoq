@@ -22,6 +22,9 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from decimal import Decimal
+
+from stoqlib.api import api
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.test.domaintest import DomainTest
@@ -164,6 +167,31 @@ class OpticalWorkOrderTest(OpticalDomainTest):
 
         purchase = optical_wo.create_purchase(supplier, item1, False)
         for item in purchase.get_items():
+            # Default cost
+            self.assertEqual(item.cost, Decimal('125'))
+            # This item should not be in the purchase
+            self.assertNotEqual(item.sellable, optical_prod2.product.sellable)
+
+    def test_create_purchase_with_supplier_info(self):
+        sale = self.create_sale()
+        supplier = self.create_supplier()
+        optical_prod = self.create_optical_product(optical_type=OpticalProduct.TYPE_GLASS_LENSES)
+        optical_prod.product.cost = Decimal('10')
+        optical_prod2 = self.create_optical_product(optical_type=OpticalProduct.TYPE_GLASS_FRAME)
+        optical_wo = self.create_optical_work_order()
+        psi = self.create_product_supplier_info(supplier=supplier,
+                                                product=optical_prod.product,
+                                                branch=api.get_current_branch(self.store))
+        psi.base_cost = Decimal('5')
+        wo = optical_wo.work_order
+        wo.sale = sale
+        item1 = optical_wo.work_order.add_sellable(optical_prod.product.sellable)
+        optical_wo.work_order.add_sellable(optical_prod2.product.sellable)
+        wo.status = WorkOrder.STATUS_WORK_IN_PROGRESS
+
+        purchase = optical_wo.create_purchase(supplier, item1, False)
+        for item in purchase.get_items():
+            self.assertEqual(item.cost, Decimal('5'))
             # This item should not be in the purchase
             self.assertNotEqual(item.sellable, optical_prod2.product.sellable)
 
