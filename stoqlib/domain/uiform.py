@@ -120,7 +120,7 @@ def create_default_forms(store):
         (u'city', N_(u'City'), True, False),
         (u'state', N_(u'State'), True, True),
         (u'country', N_(u'Country'), True, True),
-        (u'cpf', _(u'Document'), True, False),
+        (u'cpf', N_(u'Document'), True, False),
     ]
 
     employee_fields = [
