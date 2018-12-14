@@ -98,6 +98,12 @@ class OpticalMedicTest(OpticalDomainTest):
         medic2 = self.create_optical_medic(crm_number=u'2')
         medic1.person.merge_with(medic2.person)
 
+    def test_merge_with_medic_no_crm(self):
+        medic1 = self.create_optical_medic()
+        medic1.crm_number = None
+        medic2 = self.create_optical_medic(crm_number='2')
+        medic1.person.merge_with(medic2.person)
+
     def test_merge_with_client(self):
         medic = self.create_optical_medic(crm_number=u'333')
         client = self.create_client()

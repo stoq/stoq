@@ -85,6 +85,14 @@ class OpticalMedic(Domain):
         other_facet = obj.store.find(cls, person=other).one()
         if not this_facet and not other_facet:
             return
+
+        # If this facet does not have a crm, but the other one does, the crm would be copied to
+        # this, but we need to clear the other value, since crm is unique in the database.
+        if other_facet and other_facet.crm_number and not this_facet.crm_number:
+            crm = other_facet.crm_number
+            other_facet.crm_number = None
+            this_facet.crm_number = crm
+
         obj.merge_facet(this_facet, other_facet)
         return set([('optical_medic', 'person_id')])
 
