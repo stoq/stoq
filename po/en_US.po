@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-07 02:11-0300\n"
+"POT-Creation-Date: 2018-06-10 02:11-0300\n"
 "PO-Revision-Date: 2018-06-06 05:11+0000\n"
 "Last-Translator: Async Jenkins <asyncjenkins@hackedbellini.org>\n"
 "Language-Team: English (United States) (http://www.transifex.com/async/stoq/language/en_US/)\n"
@@ -4273,7 +4273,7 @@ msgstr ""
 
 #: ../data/template/optical/opticaldetails.html:39
 #: ../plugins/optical/medicssearch.py:132
-#: ../plugins/optical/opticaleditor.py:44
+#: ../plugins/optical/opticaleditor.py:44 ../plugins/optical/opticalui.py:169
 msgid "Medic"
 msgstr ""
 
@@ -4294,7 +4294,7 @@ msgstr ""
 
 #: ../data/template/optical/prescription.html:10
 #: ../data/template/optical/workorderdetails.html:8
-#: ../plugins/optical/opticalreport.py:34 ../plugins/optical/opticalui.py:196
+#: ../plugins/optical/opticalreport.py:34 ../plugins/optical/opticalui.py:205
 #: ../stoq/gui/calendar.py:287 ../stoqlib/gui/editors/workordereditor.py:65
 #: ../stoqlib/lib/parameters.py:954 ../stoqlib/lib/parameters.py:962
 #: ../stoqlib/reporting/workorder.py:43
@@ -5734,7 +5734,7 @@ msgstr ""
 #. TRANSLATORS: Traduzir como 'Anamnese'
 #: ../plugins/optical/glade/PatientHistory.ui.h:42
 #: ../plugins/optical/glade/PatientHistoryDialog.ui.h:3
-#: ../plugins/optical/opticalhistory.py:55 ../plugins/optical/opticalui.py:315
+#: ../plugins/optical/opticalhistory.py:55 ../plugins/optical/opticalui.py:324
 msgid "Patient History"
 msgstr ""
 
@@ -5936,7 +5936,7 @@ msgstr ""
 
 #: ../plugins/optical/glade/PatientTest.ui.h:20
 #: ../plugins/optical/glade/WorkOrderOpticalSlave.ui.h:13
-#: ../plugins/optical/opticalui.py:131
+#: ../plugins/optical/opticalui.py:133
 msgid "Cylindrical"
 msgstr ""
 
@@ -6063,7 +6063,7 @@ msgid "Spherical"
 msgstr ""
 
 #: ../plugins/optical/glade/WorkOrderOpticalSlave.ui.h:14
-#: ../plugins/optical/opticalui.py:132
+#: ../plugins/optical/opticalui.py:134
 msgid "Axis"
 msgstr ""
 
@@ -6073,7 +6073,7 @@ msgid "PD"
 msgstr ""
 
 #: ../plugins/optical/glade/WorkOrderOpticalSlave.ui.h:17
-#: ../plugins/optical/opticalui.py:122 ../stoq/gui/pos.py:789
+#: ../plugins/optical/opticalui.py:124 ../stoq/gui/pos.py:789
 #: ../stoqlib/domain/uiform.py:137
 #: ../stoqlib/gui/dialogs/sellabledialog.py:205
 msgid "Height"
@@ -6088,7 +6088,7 @@ msgid "Base"
 msgstr ""
 
 #: ../plugins/optical/glade/WorkOrderOpticalSlave.ui.h:20
-#: ../plugins/optical/opticalui.py:120 ../plugins/optical/opticalui.py:130
+#: ../plugins/optical/opticalui.py:122 ../plugins/optical/opticalui.py:132
 #: ../stoqlib/gui/widgets/calculator.py:153
 msgid "Addition"
 msgstr ""
@@ -6098,7 +6098,7 @@ msgid "Near"
 msgstr ""
 
 #: ../plugins/optical/glade/WorkOrderOpticalSlave.ui.h:22
-#: ../plugins/optical/opticalui.py:109
+#: ../plugins/optical/opticalui.py:111
 msgid "Frame"
 msgstr ""
 
@@ -6185,7 +6185,7 @@ msgstr ""
 msgid "Confirm date"
 msgstr ""
 
-#: ../plugins/optical/medicssearch.py:130 ../plugins/optical/opticalui.py:159
+#: ../plugins/optical/medicssearch.py:130 ../plugins/optical/opticalui.py:167
 #: ../stoq/gui/pos.py:784 ../stoq/gui/stock.py:263
 #: ../stoqlib/domain/uiform.py:142
 #: ../stoqlib/gui/dialogs/initialstockdialog.py:110
@@ -6334,12 +6334,12 @@ msgid "Glasses"
 msgstr ""
 
 #. Translators: Lente Oftálmica
-#: ../plugins/optical/opticalslave.py:124 ../plugins/optical/opticalui.py:115
+#: ../plugins/optical/opticalslave.py:124 ../plugins/optical/opticalui.py:117
 msgid "Glass Lenses"
 msgstr ""
 
 #. Translators: Lente de Contato
-#: ../plugins/optical/opticalslave.py:126 ../plugins/optical/opticalui.py:125
+#: ../plugins/optical/opticalslave.py:126 ../plugins/optical/opticalui.py:127
 msgid "Contact Lenses"
 msgstr ""
 
@@ -6363,20 +6363,20 @@ msgstr ""
 msgid "Estimated finish date cannot be in the past."
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:110
+#: ../plugins/optical/opticalui.py:112
 msgid "Glass Type"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:111
+#: ../plugins/optical/opticalui.py:113
 #: ../stoqlib/gui/dialogs/invoicedialog.py:51
 msgid "Size"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:112 ../plugins/optical/opticalui.py:128
+#: ../plugins/optical/opticalui.py:114 ../plugins/optical/opticalui.py:130
 msgid "Lens Type"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:113 ../plugins/optical/opticalui.py:133
+#: ../plugins/optical/opticalui.py:115 ../plugins/optical/opticalui.py:135
 #: ../stoqlib/gui/dialogs/paymentcategorydialog.py:55
 #: ../stoqlib/gui/dialogs/workordercategorydialog.py:45
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:61
@@ -6384,84 +6384,84 @@ msgstr ""
 msgid "Color"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:116
+#: ../plugins/optical/opticalui.py:118
 msgid "Photosensitive"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:117
+#: ../plugins/optical/opticalui.py:119
 msgid "Anti Glare"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:118
+#: ../plugins/optical/opticalui.py:120
 msgid "Refraction Index"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:119 ../plugins/optical/opticalui.py:127
+#: ../plugins/optical/opticalui.py:121 ../plugins/optical/opticalui.py:129
 msgid "Classification"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:121
+#: ../plugins/optical/opticalui.py:123
 msgid "Diameter"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:123
+#: ../plugins/optical/opticalui.py:125
 msgid "Availability"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:126
+#: ../plugins/optical/opticalui.py:128
 msgid "Degree"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:129
+#: ../plugins/optical/opticalui.py:131
 msgid "Discard"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:134
+#: ../plugins/optical/opticalui.py:136
 msgid "Curvature"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:197
+#: ../plugins/optical/opticalui.py:206
 msgid "Allow to customize the work order description"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:198
+#: ../plugins/optical/opticalui.py:207
 msgid ""
 "If true, it will be allowed to set a description for the work order "
 "manually. Otherwise, the identifier will be used."
 msgstr ""
 
 #. Add a new option to the WorkOrderRow options menu
-#: ../plugins/optical/opticalui.py:226 ../plugins/optical/opticalui.py:281
+#: ../plugins/optical/opticalui.py:235 ../plugins/optical/opticalui.py:290
 msgid "Create new purchase..."
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:251 ../plugins/optical/opticalui.py:271
-#: ../plugins/optical/opticalui.py:276
+#: ../plugins/optical/opticalui.py:260 ../plugins/optical/opticalui.py:280
+#: ../plugins/optical/opticalui.py:285
 msgid "Optical"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:252 ../stoq/gui/sales.py:138
+#: ../plugins/optical/opticalui.py:261 ../stoq/gui/sales.py:138
 msgid "Sale with work order..."
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:255
+#: ../plugins/optical/opticalui.py:264
 msgid "Medics..."
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:258
+#: ../plugins/optical/opticalui.py:267
 msgid "Medics sold items..."
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:275 ../plugins/optical/opticalui.py:279
+#: ../plugins/optical/opticalui.py:284 ../plugins/optical/opticalui.py:288
 msgid "Edit optical details..."
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:296 ../stoqlib/gui/search/callsearch.py:86
+#: ../plugins/optical/opticalui.py:305 ../stoqlib/gui/search/callsearch.py:86
 #: ../stoqlib/gui/utils/keybindings.py:57
 msgid "Print"
 msgstr ""
 
-#: ../plugins/optical/opticalui.py:305
+#: ../plugins/optical/opticalui.py:314
 msgid "You cannot create a pre-sale with an open inventory."
 msgstr ""
 
