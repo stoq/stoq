@@ -236,6 +236,8 @@ class TillApp(ShellApp):
                          format_func=format_quantity),
             SearchColumn('total', title=_('Total'), data_type=currency,
                          width=100),
+            SearchColumn('missing_payment', title=_('Missing Payment'), data_type=currency,
+                         width=150),
         ])
 
         return columns

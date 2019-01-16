@@ -39,6 +39,7 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
                 column: title='Salesperson'
                 column: title='Quantity'
                 column: title='Total'
+                column: title='Missing Payment'
           GtkBox(list_vbox, orientation=vertical):
             GtkAlignment(alignment1):
               GtkBox(footer_hbox, orientation=horizontal):

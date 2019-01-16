@@ -1611,6 +1611,7 @@ class Sale(IdentifiableDomain):
 
     def get_total_paid(self):
         """Return the total amount already paid for this sale
+
         :returns: the total amount paid
         """
         total_paid = 0
@@ -2405,6 +2406,13 @@ _TradeAndCreditTotal = Select(columns=[Payment.group_id,
                               group_by=[Payment.group_id])
 TradeAndCreditTotal = Alias(_TradeAndCreditTotal, '_trade_credit_total')
 
+_PaymentTotal = Select(columns=[Payment.group_id,
+                                Alias(Sum(Payment.value), 'total')],
+                       tables=[Payment],
+                       where=(Payment.status != Payment.STATUS_CANCELLED),
+                       group_by=[Payment.group_id])
+PaymentTotal = Alias(_PaymentTotal, '_payment_total')
+
 
 class SaleView(Viewable):
     """Stores general information about sales
@@ -2521,10 +2529,14 @@ class SaleView(Viewable):
     #: the total of the sale without trades and credit values
     _net_total = _total - Coalesce(Field('_trade_credit_total', 'total'), 0)
 
+    #: the total of the sale without trades and credit values
+    missing_payment = _total - Coalesce(Field('_payment_total', 'total'), 0)
+
     tables = [
         Sale,
         LeftJoin(SaleItemSummary, Field('_sale_item', 'sale_id') == Sale.id),
         LeftJoin(TradeAndCreditTotal, Field('_trade_credit_total', 'group_id') == Sale.group_id),
+        LeftJoin(PaymentTotal, Field('_payment_total', 'group_id') == Sale.group_id),
         LeftJoin(Branch, Sale.branch_id == Branch.id),
         LeftJoin(Client, Sale.client_id == Client.id),
         LeftJoin(SalesPerson, Sale.salesperson_id == SalesPerson.id),
