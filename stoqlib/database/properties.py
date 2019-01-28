@@ -92,6 +92,8 @@ class IdentifierCol(Int):
         # if there is an object, then its the variable
         if obj and getattr(obj, 'branch', None):
             data.prefix = obj.branch.acronym or ''
+        if obj and getattr(obj, 'station', None) and obj.station.code:
+            data.prefix += obj.station.code + '-'
         return data
 
 

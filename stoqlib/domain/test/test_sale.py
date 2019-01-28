@@ -2859,6 +2859,13 @@ class TestSaleView(DomainTest):
         self.assertEqual(self.store.execute(postresults[1]).get_one(),
                          (2, Decimal("20"), Decimal("10")))
 
+    def test_identifier_str(self):
+        sale = self.create_sale()
+        sale.branch.acronym = '9876'
+        sale.station.code = '54'
+        sale.identifier = 138
+        self.assertEqual(str(sale.identifier), '987654-00138')
+
     def test_find_by_branch(self):
         sale = self.create_sale()
         views = SaleView.find_by_branch(store=self.store,
