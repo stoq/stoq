@@ -164,11 +164,12 @@ class FiscalPrinterHelper(GObject.GObject):
         manager = get_plugin_manager()
 
         # This behavior is only because of ECF
-        if not is_partial and not self._previous_day and manager.is_active('ecf'):
-            if not yesno(_("You can only close the till once per day. "
-                           "You won't be able to make any more sales today.\n\n"
-                           "Close the till?"),
-                         Gtk.ResponseType.NO, _("Close Till"), _("Not now")):
+        if not is_partial and not self._previous_day:
+            if (manager.is_active('ecf') and
+                not yesno(_("You can only close the till once per day. "
+                            "You won't be able to make any more sales today.\n\n"
+                            "Close the till?"),
+                          Gtk.ResponseType.NO, _("Close Till"), _("Not now"))):
                 return
         elif not is_partial:
             # When closing from a previous day, close only what is needed.
