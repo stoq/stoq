@@ -25,3 +25,4 @@ cryptography >= 1.4
 python-nss >= 0.12
 viivakoodi >= 0.8.0
 qrcode >= 4.0
+blinker >= 1.3
