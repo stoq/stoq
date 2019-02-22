@@ -5,7 +5,7 @@
   <title>Novidades da versão</title>
   <info>
     <desc>
-      Novidades da versão 3.0
+      Novidades da versão 3.1
     </desc>
 
     <link type="guide" xref="index" group="changelog" />
@@ -29,29 +29,31 @@
   <section id="last-version">
     <title>Novidades da versão 3.0</title>
     <p>
-      Data do lançamento: 2018-06-25
+      Data do lançamento: 2019-02-22
     </p>
 
     <section>
       <title>Principais funcionalidades</title>
       <list>
-        <item><p>Modernização da interface: mais amigável, flexível e com
-                 suporte otimizado a telas touch screen</p></item>
-        <item><p>Novo aplicativo 'Entregas', adicionando diversas
-                 funcionalidades ao processo de entrega e transporte (funcionalidade
-                 em fase experimental)</p></item>
-        <item><p>Suporte para entregas nas saídas manuais</p></item>
-        <item><p>Novos recursos no processo de ordem de compra no plugin
-                 para óticas</p></item>
-        <item><p>Novo processo de conciliação de compras, permitindo agrupar
-                 diversas compras/recebimentos em uma única nota fiscal</p></item>
-        <item><p>Novo campo para produtos para informação do CEST,
-                 necessário para emissão de NF-e/NFC-e e CF-e SAT</p></item>
-        <item><p>Atalhos para principais operações a partir da tela inicial</p></item>
-        <item><p>Opção para tornar a tela inicial um dashboard para ordens de serviço</p></item>
-        <item><p>Informação do valor líquido das vendas no aplicativo
-                 Vendas, indicando o total recebido pela venda descontando o valor da
-                 troca e do crédito do cliente, quando aplicável</p></item>
+        <item><p>Agora é possível deixar recados para os usuários do sistema: Envie mensagens para
+        usuários, perfis de usuário ou todos os usuários de uma filial. Esse aviso aparecerá na tela
+        inicial do Stoq.</p></item>
+        <item><p>Para usuários que não utilizem ECF, agora é permitido abrir mais de um caixa por
+        dia.</p></item>
+        <item><p>Melhor tratamento de dispositivos externos. Fizemos algumas melhorias que devem
+        aumentar a estabilidade do sistema quando comunicando com disposivos externos.</p></item>
+        <item><p>Utilize o Stoq em terminais de auto-serviço com balanças: Configure o Stoq para
+        adicionar um produto automaticamente ao ler o código de um token de venda.</p></item>
+        <item><p>Permissão para criar pagamentos para outras filiais a partir de qualquer computador
+        (em bases sincronizadas)</p></item>
+        <item><p>Diversas melhorias no processo de contagem de inventário, tentando reduzir o número
+        de erros que podem acontecer, como contar um mesmo produto duas vezes e um aviso quando um
+        produto lido não foi encontrado</p></item>
+        <item><p>Diversas informações novas em alguns relatórios, como número da nota fiscal na
+        lista de contas a pagar</p></item>
+        <item><p>Agora é possível indicar o relacionamento ou parentesco entre duas pessoas
+        cadastradas no sistema</p></item>
+        <item><p>Diversas outras melhorias e correçòes de bugs</p></item>
       </list>
     </section>
 
