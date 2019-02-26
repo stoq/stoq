@@ -25,6 +25,7 @@
 __tests__ = 'stoqlib/domain/base.py'
 
 import json
+import re
 
 import mock
 from storm.exceptions import NotOneError
@@ -32,6 +33,7 @@ from storm.references import Reference
 
 from stoqlib.database.properties import (IntCol, UnicodeCol, BoolCol, IdCol,
                                          IdentifierCol)
+from stoqlib.database.runtime import new_store
 from stoqlib.domain.base import Domain
 
 from stoqlib.domain.test.domaintest import DomainTest
@@ -48,6 +50,8 @@ class Dong(Domain):
     bool_field = BoolCol(default=False)
     ding_id = IdCol()
     ding = Reference(ding_id, Ding.id)
+
+    repr_fields = ['ding_id']
 
 
 class Dung(Domain):
@@ -285,6 +289,27 @@ class TestSelect(DomainTest):
         new_dung = Dung(store=self.store)
         new_dung.identifier = Dung.get_temporary_identifier(self.store)
         self.assertEqual(new_dung.identifier, -2)
+
+    def test_repr(self):
+        store = new_store()
+        ding = Ding(store=store, str_field=u'Foo', int_field=666)
+        dong = Dong(store=store, bool_field=False,
+                    ding=ding)
+        store.close()
+        # This never got to database, so there is no id
+        self.assertEqual(repr(dong), '<Dong [id missing] ding_id=None>')
+
+        store = new_store()
+        ding = Ding(store=store, str_field=u'Foo', int_field=666)
+        dong = Dong(store=store, bool_field=False,
+                    ding=ding)
+
+        # Where we have a full representation of the object
+        self.assertTrue(re.match("<Dong '[a-f0-9-]*' ding_id='[a-f0-9-]*'>", repr(dong)))
+
+        store.rollback()
+        self.assertTrue(re.match("<Dong '[a-f0-9-]*' ding_id='\[database connection closed\]'>",
+                                 repr(dong)))
 
     def test_serialize(self):
         ding = Ding(store=self.store, str_field=u'Sambiquira', int_field=666)
