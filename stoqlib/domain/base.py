@@ -30,7 +30,7 @@ import collections
 import logging
 import warnings
 
-from storm.exceptions import NotOneError
+from storm.exceptions import NotOneError, ClosedError
 from storm.expr import And, Alias, Like, Max, Select, Update, Undef
 from storm.info import get_cls_info, get_obj_info
 from storm.properties import Property
@@ -95,9 +95,18 @@ class Domain(ORMObject):
         ORMObject.__init__(self, *args, **kwargs)
 
     def __repr__(self):
-        parts = ['%r' % self.id]
+        try:
+            parts = ['%r' % self.id]
+        except ClosedError:
+            parts = ['[id missing]']
+
         for field in self.repr_fields:
-            parts.append('%s=%r' % (field, getattr(self, field)))
+            try:
+                value = getattr(self, field)
+            except ClosedError:
+                value = '[database connection closed]'
+
+            parts.append('%s=%r' % (field, value))
 
         desc = ' '.join(parts)
         return '<%s %s>' % (self.__class__.__name__, desc)
