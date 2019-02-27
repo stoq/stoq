@@ -161,9 +161,18 @@ data_files += listplugins(PLUGINS, PLUGIN_EXTS)
 # https://pythonhosted.org/setuptools/setuptools.html#dependencies-that-aren-t-in-pypi
 # Try to make a way to integrate it with debian packaging, just like the
 # dependencies bellow.
+install_requires = []
 with open('requirements.txt') as f:
-    install_requires = [l.strip() for l in f.readlines() if
-                        l.strip() and not l.startswith('#')]
+    for l in f.readlines():
+        l = l.strip()
+        if not l or l.startswith('#'):
+            continue
+        if l.startswith('https://'):
+            # requirements.txt file format is a bit different from setup install_requires argument
+            package = l.split('=')[-1]
+            l = '%s @ %s' % (package, l)
+        install_requires.append(l)
+
 
 setup(name='stoq',
       version=version,
