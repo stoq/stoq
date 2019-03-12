@@ -223,9 +223,6 @@ class SchemaMigration(object):
                     continue
                 patches_to_apply.append(patch)
 
-            from stoqlib.database.admin import create_database_functions
-            create_database_functions()
-
             log.info("Applying %d patches" % (len(patches_to_apply), ))
             create_log.info("PATCHES:%d" % (len(patches_to_apply), ))
 
@@ -306,6 +303,10 @@ class SchemaMigration(object):
     def update(self):
         """Updates the database schema
         """
+        # Make sure that database functions are up to date even if there are no patches to apply.
+        from stoqlib.database.admin import create_database_functions
+        create_database_functions()
+
         if self.check_uptodate():
             print('Database is already at the latest version %d.%d' % (
                 self.get_current_version()))

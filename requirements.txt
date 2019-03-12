@@ -24,7 +24,8 @@ viivakoodi >= 0.8.0
 qrcode >= 4.0
 blinker >= 1.3
 requests>=2.18.4
-PyGObject>=3.30.1
+# This is for installing stoq from pip easyer, but it is currently breaking our test suite
+#PyGObject>=3.30.1
 
 # We need a custom version of stoq for now.
 https://launchpad.net/~stoq-dev/+archive/ubuntu/lancamentos/+sourcefiles/storm/0.20.0.100-2~py3-1xenial/storm_0.20.0.100-2~py3-1xenial.tar.gz#egg=storm
