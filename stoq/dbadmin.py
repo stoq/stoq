@@ -462,8 +462,19 @@ class StoqCommandHandler:
 
         self._enable_plugins([str(plugin_name)])
 
+    def opt_update_plugins(self, parser, group):
+        group.add_option('', '--channel',
+                         action="store",
+                         dest="channel",
+                         type="str",
+                         help="which plugin channel to use",
+                         default="stable")
+
     def cmd_update_plugins(self, options):
         """Update plugins on Stoq"""
+        if options.channel and options.channel not in ['stable', 'beta', 'alpha']:
+            print('invalid channel')
+            return
         self._read_config(options, register_station=False,
                           check_schema=False,
                           load_plugins=False)
@@ -474,7 +485,7 @@ class StoqCommandHandler:
         manager = get_plugin_manager()
 
         for egg_plugin in manager.egg_plugins_names:
-            rv, text = manager.download_plugin(egg_plugin)
+            rv, text = manager.download_plugin(egg_plugin, options.channel)
             print("{}: [{}] {}".format(egg_plugin, rv, text))
 
     def cmd_insert_egg(self, options, plugin_name, filename):

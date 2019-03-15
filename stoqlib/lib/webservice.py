@@ -213,11 +213,12 @@ class WebService(object):
         endpoint = 'api/stoq/v1/feedback/%s' % (sysparam.get_string('USER_HASH'), )
         return self._do_request('POST', endpoint, json=params, **kwargs)
 
-    def download_plugin(self, plugin_name, md5sum=None, **kwargs):
+    def download_plugin(self, plugin_name, md5sum=None, channel=u'stable', **kwargs):
         params = {
             'hash': sysparam.get_string('USER_HASH'),
             'md5': md5sum or '',
             'version': self._get_version(),
+            'channel': channel,
         }
 
         endpoint = 'api/stoq-link/egg/%s' % (plugin_name, )
