@@ -228,10 +228,11 @@ class PluginManager(object):
     # Public API
     #
 
-    def download_plugin(self, plugin_name):
+    def download_plugin(self, plugin_name, channel=u'stable'):
         """Download a plugin from webservice
 
         :param plugin_name: the name of the plugin to download
+        :param channel: the channel the plugin belongs
         :returns: a deferred
         """
         from stoqlib.lib.webservice import WebService
@@ -241,7 +242,7 @@ class PluginManager(object):
                                           plugin_name=plugin_name).one()
         md5sum = existing_egg and existing_egg.egg_md5sum
         webapi = WebService()
-        r = webapi.download_plugin(plugin_name, md5sum=md5sum)
+        r = webapi.download_plugin(plugin_name, md5sum=md5sum, channel=channel)
 
         try:
             response = r.get_response()
