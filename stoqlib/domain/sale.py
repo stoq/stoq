@@ -2402,7 +2402,8 @@ _TradeAndCreditTotal = Select(columns=[Payment.group_id,
                               tables=[Payment,
                                       LeftJoin(PaymentMethod,
                                                PaymentMethod.id == Payment.method_id)],
-                              where=In(PaymentMethod.method_name, ['credit', 'trade']),
+                              where=And(In(PaymentMethod.method_name, ['credit', 'trade']),
+                                        Payment.payment_type == Payment.TYPE_IN),
                               group_by=[Payment.group_id])
 TradeAndCreditTotal = Alias(_TradeAndCreditTotal, '_trade_credit_total')
 
