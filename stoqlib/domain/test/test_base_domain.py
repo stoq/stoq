@@ -307,6 +307,9 @@ class TestSelect(DomainTest):
         # Where we have a full representation of the object
         self.assertTrue(re.match("<Dong '[a-f0-9-]*' ding_id='[a-f0-9-]*'>", repr(dong)))
 
+        store.rollback(close=False)
+        self.assertTrue(re.match("<Dong '[a-f0-9-]*' ding_id='\[lost object\]'>", repr(dong)))
+
         store.rollback()
         self.assertTrue(re.match("<Dong '[a-f0-9-]*' ding_id='\[database connection closed\]'>",
                                  repr(dong)))
