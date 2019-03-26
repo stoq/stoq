@@ -124,9 +124,11 @@ class TestReturnedSale(DomainTest):
         sellable = self.add_product(sale)
         self.add_payments(sale)
         rsale1 = ReturnedSale(branch=branch,
+                              status=ReturnedSale.STATUS_CONFIRMED,
                               sale=sale,
                               store=self.store)
         rsale2 = ReturnedSale(branch=branch,
+                              status=ReturnedSale.STATUS_CONFIRMED,
                               sale=sale,
                               store=self.store)
         self.assertEqual(rsale1.sale_total, currency(0))

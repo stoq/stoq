@@ -389,8 +389,9 @@ class ReturnedSale(IdentifiableDomain):
         if not self.sale:
             return currency(0)
 
-        # TODO: Filter by status
-        returned = self.store.find(ReturnedSale, sale=self.sale)
+        query = And(ReturnedSale.sale_id == self.sale.id,
+                    ReturnedSale.status == ReturnedSale.STATUS_CONFIRMED)
+        returned = self.store.find(ReturnedSale, query)
         # This will sum the total already returned for this sale,
         # excluiding *self* within the same store
         returned_total = sum([returned_sale.returned_total for returned_sale in
