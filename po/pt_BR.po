@@ -19319,7 +19319,7 @@ msgstr "Se o Stoq é utilizado em um modo de demonstração"
 
 #: ../stoqlib/lib/parameters.py:796
 msgid "Block payments from/to the imbalance account"
-msgstr "Bloquear pagametnso de/para a conta desequilíbrio"
+msgstr "Bloquear pagamentos de/para a conta desequilíbrio"
 
 #: ../stoqlib/lib/parameters.py:797
 msgid ""
