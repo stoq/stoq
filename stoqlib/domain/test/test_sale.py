@@ -853,9 +853,11 @@ class TestSale(DomainTest):
 
         returned_amount = 0
         for payment in sale.payments:
+            # None of the payment should be cancelled
+            self.assertNotEqual(payment.status, Payment.STATUS_CANCELLED)
             if payment.is_outpayment():
                 returned_amount += payment.value
-        self.assertEqual(returned_amount, currency(0))
+        self.assertEqual(returned_amount, currency(300))
 
     def test_partial_return_not_paid(self):
         sale = self.create_sale()
@@ -887,7 +889,7 @@ class TestSale(DomainTest):
         for payment in sale.payments:
             if payment.is_outpayment():
                 returned_amount += payment.value
-        self.assertEqual(returned_amount, currency(0))
+        self.assertEqual(returned_amount, currency(300))
 
     def test_total_return_not_entirely_paid(self):
         sale = self.create_sale()
@@ -919,9 +921,9 @@ class TestSale(DomainTest):
         returned_amount = 0
         for payment in sale.payments:
             if payment.is_inpayment():
-                # At this point, inpayments should be either paid or cancelled
-                self.assertFalse(payment.is_pending())
-                self.assertTrue(payment.is_paid() or payment.is_cancelled())
+                # At this point, inpayments should be either paid or pending
+                self.assertFalse(payment.is_cancelled())
+                self.assertTrue(payment.is_paid() or payment.is_pending())
             if payment.is_outpayment():
                 returned_amount += payment.value
         self.assertEqual(payment.value, returned_amount)
@@ -956,8 +958,9 @@ class TestSale(DomainTest):
         returned_amount = 0
         for payment in sale.payments:
             if payment.is_inpayment():
-                # At this point, inpayments should be either paid or cancelled
-                self.assertTrue(payment.is_paid() or payment.is_cancelled())
+                # At this point, inpayments should be either paid or pending
+                self.assertFalse(payment.is_cancelled())
+                self.assertTrue(payment.is_paid() or payment.is_pending())
             if payment.is_outpayment():
                 returned_amount += payment.value
         self.assertEqual(payment.value, returned_amount)

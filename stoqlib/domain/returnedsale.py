@@ -535,24 +535,7 @@ class ReturnedSale(IdentifiableDomain):
         """
         assert self.sale and self.sale.can_return()
         self._clean_not_used_items()
-
-        payment = None
-        if self.total_amount == 0 and method_name != 'credit':
-            # The client does not owe anything to us
-            self.group.cancel()
-        elif self.total_amount < 0:
-            # The user has paid more than it's returning
-            for payment in self.group.get_pending_payments():
-                if payment.is_inpayment():
-                    # We are returning money to client, that means he doesn't owe
-                    # us anything, we do now. Cancel pending payments
-                    payment.cancel()
-
-            self._create_return_payment(method_name, self.total_amount_abs)
-        elif method_name == u'credit':
-            # The out payments are not paid yet, but the user choose to create credit
-            # anyway. Leave the payments as they are and do create the credit
-            self._create_return_payment(method_name, self.returned_total)
+        self._create_return_payment(method_name, self.returned_total)
 
         # FIXME: For now, we are not reverting the comission as there is a
         # lot of things to consider. See bug 5215 for information about it.

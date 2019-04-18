@@ -27,8 +27,7 @@
 import decimal
 
 from gi.repository import Gtk
-from kiwi.currency import currency
-from kiwi.datatypes import converter
+from kiwi.currency import currency, format_price
 from kiwi.ui.objectlist import Column
 from storm.expr import Ne
 
@@ -40,7 +39,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.enums import ReturnPolicy
 from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.formatters import format_quantity, format_sellable_description
-from stoqlib.lib.message import info, yesno
+from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
@@ -50,8 +49,6 @@ from stoqlib.gui.events import (SaleReturnWizardFinishEvent,
                                 InvoiceSetupEvent,
                                 WizardAddSellableEvent)
 from stoqlib.gui.search.salesearch import SaleSearch
-from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
-                                             MultipleMethodSlave)
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.reporting.clientcredit import ClientCreditReport
@@ -352,9 +349,8 @@ class SaleReturnInvoiceStep(WizardEditorStep):
         'responsible',
         'reason',
         'sale_total',
-        'paid_total',
         'returned_total',
-        'total_amount_abs',
+        'message',
     ]
 
     #
@@ -364,25 +360,10 @@ class SaleReturnInvoiceStep(WizardEditorStep):
     def post_init(self):
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
-
-        if isinstance(self.wizard, SaleTradeWizard):
-            for widget in [self.total_amount_lbl, self.total_amount_abs,
-                           self.total_separator]:
-                widget.hide()
-
         self._update_widgets()
 
-    def next_step(self):
-        return SaleReturnPaymentStep(self.store, self.wizard,
-                                     model=self.model, previous=self)
-
     def has_next_step(self):
-        if isinstance(self.wizard, SaleTradeWizard):
-            return False
-        # If we are creating a credit, there is not need to recreate the payments
-        if self.credit_checkbutton.read():
-            return False
-        return self.model.total_amount > 0
+        return False
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
@@ -392,24 +373,24 @@ class SaleReturnInvoiceStep(WizardEditorStep):
     #
 
     def _update_widgets(self):
-        self.proxy.update('total_amount_abs')
-
-        if self.model.total_amount < 0:
-            self.total_amount_lbl.set_text(_("Overpaid:"))
-        elif self.model.total_amount > 0:
-            self.total_amount_lbl.set_text(_("Missing:"))
-        else:
-            self.total_amount_lbl.set_text(_("Difference:"))
-
         if (isinstance(self.wizard, SaleTradeWizard) or
                 not self.wizard.model.sale.client):
-            self.credit_checkbutton.hide()
+            self.box1.hide()
+            # Just a precaution
+            self.message.hide()
 
+        msg = _("A reversal payment to the client will be created. "
+                "You can see it on the Payable Application.")
+        self.message.set_text(msg)
         policy = sysparam.get_int('RETURN_POLICY_ON_SALES')
-        self.credit_checkbutton.set_sensitive(policy == ReturnPolicy.CLIENT_CHOICE)
-        self.credit_checkbutton.set_active(policy == ReturnPolicy.RETURN_CREDIT)
+        if policy == ReturnPolicy.RETURN_MONEY:
+            self.refund.set_active(True)
+        elif policy == ReturnPolicy.RETURN_CREDIT:
+            self.credit.set_active(True)
+        for widget in self.credit.get_group():
+            widget.set_sensitive(policy == ReturnPolicy.CLIENT_CHOICE)
 
-        self.wizard.credit = self.credit_checkbutton.read()
+        self.wizard.credit = self.credit.get_active()
 
         self.wizard.update_view()
         self.force_validation()
@@ -418,62 +399,19 @@ class SaleReturnInvoiceStep(WizardEditorStep):
     #  Callbacks
     #
 
-    def on_credit_checkbutton__toggled(self, widget):
-        self.wizard.credit = self.credit_checkbutton.read()
-        if self.wizard.credit:
-            self.wizard.enable_finish()
-        else:
-            self.wizard.disable_finish()
+    def on_refund__toggled(self, widget):
+        if self.refund.get_active():
+            msg = _("A reversal payment to the client will be created. "
+                    "You can see it on the Payable Application.")
+            self.message.set_text(msg)
+            self.wizard.credit = False
 
-
-class SaleReturnPaymentStep(WizardEditorStep):
-    gladefile = 'HolderTemplate'
-    model_type = ReturnedSale
-
-    #
-    #  WizardEditorStep
-    #
-
-    def post_init(self):
-        self.register_validate_function(self._validation_func)
-        self.force_validation()
-
-        before_debt = currency(self.model.sale_total - self.model.paid_total)
-        now_debt = currency(before_debt - self.model.returned_total)
-        short = _("The client's debt has changed. "
-                  "Use this step to adjust the payments.")
-        longdesc = _("The debt before was %s and now is %s. Cancel some unpaid "
-                     "installments and create new ones.")
-        info(short,
-             longdesc % (converter.as_string(currency, before_debt),
-                         converter.as_string(currency, now_debt)))
-
-    def setup_slaves(self):
-        register_payment_slaves()
-        outstanding_value = (self.model.total_amount_abs +
-                             self.model.paid_total)
-        self.slave = MultipleMethodSlave(self.wizard, self, self.store,
-                                         self.model, None,
-                                         outstanding_value=outstanding_value,
-                                         finish_on_total=False,
-                                         allow_remove_paid=False)
-        self.slave.enable_remove()
-        self.attach_slave('place_holder', self.slave)
-
-    def validate_step(self):
-        return True
-
-    def has_next_step(self):
-        return False
-
-    #
-    #  Callbacks
-    #
-
-    def _validation_func(self, value):
-        can_finish = value and self.slave.can_confirm()
-        self.wizard.refresh_next(can_finish)
-
+    def on_credit__toggled(self, widget):
+        if self.credit.get_active():
+            msg = _("The client will receive %s in credit for future purchases"
+                    % format_price(self.returned_total.read()))
+            self.message.set_text(msg)
+            self.wizard.credit = True
 
 #
 #  Wizards
@@ -513,22 +451,6 @@ class SaleReturnWizard(_BaseSaleReturnWizard):
             # If there is any problem with the invoice, the event will display an error
             # message and the dialog is kept open so the user can fix whatever is wrong.
             return
-
-        for payment in self.model.group.payments:
-            if payment.is_preview():
-                # Set payments created on SaleReturnPaymentStep as pending
-                payment.set_pending()
-
-        total_amount = self.model.total_amount
-        # If the user chose to create credit for the client instead of returning
-        # money, there is no need to display this messages.
-        if not self.credit:
-            if total_amount == 0:
-                info(_("The client does not have a debt to this sale anymore. "
-                       "Any existing unpaid installment will be cancelled."))
-            elif total_amount < 0:
-                info(_("A reversal payment to the client will be created. "
-                       "You can see it on the Payable Application."))
 
         login_user = api.get_current_user(self.store)
         self.model.return_(method_name=u'credit' if self.credit else u'money',
