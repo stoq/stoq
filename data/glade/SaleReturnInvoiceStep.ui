@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
 <interface>
-  <!-- interface-requires kiwiwidgets 0.0 -->
-  <requires lib="gtk+" version="2.16"/>
-  <!-- interface-naming-policy toplevel-contextual -->
+  <requires lib="gtk+" version="3.0"/>
+  <requires lib="kiwiwidgets" version="0.0"/>
   <object class="GtkWindow" id="SaleReturnInvoiceStep">
     <property name="can_focus">True</property>
     <property name="border_width">6</property>
@@ -36,42 +36,19 @@
                       <object class="GtkTable" id="table2">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="n_rows">6</property>
+                        <property name="n_rows">3</property>
                         <property name="n_columns">4</property>
                         <property name="column_spacing">6</property>
                         <property name="row_spacing">6</property>
                         <child>
-                          <object class="GtkHSeparator" id="total_separator">
-                            <property name="visible">True</property>
-                          </object>
-                          <packing>
-                            <property name="right_attach">2</property>
-                            <property name="top_attach">4</property>
-                            <property name="bottom_attach">5</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="ProxyLabel" id="total_amount_abs">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="xalign">1</property>
-                            <property name="use_markup">True</property>
-                            <property name="data_type">currency</property>
-                            <property name="model_attribute">total_amount_abs</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="right_attach">2</property>
-                            <property name="top_attach">5</property>
-                            <property name="bottom_attach">6</property>
-                          </packing>
+                          <placeholder/>
                         </child>
                         <child>
                           <object class="ProxyLabel" id="sale_total">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="xalign">1</property>
                             <property name="use_markup">True</property>
+                            <property name="xalign">1</property>
                             <property name="data_type">currency</property>
                             <property name="model_attribute">sale_total</property>
                           </object>
@@ -85,8 +62,9 @@
                         <child>
                           <object class="GtkLabel" id="label3">
                             <property name="visible">True</property>
-                            <property name="xalign">1</property>
+                            <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Responsible:</property>
+                            <property name="xalign">1</property>
                           </object>
                           <packing>
                             <property name="x_options">GTK_FILL</property>
@@ -96,8 +74,8 @@
                           <object class="ProxyLabel" id="responsible">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="xalign">0</property>
                             <property name="use_markup">True</property>
+                            <property name="xalign">0</property>
                             <property name="data_type">str</property>
                             <property name="model_attribute">responsible.person.name</property>
                           </object>
@@ -110,101 +88,13 @@
                           <object class="ProxyLabel" id="sale_total_lbl">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="xalign">1</property>
                             <property name="label" translatable="yes">Sale total:</property>
+                            <property name="xalign">1</property>
                           </object>
                           <packing>
                             <property name="top_attach">1</property>
                             <property name="bottom_attach">2</property>
                             <property name="x_options">GTK_FILL</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="ProxyLabel" id="total_amount_lbl">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="xalign">1</property>
-                            <property name="label" translatable="yes">Total amount:</property>
-                          </object>
-                          <packing>
-                            <property name="top_attach">5</property>
-                            <property name="bottom_attach">6</property>
-                            <property name="x_options">GTK_FILL</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="ProxyLabel" id="paid_total_lbl">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="xalign">1</property>
-                            <property name="label" translatable="yes">Already paid:</property>
-                          </object>
-                          <packing>
-                            <property name="top_attach">2</property>
-                            <property name="bottom_attach">3</property>
-                            <property name="x_options">GTK_FILL</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="ProxyLabel" id="returned_total_lbl">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="xalign">1</property>
-                            <property name="label" translatable="yes">Returned total:</property>
-                          </object>
-                          <packing>
-                            <property name="top_attach">3</property>
-                            <property name="bottom_attach">4</property>
-                            <property name="x_options">GTK_FILL</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="ProxyLabel" id="paid_total">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="xalign">1</property>
-                            <property name="use_markup">True</property>
-                            <property name="data_type">currency</property>
-                            <property name="model_attribute">paid_total</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="right_attach">2</property>
-                            <property name="top_attach">2</property>
-                            <property name="bottom_attach">3</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="ProxyLabel" id="returned_total">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="xalign">1</property>
-                            <property name="use_markup">True</property>
-                            <property name="data_type">currency</property>
-                            <property name="model_attribute">returned_total</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="right_attach">2</property>
-                            <property name="top_attach">3</property>
-                            <property name="bottom_attach">4</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="ProxyCheckButton" id="credit_checkbutton">
-                            <property name="label" translatable="yes">Create credit for future sales</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">False</property>
-                            <property name="use_action_appearance">False</property>
-                            <property name="draw_indicator">True</property>
-                            <property name="data_type">bool</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">2</property>
-                            <property name="right_attach">4</property>
-                            <property name="top_attach">5</property>
-                            <property name="bottom_attach">6</property>
                           </packing>
                         </child>
                         <child>
@@ -222,25 +112,78 @@
                           </packing>
                         </child>
                         <child>
-                          <placeholder/>
+                          <object class="ProxyLabel" id="returned_total_lbl">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="label" translatable="yes">Returned total:</property>
+                            <property name="xalign">1</property>
+                          </object>
+                          <packing>
+                            <property name="top_attach">2</property>
+                            <property name="bottom_attach">3</property>
+                            <property name="x_options">GTK_FILL</property>
+                          </packing>
                         </child>
                         <child>
-                          <placeholder/>
+                          <object class="ProxyLabel" id="returned_total">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="use_markup">True</property>
+                            <property name="xalign">1</property>
+                            <property name="data_type">currency</property>
+                            <property name="model_attribute">returned_total</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="right_attach">2</property>
+                            <property name="top_attach">2</property>
+                            <property name="bottom_attach">3</property>
+                          </packing>
                         </child>
                         <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
+                          <object class="GtkBox" id="box1">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="ProxyRadioButton" id="refund">
+                                <property name="label" translatable="yes">Refund</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="xalign">0</property>
+                                <property name="active">True</property>
+                                <property name="draw_indicator">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="ProxyRadioButton" id="credit">
+                                <property name="label" translatable="yes">Credit</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="xalign">0</property>
+                                <property name="active">True</property>
+                                <property name="draw_indicator">True</property>
+                                <property name="group">refund</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="left_attach">2</property>
+                            <property name="right_attach">4</property>
+                            <property name="top_attach">2</property>
+                            <property name="bottom_attach">3</property>
+                          </packing>
                         </child>
                         <child>
                           <placeholder/>
@@ -260,14 +203,27 @@
                   </packing>
                 </child>
                 <child>
+                  <object class="ProxyLabel" id="message">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="data_type">str</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkVBox" id="vbox2">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <child>
                       <object class="GtkLabel" id="label7">
                         <property name="visible">True</property>
-                        <property name="xalign">0</property>
+                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Reason:</property>
+                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -279,8 +235,6 @@
                       <object class="GtkScrolledWindow" id="scrolledwindow1">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="hscrollbar_policy">automatic</property>
-                        <property name="vscrollbar_policy">automatic</property>
                         <property name="shadow_type">in</property>
                         <child>
                           <object class="ProxyTextView" id="reason">
@@ -303,7 +257,7 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>

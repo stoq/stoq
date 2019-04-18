@@ -22,14 +22,15 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from gi.repository import Gtk
 import mock
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.gui.wizards.salereturnwizard import (SaleReturnWizard,
                                                   SaleTradeWizard)
-from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.parameters import sysparam
+from stoqlib.reporting.clientcredit import ClientCreditReport
 
 
 class TestSaleReturnWizard(GUITest):
@@ -47,8 +48,32 @@ class TestSaleReturnWizard(GUITest):
             self.assertTrue(item.will_return)
             self.assertEqual(item.quantity, item.max_quantity)
 
-    @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
-    def test_sale_return_items_step(self, info):
+    @mock.patch('stoqlib.gui.wizards.salereturnwizard.yesno')
+    @mock.patch('stoqlib.gui.wizards.salereturnwizard.print_report')
+    def test_finish(self, print_report, yesno):
+        sale = self.create_sale()
+        self.add_product(sale)
+        payment, = self.add_payments(sale)
+        sale.order()
+        sale.confirm()
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.reason = u"Reason"
+        wizard = SaleReturnWizard(self.store, returned_sale)
+        self.click(wizard.next_button)
+        step = wizard.get_current_step()
+
+        module = 'stoqlib.gui.events.SaleReturnWizardFinishEvent.emit'
+        with mock.patch(module):
+            step.reason = "123"
+            step.credit.set_active(True)
+            with mock.patch.object(self.store, 'commit'):
+                self.click(wizard.next_button)
+            yesno.assert_called_once_with('Would you like to print the credit letter?',
+                                          Gtk.ResponseType.YES,
+                                          'Print Letter', "Don't print")
+            print_report.assert_called_once_with(ClientCreditReport, sale.client)
+
+    def test_sale_return_items_step(self):
         sale = self.create_sale()
         package = self.create_product(description=u'Package', is_package=True)
         component = self.create_product(description=u'Component', stock=5,
@@ -168,116 +193,27 @@ class TestSaleReturnWizard(GUITest):
             "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed\n"
             "do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
         self.assertValid(step, ['reason'])
+        msg = ('A reversal payment to the client will be created. '
+               'You can see it on the Payable Application.')
+        self.assertEqual(step.message.get_text(), msg)
 
         # XXX: changed because invoice_number is no longer mandatory
         self.assertSensitive(wizard, ['next_button'])
 
-    @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
-    def test_sale_return_payment_step_not_paid(self, info):
-        sale = self.create_sale()
-        sale.identifier = 1234
-        self.add_product(sale, price=50, quantity=6)
-        self.add_payments(sale, method_type=u'check', installments=3,
-                          date=localdate(2012, 1, 1).date())
-        sale.order()
-        sale.confirm()
-        returned_sale = sale.create_sale_return_adapter()
-        returned_sale.reason = u'reason'
-        returned_sale.invoice.invoice_number = 1
-        list(returned_sale.returned_items)[0].quantity = 1
-        wizard = SaleReturnWizard(self.store, returned_sale)
-        self.click(wizard.next_button)
-        self.click(wizard.next_button)
-        step = wizard.get_current_step()
-
-        info.assert_called_once_with(
-            ("The client's debt has changed. "
-             "Use this step to adjust the payments."),
-            ("The debt before was $300.00 and now is $250.00. "
-             "Cancel some unpaid installments and create new ones."))
-        self.assertVisible(step.slave, ['remove_button'])
-        self.assertEqual(step.slave.total_value.read(),
-                         returned_sale.total_amount_abs +
-                         returned_sale.paid_total)
-        self.check_wizard(wizard,
-                          'wizard-sale-return-payment-step-not-paid')
-
-    @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
-    def test_sale_return_payment_step_partially_paid(self, info):
-        sale = self.create_sale()
-        sale.identifier = 1234
-        self.add_product(sale, price=50, quantity=6)
-        payments = self.add_payments(sale, method_type=u'check', installments=3,
-                                     date=localdate(2012, 1, 1).date())
-        sale.order()
-        sale.confirm()
-        payments[0].pay()
-        returned_sale = sale.create_sale_return_adapter()
-        returned_sale.reason = u'reason'
-        returned_sale.invoice.invoice_number = 1
-        list(returned_sale.returned_items)[0].quantity = 1
-        wizard = SaleReturnWizard(self.store, returned_sale)
-        self.click(wizard.next_button)
-        self.click(wizard.next_button)
-        step = wizard.get_current_step()
-
-        info.assert_called_once_with(
-            ("The client's debt has changed. "
-             "Use this step to adjust the payments."),
-            ("The debt before was $200.00 and now is $150.00. "
-             "Cancel some unpaid installments and create new ones."))
-        self.assertVisible(step.slave, ['remove_button'])
-        self.assertEqual(step.slave.total_value.read(),
-                         returned_sale.total_amount_abs +
-                         returned_sale.paid_total)
-        self.check_wizard(wizard,
-                          'wizard-sale-return-payment-step-partially-paid')
-
-    @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
-    def test_finish_with_group_cancelling(self, info):
+    def test_sale_return_invoice_step_with_credit(self):
         sale = self.create_sale()
         self.add_product(sale)
         payment, = self.add_payments(sale)
         sale.order()
         sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
-        returned_sale.invoice.invoice_number = 123456
         returned_sale.reason = u"Reason"
         wizard = SaleReturnWizard(self.store, returned_sale)
         self.click(wizard.next_button)
 
-        module = 'stoqlib.gui.events.SaleReturnWizardFinishEvent.emit'
-        with mock.patch(module) as emit:
-            # Cancel the payment, so returned_sale.total_amount will be 0
-            payment.cancel()
-            with mock.patch.object(self.store, 'commit'):
-                self.click(wizard.next_button)
-            info.assert_called_once_with(
-                "The client does not have a debt to this sale anymore. "
-                "Any existing unpaid installment will be cancelled.")
-            emit.assert_called_once_with(returned_sale)
-
-    @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
-    def test_finish_with_reversal_payment(self, info):
-        sale = self.create_sale()
-        self.add_product(sale)
-        payment, = self.add_payments(sale)
-        sale.order()
-        sale.confirm()
-        returned_sale = sale.create_sale_return_adapter()
-        returned_sale.invoice.invoice_number = 123456
-        returned_sale.reason = u"Reason"
-        wizard = SaleReturnWizard(self.store, returned_sale)
-        self.click(wizard.next_button)
-
-        module = 'stoqlib.gui.events.SaleReturnWizardFinishEvent.emit'
-        with mock.patch(module) as emit:
-            with mock.patch.object(self.store, 'commit'):
-                self.click(wizard.next_button)
-            info.assert_called_once_with(
-                "A reversal payment to the client will be created. "
-                "You can see it on the Payable Application.")
-            emit.assert_called_once_with(returned_sale)
+        invoice_step = wizard.get_current_step()
+        invoice_step.credit.set_active(True)
+        self.check_wizard(wizard, 'wizard-sale-return-invoice-step-with-credit')
 
 
 class TestSaleTradeWizard(GUITest):
