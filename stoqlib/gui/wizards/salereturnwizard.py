@@ -408,8 +408,8 @@ class SaleReturnInvoiceStep(WizardEditorStep):
 
     def on_credit__toggled(self, widget):
         if self.credit.get_active():
-            msg = _("The client will receive %s in credit for future purchases"
-                    % format_price(self.returned_total.read()))
+            msg = (_("The client will receive %s in credit for future purchases")
+                   % format_price(self.returned_total.read()))
             self.message.set_text(msg)
             self.wizard.credit = True
 
