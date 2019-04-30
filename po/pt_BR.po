@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-22 16:03-0300\n"
+"POT-Creation-Date: 2019-04-30 11:42-0300\n"
 "PO-Revision-Date: 2018-06-07 13:37+0000\n"
 "Last-Translator: Ronaldo Maia <romaia@async.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/async/stoq/"
@@ -29,18 +29,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../bin/stoq:199 ../stoq/__main__.py:199
+#: ../bin/stoq:199
 msgid "You are using a trial version of Stoq"
 msgstr "Você está usando uma versão de testes do Stoq"
 
-#: ../bin/stoq:200 ../stoq/__main__.py:200
-#, c-format, python-format
+#: ../bin/stoq:200
+#, c-format
 msgid "There are <b>%s days</b> remaining to try all Stoq features"
 msgstr ""
 "Você possui <b>%s dias</b> restantes para testar as funcionalidades do Stoq"
 
-#: ../bin/stoq:203 ../stoq/__main__.py:203
-#: ../stoqlib/gui/dialogs/pluginsdialog.py:87
+#: ../bin/stoq:203 ../stoqlib/gui/dialogs/pluginsdialog.py:87
 msgid "Activate"
 msgstr "Ativar"
 
@@ -257,7 +256,7 @@ msgstr "Conta bancária:"
 
 #: ../data/glade/BaseCashEditor.ui.h:1 ../data/glade/PaymentChangeDialog.ui.h:5
 #: ../data/glade/ReturnedSaleUndoDialog.ui.h:2
-#: ../data/glade/SaleReturnInvoiceStep.ui.h:7
+#: ../data/glade/SaleReturnInvoiceStep.ui.h:6
 #: ../data/glade/StartStockDecreaseStep.ui.h:4
 #: ../data/template/stock_decrease/stock_decrease-details.html:29
 msgid "Reason:"
@@ -367,7 +366,7 @@ msgstr "Lote"
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:472
 #: ../stoqlib/gui/wizards/purchasewizard.py:295
 #: ../stoqlib/gui/wizards/salequotewizard.py:420
-#: ../stoqlib/gui/wizards/salereturnwizard.py:235
+#: ../stoqlib/gui/wizards/salereturnwizard.py:232
 #: ../stoqlib/gui/wizards/salewizard.py:444
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:268
 #: ../stoqlib/gui/wizards/workorderpackagewizard.py:67
@@ -594,7 +593,6 @@ msgid "Change:"
 msgstr "Troco:"
 
 #: ../data/glade/CashChangeSlave.ui.h:4
-#: ../data/glade/SaleReturnInvoiceStep.ui.h:6
 msgid "Create credit for future sales"
 msgstr "Criar crédito para vendas futuras"
 
@@ -1556,7 +1554,7 @@ msgstr "Preço Original:"
 #: ../data/glade/ProductComponentEditor.ui.h:4
 #: ../data/glade/SaleQuoteItemSlave.ui.h:3 ../data/glade/pos.ui.h:4
 #: ../stoqlib/gui/wizards/salequotewizard.py:256
-#: ../stoqlib/gui/wizards/salereturnwizard.py:191
+#: ../stoqlib/gui/wizards/salereturnwizard.py:188
 msgid "Price:"
 msgstr "Preço:"
 
@@ -1680,7 +1678,6 @@ msgstr "<b>Forma:</b>"
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:4
 #: ../data/template/optical/saledetails.html:39
 #: ../stoqlib/gui/slaves/paymentslave.py:1288
-#: ../stoqlib/gui/wizards/salereturnwizard.py:400
 msgid "Missing:"
 msgstr "Faltando:"
 
@@ -2797,17 +2794,20 @@ msgid "Sale total:"
 msgstr "Total da venda:"
 
 #: ../data/glade/SaleReturnInvoiceStep.ui.h:3
-msgid "Total amount:"
-msgstr "Valor total:"
-
-#: ../data/glade/SaleReturnInvoiceStep.ui.h:4
-#: ../data/glade/SalesPersonStep.ui.h:13
-msgid "Already paid:"
-msgstr "Já pago:"
-
-#: ../data/glade/SaleReturnInvoiceStep.ui.h:5
 msgid "Returned total:"
 msgstr "Total devolvido:"
+
+#: ../data/glade/SaleReturnInvoiceStep.ui.h:4
+msgid "Refund"
+msgstr "Reembolso"
+
+#: ../data/glade/SaleReturnInvoiceStep.ui.h:5
+#: ../data/template/till/summary.html:50 ../stoqlib/domain/account.py:169
+#: ../stoqlib/domain/payment/card.py:328
+#: ../stoqlib/domain/payment/operation.py:439
+#: ../stoqlib/gui/dialogs/tilldailymovement.py:255
+msgid "Credit"
+msgstr "Crédito"
 
 #: ../data/glade/SaleReturnSelectionStep.ui.h:1
 msgid "The sale is not listed here"
@@ -2850,6 +2850,10 @@ msgstr "Adicionar uma nova transportadora"
 #: ../data/glade/ServiceFiscalSlave.ui.h:4
 msgid "0.00"
 msgstr "0.00"
+
+#: ../data/glade/SalesPersonStep.ui.h:13
+msgid "Already paid:"
+msgstr "Já pago:"
 
 #: ../data/glade/SalesPersonStep.ui.h:15
 msgid "Order Details"
@@ -3701,7 +3705,7 @@ msgstr "Forma"
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:195
 #: ../stoqlib/gui/wizards/renegotiationwizard.py:89
 #: ../stoqlib/gui/wizards/salequotewizard.py:411
-#: ../stoqlib/gui/wizards/salereturnwizard.py:218
+#: ../stoqlib/gui/wizards/salereturnwizard.py:215
 #: ../stoqlib/gui/wizards/salewizard.py:440
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:263
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:168
@@ -4123,7 +4127,7 @@ msgstr "Operações de crédito"
 #: ../stoqlib/gui/wizards/receivingwizard.py:260
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:191
 #: ../stoqlib/gui/wizards/salequotewizard.py:407
-#: ../stoqlib/gui/wizards/salereturnwizard.py:214
+#: ../stoqlib/gui/wizards/salereturnwizard.py:211
 #: ../stoqlib/gui/wizards/salewizard.py:436
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:262
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:166
@@ -4345,7 +4349,7 @@ msgstr "Preço"
 #: ../stoqlib/gui/wizards/receivingwizard.py:281
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:203
 #: ../stoqlib/gui/wizards/salequotewizard.py:445
-#: ../stoqlib/gui/wizards/salereturnwizard.py:238
+#: ../stoqlib/gui/wizards/salereturnwizard.py:235
 #: ../stoqlib/gui/wizards/salewizard.py:450
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:277
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:175
@@ -4831,7 +4835,7 @@ msgstr "Quantidade total"
 #: ../stoqlib/gui/wizards/receivingwizard.py:262
 #: ../stoqlib/gui/wizards/reconciliationwizard.py:193
 #: ../stoqlib/gui/wizards/salequotewizard.py:409
-#: ../stoqlib/gui/wizards/salereturnwizard.py:216
+#: ../stoqlib/gui/wizards/salereturnwizard.py:213
 #: ../stoqlib/gui/wizards/salewizard.py:438
 #: ../stoqlib/gui/wizards/workorderquotewizard.py:336
 msgid "Barcode"
@@ -4938,13 +4942,6 @@ msgstr "Total da saída"
 #: ../data/template/till/summary.html:45
 msgid "Subtotal"
 msgstr "Subtotal"
-
-#: ../data/template/till/summary.html:50 ../stoqlib/domain/account.py:169
-#: ../stoqlib/domain/payment/card.py:328
-#: ../stoqlib/domain/payment/operation.py:439
-#: ../stoqlib/gui/dialogs/tilldailymovement.py:255
-msgid "Credit"
-msgstr "Crédito"
 
 #: ../data/template/till/supplies.html:8
 msgid "Supplied Value"
@@ -6686,7 +6683,7 @@ msgstr "Imprimir detalhes da cotação"
 #: ../stoqlib/gui/wizards/loanwizard.py:465
 #: ../stoqlib/gui/wizards/receivingwizard.py:473
 #: ../stoqlib/gui/wizards/salequotewizard.py:738
-#: ../stoqlib/gui/wizards/salereturnwizard.py:544
+#: ../stoqlib/gui/wizards/salereturnwizard.py:466
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:436
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:255
 msgid "Don't print"
@@ -9072,7 +9069,7 @@ msgid "Sales help"
 msgstr "Ajuda do vendas"
 
 #: ../stoq/gui/sales.py:223 ../stoq/gui/till.py:166
-#: ../stoqlib/gui/wizards/salereturnwizard.py:212
+#: ../stoqlib/gui/wizards/salereturnwizard.py:209
 msgid "Return"
 msgstr "Devolver"
 
@@ -10298,7 +10295,7 @@ msgstr ""
 msgid "Incompatible dependency"
 msgstr "Dependência incompatível"
 
-#: ../stoq/lib/startup.py:149 ../stoqlib/database/migration.py:258
+#: ../stoq/lib/startup.py:149 ../stoqlib/database/migration.py:255
 msgid "Database schema error"
 msgstr "Erro de esquema no banco de dados"
 
@@ -10372,7 +10369,7 @@ msgstr "%s precisa ter definida a variável de classe patch_resource"
 msgid "%s needs to have the patch_patterns class variable set"
 msgstr "%s precisa ter definida a variável de classe patch_patterns"
 
-#: ../stoqlib/database/migration.py:259
+#: ../stoqlib/database/migration.py:256
 msgid ""
 "The database schema has changed, but the database has not been updated. Run "
 "'stoqdbadmin updateschema` to update the schema  to the latest available "
@@ -10382,7 +10379,7 @@ msgstr ""
 "'stoqdbadmin updateschema` para atualizar o esquema para a última versão "
 "disponível."
 
-#: ../stoqlib/database/migration.py:280
+#: ../stoqlib/database/migration.py:277
 #, python-format
 msgid ""
 "The current version of database %s is greater than the latest available "
@@ -10391,7 +10388,7 @@ msgstr ""
 "A versão atual do banco de dados %s é maior que a última versão disponível "
 "%s. Tente atualizar a sua instalação."
 
-#: ../stoqlib/database/migration.py:364
+#: ../stoqlib/database/migration.py:365
 msgid ""
 "Could not lock database. This means there are other clients connected. Make "
 "sure to close every Stoq client before updating the database"
@@ -10401,33 +10398,33 @@ msgstr ""
 "Stoq antes de atualiza-la."
 
 #. FIXME: Improve this message after 1.5 is released
-#: ../stoqlib/database/migration.py:377
+#: ../stoqlib/database/migration.py:378
 msgid "Could not connect to the database using command line tool! Aborting."
 msgstr ""
 "Não foi possível conectar ao banco de dados usando a ferramenta de linha de "
 "comando! Abortando."
 
-#: ../stoqlib/database/migration.py:379
+#: ../stoqlib/database/migration.py:380
 msgid "Please, check if you can connect to the database using:"
 msgstr "Por favor, verifique se você consegue conectar a base de dados usando:"
 
-#: ../stoqlib/database/migration.py:381
+#: ../stoqlib/database/migration.py:382
 msgid "psql -l -h <server> -p <port> -U <username>"
 msgstr "psql -l -h <server> -p <port> -U <username>"
 
-#: ../stoqlib/database/migration.py:393
+#: ../stoqlib/database/migration.py:394
 msgid "Could not create backup! Aborting."
 msgstr "Não foi possível criar o backup! Abortando."
 
-#: ../stoqlib/database/migration.py:394
+#: ../stoqlib/database/migration.py:395
 msgid "Please contact stoq team to inform this problem.\n"
 msgstr "Por favor contate a equipe do Stoq para informar o problema.\n"
 
-#: ../stoqlib/database/migration.py:548
+#: ../stoqlib/database/migration.py:549
 msgid "Update Error"
 msgstr "Erro de atualização"
 
-#: ../stoqlib/database/migration.py:549
+#: ../stoqlib/database/migration.py:550
 msgid "You need to call setup() before checking the database schema."
 msgstr ""
 "Você precisa chamar setup() antes de verificar o esquema do banco de dados."
@@ -11291,21 +11288,21 @@ msgid "Freight for receiving %s"
 msgstr "Frete para o recebimento %s"
 
 #. TODO: Save the operation nature in new returned_sale table field.
-#: ../stoqlib/domain/returnedsale.py:488 ../stoqlib/reporting/salereturn.py:36
+#: ../stoqlib/domain/returnedsale.py:489 ../stoqlib/reporting/salereturn.py:36
 msgid "Sale Return"
 msgstr "Devolução"
 
-#: ../stoqlib/domain/returnedsale.py:585
+#: ../stoqlib/domain/returnedsale.py:569
 #, python-format
 msgid "Traded items for sale %s"
 msgstr "Itens trocados para venda %s"
 
-#: ../stoqlib/domain/returnedsale.py:655
+#: ../stoqlib/domain/returnedsale.py:639
 #, python-format
 msgid "%s return undone for sale %s"
 msgstr "%s devolução desfeita pela venda %s"
 
-#: ../stoqlib/domain/returnedsale.py:681
+#: ../stoqlib/domain/returnedsale.py:665
 #: ../stoqlib/gui/wizards/salewizard.py:236
 #, python-format
 msgid "%s returned for sale %s"
@@ -12966,7 +12963,7 @@ msgstr "Preço base"
 
 #: ../stoqlib/gui/dialogs/saledetails.py:278
 #: ../stoqlib/gui/dialogs/saledetails.py:310
-#: ../stoqlib/gui/wizards/salereturnwizard.py:222
+#: ../stoqlib/gui/wizards/salereturnwizard.py:219
 msgid "Sale price"
 msgstr "Preço da venda"
 
@@ -16161,7 +16158,6 @@ msgstr "Conta bancária"
 #: ../stoqlib/gui/slaves/paymentslave.py:297
 #: ../stoqlib/gui/slaves/paymentslave.py:1290
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:119
-#: ../stoqlib/gui/wizards/salereturnwizard.py:398
 msgid "Overpaid:"
 msgstr "Pago em excesso:"
 
@@ -16193,7 +16189,6 @@ msgid "Authorization number must have 6 digits or less."
 msgstr "O número da autorização deve ter 6 dígitos ou menos."
 
 #: ../stoqlib/gui/slaves/paymentslave.py:1292
-#: ../stoqlib/gui/wizards/salereturnwizard.py:402
 msgid "Difference:"
 msgstr "Diferença:"
 
@@ -17641,41 +17636,16 @@ msgstr ""
 "Os pagamentos criados podem ser encontrados no aplicativos Contas a Receber "
 "e você pode marcá-los como pagos a qualquer momento."
 
-#: ../stoqlib/gui/wizards/salereturnwizard.py:178
+#: ../stoqlib/gui/wizards/salereturnwizard.py:175
 msgid "Total to return:"
 msgstr "Total a devolver:"
 
-#: ../stoqlib/gui/wizards/salereturnwizard.py:228
+#: ../stoqlib/gui/wizards/salereturnwizard.py:225
 msgid "Sold quantity"
 msgstr "Quantidade vendida"
 
-#: ../stoqlib/gui/wizards/salereturnwizard.py:443
-msgid "The client's debt has changed. Use this step to adjust the payments."
-msgstr ""
-"A dívida do cliente mudou. Utilize este passo para ajustar os pagamentos."
-
-#: ../stoqlib/gui/wizards/salereturnwizard.py:445
-#, python-format
-msgid ""
-"The debt before was %s and now is %s. Cancel some unpaid installments and "
-"create new ones."
-msgstr ""
-"A dívida anterior era de %s e agora é de %s. Cancele algumas parcelas não "
-"pagas e crie novas."
-
-#: ../stoqlib/gui/wizards/salereturnwizard.py:503
-msgid "Return Sale Order"
-msgstr "Devolver pedido de venda"
-
-#: ../stoqlib/gui/wizards/salereturnwizard.py:527
-msgid ""
-"The client does not have a debt to this sale anymore. Any existing unpaid "
-"installment will be cancelled."
-msgstr ""
-"O cliente não possui mais uma dívida com esta venda. Qualquer parcela "
-"existente não paga será cancelada."
-
-#: ../stoqlib/gui/wizards/salereturnwizard.py:530
+#: ../stoqlib/gui/wizards/salereturnwizard.py:382
+#: ../stoqlib/gui/wizards/salereturnwizard.py:404
 msgid ""
 "A reversal payment to the client will be created. You can see it on the "
 "Payable Application."
@@ -17683,15 +17653,24 @@ msgstr ""
 "Um pagamento de estorno ao cliente será criado. Você pode vê-lo no "
 "aplicativo Contas a pagar."
 
-#: ../stoqlib/gui/wizards/salereturnwizard.py:543
+#: ../stoqlib/gui/wizards/salereturnwizard.py:411
+#, python-format
+msgid "The client will receive %s in credit for future purchases"
+msgstr "O cliente receberá %s em crédito para futuras compras"
+
+#: ../stoqlib/gui/wizards/salereturnwizard.py:441
+msgid "Return Sale Order"
+msgstr "Devolver pedido de venda"
+
+#: ../stoqlib/gui/wizards/salereturnwizard.py:465
 msgid "Would you like to print the credit letter?"
 msgstr "Você gostaria de imprimir a carta de crédito?"
 
-#: ../stoqlib/gui/wizards/salereturnwizard.py:544
+#: ../stoqlib/gui/wizards/salereturnwizard.py:466
 msgid "Print Letter"
 msgstr "Imprimir carta"
 
-#: ../stoqlib/gui/wizards/salereturnwizard.py:551
+#: ../stoqlib/gui/wizards/salereturnwizard.py:473
 msgid "Trade Sale Order"
 msgstr "Troca de venda"
 
@@ -18780,9 +18759,9 @@ msgid ""
 "the values that are supposed to be in the till and will only inform the "
 "quantity he counted for each payment method"
 msgstr ""
-"Quando setado, o usuário fará um fechamento cego de caixa, isto é, ele não saberá "
-"quais são os valores esperados do caixa e somente informará o valor que ele conferiu "
-"para cada forma de pagamento"
+"Quando setado, o usuário fará um fechamento cego de caixa, isto é, ele não "
+"saberá quais são os valores esperados do caixa e somente informará o valor "
+"que ele conferiu para cada forma de pagamento"
 
 #: ../stoqlib/lib/parameters.py:433
 msgid "Confirm sales in Till"
@@ -18820,9 +18799,9 @@ msgid ""
 "price will be used instead of the default price configured in the product/"
 "service. Useful when a branch should have a special price for the products."
 msgstr ""
-"Tabela de preços padrão que será usada na venda de produtos. Essa tabela será usada "
-"em vez do preço padrão configurado no produto/serviço. Util quando uma filial vende um "
-"produto a um preço especial"
+"Tabela de preços padrão que será usada na venda de produtos. Essa tabela "
+"será usada em vez do preço padrão configurado no produto/serviço. Util "
+"quando uma filial vende um produto a um preço especial"
 
 #: ../stoqlib/lib/parameters.py:458
 msgid "POS"
@@ -19326,8 +19305,8 @@ msgid ""
 "When set, the user will be required to inform both source and destination "
 "accounts that are different than the imbalance account"
 msgstr ""
-"Quando setado, o usuário será obrigado a informar as contas de origem e destino "
-"diferentes da conta desequilíbrio"
+"Quando setado, o usuário será obrigado a informar as contas de origem e "
+"destino diferentes da conta desequilíbrio"
 
 #: ../stoqlib/lib/parameters.py:804
 msgid "Block incomplete purchase payments"
@@ -19699,16 +19678,16 @@ msgid ""
 "This will indicates if an assisted inventory should allow the same sellable "
 "to be read in a row"
 msgstr ""
-"Isso indica se um inventário assistido permitirá que um mesmo produto seja lido "
-"seja lido duas vezes seguidas"
+"Isso indica se um inventário assistido permitirá que um mesmo produto seja "
+"lido seja lido duas vezes seguidas"
 
 #: ../stoqlib/lib/parameters.py:1060
 msgid ""
 "If this parameter is not set, it wont let the user to count any sellable "
 "twice in a row when using assisted count inventory"
 msgstr ""
-"Se esse parâmetro não estiver setado, não será permitido que o usuário faça a "
-"contagem do mesmo produto duas vezes seguidas no inventário assistido"
+"Se esse parâmetro não estiver setado, não será permitido que o usuário faça "
+"a contagem do mesmo produto duas vezes seguidas no inventário assistido"
 
 #: ../stoqlib/lib/parameters.py:1067
 msgid "Show full time of the sale on receivable payments"
@@ -19726,36 +19705,36 @@ msgstr ""
 msgid "Need at least one value"
 msgstr "É preciso pelo menos um valor"
 
-#: ../stoqlib/lib/pluginmanager.py:249
+#: ../stoqlib/lib/pluginmanager.py:250
 #, python-format
 msgid "Failed to do the request: %s"
 msgstr "Falha em realizar a requisição: %s"
 
-#: ../stoqlib/lib/pluginmanager.py:253
+#: ../stoqlib/lib/pluginmanager.py:254
 msgid "No update needed. The plugin is already up to date."
 msgstr "Nenhuma atualização necessária. Os plugins já estão atualizados."
 
-#: ../stoqlib/lib/pluginmanager.py:259
+#: ../stoqlib/lib/pluginmanager.py:260
 msgid "Plugin not available for this stoq version"
 msgstr "O plugin não está disponível para esta versão do Stoq"
 
-#: ../stoqlib/lib/pluginmanager.py:260
+#: ../stoqlib/lib/pluginmanager.py:261
 msgid "The instance is not authorized to download the plugin"
 msgstr "A instância não está autorizada a baixar o plugin"
 
-#: ../stoqlib/lib/pluginmanager.py:261
+#: ../stoqlib/lib/pluginmanager.py:262
 msgid "Plugin does not exist"
 msgstr "O plugin não existe"
 
-#: ../stoqlib/lib/pluginmanager.py:262
+#: ../stoqlib/lib/pluginmanager.py:263
 msgid "This instance has not acquired the specified plugin"
 msgstr "A instância não adquiriu o plugin especificado"
 
-#: ../stoqlib/lib/pluginmanager.py:290
+#: ../stoqlib/lib/pluginmanager.py:291
 msgid "The downloaded plugin is corrupted"
 msgstr "O plugin baixado está corrompido"
 
-#: ../stoqlib/lib/pluginmanager.py:293
+#: ../stoqlib/lib/pluginmanager.py:294
 msgid "Plugin download successful"
 msgstr "Plugin baixado com sucesso"
 
@@ -20430,6 +20409,27 @@ msgstr "ordens de serviço"
 #, python-format
 msgid "Order number: %s"
 msgstr "Número da ordem: %s"
+
+#~ msgid "Total amount:"
+#~ msgstr "Valor total:"
+
+#~ msgid "The client's debt has changed. Use this step to adjust the payments."
+#~ msgstr ""
+#~ "A dívida do cliente mudou. Utilize este passo para ajustar os pagamentos."
+
+#~ msgid ""
+#~ "The debt before was %s and now is %s. Cancel some unpaid installments and "
+#~ "create new ones."
+#~ msgstr ""
+#~ "A dívida anterior era de %s e agora é de %s. Cancele algumas parcelas não "
+#~ "pagas e crie novas."
+
+#~ msgid ""
+#~ "The client does not have a debt to this sale anymore. Any existing unpaid "
+#~ "installment will be cancelled."
+#~ msgstr ""
+#~ "O cliente não possui mais uma dívida com esta venda. Qualquer parcela "
+#~ "existente não paga será cancelada."
 
 #~ msgid "There is no scale configured"
 #~ msgstr "Não há balança configurada"
