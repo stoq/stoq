@@ -196,6 +196,7 @@ class TestOperationCost(DomainTest):
 
 
 class TestCreditCardData(DomainTest):
+
     def test_is_credit_debit(self):
         device = self.create_card_device(description=u'MAQ1')
         provider = self.create_credit_provider(u'PRO1')
@@ -205,11 +206,19 @@ class TestCreditCardData(DomainTest):
                                                    payment_value=1000)
         self.assertTrue(credit_card.is_credit())
         self.assertFalse(credit_card.is_debit())
+        self.assertFalse(credit_card.is_voucher())
 
         # Debit card
         credit_card.card_type = CreditCardData.TYPE_DEBIT
         self.assertFalse(credit_card.is_credit())
         self.assertTrue(credit_card.is_debit())
+        self.assertFalse(credit_card.is_voucher())
+
+        # Voucher card
+        credit_card.card_type = CreditCardData.TYPE_VOUCHER
+        self.assertFalse(credit_card.is_credit())
+        self.assertFalse(credit_card.is_debit())
+        self.assertTrue(credit_card.is_voucher())
 
     def test_get_description(self):
         device = self.create_card_device(description=u'MAQ1')

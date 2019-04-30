@@ -315,6 +315,9 @@ class CreditCardData(Domain):
     #: date. Not completely supported in Stoq yet
     TYPE_DEBIT_PRE_DATED = u'debit-pre-dated'
 
+    #: This is a voucher card payment.
+    TYPE_VOUCHER = 'voucher'
+
     types = collections.OrderedDict([
         (TYPE_CREDIT, _(u'Credit Card')),
         (TYPE_DEBIT, _(u'Debit Card')),
@@ -322,6 +325,7 @@ class CreditCardData(Domain):
         (TYPE_CREDIT_INSTALLMENTS_PROVIDER, _(u'Credit Card Installments '
                                               u'Provider')),
         (TYPE_DEBIT_PRE_DATED, _(u'Debit Card Pre-dated')),
+        (TYPE_VOUCHER, _(u'Voucher')),
     ])
 
     short_desc = collections.OrderedDict([
@@ -334,6 +338,7 @@ class CreditCardData(Domain):
         # abbreviated to fit a small space
         (TYPE_CREDIT_INSTALLMENTS_PROVIDER, _(u'Credit Inst. Provider')),
         (TYPE_DEBIT_PRE_DATED, _(u'Debit Pre-dated')),
+        (TYPE_VOUCHER, _(u'Voucher')),
     ])
 
     payment_id = IdCol()
@@ -383,6 +388,9 @@ class CreditCardData(Domain):
 
     def is_debit(self):
         return self.card_type in (self.TYPE_DEBIT, self.TYPE_DEBIT_PRE_DATED)
+
+    def is_voucher(self):
+        return self.card_type == self.TYPE_VOUCHER
 
     def get_description(self):
         type_desc = CreditCardData.short_desc[self.card_type]

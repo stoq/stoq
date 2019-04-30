@@ -18,6 +18,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Card Device Cost"', hid
             item: 'Credit Card Installments Store'
             item: 'Credit Card Installments Provider'
             item: 'Debit Card Pre-dated'
+            item: 'Voucher'
           GtkLabel(label3): 'Installments:'
           ProxySpinButton(installment_start): '1', ineditable
           GtkLabel(label5): 'To'

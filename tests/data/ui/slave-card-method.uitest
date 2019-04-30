@@ -20,6 +20,7 @@ GtkBox(vbox1, orientation=vertical):
         GtkRadioButton(expand=True, fill=True): 'Credit Card Installments Store'
         GtkRadioButton(expand=True, fill=True): 'Credit Card Installments Provider'
         GtkRadioButton(expand=True, fill=True): 'Debit Card Pre-dated'
+        GtkRadioButton(expand=True, fill=True): 'Voucher'
       GtkLabel(label2):
       ProxyLabel(kiwilabel3): 'Number of Installments:'
       GtkBox(hbox1, orientation=horizontal):
