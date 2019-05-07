@@ -158,7 +158,7 @@ class ResourceStatusManager(GObject.GObject):
         """Get the manager singleton instance"""
         if cls._instance is None:
             cls._instance = cls()
-        cls._try_register_messages()
+            cls._try_register_messages()
         return cls._instance
 
     @property
