@@ -126,7 +126,7 @@ class TestAsyncRequest(DomainTest):
                 request, 'foo', 'bar',
                 headers={'Content-type': 'application/json'},
                 data='{"baz": "bin"}',
-                timeout=5)
+                timeout=50)
             self.assertIs(ar.retval, retval)
             self.assertIsNone(ar.error)
         finally:

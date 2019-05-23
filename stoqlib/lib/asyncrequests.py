@@ -33,6 +33,8 @@ import json
 import requests
 import threading
 
+from stoqlib.lib.configparser import get_config
+
 _requests_version = tuple(map(int, requests.__version__.split('.')))
 
 
@@ -42,9 +44,6 @@ class AsyncRequest(threading.Thread):
     Responsible for doing the request asynchronously, and optionally
     call a callback/errback on success/failure.
     """
-
-    #: The default request timeout if none is defined
-    DEFAULT_TIMEOUT = 5
 
     def __init__(self, method, url, callback=None, errback=None, **kwargs):
         super(AsyncRequest, self).__init__()
@@ -69,7 +68,7 @@ class AsyncRequest(threading.Thread):
         directly, use :meth:`.start` instead.
         """
         kwargs = self._kwargs.copy()
-        kwargs.setdefault('timeout', self.DEFAULT_TIMEOUT)
+        kwargs.setdefault('timeout', self._get_default_timeout())
 
         # FIXME: json support was added in requests 2.5. For older versions,
         # do the same as requests would do
@@ -106,6 +105,15 @@ class AsyncRequest(threading.Thread):
         if self.error:
             raise self.error
         return self.retval
+
+    #
+    #   Private
+    #
+
+    def _get_default_timeout(self):
+        config = get_config()
+        default_timeout = config.get('General', 'default_timeout') or 50
+        return default_timeout
 
 
 def request(method, url, callback=None, errback=None, **kwargs):
