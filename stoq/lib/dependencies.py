@@ -41,7 +41,7 @@ GTK_REQUIRED = (3, 14)
 GUDEV_REQUIRED = (147, )
 KIWI_REQUIRED = (1, 11, 1)
 MAKO_REQUIRED = (0, 2, 5)
-PIL_REQUIRED = (1, 1, 5)
+PIL_REQUIRED = (3, 1, 0)
 PYCAIRO_REQUIRED = (1, 8, 2)
 PYPOPPLER_REQUIRED = (0, 12, 1)
 PSQL_REQUIRED = (9, 6)
@@ -322,18 +322,17 @@ class DependencyChecker(object):
     def _check_pil(self, version):
         try:
             import PIL
-            import PIL.Image
         except ImportError:
             self._missing(project='Python Imaging Library (PIL)',
                           url='http://www.pythonware.com/products/pil/',
                           version=version)
             return
 
-        if list(map(int, PIL.Image.VERSION.split('.'))) < list(version):
-            self._too_old(project='Python Imaging Library (PIL)',
-                          url='http://www.pythonware.com/products/pil/',
+        if list(map(int, PIL.PILLOW_VERSION.split('.'))) < list(version):
+            self._too_old(project='Pillow - The friendly PIL fork',
+                          url='https://python-pillow.org/',
                           required=version,
-                          found=PIL.Image.VERSION)
+                          found=PIL.PILLOW_VERSION)
 
     def _check_reportlab(self, version):
         try:
