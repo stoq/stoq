@@ -112,7 +112,7 @@ class AsyncRequest(threading.Thread):
 
     def _get_default_timeout(self):
         config = get_config()
-        default_timeout = config.get('General', 'default_timeout') or 50
+        default_timeout = config and config.get('General', 'default_timeout') or 50
         return default_timeout
 
 
