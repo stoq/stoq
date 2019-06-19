@@ -468,7 +468,7 @@ class StoqCommandHandler:
                          dest="channel",
                          type="str",
                          help="which plugin channel to use",
-                         default="stable")
+                         default=None)
 
     def cmd_update_plugins(self, options):
         """Update plugins on Stoq"""

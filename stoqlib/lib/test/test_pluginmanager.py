@@ -188,7 +188,7 @@ class TestPluginManager(DomainTest):
             self.assertEqual(
                 self._manager.download_plugin(u'foo'),
                 (False, 'Plugin not available for this stoq version'))
-            self.assertCalledOnceWith(download_plugin, 'foo', md5sum=None, channel='stable')
+            self.assertCalledOnceWith(download_plugin, 'foo', md5sum=None, channel=None)
 
             self.assertNotCalled(commit)
             self.assertNotCalled(r)
@@ -210,7 +210,7 @@ class TestPluginManager(DomainTest):
             self.assertEqual(
                 self._manager.download_plugin(u'foo'),
                 (True, 'No update needed. The plugin is already up to date.'))
-            self.assertCalledOnceWith(download_plugin, 'foo', md5sum=None, channel='stable')
+            self.assertCalledOnceWith(download_plugin, 'foo', md5sum=None, channel=None)
 
             self.assertNotCalled(commit)
             self.assertNotCalled(r)
@@ -233,7 +233,7 @@ class TestPluginManager(DomainTest):
             self.assertEqual(
                 self._manager.download_plugin(u'foo'),
                 (False, 'The downloaded plugin is corrupted'))
-            self.assertCalledOnceWith(download_plugin, 'foo', md5sum=None, channel='stable')
+            self.assertCalledOnceWith(download_plugin, 'foo', md5sum=None, channel=None)
 
             self.assertNotCalled(commit)
             self.assertNotCalled(r)
@@ -260,7 +260,7 @@ class TestPluginManager(DomainTest):
             self.assertEqual(
                 self._manager.download_plugin(u'foo'),
                 (True, 'Plugin download successful'))
-            self.assertCalledOnceWith(download_plugin, 'foo', md5sum=None, channel='stable')
+            self.assertCalledOnceWith(download_plugin, 'foo', md5sum=None, channel=None)
 
             self.assertCalledOnceWith(commit)
             self.assertCalledOnceWith(r)

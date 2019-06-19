@@ -228,7 +228,7 @@ class PluginManager(object):
     # Public API
     #
 
-    def download_plugin(self, plugin_name, channel=u'stable'):
+    def download_plugin(self, plugin_name, channel=None):
         """Download a plugin from webservice
 
         :param plugin_name: the name of the plugin to download
