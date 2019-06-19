@@ -236,8 +236,6 @@ class SchemaMigration(object):
                 ', '.join(str(p.level) for p in patches_to_apply)))
             last_level = patches_to_apply[-1].get_version()
 
-        self.after_update()
-
         return current_version, last_level
 
     # Public API
@@ -314,6 +312,8 @@ class SchemaMigration(object):
                 f = "(%d.%d)" % from_
                 t = "(%d.%d)" % to
                 print('Database schema updated from %s to %s' % (f, t))
+
+        self.after_update()
 
     def get_current_version(self):
         """This method is revision for returning the database schema version
@@ -409,6 +409,28 @@ class StoqlibSchemaMigration(SchemaMigration):
 
         os.unlink(self._backup)
 
+    def _get_transaction_entry_tables(self, store):
+        """Returns a list of all tables that reference transaction_entry"""
+        tables_query = """
+        SELECT DISTINCT src_pg_class.relname AS srctable
+        FROM pg_constraint
+        JOIN pg_class AS src_pg_class ON src_pg_class.oid = pg_constraint.conrelid
+        JOIN pg_class AS ref_pg_class ON ref_pg_class.oid = pg_constraint.confrelid
+        JOIN pg_attribute AS src_pg_attribute ON src_pg_class.oid = src_pg_attribute.attrelid
+        JOIN pg_attribute AS ref_pg_attribute
+            ON ref_pg_class.oid = ref_pg_attribute.attrelid, generate_series(0,10) pos(n)
+        WHERE
+            contype = 'f'
+            AND ref_pg_class.relname = 'transaction_entry'
+            AND ref_pg_attribute.attname = 'id'
+            AND src_pg_attribute.attnum = pg_constraint.conkey[n]
+            AND ref_pg_attribute.attnum = pg_constraint.confkey[n]
+            AND NOT src_pg_attribute.attisdropped
+            AND NOT ref_pg_attribute.attisdropped
+        """
+
+        return [i for (i,) in store.execute(tables_query).get_all()]
+
     def update(self, plugins=True, backup=True, check_database=True):
         log.info("Upgrading database (plugins=%r, backup=%r)" % (
             plugins, backup))
@@ -491,6 +513,7 @@ class StoqlibSchemaMigration(SchemaMigration):
 
         # Updating the parameter list
         sysparam.ensure_system_parameters(store, update=True)
+        self.ensure_te_rules(store)
         store.commit(close=True)
 
     def generate_sql_for_patch(self, patch):
@@ -498,6 +521,23 @@ class StoqlibSchemaMigration(SchemaMigration):
             "INSERT INTO system_table (updated, patchlevel, generation)"
             "VALUES (NOW(), %s, %s);", (patch.level,
                                         patch.generation))
+
+    def ensure_te_rules(self, store):
+        """Ensures that all tables have the transcation entry rules
+
+        It may happen that the developer forgets to add the update_te rule after the table is
+        created, leaving a table that will not be properly synchronized.
+
+        This makes sure that all tables have the update_te rule.
+        """
+        query = """
+        ALTER TABLE {table} ALTER COLUMN te_id SET DEFAULT new_te('{table}');
+        CREATE OR REPLACE RULE update_te AS ON UPDATE TO {table}
+            DO ALSO SELECT update_te(old.te_id, '{table}');
+        """
+
+        for table in self._get_transaction_entry_tables(store):
+            store.execute(query.format(table=table))
 
 
 class PluginSchemaMigration(SchemaMigration):
