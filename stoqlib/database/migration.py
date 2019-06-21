@@ -243,13 +243,9 @@ class SchemaMigration(object):
     # Public API
 
     def check(self, check_plugins=True):
-        if self.check_uptodate():
-            return True
-
-        if not check_plugins:
-            return True
-
-        if self.check_plugins():
+        # always check if schema is up to date and optionally (depending on check_plugins flag)
+        # check if plugins are up to date as well
+        if self.check_uptodate() and (not check_plugins or self.check_plugins()):
             return True
 
         error(_("Database schema error"),

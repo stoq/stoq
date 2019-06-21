@@ -23,8 +23,10 @@
 ##
 """ This module tests stoq/database/database.py """
 
+import mock
 import unittest
 
+from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.runtime import new_store
 from stoqlib.domain.person import Person
 
@@ -79,3 +81,17 @@ class DatabaseTest(unittest.TestCase):
         trans.rollback(close=True)
         # Should not be ok to use trans again
         self.assertRaises(ClosedError, trans.find(Person).any)
+
+    @mock.patch('stoqlib.database.migration.error')
+    @mock.patch('stoqlib.database.migration.SchemaMigration.check_uptodate')
+    @mock.patch('stoqlib.database.migration.StoqlibSchemaMigration.check_plugins')
+    def test_migration_check(self, check_plugins, check_uptodate, error):
+        migration = StoqlibSchemaMigration()
+        check_uptodate.return_value = False
+        self.assertFalse(migration.check())
+        check_uptodate.return_value = True
+        self.assertTrue(migration.check(check_plugins=False))
+        check_plugins.return_value = False
+        self.assertFalse(migration.check(check_plugins=True))
+        check_plugins.return_value = True
+        self.assertTrue(migration.check(check_plugins=True))
