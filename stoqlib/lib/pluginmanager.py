@@ -74,6 +74,7 @@ class PluginDescription(object):
         self.name = os.path.basename(filename).split('.')[0]
         self.entry = config.get('Plugin', 'Module')
         self.filename = filename
+        self.version = config.get('Plugin', 'Version')
 
         if config.has_option('Plugin', 'Dependencies'):
             self.dependencies = [
@@ -147,6 +148,12 @@ class PluginManager(object):
     def active_plugins_names(self):
         """A list of names of all active plugins"""
         return list(self._active_plugins.keys())
+
+    @property
+    def available_plugins_versions(self):
+        """An object with pairs of available plugin names and its versions"""
+        return {plugin_name: self._plugin_descriptions[plugin_name].version
+                for plugin_name in self.available_plugins_names}
 
     #
     # Private
