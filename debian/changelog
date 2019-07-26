@@ -1,3 +1,9 @@
+stoq (3.2~rc1) xenial; urgency=medium
+
+  * Release 3.2~rc1
+
+ -- Luis Tadashi Oishi <luis.shi@gmail.com>  Tue, 30 Jul 2019 14:56:48 -0300
+
 stoq (3.1.1) xenial; urgency=medium
 
   * Release 3.1.1

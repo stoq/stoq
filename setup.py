@@ -133,6 +133,7 @@ if building_egg:
     ])
 else:
     data_files.extend([
+        ('/etc/udev/rules.d', listfiles('data', 'udev', '10-stoq.rules')),
         ('share/applications', ['stoq.desktop']),
         ('share/doc/stoq',
          ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',

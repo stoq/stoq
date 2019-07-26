@@ -1,0 +1,81 @@
+# Stoq device nodes
+# XXX: need to find out how to reload this file
+
+
+#
+# SAT
+#
+
+# Bematech SAT RB2000
+ATTRS{idVendor}=="0b1b", ATTRS{idProduct}=="0109", ENV{MTP_NO_PROBE}="1"
+ATTRS{idVendor}=="0b1b", ATTRS{idProduct}=="0109", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="0b1b", ATTRS{idProduct}=="0109", SYMLINK+="ttyBematechRB2000"
+# Bematech SAT, believed to be RB1000; Note we reuse the same device node, which should have been more generic
+ATTRS{idVendor}=="0b1b", ATTRS{idProduct}=="0108", ENV{MTP_NO_PROBE}="1"
+ATTRS{idVendor}=="0b1b", ATTRS{idProduct}=="0108", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="0b1b", ATTRS{idProduct}=="0108", SYMLINK+="ttyBematechRB2000"
+# Tanca, Elgin, Sweda all use internal USB adapters from vendor 0525
+ATTRS{idVendor}=="0525", ENV{MTP_NO_PROBE}="1"
+ATTRS{idVendor}=="0525", ENV{ID_MM_DEVICE_IGNORE}="1"
+# Note: The Elgin Linker SAT auto-detects and does not require a symlink
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="0525", SYMLINK+="ttyTS0"
+# Sweda uses a USB-Ethernet adapter, which we provide a stable name for
+SUBSYSTEM=="net", ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idVendor}=="0525", ATTRS{idProduct}=="a4a2", NAME="en-sat-sweda"
+
+
+
+#
+# Pinpad
+# Note: we use ircomm1 as a workaround for a limitation in the devices the NTK library supports
+#
+
+# Gertec PPC920/930
+ATTRS{idVendor}=="1753", ATTRS{idProduct}=="c902", ENV{MTP_NO_PROBE}="1"
+ATTRS{idVendor}=="1753", ATTRS{idProduct}=="c902", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="1753", ATTRS{idProduct}=="c902", SYMLINK+="ircomm1"
+# Gertec PPC900
+ATTRS{idVendor}=="1753", ATTRS{idProduct}=="c901", ENV{MTP_NO_PROBE}="1"
+ATTRS{idVendor}=="1753", ATTRS{idProduct}=="c901", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="1753", ATTRS{idProduct}=="c901", SYMLINK+="ircomm1"
+# Pinpad Ingenico
+ATTRS{idVendor}=="079b", ATTRS{idProduct}=="0028", ENV{MTP_NO_PROBE}="1"
+ATTRS{idVendor}=="079b", ATTRS{idProduct}=="0028", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="079b", ATTRS{idProduct}=="0028", SYMLINK+="ircomm1"
+# Pinpad Verifone
+ATTRS{idVendor}=="11ca", ATTRS{idProduct}=="0219", ENV{MTP_NO_PROBE}="1"
+ATTRS{idVendor}=="11ca", ATTRS{idProduct}=="0219", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="11ca", ATTRS{idProduct}=="0219", SYMLINK+="ircomm1"
+
+#
+# Printer
+#
+
+# Bematech MP4200TH
+ATTRS{idVendor}=="0b1b", ATTRS{idProduct}=="0003", ENV{MTP_NO_PROBE}="1"
+ATTRS{idVendor}=="0b1b", ATTRS{idProduct}=="0003", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="0b1b", ATTRS{idProduct}=="0003", SYMLINK+="ttyBematechMP4200"
+# Elgin I9 (via Netchip Technology USB-Serial) Note: ttyUSB, not ttyACM
+ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", ENV{MTP_NO_PROBE}="1"
+ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyUSB[0-9]*", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", SYMLINK+="ttyElginI9"
+# Sweda SI300
+ATTRS{idVendor}=="1c8a", ATTRS{idProduct}=="3001", ENV{MTP_NO_PROBE}="1"
+ATTRS{idVendor}=="1c8a", ATTRS{idProduct}=="3001", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="1c8a", ATTRS{idProduct}=="3001", SYMLINK+="ttySwedaSI300"
+# SNBC 154f
+ATTRS{idVendor}=="154f", ATTRS{idProduct}=="154f", SUBSYSTEM=="usb", MODE="0664", GROUP="dialout"
+
+#
+# Touch
+#
+
+# Elgin
+ATTRS{idVendor}=="0eef", ENV{MTP_NO_PROBE}="1"
+ATTRS{idVendor}=="0eef", ENV{ID_MM_DEVICE_IGNORE}="1"
+# EVERVISION
+ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="88cd", ENV{MTP_NO_PROBE}="1"
+ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="88cd", ENV{ID_MM_DEVICE_IGNORE}="1"
+# Radiant
+ATTRS{idVendor}=="07d5", ATTRS{idProduct}=="04b1", ENV{MTP_NO_PROBE}="1"
+ATTRS{idVendor}=="07d5", ATTRS{idProduct}=="04b1", ENV{ID_MM_DEVICE_IGNORE}="1"
+

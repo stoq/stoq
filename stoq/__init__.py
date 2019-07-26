@@ -31,16 +31,16 @@ website = 'http://www.stoq.com.br'
 major_version = 3
 
 #: Minor version, increase when doing a new stable release
-minor_version = 1
+minor_version = 2
 
 #: Micro version, increase when doing a bug fix for a stable release
-micro_version = 1
+micro_version = 0
 
 #: extra version, rc1, rc2, etc goes here.
-extra_version = ''
+extra_version = 'rc1'
 
 #: the date the software was released
-release_date = (2019, 3, 5)
+release_date = (2019, 7, 30)
 
 #: if this is a stable release
 stable = True
