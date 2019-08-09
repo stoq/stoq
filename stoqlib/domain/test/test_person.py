@@ -1559,6 +1559,7 @@ class TestPersonMerging(DomainTest):
             ' WHERE user_branch_access.user_id = %s\)')
 
         expected_updates = [
+            'UPDATE access_token SET user_id=%s WHERE access_token.user_id = %s',
             'UPDATE calls SET attendant_id=%s WHERE calls.attendant_id = %s',
             'UPDATE client_salary_history SET user_id=%s WHERE client_salary_history.user_id = %s',
             'UPDATE credit_check_history SET user_id=%s WHERE credit_check_history.user_id = %s',  # nopep8

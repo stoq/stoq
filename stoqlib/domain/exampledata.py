@@ -72,6 +72,7 @@ class ExampleCreator(object):
 
     def create_by_type(self, model_type):
         known_types = {
+            'AccessToken': self.create_access_token,
             'Account': self.create_account,
             'AccountTransaction': self.create_account_transaction,
             'Address': self.create_address,
@@ -1355,3 +1356,10 @@ class ExampleCreator(object):
         return CostCenterEntry(cost_center=cost_center or self.create_cost_center(),
                                payment=payment,
                                stock_transaction=stock_transaction)
+
+    def create_access_token(self, user=None, station=None, exp_timedelta=None):
+        from stoqlib.domain.token import AccessToken
+        user = user or self.create_user()
+        station = station or self.create_station()
+        exp = datetime.timedelta(days=1)
+        return AccessToken.get_or_create(self.store, user=user, station=station, exp_timedelta=exp)

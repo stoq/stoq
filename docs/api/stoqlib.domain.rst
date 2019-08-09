@@ -345,6 +345,13 @@ domain Package
     :members:
     :show-inheritance:
 
+:mod:`token`
+------------
+
+.. automodule:: stoqlib.domain.token
+    :members:
+    :show-inheritance:
+
 :mod:`transfer`
 ---------------
 

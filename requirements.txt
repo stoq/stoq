@@ -32,3 +32,4 @@ https://launchpad.net/~stoq-dev/+archive/ubuntu/lancamentos/+sourcefiles/storm/0
 # This is really a storm dependency, but since storm installation is quite complicated now, we
 # should require it here.
 future >= 0.15
+pyjwt >= 1.3.0

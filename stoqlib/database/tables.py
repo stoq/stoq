@@ -77,6 +77,7 @@ _tables = [
     ('synchronization', ["BranchSynchronization"]),
     ('station', ['StationType', "BranchStation"]),
     ('till', ["Till", "TillEntry", 'TillSummary']),
+    ('token', ['AccessToken']),
     ('payment.card', ["CreditProvider", "CreditCardData", 'CardPaymentDevice',
                       'CardOperationCost']),
     ('payment.category', ["PaymentCategory"]),
