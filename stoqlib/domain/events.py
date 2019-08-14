@@ -238,6 +238,7 @@ class SaleConfirmedRemoteEvent(Event):
     :param sale: The same that was confirmed
     :param document: The client document. Can be used for fiscal information
         in case the client wasn't specified in the sale
+    :param should_print_receipts: if sale receipts should be printed or not
     """
 
 
