@@ -195,13 +195,19 @@ class XmlCol(SimpleProperty):
 class JsonVariable(EncodedValueVariable):
 
     def _loads(self, value):
-        # This already comes from database as a json.
-        return value
+        if isinstance(value, dict):
+            return value
+
+        return json.loads(value)
 
     def _dumps(self, value):
         if value is None:
             return None
-        return json.dumps(value)
+
+        if isinstance(value, dict):
+            return json.dumps(value)
+
+        return value
 
 
 class JsonCol(SimpleProperty):
