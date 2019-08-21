@@ -1,0 +1,8 @@
+image: cprov/stoq:latest
+
+before_script:
+  - python3 -V
+  
+test:
+  script:
+    - echo 1
