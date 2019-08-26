@@ -1,8 +1,25 @@
 image: cprov/stoq:latest
 
+stages:
+  - test
+  - build
+
 before_script:
   - python3 -V
-  
+  - virtualenv -p python3 --system-site-packages venv
+  - source venv/bin/activate
+
 test:
+  stage: test
   script:
     - echo 1
+
+build_dist:
+  stage: build
+  script:
+    - python setup.py sdist
+    - python setup.py bdist_wheel
+
+  artifacts:
+    paths:
+      - dist
