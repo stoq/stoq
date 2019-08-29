@@ -95,7 +95,7 @@ class PackageInstaller(GObject.GObject):
             # Silently ignore auth failures
             sys.exit(11)
             return
-        except TransactionFailed as error:
+        except TransactionFailed:
             pass
         except Exception as error:
             error = TransactionFailed(ERROR_UNKNOWN, str(error))

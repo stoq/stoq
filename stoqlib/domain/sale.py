@@ -1089,7 +1089,7 @@ class Sale(IdentifiableDomain):
         if not with_children:
             query = And(query,
                         Eq(SaleItem.parent_item_id, None))
-        return store.find(SaleItem, query)
+        return store.find(SaleItem, query).order_by(SaleItem.te_id)
 
     def remove_item(self, sale_item):
         if sale_item.quantity_decreased > 0:

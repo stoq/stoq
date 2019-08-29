@@ -65,7 +65,7 @@ class _NssHTTPConnection(http.client.HTTPConnection):
         log.info("connect: host=%s port=%s", self.host, self.port)
         try:
             addr_info = io.AddrInfo(self.host)
-        except Exception as e:
+        except Exception:
             log.error("could not resolve host address '%s'", self.host)
             raise
 

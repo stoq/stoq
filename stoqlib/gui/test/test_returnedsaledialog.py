@@ -94,26 +94,15 @@ class TestReturnedSaleDialog(GUITest):
         package = self.create_product(description=u'Package', is_package=True)
         comp = self.create_product(description=u'Component 1', stock=5,
                                    storable=True)
-        comp2 = self.create_product(description=u'Component 2', stock=5,
-                                    storable=True)
         p_comp = self.create_product_component(product=package,
                                                component=comp,
                                                component_quantity=2,
                                                price=2)
-        p_comp2 = self.create_product_component(product=package,
-                                                component=comp2,
-                                                component_quantity=2,
-                                                price=5)
         item = sale.add_sellable(package.sellable, quantity=1, price=0)
         sale.add_sellable(comp.sellable,
                           quantity=item.quantity * p_comp.quantity,
                           price=p_comp.price,
                           parent=item)
-        sale.add_sellable(comp2.sellable,
-                          quantity=item.quantity * p_comp2.quantity,
-                          price=p_comp2.price,
-                          parent=item)
-
         self.add_payments(sale)
         sale.order()
         sale.confirm()

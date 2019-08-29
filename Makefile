@@ -62,6 +62,7 @@ coverage: clean check-source-all
 	    --cover-erase \
 	    --cover-inclusive \
 	    $(TEST_MODULES) && \
+	coverage xml --omit "**/test/*.py" && \
 	utils/validatecoverage.py coverage.xml && \
 	git show|tools/diff-coverage coverage.xml
 

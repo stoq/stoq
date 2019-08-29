@@ -286,7 +286,7 @@ class DatabaseSettings(object):
         except OperationalError as e:
             log.info('OperationalError: %s' % e)
             raise DatabaseError(e.args[0])
-        except Exception as e:
+        except Exception:
             value = sys.exc_info()[1]
             raise DatabaseError(
                 _("Could not connect to %s database. The error message is "

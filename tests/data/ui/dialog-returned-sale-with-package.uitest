@@ -35,7 +35,6 @@ GtkBox(toplevel, orientation=vertical):
         column: title='Total'
         row: '', 'Package', Decimal('1.000'), <currency $0>, Decimal('0.00')
           row: '', 'Component 1', Decimal('2.000'), <currency $2>, Decimal('4.00')
-          row: '', 'Component 2', Decimal('2.000'), <currency $5>, Decimal('10.00')
     GtkBox(hbox1, orientation=horizontal):
       GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
         ProxyTextView(reason): invalid

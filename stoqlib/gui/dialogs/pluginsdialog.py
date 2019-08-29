@@ -79,9 +79,7 @@ class PluginManagerDialog(BasicDialog):
 
     def _update_widgets(self):
         selected = self.klist.get_selected()
-        assert selected
-
-        self.ok_button.set_sensitive(selected.can_activate())
+        self.ok_button.set_sensitive(selected and selected.can_activate())
 
     def _setup_widgets(self):
         self.set_ok_label(_(u'Activate'), Gtk.STOCK_APPLY)

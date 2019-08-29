@@ -1,0 +1,5 @@
+mock
+nose
+nosexcover
+coverage
+pyflakes
