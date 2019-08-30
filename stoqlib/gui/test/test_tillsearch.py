@@ -42,8 +42,8 @@ class TestTillSearch(GUITest):
 
     def test_date_search(self):
         till1 = self.create_till()
-        till1.open_till()
-        till1.close_till(u"Bla")
+        till1.open_till(self.current_user)
+        till1.close_till(self.current_user, "Bla")
         till1.opening_date = localdate(2014, 1, 1).date()
         till1.closing_date = localdate(2014, 1, 1).date()
         till1.responsible_open_id = self.create_user().id
@@ -51,8 +51,8 @@ class TestTillSearch(GUITest):
         till1.final_cash_amount = Decimal(12366.43)
 
         till2 = self.create_till()
-        till2.open_till()
-        till2.close_till(u"TESTE")
+        till2.open_till(self.current_user)
+        till2.close_till(self.current_user, "TESTE")
         till2.opening_date = localdate(2014, 2, 3).date()
         till2.closing_date = localdate(2014, 2, 3).date()
         till2.initial_cash_amount = Decimal(6734.43)
@@ -76,8 +76,8 @@ class TestTillSearch(GUITest):
             "significa nadis i pareci latim. Interessantiss "
             "quisso pudia ce receita de bolis, mais bolis eu num gostis.")
         till = self.create_till()
-        till.open_till()
-        till.close_till(observations)
+        till.open_till(self.current_user)
+        till.close_till(self.current_user, observations)
 
         model = self.store.find(TillClosedView, id=till.id).one()
         self.assertEqual(observations, model.observations)

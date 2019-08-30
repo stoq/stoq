@@ -412,7 +412,7 @@ class InvoiceItemIcms(BaseICMS):
 
     @classmethod
     def get_tax_template(cls, invoice_item):
-        return invoice_item.sellable.product.icms_template
+        return invoice_item.sellable.product.get_icms_template(invoice_item.parent.branch)
 
 
 class InvoiceItemIpi(BaseIPI):
@@ -448,7 +448,7 @@ class InvoiceItemIpi(BaseIPI):
 
     @classmethod
     def get_tax_template(cls, invoice_item):
-        return invoice_item.sellable.product.ipi_template
+        return invoice_item.sellable.product.get_ipi_template(invoice_item.parent.branch)
 
 
 class InvoiceItemPis(BasePIS):
@@ -508,7 +508,8 @@ class InvoiceItemPis(BasePIS):
         if invoice_item.sellable.service:
             return default_pis
 
-        return invoice_item.sellable.product.pis_template or default_pis
+        return (invoice_item.sellable.product.get_pis_template(invoice_item.parent.branch) or
+                default_pis)
 
     #
     # Private API
@@ -580,7 +581,8 @@ class InvoiceItemCofins(BaseCOFINS):
         if invoice_item.sellable.service:
             return default_cofins
 
-        return invoice_item.sellable.product.cofins_template or default_cofins
+        return (invoice_item.sellable.product.get_cofins_template(invoice_item.parent.branch) or
+                default_cofins)
 
     #
     # Private API

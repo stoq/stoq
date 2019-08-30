@@ -48,11 +48,11 @@ class TestReceivingOrder(DomainTest):
 
         # When we don't provide a CFOP, the constructor should use the default
         # one
-        order = ReceivingOrder(self.store, branch=branch)
+        order = ReceivingOrder(self.store, branch=branch, station=self.current_station)
         self.assertNotEqual(order.cfop, None)
         self.assertNotEqual(order.cfop, cfop)
 
-        order = ReceivingOrder(self.store, cfop=cfop, branch=branch)
+        order = ReceivingOrder(self.store, cfop=cfop, branch=branch, station=self.current_station)
         self.assertEqual(order.cfop, cfop)
 
     def test_get_total(self):
@@ -70,10 +70,11 @@ class TestReceivingOrder(DomainTest):
         order.quantity = 8
         order_item = self.create_receiving_order_item(order)
         order_item.quantity_received = 10
-        self.assertRaises(ValueError, order.confirm)
+        with self.assertRaises(ValueError):
+            order.confirm(self.current_user)
         order_item.quantity_received = 8
-        self.assertRaises(ValueError, order.confirm)
-        self.assertRaises(ValueError, order.confirm)
+        with self.assertRaises(ValueError):
+            order.confirm(self.current_user)
 
         storable = order_item.sellable.product_storable
         stock_item = storable.get_stock_item(branch=order.branch, batch=None)
@@ -82,8 +83,8 @@ class TestReceivingOrder(DomainTest):
             item.quantity_received = 0
         purchase.status = purchase.ORDER_PENDING
         self.assertEqual(stock_item.quantity, 8)
-        purchase.confirm()
-        order.confirm()
+        purchase.confirm(self.current_user)
+        order.confirm(self.current_user)
         installment_count = order.payments.count()
         for pay in order.payments:
             self.assertEqual(pay.value,
@@ -101,10 +102,9 @@ class TestReceivingOrder(DomainTest):
         purchase_item = purchase_order.add_item(product.sellable, 1)
         purchase_order.status = purchase_order.ORDER_PENDING
         method = PaymentMethod.get_by_name(self.store, u'money')
-        method.create_payment(Payment.TYPE_OUT,
-                              purchase_order.group, purchase_order.branch,
-                              purchase_order.purchase_total)
-        purchase_order.confirm()
+        method.create_payment(purchase_order.branch, purchase_order.station, Payment.TYPE_OUT,
+                              purchase_order.group, purchase_order.purchase_total)
+        purchase_order.confirm(self.current_user)
 
         receiving_order = self.create_receiving_order(purchase_order)
         receiving_order.branch = self.current_branch
@@ -114,7 +114,7 @@ class TestReceivingOrder(DomainTest):
             purchase_item=purchase_item,
             quantity=1)
         self.assertFalse(self.store.find(ProductStockItem, storable=storable).one())
-        receiving_order.confirm()
+        receiving_order.confirm(self.current_user)
         product_stock_item = self.store.find(ProductStockItem,
                                              storable=storable).one()
         self.assertTrue(product_stock_item)
@@ -122,10 +122,10 @@ class TestReceivingOrder(DomainTest):
 
         sale = self.create_sale()
         sale.add_sellable(product.sellable)
-        sale.order()
+        sale.order(self.current_user)
         method = PaymentMethod.get_by_name(self.store, u'check')
-        method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, Decimal(100))
-        sale.confirm()
+        method.create_payment(sale.branch, sale.station, Payment.TYPE_IN, sale.group, Decimal(100))
+        sale.confirm(self.current_user)
         self.assertEqual(product_stock_item.quantity, 0)
 
     def test_update_payment_values(self):
@@ -140,7 +140,7 @@ class TestReceivingOrder(DomainTest):
         for item in purchase.get_items():
             item.quantity_received = 0
         purchase.status = purchase.ORDER_PENDING
-        purchase.confirm()
+        purchase.confirm(self.current_user)
 
         installment_count = order.payments.count()
         payment_dict = {}
@@ -175,7 +175,7 @@ class TestReceivingOrder(DomainTest):
         for item in purchase.get_items():
             item.quantity_received = 0
         purchase.status = purchase.ORDER_PENDING
-        purchase.confirm()
+        purchase.confirm(self.current_user)
 
         installment_count = order.payments.count()
         payment_dict = {}
@@ -503,8 +503,8 @@ class TestReceivingInvoice(DomainTest):
         self.assertEqual(invoice.total, currency(1052))
 
         purchase.status = purchase.ORDER_PENDING
-        purchase.confirm()
-        invoice.confirm()
+        purchase.confirm(self.current_user)
+        invoice.confirm(self.current_user)
         self.assertEqual(invoice.invoice_total, invoice.total)
 
     def test_get_total_for_payment(self):

@@ -116,8 +116,10 @@ class _PaymentEditor(BaseEditor):
         branch = api.get_current_branch(store)
         # Set status to PENDING now, to avoid calling set_pending on
         # on_confirm for payments that shoud not have its status changed.
-        return Payment(open_date=localtoday().date(),
+        return Payment(store=store,
+                       open_date=localtoday().date(),
                        branch=branch,
+                       station=api.get_current_station(store),
                        status=Payment.STATUS_PENDING,
                        description=u'',
                        value=currency(0),

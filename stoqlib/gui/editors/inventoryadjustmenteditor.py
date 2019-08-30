@@ -32,6 +32,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import MultiLineField, NumericField, TextField
 from kiwi.ui.objectlist import Column
 
+from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory, InventoryItem
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -176,7 +177,7 @@ class InventoryAdjustmentEditor(BaseEditor):
                 continue
             item.actual_quantity = item.counted_quantity
             item.reason = _(u'Automatic adjustment')
-            item.adjust(self.model.invoice_number)
+            item.adjust(api.get_current_user(self.store), self.model.invoice_number)
             self.inventory_items.update(item)
 
     def on_inventory_items__row_activated(self, objectlist, item):
@@ -236,4 +237,4 @@ class InventoryItemAdjustmentEditor(BaseEditor):
         self.actual_quantity.update(self.model.counted_quantity)
 
     def on_confirm(self):
-        self.model.adjust(self._invoice_number)
+        self.model.adjust(api.get_current_user(self.store), self._invoice_number)

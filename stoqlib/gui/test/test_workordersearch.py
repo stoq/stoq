@@ -45,10 +45,10 @@ class TestWorkOrderFinishedSearch(GUITest):
         work_order = self.create_workorder()
         work_order.open_date = localdate(2014, 1, 1)
         work_order.identifier = 123
-        work_order.approve()
-        work_order.work()
+        work_order.approve(self.current_user)
+        work_order.work(self.current_branch, self.current_user)
         work_order.add_sellable(self.create_sellable(), quantity=1)
-        work_order.finish()
+        work_order.finish(self.current_branch, self.current_user)
 
     def test_search(self):
         self._create_domain()
@@ -73,7 +73,7 @@ class TestWorkOrderFinishedSearch(GUITest):
             self.assertFalse(search.retval)
         # With all items reserved.
         for item in work_order.get_items():
-            item.reserve(item.quantity)
+            item.reserve(self.current_user, item.quantity)
         search.confirm()
         self.assertTrue(search.retval)
 

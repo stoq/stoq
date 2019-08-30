@@ -106,7 +106,7 @@ class _TestFiscalCouponPayments(object):
         method = PaymentMethod.get_by_name(self.store, method_type)
         method.create_payment(Payment.TYPE_IN, sale.group, sale.branch,
                               sale.get_total_sale_amount())
-        self.sale.order()
+        self.sale.order(self.current_user)
 
     def test_setup_payment(self):
         if True:

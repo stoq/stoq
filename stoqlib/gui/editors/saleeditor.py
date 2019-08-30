@@ -181,23 +181,24 @@ class SaleQuoteItemSlave(BaseEditorSlave):
         decreased = self.model.quantity_decreased
         to_reserve = self.quantity_model.reserved
         diff = to_reserve - decreased
+        user = api.get_current_user(self.store)
 
         for sale_item in self.model.children_items:
             component = sale_item.get_component(self.model)
             component_qty = component.quantity * diff
             if diff > 0:
-                sale_item.reserve(component_qty)
+                sale_item.reserve(api.get_current_user(self.store), component_qty)
             elif diff < 0:
-                sale_item.return_to_stock(abs(component_qty))
+                sale_item.return_to_stock(abs(component_qty), user)
 
         if diff > 0:
             # Update quantity first, so that the db constraint does not break
             self.model.quantity = self.quantity_model.quantity
             # We need to decrease a few more from the stock
-            self.model.reserve(diff)
+            self.model.reserve(api.get_current_user(self.store), diff)
         elif diff < 0:
             # We need to return some items to the stock
-            self.model.return_to_stock(abs(diff))
+            self.model.return_to_stock(abs(diff), user)
             # Update quantity last, so that the db constraint does not break
             self.model.quantity = self.quantity_model.quantity
         else:

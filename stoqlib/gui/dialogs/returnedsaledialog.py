@@ -66,7 +66,8 @@ class ReturnedSaleDialog(BaseEditor):
                      'new_sale_identifier']
 
     def _setup_status(self):
-        self.receive_button.set_property('visible', self.model.can_receive())
+        self.receive_button.set_property('visible',
+                                         self.model.can_receive(api.get_current_branch(self.store)))
         returned_sale = self.store.get(ReturnedSale, self.model.id)
         if not self.model.is_pending():
             self.receiving_responsible.set_text(returned_sale.confirm_responsible.person.name)
@@ -188,7 +189,7 @@ class ReturnedSaleUndoDialog(BaseEditor):
 
     def confirm(self):
         try:
-            self.model.undo(reason=self.undo_reason.read())
+            self.model.undo(api.get_current_user(self.store), reason=self.undo_reason.read())
         except StockError:
             warning(_('It was not possible to undo this returned sale. Some of '
                       'the returned products are out of stock.'))

@@ -45,6 +45,7 @@ class TestTillHistory(GUITest):
                           till=self.create_till(),
                           payment=None,
                           branch=api.get_current_branch(self.store),
+                          station=self.current_station,
                           store=self.store)
 
         dialog = TillHistoryDialog(self.store)

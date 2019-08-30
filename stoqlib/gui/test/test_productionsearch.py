@@ -98,7 +98,7 @@ class TestProductionItemsSearch(GUITest):
         item = self.create_production_item(5)
         item.order.identifier = 78425
         item.product.sellable.description = u'Luvas'
-        item.order.start_production()
+        item.order.start_production(self.current_user)
         item.produced = 2
 
         item = self.create_production_item(3)

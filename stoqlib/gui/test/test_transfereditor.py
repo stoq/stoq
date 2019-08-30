@@ -103,10 +103,10 @@ class TestTransferItemSlave(GUITest):
         self.assertEqual(cofins_template.cst, 49)
 
         product = self.create_product()
-        product.icms_template = icms_template
-        product.ipi_template = ipi_template
-        product.pis_template = pis_template
-        product.cofins_template = cofins_template
+        product.set_icms_template(icms_template)
+        product.set_ipi_template(ipi_template)
+        product.set_pis_template(pis_template)
+        product.set_cofins_template(cofins_template)
         transfer_item = self.create_transfer_order_item(sellable=product.sellable,
                                                         stock_cost=100,
                                                         quantity=1)

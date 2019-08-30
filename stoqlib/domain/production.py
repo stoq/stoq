@@ -37,6 +37,7 @@ from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                          IdCol, EnumCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain, IdentifiableDomain
+from stoqlib.domain.person import LoginUser
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.interfaces import IContainer, IDescribable
 from stoqlib.lib.dateutils import localnow, localtoday
@@ -189,14 +190,14 @@ class ProductionOrder(IdentifiableDomain):
         return self.store.find(ProductionMaterial, order=self,
                                )
 
-    def start_production(self):
+    def start_production(self, user: LoginUser):
         """Start the production by allocating all the material needed.
         """
         assert self.status in [ProductionOrder.ORDER_OPENED,
                                ProductionOrder.ORDER_WAITING]
 
         for material in self.get_material_items():
-            material.allocate()
+            material.allocate(user)
 
         self.start_date = localtoday()
         self.status = ProductionOrder.ORDER_PRODUCING
@@ -220,7 +221,7 @@ class ProductionOrder(IdentifiableDomain):
 
         return all([item.test_passed for item in produced_items])
 
-    def try_finalize_production(self, ignore_completion=False):
+    def try_finalize_production(self, user: LoginUser, ignore_completion=False):
         """When all items are completely produced, change the status of the
         production to CLOSED.
         """
@@ -245,11 +246,11 @@ class ProductionOrder(IdentifiableDomain):
         if self.status == ProductionOrder.ORDER_CLOSED:
             # Return remaining allocated material to the stock
             for m in self.get_material_items():
-                m.return_remaining()
+                m.return_remaining(user)
 
             # Increase the stock for the produced items
             for p in self.produced_items:
-                p.send_to_stock()
+                p.send_to_stock(user)
 
     def set_production_waiting(self):
         assert self.status == ProductionOrder.ORDER_OPENED
@@ -348,7 +349,7 @@ class ProductionItem(Domain):
     def is_completely_produced(self):
         return self.quantity == self.produced + self.lost
 
-    def produce(self, quantity, produced_by=None, serials=None):
+    def produce(self, user: LoginUser, quantity, serials=None):
         """Sets a certain quantity as produced. The quantity will be marked as
         produced only if there are enough materials allocated, otherwise a
         ValueError exception will be raised.
@@ -360,8 +361,7 @@ class ProductionItem(Domain):
         # check if its ok to produce before consuming material
         if self.product.has_quality_tests():
             # We have some quality tests to assure. Register it for later
-            assert produced_by
-            assert len(serials) == quantity
+            assert serials and len(serials) == quantity
             # We only support yield quantity > 1 when there are no tests
             assert self.product.yield_quantity == 1
 
@@ -382,7 +382,7 @@ class ProductionItem(Domain):
                 ProductionProducedItem(store=self.store,
                                        order=self.order,
                                        product=self.product,
-                                       produced_by=produced_by,
+                                       produced_by=user,
                                        produced_date=localnow(),
                                        serial_number=serial,
                                        entered_stock=False)
@@ -394,12 +394,12 @@ class ProductionItem(Domain):
             yield_quantity = quantity * self.product.yield_quantity
             storable.increase_stock(yield_quantity, self.order.branch,
                                     StockTransactionHistory.TYPE_PRODUCTION_PRODUCED,
-                                    self.id)
+                                    self.id, user)
         self.produced += quantity
-        self.order.try_finalize_production()
+        self.order.try_finalize_production(user)
         ProductHistory.add_produced_item(self.store, self.order.branch, self)
 
-    def add_lost(self, quantity):
+    def add_lost(self, user: LoginUser, quantity):
         """Adds a quantity that was lost. The maximum quantity that can be
         lost is the total quantity minus the quantity already produced.
 
@@ -415,13 +415,13 @@ class ProductionItem(Domain):
         for component in self.get_components():
             material = self._get_material_from_component(component)
             try:
-                material.add_lost(quantity * component.quantity)
+                material.add_lost(user, quantity * component.quantity)
             except ValueError:
                 store.rollback_to_savepoint(u'before_lose')
                 raise
 
         self.lost += quantity
-        self.order.try_finalize_production()
+        self.order.try_finalize_production(user)
         ProductHistory.add_lost_item(store, self.order.branch, self)
 
 
@@ -482,7 +482,7 @@ class ProductionMaterial(Domain):
 
         return self.lost + quantity <= self.needed - self.consumed
 
-    def allocate(self, quantity=None):
+    def allocate(self, user: LoginUser, quantity=None):
         """Allocates the needed quantity of this material by decreasing the
         stock quantity. If no quantity was specified, it will decrease all the
         stock needed or the maximum quantity available. Otherwise, allocate the
@@ -513,9 +513,9 @@ class ProductionMaterial(Domain):
             self.allocated += quantity
             storable.decrease_stock(quantity, self.order.branch,
                                     StockTransactionHistory.TYPE_PRODUCTION_ALLOCATED,
-                                    self.id)
+                                    self.id, user)
 
-    def return_remaining(self):
+    def return_remaining(self, user: LoginUser):
         """Returns remaining allocated material to the stock
 
         This should be called only after the production order is closed.
@@ -530,10 +530,10 @@ class ProductionMaterial(Domain):
             return
         storable.increase_stock(remaining, self.order.branch,
                                 StockTransactionHistory.TYPE_PRODUCTION_RETURNED,
-                                self.id)
+                                self.id, user)
         self.allocated -= remaining
 
-    def add_lost(self, quantity):
+    def add_lost(self, user: LoginUser, quantity):
         """Adds the quantity lost of this material. The maximum quantity that
         can be lost is given by the formula::
 
@@ -548,7 +548,7 @@ class ProductionMaterial(Domain):
 
         required = self.consumed + self.lost + quantity
         if required > self.allocated:
-            self.allocate(required - self.allocated)
+            self.allocate(user, required - self.allocated)
 
         self.lost += quantity
         store = self.store
@@ -672,7 +672,7 @@ class ProductionProducedItem(Domain):
         # There should be no results for the range to be valid
         return store.find(cls, query).is_empty()
 
-    def send_to_stock(self):
+    def send_to_stock(self, user: LoginUser):
         # Already is in stock
         if self.entered_stock:
             return
@@ -680,7 +680,7 @@ class ProductionProducedItem(Domain):
         storable = self.product.storable
         storable.increase_stock(1, self.order.branch,
                                 StockTransactionHistory.TYPE_PRODUCTION_SENT,
-                                self.id)
+                                self.id, user)
         self.entered_stock = True
 
     def set_test_result_value(self, quality_test, value, tester):
@@ -699,7 +699,7 @@ class ProductionProducedItem(Domain):
             result.tested_by = tester
 
         result.tested_date = localnow()
-        result.set_value(value)
+        result.set_value(tester, value)
         return result
 
     def get_test_result(self, quality_test):
@@ -708,7 +708,7 @@ class ProductionProducedItem(Domain):
                           quality_test=quality_test,
                           produced_item=self).one()
 
-    def check_tests(self):
+    def check_tests(self, user: LoginUser):
         """Checks if all tests for this produced items passes.
 
         If all tests passes, sets self.test_passed = True
@@ -719,7 +719,7 @@ class ProductionProducedItem(Domain):
         self.test_passed = (passed and
                             len(results) == self.product.quality_tests.count())
         if self.test_passed:
-            self.order.try_finalize_production()
+            self.order.try_finalize_production(user)
 
 
 @implementer(IDescribable)
@@ -757,21 +757,21 @@ class ProductionItemQualityResult(Domain):
     def get_decimal_value(self):
         return Decimal(self.result_value)
 
-    def set_value(self, value):
+    def set_value(self, user: LoginUser, value):
         if isinstance(value, bool):
-            self.set_boolean_value(value)
+            self.set_boolean_value(user, value)
         else:
-            self.set_decimal_value(value)
+            self.set_decimal_value(user, value)
 
-    def set_boolean_value(self, value):
+    def set_boolean_value(self, user: LoginUser, value):
         self.test_passed = self.quality_test.result_value_passes(value)
         self.result_value = str(value)
-        self.produced_item.check_tests()
+        self.produced_item.check_tests(user)
 
-    def set_decimal_value(self, value):
+    def set_decimal_value(self, user: LoginUser, value):
         self.test_passed = self.quality_test.result_value_passes(value)
         self.result_value = u'%s' % (value, )
-        self.produced_item.check_tests()
+        self.produced_item.check_tests(user)
 
 
 class ProductionOrderProducingView(Viewable):

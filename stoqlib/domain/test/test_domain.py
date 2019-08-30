@@ -106,8 +106,7 @@ def orm_get_unittest_value(klass, test, tables_dict, name, column):
         if cls.__name__ == 'LoginUser':
             # Avoid unique problems on domains that defines 2 references
             # to LoginUser (e.g. WorkOrder)
-            from stoqlib.database.runtime import get_current_user
-            value = get_current_user(test.store)
+            return test.current_user
         elif cls.__name__ == 'StorableBatch':
             # StorableBatch needs some very specific information, that is
             # related to other objects. Thus, it cannot be created with random
@@ -151,6 +150,8 @@ def _create_domain_test():
             storable = self.create_storable()
             kwargs['sellable'] = storable.product.sellable
             kwargs['quantity'] = 1
+        elif klass.__name__ == 'TransferOrder':
+            kwargs['branch'] = kwargs.pop('source_branch')
 
         if 'id' in kwargs:
             del kwargs['id']

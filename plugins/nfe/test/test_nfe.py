@@ -175,7 +175,7 @@ class TestNfeGenerator(DomainTest):
                                 store=self.store)
             storable.increase_stock(data[3], get_current_branch(self.store),
                                     StockTransactionHistory.TYPE_INITIAL,
-                                    sale.id)
+                                    sale.id, self.current_user)
 
             sale_item = sale.add_sellable(sellable, data[3])
             if tax_type == 'aliq':
@@ -198,13 +198,12 @@ class TestNfeGenerator(DomainTest):
                              street=u"Rua dos Tomates",
                              streetnumber=2666,
                              postal_code=u'87654-321')
-        sale.order()
+        sale.order(self.current_user)
 
         method = PaymentMethod.get_by_name(self.store, u'money')
-        method.create_payment(Payment.TYPE_IN, sale.group, sale.branch,
-                              sale.get_sale_subtotal(),
-                              due_date=due_date)
-        sale.confirm()
+        method.create_payment(sale.branch, sale.station, Payment.TYPE_IN, sale.group,
+                              sale.get_sale_subtotal(), due_date=due_date)
+        sale.confirm(self.current_user)
 
         return sale
 

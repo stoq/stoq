@@ -31,72 +31,72 @@ class TestProductOverride(DomainTest):
 
     def test_overide_icms(self):
         product = self.create_product()
-        product.icms_template = self.create_product_icms_template(crt=3, code=3)
+        product.set_icms_template(self.create_product_icms_template(crt=3, code=3))
 
         # Default value should be the one created above
-        self.assertEqual(product.icms_template.cst, 3)
+        self.assertEqual(product.get_icms_template(self.current_branch).cst, 3)
 
         # Now create an override
         override = ProductBranchOverride(store=self.store, product=product,
                                          branch=self.current_branch)
 
         # The override object does not define an icms template
-        self.assertEqual(product.icms_template.cst, 3)
+        self.assertEqual(product.get_icms_template(self.current_branch).cst, 3)
 
         # Setting a template on the override should take effect
         override.icms_template = self.create_product_icms_template(crt=3, code=6)
-        self.assertEqual(product.icms_template.cst, 6)
+        self.assertEqual(product.get_icms_template(self.current_branch).cst, 6)
 
     def test_overide_ipi(self):
         product = self.create_product()
-        product.ipi_template = self.create_product_ipi_template(cst=3)
+        product.set_ipi_template(self.create_product_ipi_template(cst=3))
 
         # Default value should be the one created above
-        self.assertEqual(product.ipi_template.cst, 3)
+        self.assertEqual(product.get_ipi_template(self.current_branch).cst, 3)
 
         # Now create an override
         override = ProductBranchOverride(store=self.store, product=product,
                                          branch=self.current_branch)
 
         # The override object does not define an ipi template
-        self.assertEqual(product.ipi_template.cst, 3)
+        self.assertEqual(product.get_ipi_template(self.current_branch).cst, 3)
 
         # Setting a template on the override should take effect
         override.ipi_template = self.create_product_ipi_template(cst=6)
-        self.assertEqual(product.ipi_template.cst, 6)
+        self.assertEqual(product.get_ipi_template(self.current_branch).cst, 6)
 
     def test_overide_pis(self):
         product = self.create_product()
-        product.pis_template = self.create_product_pis_template(cst=3)
+        product.set_pis_template(self.create_product_pis_template(cst=3))
 
         # Default value should be the one created above
-        self.assertEqual(product.pis_template.cst, 3)
+        self.assertEqual(product.get_pis_template(self.current_branch).cst, 3)
 
         # Now create an override
         override = ProductBranchOverride(store=self.store, product=product,
                                          branch=self.current_branch)
 
         # The override object does not define an pis template
-        self.assertEqual(product.pis_template.cst, 3)
+        self.assertEqual(product.get_pis_template(self.current_branch).cst, 3)
 
         # Setting a template on the override should take effect
         override.pis_template = self.create_product_pis_template(cst=6)
-        self.assertEqual(product.pis_template.cst, 6)
+        self.assertEqual(product.get_pis_template(self.current_branch).cst, 6)
 
     def test_overide_cofins(self):
         product = self.create_product()
-        product.cofins_template = self.create_product_cofins_template(cst=3)
+        product.set_cofins_template(self.create_product_cofins_template(cst=3))
 
         # Default value should be the one created above
-        self.assertEqual(product.cofins_template.cst, 3)
+        self.assertEqual(product.get_cofins_template(self.current_branch).cst, 3)
 
         # Now create an override
         override = ProductBranchOverride(store=self.store, product=product,
                                          branch=self.current_branch)
 
         # The override object does not define an cofins template
-        self.assertEqual(product.cofins_template.cst, 3)
+        self.assertEqual(product.get_cofins_template(self.current_branch).cst, 3)
 
         # Setting a template on the override should take effect
         override.cofins_template = self.create_product_cofins_template(cst=6)
-        self.assertEqual(product.cofins_template.cst, 6)
+        self.assertEqual(product.get_cofins_template(self.current_branch).cst, 6)

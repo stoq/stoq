@@ -353,7 +353,9 @@ def return_sale(parent, sale, store):
                       'the sale client'))
             return
 
-        returned_sale = sale.create_sale_return_adapter()
+        returned_sale = sale.create_sale_return_adapter(api.get_current_branch(store),
+                                                        api.get_current_user(store),
+                                                        api.get_current_station(store))
         retval = run_dialog(SaleReturnWizard, parent, store, returned_sale)
     elif sale.can_cancel():
         reason = _(u'Sale cancelled due to client return.')

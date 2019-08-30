@@ -325,6 +325,7 @@ class ProductionWizard(BaseWizard):
     def _create_model(self, store):
         branch = api.get_current_branch(store)
         return ProductionOrder(branch=branch,
+                               station=api.get_current_station(store),
                                store=store)
 
     #

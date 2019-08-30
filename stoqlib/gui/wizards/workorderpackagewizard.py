@@ -29,6 +29,7 @@ from gi.repository import Gtk, GdkPixbuf
 from kiwi.ui.objectlist import Column
 from kiwi.ui.gadgets import render_pixbuf
 
+from stoqlib.api import api
 from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.domain.workorder import (WorkOrderPackage,
                                       WorkOrderPackageSentView,
@@ -193,6 +194,6 @@ class WorkOrderPackageReceiveWizard(BaseWizard):
 
     def finish(self):
         self.model.receive_responsible = get_current_user(self.store)
-        self.model.receive()
+        self.model.receive(api.get_current_user(self.store))
         self.retval = self.model
         self.close()

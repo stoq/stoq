@@ -22,8 +22,9 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Person, LoginUser
 from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.station import BranchStation
 from stoqlib.domain.transfer import TransferOrder
 from stoqlib.importers.csvimporter import CSVImporter
 
@@ -63,12 +64,15 @@ class TransferImporter(CSVImporter):
                 data.dest_employee_name, ))
         dest_employee = person.employee
 
+        station = store.find(BranchStation).any()
+        user = store.find(LoginUser).any()
         sellables = self.parse_multi(Sellable, data.sellable_list, store)
 
         order = TransferOrder(store=store,
                               open_date=self.parse_date(data.open_date),
                               receival_date=None,
-                              source_branch=source_branch,
+                              branch=source_branch,
+                              station=station,
                               destination_branch=dest_branch,
                               source_responsible=source_employee,
                               destination_responsible=None)
@@ -79,5 +83,5 @@ class TransferImporter(CSVImporter):
             order.add_sellable(sellable, batch=None,
                                quantity=int(data.quantity))
 
-        order.send()
-        order.receive(dest_employee)
+        order.send(user)
+        order.receive(user, dest_employee)

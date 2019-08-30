@@ -54,8 +54,8 @@ class TestSintegraGenerator(DomainTest):
             store=self.store)
         self.create_receiving_order_item(order, sellable=sellable2)
 
-        purchase.confirm()
-        order.confirm()
+        purchase.confirm(self.current_user)
+        order.confirm(self.current_user)
 
         sellable.code = u'9999'
         sellable2.code = u'10000'
@@ -75,13 +75,13 @@ class TestSintegraGenerator(DomainTest):
 
         self.create_storable(product, get_current_branch(self.store), stock=100)
 
-        sale.order()
+        sale.order(self.current_user)
 
         method = PaymentMethod.get_by_name(self.store, u'money')
-        method.create_payment(Payment.TYPE_IN, sale.group, sale.branch,
+        method.create_payment(sale.branch, sale.station, Payment.TYPE_IN, sale.group,
                               sale.get_sale_subtotal())
 
-        sale.confirm()
+        sale.confirm(self.current_user)
         sale.group.pay()
         sale.close_date = localdate(2007, 6, 10)
         sale.confirm_date = localdate(2007, 6, 10)
@@ -100,7 +100,7 @@ class TestSintegraGenerator(DomainTest):
         inventory_item.reason = u'Test'
         inventory_item.actual_quantity = 99
         inventory_item.counted_quantity = 99
-        inventory_item.adjust(invoice_number=999)
+        inventory_item.adjust(self.current_user, invoice_number=999)
         inventory.close()
         inventory.close_date = localdate(2007, 6, 15)
 

@@ -858,6 +858,7 @@ class PurchaseReceivingView(Viewable):
     supplier = Supplier
     receiving_invoice = ReceivingInvoice
     purchase = PurchaseOrder
+    branch = Branch
 
     id = ReceivingOrder.id
     identifier = ReceivingOrder.identifier
@@ -881,6 +882,7 @@ class PurchaseReceivingView(Viewable):
 
     tables = [
         ReceivingOrder,
+        Join(Branch, ReceivingOrder.branch_id == Branch.id),
         LeftJoin(ReceivingItemSummary, Field('_receiving_item',
                                              'receiving_order_id') == ReceivingOrder.id),
         LeftJoin(PurchaseReceivingMap,
@@ -1304,12 +1306,11 @@ class ReturnedSalesView(Viewable):
     def new_sale_identifier(self):
         return self.new_sale.identifier
 
-    def can_receive(self):
-        from stoqlib.api import api
+    def can_receive(self, branch: Branch):
         if not self.sale:
             # There is no original sale to compare
             return self.is_pending()
-        same_branch = self.sale.branch == api.get_current_branch(self.store)
+        same_branch = self.sale.branch == branch
         return bool(self.is_pending() and same_branch)
 
     def is_pending(self):

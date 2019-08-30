@@ -69,7 +69,7 @@ class PaymentReceivingSearch(SearchDialog):
 
     def _receive(self):
         with api.new_store() as store:
-            till = Till.get_current(store)
+            till = Till.get_current(store, api.get_current_station(store))
             assert till
 
             in_payment = self.results.get_selected()

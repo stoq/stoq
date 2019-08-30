@@ -207,8 +207,8 @@ class TestClientsWithSaleSearch(GUITest):
         sale = self.create_sale(client=client, branch=current_branch)
         sale.add_sellable(sellable, quantity=3)
         self.add_payments(sale)
-        sale.order()
-        sale.confirm()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
         sale.confirm_date = datetime.date.today()
 
         search = ClientsWithSaleSearch(self.store)

@@ -83,6 +83,7 @@ class MissingItemsDialog(SimpleListDialog):
         user = api.get_current_user(store)
         employee = user.person.employee
         prod_order = ProductionOrder(branch=store.fetch(self.order.branch),
+                                     station=api.get_current_station(store),
                                      status=ProductionOrder.ORDER_WAITING,
                                      responsible=employee,
                                      description=desc,
@@ -119,7 +120,7 @@ class MissingItemsDialog(SimpleListDialog):
             store = api.new_store()
             sale = store.fetch(self.order)
             self._create_production_order(store)
-            sale.order()
+            sale.order(api.get_current_user(store))
             store.confirm(True)
             store.close()
         return SimpleListDialog.confirm(self, *args)

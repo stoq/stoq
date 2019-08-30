@@ -113,7 +113,7 @@ class TestLoan(DomainTest):
                                                         batch=None)
 
         before_quantity = stock_item.quantity
-        loan.sync_stock()
+        loan.sync_stock(self.current_user)
         after_quantity = stock_item.quantity
         compare = [[before_quantity, after_quantity]]
 
@@ -121,7 +121,7 @@ class TestLoan(DomainTest):
                                                         batch=None)
 
         before_quantity = stock_item.quantity
-        loan.sync_stock()
+        loan.sync_stock(self.current_user)
         after_quantity = stock_item.quantity
         compare.append([before_quantity, after_quantity])
 
@@ -291,7 +291,7 @@ class TestLoanItem(DomainTest):
         # creates a loan with 4 items of the same product
         quantity = 4
         loan_item = loan.add_sellable(sellable, quantity=quantity, price=10)
-        loan_item.sync_stock()
+        loan_item.sync_stock(self.current_user)
         self.assertEqual(loan_item.quantity, quantity)
         self.assertEqual(loan_item.return_quantity, 0)
         self.assertEqual(loan_item.sale_quantity, 0)
@@ -304,7 +304,7 @@ class TestLoanItem(DomainTest):
         # loan)
         loan_item.return_quantity = 1
         loan_item.sale_quantity = 1
-        loan_item.sync_stock()
+        loan_item.sync_stock(self.current_user)
         self.assertEqual(loan_item.quantity, quantity)
         self.assertEqual(loan_item.return_quantity, 1)
         self.assertEqual(loan_item.sale_quantity, 1)
@@ -315,7 +315,7 @@ class TestLoanItem(DomainTest):
 
         # Return the 2 remaining products in this loan.
         loan_item.return_quantity += 2
-        loan_item.sync_stock()
+        loan_item.sync_stock(self.current_user)
         self.assertEqual(loan_item.quantity, quantity)
         self.assertEqual(loan_item.return_quantity, 3)
         self.assertEqual(loan_item.sale_quantity, 1)
@@ -331,12 +331,12 @@ class TestLoanItem(DomainTest):
         batch = self.create_storable_batch(storable=storable)
         storable.increase_stock(10, loan.branch,
                                 StockTransactionHistory.TYPE_INITIAL,
-                                None, batch=batch)
+                                None, self.current_user, batch=batch)
 
         loan_item = loan.add_sellable(product.sellable, quantity=4, price=10,
                                       batch=batch)
         self.assertEqual(batch.get_balance_for_branch(loan.branch), 10)
-        loan_item.sync_stock()
+        loan_item.sync_stock(self.current_user)
         self.assertEqual(batch.get_balance_for_branch(loan.branch), 6)
         self.assertEqual(loan_item.quantity, 4)
         self.assertEqual(loan_item.return_quantity, 0)
@@ -344,12 +344,12 @@ class TestLoanItem(DomainTest):
 
         # The sale quantity should still be decreased
         loan_item.sale_quantity = 2
-        loan_item.sync_stock()
+        loan_item.sync_stock(self.current_user)
         self.assertEqual(batch.get_balance_for_branch(loan.branch), 6)
 
         # The return quantity should go back to the stock
         loan_item.return_quantity = 2
-        loan_item.sync_stock()
+        loan_item.sync_stock(self.current_user)
         self.assertEqual(batch.get_balance_for_branch(loan.branch), 8)
 
     def test_remaining_quantity(self):
@@ -407,10 +407,10 @@ class TestLoanItem(DomainTest):
                                                  tax_type=ProductTaxTemplate.TYPE_COFINS)
         cofins_template = ProductCofinsTemplate(store=self.store,
                                                 product_tax_template=cofins_tax_template)
-        product.icms_template = icms_template
-        product.ipi_template = ipi_template
-        product.pis_template = pis_template
-        product.cofins_template = cofins_template
+        product.set_icms_template(icms_template)
+        product.set_ipi_template(ipi_template)
+        product.set_pis_template(pis_template)
+        product.set_cofins_template(cofins_template)
 
         loan_item = loan.add_sellable(product.sellable)
         self.assertIsNotNone(loan_item.icms_info)

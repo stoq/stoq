@@ -76,8 +76,8 @@ class TestPaymentEditor(GUITest):
 
     def test_sale_editor_confirmed_sale(self):
         sale = self._create_sale()
-        sale.order()
-        sale.confirm()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
         editor = SalePaymentsEditor(self.store, sale)
         payments = editor.slave.payments
         payments.select(payments[0])

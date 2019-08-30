@@ -206,7 +206,7 @@ class PurchaseItemStep(SellableItemStep):
         supplier = self.model.supplier
         product = item.sellable.product
         supplier_info = ProductSupplierInfo.find_by_product_supplier(
-            self.store, product, supplier)
+            self.store, product, supplier, api.get_current_branch(self.store))
         if supplier_info is not None:
             delta = datetime.timedelta(days=supplier_info.lead_time)
             expected_receival = self.model.open_date + delta
@@ -326,7 +326,7 @@ class PurchaseItemStep(SellableItemStep):
         product = sellable.product
         supplier = self.model.supplier
         return ProductSupplierInfo.find_by_product_supplier(
-            self.store, product, supplier)
+            self.store, product, supplier, api.get_current_branch(self.store))
 
     #
     # Callbacks
@@ -386,7 +386,7 @@ class FinishPurchaseStep(WizardEditorStep):
         # purchase first. Note that the purchase may already be confirmed
         if self.model.status in [PurchaseOrder.ORDER_PENDING,
                                  PurchaseOrder.ORDER_CONSIGNED]:
-            self.model.confirm()
+            self.model.confirm(api.get_current_user(self.store))
 
         temporary_identifier = None
         if self.wizard.is_for_another_branch():
@@ -396,12 +396,14 @@ class FinishPurchaseStep(WizardEditorStep):
             store=self.store,
             supplier=self.model.supplier,
             branch=self.model.branch,
+            station=api.get_current_station(self.store),
             responsible=api.get_current_user(self.store))
         receiving_model = ReceivingOrder(
             identifier=temporary_identifier,
             receiving_invoice=receiving_invoice,
             responsible=receiving_invoice.responsible,
             branch=self.model.branch,
+            station=api.get_current_station(self.store),
             invoice_number=None,
             store=self.store)
         receiving_model.add_purchase(self.model)
@@ -546,6 +548,7 @@ class PurchaseWizard(BaseWizard):
         return PurchaseOrder(supplier_id=supplier_id,
                              responsible=api.get_current_user(store),
                              branch=branch,
+                             station=api.get_current_station(store),
                              status=status,
                              group=group,
                              store=store)
@@ -570,7 +573,7 @@ class PurchaseWizard(BaseWizard):
 
         if self.receiving_model:
             # Confirming the receiving will close the purchase
-            self.receiving_model.confirm()
+            self.receiving_model.confirm(api.get_current_user(self.store))
 
         self.close()
 

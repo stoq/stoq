@@ -46,16 +46,6 @@ class TestStockDecrease(DomainTest):
         with self.assertRaises(DatabaseInconsistency):
             StockDecrease.get_status_name(-1)
 
-    def test_add_item(self):
-        decrease = self.create_stock_decrease()
-        sellable = self.create_sellable()
-
-        item = StockDecreaseItem(store=self.store,
-                                 sellable=sellable)
-        self.assertEqual(item.stock_decrease, None)
-        decrease.add_item(item)
-        self.assertEqual(item.stock_decrease, decrease)
-
     def test_remove_item(self):
         decrease = self.create_stock_decrease()
         sellable = self.create_sellable()
@@ -101,7 +91,7 @@ class TestStockDecrease(DomainTest):
         self.assertEqual(storable.get_stock_item(branch, None).quantity, 100)
 
         self.assertTrue(decrease.can_confirm())
-        decrease.confirm()
+        decrease.confirm(self.current_user)
         self.assertFalse(decrease.can_confirm())
 
         self.assertEqual(storable.get_stock_item(branch, None).quantity, 95)
@@ -226,13 +216,14 @@ class TestStockDecrease(DomainTest):
 
 class TestStockDecreaseItem(DomainTest):
     def test_constructor(self):
+        decrease = self.create_stock_decrease()
         with self.assertRaisesRegex(
                 TypeError, 'You must provide a sellable argument'):
-            StockDecreaseItem(store=self.store)
+            StockDecreaseItem(store=self.store, stock_decrease=decrease)
 
         with self.assertRaisesRegex(
                 TypeError, 'You must provide a sellable argument'):
-            StockDecreaseItem(store=self.store,
+            StockDecreaseItem(store=self.store, stock_decrease=decrease,
                               sellable=None)
         item = self.create_stock_decrease_item()
         self.assertIsNotNone(item.icms_info)

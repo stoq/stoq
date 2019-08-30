@@ -196,7 +196,9 @@ class OpticalWorkOrderActions(BaseActions):
 
             order.supplier_order = rv.supplier_order
             optical_wo = OpticalWorkOrder.find_by_work_order(store, order)
-            optical_wo.create_purchase(rv.supplier, rv.item, rv.is_freebie)
+            optical_wo.create_purchase(rv.supplier, rv.item, rv.is_freebie,
+                                       api.get_current_branch(store),
+                                       api.get_current_station(store), api.get_current_user(store))
 
 
 params = [
@@ -390,12 +392,15 @@ class OpticalUI(object):
             order.supplier_order = rv.supplier_order
             optical_wo.create_purchase(order.store.fetch(rv.supplier),
                                        order.store.fetch(rv.item),
-                                       rv.is_freebie)
+                                       rv.is_freebie, api.get_current_branch(order.store),
+                                       api.get_current_station(order.store),
+                                       api.get_current_user(order.store))
             return
 
         for purchase in PurchaseOrder.find_by_work_order(order.store, order):
             if optical_wo.can_receive_purchase(purchase):
-                optical_wo.receive_purchase(purchase, reserve=True)
+                optical_wo.receive_purchase(purchase, api.get_current_station(order.store),
+                                            api.get_current_user(order.store), reserve=True)
 
     #
     # Callbacks

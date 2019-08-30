@@ -61,18 +61,19 @@ class TestReturnedSaleDialog(GUITest):
         sale = self.create_sale()
         sale.identifier = 14913
         self.add_product(sale)
-        sale.order()
+        sale.order(self.current_user)
         self.add_payments(sale)
-        sale.confirm()
+        sale.confirm(self.current_user)
         sale.group.pay()
 
         # A new sale and a trade
-        returned_sale = sale.create_sale_return_adapter()
+        returned_sale = sale.create_sale_return_adapter(self.current_branch, self.current_user,
+                                                        self.current_station)
         returned_sale.identifier = 991
         new_sale = self.create_sale()
         new_sale.identifier = 14914
         returned_sale.new_sale = new_sale
-        returned_sale.trade()
+        returned_sale.trade(self.current_user)
 
         model = self.store.find(ReturnedSalesView).one()
         dialog = ReturnedSaleDialog(self.store, model)
@@ -82,7 +83,7 @@ class TestReturnedSaleDialog(GUITest):
         returned_sale = self.create_trade()
         returned_sale.identifier = 1992
         returned_sale.new_sale.identifier = 14915
-        returned_sale.trade()
+        returned_sale.trade(self.current_user)
 
         model = self.store.find(ReturnedSalesView).one()
         dialog = ReturnedSaleDialog(self.store, model)
@@ -104,8 +105,8 @@ class TestReturnedSaleDialog(GUITest):
                           price=p_comp.price,
                           parent=item)
         self.add_payments(sale)
-        sale.order()
-        sale.confirm()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
         r_sale = self.create_returned_sale(sale)
         r_sale.identifier = 666
 
@@ -175,16 +176,17 @@ class TestReturnedSaleDialog(GUITest):
         # First create a sale
         sale = self.create_sale()
         self.add_product(sale)
-        sale.order()
+        sale.order(self.current_user)
         self.add_payments(sale)
-        sale.confirm()
+        sale.confirm(self.current_user)
         sale.group.pay()
 
         # A new sale and a trade
-        returned_sale = sale.create_sale_return_adapter()
+        returned_sale = sale.create_sale_return_adapter(self.current_branch, self.current_user,
+                                                        self.current_station)
         new_sale = self.create_sale()
         returned_sale.new_sale = new_sale
-        returned_sale.trade()
+        returned_sale.trade(self.current_user)
 
         model = self.store.find(ReturnedSalesView).one()
         dialog = ReturnedSaleDialog(self.store, model)

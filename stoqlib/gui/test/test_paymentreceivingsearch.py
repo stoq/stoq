@@ -48,7 +48,7 @@ class TestPaymentReceivingSearch(GUITest):
         run_dialog.return_value = True
 
         till = self.create_till()
-        till.open_till()
+        till.open_till(self.current_user)
 
         payment = self.create_payment(payment_type=Payment.TYPE_IN,
                                       method=self.get_payment_method(name=u'store_credit'))

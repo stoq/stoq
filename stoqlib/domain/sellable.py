@@ -762,7 +762,7 @@ class Sellable(Domain):
         """
         return self.check_unique_value_exists(Sellable.barcode, barcode)
 
-    def check_taxes_validity(self):
+    def check_taxes_validity(self, branch):
         """Check if icms taxes are valid.
 
         This check is done because some icms taxes (such as CSOSN 101) have
@@ -772,7 +772,7 @@ class Sellable(Domain):
 
         :raises: :exc:`TaxError` if there are any issues with the sellable taxes.
         """
-        icms_template = self.product and self.product.icms_template
+        icms_template = self.product and self.product.get_icms_template(branch)
         SellableCheckTaxesEvent.emit(self)
         if not icms_template:
             return

@@ -38,13 +38,12 @@ from stoqlib.database.expr import NullIf
 from stoqlib.database.properties import (DateTimeCol, IdCol, IdentifierCol,
                                          PriceCol, QuantityCol,
                                          UnicodeCol, EnumCol)
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain, IdentifiableDomain
 from stoqlib.domain.events import StockOperationConfirmedEvent
 from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
-from stoqlib.domain.person import Person, Branch, Company
+from stoqlib.domain.person import Person, Branch, Company, LoginUser, Employee
 from stoqlib.domain.interfaces import IContainer, IInvoice, IInvoiceItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.product import StorableBatch
@@ -155,7 +154,7 @@ class TransferOrderItem(Domain):
         """Returns the total cost of a transfer item eg quantity * cost"""
         return self.quantity * self.sellable.cost
 
-    def send(self):
+    def send(self, user: LoginUser):
         """Sends this item to it's destination |branch|.
         This method should never be used directly, and to send a transfer you
         should use TransferOrder.send().
@@ -166,12 +165,12 @@ class TransferOrderItem(Domain):
             storable.decrease_stock(self.quantity,
                                     self.transfer_order.source_branch,
                                     StockTransactionHistory.TYPE_TRANSFER_TO,
-                                    self.id, batch=self.batch)
+                                    self.id, user, batch=self.batch)
         ProductHistory.add_transfered_item(self.store,
                                            self.transfer_order.source_branch,
                                            self)
 
-    def receive(self):
+    def receive(self, user: LoginUser):
         """Receives this item, increasing the quantity in the stock.
         This method should never be used directly, and to receive a transfer
         you should use TransferOrder.receive().
@@ -182,10 +181,10 @@ class TransferOrderItem(Domain):
             storable.increase_stock(self.quantity,
                                     self.transfer_order.destination_branch,
                                     StockTransactionHistory.TYPE_TRANSFER_FROM,
-                                    self.id, unit_cost=self.stock_cost,
+                                    self.id, user, unit_cost=self.stock_cost,
                                     batch=self.batch)
 
-    def cancel(self):
+    def cancel(self, user: LoginUser):
         """Cancel the receiving of this transfer item.
 
         This method will return the product to the stock from source branch.
@@ -196,7 +195,7 @@ class TransferOrderItem(Domain):
         storable.increase_stock(self.quantity,
                                 self.transfer_order.source_branch,
                                 StockTransactionHistory.TYPE_CANCELLED_TRANSFER,
-                                self.id, unit_cost=self.stock_cost,
+                                self.id, user, unit_cost=self.stock_cost,
                                 batch=self.batch)
 
 
@@ -282,9 +281,9 @@ class TransferOrder(IdentifiableDomain):
     #: the reason the transfer was cancelled
     cancel_reason = UnicodeCol()
 
-    def __init__(self, store=None, **kwargs):
-        kwargs['invoice'] = Invoice(store=store, invoice_type=Invoice.TYPE_OUT)
-        super(TransferOrder, self).__init__(store=store, **kwargs)
+    def __init__(self, store, branch: Branch, **kwargs):
+        kwargs['invoice'] = Invoice(store=store, invoice_type=Invoice.TYPE_OUT, branch=branch)
+        super(TransferOrder, self).__init__(store=store, branch=branch, **kwargs)
 
     #
     # IContainer implementation
@@ -342,6 +341,10 @@ class TransferOrder(IdentifiableDomain):
     def branch(self):
         return self.source_branch
 
+    @branch.setter
+    def branch(self, value):
+        self.source_branch = value
+
     @property
     def status_str(self):
         return(self.statuses[self.status])
@@ -384,17 +387,16 @@ class TransferOrder(IdentifiableDomain):
     def can_receive(self):
         return self.status == self.STATUS_SENT
 
-    def can_cancel(self):
-        return And(self.status == self.STATUS_SENT,
-                   self.source_branch == get_current_branch(self.store))
+    def can_cancel(self, current_branch: Branch):
+        return self.status == self.STATUS_SENT and self.source_branch == current_branch
 
-    def send(self):
+    def send(self, user: LoginUser):
         """Sends a transfer order to the destination branch.
         """
         assert self.can_send()
 
         for item in self.get_items():
-            item.send()
+            item.send(user)
 
         # Save the operation nature and branch in Invoice table.
         self.invoice.operation_nature = self.operation_nature
@@ -404,24 +406,25 @@ class TransferOrder(IdentifiableDomain):
         self.status = self.STATUS_SENT
         StockOperationConfirmedEvent.emit(self, old_status)
 
-    def receive(self, responsible, receival_date=None):
+    def receive(self, user: LoginUser, responsible: Employee, receival_date=None):
         """Confirms the receiving of the transfer order.
         """
         assert self.can_receive()
 
         for item in self.get_items():
-            item.receive()
+            item.receive(user)
 
         self.receival_date = receival_date or localnow()
         self.destination_responsible = responsible
         self.status = self.STATUS_RECEIVED
 
-    def cancel(self, responsible, cancel_reason, cancel_date=None):
+    def cancel(self, user: LoginUser, responsible: Employee, cancel_reason, current_branch: Branch,
+               cancel_date=None):
         """Cancel a transfer order"""
-        assert self.can_cancel()
+        assert self.can_cancel(current_branch)
 
         for item in self.get_items():
-            item.cancel()
+            item.cancel(user)
 
         self.cancel_date = cancel_date or localnow()
         self.cancel_responsible_id = responsible.id

@@ -82,7 +82,7 @@ class StockTransferInitialStep(WizardEditorStep):
         self.destination_branch.update(None)
 
     def _setup_widgets(self):
-        branches = Branch.get_active_remote_branches(self.store)
+        branches = Branch.get_active_remote_branches(self.store, api.get_current_branch(self.store))
         self.destination_branch.prefill(api.for_person_combo(branches))
         self.source_branch.set_text(self.branch.get_description())
 
@@ -244,10 +244,13 @@ class StockTransferWizard(BaseWizard):
     def _create_model(self, store):
         user = api.get_current_user(store)
         source_responsible = store.find(Employee, person=user.person).one()
+        dest_branch = Branch.get_active_remote_branches(store,
+                                                        api.get_current_branch(store))[0]
         return TransferOrder(
-            source_branch=api.get_current_branch(store),
+            branch=api.get_current_branch(store),
+            station=api.get_current_station(store),
             source_responsible=source_responsible,
-            destination_branch=Branch.get_active_remote_branches(store)[0],
+            destination_branch=dest_branch,
             store=store)
 
     def _receipt_dialog(self, order):
@@ -274,7 +277,7 @@ class StockTransferWizard(BaseWizard):
         # failed above?
         self.store.savepoint('before_send_transfer')
         try:
-            self.model.send()
+            self.model.send(api.get_current_user(self.store))
         except Exception as e:
             warning(_("An error happened when trying to confirm the transfer"),
                     str(e))

@@ -98,8 +98,8 @@ class TestClientDetails(GUITest):
         sale = self.create_sale(client=client)
         self.create_sale_item(sale, product=True)
         self.create_payment(payment_type=Payment.TYPE_IN, group=sale.group)
-        sale.order()
-        sale.confirm()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
 
         sale2 = self.create_sale(client=client)
         item = self.create_sale_item(sale2, product=True)

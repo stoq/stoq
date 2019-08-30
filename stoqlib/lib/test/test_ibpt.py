@@ -137,7 +137,7 @@ class TestCalculateTaxForItem(DomainTest):
         # Values (0, 3, 4, 5, 8) - taxes codes of brazilian origin.
         # Different values represent taxes of international origin.
         icms.orig = 0
-        product.icms_template = icms
+        product.set_icms_template(icms)
 
         # Values used from IBPT table. Change this values when update the taxes.
         # (ncm;ex;tipo;descricao;nacionalfederal;importadosfederal;estadual;

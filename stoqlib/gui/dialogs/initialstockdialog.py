@@ -138,9 +138,8 @@ class InitialStockDialog(BaseEditor):
                                                     item.unit_cost,
                                                     batch_number=batch)
             else:
-                storable.register_initial_stock(item.initial_stock,
-                                                self.model.branch,
-                                                item.unit_cost)
+                storable.register_initial_stock(item.initial_stock, self.model.branch,
+                                                item.unit_cost, api.get_current_user(self.store))
 
     def _add_initial_stock(self):
         for item in self.storables:

@@ -28,19 +28,19 @@ import decimal
 from storm.expr import Join, LeftJoin, Coalesce, Sum, Eq
 from storm.references import Reference
 
-from stoqlib.api import api
 from stoqlib.database.expr import StatementTimestamp
 from stoqlib.database.properties import (DecimalCol, DateTimeCol, EnumCol,
                                          UnicodeCol, IdCol, BoolCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import DomainMergeEvent
-from stoqlib.domain.person import Person, Company, Branch
+from stoqlib.domain.person import Person, Company, Branch, LoginUser
 from stoqlib.domain.product import (Product, StorableBatch, ProductManufacturer,
                                     ProductSupplierInfo)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import SaleItem, Sale
 from stoqlib.domain.sellable import Sellable, SellableCategory
+from stoqlib.domain.station import BranchStation
 from stoqlib.domain.workorder import WorkOrder, WorkOrderItem
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -405,7 +405,8 @@ class OpticalWorkOrder(Domain):
         # can still create a purchase
         return None in purchases
 
-    def create_purchase(self, supplier, work_order_item, is_freebie):
+    def create_purchase(self, supplier, work_order_item, is_freebie, branch: Branch,
+                        station: BranchStation, user: LoginUser):
         """Create a purchase
 
         :param supplier: the |supplier| of that purchase
@@ -415,12 +416,12 @@ class OpticalWorkOrder(Domain):
         """
         sellable = work_order_item.sellable
         store = self.work_order.store
-        current_branch = api.get_current_branch(store)
         purchase = PurchaseOrder(store=store,
+                                 branch=branch,
+                                 station=station,
                                  status=PurchaseOrder.ORDER_PENDING,
                                  supplier=supplier,
-                                 responsible=api.get_current_user(store),
-                                 branch=current_branch,
+                                 responsible=user,
                                  work_order=self.work_order)
         if is_freebie:
             purchase.notes = _('The product %s is a freebie') % sellable.description
@@ -430,8 +431,8 @@ class OpticalWorkOrder(Domain):
             # further in order to change that behavior.
             cost = decimal.Decimal('0.01')
         else:
-            psi = ProductSupplierInfo.find_by_product_supplier(store, sellable.product,
-                                                               supplier)
+            psi = ProductSupplierInfo.find_by_product_supplier(store, sellable.product, supplier,
+                                                               branch)
             cost = psi.base_cost if psi else sellable.cost
 
         # Add the sellable to the purchase
@@ -440,7 +441,7 @@ class OpticalWorkOrder(Domain):
                                           cost=cost)
         work_order_item.purchase_item = purchase_item
 
-        purchase.confirm()
+        purchase.confirm(user)
         return purchase
 
     def can_receive_purchase(self, purchase):
@@ -451,20 +452,21 @@ class OpticalWorkOrder(Domain):
         # XXX Lets assume that there is only on purchase
         return purchase and purchase.status == PurchaseOrder.ORDER_CONFIRMED
 
-    def receive_purchase(self, purchase_order, reserve=False):
-        receiving = purchase_order.create_receiving_order()
-        receiving.confirm()
+    def receive_purchase(self, purchase_order: PurchaseOrder, station: BranchStation,
+                         user: LoginUser, reserve=False):
+        receiving = purchase_order.create_receiving_order(station)
+        receiving.confirm(user)
         if reserve:
-            self.reserve_products(purchase_order)
+            self.reserve_products(purchase_order, user)
 
-    def reserve_products(self, purchase_order):
+    def reserve_products(self, purchase_order, user: LoginUser):
         for item in self.work_order.get_items():
             if not item.purchase_item:
                 continue
             sale_item = item.sale_item
             to_reserve = sale_item.quantity - sale_item.quantity_decreased
             if to_reserve > 0:
-                sale_item.reserve(quantize(to_reserve))
+                sale_item.reserve(user, quantize(to_reserve))
 
     def copy(self, target):
         """Make a copy of self into a target |work_order|

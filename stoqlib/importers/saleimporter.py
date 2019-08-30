@@ -25,9 +25,10 @@
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Person, LoginUser
 from stoqlib.domain.product import Product
 from stoqlib.domain.sale import Sale
+from stoqlib.domain.station import BranchStation
 from stoqlib.importers.csvimporter import CSVImporter
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -51,6 +52,8 @@ class SaleImporter(CSVImporter):
             raise ValueError(u"%s is not a valid branch" % (
                 data.branch_name, ))
         branch = person.branch
+        station = store.find(BranchStation).any()
+        user = store.find(LoginUser).any()
 
         person = store.find(Person, name=data.client_name).one()
         if person is None or person.client is None:
@@ -69,6 +72,7 @@ class SaleImporter(CSVImporter):
                     coupon_id=int(data.coupon_id),
                     salesperson=salesperson,
                     branch=branch,
+                    station=station,
                     cfop_id=sysparam.get_object_id('DEFAULT_SALES_CFOP'),
                     group=group,
                     store=store)
@@ -78,11 +82,11 @@ class SaleImporter(CSVImporter):
             sale.add_sellable(product.sellable)
             total_price += product.sellable.price
 
-        sale.order()
+        sale.order(user)
         method = PaymentMethod.get_by_name(store, data.payment_method)
-        method.create_payment(Payment.TYPE_IN, group, branch, total_price,
+        method.create_payment(branch, station, Payment.TYPE_IN, group, total_price,
                               due_date=self.parse_date(data.due_date))
-        sale.confirm()
+        sale.confirm(user)
         # XXX: The payments are paid automatically when a sale is confirmed.
         #     So, we will change all the payment paid_date to the same date
         #     as open_date, then we can test the reports properly.

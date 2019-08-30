@@ -46,6 +46,8 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.product import Product, StorableBatch
+from stoqlib.domain.sale import SaleItem
+from stoqlib.domain.workorder import WorkOrderItem
 from stoqlib.domain.service import ServiceView
 from stoqlib.domain.views import (ProductFullStockItemView,
                                   ProductComponentView, SellableFullStockView,
@@ -274,7 +276,12 @@ class SellableItemSlave(BaseEditorSlave):
         for item in items:
             # We need to remove the children before remove the parent_item
             self.remove_items(getattr(item, 'children_items', []))
-            self.model.remove_item(item)
+            if isinstance(item, (SaleItem, WorkOrderItem)):
+                # SaleItem and WorkOrderItem may change the stock items. And stock transactions
+                # require the logged user
+                self.model.remove_item(item, api.get_current_user(item.store))
+            else:
+                self.model.remove_item(item)
 
     def hide_item_addition_toolbar(self):
         self.item_table.hide()
@@ -880,7 +887,7 @@ class SellableItemStep(SellableItemSlave, WizardStep):
     def can_add_sellable(self, sellable):
         if self.check_item_taxes:
             try:
-                sellable.check_taxes_validity()
+                sellable.check_taxes_validity(self.wizard.model.branch)
             except TaxError as strerr:
                 # If the sellable taxes are not valid, we cannot add it.
                 warning(str(strerr))

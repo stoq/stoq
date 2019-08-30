@@ -710,13 +710,13 @@ class TestSellable(DomainTest):
         # There's a storable, but we can still close because there's no stock
         self.assertTrue(sellable.can_close())
 
-        storable.increase_stock(1, self.current_branch,
-                                StockTransactionHistory.TYPE_INITIAL, None)
+        storable.increase_stock(1, self.current_branch, StockTransactionHistory.TYPE_INITIAL,
+                                None, self.current_user)
         # Now that there's stock we should not be able to close anymore
         self.assertFalse(sellable.can_close())
 
-        storable.decrease_stock(1, self.current_branch,
-                                StockTransactionHistory.TYPE_INITIAL, None)
+        storable.decrease_stock(1, self.current_branch, StockTransactionHistory.TYPE_INITIAL,
+                                None, self.current_user)
         # But decreasing the stock should make it possible to close again
         self.assertTrue(sellable.can_close())
 
@@ -732,8 +732,8 @@ class TestSellable(DomainTest):
         storable = Storable(product=sellable.product, store=self.store)
         self.assertTrue(sellable.can_remove())
 
-        storable.increase_stock(1, self.current_branch,
-                                StockTransactionHistory.TYPE_INITIAL, None)
+        storable.increase_stock(1, self.current_branch, StockTransactionHistory.TYPE_INITIAL,
+                                None, self.current_user)
         sale = self.create_sale()
         sale.status = Sale.STATUS_QUOTE
         sale.branch = self.current_branch
@@ -853,20 +853,19 @@ class TestSellable(DomainTest):
 
     def test_check_taxes_validity(self):
         sellable = self.create_sellable()
-        sellable.check_taxes_validity()
+        sellable.check_taxes_validity(self.current_branch)
 
         tax = ProductTaxTemplate(store=self.store, name=u'foo')
-        sellable.product.icms_template = ProductIcmsTemplate(
-            store=self.store,
-            product_tax_template=tax)
+        template = ProductIcmsTemplate(store=self.store, product_tax_template=tax)
+        sellable.product.set_icms_template(template)
 
-        sellable.check_taxes_validity()
+        sellable.check_taxes_validity(self.current_branch)
 
-        sellable.product.icms_template.p_cred_sn = 10
-        sellable.product.icms_template.p_cred_sn_valid_until = localdate(2000, 1, 1)
+        template.p_cred_sn = 10
+        template.p_cred_sn_valid_until = localdate(2000, 1, 1)
 
         with self.assertRaises(TaxError) as e:
-            sellable.check_taxes_validity()
+            sellable.check_taxes_validity(self.current_branch)
             self.assertEqual(str(e), ("You cannot sell this item before updating "
                                       "the 'ICMS tax rate credit' field on 'foo' "
                                       "Tax Class.\n"

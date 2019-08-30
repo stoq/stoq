@@ -39,11 +39,10 @@ from stoqlib.database.expr import Date, TransactionTimestamp
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol, BoolCol,
                                          IdCol, EnumCol)
 from stoqlib.database.properties import PriceCol
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable, IReversal
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Person, Branch, LoginUser
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
@@ -129,8 +128,8 @@ class FiscalBookEntry(Domain):
                           entry_type=entry_type).one()
 
     @classmethod
-    def _create_fiscal_entry(cls, store, entry_type, group, cfop, invoice_number,
-                             iss_value=0, icms_value=0, ipi_value=0):
+    def _create_fiscal_entry(cls, store, branch: Branch, user: LoginUser, entry_type, group, cfop,
+                             invoice_number, iss_value=0, icms_value=0, ipi_value=0):
         return FiscalBookEntry(
             entry_type=entry_type,
             iss_value=iss_value,
@@ -139,14 +138,14 @@ class FiscalBookEntry(Domain):
             invoice_number=invoice_number,
             cfop=cfop,
             drawee=group.recipient,
-            branch=get_current_branch(store),
+            branch=branch,
             date=TransactionTimestamp(),
             payment_group=group,
             store=store)
 
     @classmethod
-    def create_product_entry(cls, store, group, cfop, invoice_number, value,
-                             ipi_value=0):
+    def create_product_entry(cls, store, branch: Branch, user: LoginUser, group, cfop,
+                             invoice_number, value, ipi_value=0):
         """Creates a new product entry in the fiscal book
 
         :param store: a store
@@ -160,15 +159,13 @@ class FiscalBookEntry(Domain):
         :returns: a fiscal book entry
         :rtype: :class:`FiscalBookEntry`
         """
-        return cls._create_fiscal_entry(
-            store,
-            FiscalBookEntry.TYPE_PRODUCT,
-            group, cfop, invoice_number,
-            icms_value=value, ipi_value=ipi_value,
-        )
+        return cls._create_fiscal_entry(store, branch, user, FiscalBookEntry.TYPE_PRODUCT, group,
+                                        cfop, invoice_number, icms_value=value,
+                                        ipi_value=ipi_value,)
 
     @classmethod
-    def create_service_entry(cls, store, group, cfop, invoice_number, value):
+    def create_service_entry(cls, store, branch: Branch, user: LoginUser, group, cfop,
+                             invoice_number, value):
         """Creates a new service entry in the fiscal book
 
         :param store: a store
@@ -181,12 +178,8 @@ class FiscalBookEntry(Domain):
         :returns: a fiscal book entry
         :rtype: :class:`FiscalBookEntry`
         """
-        return cls._create_fiscal_entry(
-            store,
-            FiscalBookEntry.TYPE_SERVICE,
-            group, cfop, invoice_number,
-            iss_value=value,
-        )
+        return cls._create_fiscal_entry(store, branch, user, FiscalBookEntry.TYPE_SERVICE, group,
+                                        cfop, invoice_number, iss_value=value,)
 
     def reverse_entry(self, invoice_number,
                       iss_value=None, icms_value=None, ipi_value=None):
@@ -278,25 +271,22 @@ class Invoice(Domain):
     #: the |branch| where this invoice was generated
     branch = Reference(branch_id, 'Branch.id')
 
-    def __init__(self, **kw):
-        if not 'branch' in kw:
-            kw['branch'] = get_current_branch(kw.get('store'))
-        super(Invoice, self).__init__(**kw)
+    def __init__(self, branch: Branch, **kw):
+        super(Invoice, self).__init__(branch=branch, **kw)
 
     @classmethod
-    def get_next_invoice_number(cls, store, mode=None, series=None):
-        return Invoice.get_last_invoice_number(store, series, mode) + 1
+    def get_next_invoice_number(cls, store, branch: Branch, mode=None, series=None):
+        return Invoice.get_last_invoice_number(store, branch, series, mode) + 1
 
     @classmethod
-    def get_last_invoice_number(cls, store, series=None, mode=None):
+    def get_last_invoice_number(cls, store, branch: Branch, series=None, mode=None):
         """Returns the last invoice number. If there is not an invoice
         number used, the returned value will be zero.
 
         :param store: a store
         :returns: an integer representing the last sale invoice number
         """
-        current_branch = get_current_branch(store)
-        last = store.find(cls, branch=current_branch, series=series,
+        last = store.find(cls, branch=branch, series=series,
                           mode=mode).max(cls.invoice_number)
         return last or 0
 

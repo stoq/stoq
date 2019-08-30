@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
-##
-## Copyright (C) 2011-2013 Async Open Source <http://www.async.com.br>
-## All rights reserved
-##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., or visit: http://www.gnu.org/.
-##
-## Author(s): Stoq Team <stoq-devel@async.com.br>
-##
+#
+# Copyright (C) 2011-2019 Async Open Source <http://www.async.com.br>
+# All rights reserved
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., or visit: http://www.gnu.org/.
+#
+# Author(s): Stoq Team <stoq-devel@async.com.br>
+#
 
 __tests__ = 'stoqlib/domain/account.py'
 
@@ -347,8 +347,8 @@ class TestAccountTransaction(DomainTest):
         sale = self.create_sale()
         self.add_product(sale)
         payment = self.add_payments(sale, method_type=u'check')[0]
-        sale.order()
-        sale.confirm()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
         account = self.create_account()
         payment.method.destination_account = account
         with self.assertRaisesRegex(PaymentError, "Payment needs to be paid"):
@@ -367,7 +367,7 @@ class TestAccountTransaction(DomainTest):
         purchase.status = PurchaseOrder.ORDER_PENDING
         purchase.add_item(self.create_sellable(), 1)
         payment = self.add_payments(purchase, method_type=u'money')[0]
-        purchase.confirm()
+        purchase.confirm(self.current_user)
         account = self.create_account()
         payment.method.destination_account = account
         with self.assertRaisesRegex(PaymentError, "Payment needs to be paid"):

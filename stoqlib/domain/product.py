@@ -27,7 +27,7 @@ It's purchased by a supplier and sold to client.
 
 Imports that will be used in this doctest:
 
-    >>> from stoqlib.database.runtime import new_store, get_current_branch
+    >>> from stoqlib.database.runtime import new_store
     >>> from stoqlib.domain.product import Product, ProductStockItem, Storable
     >>> from stoqlib.domain.product import StockTransactionHistory
 
@@ -54,7 +54,8 @@ storable facet.
 The storable needs to have it's stock created, let's do so. Note that a reason
 is always required when changing the stock quantity
 
-    >>> storable.increase_stock(10, branch, StockTransactionHistory.TYPE_INITIAL, None)
+    >>> user = ExampleCreator.create(store, 'LoginUser')
+    >>> storable.increase_stock(10, branch, StockTransactionHistory.TYPE_INITIAL, None, user)
 
 A stock item should now be available for the storable:
 
@@ -71,8 +72,8 @@ The branch and storable should be set properly
 Fetch the stock item for the current branch and verify that the
 stock_items are unique:
 
-    >>> current_branch = get_current_branch(store)
-    >>> stock_item2 = storable.get_stock_item(current_branch, batch=None)
+    >>> other_branch = ExampleCreator.create(store, 'Other Branch')
+    >>> stock_item2 = storable.get_stock_item(other_branch, batch=None)
     >>> stock_item != stock_item2
     True
 
@@ -98,14 +99,14 @@ from stoqlib.database.expr import (Field, TransactionTimestamp,
 from stoqlib.database.properties import (BoolCol, DateTimeCol, DecimalCol,
                                          EnumCol, IdCol, IntCol, PercentCol,
                                          PriceCol, QuantityCol, UnicodeCol)
-from stoqlib.database.runtime import get_current_user, autoreload_object, get_current_branch
+from stoqlib.database.runtime import autoreload_object
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent, ProductStockUpdateEvent)
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.overrides import ProductBranchOverride
-from stoqlib.domain.person import Person, Branch
+from stoqlib.domain.person import Person, Branch, LoginUser
 from stoqlib.domain.sellable import Sellable
 from stoqlib.exceptions import StockError
 from stoqlib.lib.dateutils import localnow, localtoday
@@ -178,11 +179,10 @@ class ProductSupplierInfo(Domain):
     #
 
     @classmethod
-    def find_by_product_supplier(cls, store, product, supplier):
-        current_branch = get_current_branch(store)
+    def find_by_product_supplier(cls, store, product, supplier, branch: Branch):
         supplier_infos = store.find(cls, And(cls.product == product,
                                              cls.supplier == supplier,
-                                             Or(cls.branch_id == current_branch.id,
+                                             Or(cls.branch_id == branch.id,
                                                 Eq(cls.branch_id, None))))
         return supplier_infos.order_by(cls.branch_id).first()
 
@@ -410,50 +410,6 @@ class Product(Domain):
     def product_type_str(self):
         return self.product_types[self.product_type]
 
-    @property
-    def icms_template(self):
-        override = ProductBranchOverride.find_product(self)
-        if override:
-            return override.icms_template or self._icms_template
-        return self._icms_template
-
-    @icms_template.setter
-    def icms_template(self, value):
-        self._icms_template = value
-
-    @property
-    def ipi_template(self):
-        override = ProductBranchOverride.find_product(self)
-        if override:
-            return override.ipi_template or self._ipi_template
-        return self._ipi_template
-
-    @ipi_template.setter
-    def ipi_template(self, value):
-        self._ipi_template = value
-
-    @property
-    def pis_template(self):
-        override = ProductBranchOverride.find_product(self)
-        if override:
-            return override.pis_template or self._pis_template
-        return self._pis_template
-
-    @pis_template.setter
-    def pis_template(self, value):
-        self._pis_template = value
-
-    @property
-    def cofins_template(self):
-        override = ProductBranchOverride.find_product(self)
-        if override:
-            return override.cofins_template or self._cofins_template
-        return self._cofins_template
-
-    @cofins_template.setter
-    def cofins_template(self, value):
-        self._cofins_template = value
-
     #
     # Private
     #
@@ -498,7 +454,63 @@ class Product(Domain):
     def get_description(self):
         return self.description
 
-    def set_as_storable_product(self, quantity=0, branch=None, cost=None):
+    def get_icms_template(self, branch: Branch):
+        """Returns the icms template that should be used for this product
+
+        :param branch: the branch that will be selling this product.
+        """
+        override = ProductBranchOverride.find_product(branch, self)
+        if override:
+            return override.icms_template or self._icms_template
+        return self._icms_template
+
+    def set_icms_template(self, value):
+        """Sets the icms template for this product"""
+        self._icms_template = value
+
+    def get_ipi_template(self, branch: Branch):
+        """Returns the ipi template that should be used for this product
+
+        :param branch: the branch that will be selling this product.
+        """
+        override = ProductBranchOverride.find_product(branch, self)
+        if override:
+            return override.ipi_template or self._ipi_template
+        return self._ipi_template
+
+    def set_ipi_template(self, value):
+        """Sets the ipi template for this product"""
+        self._ipi_template = value
+
+    def get_pis_template(self, branch: Branch):
+        """Returns the pis template that should be used for this product
+
+        :param branch: the branch that will be selling this product.
+        """
+        override = ProductBranchOverride.find_product(branch, self)
+        if override:
+            return override.pis_template or self._pis_template
+        return self._pis_template
+
+    def set_pis_template(self, value):
+        """Sets the pis template for this product"""
+        self._pis_template = value
+
+    def get_cofins_template(self, branch: Branch):
+        """Returns the cofins template that should be used for this product
+
+        :param branch: the branch that will be selling this product.
+        """
+        override = ProductBranchOverride.find_product(branch, self)
+        if override:
+            return override.cofins_template or self._cofins_template
+        return self._cofins_template
+
+    def set_cofins_template(self, value):
+        """Sets the cofins template for this product"""
+        self._cofins_template = value
+
+    def set_as_storable_product(self, branch: Branch, user: LoginUser, quantity=0, cost=None):
         """ Change a product without storable to a product with stock control.
 
         :param quantity: The current product quantity in stock.
@@ -509,13 +521,10 @@ class Product(Domain):
         storable = Storable(product=self, store=self.store)
         self.manage_stock = True
 
-        if not branch:
-            branch = get_current_branch(store=self.store)
-
         # TODO: Instead of register an initial stock, we must consider the product history.
         # Calculating the current quantity based on stock transaction history.
         if quantity:
-            storable.register_initial_stock(quantity, branch, cost or self.sellable.cost)
+            storable.register_initial_stock(quantity, branch, cost or self.sellable.cost, user)
 
     def has_quality_tests(self):
         return not self.quality_tests.find().is_empty()
@@ -871,8 +880,8 @@ class Product(Domain):
             self.sellable.copy_sellable(target=target.sellable)
 
         props = ['manufacturer', 'brand', 'family', 'width', 'height', 'depth',
-                 'weight', 'ncm', 'ex_tipi', 'genero', 'icms_template',
-                 'ipi_template', 'pis_template', 'cofins_template']
+                 'weight', 'ncm', 'ex_tipi', 'genero', '_icms_template',
+                 '_ipi_template', '_pis_template', '_cofins_template']
         for prop in props:
             value = getattr(self, prop)
             setattr(target, prop, value)
@@ -1320,8 +1329,8 @@ class Storable(Domain):
     #  Public API
     #
 
-    def increase_stock(self, quantity, branch, type, object_id, unit_cost=None,
-                       batch=None):
+    def increase_stock(self, quantity, branch, type, object_id, user: LoginUser,
+                       unit_cost=None, batch=None):
         """When receiving a product, update the stock reference for this new
         item on a specific |branch|.
 
@@ -1349,7 +1358,7 @@ class Storable(Domain):
             batch=batch,
             quantity=quantity,
             unit_cost=unit_cost,
-            responsible=get_current_user(self.store),
+            responsible=user,
             type=type,
             object_id=object_id)
         stock_item = stock_transaction.product_stock_item
@@ -1357,7 +1366,7 @@ class Storable(Domain):
         ProductStockUpdateEvent.emit(self.product, branch, old_quantity,
                                      stock_item.quantity)
 
-    def decrease_stock(self, quantity, branch, type, object_id,
+    def decrease_stock(self, quantity, branch, type, object_id, user: LoginUser,
                        cost_center=None, batch=None):
         """When receiving a product, update the stock reference for the sold item
         this on a specific |branch|. Returns the stock item that was
@@ -1394,7 +1403,7 @@ class Storable(Domain):
             batch=batch,
             quantity=-quantity,
             unit_cost=stock_item.stock_cost,
-            responsible=get_current_user(self.store),
+            responsible=user,
             type=type,
             object_id=object_id)
 
@@ -1407,7 +1416,7 @@ class Storable(Domain):
         return stock_item
 
     def register_initial_stock(self, quantity, branch, unit_cost,
-                               batch_number=None):
+                               user: LoginUser, batch_number=None):
         """Register initial stock, by increasing the amount of this storable,
         for the given quantity and |branch|
 
@@ -1428,11 +1437,10 @@ class Storable(Domain):
         else:
             batch = None
 
-        self.increase_stock(quantity, branch,
-                            StockTransactionHistory.TYPE_INITIAL,
-                            object_id=None, unit_cost=unit_cost, batch=batch)
+        self.increase_stock(quantity, branch, StockTransactionHistory.TYPE_INITIAL, object_id=None,
+                            user=user, unit_cost=unit_cost, batch=batch)
 
-    def update_stock_cost(self, stock_cost, branch, batch=None):
+    def update_stock_cost(self, stock_cost, branch, responsible: LoginUser, batch=None):
         """Update the stock cost
 
         :param stock_cost: The new stock cost
@@ -1447,7 +1455,7 @@ class Storable(Domain):
             batch=batch,
             quantity=0,
             unit_cost=stock_cost,
-            responsible=get_current_user(self.store),
+            responsible=responsible,
             type=StockTransactionHistory.TYPE_UPDATE_STOCK_COST,
             object_id=None)
 

@@ -76,8 +76,9 @@ class CreditEditor(BaseEditor):
 
         # Set status to PENDING now, to avoid calling set_pending on
         # on_confirm for payments that shoud not have its status changed.
-        payment = Payment(open_date=localtoday(),
+        payment = Payment(store=self.store, open_date=localtoday(),
                           branch=branch,
+                          station=api.get_current_station(self.store),
                           status=Payment.STATUS_PENDING,
                           description=self.model.description,
                           value=abs(self.model.value),

@@ -32,6 +32,7 @@ from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       ReceivingInvoice)
 from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.station import BranchStation
 from stoqlib.domain.workorder import WorkOrder
 from stoqlib.importers.csvimporter import CSVImporter
 
@@ -67,6 +68,7 @@ class PurchaseImporter(CSVImporter):
             raise ValueError(u"%s is not a valid branch" % (
                 data.branch_name, ))
         branch = person.branch
+        station = store.find(BranchStation).any()
 
         login_user = store.find(LoginUser, username=u'admin').one()
         group = PaymentGroup(store=store)
@@ -77,7 +79,8 @@ class PurchaseImporter(CSVImporter):
                                  transporter=transporter,
                                  group=group,
                                  responsible=get_current_user(store),
-                                 branch=branch)
+                                 branch=branch,
+                                 station=station)
 
         for sellable in self.parse_multi(Sellable, data.sellable_list, store):
             if not sellable.product:
@@ -89,21 +92,22 @@ class PurchaseImporter(CSVImporter):
                          order=purchase)
 
         method = PaymentMethod.get_by_name(store, data.payment_method)
-        method.create_payment(Payment.TYPE_OUT, purchase.group, branch,
-                              purchase.purchase_total,
-                              self.parse_date(data.due_date))
-        purchase.confirm()
+        method.create_payment(branch, station, Payment.TYPE_OUT, purchase.group,
+                              purchase.purchase_total, self.parse_date(data.due_date))
+        purchase.confirm(login_user)
         for payment in purchase.payments:
             payment.open_date = purchase.open_date
 
         receiving_invoice = ReceivingInvoice(store=store,
+                                             branch=branch,
+                                             station=station,
                                              supplier=supplier,
                                              invoice_number=int(data.invoice),
                                              transporter=transporter)
         receiving_order = ReceivingOrder(responsible=login_user,
                                          receival_date=self.parse_date(data.due_date),
                                          invoice_number=int(data.invoice),
-                                         branch=branch,
+                                         branch=branch, station=station,
                                          receiving_invoice=receiving_invoice,
                                          store=store)
         receiving_order.add_purchase(purchase)
@@ -117,4 +121,4 @@ class PurchaseImporter(CSVImporter):
                 purchase_item=purchase_item,
                 receiving_order=receiving_order
             )
-        receiving_order.confirm()
+        receiving_order.confirm(login_user)

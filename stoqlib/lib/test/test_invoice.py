@@ -57,7 +57,7 @@ def compare_invoice_file(invoice, basename):
 class InvoiceTest(DomainTest):
     def _add_payments(self, sale):
         method = PaymentMethod.get_by_name(self.store, u'money')
-        payment = method.create_payment(Payment.TYPE_IN, sale.group, sale.branch,
+        payment = method.create_payment(sale.branch, sale.station, Payment.TYPE_IN, sale.group,
                                         sale.get_sale_subtotal())
         payment.due_date = datetime.datetime(2000, 1, 1)
 
@@ -82,9 +82,9 @@ class InvoiceTest(DomainTest):
             code = str(1000 + i)
             self._add_product(sale, tax=18, price=price, code=code)
 
-        sale.order()
+        sale.order(self.current_user)
         self._add_payments(sale)
-        sale.confirm()
+        sale.confirm(self.current_user)
         sale.client = self.create_client()
         address = self.create_address()
         address.person = sale.client.person
@@ -106,9 +106,9 @@ class InvoiceTest(DomainTest):
             code = str(1000 + i)
             self._add_product(sale, tax=18, price=price, code=code)
 
-        sale.order()
+        sale.order(self.current_user)
         self._add_payments(sale)
-        sale.confirm()
+        sale.confirm(self.current_user)
         sale.client = self.create_client()
         address = self.create_address()
         address.person = sale.client.person
@@ -129,9 +129,9 @@ class InvoiceTest(DomainTest):
             price = 50 + i
             code = str(1000 + i)
             self._add_product(sale, tax=18, price=price, code=code)
-        sale.order()
+        sale.order(self.current_user)
         self._add_payments(sale)
-        sale.confirm()
+        sale.confirm(self.current_user)
 
         layout = self.store.find(InvoiceLayout).one()
         layout.continuous_page = True
@@ -148,9 +148,9 @@ class InvoiceTest(DomainTest):
         for i in range(10):
             self._add_product(sale, tax=18, price=50 + i)
 
-        sale.order()
+        sale.order(self.current_user)
         self._add_payments(sale)
-        sale.confirm()
+        sale.confirm(self.current_user)
         sale.client = self.create_client()
         address = self.create_address()
         address.person = sale.client.person

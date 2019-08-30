@@ -40,14 +40,11 @@ from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
-from stoqlib.api import api
 from stoqlib.database.expr import (Concat, Date, Distinct, Field, NullIf,
                                    Round, TransactionTimestamp)
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                          PriceCol, QuantityCol, IdentifierCol,
                                          IdCol, BoolCol, EnumCol)
-from stoqlib.database.runtime import (get_current_user,
-                                      get_current_branch)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.base import Domain, IdentifiableDomain
@@ -74,6 +71,7 @@ from stoqlib.domain.product import (Product, ProductHistory, Storable,
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.domain.service import Service
+from stoqlib.domain.station import BranchStation
 from stoqlib.domain.taxes import check_tax_info_presence, InvoiceItemIpi
 from stoqlib.exceptions import SellError, StockError, DatabaseInconsistency
 from stoqlib.lib.dateutils import localnow
@@ -192,23 +190,21 @@ class SaleItem(Domain):
 
     parent_item = Reference(parent_item_id, 'SaleItem.id')
 
-    #: A list of children of self
+    # : A list of children of self
     children_items = ReferenceSet('id', 'SaleItem.parent_item_id')
 
-    def __init__(self, store=None, **kw):
+    def __init__(self, store, sale: 'Sale', sellable: 'sellable', **kw):
         if not 'kw' in kw:
-            if not 'sellable' in kw:
-                raise TypeError('You must provide a sellable argument')
-            base_price = kw['sellable'].price
+            base_price = sellable.price
             kw['base_price'] = base_price
             if not kw.get('cfop'):
-                kw['cfop'] = kw['sellable'].default_sale_cfop
+                kw['cfop'] = sellable.default_sale_cfop
             if not kw.get('cfop'):
                 kw['cfop'] = sysparam.get_object(store, 'DEFAULT_SALES_CFOP')
 
             store = kw.get('store', store)
             check_tax_info_presence(kw, store)
-        Domain.__init__(self, store=store, **kw)
+        Domain.__init__(self, store=store, sale=sale, sellable=sellable, **kw)
 
         product = self.sellable.product
         if product:
@@ -318,14 +314,7 @@ class SaleItem(Domain):
     #  Public API
     #
 
-    def sell(self, branch):
-        store = self.store
-        if not (branch and
-                branch.id == get_current_branch(store).id):
-            raise SellError(_(u"Stoq still doesn't support sales for "
-                              u"branch companies different than the "
-                              u"current one"))
-
+    def sell(self, user: LoginUser):
         if not self.sellable.is_available():
             raise SellError(_(u"%s is not available for sale. Try making it "
                               u"available first and then try again.") % (
@@ -341,8 +330,8 @@ class SaleItem(Domain):
         if storable and quantity_to_decrease:
             try:
                 item = storable.decrease_stock(
-                    quantity_to_decrease, branch,
-                    StockTransactionHistory.TYPE_SELL, self.id,
+                    quantity_to_decrease, self.sale.branch,
+                    StockTransactionHistory.TYPE_SELL, self.id, user,
                     cost_center=self.sale.cost_center, batch=self.batch)
             except StockError as err:
                 raise SellError(str(err))
@@ -351,7 +340,7 @@ class SaleItem(Domain):
         self.quantity_decreased += quantity_to_decrease
         self.update_tax_values()
 
-    def cancel(self, branch):
+    def cancel(self, user: LoginUser):
         # This is emitted here instead of inside the if bellow because one can
         # connect on it and change this item in a way that, if it wasn't going
         # to increase stock before, it will after
@@ -360,13 +349,13 @@ class SaleItem(Domain):
         storable = self.sellable.product_storable
         if storable and self.quantity_decreased:
             storable.increase_stock(self.quantity_decreased,
-                                    branch,
+                                    self.sale.branch,
                                     StockTransactionHistory.TYPE_CANCELED_SALE,
-                                    self.id,
+                                    self.id, user,
                                     batch=self.batch)
         self.quantity_decreased = Decimal(0)
 
-    def reserve(self, quantity):
+    def reserve(self, user: LoginUser, quantity):
         """Reserve some quantity of this this item from stock
 
         This will remove the informed quantity from the stock.
@@ -376,10 +365,10 @@ class SaleItem(Domain):
         if storable:
             storable.decrease_stock(quantity, self.sale.branch,
                                     StockTransactionHistory.TYPE_SALE_RESERVED,
-                                    self.id, batch=self.batch)
+                                    self.id, user, batch=self.batch)
         self.quantity_decreased += quantity
 
-    def return_to_stock(self, quantity):
+    def return_to_stock(self, quantity, user: LoginUser):
         """Return some reserved quantity to stock
 
         This will return a previously reserved quantity to stock, so that it can
@@ -390,7 +379,7 @@ class SaleItem(Domain):
         if storable:
             storable.increase_stock(quantity, self.sale.branch,
                                     StockTransactionHistory.TYPE_SALE_RETURN_TO_STOCK,
-                                    self.id, batch=self.batch)
+                                    self.id, user, batch=self.batch)
         self.quantity_decreased -= quantity
 
     def set_batches(self, batches):
@@ -826,7 +815,8 @@ class Delivery(Domain):
         self.status = status
 
 
-@implementer(IContainer)
+# remove_item takes an extra argument so we cant implement IContainer
+# @implementer(IContainer)
 @implementer(IInvoice)
 class Sale(IdentifiableDomain):
     """Sale logic, the process of selling a |sellable| to a |client|.
@@ -1055,12 +1045,12 @@ class Sale(IdentifiableDomain):
     #: |loginuser| that cancelled the sale
     cancel_responsible = Reference(cancel_responsible_id, 'LoginUser.id')
 
-    def __init__(self, store=None, **kw):
-        kw['invoice'] = Invoice(store=store, invoice_type=Invoice.TYPE_OUT)
-        super(Sale, self).__init__(store=store, **kw)
+    def __init__(self, store, branch: Branch, **kw):
+        kw['invoice'] = Invoice(store=store, invoice_type=Invoice.TYPE_OUT, branch=branch)
+        super(Sale, self).__init__(store=store, branch=branch, **kw)
         # Branch needs to be set before cfop, which triggers an
         # implicit flush.
-        self.branch = kw.pop('branch', None)
+        self.branch = branch
         if not 'cfop' in kw:
             self.cfop = sysparam.get_object(store, 'DEFAULT_SALES_CFOP')
 
@@ -1091,9 +1081,9 @@ class Sale(IdentifiableDomain):
                         Eq(SaleItem.parent_item_id, None))
         return store.find(SaleItem, query).order_by(SaleItem.te_id)
 
-    def remove_item(self, sale_item):
+    def remove_item(self, sale_item, user: LoginUser):
         if sale_item.quantity_decreased > 0:
-            sale_item.return_to_stock(sale_item.quantity_decreased)
+            sale_item.return_to_stock(sale_item.quantity_decreased, user)
 
         # If the item removed is the item corresponding to the delivery, we need to
         # remove all items from the delivery, including the delivery itself
@@ -1198,7 +1188,7 @@ class Sale(IdentifiableDomain):
         return self.payments.find(
             Payment.status == Payment.STATUS_PENDING).count() > 0
 
-    def can_cancel(self):
+    def can_cancel(self, user: LoginUser):
         """Only ordered, confirmed, paid and quoting sales can be cancelled.
 
         :returns: ``True`` if the sale can be cancelled
@@ -1217,7 +1207,6 @@ class Sale(IdentifiableDomain):
 
         # When ALLOW_CANCEL_CONFIRMED_SALES is True, any sale can be cancelled
         # Admin user can always cancel as well
-        user = api.get_current_user(self.store)
         if (sysparam.get_bool("ALLOW_CANCEL_CONFIRMED_SALES")
                 or user.profile.check_app_permission(u'admin')):
             return True
@@ -1262,7 +1251,7 @@ class Sale(IdentifiableDomain):
     def is_returned(self):
         return self.status == Sale.STATUS_RETURNED
 
-    def order(self):
+    def order(self, user: LoginUser):
         """Orders the sale
 
         Ordering a sale is the first step done after creating it.
@@ -1277,9 +1266,9 @@ class Sale(IdentifiableDomain):
             raise SellError(_('Unable to make sales for clients with status '
                               '%s') % self.client.get_status_string())
 
-        self._set_sale_status(Sale.STATUS_ORDERED)
+        self._set_sale_status(Sale.STATUS_ORDERED, user)
 
-    def confirm(self, till=None):
+    def confirm(self, user: LoginUser, till=None):
         """Confirms the sale
 
         Confirming a sale means that the customer has confirmed the sale.
@@ -1294,23 +1283,20 @@ class Sale(IdentifiableDomain):
         assert self.can_confirm()
         assert self.branch
 
-        # FIXME: We should use self.branch, but it's not supported yet
-        store = self.store
-        branch = get_current_branch(store)
         for item in self.get_items():
             self.validate_batch(item.batch, sellable=item.sellable)
             if item.sellable.product:
-                ProductHistory.add_sold_item(store, branch, item)
-            item.sell(branch)
+                ProductHistory.add_sold_item(self.store, self.branch, item)
+            item.sell(user)
 
         self.total_amount = self.get_total_sale_amount()
 
         self.group.confirm()
         self._add_inpayments(till=till)
-        self._create_fiscal_entries()
+        self._create_fiscal_entries(user)
 
         # Save operation_nature and branch in Invoice table.
-        self.invoice.branch = branch
+        self.invoice.branch = self.branch
 
         if self._create_commission_at_confirm():
             for payment in self.payments:
@@ -1325,8 +1311,8 @@ class Sale(IdentifiableDomain):
         # automatically paid.
         # Since some plugins may listen to the sale status change event, we should
         # set payments as paid before the status change.
-        source_account = sysparam.get_object(store, 'SALES_ACCOUNT')
-        destination_account = sysparam.get_object(store, 'TILLS_ACCOUNT')
+        source_account = sysparam.get_object(self.store, 'SALES_ACCOUNT')
+        destination_account = sysparam.get_object(self.store, 'TILLS_ACCOUNT')
         for method in self.store.find(PaymentMethod):
             if method.operation.pay_on_sale_confirm():
                 self.group.pay_method_payments(method.method_name,
@@ -1334,7 +1320,7 @@ class Sale(IdentifiableDomain):
                                                destination_account=destination_account)
 
         old_status = self.status
-        self._set_sale_status(Sale.STATUS_CONFIRMED)
+        self._set_sale_status(Sale.STATUS_CONFIRMED, user)
 
         if self.current_sale_token:
             self.current_sale_token.close_token()
@@ -1410,25 +1396,25 @@ class Sale(IdentifiableDomain):
         self.close_date = None
         self.paid = False
 
-    def set_renegotiated(self):
+    def set_renegotiated(self, user: LoginUser):
         """Set the sale as renegotiated. The sale payments have been
         renegotiated and the operations will be done in
         another |paymentgroup|."""
         assert self.can_set_renegotiated()
 
         self.close_date = TransactionTimestamp()
-        self._set_sale_status(Sale.STATUS_RENEGOTIATED)
+        self._set_sale_status(Sale.STATUS_RENEGOTIATED, user)
 
-    def set_not_returned(self):
+    def set_not_returned(self, user: LoginUser):
         """Sets a sale as not returnd
 
         This will reset the sale status to confirmed (once you can only returna
         confirmed sale). Also, the return_date will be reset.
         """
-        self._set_sale_status(Sale.STATUS_CONFIRMED)
+        self._set_sale_status(Sale.STATUS_CONFIRMED, user)
         self.return_date = None
 
-    def cancel(self, reason, force=False):
+    def cancel(self, user: LoginUser, reason: str, force=False):
         """Cancel the sale
 
         You can only cancel an ordered sale. This will also cancel
@@ -1440,15 +1426,14 @@ class Sale(IdentifiableDomain):
             the last sale on the ecf)
         """
         if not force:
-            assert self.can_cancel()
+            assert self.can_cancel(user)
 
-        branch = get_current_branch(self.store)
         for item in self.get_items():
-            item.cancel(branch)
+            item.cancel(user)
 
         self.cancel_date = TransactionTimestamp()
         self.cancel_reason = reason
-        self.cancel_responsible = api.get_current_user(self.store)
+        self.cancel_responsible = user
         self.paid = False
 
         # Cancel payments
@@ -1459,9 +1444,9 @@ class Sale(IdentifiableDomain):
         if self.current_sale_token:
             self.current_sale_token.close_token()
 
-        self._set_sale_status(Sale.STATUS_CANCELLED)
+        self._set_sale_status(Sale.STATUS_CANCELLED, user)
 
-    def return_(self, returned_sale):
+    def return_(self, returned_sale: ReturnedSale):
         """Returns a sale
         Returning a sale means that all the items are returned to the stock.
         A renegotiation object needs to be supplied which
@@ -1477,7 +1462,7 @@ class Sale(IdentifiableDomain):
                                 sale_item in self.get_items()])
         if totally_returned:
             self.return_date = TransactionTimestamp()
-            self._set_sale_status(Sale.STATUS_RETURNED)
+            self._set_sale_status(Sale.STATUS_RETURNED, returned_sale.responsible)
             self.paid = False
 
         if self.client:
@@ -1852,14 +1837,14 @@ class Sale(IdentifiableDomain):
                         price=price,
                         parent_item=parent)
 
-    def create_sale_return_adapter(self):
+    def create_sale_return_adapter(self, branch: Branch, user: LoginUser, station: BranchStation):
         store = self.store
-        current_user = get_current_user(store)
         returned_sale = ReturnedSale(
             store=store,
             sale=self,
-            branch=get_current_branch(store),
-            responsible=current_user,
+            branch=branch,
+            responsible=user,
+            station=station,
         )
         for sale_item in self.get_items(with_children=False):
             if sale_item.is_totally_returned():
@@ -2029,11 +2014,11 @@ class Sale(IdentifiableDomain):
     # Private API
     #
 
-    def _set_sale_status(self, status):
+    def _set_sale_status(self, status, user: LoginUser):
         old_status = self.status
         self.status = status
 
-        SaleStatusChangedEvent.emit(self, old_status)
+        SaleStatusChangedEvent.emit(self, old_status, user)
 
     def _get_percentage_value(self, percentage):
         if not percentage:
@@ -2139,7 +2124,7 @@ class Sale(IdentifiableDomain):
             self.store, self.group,
             FiscalBookEntry.TYPE_SERVICE)
 
-    def _create_fiscal_entries(self):
+    def _create_fiscal_entries(self, user: LoginUser):
         """A Brazil-specific method
         Create new ICMS and ISS entries in the fiscal book
         for a given sale.
@@ -2152,13 +2137,13 @@ class Sale(IdentifiableDomain):
 
         if not self.products.is_empty():
             FiscalBookEntry.create_product_entry(
-                self.store,
+                self.store, self.branch, user,
                 self.group, self.cfop, self.coupon_id,
                 self._get_icms_total(av_difference))
 
         if not self.services.is_empty() and self.service_invoice_number:
             FiscalBookEntry.create_service_entry(
-                self.store,
+                self.store, self.branch, user,
                 self.group, self.cfop, self.service_invoice_number,
                 self._get_iss_total(av_difference))
 
@@ -2426,7 +2411,7 @@ class SaleView(Viewable):
     Company_Client = ClassAlias(Company, 'company_client')
 
     #: the |sale| of the view
-    sale = Sale
+    sale = Sale  # type: Sale
 
     #: the |client| of the view
     client = Client
@@ -2593,8 +2578,8 @@ class SaleView(Viewable):
     def can_confirm(self):
         return self.sale.can_confirm()
 
-    def can_cancel(self):
-        return self.sale.can_cancel()
+    def can_cancel(self, user: LoginUser):
+        return self.sale.can_cancel(user)
 
     def can_edit(self):
         return self.sale.can_edit()

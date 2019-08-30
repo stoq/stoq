@@ -78,7 +78,7 @@ class TestPayable(BaseGUITest):
         order.add_item(self.create_sellable(), 1)
         payment = self.add_payments(order, method_type=u'money')[0]
         payment.open_date = payment.due_date = localdate(2012, 1, 1)
-        order.confirm()
+        order.confirm(self.current_user)
         payment.identifier = 67890
         order.close()
         return order, payment

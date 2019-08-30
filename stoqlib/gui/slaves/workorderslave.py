@@ -290,7 +290,7 @@ class _WorkOrderItemSlave(SellableItemSlave):
         # Storable items added here are consumed at the same time
         storable = item.sellable.product_storable
         if storable:
-            item.reserve(quantity)
+            item.reserve(api.get_current_user(self.store), quantity)
         return item
 
     def get_sellable_view_query(self):

@@ -281,7 +281,7 @@ class TillApp(ShellApp):
 
         # Change the sale status to ORDERED
         if retval and sale.can_order():
-            sale.order()
+            sale.order(api.get_current_user(store))
 
         if store.confirm(retval):
             self.refresh()
@@ -373,7 +373,7 @@ class TillApp(ShellApp):
     def _get_till_balance(self):
         """Returns the balance of till operations"""
         try:
-            till = Till.get_current(self.store)
+            till = Till.get_current(self.store, api.get_current_station(self.store))
         except TillError:
             till = None
 
@@ -408,7 +408,7 @@ class TillApp(ShellApp):
             # when confirming sales in till, we also might want to cancel
             # sales
             can_return = (sale_view.can_return() or
-                          sale_view.can_cancel())
+                          sale_view.can_cancel(api.get_current_user(self.store)))
             can_edit_payment = sale_view.sale.can_edit()
         else:
             can_edit_payment = False
@@ -514,7 +514,7 @@ class TillApp(ShellApp):
             self.search_holder.show()
             self.footer_hbox.show()
             self.large_status.hide()
-            till = Till.get_current(self.store)
+            till = Till.get_current(self.store, api.get_current_station(self.store))
             text = _(u"Till opened on %s") % till.opening_date.strftime('%x')
             self.small_status.set_text(text)
         self._update_toolbar_buttons()
@@ -528,11 +528,12 @@ class TillApp(ShellApp):
 
     def on_Confirm__activate(self, action):
         selected = self.results.get_selected()
+        branch = api.get_current_branch(self.store)
 
         # If there are unfinished workorders associated with the sale, we
         # cannot print the coupon yet. Instead lets just create the payments.
         workorders = WorkOrder.find_by_sale(self.store, selected.sale)
-        if not all(wo.can_close() or wo.is_finished() for wo in workorders):
+        if not all(wo.can_close(branch) or wo.is_finished() for wo in workorders):
             self._create_sale_payments(selected)
         else:
             self._confirm_order(selected)

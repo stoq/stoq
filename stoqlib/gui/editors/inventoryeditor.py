@@ -196,7 +196,8 @@ class InventoryOpenEditor(BaseEditor):
         branch = self.store.fetch(self.model.branch)
         responsible = self.store.fetch(self.model.user)
         query = self._get_sellables_query()
-        return Inventory.create_inventory(self.store, branch, responsible, query)
+        return Inventory.create_inventory(self.store, branch, api.get_current_station(self.store),
+                                          responsible, query)
 
     #
     # Kiwi Callback

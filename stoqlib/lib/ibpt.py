@@ -136,8 +136,8 @@ class IBPTGenerator(object):
         sellable = item.sellable
         product = sellable.product
 
-        if product and product.icms_template:
-            origin = product.icms_template.orig
+        if product and product.get_icms_template(item.parent.branch):
+            origin = product.get_icms_template(item.parent.branch).orig
         else:
             # If the product does not have any fiscal information or it's a
             # service, defaults to national origin

@@ -135,8 +135,9 @@ class TillOpeningEditor(BaseEditor):
     #
 
     def create_model(self, store):
-        till = Till(store=store, station=api.get_current_station(store))
-        till.open_till()
+        till = Till(store=store, branch=api.get_current_branch(store),
+                    station=api.get_current_station(store))
+        till.open_till(api.get_current_user(store))
 
         return _TillOpeningModel(till=till, value=currency(0))
 
@@ -147,7 +148,8 @@ class TillOpeningEditor(BaseEditor):
         till = self.model.till
         # Using api.get_default_store instead of self.store
         # or it will return self.model.till
-        last_opened = Till.get_last_opened(api.get_default_store())
+        last_opened = Till.get_last_opened(api.get_default_store(),
+                                           api.get_current_station(api.get_default_store()))
         if (last_opened and
                 last_opened.opening_date.date() == till.opening_date.date()):
             warning(_("A till was opened earlier this day."))
@@ -203,7 +205,7 @@ class TillClosingEditor(BaseEditor):
         :param previous_day: If the till wasn't closed previously
         """
         self._previous_day = previous_day
-        self.till = Till.get_last(store)
+        self.till = Till.get_last(store, api.get_current_station(store))
         if close_db:
             assert self.till
         self._close_db = close_db
@@ -336,7 +338,8 @@ class TillClosingEditor(BaseEditor):
 
         if self._close_db:
             try:
-                till.close_till(observations=self.model.observations)
+                till.close_till(user=api.get_current_user(self.store),
+                                observations=self.model.observations)
             except ValueError as err:
                 warning(str(err))
                 return
@@ -406,7 +409,7 @@ class CashAdvanceEditor(BaseEditor):
     #
 
     def create_model(self, store):
-        till = Till.get_current(self.store)
+        till = Till.get_current(self.store, api.get_current_station(self.store))
         return Settable(employee=None,
                         payment=None,
                         # FIXME: should send in consts.now()
@@ -462,7 +465,7 @@ class BaseCashEditor(BaseEditor):
     #
 
     def create_model(self, store):
-        till = Till.get_current(store)
+        till = Till.get_current(store, api.get_current_station(store))
         return Settable(value=currency(0),
                         reason=u'',
                         till=till,

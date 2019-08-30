@@ -75,14 +75,12 @@ class TestBooklet(ReportTest):
             sellable = self.add_product(sale, price, quantity)
             sellable.description = description
 
-        sale.order()
+        sale.order(self.current_user)
         method = PaymentMethod.get_by_name(self.store, u'store_credit')
         method.max_installments = 12
-        method.create_payments(Payment.TYPE_IN,
-                               sale.group, sale.branch,
-                               value=sale.get_total_sale_amount(),
-                               due_dates=due_dates)
-        sale.confirm()
+        method.create_payments(sale.branch, sale.station, Payment.TYPE_IN, sale.group,
+                               value=sale.get_total_sale_amount(), due_dates=due_dates)
+        sale.confirm(self.current_user)
         sale.identifier = 123
 
         for i, payment in enumerate(sale.group.payments):

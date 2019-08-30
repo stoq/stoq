@@ -73,8 +73,8 @@ class TestSoldItemsByBranchSearch(GUITest):
         sale_item = self.create_sale_item(sale=sale)
         self.create_storable(sale_item.sellable.product, branches[0], 10)
         self.create_payment(payment_type=Payment.TYPE_IN, group=sale.group)
-        sale.order()
-        sale.confirm()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
         sale_item.sellable.code = u'1'
         sale_item.sellable.description = u'Luvas'
         sale.open_date = localdate(2012, 1, 1).date()
@@ -82,10 +82,11 @@ class TestSoldItemsByBranchSearch(GUITest):
 
         sale = self.create_sale(branch=branches[1])
         sale_item = self.create_sale_item(sale=sale)
-        self.create_storable(sale_item.sellable.product, branches[0], 10)
+        self.create_storable(sale_item.sellable.product, branches[1], 10)
         self.create_payment(payment_type=Payment.TYPE_IN, group=sale.group)
-        sale.order()
-        sale.confirm()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
+
         sale_item.sellable.code = u'2'
         sale_item.sellable.description = u'Botas'
         sale.open_date = localdate(2012, 2, 2).date()

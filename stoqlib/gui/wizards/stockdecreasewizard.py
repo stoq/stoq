@@ -415,7 +415,10 @@ class StockDecreaseWizard(BaseWizard):
 
     def _create_model(self, store):
         if self.receiving_order:
-            return StockDecrease.create_for_receiving_order(self.receiving_order)
+            return StockDecrease.create_for_receiving_order(self.receiving_order,
+                                                            api.get_current_branch(store),
+                                                            api.get_current_station(store),
+                                                            api.get_current_user(store))
 
         branch = api.get_current_branch(store)
         user = api.get_current_user(store)
@@ -425,6 +428,7 @@ class StockDecreaseWizard(BaseWizard):
                                        responsible=user,
                                        removed_by=employee,
                                        branch=branch,
+                                       station=api.get_current_station(store),
                                        status=StockDecrease.STATUS_INITIAL,
                                        cfop_id=cfop_id)
         stock_decrease.invoice.operation_nature = self.title
@@ -453,7 +457,7 @@ class StockDecreaseWizard(BaseWizard):
             for item in self.model.get_items():
                 sellable = item.sellable
                 try:
-                    sellable.check_taxes_validity()
+                    sellable.check_taxes_validity(self.model.branch)
                 except TaxError:
                     missing_tax_info.append(sellable.description)
             if missing_tax_info:
@@ -469,7 +473,7 @@ class StockDecreaseWizard(BaseWizard):
 
         self.retval = self.model
         self.store.confirm(self.model)
-        self.model.confirm()
+        self.model.confirm(api.get_current_user(self.store))
         self.close()
 
         StockDecreaseWizardFinishEvent.emit(self.model)

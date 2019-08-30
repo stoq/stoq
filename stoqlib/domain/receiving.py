@@ -40,6 +40,7 @@ from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.person import LoginUser
 from stoqlib.domain.product import (ProductHistory, StockTransactionHistory,
                                     StorableBatch)
 from stoqlib.domain.purchase import PurchaseOrder
@@ -162,7 +163,7 @@ class ReceivingOrderItem(Domain):
         # The unit may be empty
         return data.strip()
 
-    def add_stock_items(self):
+    def add_stock_items(self, user: LoginUser):
         """This is normally called from ReceivingOrder when
         a the receving order is confirmed.
         """
@@ -180,7 +181,7 @@ class ReceivingOrderItem(Domain):
             cost = self.cost + (self.ipi_value / self.quantity)
             storable.increase_stock(self.quantity, branch,
                                     StockTransactionHistory.TYPE_RECEIVED_PURCHASE,
-                                    self.id, cost, batch=self.batch)
+                                    self.id, user, cost, batch=self.batch)
         purchase.increase_quantity_received(self.purchase_item, self.quantity)
         ProductHistory.add_received_item(store, branch, self)
 
@@ -264,12 +265,12 @@ class ReceivingOrder(IdentifiableDomain):
     #  Public API
     #
 
-    def confirm(self):
+    def confirm(self, user: LoginUser):
         if self.receiving_invoice:
-            self.receiving_invoice.confirm()
+            self.receiving_invoice.confirm(user)
 
         for item in self.get_items():
-            item.add_stock_items()
+            item.add_stock_items(user)
 
         purchases = list(self.purchase_orders)
         for purchase in purchases:
@@ -724,8 +725,9 @@ class ReceivingInvoice(IdentifiableDomain):
 
         description = _(u'Freight for receiving %s') % (self.identifier, )
         payment = money_method.create_payment(
+            self.branch, self.station,
             Payment.TYPE_OUT,
-            group, self.branch, self.freight_total,
+            group, self.freight_total,
             due_date=localnow(),
             description=description)
         payment.set_pending()
@@ -750,7 +752,7 @@ class ReceivingInvoice(IdentifiableDomain):
 
         return freight_type
 
-    def confirm(self):
+    def confirm(self, user: LoginUser):
         self.invoice_total = self.total
         if self.group:
             self.group.confirm()
@@ -762,7 +764,7 @@ class ReceivingInvoice(IdentifiableDomain):
         # code, since it will pretty soon need a lot of changes.
         group = self.group or self.get_purchase_orders().pop().group
         FiscalBookEntry.create_product_entry(
-            self.store, group, receiving.cfop, self.invoice_number,
+            self.store, self.branch, user, group, receiving.cfop, self.invoice_number,
             self.icms_total, self.ipi_total)
 
     def add_receiving(self, receiving):

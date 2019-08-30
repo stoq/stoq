@@ -147,8 +147,9 @@ class TransferOrderDetailsDialog(BaseEditor):
 
         if yesno(_(u'Receive the order?'), Gtk.ResponseType.YES, _(u'Receive'),
                  _(u"Don't receive")):
-            responsible = api.get_current_user(self.store).person.employee
-            self.model.receive(responsible)
+            user = api.get_current_user(self.store)
+            responsible = user.person.employee
+            self.model.receive(user, responsible)
             self.store.commit(close=False)
             self.receival_date.set_property('model-attribute', 'receival_date')
             self.transfer_proxy.update_many(['destination_responsible_name',
@@ -184,8 +185,10 @@ class TransferOrderDetailsDialog(BaseEditor):
                       "should do a reverse transfer."))
             return
 
-        responsible = api.get_current_user(self.store).person.employee
-        self.model.cancel(responsible, retval.notes)
+        user = api.get_current_user(self.store)
+        branch = api.get_current_branch(self.store)
+        responsible = user.person.employee
+        self.model.cancel(user, responsible, retval.notes, branch)
         self.store.commit(close=False)
         self.receival_date.set_property('model-attribute', 'cancel_date')
         self.transfer_proxy.update_many(['destination_responsible_name',

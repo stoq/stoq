@@ -47,7 +47,7 @@ class TestTransferOrderSearch(GUITest):
         self.clean_domain([TransferOrderItem, TransferOrder])
         responsible = self.create_employee()
 
-        other_branch = Branch.get_active_remote_branches(self.store)[0]
+        other_branch = Branch.get_active_remote_branches(self.store, self.current_branch)[0]
         current_branch = api.get_current_branch(self.store)
 
         # One transfer that we did not receive yet
@@ -56,7 +56,7 @@ class TestTransferOrderSearch(GUITest):
         self.create_transfer_order_item(order=order)
         order.identifier = 75168
         order.open_date = localdatetime(2012, 1, 1)
-        order.send()
+        order.send(self.current_user)
 
         # One that we have already received
         order = self.create_transfer_order(source_branch=other_branch,
@@ -64,8 +64,8 @@ class TestTransferOrderSearch(GUITest):
         self.create_transfer_order_item(order=order)
         order.identifier = 56832
         order.open_date = localdatetime(2012, 2, 2)
-        order.send()
-        order.receive(responsible)
+        order.send(self.current_user)
+        order.receive(self.current_user, responsible)
         order.receival_date = localdatetime(2012, 2, 2)
 
         # One that we have sent but is not received yet
@@ -74,7 +74,7 @@ class TestTransferOrderSearch(GUITest):
         self.create_transfer_order_item(order=order)
         order.identifier = 20486
         order.open_date = localdatetime(2012, 3, 3)
-        order.send()
+        order.send(self.current_user)
 
         # One that we have sent and is recived
         order = self.create_transfer_order(source_branch=current_branch,
@@ -82,9 +82,9 @@ class TestTransferOrderSearch(GUITest):
         self.create_transfer_order_item(order=order)
         order.identifier = 20489
         order.open_date = localdatetime(2012, 3, 4)
-        order.send()
+        order.send(self.current_user)
 
-        order.receive(responsible)
+        order.receive(self.current_user, responsible)
         order.receival_date = localdatetime(2012, 3, 5)
 
         # And another one that is cancelled
@@ -93,9 +93,9 @@ class TestTransferOrderSearch(GUITest):
         self.create_transfer_order_item(order=order)
         order.identifier = 20491
         order.open_date = localdatetime(2012, 4, 5)
-        order.send()
+        order.send(self.current_user)
 
-        order.cancel(responsible, 'Cancelled due something',
+        order.cancel(self.current_user, responsible, 'Cancelled due something', self.current_branch,
                      cancel_date=localdatetime(2012, 4, 6))
 
     def test_search(self):
@@ -176,7 +176,7 @@ class TestTransferItemSearch(GUITest):
     def _create_domain(self):
         self.clean_domain([TransferOrderItem, TransferOrder])
 
-        other_branch = Branch.get_active_remote_branches(self.store)[0]
+        other_branch = Branch.get_active_remote_branches(self.store, self.current_branch)[0]
         current_branch = api.get_current_branch(self.store)
 
         # One transfer that we did not receive yet
@@ -185,7 +185,7 @@ class TestTransferItemSearch(GUITest):
         self.create_transfer_order_item(order=order)
         order.identifier = 75168
         order.open_date = localdatetime(2012, 1, 1)
-        order.send()
+        order.send(self.current_user)
 
     def test_search(self):
         self._create_domain()

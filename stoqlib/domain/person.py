@@ -73,7 +73,6 @@ from stoqlib.database.properties import (BoolCol, DateTimeCol,
                                          PriceCol, EnumCol,
                                          UnicodeCol, IdCol)
 from stoqlib.database.viewable import Viewable
-from stoqlib.database.runtime import get_current_station, get_current_branch
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.certificate import Certificate
 from stoqlib.domain.base import Domain
@@ -83,6 +82,7 @@ from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.profile import UserProfile
+from stoqlib.domain.station import BranchStation
 from stoqlib.enums import LatePaymentPolicy, RelativeLocation
 from stoqlib.exceptions import (DatabaseInconsistency, LoginError, SellError,
                                 ModelDataError)
@@ -1638,8 +1638,7 @@ class LoginUser(Domain):
         """
         self.pw_hash = self.hash(password or u'')
 
-    def login(self):
-        station = get_current_station(self.store)
+    def login(self, station: BranchStation):
         if station:
             Event.log(self.store,
                       Event.TYPE_USER,
@@ -1650,8 +1649,7 @@ class LoginUser(Domain):
                       Event.TYPE_USER,
                       _(u"User '%s' logged in") % (self.username, ))
 
-    def logout(self):
-        station = get_current_station(self.store)
+    def logout(self, station: BranchStation):
         if station:
             Event.log(self.store,
                       Event.TYPE_USER,
@@ -1792,14 +1790,13 @@ class Branch(Domain):
         return store.find(cls, Eq(cls.is_active, True))
 
     @classmethod
-    def get_active_remote_branches(cls, store):
+    def get_active_remote_branches(cls, store, current_branch: 'Branch'):
         """Find all active branches excluding the current one
 
         :param store: the store to be used to find the branches
         :returns: a sequence of active |branches|
         """
         branches = cls.get_active_branches(store)
-        current_branch = get_current_branch(store)
         return branches.find(Branch.id != current_branch.id)
 
     @classmethod
@@ -1892,7 +1889,7 @@ class SalesPerson(Domain):
     #
 
     @classmethod
-    def get_active_salespersons(cls, store):
+    def get_active_salespersons(cls, store, branch: Branch):
         """Get a list of all active salespersons
 
         When the salesperson is also a user in the system, only the users that
@@ -1905,16 +1902,15 @@ class SalesPerson(Domain):
                   Join(Person, Person.id == SalesPerson.person_id),
                   LeftJoin(LoginUser, LoginUser.person_id == SalesPerson.person_id),
                   LeftJoin(UserBranchAccess, UserBranchAccess.user_id == LoginUser.id)]
-        current_branch = get_current_branch(store)
         query = And(
             Eq(cls.is_active, True),
-            Or(UserBranchAccess.branch_id == current_branch.id,
+            Or(UserBranchAccess.branch_id == branch.id,
                Eq(UserBranchAccess.branch_id, None)))
         items = store.using(*tables).find((Person.name, SalesPerson), query)
         return locale_sorted(items, key=operator.itemgetter(0))
 
     @classmethod
-    def get_active_items(cls, store):
+    def get_active_items(cls, store, branch: Branch):
         """
         Return a list of active items (name, id)
 
@@ -1925,7 +1921,7 @@ class SalesPerson(Domain):
         :returns: the items
         """
         return [(name, salesperson.id) for name, salesperson in
-                cls.get_active_salespersons(store)]
+                cls.get_active_salespersons(store, branch)]
 
 
 @implementer(IActive)

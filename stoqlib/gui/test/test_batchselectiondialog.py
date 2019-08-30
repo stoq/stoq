@@ -45,11 +45,11 @@ class TestBatchSelectionDialog(GUITest):
         batch.create_date = datetime.date(2012, 12, 12)
 
         storable.register_initial_stock(10, api.get_current_branch(self.store),
-                                        1, u'1')
+                                        1, self.current_user, u'1')
         storable.register_initial_stock(15, api.get_current_branch(self.store),
-                                        1, u'2')
+                                        1, self.current_user, u'2')
         storable.register_initial_stock(8, api.get_current_branch(self.store),
-                                        1, u'3')
+                                        1, self.current_user, u'3')
 
         dialog = BatchSelectionDialog(self.store, storable, 33)
         for entry in list(dialog._spins.keys()):
@@ -92,10 +92,10 @@ class TestBatchSelectionDialog(GUITest):
 
         storable.increase_stock(10, branch,
                                 StockTransactionHistory.TYPE_INITIAL,
-                                None, batch=batch1)
+                                None, self.current_user, batch=batch1)
         storable.increase_stock(10, branch,
                                 StockTransactionHistory.TYPE_INITIAL,
-                                None, batch=batch2)
+                                None, self.current_user, batch=batch2)
 
         dialog = BatchSelectionDialog(self.store, storable, 5)
         # The last batch should not appear since it doesn't have a storable
@@ -134,7 +134,7 @@ class TestBatchIncreaseSelectionDialog(GUITest):
 
         with self.sysparam(SUGGEST_BATCH_NUMBER=True):
             storable.register_initial_stock(1, self.create_branch(), 0,
-                                            batch_number=u'123')
+                                            self.current_user, batch_number=u'123')
             dialog = BatchIncreaseSelectionDialog(self.store, storable, 10)
             # Make sure it suggested right
             self.assertEqual(dialog._last_entry.get_text(), '124')
@@ -162,7 +162,7 @@ class TestBatchIncreaseSelectionDialog(GUITest):
 
         with self.sysparam(SUGGEST_BATCH_NUMBER=True, SYNCHRONIZED_MODE=True):
             storable.register_initial_stock(1, self.create_branch(), 0,
-                                            batch_number=u'130')
+                                            self.current_user, batch_number=u'130')
             dialog = BatchIncreaseSelectionDialog(self.store, storable, 10)
             # Make sure it suggested right
             self.assertEqual(dialog._last_entry.get_text(), '131-AB')

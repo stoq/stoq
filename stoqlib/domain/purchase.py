@@ -41,7 +41,6 @@ from stoqlib.database.expr import (Date, Field, NullIf, TransactionTimestamp,
 from stoqlib.database.properties import (DateTimeCol, UnicodeCol,
                                          PriceCol, BoolCol, QuantityCol,
                                          IdentifierCol, IdCol, EnumCol)
-from stoqlib.database.runtime import get_current_user
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain, IdentifiableDomain
 from stoqlib.domain.event import Event
@@ -53,6 +52,7 @@ from stoqlib.domain.product import (StockTransactionHistory, Storable,
 from stoqlib.domain.person import (Person, Branch, Company, Supplier,
                                    Transporter, LoginUser)
 from stoqlib.domain.sellable import Sellable, SellableUnit
+from stoqlib.domain.station import BranchStation
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.defaults import quantize
@@ -173,7 +173,7 @@ class PurchaseItem(Domain):
         ordered_items = store.find(PurchaseItem, query)
         return ordered_items.sum(PurchaseItem.quantity) or Decimal(0)
 
-    def return_consignment(self, quantity):
+    def return_consignment(self, user: LoginUser, quantity):
         """
         Return this as a consignment item
 
@@ -184,7 +184,7 @@ class PurchaseItem(Domain):
         storable.decrease_stock(quantity=quantity,
                                 branch=self.order.branch,
                                 type=StockTransactionHistory.TYPE_CONSIGNMENT_RETURNED,
-                                object_id=self.id)
+                                object_id=self.id, user=user)
 
     def get_component_quantity(self, parent):
         """Get the quantity of a component.
@@ -396,9 +396,8 @@ class PurchaseOrder(IdentifiableDomain):
 
         money = PaymentMethod.get_by_name(self.store, u'money')
         payment = money.create_payment(
-            Payment.TYPE_IN, self.group, self.branch,
-            paid_value, description=_(u'%s Money Returned for Purchase %s') % (
-                u'1/1', self.identifier))
+            self.branch, self.station, Payment.TYPE_IN, self.group, paid_value,
+            description=_('%s Money Returned for Purchase %s') % ('1/1', self.identifier))
         payment.set_pending()
         payment.pay()
 
@@ -443,7 +442,7 @@ class PurchaseOrder(IdentifiableDomain):
                 return False
         return True
 
-    def confirm(self, confirm_date=None):
+    def confirm(self, responsible: LoginUser, confirm_date=None):
         """Confirms the purchase order
 
         :param confirm_data: optional, datetime
@@ -465,7 +464,7 @@ class PurchaseOrder(IdentifiableDomain):
         if self.supplier and self.group:
             self.group.recipient = self.supplier.person
 
-        self.responsible = get_current_user(self.store)
+        self.responsible = responsible
         self.status = PurchaseOrder.ORDER_CONFIRMED
         self.confirm_date = confirm_date
 
@@ -475,13 +474,13 @@ class PurchaseOrder(IdentifiableDomain):
                                             self.purchase_total,
                                             self.supplier.person.name))
 
-    def set_consigned(self):
+    def set_consigned(self, responsible: LoginUser):
         if self.status != PurchaseOrder.ORDER_PENDING:
             raise ValueError(
                 _(u'Invalid order status, it should be '
                   u'ORDER_PENDING, got %s') % (self.status_str, ))
 
-        self.responsible = get_current_user(self.store)
+        self.responsible = responsible
         self.status = PurchaseOrder.ORDER_CONSIGNED
 
     def close(self):
@@ -664,9 +663,9 @@ class PurchaseOrder(IdentifiableDomain):
                                        Sellable.id == Storable.id,
                                        Eq(Storable.is_batch, True))).is_empty()
 
-    def create_receiving_order(self):
+    def create_receiving_order(self, station: BranchStation):
         from stoqlib.domain.receiving import ReceivingOrder
-        receiving = ReceivingOrder(self.store, branch=self.branch)
+        receiving = ReceivingOrder(self.store, branch=self.branch, station=station)
         receiving.add_purchase(self)
         for item in self.get_items():
             receiving.add_purchase_item(item, quantity=item.quantity,
@@ -773,8 +772,8 @@ class QuoteGroup(IdentifiableDomain):
 
     def add_item(self, item):
         store = self.store
-        return Quotation(purchase=item, group=self, branch=self.branch,
-                         store=store)
+        return Quotation(store=store, purchase=item, group=self, branch=self.branch,
+                         station=self.station)
 
     #
     # IDescribable

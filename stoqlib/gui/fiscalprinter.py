@@ -116,7 +116,7 @@ class FiscalPrinterHelper(GObject.GObject):
         """Opens the till
         """
         try:
-            current_till = Till.get_current(self.store)
+            current_till = Till.get_current(self.store, api.get_current_station(self.store))
         except TillError as e:
             warning(str(e))
             return False
@@ -177,7 +177,7 @@ class FiscalPrinterHelper(GObject.GObject):
             close_ecf = self._close_ecf
 
         if close_db:
-            till = Till.get_last_opened(self.store)
+            till = Till.get_last_opened(self.store, api.get_current_station(self.store))
             assert till
 
         store = api.new_store()
@@ -220,7 +220,7 @@ class FiscalPrinterHelper(GObject.GObject):
         """
         ecf_needs_closing = HasPendingReduceZ.emit()
 
-        last_till = Till.get_last(self.store)
+        last_till = Till.get_last(self.store, api.get_current_station(self.store))
         if last_till:
             db_needs_closing = last_till.needs_closing()
         else:
@@ -299,7 +299,7 @@ class FiscalPrinterHelper(GObject.GObject):
         if needs_closing is CLOSE_TILL_NONE:
             self._previous_day = False
             # We still need to check if the till is open or closed.
-            till = Till.get_current(self.store)
+            till = Till.get_current(self.store, api.get_current_station(self.store))
             self._till_status_changed(closed=not till, blocked=False)
             return True
 
@@ -557,9 +557,9 @@ class FiscalCoupon(GObject.GObject):
 
             # FIXME: This used to be done inside sale.confirm. Maybe it would
             # be better to do a proper error handling
-            till = Till.get_current(store)
+            till = Till.get_current(store, api.get_current_station(store))
             assert till
-            sale.confirm(till=till)
+            sale.confirm(api.get_current_user(store), till=till)
 
             # Only finish the transaction after everything passed above.
             store.confirm(model)

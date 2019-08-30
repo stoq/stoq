@@ -375,16 +375,16 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         self.assertIsNotNone(wo_view)
         app.search.results.select(wo_view)
         with mock.patch('plugins.optical.opticalui.run_dialog') as run_dialog:
-            wo.approve()
+            wo.approve(self.current_user)
             run_dialog.return_value = Settable(supplier=supplier,
                                                supplier_order='1111',
                                                item=work_item,
                                                is_freebie=False)
-            wo.work()
+            wo.work(self.current_branch, self.current_user)
             results = PurchaseOrder.find_by_work_order(wo.store, wo)
             self.assertEquals(len(list(results)), 1)
 
-        wo.finish()
+        wo.finish(self.current_branch, self.current_user)
         app.deactivate()
 
     def test_work_order_cancel_change_status(self):
@@ -398,7 +398,7 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
         work_item = wo.add_sellable(product.sellable)
         work_item.sale_item = sale_item
         wo.sale = sale
-        wo.approve()
+        wo.approve(self.current_user)
 
         app = self.create_app(ServicesApp, u'services')
         app.search.refresh()
@@ -412,16 +412,16 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
 
         with mock.patch('plugins.optical.opticalui.run_dialog') as run_dialog:
             # No optical work order related to this WO, the dialog doesn't even run
-            wo.work()
+            wo.work(self.current_branch, self.current_user)
             self.assertNotCalled(run_dialog)
 
-        wo.pause('Reason')
+        wo.pause(self.current_user, 'Reason')
         optical_wo = self.create_optical_work_order()
         optical_wo.work_order = wo
 
         with mock.patch('plugins.optical.opticalui.run_dialog') as run_dialog:
             run_dialog.return_value = None
-            wo.work()
+            wo.work(self.current_branch, self.current_user)
             # At this point we didnt create a purchase
             results = PurchaseOrder.find_by_work_order(wo.store, wo)
             self.assertEquals(len(list(results)), 0)

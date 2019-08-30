@@ -90,7 +90,8 @@ class StartSaleQuoteStep(WizardEditorStep):
 
     def _setup_widgets(self):
         # Salesperson combo
-        salespersons = SalesPerson.get_active_salespersons(self.store)
+        salespersons = SalesPerson.get_active_salespersons(self.store,
+                                                           api.get_current_branch(self.store))
         self.salesperson.prefill(salespersons)
 
         change_salesperson = sysparam.get_int('ACCEPT_CHANGE_SALESPERSON')
@@ -714,6 +715,7 @@ class SaleQuoteWizard(BaseWizard):
                     status=Sale.STATUS_QUOTE,
                     salesperson=salesperson,
                     branch=api.get_current_branch(store),
+                    station=api.get_current_station(store),
                     group=PaymentGroup(store=store),
                     cfop_id=sysparam.get_object_id('DEFAULT_SALES_CFOP'),
                     store=store)

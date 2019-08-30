@@ -154,9 +154,9 @@ class ProductImporter(CSVImporter):
         product = Product(store=store, sellable=sellable, ncm=data.ncm)
 
         taxes = self._maybe_create_taxes(store)
-        product.icms_template = taxes['icms']
-        product.pis_template = taxes['pis']
-        product.cofins_template = taxes['cofins']
+        product.set_icms_template(taxes['icms'])
+        product.set_pis_template(taxes['pis'])
+        product.set_cofins_template(taxes['cofins'])
 
         supplier = store.fetch(self.supplier)
         ProductSupplierInfo(store=store,

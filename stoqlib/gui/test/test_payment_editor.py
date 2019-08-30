@@ -226,9 +226,9 @@ class TestPaymentEditor(GUITest):
     def test_show_sale_dialog(self, run_dialog):
         sale = self.create_sale()
         self.add_product(sale)
-        sale.order()
+        sale.order(self.current_user)
         self.add_payments(sale, method_type=u'money')
-        sale.confirm()
+        sale.confirm(self.current_user)
 
         p = sale.payments[0]
 

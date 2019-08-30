@@ -399,9 +399,9 @@ class PaymentListSlave(GladeSlaveDelegate):
                     tmp_identifier = None
 
                 payment = self.method.create_payment(
-                    payment_type=self.payment_type, payment_group=self.group,
-                    branch=self.branch, value=p.value, due_date=due_date,
-                    description=p.description, payment_number=p.payment_number)
+                    payment_type=self.payment_type, payment_group=self.group, branch=self.branch,
+                    station=api.get_current_station(self.branch.store), value=p.value,
+                    due_date=due_date, description=p.description, payment_number=p.payment_number)
                 if tmp_identifier:
                     payment.identifier = tmp_identifier
             except PaymentMethodError as err:
@@ -979,10 +979,9 @@ class CardMethodSlave(BaseEditorSlave):
                                                    self.total_value, due_dates)
             return
 
-        payments = self.method.create_payments(Payment.TYPE_IN,
-                                               self._payment_group,
-                                               self.order.branch,
-                                               self.total_value, due_dates)
+        payments = self.method.create_payments(self.order.branch,
+                                               api.get_current_station(self.store), Payment.TYPE_IN,
+                                               self._payment_group, self.total_value, due_dates)
 
         operation = self.method.operation
         for payment in payments:
@@ -1466,8 +1465,9 @@ class MultipleMethodSlave(BaseEditorSlave):
         assert isinstance(self.model, Sale)
 
         try:
-            payment = self._method.create_payment(
-                Payment.TYPE_IN, self.model.group, self.model.branch, payment_value)
+            payment = self._method.create_payment(self.model.branch,
+                                                  api.get_current_station(self.model.store),
+                                                  Payment.TYPE_IN, self.model.group, payment_value)
         except PaymentMethodError as err:
             warning(str(err))
 
@@ -1488,8 +1488,9 @@ class MultipleMethodSlave(BaseEditorSlave):
             p_type = Payment.TYPE_IN
 
         try:
-            payment = self._method.create_payment(
-                p_type, self.model.group, self.model.branch, payment_value)
+            payment = self._method.create_payment(self.model.branch,
+                                                  api.get_current_station(self.store), p_type,
+                                                  self.model.group, payment_value)
         except PaymentMethodError as err:
             warning(str(err))
 

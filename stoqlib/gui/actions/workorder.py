@@ -58,23 +58,24 @@ class WorkOrderActions(BaseActions):
         else:
             has_quote = model and bool(model.defect_reported or model.defect_detected)
 
+        branch = model and api.get_current_branch(model.store)
         self.set_action_enabled('Details', model)
         self.set_action_enabled('Edit', model and model.can_edit())
-        self.set_action_enabled('Approve', model and model.can_approve()),
-        self.set_action_enabled('Finish', model and model.can_finish())
-        self.set_action_enabled('Close', model and model.can_close())
+        self.set_action_enabled('Approve', model and model.can_approve())
+        self.set_action_enabled('Finish', model and model.can_finish(branch))
+        self.set_action_enabled('Close', model and model.can_close(branch))
         self.set_action_enabled('Cancel', model and model.can_cancel())
         self.set_action_enabled('Reject', model and model.can_reject()),
-        self.set_action_enabled('UndoRejection', model and model.can_undo_rejection()),
-        self.set_action_enabled('Pause', model and model.can_pause()),
-        self.set_action_enabled('Work', model and model.can_work()),
+        self.set_action_enabled('UndoRejection', model and model.can_undo_rejection())
+        self.set_action_enabled('Pause', model and model.can_pause())
+        self.set_action_enabled('Work', model and model.can_work(branch))
         self.set_action_enabled('CheckOrder', model and model.can_check_order()),
-        self.set_action_enabled('InformClient', model and model.can_inform_client()),
+        self.set_action_enabled('InformClient', model and model.can_inform_client())
         self.set_action_enabled('Reopen', model and model.can_reopen())
         self.set_action_enabled('PrintReceipt', model and model.is_finished())
         self.set_action_enabled('PrintQuote', bool(has_quote))
-        self.set_action_enabled('FinishOrClose', model and (model.can_finish() or
-                                                            model.can_close()))
+        self.set_action_enabled('FinishOrClose', model and (model.can_finish(branch) or
+                                                            model.can_close(branch)))
 
     #
     #   Private
@@ -158,7 +159,7 @@ class WorkOrderActions(BaseActions):
 
         with api.new_store() as store:
             work_order = store.fetch(work_order)
-            work_order.finish()
+            work_order.finish(api.get_current_branch(store), api.get_current_user(store))
 
         self.emit('model-edited', work_order)
 
@@ -170,7 +171,7 @@ class WorkOrderActions(BaseActions):
 
         with api.new_store() as store:
             work_order = store.fetch(work_order)
-            work_order.cancel(reason=rv.notes)
+            work_order.cancel(api.get_current_user(store), reason=rv.notes)
         self.emit('model-edited', work_order)
 
     @action('Close')

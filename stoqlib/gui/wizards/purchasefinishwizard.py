@@ -233,6 +233,7 @@ class PurchaseFinishWizard(BaseWizard):
 
         payment = Payment(open_date=today,
                           branch=self.purchase.branch,
+                          station=api.get_current_station(self.store),
                           description=description,
                           value=value,
                           base_value=value,

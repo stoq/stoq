@@ -34,8 +34,8 @@ class TestTillDetailsDialog(GUITest):
 
     def test_show(self):
         till = self.create_till()
-        till.open_till()
-        till.close_till(u"Observation...")
+        till.open_till(self.current_user)
+        till.close_till(self.current_user, "Observation...")
         till.opening_date = localdate(2014, 5, 6).date()
         till.closing_date = localdate(2014, 5, 6).date()
         till.responsible_open_id = self.create_user().id

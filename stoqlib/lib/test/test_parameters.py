@@ -55,6 +55,7 @@ class TestParameter(DomainTest):
         self.sale = Sale(coupon_id=123, client=client,
                          cfop_id=self.sparam.get_object_id('DEFAULT_SALES_CFOP'),
                          group=group, branch=self.branch,
+                         station=self.current_station,
                          salesperson=self.salesperson,
                          store=self.store)
 
@@ -131,15 +132,14 @@ class TestParameter(DomainTest):
     def test_default_sales_cfop(self):
         self._create_examples()
         group = self.create_payment_group()
-        sale = Sale(coupon_id=123, salesperson=self.salesperson,
+        sale = Sale(coupon_id=123, salesperson=self.salesperson, station=self.current_station,
                     branch=self.branch, group=group, store=self.store)
         self.assertTrue(self.sparam.compare_object(
             'DEFAULT_SALES_CFOP', sale.cfop))
         param = self.sparam.get_object(self.store, 'DEFAULT_RECEIVING_CFOP')
         group = self.create_payment_group()
-        sale = Sale(coupon_id=432, salesperson=self.salesperson,
-                    branch=self.branch, group=group, cfop=param,
-                    store=self.store)
+        sale = Sale(coupon_id=432, salesperson=self.salesperson, branch=self.branch, group=group,
+                    station=self.current_station, cfop=param, store=self.store)
         self.assertEqual(sale.cfop, param)
 
     def test_default_return_sales_cfop(self):
@@ -173,10 +173,12 @@ class TestParameter(DomainTest):
                                 username=u'craudio')
         receiving_order = ReceivingOrder(responsible=responsible,
                                          branch=branch,
+                                         station=self.current_station,
                                          store=self.store,
                                          invoice_number=876)
         param2 = self.sparam.get_object(self.store, 'DEFAULT_SALES_CFOP')
         receiving_order2 = ReceivingOrder(responsible=responsible,
+                                          station=self.current_station,
                                           cfop=param2, branch=branch,
                                           store=self.store,
                                           invoice_number=1231)

@@ -49,7 +49,7 @@
               <object class="ProxyComboBox" id="icms_template">
                 <property name="visible">True</property>
                 <property name="data_type">object</property>
-                <property name="model_attribute">icms_template</property>
+                <property name="model_attribute">_icms_template</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -61,7 +61,7 @@
               <object class="ProxyComboBox" id="ipi_template">
                 <property name="visible">True</property>
                 <property name="data_type">object</property>
-                <property name="model_attribute">ipi_template</property>
+                <property name="model_attribute">_ipi_template</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -89,7 +89,7 @@
               <object class="ProxyComboBox" id="pis_template">
                 <property name="visible">True</property>
                 <property name="data_type">object</property>
-                <property name="model_attribute">pis_template</property>
+                <property name="model_attribute">_pis_template</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -129,7 +129,7 @@
               <object class="ProxyComboBox" id="cofins_template">
                 <property name="visible">True</property>
                 <property name="data_type">object</property>
-                <property name="model_attribute">cofins_template</property>
+                <property name="model_attribute">_cofins_template</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>

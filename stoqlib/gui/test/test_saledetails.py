@@ -67,8 +67,8 @@ class TestSaleDetails(GUITest):
         payment.identifier = 999
         payment.group.payer = client.person
 
-        sale.order()
-        sale.confirm()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
         sale.group.pay()
 
         payment.paid_date = today
@@ -88,8 +88,9 @@ class TestSaleDetails(GUITest):
         date = localdate(2010, 12, 10).date()
 
         sale = self._create_sale()
-        returned_sale = sale.create_sale_return_adapter()
-        returned_sale.return_()
+        returned_sale = sale.create_sale_return_adapter(self.current_branch, self.current_user,
+                                                        self.current_station)
+        returned_sale.return_(self.current_user)
         returned_sale.return_date = date
 
         # payments[0] is the sale's payment created on self._create_sale
@@ -120,7 +121,8 @@ class TestSaleDetails(GUITest):
         sale.add_sellable(component1.sellable, quantity=1, parent=parent)
         sale.add_sellable(component2.sellable, quantity=1, parent=parent)
 
-        sale.create_sale_return_adapter()
+        sale.create_sale_return_adapter(self.current_branch, self.current_user,
+                                        self.current_station)
 
         model = self.store.find(SaleView, id=sale.id).one()
         dialog = SaleDetailsDialog(self.store, model)

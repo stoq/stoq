@@ -248,12 +248,14 @@ class Payment(IdentifiableDomain):
     #: |attachment| for this payment
     attachment = Reference(attachment_id, 'Attachment.id')
 
-    def __init__(self, store=None, **kw):
+    def __init__(self, store, branch, **kw):
+        from stoqlib.domain.person import Branch
+        assert isinstance(branch, Branch)
         if not 'value' in kw:
             raise TypeError('You must provide a value argument')
         if not 'base_value' in kw or not kw['base_value']:
             kw['base_value'] = kw['value']
-        super(Payment, self).__init__(store=store, **kw)
+        super(Payment, self).__init__(store=store, branch=branch, **kw)
 
     def _check_status(self, status, operation_name):
         fmt = 'Invalid status for %s operation: %s'
@@ -309,6 +311,7 @@ class Payment(IdentifiableDomain):
             p = Payment(open_date=payment.open_date,
                         identifier=temporary_identifier,
                         branch=payment.branch,
+                        station=payment.station,
                         payment_type=payment.payment_type,
                         status=payment.status,
                         description=u'%d/%d %s' % (i + 2, n_dates,

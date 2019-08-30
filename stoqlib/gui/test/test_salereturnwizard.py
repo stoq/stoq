@@ -39,9 +39,10 @@ class TestSaleReturnWizard(GUITest):
         self.add_product(sale)
         self.add_product(sale, quantity=2)
         self.add_payments(sale)
-        sale.order()
-        sale.confirm()
-        returned_sale = sale.create_sale_return_adapter()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
+        returned_sale = sale.create_sale_return_adapter(self.current_branch, self.current_user,
+                                                        self.current_station)
         SaleReturnWizard(self.store, returned_sale)
 
         for item in returned_sale.returned_items:
@@ -54,9 +55,10 @@ class TestSaleReturnWizard(GUITest):
         sale = self.create_sale()
         self.add_product(sale)
         payment, = self.add_payments(sale)
-        sale.order()
-        sale.confirm()
-        returned_sale = sale.create_sale_return_adapter()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
+        returned_sale = sale.create_sale_return_adapter(self.current_branch, self.current_user,
+                                                        self.current_station)
         returned_sale.reason = u"Reason"
         wizard = SaleReturnWizard(self.store, returned_sale)
         self.click(wizard.next_button)
@@ -90,9 +92,10 @@ class TestSaleReturnWizard(GUITest):
                           price=package_qty * p_comp.price,
                           parent=package_item)
         self.add_payments(sale)
-        sale.order()
-        sale.confirm()
-        returned_sale = sale.create_sale_return_adapter()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
+        returned_sale = sale.create_sale_return_adapter(self.current_branch, self.current_user,
+                                                        self.current_station)
 
         wizard = SaleReturnWizard(self.store, returned_sale)
         step = wizard.get_current_step()
@@ -178,9 +181,10 @@ class TestSaleReturnWizard(GUITest):
         self.add_product(sale)
         self.add_product(sale, quantity=2)
         self.add_payments(sale)
-        sale.order()
-        sale.confirm()
-        returned_sale = sale.create_sale_return_adapter()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
+        returned_sale = sale.create_sale_return_adapter(self.current_branch, self.current_user,
+                                                        self.current_station)
         wizard = SaleReturnWizard(self.store, returned_sale)
         self.click(wizard.next_button)
         step = wizard.get_current_step()
@@ -204,9 +208,10 @@ class TestSaleReturnWizard(GUITest):
         sale = self.create_sale()
         self.add_product(sale)
         payment, = self.add_payments(sale)
-        sale.order()
-        sale.confirm()
-        returned_sale = sale.create_sale_return_adapter()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
+        returned_sale = sale.create_sale_return_adapter(self.current_branch, self.current_user,
+                                                        self.current_station)
         returned_sale.reason = u"Reason"
         wizard = SaleReturnWizard(self.store, returned_sale)
         self.click(wizard.next_button)

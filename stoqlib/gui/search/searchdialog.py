@@ -29,6 +29,7 @@ from kiwi.environ import environ
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
+from stoqlib.api import api
 from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.person import Individual
 from stoqlib.enums import SearchFilterPosition
@@ -464,7 +465,7 @@ class SearchDialog(BasicDialog):
 
     def create_salesperson_filter(self, label=None):
         from stoqlib.domain.person import SalesPerson
-        items = SalesPerson.get_active_items(self.store)
+        items = SalesPerson.get_active_items(self.store, api.get_current_branch(self.store))
         items.insert(0, (_("Any"), None))
 
         if not label:

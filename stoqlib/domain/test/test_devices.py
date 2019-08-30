@@ -162,5 +162,6 @@ class TestDeviceSettings(DomainTest):
 
     def test_get_scale_settings(self):
         device = DeviceSettings(store=self.store,
+                                station=None,
                                 type=DeviceSettings.SCALE_DEVICE)
-        self.assertIsNone(device.get_scale_settings(store=self.store))
+        self.assertIsNone(device.get_scale_settings(store=self.store, station=self.current_station))

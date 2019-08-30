@@ -48,6 +48,7 @@ from stoqlib.domain.base import Domain, IdentifiableDomain
 from stoqlib.domain.events import StockOperationConfirmedEvent
 from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.interfaces import IContainer, IInvoice, IInvoiceItem
+from stoqlib.domain.person import LoginUser
 from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.domain.taxes import check_tax_info_presence
 from stoqlib.exceptions import DatabaseInconsistency
@@ -176,7 +177,7 @@ class LoanItem(Domain):
     def cfop_code(self):
         return u'5917'
 
-    def sync_stock(self):
+    def sync_stock(self, user: LoginUser):
         """Synchronizes the stock, increasing/decreasing it accordingly.
         Using the stored values when this object is created/loaded, compute how
         much we should increase or decrease the stock quantity.
@@ -193,12 +194,12 @@ class LoanItem(Domain):
         if diff_quantity > 0:
             self.storable.increase_stock(diff_quantity, self.branch,
                                          StockTransactionHistory.TYPE_RETURNED_LOAN,
-                                         self.id, batch=self.batch)
+                                         self.id, user, batch=self.batch)
         elif diff_quantity < 0:
             diff_quantity = - diff_quantity
             self.storable.decrease_stock(diff_quantity, self.branch,
                                          StockTransactionHistory.TYPE_LOANED,
-                                         self.id, batch=self.batch)
+                                         self.id, user, batch=self.batch)
 
         # Reset the values used to calculate the stock quantity, just like
         # when the object as loaded from the database again.
@@ -344,9 +345,9 @@ class Loan(IdentifiableDomain):
     cancel_responsible_id = IdCol()
     cancel_responsible = Reference(cancel_responsible_id, 'LoginUser.id')
 
-    def __init__(self, store=None, **kwargs):
-        kwargs['invoice'] = Invoice(store=store, invoice_type=Invoice.TYPE_OUT)
-        super(Loan, self).__init__(store=store, **kwargs)
+    def __init__(self, store, branch, **kwargs):
+        kwargs['invoice'] = Invoice(store=store, branch=branch, invoice_type=Invoice.TYPE_OUT)
+        super(Loan, self).__init__(store=store, branch=branch, **kwargs)
 
     #
     # Classmethods
@@ -533,7 +534,7 @@ class Loan(IdentifiableDomain):
     # Public API
     #
 
-    def sync_stock(self):
+    def sync_stock(self, user: LoginUser):
         """Synchronizes the stock of *self*'s :class:`loan items <LoanItem>`
 
         Just a shortcut to call :meth:`LoanItem.sync_stock` of all of
@@ -544,7 +545,7 @@ class Loan(IdentifiableDomain):
             # No need to sync stock for products that dont need.
             if not loan_item.sellable.product.manage_stock:
                 continue
-            loan_item.sync_stock()
+            loan_item.sync_stock(user)
 
     def can_close(self):
         """Checks if the loan can be closed. A loan can be closed if it is

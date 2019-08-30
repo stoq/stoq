@@ -123,11 +123,11 @@ class TestReceivable(BaseGUITest):
         sale.open_date = datetime.datetime(2013, 1, 1)
         sale.identifier = 12345
         self.add_product(sale)
-        sale.order()
+        sale.order(self.current_user)
         payment = self.add_payments(sale, method_type=u'bill',
                                     date=datetime.datetime(2013, 1, 1))[0]
         payment.identifier = 67890
-        sale.confirm()
+        sale.confirm(self.current_user)
         payment.due_date = localdatetime(2012, 1, 1)
         return sale, payment
 

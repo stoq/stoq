@@ -40,31 +40,29 @@ class _TestPaymentMethod:
     def createInPayment(self):
         sale = self.create_sale()
         method = PaymentMethod.get_by_name(self.store, self.method_type)
-        return method.create_payment(Payment.TYPE_IN, sale.group,
-                                     sale.branch, Decimal(100))
+        return method.create_payment(sale.branch, sale.station, Payment.TYPE_IN, sale.group,
+                                     Decimal(100))
 
     def createOutPayment(self):
         purchase = self.create_purchase_order()
         method = PaymentMethod.get_by_name(self.store, self.method_type)
-        return method.create_payment(Payment.TYPE_OUT, purchase.group,
-                                     purchase.branch, Decimal(100))
+        return method.create_payment(purchase.branch, purchase.station, Payment.TYPE_OUT,
+                                     purchase.group, Decimal(100))
 
     def createInPayments(self, no=3):
         sale = self.create_sale()
         d = localnow()
         method = PaymentMethod.get_by_name(self.store, self.method_type)
-        payments = method.create_payments(Payment.TYPE_IN, sale.group,
-                                          sale.branch, Decimal(100),
-                                          [d] * no)
+        payments = method.create_payments(sale.branch, sale.station, Payment.TYPE_IN, sale.group,
+                                          Decimal(100), [d] * no)
         return payments
 
     def createOutPayments(self, no=3):
         purchase = self.create_purchase_order()
         d = localnow()
         method = PaymentMethod.get_by_name(self.store, self.method_type)
-        payments = method.create_payments(Payment.TYPE_OUT, purchase.group,
-                                          purchase.branch, Decimal(100),
-                                          [d] * no)
+        payments = method.create_payments(purchase.branch, purchase.station, Payment.TYPE_OUT,
+                                          purchase.group, Decimal(100), [d] * no)
         return payments
 
     def createPayment(self, payment_type):
@@ -77,7 +75,7 @@ class _TestPaymentMethod:
 
         value = Decimal(100)
         method = PaymentMethod.get_by_name(self.store, self.method_type)
-        return method.create_payment(payment_type, order.group, order.branch, value)
+        return method.create_payment(order.branch, order.station, payment_type, order.group, value)
 
     def createPayments(self, payment_type, no=3):
         if payment_type == Payment.TYPE_OUT:
@@ -90,7 +88,8 @@ class _TestPaymentMethod:
         value = Decimal(100)
         due_dates = [localnow()] * no
         method = PaymentMethod.get_by_name(self.store, self.method_type)
-        return method.create_payments(payment_type, order.group, order.branch, value, due_dates)
+        return method.create_payments(order.branch, order.station, payment_type, order.group, value,
+                                      due_dates)
 
 
 class _TestPaymentMethodsBase(_TestPaymentMethod):
@@ -207,8 +206,9 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
 
     def _createUnclosedTill(self):
         till = Till(station=self.current_station,
+                    branch=self.current_branch,
                     store=self.store)
-        till.open_till()
+        till.open_till(self.current_user)
         yesterday = localtoday() - datetime.timedelta(1)
         till.opening_date = yesterday
 
@@ -227,7 +227,7 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
                  'method is 1')):
             method.create_payment(payment_type=Payment.TYPE_IN, payment_group=group,
                                   branch=branch, value=100, due_date=None,
-                                  description=None, base_value=None,
+                                  description=None, base_value=None, station=self.current_station,
                                   payment_number=None)
 
         self.create_payment(payment_type=Payment.TYPE_IN, date=None,
@@ -236,7 +236,7 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
         with self.assertRaises(DatabaseInconsistency):
             method.create_payment(payment_type=Payment.TYPE_IN, payment_group=group,
                                   branch=branch, value=100, due_date=None,
-                                  description=None, base_value=None,
+                                  description=None, base_value=None, station=self.current_station,
                                   payment_number=None)
 
     def test_create_payments_without_installments(self):
@@ -246,7 +246,7 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
         group = self.create_payment_group()
         with self.assertRaises(ValueError) as error:
             method.create_payments(payment_type=Payment.TYPE_IN, group=group,
-                                   branch=branch, value=Decimal(100),
+                                   branch=branch, value=Decimal(100), station=self.current_station,
                                    due_dates=[])
         self.assertEqual(str(error.exception), _('Need at least one installment'))
 
@@ -396,7 +396,8 @@ class TestCheck(DomainTest, _TestPaymentMethodsBase):
     def test_bank(self):
         sale = self.create_sale()
         method = PaymentMethod.get_by_name(self.store, self.method_type)
-        payment = method.create_payment(Payment.TYPE_OUT, sale.group, sale.branch, Decimal(10))
+        payment = method.create_payment(sale.branch, self.current_station, Payment.TYPE_OUT,
+                                        sale.group, Decimal(10))
         check_data = method.operation.get_check_data_by_payment(payment)
         check_data.bank_account.bank_number = 123
         self.assertEqual(payment.bank_account_number, 123)

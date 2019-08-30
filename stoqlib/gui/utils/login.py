@@ -162,7 +162,7 @@ class LoginHelper:
             warning(msg)
             raise LoginError(_("User does not have a profile"))
 
-        user.login()
+        user.login(api.get_current_station(default_store))
 
         # ICurrentUser might already be provided which is the case when
         # creating a new database, thus we need to replace it.

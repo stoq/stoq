@@ -54,11 +54,13 @@ class TestPayment(DomainTest):
         with self.assertRaises(TypeError):
             Payment(due_date=localnow(),
                     branch=self.create_branch(),
+                    station=self.current_station,
                     payment_type=Payment.TYPE_OUT,
                     store=self.store)
 
         payment = Payment(value=currency(10), due_date=localnow(),
                           branch=self.create_branch(),
+                          station=self.current_station,
                           method=None,
                           group=None,
                           category=None,
@@ -77,6 +79,7 @@ class TestPayment(DomainTest):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
+                          station=self.current_station,
                           due_date=localnow(),
                           method=method,
                           group=None,
@@ -114,6 +117,7 @@ class TestPayment(DomainTest):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
+                          station=self.current_station,
                           due_date=localnow(),
                           open_date=localnow(),
                           method=method,
@@ -180,6 +184,7 @@ class TestPayment(DomainTest):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
+                          station=self.current_station,
                           due_date=localnow(),
                           method=method,
                           group=None,
@@ -196,6 +201,7 @@ class TestPayment(DomainTest):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
+                          station=self.current_station,
                           due_date=localnow(),
                           method=method,
                           group=None,
@@ -217,6 +223,7 @@ class TestPayment(DomainTest):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
+                          station=self.current_station,
                           due_date=localnow(),
                           method=method,
                           group=None,
@@ -233,6 +240,7 @@ class TestPayment(DomainTest):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
+                          station=self.current_station,
                           due_date=localnow(),
                           method=method,
                           group=None,
@@ -253,6 +261,7 @@ class TestPayment(DomainTest):
         open_date = due_date = self._get_relative_day(-4)
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
+                          station=self.current_station,
                           due_date=due_date,
                           open_date=open_date,
                           method=method,
@@ -284,6 +293,7 @@ class TestPayment(DomainTest):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
+                          station=self.current_station,
                           due_date=localnow(),
                           method=method,
                           group=None,
@@ -351,14 +361,15 @@ class TestPayment(DomainTest):
                                            localdate(2012, 1, 1).date(),
                                            localdate(2012, 3, 1).date(),
                                            temporary_identifiers=True)
-        (self.assertTrue(p.identifier < 0) for p in payments)
+        for p in payments:
+            self.assertTrue(p.identifier < 0)
 
     def test_set_not_paid(self):
         sale = self.create_sale()
         self.add_product(sale)
         payment = self.add_payments(sale, method_type=u'check')[0]
-        sale.order()
-        sale.confirm()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
 
         account = self.create_account()
         payment.method.destination_account = account

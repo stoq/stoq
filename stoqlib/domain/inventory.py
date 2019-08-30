@@ -42,6 +42,7 @@ from stoqlib.domain.person import LoginUser, Person, Branch
 from stoqlib.domain.product import (StockTransactionHistory, StorableBatch, Product,
                                     Storable, ProductStockItem)
 from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.station import BranchStation
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -150,7 +151,7 @@ class InventoryItem(Domain):
     #  Public API
     #
 
-    def adjust(self, invoice_number):
+    def adjust(self, user: LoginUser, invoice_number):
         """Create an entry in fiscal book registering the adjustment
         with the related cfop data and change the product quantity
         available in stock.
@@ -163,7 +164,7 @@ class InventoryItem(Domain):
         if storable is None:
             # This item is in the inventory but is not an storable. We should register the initial
             # stock
-            self.product.set_as_storable_product(self.actual_quantity, self.inventory.branch)
+            self.product.set_as_storable_product(self.inventory.branch, user, self.actual_quantity)
             self.is_adjusted = True
             return
 
@@ -174,12 +175,12 @@ class InventoryItem(Domain):
             storable.increase_stock(adjustment_qty,
                                     self.inventory.branch,
                                     StockTransactionHistory.TYPE_INVENTORY_ADJUST,
-                                    self.id, batch=self.batch)
+                                    self.id, user, batch=self.batch)
         else:
             storable.decrease_stock(abs(adjustment_qty),
                                     self.inventory.branch,
                                     StockTransactionHistory.TYPE_INVENTORY_ADJUST,
-                                    self.id, batch=self.batch)
+                                    self.id, user, batch=self.batch)
 
         self._add_inventory_fiscal_entry(invoice_number)
         self.is_adjusted = True
@@ -511,15 +512,17 @@ class Inventory(IdentifiableDomain):
             query)
 
     @classmethod
-    def create_inventory(cls, store, branch, responsible, query=None):
+    def create_inventory(cls, store, branch: Branch, station: BranchStation, responsible,
+                         query=None):
         """Create a inventory with products that match the given query
 
         :param store: A store to open the inventory in
         :param query: A query to restrict the products that should be in the inventory.
         """
         inventory = cls(store=store,
+                        branch=branch,
+                        station=station,
                         open_date=localnow(),
-                        branch_id=branch.id,
                         responsible_id=responsible.id)
 
         for data in cls.get_sellables_for_inventory(store, branch, query):

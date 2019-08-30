@@ -66,16 +66,18 @@ class StartConsignmentStep(StartPurchaseStep):
 class ConsignmentItemStep(PurchaseItemStep):
 
     def _create_receiving_order(self):
-        self.model.set_consigned()
+        self.model.set_consigned(api.get_current_user(self.store))
 
         receiving_invoice = ReceivingInvoice(
             supplier=self.model.supplier,
             store=self.store,
             branch=self.model.branch,
+            station=api.get_current_station(self.store),
             responsible=api.get_current_user(self.store))
         receiving_model = ReceivingOrder(
             responsible=receiving_invoice.responsible,
             branch=self.model.branch,
+            station=api.get_current_station(self.store),
             invoice_number=None,
             receiving_invoice=receiving_invoice,
             store=self.store)
@@ -184,7 +186,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
             to_return = final.quantity_returned - initial.returned
 
             if to_return > 0:
-                final.return_consignment(to_return)
+                final.return_consignment(api.get_current_user(self.store), to_return)
             if to_sold > 0:
                 total_charged += final.cost * to_sold
 
@@ -300,7 +302,7 @@ class CloseInConsignmentWizard(BaseWizard):
                 payment.set_pending()
 
         if can_close:
-            purchase.confirm()
+            purchase.confirm(api.get_current_user(self.store))
             purchase.close()
 
         self.retval = purchase

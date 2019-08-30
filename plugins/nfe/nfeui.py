@@ -155,7 +155,7 @@ class NFeUI(object):
     # Events
     #
 
-    def _on_SaleStatusChanged(self, sale, old_status):
+    def _on_SaleStatusChanged(self, sale, old_status, user):
         if sale.status == Sale.STATUS_CONFIRMED:
             operation_dir = _('Sales')
             self._create_nfe(sale, sale.store, operation_dir)

@@ -618,7 +618,7 @@ class ECFUI(object):
     def _on_StartApplicationEvent(self, appname, app):
         self._add_ui_menus(appname, app)
 
-    def _on_SaleStatusChanged(self, sale, old_status):
+    def _on_SaleStatusChanged(self, sale, old_status, user):
         if sale.status == Sale.STATUS_CONFIRMED:
             if old_status == Sale.STATUS_RETURNED:
                 self._undo_returned_sale(sale)

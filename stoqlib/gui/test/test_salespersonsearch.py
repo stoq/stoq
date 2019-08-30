@@ -35,9 +35,9 @@ class TestSalesPersonSalesSearch(GUITest):
         # 5 items in sale for first salesperson
         sale1 = self.create_sale()
         self.add_product(sale1, quantity=5)
-        sale1.order()
+        sale1.order(self.current_user)
         self.add_payments(sale1, method_type=u'check')
-        sale1.confirm()
+        sale1.confirm(self.current_user)
         sale1.confirm_date = localdate(2011, 1, 1).date()
         sale1.salesperson.person.name = u'salesperson1'
 
@@ -45,17 +45,17 @@ class TestSalesPersonSalesSearch(GUITest):
         sale2 = self.create_sale()
         sale2.salesperson = sale1.salesperson
         self.add_product(sale2, quantity=3)
-        sale2.order()
+        sale2.order(self.current_user)
         self.add_payments(sale2, method_type=u'money')
-        sale2.confirm()
+        sale2.confirm(self.current_user)
         sale2.confirm_date = sale1.confirm_date
 
         # 15 items for another salesperson
         sale3 = self.create_sale()
         self.add_product(sale3, quantity=15)
-        sale3.order()
+        sale3.order(self.current_user)
         self.add_payments(sale3, method_type=u'bill')
-        sale3.confirm()
+        sale3.confirm(self.current_user)
         sale3.confirm_date = sale1.confirm_date
         sale3.salesperson.person.name = u'salesperson2'
 
@@ -74,9 +74,9 @@ class TestSalesPersonSalesSearch(GUITest):
             # One sale on one branch
             sale1 = self.create_sale(branch=current)
             self.add_product(sale1)
-            sale1.order()
+            sale1.order(self.current_user)
             self.add_payments(sale1, method_type=u'check')
-            sale1.confirm()
+            sale1.confirm(self.current_user)
             sale1.confirm_date = localdate(2011, 1, 1).date()
             sale1.salesperson.person.name = u'salesperson1'
 
@@ -84,9 +84,9 @@ class TestSalesPersonSalesSearch(GUITest):
             sale2 = self.create_sale(branch=other_branch)
             sale2.salesperson = sale1.salesperson
             self.add_product(sale2)
-            sale2.order()
+            sale2.order(self.current_user)
             self.add_payments(sale2, method_type=u'money')
-            sale2.confirm()
+            sale2.confirm(self.current_user)
             sale2.confirm_date = sale1.confirm_date
 
             dialog = SalesPersonSalesSearch(self.store)

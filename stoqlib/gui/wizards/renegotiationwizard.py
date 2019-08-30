@@ -70,7 +70,7 @@ class PaymentRenegotiationPaymentListStep(BaseMethodSelectionStep,
         payments = []
         for group in self.groups:
             group.renegotiation = self.model
-            group.get_parent().set_renegotiated()
+            group.get_parent().set_renegotiated(api.get_current_user(self.store))
             payments.extend(group.get_pending_payments())
 
         assert len(payments)
@@ -188,6 +188,7 @@ class PaymentRenegotiationWizard(BaseWizard):
                              store=store)
         model = PaymentRenegotiation(total=value,
                                      branch=branch,
+                                     station=api.get_current_station(store),
                                      responsible=user,
                                      client=client,
                                      group=group,

@@ -30,7 +30,6 @@ import string
 import mock
 from gi.repository import Gtk
 
-from stoqlib.api import api
 from stoqlib.domain.sale import Sale, SaleComment
 from stoqlib.domain.workorder import WorkOrder, WorkOrderCategory, WorkOrderItem
 from stoqlib.enums import ChangeSalespersonPolicy
@@ -73,14 +72,14 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         sellable2.barcode = u'12345679'
         self.create_storable(
             product=sellable2.product,
-            branch=api.get_current_branch(self.store),
+            branch=self.current_branch,
             stock=10)
         # Test for reserve for a batch with storable
         sellable3 = self.create_sellable()
         sellable3.barcode = u'12345680'
         storable, batch = self.create_storable(
             product=sellable3.product,
-            branch=api.get_current_branch(self.store),
+            branch=self.current_branch,
             is_batch=True, stock=10)
         # Test for return_to_stock
         sellable4 = self.create_sellable()
@@ -355,14 +354,14 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         medic = self.create_optical_medic(crm_number=u'999')
 
         auto = self.create_storable(
-            branch=api.get_current_branch(self.store),
+            branch=self.current_branch,
             stock=10)
         auto.product.sellable.barcode = u'auto_reserve'
         OpticalProduct(store=self.store, product=auto.product,
                        auto_reserve=True)
 
         not_auto = self.create_storable(
-            branch=api.get_current_branch(self.store),
+            branch=self.current_branch,
             stock=10)
         not_auto.product.sellable.barcode = u'not_auto_reserve'
         OpticalProduct(store=self.store, product=not_auto.product,

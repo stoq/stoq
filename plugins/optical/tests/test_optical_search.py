@@ -67,8 +67,8 @@ class TestMedicSalesSearch(GUITest, OpticalDomainTest):
         wo_item = self.create_work_order_item(order=workorder)
         wo_item.sale_item = sale_item
         self.add_payments(sale)
-        sale.order()
-        sale.confirm()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
         sale.open_date = localtoday()
         sale.confirm_date = localtoday()
 

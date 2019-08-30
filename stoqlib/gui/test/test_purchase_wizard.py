@@ -77,7 +77,8 @@ class TestPurchaseWizard(GUITest):
         with self.sysparam(MANDATORY_CHECK_NUMBER=True):
             self.wizard = PurchaseWizard(self.store)
             purchase_branch = self.create_branch()
-            purchase_order = PurchaseOrder(branch=purchase_branch)
+            purchase_order = PurchaseOrder(branch=purchase_branch, station=self.current_station,
+                                           store=self.store)
             sellable = self.create_sellable()
             purchase_order.add_item(sellable=sellable)
             self.wizard.model.identifier = 12345

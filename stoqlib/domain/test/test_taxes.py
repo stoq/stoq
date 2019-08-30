@@ -50,8 +50,8 @@ class TestBaseTax(DomainTest):
             calculo=ProductIpiTemplate.CALC_ALIQUOTA)
 
         product = self.create_product()
-        product.icms_template = icms_template
-        product.ipi_template = ipi_template
+        product.set_icms_template(icms_template)
+        product.set_ipi_template(ipi_template)
         sale_item = self.create_sale_item(sellable=product.sellable)
         sale_item.icms_info.set_item_tax(sale_item)
         sale_item.ipi_info.set_item_tax(sale_item)
@@ -439,7 +439,7 @@ class TestInvoiceItemPis(DomainTest):
             self.assertEqual(pis1, invoice_item_pis.get_tax_template(sale_item2))
             self.assertNotEqual(pis2, invoice_item_pis.get_tax_template(sale_item2))
 
-        product.pis_template = pis2
+        product.set_pis_template(pis2)
         self.assertEqual(pis2, invoice_item_pis.get_tax_template(sale_item))
         self.assertNotEqual(pis1, invoice_item_pis.get_tax_template(sale_item))
 
@@ -527,7 +527,7 @@ class TestInvoiceItemCofins(DomainTest):
             self.assertEqual(cofins1, invoice_item_cofins.get_tax_template(sale_item2))
             self.assertNotEqual(cofins2, invoice_item_cofins.get_tax_template(sale_item2))
 
-        product.cofins_template = cofins2
+        product.set_cofins_template(cofins2)
         self.assertEqual(cofins2, invoice_item_cofins.get_tax_template(sale_item))
         self.assertNotEqual(cofins1, invoice_item_cofins.get_tax_template(sale_item))
 

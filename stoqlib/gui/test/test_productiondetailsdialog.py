@@ -78,7 +78,7 @@ class TestProductionDetailsDialog(GUITest):
     @mock.patch('stoqlib.gui.dialogs.productiondetails.run_dialog')
     def test_without_quality_test(self, run_dialog):
         order = self._create_order()
-        order.start_production()
+        order.start_production(self.current_user)
         editor = ProductionDetailsDialog(self.store, order)
         self.check_editor(editor, 'dialog-production-details-create')
 
@@ -93,7 +93,7 @@ class TestProductionDetailsDialog(GUITest):
                                                editor, self.store,
                                                production_item)
             # This is what the editor above would have done:
-            production_item.produce(1, api.get_current_user(self.store), [])
+            production_item.produce(api.get_current_user(self.store), 1, [])
             self.check_editor(editor, 'dialog-production-details-produced')
 
         run_dialog.reset_mock()
@@ -110,7 +110,7 @@ class TestProductionDetailsDialog(GUITest):
                                                editor, self.store,
                                                material)
             # This is what the editor above would have done:
-            material.add_lost(1)
+            material.add_lost(self.current_user, 1)
             self.check_editor(editor, 'dialog-production-details-lost')
 
         editor.materials.select(material)
@@ -121,14 +121,14 @@ class TestProductionDetailsDialog(GUITest):
                                                editor, self.store,
                                                material)
             # This is what the editor above would have done:
-            material.allocate(1)
+            material.allocate(self.current_user, 1)
             self.check_editor(editor, 'dialog-production-details-allocated')
 
     @mock.patch('stoqlib.gui.dialogs.productiondetails.run_dialog')
     def test_with_quality_test(self, run_dialog):
         order = self._create_order()
         self._create_quality_tests(order)
-        order.start_production()
+        order.start_production(self.current_user)
         editor = ProductionDetailsDialog(self.store, order)
         self.check_editor(editor, 'dialog-production-details-quality-create')
 
@@ -139,7 +139,7 @@ class TestProductionDetailsDialog(GUITest):
 
         with mock.patch.object(self.store, 'commit'):
             # This is what the editor above would have done:
-            production_item.produce(1, api.get_current_user(self.store), [1])
+            production_item.produce(api.get_current_user(self.store), 1, [1])
             self.click(editor.produce_button)
         run_dialog.assert_called_once_with(ProductionItemProducedEditor,
                                            editor, self.store,

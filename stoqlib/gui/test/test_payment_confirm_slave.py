@@ -52,7 +52,7 @@ class TestPurchasePaymentConfirmSlave(GUITest):
         self.create_purchase_order_item(order)
         order.identifier = 68395
         order.status = PurchaseOrder.ORDER_PENDING
-        order.confirm()
+        order.confirm(self.current_user)
 
         payment.group = order.group
 
@@ -81,7 +81,7 @@ class TestSalePaymentConfirmSlave(GUITest):
                              get_current_branch(self.store), 10)
 
         payment.group = sale.group
-        sale.order()
+        sale.order(self.current_user)
 
         slave = SalePaymentConfirmSlave(self.store, [payment])
 
@@ -98,7 +98,7 @@ class TestSalePaymentConfirmSlave(GUITest):
 
         sale.group = payment.group
 
-        sale.order()
+        sale.order(self.current_user)
 
         payment.method.daily_interest = 1
         payment.method.penalty = 1
@@ -135,7 +135,7 @@ class TestSalePaymentConfirmSlave(GUITest):
         card_data = payment.card_data
         card_data.fee_value = 2
         card_data.fare = 4
-        sale.order()
+        sale.order(self.current_user)
 
         slave = SalePaymentConfirmSlave(self.store, [payment])
         self.assertEqual(slave.discount.read(), 6)

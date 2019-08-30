@@ -30,6 +30,7 @@ import string
 from kiwi.ui.objectlist import Column
 from kiwi.datatypes import ValidationError
 
+from stoqlib.api import api
 from stoqlib.domain.person import Person
 from stoqlib.domain.workorder import WorkOrder, WorkOrderItem
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
@@ -150,7 +151,7 @@ class OpticalItemStep(WorkOrderQuoteItemStep):
         if auto_reserve:
             quantity_to_reserve = min(balance, sale_item.quantity)
             if quantity_to_reserve:
-                sale_item.reserve(quantity_to_reserve)
+                sale_item.reserve(api.get_current_user(self.store), quantity_to_reserve)
 
         wo_item.quantity_decreased = sale_item.quantity_decreased
         return sale_item

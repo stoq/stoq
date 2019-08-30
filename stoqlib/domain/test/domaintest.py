@@ -152,6 +152,7 @@ class FakeNamespace(object):
     def __init__(self):
         self.api = mock.Mock()
         self.api.get_current_branch = get_current_branch
+        self.api.get_current_station = get_current_station
         self.DatabaseSettings = FakeDatabaseSettings
         self.StoqConfig = FakeStoqConfig
         self.datetime = mock.MagicMock(datetime)

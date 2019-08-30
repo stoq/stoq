@@ -207,10 +207,11 @@ class ProductSupplierEditor(BaseEditor):
         self._setup_branch_combo()
 
     def _setup_branch_combo(self):
-        branches = [api.get_current_branch(self.store)]
+        current_branch = api.get_current_branch(self.store)
+        branches = [current_branch]
         user = api.get_current_user(self.store)
         if user.profile.check_app_permission(u'admin'):
-            branches.extend(list(Branch.get_active_remote_branches(self.store)))
+            branches.extend(list(Branch.get_active_remote_branches(self.store, current_branch)))
         options = [(branch.get_description(), branch) for branch in branches]
         self.branch_combo.prefill(options)
         self.branch_combo.set_sensitive(False)
@@ -516,10 +517,10 @@ class ProductEditor(SellableEditor):
             model.model = self._template.model
             model.family = self._template.family
             model.ncm = self._template.ncm
-            model.icms_template = self._template.icms_template
-            model.ipi_template = self._template.ipi_template
-            model.pis_template = self._template.pis_template
-            model.cofins_template = self._template.cofins_template
+            model.set_icms_template(self._template._icms_template)
+            model.set_ipi_template(self._template._ipi_template)
+            model.set_pis_template(self._template._pis_template)
+            model.set_cofins_template(self._template._cofins_template)
 
             for product_attr in self._template.attributes:
                 ProductAttribute(store=self.store,
@@ -706,6 +707,7 @@ class ProductStockQuantityEditor(BaseEditor):
     def _register_inventory(self):
         query = Storable.id == self._product.id
         inventory = Inventory.create_inventory(self.store, branch=self._branch,
+                                               station=api.get_current_station(self.store),
                                                responsible=api.get_current_user(self.store),
                                                query=query)
         # At this point, the inventory should have only one item.
@@ -713,17 +715,18 @@ class ProductStockQuantityEditor(BaseEditor):
         item.counted_quantity = item.actual_quantity = self.model.quantity
         # item.product_cost = self.model.cost
         item.reason = self.model.reason
-        item.adjust(invoice_number=None)
+        item.adjust(user=api.get_current_user(self.store), invoice_number=None)
         inventory.close()
 
     def _register_initial_stock(self):
         if not self._product.storable:
-            self._product.set_as_storable_product(self.model.quantity,
-                                                  self._branch, self.model.cost)
+            self._product.set_as_storable_product(self._branch, api.get_current_user(self.store),
+                                                  self.model.quantity, self.model.cost)
         elif self.model.quantity:
             self._product.storable.register_initial_stock(self.model.quantity,
                                                           self._branch,
-                                                          self.model.cost)
+                                                          self.model.cost,
+                                                          api.get_current_user(self.store))
 
     def on_confirm(self):
         if not self._stock_item:

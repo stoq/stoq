@@ -40,8 +40,8 @@ class TestTillHistory(GUITest):
         sale.identifier = 1234
         self.add_product(sale)
         self.add_payments(sale, method_type=u'bill')
-        sale.order()
-        sale.confirm()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
         sale.group.pay()
 
         # Creating a purchase order to which a money payment is attached.
@@ -51,7 +51,7 @@ class TestTillHistory(GUITest):
         payment = self.add_payments(purchase, method_type=u'money')[0]
         payment.identifier = 43210
         purchase.status = purchase.ORDER_PENDING
-        purchase.confirm()
+        purchase.confirm(self.current_user)
         purchase.group.pay()
 
         # We create two payments whose dates are corresponding to the day of the test,
@@ -81,8 +81,8 @@ class TestTillHistory(GUITest):
         sale.identifier = 1234
         self.add_product(sale)
         payments = self.add_payments(sale, method_type=u'check', installments=2)
-        sale.order()
-        sale.confirm()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
         sale.group.pay()
         # Set the check data
         number = 0
@@ -99,8 +99,8 @@ class TestTillHistory(GUITest):
         sale.identifier = 7894
         self.add_product(sale)
         payments = self.add_payments(sale, method_type=u'check', installments=3)
-        sale.order()
-        sale.confirm()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
         sale.group.pay()
         # Set some blank values
         number = 0

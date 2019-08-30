@@ -59,7 +59,7 @@ class TestInventory(DomainTest):
         batch1 = self.create_storable_batch(storable3, u'123')
         storable3.increase_stock(3, branch, batch=batch1,
                                  type=StockTransactionHistory.TYPE_INITIAL,
-                                 object_id=None, unit_cost=10)
+                                 object_id=None, user=self.current_user, unit_cost=10)
 
         # One storable with one batch and a stock item (but without stock).
         # it should be on the inventory
@@ -69,15 +69,16 @@ class TestInventory(DomainTest):
         batch2 = self.create_storable_batch(storable4, u'124')
         storable4.increase_stock(1, branch, batch=batch2,
                                  type=StockTransactionHistory.TYPE_INITIAL,
-                                 object_id=None, unit_cost=10)
+                                 object_id=None, user=self.current_user, unit_cost=10)
         storable4.decrease_stock(1, branch, batch=batch2,
                                  type=StockTransactionHistory.TYPE_INITIAL,
-                                 object_id=None)
+                                 object_id=None, user=self.current_user)
 
         # Then, lets open the inventory
         responsible = self.create_user()
         query = Sellable.category == cat
-        inventory = Inventory.create_inventory(self.store, branch, responsible, query)
+        inventory = Inventory.create_inventory(self.store, branch, self.current_station,
+                                               responsible, query)
 
         self.assertEqual(inventory.branch, branch)
         self.assertEqual(inventory.responsible, responsible)
@@ -143,7 +144,7 @@ class TestInventory(DomainTest):
         item.actual_quantity = item.recorded_quantity - 1
         item.cfop_data = self.create_cfop_data()
         item.reason = u"Test"
-        item.adjust(invoice_number=13)
+        item.adjust(user=self.current_user, invoice_number=13)
         self.assertRaises(AssertionError, inventory.cancel)
         self.assertEqual(inventory.status, Inventory.STATUS_OPEN)
 
@@ -171,17 +172,17 @@ class TestInventory(DomainTest):
 
         items[0].reason = u"Test"
         items[0].cfop_data = cfop
-        items[0].adjust(invoice_number=13)
+        items[0].adjust(user=self.current_user, invoice_number=13)
         self.assertEqual(inventory.has_adjusted_items(), True)
 
         items[1].reason = u"Test"
         items[1].cfop_data = cfop
-        items[1].adjust(invoice_number=13)
+        items[1].adjust(user=self.current_user, invoice_number=13)
         self.assertEqual(inventory.has_adjusted_items(), True)
 
         items[2].reason = u"Test"
         items[2].cfop_data = cfop
-        items[2].adjust(invoice_number=13)
+        items[2].adjust(user=self.current_user, invoice_number=13)
         self.assertEqual(inventory.has_adjusted_items(), True)
 
     def test_get_items(self):
@@ -275,7 +276,7 @@ class TestInventoryItem(DomainTest):
         item.cfop_data = self.create_cfop_data()
         item.reason = u"test adjust"
         invoice_number = 13
-        item.adjust(invoice_number)
+        item.adjust(user=self.current_user, invoice_number=invoice_number)
 
         storable = item.product.storable
         current_stock = storable.get_balance_for_branch(item.inventory.branch)
@@ -290,9 +291,9 @@ class TestInventoryItem(DomainTest):
         item.is_adjusted = False
         item.actual_quantity = item.recorded_quantity
         item.inventory.status = Inventory.STATUS_OPEN
-        self.assertEqual(item.adjust(invoice_number=invoice_number), None)
+        self.assertEqual(item.adjust(user=self.current_user, invoice_number=invoice_number), None)
 
-        # Make the produc without stock control
+        # Make the product without stock control
         for i in storable.get_stock_items():
             for transaction_history in i.transactions:
                 self.store.remove(transaction_history)
@@ -306,7 +307,7 @@ class TestInventoryItem(DomainTest):
         self.assertEqual(item.product.storable, None)
 
         # After adjusting, the storable should be created, and there is one stock item.
-        item.adjust(invoice_number=invoice_number)
+        item.adjust(user=self.current_user, invoice_number=invoice_number)
         self.assertEqual(item.product.storable.get_stock_items().count(), 1)
 
     def test_get_code(self):
@@ -342,7 +343,7 @@ class TestInventoryItem(DomainTest):
         item.cfop_data = self.create_cfop_data()
         item.reason = u"test adjust"
         invoice_number = 13
-        item.adjust(invoice_number)
+        item.adjust(user=self.current_user, invoice_number=invoice_number)
         self.assertTrue(item.is_adjusted)
 
     def test_get_adjustment_quantity(self):

@@ -47,7 +47,8 @@ class TestTill(DomainTest):
         sellable = self.create_sellable()
         sale.add_sellable(sellable, price=10)
         method = PaymentMethod.get_by_name(self.store, u'bill')
-        payment = method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, Decimal(10))
+        payment = method.create_payment(sale.branch, sale.station, Payment.TYPE_IN, sale.group,
+                                        Decimal(10))
         return payment
 
     def _create_outpayment(self):
@@ -55,63 +56,67 @@ class TestTill(DomainTest):
         sellable = self.create_sellable()
         purchase.add_item(sellable, 1)
         method = PaymentMethod.get_by_name(self.store, u'bill')
-        payment = method.create_payment(
-            Payment.TYPE_OUT,
-            purchase.group, purchase.branch, Decimal(10))
+        payment = method.create_payment(purchase.branch, purchase.station, Payment.TYPE_OUT,
+                                        purchase.group, Decimal(10))
         return payment
 
     def test_get_current_till_open(self):
-        self.assertEqual(Till.get_current(self.store), None)
+        self.assertEqual(Till.get_current(self.store, self.current_station), None)
 
-        till = Till(store=self.store, station=self.current_station)
+        till = Till(store=self.store, branch=self.current_branch, station=self.current_station)
 
-        self.assertEqual(Till.get_current(self.store), None)
-        till.open_till()
-        self.assertEqual(Till.get_current(self.store), till)
+        self.assertEqual(Till.get_current(self.store, self.current_station), None)
+        till.open_till(self.current_user)
+        self.assertEqual(Till.get_current(self.store, self.current_station), till)
         self.assertEqual(till.opening_date.date(), localtoday().date())
         self.assertEqual(till.status, Till.STATUS_OPEN)
 
-        self.assertRaises(TillError, till.open_till)
+        with self.assertRaises(TillError):
+            till.open_till(self.current_user)
 
     def test_get_current_till_close(self):
-        self.assertEqual(Till.get_current(self.store), None)
-        till = Till(store=self.store, station=self.current_station)
-        till.open_till()
+        self.assertEqual(Till.get_current(self.store, self.current_station), None)
+        till = Till(store=self.store, branch=self.current_branch, station=self.current_station)
+        till.open_till(self.current_user)
 
-        self.assertEqual(Till.get_current(self.store), till)
-        till.close_till()
-        self.assertEqual(Till.get_current(self.store), None)
+        self.assertEqual(Till.get_current(self.store, self.current_station), till)
+        till.close_till(self.current_user)
+        self.assertEqual(Till.get_current(self.store, self.current_station), None)
 
     def test_till_open_once(self):
-        till = Till(store=self.store, station=self.current_station)
+        till = Till(store=self.store, branch=self.current_branch, station=self.current_station)
 
-        till.open_till()
-        till.close_till()
+        till.open_till(self.current_user)
+        till.close_till(self.current_user)
 
         with mock.patch.object(PluginManager, 'is_active') as is_active:
             is_active.return_value = True
-            self.assertRaises(TillError, till.open_till)
+            with self.assertRaises(TillError):
+                till.open_till(self.current_user)
 
     def test_till_close(self):
         station = self.create_station()
-        till = Till(store=self.store, station=station)
-        till.open_till()
+        till = Till(store=self.store, branch=self.current_branch, station=station)
+        till.open_till(self.current_user)
         self.assertEqual(till.status, Till.STATUS_OPEN)
-        till.close_till()
+        till.close_till(self.current_user)
         self.assertEqual(till.status, Till.STATUS_CLOSED)
-        self.assertRaises(TillError, till.close_till)
+        with self.assertRaises(TillError):
+            till.close_till(self.current_user)
 
     def test_till_close_more_than_balance(self):
         station = self.create_station()
-        till = Till(store=self.store, station=station)
-        till.open_till()
+        till = Till(store=self.store, branch=self.current_branch, station=station)
+        till.open_till(self.current_user)
         till.add_debit_entry(currency(20), u"")
-        self.assertRaises(ValueError, till.close_till)
+        with self.assertRaises(ValueError):
+            till.close_till(self.current_user)
 
     def test_get_balance(self):
         till = Till(store=self.store,
+                    branch=self.current_branch,
                     station=self.create_station())
-        till.open_till()
+        till.open_till(self.current_user)
 
         old = till.get_balance()
         till.add_credit_entry(currency(10), u"")
@@ -121,8 +126,9 @@ class TestTill(DomainTest):
 
     def test_get_cash_amount(self):
         till = Till(store=self.store,
+                    branch=self.current_branch,
                     station=self.create_station())
-        till.open_till()
+        till.open_till(self.current_user)
 
         old = till.get_cash_amount()
         # money operations
@@ -141,15 +147,16 @@ class TestTill(DomainTest):
         payment = self.create_payment()
         payment.due_date = till.opening_date
         payment.set_pending()
-        TillEntry(description=u'test', value=payment.value, till=till,
+        TillEntry(description=u'test', value=payment.value, till=till, station=self.current_station,
                   branch=till.station.branch, payment=payment, store=self.store)
         payment.pay()
         self.assertEqual(till.get_cash_amount(), old + 5 + payment.value)
 
     def test_get_credits_total(self):
         till = Till(store=self.store,
+                    branch=self.current_branch,
                     station=self.create_station())
-        till.open_till()
+        till.open_till(self.current_user)
 
         old = till.get_credits_total()
         till.add_credit_entry(currency(10), u"")
@@ -160,8 +167,9 @@ class TestTill(DomainTest):
 
     def test_get_debits_total(self):
         till = Till(store=self.store,
+                    branch=self.current_branch,
                     station=self.create_station())
-        till.open_till()
+        till.open_till(self.current_user)
 
         old = till.get_debits_total()
         till.add_debit_entry(currency(10), u"")
@@ -174,68 +182,70 @@ class TestTill(DomainTest):
         yesterday = localnow() - datetime.timedelta(1)
 
         # Open a till, set the opening_date to yesterday
-        till = Till(station=self.current_station,
+        till = Till(branch=self.current_branch, station=self.current_station,
                     store=self.store)
-        till.open_till()
+        till.open_till(self.current_user)
         till.opening_date = yesterday
 
-        self.assertRaises(TillError, Till.get_current, self.store)
+        with self.assertRaises(TillError):
+            Till.get_current(self.store, self.current_station)
         # This is used to close a till
-        self.assertEqual(Till.get_last_opened(self.store), till)
+        self.assertEqual(Till.get_last_opened(self.store, self.current_station), till)
 
-        till.close_till()
+        till.close_till(self.current_user)
 
-        self.assertEqual(Till.get_current(self.store), None)
+        self.assertEqual(Till.get_current(self.store, self.current_station), None)
 
     def test_till_open_previously_not_closed(self):
         yesterday = localnow() - datetime.timedelta(1)
 
         # Open a till, set the opening_date to yesterday
-        till = Till(station=self.current_station,
+        till = Till(branch=self.current_branch, station=self.current_station,
                     store=self.store)
-        till.open_till()
+        till.open_till(self.current_user)
         till.opening_date = yesterday
-        till.close_till()
+        till.close_till(self.current_user)
         till.closing_date = None
 
-        self.assertRaises(TillError, till.open_till)
+        with self.assertRaises(TillError):
+            till.open_till(self.current_user)
 
     def test_till_open_previously_opened(self):
         yesterday = localnow() - datetime.timedelta(1)
 
         # Open a till, set the opening_date to yesterday
-        till = Till(station=self.current_station,
+        till = Till(branch=self.current_branch, station=self.current_station,
                     store=self.store)
-        till.open_till()
+        till.open_till(self.current_user)
         till.opening_date = yesterday
         till.add_credit_entry(currency(10), u"")
-        till.close_till()
+        till.close_till(self.current_user)
         till.closing_date = yesterday
 
-        new_till = Till(station=self.current_station,
+        new_till = Till(branch=self.current_branch, station=self.current_station,
                         store=self.store)
         self.assertTrue(new_till._get_last_closed_till())
-        new_till.open_till()
+        new_till.open_till(self.current_user)
         self.assertEqual(new_till.initial_cash_amount, till.final_cash_amount)
 
     def test_till_open_other_station(self):
-        till = Till(station=self.create_station(),
+        till = Till(branch=self.current_branch, station=self.create_station(),
                     store=self.store)
-        till.open_till()
+        till.open_till(self.current_user)
 
-        till = Till(station=self.current_station,
+        till = Till(branch=self.current_branch, station=self.current_station,
                     store=self.store)
-        till.open_till()
+        till.open_till(self.current_user)
 
-        self.assertEqual(Till.get_last_opened(self.store), till)
+        self.assertEqual(Till.get_last_opened(self.store, self.current_station), till)
 
     def test_needs_closing(self):
-        till = Till(station=self.create_station(),
+        till = Till(branch=self.current_branch, station=self.create_station(),
                     store=self.store)
         self.assertFalse(till.needs_closing())
 
         # Till is opened today, no need to close
-        till.open_till()
+        till.open_till(self.current_user)
         self.assertFalse(till.needs_closing())
 
         # till was onpened yesterday. Should close
@@ -248,13 +258,14 @@ class TestTill(DomainTest):
             self.assertFalse(till.needs_closing())
 
         # Till is now closed, no need to close again
-        till.close_till()
+        till.close_till(self.current_user)
         self.assertFalse(till.needs_closing())
 
     def test_add_entry_in_payment(self):
         till = Till(store=self.store,
+                    branch=self.current_branch,
                     station=self.create_station())
-        till.open_till()
+        till.open_till(self.current_user)
 
         payment = self._create_inpayment()
         self.assertEqual(till.get_balance(), 0)
@@ -263,8 +274,9 @@ class TestTill(DomainTest):
 
     def test_add_entry_out_payment(self):
         till = Till(store=self.store,
+                    branch=self.current_branch,
                     station=self.create_station())
-        till.open_till()
+        till.open_till(self.current_user)
 
         payment = self._create_outpayment()
         self.assertEqual(till.get_balance(), 0)
@@ -273,8 +285,9 @@ class TestTill(DomainTest):
 
     def test_add_credit_entry(self):
         till = Till(store=self.store,
+                    branch=self.current_branch,
                     station=self.create_station())
-        till.open_till()
+        till.open_till(self.current_user)
 
         self.assertEqual(till.get_balance(), 0)
         till.add_credit_entry(10)
@@ -282,8 +295,9 @@ class TestTill(DomainTest):
 
     def test_add_debit_entry(self):
         till = Till(store=self.store,
+                    branch=self.current_branch,
                     station=self.create_station())
-        till.open_till()
+        till.open_till(self.current_user)
 
         self.assertEqual(till.get_balance(), 0)
         till.add_debit_entry(10)
@@ -291,34 +305,37 @@ class TestTill(DomainTest):
 
     def test_get_last(self):
         till = Till(store=self.store,
+                    branch=self.current_branch,
                     station=self.current_station)
-        till.open_till()
-        self.assertEqual(Till.get_last(self.store), till)
+        till.open_till(self.current_user)
+        self.assertEqual(Till.get_last(self.store, self.current_station), till)
 
     def test_get_last_closed(self):
         till = Till(store=self.store,
-                    station=self.current_station)
-        till.open_till()
-        till.close_till()
-        self.assertEqual(Till.get_last_closed(self.store), till)
+                    branch=self.current_branch, station=self.current_station)
+        till.open_till(self.current_user)
+        till.close_till(self.current_user)
+        self.assertEqual(Till.get_last_closed(self.store, self.current_station), till)
 
 
 class TestTillEntry(DomainTest):
 
     def test_time(self):
-        entry = TillEntry(store=self.store,
+        entry = TillEntry(store=self.store, branch=self.current_branch,
+                          station=self.current_station,
                           date=datetime.datetime(2000, 1, 1, 12, 34, 59, 789))
         self.assertEqual(entry.time, datetime.time(12, 34, 59))
 
     def test_branch_name(self):
         till = self.create_till()
-        till.open_till()
+        till.open_till(self.current_user)
         branch = self.create_branch(name=u'Test')
         person = branch.person
         person.company.fancy_name = u'Test Shop'
         entry = TillEntry(store=self.store,
                           till=till,
                           branch=branch,
+                          station=self.current_station,
                           date=datetime.datetime(2014, 1, 1))
         self.assertEqual(entry.branch_name, u'Test Shop')
         person.company.fancy_name = None
@@ -330,11 +347,11 @@ class TestTillSummary(DomainTest):
 
     def test_description_money(self):
         till = self.create_till()
-        till.open_till()
+        till.open_till(self.current_user)
         payment = self.create_payment()
         payment.due_date = till.opening_date
         payment.set_pending()
-        TillEntry(description=u'test', value=payment.value, till=till,
+        TillEntry(description=u'test', value=payment.value, till=till, station=self.current_station,
                   branch=till.station.branch, payment=payment, store=self.store)
 
         summary = till.get_day_summary()
@@ -343,12 +360,12 @@ class TestTillSummary(DomainTest):
 
     def test_description_card(self):
         till = self.create_till()
-        till.open_till()
+        till.open_till(self.current_user)
         till.initial_cash_amount = 0
         payment = self.create_card_payment(provider_id='VISA')
         payment.due_date = till.opening_date
         payment.set_pending()
-        TillEntry(description=u'test', value=payment.value, till=till,
+        TillEntry(description=u'test', value=payment.value, till=till, station=self.current_station,
                   branch=till.station.branch, payment=payment, store=self.store)
 
         summary = till.get_day_summary()

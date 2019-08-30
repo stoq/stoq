@@ -44,9 +44,9 @@ from stoqlib.database.properties import PriceCol
 from stoqlib.database.properties import (IntCol, BoolCol,
                                          DateTimeCol, UnicodeCol,
                                          IdCol)
-from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive
+from stoqlib.domain.station import BranchStation
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -186,13 +186,12 @@ class DeviceSettings(Domain):
                                    Eq(cls.is_active, True), cls.id != except_id)).one()
 
     @classmethod
-    def get_scale_settings(cls, store):
+    def get_scale_settings(cls, store, station: BranchStation):
         """
         Get the scale device settings for the current station
         :param store: a store
         :returns: a :class:`DeviceSettings` object or None if there is none
         """
-        station = get_current_station(store)
         return cls.get_by_station_and_type(store, station, cls.SCALE_DEVICE)
 
     #

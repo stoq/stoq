@@ -35,13 +35,14 @@ from zope.interface import implementer
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, PriceCol,
                                          QuantityCol, IdentifierCol,
                                          IdCol, EnumCol)
-from stoqlib.database.runtime import get_current_user, get_current_branch
 from stoqlib.domain.base import Domain, IdentifiableDomain
 from stoqlib.domain.events import StockOperationConfirmedEvent
 from stoqlib.domain.fiscal import Invoice
-from stoqlib.domain.interfaces import IContainer, IInvoice, IInvoiceItem
+from stoqlib.domain.interfaces import IInvoice, IInvoiceItem
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.person import LoginUser, Branch
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
+from stoqlib.domain.station import BranchStation
 from stoqlib.domain.taxes import check_tax_info_presence
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.dateutils import localnow
@@ -123,12 +124,13 @@ class StockDecreaseItem(Domain):
 
     receiving_order_item = Reference(receiving_order_item_id, 'ReceivingOrderItem.id')
 
-    def __init__(self, store=None, sellable=None, **kwargs):
+    def __init__(self, store, stock_decrease: 'StockDecrease', sellable=None, **kwargs):
         if sellable is None:
             raise TypeError('You must provide a sellable argument')
         check_tax_info_presence(kwargs, store)
 
         super(StockDecreaseItem, self).__init__(store=store, sellable=sellable,
+                                                stock_decrease=stock_decrease,
                                                 **kwargs)
 
         product = self.sellable.product
@@ -191,16 +193,12 @@ class StockDecreaseItem(Domain):
     # Public API
     #
 
-    def decrease(self, branch):
-        # FIXME: We should not be receiving a branch here. We should be using
-        # self.stock_decrease.branch for that.
-        assert branch
-
+    def decrease(self, user: LoginUser):
         storable = self.sellable.product_storable
         if storable:
-            storable.decrease_stock(self.quantity, branch,
+            storable.decrease_stock(self.quantity, self.stock_decrease.branch,
                                     StockTransactionHistory.TYPE_STOCK_DECREASE,
-                                    self.id,
+                                    self.id, user,
                                     cost_center=self.stock_decrease.cost_center,
                                     batch=self.batch)
 
@@ -221,7 +219,6 @@ class StockDecreaseItem(Domain):
         return self.sellable.get_description()
 
 
-@implementer(IContainer)
 @implementer(IInvoice)
 class StockDecrease(IdentifiableDomain):
     """Stock Decrease object implementation.
@@ -328,9 +325,9 @@ class StockDecrease(IdentifiableDomain):
     receiving_order_id = IdCol()
     receiving_order = Reference(receiving_order_id, 'ReceivingOrder.id')
 
-    def __init__(self, store=None, **kwargs):
-        kwargs['invoice'] = Invoice(store=store, invoice_type=Invoice.TYPE_OUT)
-        super(StockDecrease, self).__init__(store=store, **kwargs)
+    def __init__(self, store, branch: Branch, **kwargs):
+        kwargs['invoice'] = Invoice(store=store, branch=branch, invoice_type=Invoice.TYPE_OUT)
+        super(StockDecrease, self).__init__(store=store, branch=branch, **kwargs)
 
     #
     # IInvoice implementation
@@ -380,16 +377,17 @@ class StockDecrease(IdentifiableDomain):
     #
 
     @classmethod
-    def create_for_receiving_order(cls, receiving_order):
+    def create_for_receiving_order(cls, receiving_order, branch: Branch, station: BranchStation,
+                                   user: LoginUser):
         store = receiving_order.store
-        current_user = get_current_user(store)
-        employee = current_user.person.employee
+        employee = user.person.employee
         cfop_id = sysparam.get_object_id('DEFAULT_STOCK_DECREASE_CFOP')
         return_stock_decrease = cls(
             store=store,
             receiving_order=receiving_order,
-            branch=get_current_branch(store),
-            responsible=current_user,
+            branch=branch,
+            station=station,
+            responsible=user,
             removed_by=employee,
             cfop_id=cfop_id)
 
@@ -413,10 +411,6 @@ class StockDecrease(IdentifiableDomain):
             raise DatabaseInconsistency(_(u"Invalid status %d") % status)
         return cls.statuses[status]
 
-    def add_item(self, item):
-        assert not item.stock_decrease
-        item.stock_decrease = self
-
     def get_items(self):
         return self.store.find(StockDecreaseItem, stock_decrease=self)
 
@@ -433,7 +427,7 @@ class StockDecrease(IdentifiableDomain):
         """
         return self.status == StockDecrease.STATUS_INITIAL
 
-    def confirm(self):
+    def confirm(self, user):
         """Confirms the stock decrease
 
         """
@@ -445,7 +439,7 @@ class StockDecrease(IdentifiableDomain):
         for item in self.get_items():
             if item.sellable.product:
                 ProductHistory.add_decreased_item(store, branch, item)
-            item.decrease(branch)
+            item.decrease(user)
 
         old_status = self.status
         self.status = StockDecrease.STATUS_CONFIRMED

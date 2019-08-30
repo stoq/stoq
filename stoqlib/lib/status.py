@@ -211,11 +211,13 @@ class ResourceStatusManager(GObject.GObject):
 
         from stoqlib.domain.message import Message
         with api.new_store() as store:
+            user = api.get_current_user(store)
+            branch = api.get_current_branch(store)
             # We cannot setup correctly if the user or branch are not setup yet.
-            if not api.get_current_user(store) or not api.get_current_branch(store):
+            if not user or not branch:
                 return
 
-            messages = Message.find_active(store)
+            messages = Message.find_active(store, branch, user)
             for msg in messages:
                 @register
                 class Foo(ResourceStatus):

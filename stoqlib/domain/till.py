@@ -34,11 +34,9 @@ from storm.expr import And, Eq, Join, LeftJoin, Or
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 
-from stoqlib.database.runtime import get_current_user
 from stoqlib.database.expr import Date, TransactionTimestamp
 from stoqlib.database.properties import (PriceCol, DateTimeCol, UnicodeCol,
                                          IdentifierCol, IdCol, EnumCol)
-from stoqlib.database.runtime import get_current_station
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain, IdentifiableDomain
 from stoqlib.domain.events import TillOpenedEvent, TillClosedEvent
@@ -151,13 +149,12 @@ class Till(IdentifiableDomain):
     #
 
     @classmethod
-    def get_current(cls, store):
+    def get_current(cls, store, station: BranchStation):
         """Fetches the Till for the current station.
 
         :param store: a store
         :returns: a Till instance or None
         """
-        station = get_current_station(store)
         assert station is not None
 
         till = store.find(cls, status=Till.STATUS_OPEN, station=station).one()
@@ -169,30 +166,25 @@ class Till(IdentifiableDomain):
         return till
 
     @classmethod
-    def get_last_opened(cls, store):
+    def get_last_opened(cls, store, station: BranchStation):
         """Fetches the last Till which was opened.
         If in doubt, use Till.get_current instead. This method is a special case
         which is used to be able to close a till without calling get_current()
 
         :param store: a store
         """
-
-        result = store.find(Till,
-                            status=Till.STATUS_OPEN,
-                            station=get_current_station(store))
+        result = store.find(Till, status=Till.STATUS_OPEN, station=station)
         result = result.order_by(Till.opening_date)
         if not result.is_empty():
             return result[0]
 
     @classmethod
-    def get_last(cls, store):
-        station = get_current_station(store)
+    def get_last(cls, store, station: BranchStation):
         result = store.find(Till, station=station).order_by(Till.opening_date)
         return result.last()
 
     @classmethod
-    def get_last_closed(cls, store):
-        station = get_current_station(store)
+    def get_last_closed(cls, store, station: BranchStation):
         result = store.find(Till, station=station,
                             status=Till.STATUS_CLOSED).order_by(Till.opening_date)
         return result.last()
@@ -201,7 +193,7 @@ class Till(IdentifiableDomain):
     # Till methods
     #
 
-    def open_till(self):
+    def open_till(self, user: LoginUser):
         """Open the till.
 
         It can only be done once per day.
@@ -235,11 +227,11 @@ class Till(IdentifiableDomain):
 
         self.opening_date = TransactionTimestamp()
         self.status = Till.STATUS_OPEN
-        self.responsible_open = get_current_user(self.store)
+        self.responsible_open = user
         assert self.responsible_open is not None
         TillOpenedEvent.emit(self)
 
-    def close_till(self, observations=u""):
+    def close_till(self, user: LoginUser, observations=""):
         """This method close the current till operation with the confirmed
         sales associated. If there is a sale with a differente status than
         SALE_CONFIRMED, a new 'pending' till operation is created and
@@ -258,7 +250,7 @@ class Till(IdentifiableDomain):
         self.closing_date = TransactionTimestamp()
         self.status = Till.STATUS_CLOSED
         self.observations = observations
-        self.responsible_close = get_current_user(self.store)
+        self.responsible_close = user
         assert self.responsible_open is not None
         TillClosedEvent.emit(self)
 
@@ -419,6 +411,7 @@ class Till(IdentifiableDomain):
                          description=description,
                          payment=payment,
                          till=self,
+                         station=self.station,
                          branch=self.station.branch,
                          store=self.store)
 

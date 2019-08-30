@@ -173,17 +173,16 @@ class TestBasePaymentView(DomainTest):
         self.assertTrue(view.is_paid())
 
     def test_find_pending(self):
-        due_date = localtoday() + datetime.timedelta(-4), localtoday()
         for i in range(5):
+            payment = self.create_payment(payment_type=Payment.TYPE_IN)
+            payment.status = Payment.STATUS_PENDING
             if i % 2 == 0:
-                payment = self.create_payment(payment_type=Payment.TYPE_IN)
-                payment.status = Payment.STATUS_PENDING
                 payment.due_date = localtoday() + datetime.timedelta(-2)
             else:
-                payment = self.create_payment(payment_type=Payment.TYPE_IN)
-                payment.status = Payment.STATUS_PENDING
                 payment.due_date = Date(localtoday())
 
+        # Between 4 days ago and today
+        due_date = (localtoday() + datetime.timedelta(-4), localtoday())
         result = InPaymentView.find_pending(store=self.store, due_date=due_date)
         self.assertEqual(result.count(), 5)
 
@@ -636,7 +635,7 @@ class TestSellableCategoryView(DomainTest):
 class TestQuotationView(DomainTest):
     def test_group_quotation_purchase(self):
         order = self.create_purchase_order()
-        quote = QuoteGroup(store=self.store, branch=order.branch)
+        quote = QuoteGroup(store=self.store, branch=order.branch, station=order.station)
         order.status = PurchaseOrder.ORDER_QUOTING
         quote.add_item(order)
 
@@ -660,9 +659,9 @@ class TestSoldItemView(DomainTest):
     def test_average_cost(self):
         sale = self.create_sale()
         sellable = self.add_product(sale)
-        sale.order()
+        sale.order(self.current_user)
         self.add_payments(sale, method_type=u'money')
-        sale.confirm()
+        sale.confirm(self.current_user)
 
         view = self.store.find(SoldItemView, id=sellable.id).one()
         self.assertEqual(view.average_cost, 0)
@@ -741,16 +740,17 @@ class TestReturnedSalesView(DomainTest):
         # First create a sale
         sale = self.create_sale(branch=self.current_branch)
         self.add_product(sale)
-        sale.order()
+        sale.order(self.current_user)
         self.add_payments(sale)
-        sale.confirm()
+        sale.confirm(self.current_user)
         sale.group.pay()
 
         # A new sale and a trade
-        returned_sale = sale.create_sale_return_adapter()
+        returned_sale = sale.create_sale_return_adapter(self.current_branch, self.current_user,
+                                                        self.current_station)
         new_sale = self.create_sale()
         returned_sale.new_sale = new_sale
-        returned_sale.trade()
+        returned_sale.trade(self.current_user)
 
         # now test the properties
         self.assertEqual(self.store.find(ReturnedSalesView).count(), 1)

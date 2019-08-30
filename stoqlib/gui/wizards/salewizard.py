@@ -235,9 +235,8 @@ class BaseMethodSelectionStep(object):
         method = PaymentMethod.get_by_name(self.store, method_name)
         description = _(u'%s returned for sale %s') % (method.description,
                                                        self.model.identifier)
-        payment = method.create_payment(Payment.TYPE_OUT,
-                                        payment_group=self.model.group,
-                                        branch=self.model.branch,
+        payment = method.create_payment(self.model.branch, api.get_current_station(self.store),
+                                        Payment.TYPE_OUT, payment_group=self.model.group,
                                         value=(payments_value - sale_total),
                                         description=description)
         payment.set_pending()
@@ -261,8 +260,9 @@ class BaseMethodSelectionStep(object):
         money_method = PaymentMethod.get_by_name(self.store, u'money')
         total = total or self.wizard.get_total_to_pay()
         try:
-            return money_method.create_payment(Payment.TYPE_IN, self.model.group,
-                                               self.model.branch, total)
+            return money_method.create_payment(self.model.branch,
+                                               api.get_current_station(self.store), Payment.TYPE_IN,
+                                               self.model.group, total)
         except PaymentMethodError as err:
             warning(str(err))
 
@@ -643,7 +643,8 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.client.set_property('mandatory', mandatory_client)
 
         marker('Filling sales persons')
-        salespersons = SalesPerson.get_active_salespersons(self.store)
+        salespersons = SalesPerson.get_active_salespersons(self.store,
+                                                           api.get_current_branch(self.store))
         self.salesperson.prefill(salespersons)
         marker('Finished filling sales persons')
 
@@ -892,7 +893,7 @@ class ConfirmSaleWizard(BaseWizard):
             # but cannot confirm and are thrown back to the main
             # POS interface
             if self.model.can_order():
-                self.model.order()
+                self.model.order(api.get_current_user(self.store))
 
         marker('leaving ConfirmSaleWizard.__init__')
 

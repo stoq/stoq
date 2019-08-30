@@ -299,12 +299,12 @@ class ReceivingOrderItemStep(BaseWizardStep):
 
     def _create_receiving_order(self):
         supplier_id = self.purchases[0].supplier_id
-        branch_id = self.purchases[0].branch_id
+        branch = self.purchases[0].branch
 
         # If the receiving is for another branch, we need a temporary identifier
         temporary_identifier = None
         if (api.sysparam.get_bool('SYNCHRONIZED_MODE') and
-                api.get_current_branch(self.store).id != branch_id):
+                api.get_current_branch(self.store) != branch):
             temporary_identifier = ReceivingOrder.get_temporary_identifier(self.store)
 
         # We cannot create the model in the wizard since we haven't
@@ -312,13 +312,15 @@ class ReceivingOrderItemStep(BaseWizardStep):
         # Create the order here since this is the first place where we
         # actually have a purchase selected
         receiving_invoice = ReceivingInvoice(
-            supplier=supplier_id, store=self.store, branch=branch_id,
+            supplier=supplier_id, store=self.store, branch=branch,
+            station=api.get_current_station(self.store),
             responsible=api.get_current_user(self.store))
         self.wizard.model = self.model = ReceivingOrder(
             identifier=temporary_identifier,
             receiving_invoice=receiving_invoice,
             responsible=receiving_invoice.responsible,
-            invoice_number=None, branch=branch_id, store=self.store)
+            station=api.get_current_station(self.store),
+            invoice_number=None, branch=branch, store=self.store)
 
         for row in self.purchases:
             self.model.add_purchase(row.purchase)
@@ -490,7 +492,7 @@ class ReceivingOrderWizard(BaseWizard):
                 continue
             self.store.remove(item)
 
-        self.model.confirm()
+        self.model.confirm(api.get_current_user(self.store))
         self.retval = self.model
         # Confirm before printing to avoid losing data if something breaks
         self.store.confirm(self.retval)

@@ -83,7 +83,7 @@ class TestConfirmSaleWizard(GUITest):
                                             total_paid=0)
 
         # NOTE: Document increases/decreases
-        # 3: select user/branch/station (normally cached)
+        # 4: select user/branch/station (normally cached)
         # 1: select sales_person
         # 1: select transporter
         # 1: select cost cebnter
@@ -92,7 +92,7 @@ class TestConfirmSaleWizard(GUITest):
         #  - one is need_adjust_batches
         # 1: select payment status
         # 2: select the branch acronym for sale repr()
-        self.assertEqual(tracer.count, 14)
+        self.assertEqual(tracer.count, 15)
 
     def test_create(self):
         self._create_wizard()
@@ -182,9 +182,9 @@ class TestConfirmSaleWizard(GUITest):
         self.add_product(sale, price=100)
         method = PaymentMethod.get_by_name(self.store, u'check')
         p1 = method.create_payment(
-            Payment.TYPE_IN, sale.group, sale.branch, 50)
+            sale.branch, sale.station, Payment.TYPE_IN, sale.group, 50)
         p2 = method.create_payment(
-            Payment.TYPE_IN, sale.group, sale.branch, 50)
+            sale.branch, sale.station, Payment.TYPE_IN, sale.group, 50)
 
         for p in [p1, p2]:
             p.set_pending()
@@ -219,7 +219,7 @@ class TestConfirmSaleWizard(GUITest):
         with mock.patch.object(self.store, 'commit'):
             self._go_to_next()
         # FiscalCoupon calls this method
-        self.sale.confirm()
+        self.sale.confirm(self.current_user)
 
         self.assertEqual(self.sale.cost_center, cost_center)
 
@@ -507,7 +507,7 @@ class TestConfirmSaleWizard(GUITest):
         self.assertEqual(payments[1].payment_type, Payment.TYPE_OUT)
         self.assertEqual(payments[1].value, 40)
 
-        sale.confirm(till=self.create_till())
+        sale.confirm(user=self.current_user, till=self.create_till())
 
 
 class TestSalesPersonStep(GUITest):

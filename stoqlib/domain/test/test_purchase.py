@@ -111,17 +111,17 @@ class TestPurchaseItem(DomainTest):
     def test_get_quantity_as_string(self):
         item = self.create_purchase_order_item()
         item.sellable.unit = self.create_sellable_unit(description=u'XX')
-        str = u"%s XX" % (format_quantity(item.quantity),)
+        msg = u"%s XX" % (format_quantity(item.quantity),)
         str_quantity = item.get_quantity_as_string()
-        self.assertEqual(str, str_quantity)
+        self.assertEqual(msg, str_quantity)
 
     def test_get_quantity_received_as_string(self):
         item = self.create_purchase_order_item()
         item.quantity_received = 8
         item.sellable.unit = self.create_sellable_unit(description=u'XX')
-        str = u"%s XX" % (format_quantity(item.quantity_received),)
+        msg = u"%s XX" % (format_quantity(item.quantity_received),)
         str_received = item.get_quantity_received_as_string()
-        self.assertEqual(str, str_received)
+        self.assertEqual(msg, str_received)
 
     def test_get_ordered_quantity(self):
         item = self.create_purchase_order_item()
@@ -129,7 +129,7 @@ class TestPurchaseItem(DomainTest):
                                             sellable=item.sellable)
         self.assertEqual(ordered, Decimal(0))
         item.order.status = item.order.ORDER_PENDING
-        item.order.confirm()
+        item.order.confirm(self.current_user)
         ordered = item.get_ordered_quantity(store=self.store,
                                             sellable=item.sellable)
         self.assertEqual(ordered, Decimal(8))
@@ -148,17 +148,18 @@ class TestPurchaseOrder(DomainTest):
 
     def test_confirm_order(self):
         order = self.create_purchase_order()
-        self.assertRaises(ValueError, order.confirm)
+        with self.assertRaises(ValueError):
+            order.confirm(self.current_user)
         order.status = PurchaseOrder.ORDER_PENDING
 
-        order.confirm()
+        order.confirm(self.current_user)
 
     def test_close(self):
         order = self.create_purchase_order()
         self.assertRaises(ValueError, order.close)
         order.status = PurchaseOrder.ORDER_PENDING
         self.add_payments(order)
-        order.confirm()
+        order.confirm(self.current_user)
 
         payments = list(order.payments)
         self.assertTrue(len(payments) > 0)
@@ -184,25 +185,25 @@ class TestPurchaseOrder(DomainTest):
         order = self.create_purchase_order()
         order.consigned = True
         order.status = PurchaseOrder.ORDER_PENDING
-        order.set_consigned()
+        order.set_consigned(self.current_user)
         self.assertFalse(order.can_close())
 
     def test_set_consigned(self):
         order = self.create_purchase_order()
         order.status = PurchaseOrder.ORDER_PENDING
-        order.set_consigned()
+        order.set_consigned(self.current_user)
         self.assertEqual(self.current_user, order.responsible)
         self.assertEqual(order.status, order.ORDER_CONSIGNED)
         order.status = PurchaseOrder.ORDER_CONFIRMED
         with self.assertRaises(ValueError):
-            order.set_consigned()
+            order.set_consigned(self.current_user)
 
     def test_cancel_not_paid(self):
         order = self.create_purchase_order()
         self.assertRaises(ValueError, order.close)
         order.status = PurchaseOrder.ORDER_PENDING
         self.add_payments(order)
-        order.confirm()
+        order.confirm(self.current_user)
 
         payments = list(order.payments)
         self.assertTrue(len(payments) > 0)
@@ -424,7 +425,7 @@ class TestPurchaseOrder(DomainTest):
         order.status = PurchaseOrder.ORDER_PENDING
         order.add_item(self.create_sellable(), 1)
         self.add_payments(order, method_type=u'money')
-        order.confirm()
+        order.confirm(self.current_user)
 
         payments = list(order.payments)
         payments_before_cancel = len(payments)
@@ -469,11 +470,12 @@ class TestPurchaseOrder(DomainTest):
 
     def test_confirm_supplier(self):
         order = self.create_purchase_order()
-        self.assertRaises(ValueError, order.confirm)
+        with self.assertRaises(ValueError):
+            order.confirm(self.current_user)
         order.status = PurchaseOrder.ORDER_PENDING
 
         order.supplier = self.create_supplier()
-        order.confirm()
+        order.confirm(self.current_user)
         self.assertEqual(order.group.recipient, order.supplier.person)
 
     def test_is_paid(self):
@@ -487,7 +489,7 @@ class TestPurchaseOrder(DomainTest):
 
         order.group = self.create_payment_group()
         self.add_payments(order)
-        order.confirm()
+        order.confirm(self.current_user)
 
         self.assertEqual(order.is_paid(), False)
 
@@ -504,7 +506,7 @@ class TestPurchaseOrder(DomainTest):
         account = self.create_account()
         payment.method.destination_account = account
         self.assertTrue(account.transactions.is_empty())
-        order.confirm()
+        order.confirm(self.current_user)
 
         for payment in order.payments:
             payment.pay()
@@ -526,7 +528,7 @@ class TestPurchaseOrder(DomainTest):
         account = self.create_account()
         payment.method.destination_account = account
         self.assertTrue(account.transactions.is_empty())
-        order.confirm()
+        order.confirm(self.current_user)
 
         for payment in order.payments:
             payment.pay()
@@ -578,7 +580,7 @@ class TestPurchaseOrder(DomainTest):
         sellable = self.create_sellable()
         purchase.add_item(sellable)
 
-        receiving = purchase.create_receiving_order()
+        receiving = purchase.create_receiving_order(self.current_station)
         for item in receiving.get_items():
             self.assertEquals(item.sellable, sellable)
 
@@ -604,7 +606,7 @@ class TestQuotation(DomainTest):
 class TestQuoteGroup(DomainTest):
     def test_cancel(self):
         order = self.create_purchase_order()
-        quote = QuoteGroup(store=self.store, branch=order.branch)
+        quote = QuoteGroup(store=self.store, branch=order.branch, station=order.station)
         order.status = PurchaseOrder.ORDER_QUOTING
         quote.add_item(order)
 
@@ -617,7 +619,7 @@ class TestQuoteGroup(DomainTest):
 
     def test_close(self):
         order = self.create_purchase_order()
-        quote = QuoteGroup(store=self.store, branch=order.branch)
+        quote = QuoteGroup(store=self.store, branch=order.branch, station=order.station)
         order.status = PurchaseOrder.ORDER_QUOTING
         quote.add_item(order)
 
@@ -641,7 +643,7 @@ class TestQuoteGroup(DomainTest):
         order = self.create_purchase_order()
         self.create_purchase_order_item(order=order)
         self.create_purchase_order_item(order=order)
-        quote = self.create_quote_group(branch=order.branch)
+        quote = self.create_quote_group(branch=order.branch, station=order.station)
         order.status = PurchaseOrder.ORDER_QUOTING
         quote.add_item(order)
 

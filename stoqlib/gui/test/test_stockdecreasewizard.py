@@ -81,7 +81,7 @@ class TestStockDecreaseWizard(GUITest):
         sysparam.set_bool(self.store, 'CREATE_PAYMENTS_ON_STOCK_DECREASE', True)
 
         till = self.create_till()
-        till.open_till()
+        till.open_till(self.current_user)
 
         branch = api.get_current_branch(self.store)
         storable = self.create_storable(branch=branch, stock=1)

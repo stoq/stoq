@@ -634,6 +634,7 @@ class QuotePurchaseWizard(BaseWizard):
         group = PaymentGroup(store=store)
         return PurchaseOrder(supplier_id=supplier_id,
                              branch=branch, status=status,
+                             station=api.get_current_station(store),
                              expected_receival_date=None,
                              responsible=api.get_current_user(store),
                              group=group,
@@ -645,6 +646,7 @@ class QuotePurchaseWizard(BaseWizard):
             return quotation.group
         else:
             return QuoteGroup(branch=api.get_current_branch(store),
+                              station=api.get_current_station(store),
                               store=store)
 
     def _delete_model(self):

@@ -145,13 +145,13 @@ class TestServices(BaseGUITest):
 
         workorder.add_sellable(self.create_sellable())
         for item in workorder.order_items:
-            item.reserve(item.quantity)
+            item.reserve(self.current_user, item.quantity)
         # Selecting again will update actions sensitivity
         olist.select(olist[0])
         self.assertSensitive(app.actions, ['Finish'])
         # Initial status for the order is Opened
         self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
-        self.assertTrue(workorder.can_finish())
+        self.assertTrue(workorder.can_finish(self.current_branch))
 
         with mock.patch.object(self.store, 'close'):
             with mock.patch.object(self.store, 'commit'):
@@ -188,7 +188,7 @@ class TestServices(BaseGUITest):
 
         workorder.add_sellable(self.create_sellable())
         for item in workorder.order_items:
-            item.reserve(item.quantity)
+            item.reserve(self.current_user, item.quantity)
         # Selecting again will update actions sensitivity
         olist.select(olist[0])
         self.assertSensitive(app.actions, ['Finish'])

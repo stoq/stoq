@@ -295,7 +295,10 @@ class PersonField(DomainChoiceField):
         else:
             raise AssertionError(self.person_type)
 
-        items = person_type.get_active_items(store)
+        if person_type == SalesPerson:
+            items = person_type.get_active_items(store, api.get_current_branch(store))
+        else:
+            items = person_type.get_active_items(store)
         self.prefill(items, person_id)
 
     def run_dialog(self, store, person):

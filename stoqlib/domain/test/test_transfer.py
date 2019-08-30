@@ -36,7 +36,7 @@ class TestTransferOrderItem(DomainTest):
     def test__init__(self):
         with self.assertRaisesRegex(
                 TypeError, 'You must provide a sellable argument'):
-                TransferOrderItem(store=self.store)
+            TransferOrderItem(store=self.store)
         item = self.create_transfer_order_item()
         self.assertIsNotNone(item.icms_info)
         self.assertIsNotNone(item.ipi_info)
@@ -98,11 +98,11 @@ class TestTransferOrder(DomainTest):
         self.assertEqual(order.can_send(), True)
         self.assertEqual(order.can_receive(), False)
 
-        order.send()
+        order.send(self.current_user)
         self.assertEqual(order.can_send(), False)
         self.assertEqual(order.can_receive(), True)
 
-        order.receive(self.create_employee())
+        order.receive(self.current_user, self.create_employee())
         self.assertEqual(order.can_send(), False)
         self.assertEqual(order.can_receive(), False)
 
@@ -125,7 +125,7 @@ class TestTransferOrder(DomainTest):
         product = self.store.find(Product, sellable=item.sellable).one()
         storable = product.storable
         before_qty = storable.get_balance_for_branch(order.source_branch)
-        order.send()
+        order.send(self.current_user)
         after_qty = storable.get_balance_for_branch(order.source_branch)
         self.assertEqual(after_qty, before_qty - qty)
 
@@ -137,11 +137,11 @@ class TestTransferOrder(DomainTest):
         sent_qty = 2
         order = self.create_transfer_order()
         item = self.create_transfer_order_item(order, quantity=sent_qty)
-        order.send()
+        order.send(self.current_user)
 
         storable = item.sellable.product_storable
         before_qty = storable.get_balance_for_branch(order.destination_branch)
-        order.receive(self.create_employee())
+        order.receive(self.current_user, self.create_employee())
         after_qty = storable.get_balance_for_branch(order.destination_branch)
         self.assertEqual(after_qty, before_qty + sent_qty)
 
@@ -156,7 +156,7 @@ class TestTransferOrder(DomainTest):
         dest_before_qty = storable.get_balance_for_branch(order.destination_branch)
         self.assertEqual(sour_before_qty, 1)
         self.assertEqual(dest_before_qty, 0)
-        order.send()
+        order.send(self.current_user)
 
         # Checking the balance after sending
         sour_during_qty = storable.get_balance_for_branch(order.source_branch)
@@ -165,7 +165,8 @@ class TestTransferOrder(DomainTest):
         self.assertEqual(sour_during_qty, 0)
         self.assertEqual(dest_during_qty, 0)
 
-        order.cancel(self.create_employee(), 'Cancelled due something')
+        order.cancel(self.current_user, self.create_employee(), 'Cancelled due something',
+                     order.source_branch)
         # Checking the balance after cancel
         sour_after_qty = storable.get_balance_for_branch(order.source_branch)
         dest_after_qty = storable.get_balance_for_branch(order.destination_branch)

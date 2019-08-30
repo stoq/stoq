@@ -169,7 +169,7 @@ class TestWorkOrderEditor(GUITest):
         workorder.estimated_hours = 100
         workorder.estimated_start = localdatetime(2013, 1, 1)
         workorder.estimated_finish = localdatetime(2013, 1, 2)
-        workorder.approve()
+        workorder.approve(self.current_user)
         _adjust_history_date(workorder)
         # Create another editor to check approved state
         editor = WorkOrderEditor(self.store, model=workorder)
@@ -179,21 +179,21 @@ class TestWorkOrderEditor(GUITest):
                                price=99, quantity=2)
         workorder.add_sellable(self.create_sellable(description=u"Product B"),
                                price=5, quantity=100)
-        workorder.work()
+        workorder.work(self.current_branch, self.current_user)
         _adjust_history_date(workorder)
         # Create another editor to check work in progress state
         editor = WorkOrderEditor(self.store, model=workorder)
         self.check_editor(editor, 'editor-workorder-show-in-progress')
 
-        workorder.finish()
+        workorder.finish(self.current_branch, self.current_user)
         _adjust_history_date(workorder)
         # Create another editor to check finished state
         editor = WorkOrderEditor(self.store, model=workorder)
         self.check_editor(editor, 'editor-workorder-show-finished')
 
         for item in workorder.order_items:
-            item.reserve(item.quantity)
-        workorder.close()
+            item.reserve(self.current_user, item.quantity)
+        workorder.close(self.current_branch, self.current_user)
         _adjust_history_date(workorder)
         # Create another editor to check closed state
         editor = WorkOrderEditor(self.store, model=workorder)
@@ -235,13 +235,13 @@ class TestWorkOrderPackageSendEditor(GUITest):
 
             # Only the first 3 will appear on the list as they are waiting
             if i < 3:
-                wo.approve()
+                wo.approve(self.current_user)
                 workorders_ids.add(wo.id)
             elif 3 <= i < 6:
-                wo.approve()
-                wo.work()
+                wo.approve(self.current_user)
+                wo.work(self.current_branch, self.current_user)
                 wo.add_sellable(self.create_sellable())
-                wo.finish()
+                wo.finish(self.current_branch, self.current_user)
 
         editor = WorkOrderPackageSendEditor(self.store)
 
@@ -291,17 +291,17 @@ class TestWorkOrderPackageSendEditor(GUITest):
             # Only the 3 finished and with their original branches set to the
             # destination_branch will appear on the list
             if i < 3:
-                wo.approve()
+                wo.approve(self.current_user)
             elif 3 <= i < 6:
-                wo.approve()
-                wo.work()
+                wo.approve(self.current_user)
+                wo.work(current_branch, self.current_user)
                 wo.add_sellable(self.create_sellable())
-                wo.finish()
+                wo.finish(self.current_branch, self.current_user)
             elif 6 <= i < 9:
-                wo.approve()
-                wo.work()
+                wo.approve(self.current_user)
+                wo.work(current_branch, self.current_user)
                 wo.add_sellable(self.create_sellable())
-                wo.finish()
+                wo.finish(self.current_branch, self.current_user)
                 wo.branch = destination_branch
                 workorders_ids.add(wo.id)
 
@@ -340,7 +340,7 @@ class TestWorkOrderPackageSendEditor(GUITest):
     def test_validate_confirm(self, warning):
         wo = self.create_workorder()
         wo.identifier = 123
-        wo.approve()
+        wo.approve(self.current_user)
         sellable = self.create_sellable()
         self.create_storable(product=sellable.product)
 

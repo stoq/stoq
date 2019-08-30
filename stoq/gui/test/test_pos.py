@@ -68,11 +68,12 @@ class TestPos(BaseGUITest):
 
     def _open_till(self, store):
         till = Till(store=store,
+                    branch=api.get_current_branch(store),
                     station=api.get_current_station(store))
-        till.open_till()
+        till.open_till(api.get_current_user(store))
 
         TillOpenEvent.emit(till=till)
-        self.assertEqual(till, Till.get_current(store))
+        self.assertEqual(till, Till.get_current(store, api.get_current_station(store)))
         return till
 
     def _pos_open_till(self, pos):
@@ -106,9 +107,9 @@ class TestPos(BaseGUITest):
         # we need to open the till again
         self._open_till(store)
 
-        sale.order()
+        sale.order(api.get_current_user(store))
         total = sale.get_total_sale_amount()
-        payment_method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, total)
+        payment_method.create_payment(sale.branch, sale.station, Payment.TYPE_IN, sale.group, total)
         self.sale = sale
         return sale
 
@@ -137,11 +138,11 @@ class TestPos(BaseGUITest):
     def _auto_confirm_sale_wizard_with_trade(self, wizard, app, store, sale,
                                              subtotal, total_paid,
                                              current_document):
-        sale.order()
+        sale.order(api.get_current_user(sale.store))
         total_paid = sale.group.get_total_confirmed_value()
         total = sale.get_total_sale_amount() - total_paid
         payment_method = PaymentMethod.get_by_name(store, u'money')
-        payment_method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, total)
+        payment_method.create_payment(sale.branch, sale.station, Payment.TYPE_IN, sale.group, total)
         self.sale = sale
         return sale
 

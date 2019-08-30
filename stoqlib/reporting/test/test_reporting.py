@@ -29,7 +29,6 @@ from decimal import Decimal
 import mock
 from nose.exc import SkipTest
 
-from stoqlib.database.runtime import get_current_station
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, CommissionView
 from stoqlib.domain.inventory import InventoryItemsView
@@ -81,7 +80,7 @@ class TestReport(ReportTest):
         item.actual_quantity = item.recorded_quantity - 1
         item.cfop_data = self.create_cfop_data()
         item.reason = u"test adjust"
-        item.adjust(13)
+        item.adjust(self.current_user, 13)
 
         item2 = self.create_inventory_item(inventory=inventory)
         self.assertFalse(item2.is_adjusted)
@@ -89,7 +88,7 @@ class TestReport(ReportTest):
         item2.actual_quantity = item.recorded_quantity - 1
         item2.cfop_data = self.create_cfop_data()
         item2.reason = u"test adjust2"
-        item2.adjust(13)
+        item2.adjust(self.current_user, 13)
         inventory.close()
 
         from stoqlib.gui.dialogs.inventorydetails import InventoryDetailsDialog
@@ -164,8 +163,8 @@ class TestReport(ReportTest):
         payment.identifier = 999
         payment.group.payer = client.person
 
-        sale.order()
-        sale.confirm()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
         sale.group.pay()
 
         sale.confirm_date = today
@@ -174,8 +173,9 @@ class TestReport(ReportTest):
         date = datetime.date(2013, 2, 2)
 
         # return sale
-        returned_sale = sale.create_sale_return_adapter()
-        returned_sale.return_()
+        returned_sale = sale.create_sale_return_adapter(self.current_branch, self.current_user,
+                                                        self.current_station)
+        returned_sale.return_(self.current_user)
         returned_sale.return_date = date
 
         model = self.store.find(SaleView,
@@ -205,7 +205,8 @@ class TestReport(ReportTest):
         method = PaymentMethod.get_by_name(self.store, u'money')
         group = self.create_payment_group()
         branch = self.create_branch()
-        payment = method.create_payment(Payment.TYPE_IN, group, branch, Decimal(100))
+        payment = method.create_payment(branch, self.current_station, Payment.TYPE_IN, group,
+                                        Decimal(100))
         payment.description = u"Test receivable account"
         payment.group.payer = payer.person
         payment.set_pending()
@@ -224,7 +225,8 @@ class TestReport(ReportTest):
         method = PaymentMethod.get_by_name(self.store, u'money')
         group = self.create_payment_group()
         branch = self.create_branch()
-        payment = method.create_payment(Payment.TYPE_OUT, group, branch, Decimal(100))
+        payment = method.create_payment(branch, self.current_station, Payment.TYPE_OUT, group,
+                                        Decimal(100))
         payment.description = u"Test payable account"
         payment.group.recipient = drawee.person
         payment.set_pending()
@@ -276,21 +278,22 @@ class TestReport(ReportTest):
         from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
         dialog = TillHistoryDialog(self.store)
 
-        till = Till(station=get_current_station(self.store),
-                    store=self.store)
-        till.open_till()
+        till = Till(station=self.current_station, branch=self.current_branch, store=self.store)
+        till.open_till(self.current_user)
 
         sale = self.create_sale()
         sellable = self.create_sellable()
         sale.add_sellable(sellable, price=100)
         method = PaymentMethod.get_by_name(self.store, u'bill')
-        payment = method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, Decimal(100))
+        payment = method.create_payment(sale.branch, sale.station, Payment.TYPE_IN, sale.group,
+                                        Decimal(100))
         TillEntry(value=25,
                   identifier=20,
                   description=u"Cash In",
                   payment=None,
                   till=till,
                   branch=till.station.branch,
+                  station=self.current_station,
                   date=datetime.date(2007, 1, 1),
                   store=self.store)
         TillEntry(value=-5,
@@ -299,6 +302,7 @@ class TestReport(ReportTest):
                   payment=None,
                   till=till,
                   branch=till.station.branch,
+                  station=self.current_station,
                   date=datetime.date(2007, 1, 1),
                   store=self.store)
 
@@ -308,6 +312,7 @@ class TestReport(ReportTest):
                   payment=payment,
                   till=till,
                   branch=till.station.branch,
+                  station=self.current_station,
                   date=datetime.date(2007, 1, 1),
                   store=self.store)
         till_entry = list(self.store.find(TillEntry, till=till))
@@ -337,7 +342,7 @@ class TestReport(ReportTest):
         sellable = self.create_sellable()
         sale.add_sellable(sellable, price=100)
         sale.identifier = 1000
-        sale.order()
+        sale.order(self.current_user)
 
         # With two card payments
         card_data1 = self.create_credit_card_data(
@@ -364,7 +369,7 @@ class TestReport(ReportTest):
         card_data2.payment.identifier = 1011
 
         # Confirm the sale and pay the payments
-        sale.confirm()
+        sale.confirm(self.current_user)
         sale.group.pay()
 
         sale.confirm_date = date
@@ -380,7 +385,8 @@ class TestReport(ReportTest):
 
         method = PaymentMethod.get_by_name(self.store, u'money')
         group = self.create_payment_group()
-        payment_lonely_input = method.create_payment(Payment.TYPE_IN, group, branch, Decimal(100))
+        payment_lonely_input = method.create_payment(branch, self.current_station, Payment.TYPE_IN,
+                                                     group, Decimal(100))
         payment_lonely_input.description = u"Test receivable account"
         payment_lonely_input.group.payer = payer.person
         payment_lonely_input.set_pending()
@@ -396,8 +402,8 @@ class TestReport(ReportTest):
         method = PaymentMethod.get_by_name(self.store, u'money')
         purchase = self.create_purchase_order(branch=branch)
         purchase.identifier = 12345
-        payment = method.create_payment(Payment.TYPE_OUT,
-                                        purchase.group, branch, Decimal(100))
+        payment = method.create_payment(branch, self.current_station, Payment.TYPE_OUT,
+                                        purchase.group, Decimal(100))
         payment.description = u"Test payable account"
         payment.group.recipient = drawee.person
         payment.set_pending()
@@ -410,11 +416,12 @@ class TestReport(ReportTest):
         self.add_product(sale)
         self.add_product(sale)
         payment = self.add_payments(sale, date=date)[0]
-        sale.order()
-        sale.confirm()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
         sale.identifier = 23456
-        returned_sale = sale.create_sale_return_adapter()
-        returned_sale.return_()
+        returned_sale = sale.create_sale_return_adapter(self.current_branch, self.current_user,
+                                                        self.current_station)
+        returned_sale.return_(self.current_user)
         sale.return_date = date
         payment.open_date = date
 
@@ -427,7 +434,8 @@ class TestReport(ReportTest):
         # create lonely output payment
         group = self.create_payment_group()
         method = PaymentMethod.get_by_name(self.store, u'money')
-        payment = method.create_payment(Payment.TYPE_OUT, group, branch, Decimal(100))
+        payment = method.create_payment(branch, self.current_station, Payment.TYPE_OUT, group,
+                                        Decimal(100))
         payment.branch = branch
         payment.identifier = 1004
         payment.open_date = date
@@ -440,8 +448,8 @@ class TestReport(ReportTest):
 
         method = PaymentMethod.get_by_name(self.store, u'money')
         group = self.create_payment_group()
-        payment_lonely_input = method.create_payment(Payment.TYPE_IN, group,
-                                                     branch2, Decimal(100))
+        payment_lonely_input = method.create_payment(branch2, self.current_station, Payment.TYPE_IN,
+                                                     group, Decimal(100))
         payment_lonely_input.description = u"Other branch lonely payment"
         payment_lonely_input.group.payer = payer.person
         payment_lonely_input.set_pending()
@@ -492,12 +500,12 @@ class TestReport(ReportTest):
                          installments_value=1,
                          store=self.store)
 
-        sale.order()
+        sale.order(self.current_user)
 
         method = PaymentMethod.get_by_name(self.store, u'money')
-        method.create_payment(Payment.TYPE_IN, sale.group, sale.branch,
+        method.create_payment(sale.branch, sale.station, Payment.TYPE_IN, sale.group,
                               sale.get_sale_subtotal())
-        sale.confirm()
+        sale.confirm(self.current_user)
         sale.group.pay()
 
         salesperson = salesperson
@@ -552,7 +560,7 @@ class TestReport(ReportTest):
                           parent=parent)
 
         self.create_storable(product, get_current_branch(self.store), stock=100)
-        sale.order()
+        sale.order(self.current_user)
         self._diff_expected(SaleOrderReport, 'sale-order-report', sale)
 
     def test_sale_order_report_as_quote(self):

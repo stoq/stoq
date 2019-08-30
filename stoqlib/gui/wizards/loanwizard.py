@@ -453,6 +453,7 @@ class NewLoanWizard(BaseWizard):
     def _create_model(self, store):
         loan = Loan(responsible=api.get_current_user(store),
                     branch=api.get_current_branch(store),
+                    station=api.get_current_station(store),
                     store=store)
         # Temporarily save the client_category, so it works fine with
         # SaleQuoteItemStep
@@ -482,7 +483,7 @@ class NewLoanWizard(BaseWizard):
             return
 
         self.model.confirm()
-        self.model.sync_stock()
+        self.model.sync_stock(api.get_current_user(self.store))
         self.retval = self.model
         self.close()
         NewLoanWizardFinishEvent.emit(self.model)
@@ -548,6 +549,7 @@ class CloseLoanWizard(BaseWizard):
                 # Even if there is more than one loan, they are always from the
                 # same (client, branch)
                 branch=self.models[0].branch,
+                station=api.get_current_station(self.store),
                 client=self.models[0].client,
                 salesperson=user.person.sales_person,
                 group=PaymentGroup(store=self.store),
@@ -558,7 +560,7 @@ class CloseLoanWizard(BaseWizard):
                                   # Quantity was already decreased on loan
                                   quantity_decreased=quantity)
 
-            sale.order()
+            sale.order(user)
             info(_("Close loan details..."),
                  _("A sale was created from loan items. You can confirm "
                    "that sale in the Till application later."))
@@ -566,7 +568,7 @@ class CloseLoanWizard(BaseWizard):
             sale = None
 
         for model in self.models:
-            model.sync_stock()
+            model.sync_stock(api.get_current_user(self.store))
             if model.can_close():
                 model.close()
 

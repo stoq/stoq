@@ -41,7 +41,7 @@ class TestProductionMaterialAllocateEditor(GUITest):
         material = self.create_production_material()
         storable = material.product.storable
         storable.increase_stock(5, branch, StockTransactionHistory.TYPE_INITIAL,
-                                None)
+                                None, self.current_user)
         editor = ProductionMaterialAllocateEditor(self.store, material)
 
         allocated = material.allocated

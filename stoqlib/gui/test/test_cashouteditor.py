@@ -30,6 +30,6 @@ from stoqlib.gui.test.uitestutils import GUITest
 class TestCashOutEditor(GUITest):
     def test_create(self):
         till = self.create_till()
-        till.open_till()
+        till.open_till(self.current_user)
         editor = CashOutEditor(self.store)
         self.check_editor(editor, 'editor-cash-out-create')

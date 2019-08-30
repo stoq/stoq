@@ -40,8 +40,8 @@ class TestTransferReceipt(ReportTest):
         for i in range(5):
             self.create_transfer_order_item(order)
 
-        order.send()
-        order.receive(self.create_employee())
+        order.send(self.current_user)
+        order.receive(self.current_user, self.create_employee())
         self._diff_expected(TransferOrderReceipt, 'transfer-receipt', order)
 
     def test_transfer_receipt_cancelled(self):
@@ -52,8 +52,9 @@ class TestTransferReceipt(ReportTest):
         for i in range(5):
             self.create_transfer_order_item(order)
 
-        order.send()
-        order.cancel(self.create_employee(), 'Cancelled due something')
+        order.send(self.current_user)
+        order.cancel(self.current_user, self.create_employee(), 'Cancelled due something',
+                     source_branch)
         order.cancel_date = localdatetime(2012, 12, 12)
         self._diff_expected(TransferOrderReceipt,
                             'transfer-receipt-cancelled', order)
@@ -71,7 +72,7 @@ class TestTransferReport(ReportTest):
         for i in range(5):
             self.create_transfer_order_item(order)
 
-        order.send()
+        order.send(self.current_user)
         order.identifier = 1337
         order.open_date = localdatetime(2012, 12, 12)
         dialog = TransferOrderSearch(self.store)

@@ -75,7 +75,7 @@ class TestInPaymentView(DomainTest):
         rows = self.store.find(PaymentRenegotiation, branch_id=branch.id,
                                client=client).count()
         self.assertEqual(rows, 0)
-        PaymentRenegotiation(branch=branch, client=client)
+        PaymentRenegotiation(branch=branch, client=client, station=self.current_station)
         rows = self.store.find(PaymentRenegotiation, branch_id=branch.id,
                                client=client).count()
         self.assertEqual(rows, 1)
@@ -83,7 +83,8 @@ class TestInPaymentView(DomainTest):
     def testRenegotiated(self):
         branch = self.create_branch(name=u'Branch')
         client = self.create_client(name=u'TestClient')
-        renegotiation = PaymentRenegotiation(branch=branch, client=client)
+        renegotiation = PaymentRenegotiation(branch=branch, client=client,
+                                             station=self.current_station)
         rows = self.store.find(PaymentRenegotiation, branch_id=branch.id,
                                client=client,
                                status=renegotiation.STATUS_RENEGOTIATED).count()

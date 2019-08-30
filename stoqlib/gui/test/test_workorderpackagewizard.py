@@ -31,13 +31,11 @@ from stoqlib.gui.wizards.workorderpackagewizard import WorkOrderPackageReceiveWi
 
 
 class TestSaleReturnWizard(GUITest):
-    @mock.patch('stoqlib.domain.workorder.get_current_branch')
     @mock.patch('stoqlib.gui.wizards.workorderpackagewizard.get_current_branch')
-    def test_create(self, gcb1, gcb2):
+    def test_create(self, gcb1):
         source_branch = self.create_branch()
         destination_branch = self.create_branch()
         gcb1.return_value = source_branch
-        gcb2.return_value = source_branch
 
         package = self.create_workorder_package(source_branch=source_branch)
         package.destination_branch = destination_branch
@@ -48,14 +46,13 @@ class TestSaleReturnWizard(GUITest):
             wo.client = self.create_client()
             wo.identifier = 666 + i
             wo.open_date = datetime.datetime(2013, 1, 1)
-            package.add_order(wo)
+            package.add_order(wo, self.current_user)
 
-        package.send()
+        package.send(self.current_user)
         package.send_date = datetime.datetime(2013, 1, 2)
         # Now set current_branch as destination_branch so we are able to
         # receive the package on the wizard
         gcb1.return_value = destination_branch
-        gcb2.return_value = destination_branch
 
         wizard = WorkOrderPackageReceiveWizard(self.store)
         step = wizard.get_current_step()

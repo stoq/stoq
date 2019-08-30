@@ -348,13 +348,14 @@ class Shell(object):
         return True
 
     def _logout(self):
-        from stoqlib.database.runtime import (get_current_user,
+        from stoqlib.database.runtime import (get_current_user, get_current_station,
                                               get_default_store)
         log.debug('Logging out the current user')
         try:
-            user = get_current_user(get_default_store())
+            store = get_default_store()
+            user = get_current_user(store)
             if user:
-                user.logout()
+                user.logout(get_current_station(store))
         except StoqlibError:
             pass
 

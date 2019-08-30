@@ -509,7 +509,8 @@ class TestClient(_PersonFacetTest, DomainTest):
         sellable = self.create_sellable()
         sale.add_sellable(sellable)
 
-        sale.create_sale_return_adapter()
+        sale.create_sale_return_adapter(self.current_branch, self.current_user,
+                                        self.current_station)
 
         after_return_count = len(list(client.get_client_returned_sales()))
         self.assertEqual(after_return_count, 1)
@@ -765,11 +766,11 @@ class TestClient(_PersonFacetTest, DomainTest):
         sale = self.create_sale(client=client)
         self.add_product(sale)
         self.add_payments(sale)
-        sale.order()
-        sale.confirm()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
 
         returned_sale = ReturnedSale(sale=sale,
-                                     branch=self.current_branch,
+                                     branch=self.current_branch, station=self.current_station,
                                      store=self.store)
         ReturnedSaleItem(sale_item=list(sale.get_items())[0], quantity=1,
                          returned_sale=returned_sale,
@@ -796,11 +797,11 @@ class TestClient(_PersonFacetTest, DomainTest):
         sale = self.create_sale(client=client)
         self.add_product(sale)
         self.add_payments(sale)
-        sale.order()
-        sale.confirm()
+        sale.order(self.current_user)
+        sale.confirm(self.current_user)
 
         returned_sale = ReturnedSale(sale=sale,
-                                     branch=self.current_branch,
+                                     branch=self.current_branch, station=self.current_station,
                                      store=self.store)
         ReturnedSaleItem(sale_item=list(sale.get_items())[0], quantity=1,
                          returned_sale=returned_sale,
@@ -886,8 +887,8 @@ class TestSupplier(_PersonFacetTest, DomainTest):
         self.create_receiving_order_item(order)
         purchase = order.purchase_orders.find()[0]
         purchase.status = PurchaseOrder.ORDER_PENDING
-        purchase.confirm()
-        order.confirm()
+        purchase.confirm(self.current_user)
+        order.confirm(self.current_user)
 
         self.assertTrue(supplier.get_supplier_purchases().count())
 
@@ -1001,39 +1002,30 @@ class TestUser(_PersonFacetTest, DomainTest):
         user.profile = user_profile
         self.assertTrue(user.has_access_to(branch))
 
-    # FIXME: This get_current_station will be removed
-    @mock.patch('stoqlib.domain.person.get_current_station')
     @mock.patch('stoqlib.domain.person.Event.log')
-    def test_login(self, log, get_current_station):
+    def test_login(self, log):
         user = self.create_user()
-        user.login()
-        station = get_current_station(store=self.store)
+        user.login(self.current_station)
 
         expected = _(u"User '%s' logged in on '%s'") % (user.username,
-                                                        station.name)
+                                                        self.current_station.name)
         log.assert_called_with(self.store, Event.TYPE_USER, expected)
 
-        get_current_station.return_value = None
-        user.login()
+        user.login(station=None)
         expected = _(u"User '%s' logged in") % (user.username, )
         log.assert_called_with(self.store, Event.TYPE_USER, expected)
 
-    # FIXME: This get_current_station will be removed
-    @mock.patch('stoqlib.domain.person.get_current_station')
     @mock.patch('stoqlib.domain.person.Event.log')
-    def test_logout(self, log, get_current_station):
+    def test_logout(self, log):
         user = self.create_user()
-        new_station = self.create_station()
-        get_current_station.return_value = new_station
-        station = get_current_station()
-        user.logout()
+        station = self.create_station()
+        user.logout(station)
 
         expected = _(u"User '%s' logged out from '%s'") % (user.username,
                                                            station.name)
         log.assert_called_with(self.store, Event.TYPE_USER, expected)
 
-        get_current_station.return_value = None
-        user.logout()
+        user.logout(station=None)
         expected = _(u"User '%s' logged out") % (user.username, )
         log.assert_called_with(self.store, Event.TYPE_USER, expected)
 
@@ -1116,7 +1108,7 @@ class TestBranch(_PersonFacetTest, DomainTest):
     def test_get_active_remote_branches(self):
         self.assertIn(self.current_branch, Branch.get_active_branches(self.store))
         self.assertNotIn(self.current_branch,
-                         Branch.get_active_remote_branches(self.store))
+                         Branch.get_active_remote_branches(self.store, self.current_branch))
 
     def test_is_from_same_company(self):
         branch1 = self.create_branch()
@@ -1138,9 +1130,9 @@ class TestSalesPerson(_PersonFacetTest, DomainTest):
     facet = SalesPerson
 
     def test_getactive_salespersons(self):
-        count = len(SalesPerson.get_active_salespersons(self.store))
+        count = len(SalesPerson.get_active_salespersons(self.store, self.current_branch))
         salesperson = self.create_sales_person()
-        one_more = len(salesperson.get_active_salespersons(self.store))
+        one_more = len(salesperson.get_active_salespersons(self.store, self.current_branch))
         assert count + 1 == one_more
 
     def test_get_status_string(self):
@@ -1153,7 +1145,7 @@ class TestSalesPerson(_PersonFacetTest, DomainTest):
         salesperson = self.create_sales_person()
         salesperson.person.name = u'Teste sales person'
 
-        items = SalesPerson.get_active_items(self.store)
+        items = SalesPerson.get_active_items(self.store, self.current_branch)
         self.assertEqual(len(items), 6)
         self.assertEqual(items[5][0], u'Teste sales person')
 

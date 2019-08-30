@@ -45,6 +45,7 @@ class _TemporaryQuoteGroup(object):
     def _create_purchase_order(self, store, supplier, items):
         order = PurchaseOrder(supplier=store.fetch(supplier),
                               branch=api.get_current_branch(store),
+                              station=api.get_current_station(store),
                               status=PurchaseOrder.ORDER_QUOTING,
                               expected_receival_date=None,
                               responsible=api.get_current_user(store),
@@ -84,6 +85,7 @@ class _TemporaryQuoteGroup(object):
                 quote_data.setdefault(supplier, []).append((sellable, quantity))
 
         group = QuoteGroup(store=store,
+                           station=api.get_current_station(store),
                            branch=api.get_current_branch(store))
 
         # For each supplier that offer a material we need, we create a quote

@@ -227,18 +227,18 @@ class ProductsCostCheckStep(BaseWizardStep):
         # We only let the user get this far if the receivings selected are for the
         # same branch and supplier
         supplier = self.receivings[0].purchase.supplier
-        branch_id = self.receivings[0].branch_id
+        branch = self.receivings[0].branch
 
         # If the receiving is for another branch, we need a temporary identifier
         temporary_identifier = None
         if (api.sysparam.get_bool('SYNCHRONIZED_MODE') and
-                api.get_current_branch(self.store).id != branch_id):
+                api.get_current_branch(self.store) != branch):
             temporary_identifier = ReceivingInvoice.get_temporary_identifier(self.store)
 
         group = PaymentGroup(store=self.store, recipient=supplier.person)
         self.wizard.model = self.model = ReceivingInvoice(
             identifier=temporary_identifier, supplier=supplier, group=group,
-            branch_id=branch_id, store=self.store,
+            branch=branch, store=self.store, station=api.get_current_station(self.store),
             responsible=api.get_current_user(self.store))
 
         for row in self.receivings:
@@ -345,7 +345,7 @@ class PurchaseReconciliationWizard(BaseWizard):
         assert self.model
         assert self.model.branch
 
-        self.model.confirm()
+        self.model.confirm(api.get_current_user(self.store))
         self.retval = self.model
         self.store.confirm(self.retval)
         self.close()

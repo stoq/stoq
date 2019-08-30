@@ -27,8 +27,8 @@ from storm.references import Reference
 from stoqlib.database.properties import (DateTimeCol, EnumCol,
                                          IdCol, PercentCol, QuantityCol,
                                          PriceCol, UnicodeCol)
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain
+from stoqlib.domain.person import Branch
 
 
 class SellableBranchOverride(Domain):
@@ -83,8 +83,7 @@ class ProductBranchOverride(Domain):
     product = Reference(product_id, 'Product.id')
 
     @classmethod
-    def find_product(cls, product):
-        branch = get_current_branch(product.store)
+    def find_product(cls, branch: Branch, product):
         return product.store.find(cls, product=product, branch=branch).one()
 
 

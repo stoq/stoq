@@ -110,6 +110,7 @@ class WorkOrderEditor(BaseEditor):
             sellable=None,
             description=u'',
             branch=branch,
+            station=api.get_current_station(store),
             category=self._default_category,
             defect_detected=defect_detected,
         )
@@ -214,11 +215,12 @@ class WorkOrderEditor(BaseEditor):
             not has_open_inventory and not self.visual_mode)
 
         has_items = bool(self.model.order_items.count())
+        branch = api.get_current_branch(self.store)
         if self.model.can_approve():
             label = _("Approve")
-        elif self.model.can_work() and not has_items:
+        elif self.model.can_work(branch) and not has_items:
             label = _("Start")
-        elif self.model.can_work():
+        elif self.model.can_work(branch):
             label = _("Continue")
         elif self.model.can_pause():
             label = _("Pause")
@@ -275,10 +277,12 @@ class WorkOrderEditor(BaseEditor):
             self.category.select(self.store.fetch(rv))
 
     def _maybe_toggle_status(self):
+        user = api.get_current_user(self.store)
+        branch = api.get_current_branch(self.store)
         if self.model.can_approve():
-            self.model.approve()
-        elif self.model.can_work():
-            self.model.work()
+            self.model.approve(user)
+        elif self.model.can_work(branch):
+            self.model.work(branch, user)
         elif self.model.can_pause():
             msg_text = _(u"This will pause the order. Are you sure?")
             rv = run_dialog(
@@ -286,7 +290,7 @@ class WorkOrderEditor(BaseEditor):
                 message_text=msg_text, label_text=_(u"Reason"), mandatory=True)
             if not rv:
                 return
-            self.model.pause(reason=rv.notes)
+            self.model.pause(user, reason=rv.notes)
 
         self._update_view()
         self.history_slave.update_items()
@@ -375,7 +379,8 @@ class WorkOrderPackageSendEditor(BaseEditor):
             # If note is false (that is, an empty string) pass None
             # to force the history's notes being set as null
             notes = order_view.notes if order_view.notes else None
-            self.model.add_order(order_view.work_order, notes=notes)
+            self.model.add_order(order_view.work_order, api.get_current_user(self.store),
+                                 notes=notes)
 
         self.model.send()
 
@@ -436,8 +441,8 @@ class WorkOrderPackageSendEditor(BaseEditor):
             yield workorder
 
     def _prefill_branches(self):
-        branches = Branch.get_active_remote_branches(self.store)
         current_branch = api.get_current_branch(self.store)
+        branches = Branch.get_active_remote_branches(self.store, current_branch)
 
         # Branches not allowed to execute foreign work orders can only send
         # orders for those who can

@@ -37,6 +37,7 @@ from stoqlib.database.properties import PercentCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.station import BranchStation
 from stoqlib.exceptions import DatabaseInconsistency, PaymentMethodError
 from stoqlib.lib.payment import generate_payments_values
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
@@ -158,10 +159,9 @@ class PaymentMethod(Domain):
     #       they don't really belong to the method itself.
     #       They should either go into the group or to a separate payment
     #       factory singleton.
-    def create_payment(self, payment_type, payment_group, branch, value,
-                       due_date=None, description=None, base_value=None,
-                       payment_number=None, identifier=None,
-                       ignore_max_installments=False):
+    def create_payment(self, branch, station: BranchStation, payment_type, payment_group,
+                       value, due_date=None, description=None, base_value=None,
+                       payment_number=None, identifier=None, ignore_max_installments=False):
         """Creates a new payment according to a payment method interface
 
         :param payment_type: the kind of payment, in or out
@@ -205,8 +205,9 @@ class PaymentMethod(Domain):
             description = self.describe_payment(payment_group)
 
         payment = Payment(store=store,
-                          identifier=identifier,
                           branch=branch,
+                          station=station,
+                          identifier=identifier,
                           payment_type=payment_type,
                           due_date=due_date,
                           value=value,
@@ -219,7 +220,8 @@ class PaymentMethod(Domain):
         self.operation.payment_create(payment)
         return payment
 
-    def create_payments(self, payment_type, group, branch, value, due_dates):
+    def create_payments(self, branch, station: BranchStation, payment_type, group, value,
+                        due_dates):
         """Creates new payments
         The values of the individual payments are calculated by taking
         the value and dividing it by the number of payments.
@@ -255,6 +257,7 @@ class PaymentMethod(Domain):
                                                    normalized_values):
             description = self.describe_payment(group, i + 1, installments)
             payment = self.create_payment(
+                station=station,
                 payment_type=payment_type,
                 payment_group=group,
                 branch=branch,
@@ -294,7 +297,7 @@ class PaymentMethod(Domain):
                              key=operator.attrgetter('description'))
 
     @classmethod
-    def get_by_name(cls, store, name):
+    def get_by_name(cls, store, name) -> 'PaymentMethod':
         """Returns the Payment method associated by the nmae
 
         :param name: name of a payment method
@@ -303,7 +306,7 @@ class PaymentMethod(Domain):
         return store.find(PaymentMethod, method_name=name).one()
 
     @classmethod
-    def get_by_account(cls, store, account):
+    def get_by_account(cls, store, account) -> 'PaymentMethod':
         """Returns the Payment method associated with an account
 
         :param account: |account| for which the payment methods are

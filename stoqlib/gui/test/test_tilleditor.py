@@ -50,7 +50,7 @@ class _BaseTestTillEditor(GUITest):
         super(_BaseTestTillEditor, self).setUp()
         if self.need_open_till:
             self.till = self.create_till()
-            self.till.open_till()
+            self.till.open_till(self.current_user)
 
 
 class TestTillOpeningEditor(_BaseTestTillEditor):

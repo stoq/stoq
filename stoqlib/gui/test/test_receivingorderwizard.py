@@ -59,7 +59,7 @@ class TestReceivingOrderWizard(GUITest):
         parent = order.add_item(package.sellable, 1)
         order.add_item(component.sellable, 1, parent=parent)
         order.status = PurchaseOrder.ORDER_PENDING
-        order.confirm()
+        order.confirm(self.current_user)
         wizard = ReceivingOrderWizard(self.store)
 
         step = wizard.get_current_step()
@@ -130,7 +130,7 @@ class TestReceivingOrderWizard(GUITest):
         order1.expected_receival_date = localdatetime(2012, 9, 25)
         order1.add_item(product1.sellable, 7)
         order1.status = PurchaseOrder.ORDER_PENDING
-        order1.confirm()
+        order1.confirm(self.current_user)
 
         # And purchase order 2
         product2 = self.create_product(description=u'Product 2', storable=True)
@@ -141,7 +141,7 @@ class TestReceivingOrderWizard(GUITest):
         order2.expected_receival_date = localdatetime(2012, 9, 25)
         order2.add_item(product2.sellable, 5)
         order2.status = PurchaseOrder.ORDER_PENDING
-        order2.confirm()
+        order2.confirm(self.current_user)
 
         # Now to the wizard
         wizard = ReceivingOrderWizard(self.store)

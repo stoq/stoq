@@ -38,7 +38,7 @@ class TestProductionMaterialLostEditor(GUITest):
         material = self.create_production_material()
         material.needed = 10
         material.allocated = 5
-        material.order.start_production()
+        material.order.start_production(self.current_user)
         editor = ProductionMaterialLostEditor(self.store, material)
 
         lost = material.lost

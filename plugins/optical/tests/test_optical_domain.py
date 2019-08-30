@@ -24,8 +24,6 @@
 
 from decimal import Decimal
 
-from stoqlib.api import api
-from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.workorder import WorkOrder
@@ -57,7 +55,7 @@ class OpticalDomainTest(DomainTest):
 
     def create_optical_patient_history(self, client):
         return OpticalPatientHistory(store=self.store, client=client,
-                                     responsible=get_current_user(self.store))
+                                     responsible=self.current_user)
 
     def create_optical_product(self, product=None, optical_type=None):
         if not product:
@@ -70,15 +68,15 @@ class OpticalDomainTest(DomainTest):
     # name, it will be considered a unit test
     def create_optical_patient_tes(self, client):
         return OpticalPatientTest(store=self.store, client=client,
-                                  responsible=get_current_user(self.store))
+                                  responsible=self.current_user)
 
     def create_optical_patient_measures(self, client):
         return OpticalPatientMeasures(store=self.store, client=client,
-                                      responsible=get_current_user(self.store))
+                                      responsible=self.current_user)
 
     def create_optical_patient_visual_acuity(self, client):
         return OpticalPatientVisualAcuity(store=self.store, client=client,
-                                          responsible=get_current_user(self.store))
+                                          responsible=self.current_user)
 
 
 class OpticalMedicTest(OpticalDomainTest):
@@ -143,8 +141,8 @@ class OpticalWorkOrderTest(OpticalDomainTest):
         # wrong Status
         self.assertFalse(optical_wo.can_create_purchase())
 
-        wo.approve()
-        wo.work()
+        wo.approve(self.current_user)
+        wo.work(self.current_branch, self.current_user)
         # its not coming from a sale
         self.assertFalse(optical_wo.can_create_purchase())
 
@@ -171,7 +169,8 @@ class OpticalWorkOrderTest(OpticalDomainTest):
         optical_wo.work_order.add_sellable(optical_prod2.product.sellable)
         wo.status = WorkOrder.STATUS_WORK_IN_PROGRESS
 
-        purchase = optical_wo.create_purchase(supplier, item1, False)
+        purchase = optical_wo.create_purchase(supplier, item1, False, self.current_branch,
+                                              self.current_station, self.current_user)
         for item in purchase.get_items():
             # Default cost
             self.assertEqual(item.cost, Decimal('125'))
@@ -187,7 +186,7 @@ class OpticalWorkOrderTest(OpticalDomainTest):
         optical_wo = self.create_optical_work_order()
         psi = self.create_product_supplier_info(supplier=supplier,
                                                 product=optical_prod.product,
-                                                branch=api.get_current_branch(self.store))
+                                                branch=self.current_branch)
         psi.base_cost = Decimal('5')
         wo = optical_wo.work_order
         wo.sale = sale
@@ -195,7 +194,8 @@ class OpticalWorkOrderTest(OpticalDomainTest):
         optical_wo.work_order.add_sellable(optical_prod2.product.sellable)
         wo.status = WorkOrder.STATUS_WORK_IN_PROGRESS
 
-        purchase = optical_wo.create_purchase(supplier, item1, False)
+        purchase = optical_wo.create_purchase(supplier, item1, False, self.current_branch,
+                                              self.current_station, self.current_user)
         for item in purchase.get_items():
             self.assertEqual(item.cost, Decimal('5'))
             # This item should not be in the purchase
@@ -210,13 +210,13 @@ class OpticalWorkOrderTest(OpticalDomainTest):
         # Wrong WorkOrder status
         self.assertFalse(optical_wo.can_receive_purchase(purchase))
 
-        wo.approve()
-        wo.work()
-        wo.finish()
+        wo.approve(self.current_user)
+        wo.work(self.current_branch, self.current_user)
+        wo.finish(self.current_branch, self.current_user)
         # PurchaseOrder with wrong status
         self.assertFalse(optical_wo.can_receive_purchase(purchase))
 
-        purchase.confirm()
+        purchase.confirm(self.current_user)
         self.assertTrue(optical_wo.can_receive_purchase(purchase))
 
     def test_receive_purchase(self):
@@ -224,11 +224,11 @@ class OpticalWorkOrderTest(OpticalDomainTest):
         wo = optical_wo.work_order
         purchase = self.create_purchase_order()
         purchase.status = PurchaseOrder.ORDER_PENDING
-        wo.approve()
-        wo.work()
-        wo.finish()
-        purchase.confirm()
-        optical_wo.receive_purchase(purchase)
+        wo.approve(self.current_user)
+        wo.work(self.current_branch, self.current_user)
+        wo.finish(self.current_branch, self.current_user)
+        purchase.confirm(self.current_user)
+        optical_wo.receive_purchase(purchase, self.current_station, self.current_user)
 
         self.assertTrue(purchase.status, PurchaseOrder.ORDER_CLOSED)
 
@@ -248,8 +248,9 @@ class OpticalWorkOrderTest(OpticalDomainTest):
         wo_item2.sale_item = sale_item2
         wo.status = WorkOrder.STATUS_WORK_IN_PROGRESS
 
-        purchase = optical_wo.create_purchase(supplier, wo_item1, False)
-        optical_wo.reserve_products(purchase)
+        purchase = optical_wo.create_purchase(supplier, wo_item1, False, self.current_branch,
+                                              self.current_station, self.current_user)
+        optical_wo.reserve_products(purchase, self.current_user)
 
 
 class TestOpticalWorkOrderItemsView(OpticalDomainTest):

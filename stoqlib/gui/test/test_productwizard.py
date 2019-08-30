@@ -272,8 +272,8 @@ class TestProducCreateWizard(GUITest):
         grid_product = self.create_product(storable=True, is_grid=True)
         grid_product.sellable.default_sale_cfop = cfop
         grid_product.ncm = '12345678'
-        grid_product.pis_template = pis_template
-        grid_product.cofins_template = cofins_template
+        grid_product.set_pis_template(pis_template)
+        grid_product.set_cofins_template(cofins_template)
         grid_product.model = 'model'
         self.create_product_attribute(product=grid_product, attribute=grid_attribute)
 
@@ -300,12 +300,12 @@ class TestProducCreateWizard(GUITest):
         self.assertEqual(kwargs['product_type'], Product.TYPE_GRID)
         self.assertEqual(template, grid_product)
         self.assertEqual(template.ncm, grid_product.ncm)
-        self.assertEqual(template.pis_template, grid_product.pis_template)
-        self.assertEqual(template.cofins_template, grid_product.cofins_template)
+        self.assertEqual(template._pis_template, grid_product._pis_template)
+        self.assertEqual(template._cofins_template, grid_product._cofins_template)
         self.assertEqual(template.sellable.default_sale_cfop,
                          grid_product.sellable.default_sale_cfop)
         self.assertEqual(template.ncm, '12345678')
         self.assertEqual(template.model, 'model')
-        self.assertEqual(template.cofins_template, cofins_template)
-        self.assertEqual(template.pis_template, pis_template)
+        self.assertEqual(template._cofins_template, cofins_template)
+        self.assertEqual(template._pis_template, pis_template)
         self.assertEqual(template.sellable.default_sale_cfop, cfop)

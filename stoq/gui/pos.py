@@ -532,7 +532,7 @@ class PosApp(ShellApp):
     def _update_list(self, sellable, batch=None):
         assert isinstance(sellable, Sellable)
         try:
-            sellable.check_taxes_validity()
+            sellable.check_taxes_validity(api.get_current_branch(self.store))
         except TaxError as strerr:
             # If the sellable icms taxes are not valid, we cannot sell it.
             warning(str(strerr))
@@ -1110,6 +1110,7 @@ class PosApp(ShellApp):
         sale = Sale(store=store,
                     status=Sale.STATUS_QUOTE,
                     branch=branch,
+                    station=api.get_current_station(store),
                     salesperson=salesperson,
                     group=group,
                     cfop_id=cfop_id,
@@ -1175,7 +1176,7 @@ class PosApp(ShellApp):
             if sysparam.get_bool('USE_SALE_TOKEN') and storable:
                 diff = sale_item.quantity - sale_item.quantity_decreased
                 if diff:
-                    sale_item.reserve(diff)
+                    sale_item.reserve(api.get_current_user(self.store), diff)
 
             if delivery and fake_sale_item.deliver:
                 delivery.add_item(sale_item)
@@ -1329,13 +1330,13 @@ class PosApp(ShellApp):
 
             sale = self._create_sale(store)
             self._trade.new_sale = sale
-            self._trade.trade()
+            self._trade.trade(api.get_current_user(store))
         else:
             sale = self._create_sale(store)
 
         if save_only:
             if sale.status != Sale.STATUS_ORDERED and not sale.get_items().is_empty():
-                sale.order()
+                sale.order(api.get_current_user(store))
             store.commit()
             if sysparam.get_bool('PRINT_SALE_DETAILS_ON_POS'):
                 self._print_sale_details(sale)

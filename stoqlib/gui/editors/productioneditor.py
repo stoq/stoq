@@ -175,7 +175,7 @@ class ProductionMaterialLostEditor(ProductionItemProducedEditor):
 
     def validate_confirm(self):
         try:
-            self.model.add_lost(self.quantity.read())
+            self.model.add_lost(api.get_current_user(self.store), self.quantity.read())
         except (ValueError, AssertionError):
             info(_(u'Can not lose this quantity. Not enough materials '
                    'allocated to this production.'))
@@ -199,7 +199,7 @@ class ProductionMaterialAllocateEditor(ProductionItemProducedEditor):
 
     def validate_confirm(self):
         try:
-            self.model.allocate(self.quantity.read())
+            self.model.allocate(api.get_current_user(self.store), self.quantity.read())
         except (ValueError, AssertionError):
             info(_(u'Can not allocate this quantity.'))
             return False

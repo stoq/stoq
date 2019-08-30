@@ -32,7 +32,6 @@ from kiwi.ui.objectlist import Column
 from storm.expr import Ne
 
 from stoqlib.api import api
-from stoqlib.database.runtime import get_current_user, get_current_branch
 from stoqlib.domain.product import StorableBatch
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sale import Sale
@@ -134,15 +133,18 @@ class SaleReturnSelectionStep(WizardEditorStep):
         # again. This should be as simple as 'if sale_view'.
         if sale_view and not self.unknown_sale_check.get_active():
             sale = self.store.fetch(sale_view.sale)
-            model = sale.create_sale_return_adapter()
+            model = sale.create_sale_return_adapter(api.get_current_branch(self.store),
+                                                    api.get_current_user(self.store),
+                                                    api.get_current_station(self.store))
             for item in model.returned_items:
                 _adjust_returned_sale_item(item)
         else:
             assert self._allow_unknown_sales()
             model = ReturnedSale(
                 store=self.store,
-                responsible=get_current_user(self.store),
-                branch=get_current_branch(self.store),
+                responsible=api.get_current_user(self.store),
+                branch=api.get_current_branch(self.store),
+                station=api.get_current_station(self.store),
             )
 
         self.wizard.model = model
@@ -453,8 +455,7 @@ class SaleReturnWizard(_BaseSaleReturnWizard):
             return
 
         login_user = api.get_current_user(self.store)
-        self.model.return_(method_name=u'credit' if self.credit else u'money',
-                           login_user=login_user)
+        self.model.return_(login_user, method_name=u'credit' if self.credit else u'money')
         SaleReturnWizardFinishEvent.emit(self.model)
         self.retval = self.model
         self.close()

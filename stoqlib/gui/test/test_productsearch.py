@@ -215,7 +215,7 @@ class TestProductSearchQuantity(GUITest):
         order.status = PurchaseOrder.ORDER_PENDING
         p_item = order.add_item(product.sellable, 10)
         p2_item = order.add_item(product2.sellable, 15)
-        order.confirm()
+        order.confirm(self.current_user)
 
         # Receiving
         receiving = self.create_receiving_order(order, branch, user)
@@ -224,7 +224,7 @@ class TestProductSearchQuantity(GUITest):
         self.create_receiving_order_item(receiving, product.sellable, p_item, 8)
         self.create_receiving_order_item(receiving, product2.sellable, p2_item,
                                          12)
-        receiving.confirm()
+        receiving.confirm(self.current_user)
 
         # Sale
         sale = self.create_sale(branch=branch)
@@ -232,9 +232,9 @@ class TestProductSearchQuantity(GUITest):
         sale.open_date = self.today
         sale.add_sellable(product.sellable, 3)
         sale.add_sellable(product2.sellable, 5)
-        sale.order()
+        sale.order(self.current_user)
         self.add_payments(sale, date=self.today)
-        sale.confirm()
+        sale.confirm(self.current_user)
 
     def test_search(self):
         self._create_domain()
@@ -304,9 +304,9 @@ class TestProductsSoldSearch(GUITest):
         sale.open_date = self.today
         sale.add_sellable(product.sellable, 3)
         sale.add_sellable(product2.sellable, 5)
-        sale.order()
+        sale.order(self.current_user)
         self.add_payments(sale, date=self.today)
-        sale.confirm()
+        sale.confirm(self.current_user)
 
     def test_search(self):
         self._create_domain()
@@ -388,16 +388,15 @@ class TestProductStockSearch(GUITest):
         order.status = PurchaseOrder.ORDER_PENDING
         p_item = order.add_item(product.sellable, 10)
         p2_item = order.add_item(product2.sellable, 15)
-        order.confirm()
+        order.confirm(self.current_user)
 
         # Receiving
         receiving = self.create_receiving_order(order, branch, user)
         receiving.identifier = 222
         receiving.receival_date = self.today
         self.create_receiving_order_item(receiving, product.sellable, p_item, 8)
-        self.create_receiving_order_item(receiving, product2.sellable, p2_item,
-                                         12)
-        receiving.confirm()
+        self.create_receiving_order_item(receiving, product2.sellable, p2_item, 12)
+        receiving.confirm(self.current_user)
 
     def test_search(self):
         self._create_domain()

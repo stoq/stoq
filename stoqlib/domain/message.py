@@ -26,7 +26,6 @@
 from storm.expr import And, Coalesce, Join, LeftJoin
 from storm.references import Reference
 
-from stoqlib.api import api
 from stoqlib.database.properties import UnicodeCol, IdCol, DateTimeCol
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
@@ -68,9 +67,7 @@ class Message(Domain):
     user = Reference(user_id, 'LoginUser.id')
 
     @classmethod
-    def find_active(cls, store):
-        branch = api.get_current_branch(store)
-        user = api.get_current_user(store)
+    def find_active(cls, store, branch: Branch, user: LoginUser):
         profile = user.profile
         now = localnow()
         query = And(

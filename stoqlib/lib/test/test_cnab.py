@@ -292,7 +292,7 @@ class CnabTestMixin(object):
         sale = self.create_sale()
         sale.identifier = 123
         self.add_product(sale)
-        sale.order()
+        sale.order(self.current_user)
         payments = self.add_payments(sale, method_type=u'bill',
                                      date=datetime.datetime(2011, 5, 30),
                                      installments=10)
@@ -301,7 +301,7 @@ class CnabTestMixin(object):
         sale.client = self.create_client()
         address = self.create_address()
         address.person = sale.client.person
-        sale.confirm()
+        sale.confirm(self.current_user)
         return payments
 
     def create_bill_options(self, bank):

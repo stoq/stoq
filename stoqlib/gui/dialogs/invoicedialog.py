@@ -27,6 +27,7 @@ from gi.repository import Gtk
 
 from kiwi.ui.objectlist import Column
 
+from stoqlib.api import api
 from stoqlib.domain.invoice import InvoiceLayout, InvoicePrinter
 from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.sale import Sale
@@ -103,8 +104,8 @@ class SaleInvoicePrinterDialog(BaseEditor):
         else:
             # FIXME: This is for the old invoice printing infrastructure that is
             # no longer used. Remove this code when possible
-            next_invoice_number = Invoice.get_next_invoice_number(self.store,
-                                                                  series=1)
+            next_invoice_number = Invoice.get_next_invoice_number(
+                self.store, api.get_current_branch(self.store), series=1)
             self.invoice_number.update(next_invoice_number)
 
     def setup_proxies(self):

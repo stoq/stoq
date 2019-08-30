@@ -180,6 +180,7 @@ class WorkOrderQuoteWorkOrderStep(BaseWizardStep):
     def _create_work_order(self):
         return WorkOrder(
             store=self.store,
+            station=api.get_current_station(self.store),
             sale=self.model,
             sellable=None,
             description=u'',
@@ -224,7 +225,7 @@ class WorkOrderQuoteWorkOrderStep(BaseWizardStep):
         # a reason for it.
         reason = (_(u'Removed from sale %s') % work_order.sale.identifier)
         work_order.sale = None
-        work_order.cancel(reason=reason)
+        work_order.cancel(api.get_current_user(self.store), reason=reason)
 
         self._work_order_ids.remove(work_order_id)
 
@@ -325,7 +326,7 @@ class WorkOrderQuoteItemStep(SaleQuoteItemStep):
             # would try to return a wrong quantity to the stock. Force the
             # synchronization to avoid any problems like that
             wo_item.quantity_decreased = item.quantity_decreased
-            wo_item.order.remove_item(wo_item)
+            wo_item.order.remove_item(wo_item, api.get_current_user(self.store))
 
         super(WorkOrderQuoteItemStep, self).remove_items(items)
 
@@ -384,7 +385,7 @@ class WorkOrderQuoteItemStep(SaleQuoteItemStep):
         for wo in self.wizard.workorders:
             # The work order might be already approved if we are editing a sale
             if wo.can_approve():
-                wo.approve()
+                wo.approve(api.get_current_user(self.store))
 
             self.setup_work_order(wo)
             data.append([wo.description, wo])

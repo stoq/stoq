@@ -388,7 +388,7 @@ class PurchaseApp(ShellApp):
         with api.new_store() as store:
             for order_view in valid_order_views:
                 order = store.fetch(order_view.purchase)
-                order.confirm()
+                order.confirm(api.get_current_user(store))
         self.refresh()
         self.select_result(orders)
 

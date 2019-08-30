@@ -58,8 +58,8 @@ class TestTransferOrderDetailsDialog(GUITest):
         transfer = self.create_transfer_order()
         self.create_transfer_order_item(order=transfer)
 
-        transfer.send()
-        transfer.receive(self.create_employee())
+        transfer.send(self.current_user)
+        transfer.receive(self.current_user, self.create_employee())
         dialog = TransferOrderDetailsDialog(self.store, transfer)
         self.check_dialog(dialog, 'dialog-cancelled-order-details-show')
 
@@ -68,7 +68,8 @@ class TestTransferOrderDetailsDialog(GUITest):
     def test_receive_order(self, print_report, yesno):
         yesno.retval = True
 
-        source_branch = Branch.get_active_remote_branches(self.store)[0]
+        source_branch = Branch.get_active_remote_branches(self.store,
+                                                          api.get_current_branch(self.store))[0]
         dest_branch = api.get_current_branch(self.store)
 
         # Created and sent the order.
@@ -77,7 +78,7 @@ class TestTransferOrderDetailsDialog(GUITest):
         self.create_transfer_order_item(order=order)
         order.identifier = 28474
         order.open_date = localdatetime(2012, 2, 2)
-        order.send()
+        order.send(self.current_user)
 
         dialog = TransferOrderDetailsDialog(self.store, order)
         self.click(dialog.print_button)
@@ -96,7 +97,8 @@ class TestTransferOrderDetailsDialog(GUITest):
     @mock.patch('stoqlib.gui.dialogs.transferorderdialog.get_plugin_manager')
     def test_cancel_order_nfce_plugin_active(self, get_plugin_manager,
                                              run_dialog):
-        dest_branch = Branch.get_active_remote_branches(self.store)[0]
+        dest_branch = Branch.get_active_remote_branches(self.store,
+                                                        api.get_current_branch(self.store))[0]
         source_branch = api.get_current_branch(self.store)
 
         order = self.create_transfer_order(source_branch=source_branch,
@@ -104,7 +106,7 @@ class TestTransferOrderDetailsDialog(GUITest):
         self.create_transfer_order_item(order=order)
         order.identifier = 28474
         order.open_date = localdatetime(2012, 2, 2)
-        order.send()
+        order.send(self.current_user)
 
         dialog = TransferOrderDetailsDialog(self.store, order)
         self.assertSensitive(dialog, ['cancel_button'])
@@ -128,7 +130,7 @@ class TestTransferOrderDetailsDialog(GUITest):
         self.create_transfer_order_item(order=order)
         order.identifier = 28474
         order.open_date = localdatetime(2012, 2, 2)
-        order.send()
+        order.send(self.current_user)
         dialog = TransferOrderDetailsDialog(self.store, order)
         self.assertSensitive(dialog, ['cancel_button'])
         run_dialog.return_value = False
@@ -143,7 +145,7 @@ class TestTransferOrderDetailsDialog(GUITest):
         self.create_transfer_order_item(order=order)
         order.identifier = 28474
         order.open_date = localdatetime(2012, 2, 2)
-        order.send()
+        order.send(self.current_user)
         dialog = TransferOrderDetailsDialog(self.store, order)
         self.assertSensitive(dialog, ['cancel_button'])
         run_dialog.return_value = Note()
@@ -158,7 +160,8 @@ class TestTransferOrderDetailsDialog(GUITest):
             "reverse transfer.")
 
     def test_cancel_order_on_dest_branch(self):
-        source_branch = Branch.get_active_remote_branches(self.store)[0]
+        source_branch = Branch.get_active_remote_branches(self.store,
+                                                          api.get_current_branch(self.store))[0]
         dest_branch = api.get_current_branch(self.store)
 
         order = self.create_transfer_order(source_branch=source_branch,
@@ -166,7 +169,7 @@ class TestTransferOrderDetailsDialog(GUITest):
         self.create_transfer_order_item(order=order)
         order.identifier = 28474
         order.open_date = localdatetime(2012, 2, 2)
-        order.send()
+        order.send(self.current_user)
 
         dialog = TransferOrderDetailsDialog(self.store, order)
         # Destination branch should not cancel the transfer

@@ -381,6 +381,7 @@ class SalesApp(ShellApp):
 
     def _update_toolbar(self, *args):
         sale_view = self.results.get_selected()
+        user = api.get_current_user(self.store)
         # FIXME: Disable invoice printing if the sale was returned. Remove this
         #       when we add proper support for returned sales invoice.
         can_print_invoice = bool(sale_view and
@@ -388,10 +389,10 @@ class SalesApp(ShellApp):
                                  sale_view.status != Sale.STATUS_RETURNED)
         self.set_sensitive([self.SalesPrintInvoice], can_print_invoice)
         self.set_sensitive([self.SalesCancel],
-                           bool(sale_view and sale_view.can_cancel()))
+                           bool(sale_view and sale_view.can_cancel(user)))
         self.set_sensitive([self.sale_toolbar.return_sale_button, self.Return],
                            bool(sale_view and (sale_view.can_return() or
-                                               sale_view.can_cancel())))
+                                               sale_view.can_cancel(user))))
         self.set_sensitive([self.sale_toolbar.return_sale_button, self.Details],
                            bool(sale_view))
         self.set_sensitive([self.sale_toolbar.edit_button, self.Edit],
@@ -578,7 +579,7 @@ class SalesApp(ShellApp):
                       "do a sale return."))
             return
 
-        sale.cancel(retval.notes)
+        sale.cancel(api.get_current_user(store), retval.notes)
         store.commit(close=True)
         self.refresh()
 

@@ -517,7 +517,7 @@ class ReceivableApp(BaseAccountWindow):
 
     def on_Renegotiate__activate(self, action):
         try:
-            Till.get_current(self.store)
+            Till.get_current(self.store, api.get_current_station(self.store))
         except TillError as e:
             warning(str(e))
             return
@@ -540,7 +540,7 @@ class ReceivableApp(BaseAccountWindow):
 
     def on_Edit__activate(self, action):
         try:
-            Till.get_current(self.store)
+            Till.get_current(self.store, api.get_current_station(self.store))
         except TillError as e:
             warning(str(e))
             return
