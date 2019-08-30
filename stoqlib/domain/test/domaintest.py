@@ -37,9 +37,8 @@ from stoqlib.lib.kiwilibrary import library
 library  # pylint: disable=W0104
 
 import stoqlib
-from stoqlib.database.runtime import (get_current_branch,
-                                      new_store,
-                                      StoqlibStore)
+from stoqlib.database.runtime import (get_current_branch, get_current_user, get_current_station,
+                                      new_store, StoqlibStore)
 from stoqlib.database.testsuite import StoqlibTestsuiteTracer
 from stoqlib.domain.base import Domain
 from stoqlib.domain.exampledata import ExampleCreator
@@ -181,6 +180,18 @@ class DomainTest(unittest.TestCase, ExampleCreator):
     def __init__(self, test):
         unittest.TestCase.__init__(self, test)
         ExampleCreator.__init__(self)
+
+    @property
+    def current_user(self):
+        return get_current_user(self.store)
+
+    @property
+    def current_branch(self):
+        return get_current_branch(self.store)
+
+    @property
+    def current_station(self):
+        return get_current_station(self.store)
 
     @classmethod
     def setUpClass(cls):

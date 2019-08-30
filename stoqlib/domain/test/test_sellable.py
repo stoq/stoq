@@ -30,7 +30,6 @@ import mock
 from stoqdrivers.enum import TaxType
 
 from stoqlib.exceptions import SellableError, TaxError
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.image import Image
 from stoqlib.domain.product import Storable, StockTransactionHistory
 from stoqlib.domain.sale import Sale
@@ -707,17 +706,16 @@ class TestSellable(DomainTest):
 
     def test_can_close(self):
         sellable = self.create_sellable()
-        branch = get_current_branch(self.store)
-        storable = self.create_storable(sellable.product, branch, 0)
+        storable = self.create_storable(sellable.product, self.current_branch, 0)
         # There's a storable, but we can still close because there's no stock
         self.assertTrue(sellable.can_close())
 
-        storable.increase_stock(1, branch,
+        storable.increase_stock(1, self.current_branch,
                                 StockTransactionHistory.TYPE_INITIAL, None)
         # Now that there's stock we should not be able to close anymore
         self.assertFalse(sellable.can_close())
 
-        storable.decrease_stock(1, branch,
+        storable.decrease_stock(1, self.current_branch,
                                 StockTransactionHistory.TYPE_INITIAL, None)
         # But decreasing the stock should make it possible to close again
         self.assertTrue(sellable.can_close())
@@ -734,12 +732,11 @@ class TestSellable(DomainTest):
         storable = Storable(product=sellable.product, store=self.store)
         self.assertTrue(sellable.can_remove())
 
-        branch = get_current_branch(self.store)
-        storable.increase_stock(1, branch,
+        storable.increase_stock(1, self.current_branch,
                                 StockTransactionHistory.TYPE_INITIAL, None)
         sale = self.create_sale()
         sale.status = Sale.STATUS_QUOTE
-        sale.branch = branch
+        sale.branch = self.current_branch
         sale.add_sellable(sellable)
         self.assertFalse(sellable.can_remove())
 

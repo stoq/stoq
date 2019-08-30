@@ -30,7 +30,6 @@ import mock
 from kiwi.currency import currency
 
 from stoqlib.exceptions import TillError
-from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.till import Till, TillEntry
@@ -64,8 +63,7 @@ class TestTill(DomainTest):
     def test_get_current_till_open(self):
         self.assertEqual(Till.get_current(self.store), None)
 
-        station = get_current_station(self.store)
-        till = Till(store=self.store, station=station)
+        till = Till(store=self.store, station=self.current_station)
 
         self.assertEqual(Till.get_current(self.store), None)
         till.open_till()
@@ -76,9 +74,8 @@ class TestTill(DomainTest):
         self.assertRaises(TillError, till.open_till)
 
     def test_get_current_till_close(self):
-        station = get_current_station(self.store)
         self.assertEqual(Till.get_current(self.store), None)
-        till = Till(store=self.store, station=station)
+        till = Till(store=self.store, station=self.current_station)
         till.open_till()
 
         self.assertEqual(Till.get_current(self.store), till)
@@ -86,8 +83,7 @@ class TestTill(DomainTest):
         self.assertEqual(Till.get_current(self.store), None)
 
     def test_till_open_once(self):
-        station = get_current_station(self.store)
-        till = Till(store=self.store, station=station)
+        till = Till(store=self.store, station=self.current_station)
 
         till.open_till()
         till.close_till()
@@ -178,7 +174,7 @@ class TestTill(DomainTest):
         yesterday = localnow() - datetime.timedelta(1)
 
         # Open a till, set the opening_date to yesterday
-        till = Till(station=get_current_station(self.store),
+        till = Till(station=self.current_station,
                     store=self.store)
         till.open_till()
         till.opening_date = yesterday
@@ -195,7 +191,7 @@ class TestTill(DomainTest):
         yesterday = localnow() - datetime.timedelta(1)
 
         # Open a till, set the opening_date to yesterday
-        till = Till(station=get_current_station(self.store),
+        till = Till(station=self.current_station,
                     store=self.store)
         till.open_till()
         till.opening_date = yesterday
@@ -208,7 +204,7 @@ class TestTill(DomainTest):
         yesterday = localnow() - datetime.timedelta(1)
 
         # Open a till, set the opening_date to yesterday
-        till = Till(station=get_current_station(self.store),
+        till = Till(station=self.current_station,
                     store=self.store)
         till.open_till()
         till.opening_date = yesterday
@@ -216,7 +212,7 @@ class TestTill(DomainTest):
         till.close_till()
         till.closing_date = yesterday
 
-        new_till = Till(station=get_current_station(self.store),
+        new_till = Till(station=self.current_station,
                         store=self.store)
         self.assertTrue(new_till._get_last_closed_till())
         new_till.open_till()
@@ -227,7 +223,7 @@ class TestTill(DomainTest):
                     store=self.store)
         till.open_till()
 
-        till = Till(station=get_current_station(self.store),
+        till = Till(station=self.current_station,
                     store=self.store)
         till.open_till()
 
@@ -295,13 +291,13 @@ class TestTill(DomainTest):
 
     def test_get_last(self):
         till = Till(store=self.store,
-                    station=get_current_station(self.store))
+                    station=self.current_station)
         till.open_till()
         self.assertEqual(Till.get_last(self.store), till)
 
     def test_get_last_closed(self):
         till = Till(store=self.store,
-                    station=get_current_station(self.store))
+                    station=self.current_station)
         till.open_till()
         till.close_till()
         self.assertEqual(Till.get_last_closed(self.store), till)

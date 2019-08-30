@@ -27,7 +27,6 @@ from decimal import Decimal
 from nose.exc import SkipTest
 from kiwi.python import Settable
 
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.events import PaymentGroupGetOrderEvent
 from stoqlib.domain.payment.method import PaymentMethod
@@ -251,8 +250,7 @@ class TestPaymentGroup(DomainTest):
 
         sale.add_sellable(sellable, quantity=3, price=300)
         product = sellable.product
-        branch = get_current_branch(self.store)
-        self.create_storable(product, branch, 100)
+        self.create_storable(product, self.current_branch, 100)
 
         sale.order()
         method = PaymentMethod.get_by_name(self.store, u'check')

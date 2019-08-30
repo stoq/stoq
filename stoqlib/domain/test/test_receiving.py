@@ -30,7 +30,6 @@ from kiwi.currency import currency
 import mock
 
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import ProductStockItem, Storable
@@ -108,7 +107,7 @@ class TestReceivingOrder(DomainTest):
         purchase_order.confirm()
 
         receiving_order = self.create_receiving_order(purchase_order)
-        receiving_order.branch = get_current_branch(self.store)
+        receiving_order.branch = self.current_branch
         self.create_receiving_order_item(
             receiving_order=receiving_order,
             sellable=product.sellable,

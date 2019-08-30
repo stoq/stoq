@@ -32,7 +32,6 @@ from nose.exc import SkipTest
 from storm.expr import And, Eq, Ne
 
 from stoqlib.api import api
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.interfaces import ICurrentUser
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.event import Event
@@ -273,12 +272,11 @@ class TestSale(DomainTest):
         self.assertTrue(sale.need_adjust_batches())
 
     def test_check_and_adjust_batches(self):
-        branch = get_current_branch(self.store)
         sale = self.create_sale()
 
         # Product without batch
         product = self.create_product()
-        self.create_storable(product=product, branch=branch, stock=1)
+        self.create_storable(product=product, branch=self.current_branch, stock=1)
         sale.add_sellable(product.sellable)
         self.assertEqual(sale.need_adjust_batches(), False)
         adjusted_batches = sale.check_and_adjust_batches()
@@ -286,7 +284,7 @@ class TestSale(DomainTest):
 
         # Product with 1 batch
         product = self.create_product()
-        self.create_storable(product=product, is_batch=True, branch=branch,
+        self.create_storable(product=product, is_batch=True, branch=self.current_branch,
                              stock=1)
         sale.status = Sale.STATUS_QUOTE
         sale.add_sellable(product.sellable)
@@ -299,14 +297,14 @@ class TestSale(DomainTest):
 
         # Product with 2 batches
         product2 = self.create_product()
-        storable = self.create_storable(product=product2, branch=branch)
+        storable = self.create_storable(product=product2, branch=self.current_branch)
         storable.is_batch = True
         batch1 = self.create_storable_batch(storable=storable, batch_number=u'2')
         batch2 = self.create_storable_batch(storable=storable, batch_number=u'3')
-        storable.increase_stock(1, branch,
+        storable.increase_stock(1, self.current_branch,
                                 StockTransactionHistory.TYPE_INITIAL,
                                 None, batch=batch1)
-        storable.increase_stock(1, branch,
+        storable.increase_stock(1, self.current_branch,
                                 StockTransactionHistory.TYPE_INITIAL,
                                 None, batch=batch2)
         sale.add_sellable(product2.sellable)
@@ -662,7 +660,7 @@ class TestSale(DomainTest):
         log_.assert_called_once_with(self.store, Event.TYPE_SALE, expected)
 
     def test_total_return(self):
-        sale = self.create_sale(branch=get_current_branch(self.store))
+        sale = self.create_sale(branch=self.current_branch)
         sellable = self.add_product(sale)
         storable = sellable.product_storable
         balance_before_confirm = storable.get_balance_for_branch(sale.branch)
@@ -689,7 +687,7 @@ class TestSale(DomainTest):
                          balance_before_confirm)
 
     def test_partial_return(self):
-        sale = self.create_sale(branch=get_current_branch(self.store))
+        sale = self.create_sale(branch=self.current_branch)
         sellable = self.add_product(sale, quantity=5)
         storable = sellable.product_storable
         balance_before_confirm = storable.get_balance_for_branch(sale.branch)
@@ -966,7 +964,7 @@ class TestSale(DomainTest):
         self.assertEqual(payment.value, returned_amount)
 
     def test_trade(self):
-        sale = self.create_sale(branch=get_current_branch(self.store))
+        sale = self.create_sale(branch=self.current_branch)
         self.assertFalse(sale.can_return())
 
         sellable = self.add_product(sale)
@@ -1041,7 +1039,7 @@ class TestSale(DomainTest):
         self.assertFalse(sale.can_cancel())
         with self.sysparam(ALLOW_CANCEL_CONFIRMED_SALES=False):
             # This represents a user with administrator permissions.
-            admin_user = api.get_current_user(self.store)
+            admin_user = self.current_user
             # And this is a user without the administrator permissions.
             salesperson_user = self.store.find(LoginUser, username=u'elias').one()
             for can_cancel in [True, None]:
@@ -1117,7 +1115,7 @@ class TestSale(DomainTest):
         def callback(sale):
             return True
 
-        admin_user = api.get_current_user(self.store)
+        admin_user = self.current_user
         salesperson_user = self.store.find(LoginUser, username=u'elias').one()
         provide_utility(ICurrentUser, salesperson_user, replace=True)
         self.assertFalse(sale.can_cancel())
@@ -1213,8 +1211,7 @@ class TestSale(DomainTest):
         sale = self.create_sale()
         sellable = self.add_product(sale)
         storable = sellable.product_storable
-        branch = api.get_current_branch(self.store)
-        initial_quantity = storable.get_balance_for_branch(branch)
+        initial_quantity = storable.get_balance_for_branch(self.current_branch)
         sale.order()
 
         self.add_payments(sale)
@@ -1223,22 +1220,21 @@ class TestSale(DomainTest):
         with self.sysparam(ALLOW_CANCEL_CONFIRMED_SALES=True):
             self.assertTrue(sale.can_cancel())
 
-            after_confirmed_quantity = storable.get_balance_for_branch(branch)
+            after_confirmed_quantity = storable.get_balance_for_branch(self.current_branch)
             self.assertEqual(initial_quantity - 1, after_confirmed_quantity)
 
             self.assertTrue(sale.can_cancel())
             sale.cancel(u"Test sale cancellation")
             self.assertEqual(sale.status, Sale.STATUS_CANCELLED)
 
-            final_quantity = storable.get_balance_for_branch(branch)
+            final_quantity = storable.get_balance_for_branch(self.current_branch)
             self.assertEqual(initial_quantity, final_quantity)
 
     def test_cancel_not_paid(self):
-        branch = api.get_current_branch(self.store)
         sale = self.create_sale()
         sellable = self.add_product(sale, price=300)
         storable = sellable.product_storable
-        initial_quantity = storable.get_balance_for_branch(branch)
+        initial_quantity = storable.get_balance_for_branch(self.current_branch)
         sale.status = sale.STATUS_QUOTE
         self.assertTrue(sale.can_cancel())
 
@@ -1246,14 +1242,14 @@ class TestSale(DomainTest):
         sale.confirm()
 
         with self.sysparam(ALLOW_CANCEL_CONFIRMED_SALES=True):
-            after_confirmed_quantity = storable.get_balance_for_branch(branch)
+            after_confirmed_quantity = storable.get_balance_for_branch(self.current_branch)
             self.assertEqual(initial_quantity - 1, after_confirmed_quantity)
 
             self.assertTrue(sale.can_cancel())
             sale.cancel(u"Test sale cancellation")
             self.assertEqual(sale.status, Sale.STATUS_CANCELLED)
 
-        final_quantity = storable.get_balance_for_branch(branch)
+        final_quantity = storable.get_balance_for_branch(self.current_branch)
         self.assertEqual(initial_quantity, final_quantity)
 
     def test_cancel_quote(self):
@@ -2265,6 +2261,7 @@ class TestSaleItem(DomainTest):
         # 970 - 0 = 970
         self.assertEqual(storable.get_balance_for_branch(branch), 970)
 
+    # FIXME This will be removed
     @mock.patch('stoqlib.domain.sale.get_current_branch')
     def test_sell_branch(self, get_current_branch_):
         get_current_branch_.return_value = self.create_branch()
@@ -2980,18 +2977,17 @@ class TestSalesPersonSalesView(DomainTest):
 class TestClientsWithSale(DomainTest):
 
     def test_total_amount(self):
-        branch = get_current_branch(self.store)
         client = self.create_client()
         sellable = self.create_sellable()
 
-        sale = self.create_sale(branch=branch, client=client)
+        sale = self.create_sale(branch=self.current_branch, client=client)
         sale.add_sellable(sellable, quantity=2, price=Decimal('112.25'))
         self.add_payments(sale)
         sale.order()
         sale.confirm()
         sale.open_date = sale.confirm_date = localtoday()
 
-        sale2 = self.create_sale(branch=branch, client=client)
+        sale2 = self.create_sale(branch=self.current_branch, client=client)
         sale2.add_sellable(sellable, quantity=1, price=Decimal('225.50'))
         self.add_payments(sale2)
         sale2.order()

@@ -29,7 +29,6 @@ from decimal import Decimal, InvalidOperation
 
 from kiwi.currency import currency
 
-from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup, PurchaseItem, \
@@ -192,8 +191,7 @@ class TestPurchaseOrder(DomainTest):
         order = self.create_purchase_order()
         order.status = PurchaseOrder.ORDER_PENDING
         order.set_consigned()
-        current = get_current_user(store=self.store)
-        self.assertEqual(current, order.responsible)
+        self.assertEqual(self.current_user, order.responsible)
         self.assertEqual(order.status, order.ORDER_CONSIGNED)
         order.status = PurchaseOrder.ORDER_CONFIRMED
         with self.assertRaises(ValueError):
@@ -269,8 +267,7 @@ class TestPurchaseOrder(DomainTest):
         self.assertEqual(name, u'Test shop')
 
     def test_get_responsible_name(self):
-        current_user = get_current_user(self.store)
-        name = current_user.person.name
+        name = self.current_user.person.name
         order = self.create_purchase_order()
         value = order.responsible_name
         self.assertEqual(name, value)

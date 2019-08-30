@@ -61,7 +61,6 @@ from stoqlib.enums import LatePaymentPolicy, RelativeLocation
 from stoqlib.exceptions import (SellError, LoginError, DatabaseInconsistency,
                                 ModelDataError)
 from stoqlib.lib.dateutils import localdate, localdatetime, localnow, localtoday
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -770,7 +769,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         sale.confirm()
 
         returned_sale = ReturnedSale(sale=sale,
-                                     branch=get_current_branch(self.store),
+                                     branch=self.current_branch,
                                      store=self.store)
         ReturnedSaleItem(sale_item=list(sale.get_items())[0], quantity=1,
                          returned_sale=returned_sale,
@@ -801,7 +800,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         sale.confirm()
 
         returned_sale = ReturnedSale(sale=sale,
-                                     branch=get_current_branch(self.store),
+                                     branch=self.current_branch,
                                      store=self.store)
         ReturnedSaleItem(sale_item=list(sale.get_items())[0], quantity=1,
                          returned_sale=returned_sale,
@@ -958,23 +957,22 @@ class TestUser(_PersonFacetTest, DomainTest):
         self.assertEqual(user.get_status_string(), u'Inactive')
 
     def test_authenticate(self):
-        branch = get_current_branch(store=self.store)
         user = self.create_user()
         with self.assertRaises(LoginError) as error:
             user.authenticate(store=self.store, username=u'username',
-                              pw_hash=u'anything', current_branch=branch)
+                              pw_hash=u'anything', current_branch=self.current_branch)
         expected = "Invalid user or password"
         self.assertEqual(str(error.exception), expected)
 
         with self.assertRaises(LoginError) as error:
             user.authenticate(store=self.store, username=u'username',
-                              pw_hash=user.pw_hash, current_branch=branch)
+                              pw_hash=user.pw_hash, current_branch=self.current_branch)
         expected = u'This user does not have access to this branch.'
         self.assertEqual(str(error.exception), expected)
 
-        user.add_access_to(branch=branch)
+        user.add_access_to(branch=self.current_branch)
         result = user.authenticate(store=self.store, username=u'username',
-                                   pw_hash=user.pw_hash, current_branch=branch)
+                                   pw_hash=user.pw_hash, current_branch=self.current_branch)
         self.assertEqual(result, user)
 
     def test_status_str(self):
@@ -986,9 +984,8 @@ class TestUser(_PersonFacetTest, DomainTest):
     def test_get_associated_branches(self):
         user = self.create_user()
         self.assertIsNone(user.get_associated_branches().one())
-        branch = get_current_branch(store=self.store)
         new_branch = self.create_branch(name=u'New Branch')
-        user.add_access_to(branch)
+        user.add_access_to(self.current_branch)
         user.add_access_to(new_branch)
         self.assertEqual(user.get_associated_branches().count(), 2)
 
@@ -1004,6 +1001,7 @@ class TestUser(_PersonFacetTest, DomainTest):
         user.profile = user_profile
         self.assertTrue(user.has_access_to(branch))
 
+    # FIXME: This get_current_station will be removed
     @mock.patch('stoqlib.domain.person.get_current_station')
     @mock.patch('stoqlib.domain.person.Event.log')
     def test_login(self, log, get_current_station):
@@ -1020,6 +1018,7 @@ class TestUser(_PersonFacetTest, DomainTest):
         expected = _(u"User '%s' logged in") % (user.username, )
         log.assert_called_with(self.store, Event.TYPE_USER, expected)
 
+    # FIXME: This get_current_station will be removed
     @mock.patch('stoqlib.domain.person.get_current_station')
     @mock.patch('stoqlib.domain.person.Event.log')
     def test_logout(self, log, get_current_station):
@@ -1115,9 +1114,8 @@ class TestBranch(_PersonFacetTest, DomainTest):
         assert branch.get_active_branches(self.store).count() == count + 1
 
     def test_get_active_remote_branches(self):
-        current_branch = get_current_branch(self.store)
-        self.assertIn(current_branch, Branch.get_active_branches(self.store))
-        self.assertNotIn(current_branch,
+        self.assertIn(self.current_branch, Branch.get_active_branches(self.store))
+        self.assertNotIn(self.current_branch,
                          Branch.get_active_remote_branches(self.store))
 
     def test_is_from_same_company(self):

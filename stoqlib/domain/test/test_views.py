@@ -28,7 +28,6 @@ from decimal import Decimal
 from kiwi.datatypes import converter
 
 from stoqlib.database.expr import Date
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
@@ -400,7 +399,6 @@ class TestProductFullStockView(DomainTest):
         pv = results[0]
         self.assertEqual(pv.stock_cost, 10)
 
-        branch = get_current_branch(self.store)
         results = ProductFullStockView.find_by_branch(self.store, None).find(
             ProductFullStockView.product_id == p2.id)
         self.assertTrue(list(results))
@@ -741,7 +739,7 @@ class TestReturnedSalesView(DomainTest):
     def test_properties(self):
         self.assertEqual(self.store.find(ReturnedSalesView).count(), 0)
         # First create a sale
-        sale = self.create_sale(branch=get_current_branch(self.store))
+        sale = self.create_sale(branch=self.current_branch)
         self.add_product(sale)
         sale.order()
         self.add_payments(sale)

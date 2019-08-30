@@ -25,7 +25,6 @@
 import datetime
 from decimal import Decimal
 
-from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.payment.method import PaymentMethod, _
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.test.domaintest import DomainTest
@@ -207,7 +206,7 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
         self.assertEqual(method.get_status_string(), u'Inactive')
 
     def _createUnclosedTill(self):
-        till = Till(station=get_current_station(self.store),
+        till = Till(station=self.current_station,
                     store=self.store)
         till.open_till()
         yesterday = localtoday() - datetime.timedelta(1)

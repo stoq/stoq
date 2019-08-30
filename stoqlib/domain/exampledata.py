@@ -31,9 +31,6 @@ from stoqdrivers.enum import TaxType
 from storm.expr import Delete
 
 from stoqlib.database.expr import TransactionTimestamp
-from stoqlib.database.runtime import (get_current_station,
-                                      get_current_branch,
-                                      get_current_user)
 from stoqlib.lib.dateutils import localdate, localdatetime, localnow, localtoday
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import validate_cst
@@ -291,13 +288,13 @@ class ExampleCreator(object):
                                          trans_type=None):
         from stoqlib.domain.product import StockTransactionHistory
         trans_type = trans_type or StockTransactionHistory.TYPE_INITIAL
-        branch = branch or get_current_branch(store=self.store)
+        branch = branch or self.current_branch
         storable = storable or self.create_storable()
         sth = StockTransactionHistory(
             branch=branch,
             storable=storable,
             batch=batch,
-            responsible=get_current_user(store=self.store),
+            responsible=self.current_user,
             unit_cost=stock_cost,
             quantity=quantity,
             type=trans_type,
@@ -333,7 +330,7 @@ class ExampleCreator(object):
         product = sellable.product
         product.parent = parent
         if not branch:
-            branch = get_current_branch(self.store)
+            branch = self.current_branch
         if storable or stock:
             storable = Storable(product=product, store=self.store)
         if stock:
@@ -453,7 +450,7 @@ class ExampleCreator(object):
                     coupon_id=0,
                     open_date=TransactionTimestamp(),
                     salesperson=salesperson or self.create_sales_person(),
-                    branch=branch or get_current_branch(self.store),
+                    branch=branch or self.current_branch,
                     cfop_id=sysparam.get_object_id('DEFAULT_SALES_CFOP'),
                     group=group,
                     client=client,
@@ -474,13 +471,13 @@ class ExampleCreator(object):
     def create_sale_comment(self, sale, comment=u'Foo bar', user=None):
         from stoqlib.domain.sale import SaleComment
         return SaleComment(store=self.store, sale=sale, comment=comment,
-                           author=user or get_current_user(self.store))
+                           author=user or self.current_user)
 
     def create_trade(self, trade_value=100, branch=None, sellable=None):
         from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
-        branch = branch or get_current_branch(self.store)
+        branch = branch or self.current_branch
         returned_sale = ReturnedSale(store=self.store,
-                                     responsible=get_current_user(self.store),
+                                     responsible=self.current_user,
                                      branch=branch)
         ReturnedSaleItem(store=self.store,
                          quantity=1,
@@ -502,7 +499,7 @@ class ExampleCreator(object):
 
     def create_pending_returned_sale(self, product=None):
         from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
-        sale_branch = get_current_branch(self.store)
+        sale_branch = self.current_branch
         return_branch = self.create_branch()
         client = self.create_client()
         product = product or self.create_product()
@@ -512,7 +509,7 @@ class ExampleCreator(object):
         r_sale = ReturnedSale(store=self.store,
                               sale=sale,
                               branch=return_branch,
-                              responsible=get_current_user(self.store))
+                              responsible=self.current_user)
 
         ReturnedSaleItem(store=self.store,
                          quantity=1,
@@ -706,9 +703,9 @@ class ExampleCreator(object):
         employee = self.create_employee()
         cfop = self.create_cfop_data()
         stock_decrease = StockDecrease(
-            responsible=user or get_current_user(self.store),
+            responsible=user or self.current_user,
             removed_by=employee,
-            branch=branch or get_current_branch(self.store),
+            branch=branch or self.current_branch,
             person=destination or self.create_person(),
             status=StockDecrease.STATUS_INITIAL,
             cfop=cfop,
@@ -745,7 +742,7 @@ class ExampleCreator(object):
 
     def create_till(self):
         from stoqlib.domain.till import Till
-        station = get_current_station(self.store)
+        station = self.current_station
         return Till(store=self.store, station=station)
 
     def create_user_profile(self, name=None, max_discount=None):
@@ -766,13 +763,13 @@ class ExampleCreator(object):
         return PurchaseOrder(supplier=supplier or self.create_supplier(),
                              branch=branch or self.create_branch(),
                              group=group,
-                             responsible=get_current_user(self.store),
+                             responsible=self.current_user,
                              store=self.store)
 
     def create_quote_group(self, branch=None):
         from stoqlib.domain.purchase import QuoteGroup
         if not branch:
-            branch = get_current_branch(self.store)
+            branch = self.current_branch
         return QuoteGroup(store=self.store, branch=branch)
 
     def create_quotation(self):
@@ -798,7 +795,7 @@ class ExampleCreator(object):
 
     def create_production_order(self, branch=None):
         if branch is None:
-            branch = get_current_branch(self.store)
+            branch = self.current_branch
         from stoqlib.domain.production import ProductionOrder
         return ProductionOrder(branch=branch,
                                responsible=self.create_employee(),
@@ -854,10 +851,10 @@ class ExampleCreator(object):
     def create_receiving_invoice(self, supplier=None, branch=None, group=None,
                                  invoice_key=None, responsible=None):
         from stoqlib.domain.receiving import ReceivingInvoice
-        responsible = responsible or get_current_user(self.store)
+        responsible = responsible or self.current_user
         return ReceivingInvoice(store=self.store, invoice_number=222,
                                 supplier=supplier or self.create_supplier(),
-                                branch=branch or get_current_branch(self.store),
+                                branch=branch or self.current_branch,
                                 invoice_key=invoice_key, group=group,
                                 responsible=responsible)
 
@@ -868,8 +865,8 @@ class ExampleCreator(object):
             purchase_order = self.create_purchase_order()
         cfop = self.create_cfop_data()
         cfop.code = u'1.102'
-        branch = branch or get_current_branch(self.store)
-        responsible = user or get_current_user(self.store)
+        branch = branch or self.current_branch
+        responsible = user or self.current_user
         invoice = self.create_receiving_invoice(invoice_key=invoice_key,
                                                 branch=branch, responsible=responsible)
         receiving = ReceivingOrder(store=self.store,
@@ -984,7 +981,7 @@ class ExampleCreator(object):
             date = localtoday()
         return Payment(group=group or self.create_payment_group(),
                        description=u'Test payment',
-                       branch=branch or get_current_branch(self.store),
+                       branch=branch or self.current_branch,
                        open_date=date,
                        due_date=date,
                        value=Decimal(value or 10),
@@ -1040,7 +1037,7 @@ class ExampleCreator(object):
 
     def create_station(self, branch=None, name=None, is_active=False):
         if branch is None:
-            branch = get_current_branch(self.store)
+            branch = self.current_branch
         from stoqlib.domain.station import BranchStation
         return BranchStation(name=name or u"station",
                              branch=branch,
@@ -1084,7 +1081,7 @@ class ExampleCreator(object):
             sellable=sellable or self.create_sellable(),
             description=description,
             client=client or self.create_client(),
-            branch=branch or get_current_branch(self.store),
+            branch=branch or self.current_branch,
             current_branch=current_branch)
 
     def create_work_order_item(self, quantity=1, price=10, order=None,
@@ -1104,7 +1101,7 @@ class ExampleCreator(object):
         from stoqlib.domain.workorder import WorkOrderPackage
         return WorkOrderPackage(
             store=self.store,
-            source_branch=source_branch or get_current_branch(self.store),
+            source_branch=source_branch or self.current_branch,
             identifier=identifier)
 
     def create_inventory(self, branch=None):
@@ -1134,10 +1131,10 @@ class ExampleCreator(object):
 
     def create_loan(self, branch=None, client=None):
         from stoqlib.domain.loan import Loan
-        user = get_current_user(self.store)
+        user = self.current_user
         return Loan(responsible=user,
                     client=client,
-                    branch=branch or get_current_branch(self.store),
+                    branch=branch or self.current_branch,
                     store=self.store)
 
     def create_loan_item(self, loan=None, quantity=1):
@@ -1158,7 +1155,7 @@ class ExampleCreator(object):
         return PaymentMethod.get_by_name(self.store, name)
 
     def get_station(self):
-        return get_current_station(self.store)
+        return self.current_station
 
     def get_location(self):
         from stoqlib.domain.address import CityLocation
@@ -1171,7 +1168,7 @@ class ExampleCreator(object):
         sellable.tax_constant = self.create_sellable_tax_constant()
         sale.add_sellable(sellable, quantity=quantity)
         storable = Storable(product=product, store=self.store)
-        storable.increase_stock(100, get_current_branch(self.store),
+        storable.increase_stock(100, self.current_branch,
                                 type=StockTransactionHistory.TYPE_INITIAL,
                                 object_id=None)
         return sellable
@@ -1338,8 +1335,8 @@ class ExampleCreator(object):
 
     def create_payment_renegotiation(self, group=None):
         from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
-        return PaymentRenegotiation(responsible=get_current_user(self.store),
-                                    branch=get_current_branch(self.store),
+        return PaymentRenegotiation(responsible=self.current_user,
+                                    branch=self.current_branch,
                                     group=group or self.create_payment_group(),
                                     client=self.create_client(),
                                     store=self.store)

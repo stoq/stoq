@@ -27,7 +27,7 @@ from decimal import Decimal
 from storm.exceptions import NotOneError
 
 from stoqlib.exceptions import StockError
-from stoqlib.database.runtime import get_current_branch, new_store
+from stoqlib.database.runtime import new_store
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent)
 from stoqlib.domain.payment.method import PaymentMethod
@@ -299,10 +299,10 @@ class TestProduct(DomainTest):
         product.manage_stock = True
         self.assertTrue(product.can_close())
 
-        storable.increase_stock(1, get_current_branch(self.store),
+        storable.increase_stock(1, self.current_branch,
                                 StockTransactionHistory.TYPE_INITIAL, None)
         self.assertFalse(product.can_close())
-        storable.decrease_stock(1, get_current_branch(self.store),
+        storable.decrease_stock(1, self.current_branch,
                                 StockTransactionHistory.TYPE_INITIAL, None)
         self.assertTrue(product.can_close())
 
@@ -316,14 +316,14 @@ class TestProduct(DomainTest):
         self.assertTrue(product.can_close_children())
 
         # Increase child's stock in 1
-        product_child.storable.increase_stock(1, get_current_branch(self.store),
+        product_child.storable.increase_stock(1, self.current_branch,
                                               StockTransactionHistory.TYPE_INITIAL,
                                               None)
         # In this state, the product's children can't be closed
         self.assertFalse(product.can_close_children())
 
         # Decrease child's stock to 0 again
-        product_child.storable.decrease_stock(1, get_current_branch(self.store),
+        product_child.storable.decrease_stock(1, self.current_branch,
                                               StockTransactionHistory.TYPE_INITIAL,
                                               None)
         # Now the product's children can be closed again
@@ -333,7 +333,7 @@ class TestProduct(DomainTest):
         product = self.create_product(storable=True)
         self.assertTrue(product.can_remove())
 
-        product.storable.increase_stock(1, get_current_branch(self.store),
+        product.storable.increase_stock(1, self.current_branch,
                                         StockTransactionHistory.TYPE_INITIAL,
                                         None)
         self.assertFalse(product.can_remove())
@@ -382,7 +382,7 @@ class TestProduct(DomainTest):
         # In this state, the product's children can be removed
         self.assertTrue(product.can_remove_children())
         # Increase child's stock in 1
-        product_child.storable.increase_stock(1, get_current_branch(self.store),
+        product_child.storable.increase_stock(1, self.current_branch,
                                               StockTransactionHistory.TYPE_INITIAL,
                                               None)
         self.assertFalse(product.can_remove_children())
@@ -495,7 +495,7 @@ class TestProduct(DomainTest):
         self.assertTrue(resultset.is_empty())
 
     def test_increase_decrease_stock(self):
-        branch = get_current_branch(self.store)
+        branch = self.current_branch
         product = self.create_product()
         storable = Storable(product=product, store=self.store)
         stock_item = storable.get_stock_item(branch, None)
@@ -530,7 +530,7 @@ class TestProduct(DomainTest):
     def test_lead_time(self):
         product = self.create_product()
         Storable(product=product, store=self.store)
-        branch = get_current_branch(self.store)
+        branch = self.current_branch
 
         supplier1 = self.create_supplier()
         ProductSupplierInfo(store=self.store, product=product,
@@ -832,7 +832,7 @@ class TestProductSellableItem(DomainTest):
         sellable.barcode = u'xyz'
         product = Product(sellable=sellable, store=self.store)
         sale_item = sale.add_sellable(product.sellable)
-        branch = get_current_branch(self.store)
+        branch = self.current_branch
         storable = self.create_storable(product, branch, 2)
 
         stock_item = storable.get_stock_item(branch, None)
@@ -874,7 +874,7 @@ class TestProductHistory(DomainTest):
         sale = self.create_sale()
         sellable = self.create_sellable()
         product = sellable.product
-        branch = get_current_branch(self.store)
+        branch = self.current_branch
         self.create_storable(product, branch, 100)
         sale_item = sale.add_sellable(sellable, quantity=5)
 
@@ -907,7 +907,7 @@ class TestProductHistory(DomainTest):
 
     def test_add_lost_item(self):
         item = self.create_production_item()
-        branch = get_current_branch(self.store)
+        branch = self.current_branch
         with self.assertRaises(ValueError) as exc:
             ProductHistory.add_lost_item(self.store, branch, item)
             self.assertEqual(str(exc), "lost_item must have a positive lost attribute")
@@ -921,7 +921,7 @@ class TestProductHistory(DomainTest):
 
     def test_add_decreased_item(self):
         item = self.create_stock_decrease_item()
-        branch = get_current_branch(self.store)
+        branch = self.current_branch
         ProductHistory.add_decreased_item(self.store, branch, item)
 
         history = self.store.find(ProductHistory,
@@ -1297,7 +1297,7 @@ class TestStorable(DomainTest):
 
     def test_increase_stock_error(self):
         storable = self.create_storable()
-        branch = get_current_branch(self.store)
+        branch = self.current_branch
 
         with self.assertRaises(ValueError) as exc:
             storable.increase_stock(0, branch,
@@ -1311,7 +1311,7 @@ class TestStorable(DomainTest):
 
     def test_decrease_stock_error(self):
         storable = self.create_storable()
-        branch = get_current_branch(self.store)
+        branch = self.current_branch
 
         with self.assertRaises(ValueError) as exc:
             storable.decrease_stock(0, branch,
@@ -1331,7 +1331,7 @@ class TestStorable(DomainTest):
 
     def test_decrease_stock_cost_center(self):
         storable = self.create_storable()
-        branch = get_current_branch(self.store)
+        branch = self.current_branch
         cost_center = self.create_cost_center()
 
         self.assertTrue(cost_center.get_stock_transaction_entries().is_empty())
@@ -1494,10 +1494,6 @@ class TestStorableBatch(DomainTest):
 
 class TestStockTransactionHistory(DomainTest):
 
-    def setUp(self):
-        DomainTest.setUp(self)
-        self.branch = get_current_branch(self.store)
-
     def test_total(self):
         history = self.create_stock_transaction_history(
             quantity=15, stock_cost=100,
@@ -1508,10 +1504,10 @@ class TestStockTransactionHistory(DomainTest):
     def test_total_negative(self):
         sale_item = self.create_sale_item()
         storable = self.create_storable(sale_item.sellable.product)
-        storable.increase_stock(1, self.branch,
+        storable.increase_stock(1, self.current_branch,
                                 StockTransactionHistory.TYPE_INITIAL,
                                 None, unit_cost=10)
-        sale_item.sell(self.branch)
+        sale_item.sell(self.current_branch)
 
         history = self.store.find(StockTransactionHistory, object_id=sale_item.id).one()
         self.assertEqual(history.quantity, -1)
@@ -1520,15 +1516,15 @@ class TestStockTransactionHistory(DomainTest):
 
     def _check_stock(self, product):
         storable = product.storable or self.create_storable(product)
-        if not storable.get_stock_item(self.branch, None):
-            storable.increase_stock(100, self.branch,
+        if not storable.get_stock_item(self.current_branch, None):
+            storable.increase_stock(100, self.current_branch,
                                     StockTransactionHistory.TYPE_INITIAL, None)
 
     def test_initial_stock(self):
         storable = self.create_storable()
 
         history_before = self.store.find(StockTransactionHistory).count()
-        storable.register_initial_stock(10, self.branch, 5)
+        storable.register_initial_stock(10, self.current_branch, 5)
         history_after = self.store.find(StockTransactionHistory).count()
         self.assertEqual(history_after, history_before + 1)
 
@@ -1551,7 +1547,7 @@ class TestStockTransactionHistory(DomainTest):
 
     def _check_stock_history(self, product, quantity, item, parent, type,
                              description=''):
-        stock_item = product.storable.get_stock_item(self.branch, None)
+        stock_item = product.storable.get_stock_item(self.current_branch, None)
         transactions = stock_item.transactions.order_by(StockTransactionHistory.date)
         transaction = transactions.last()
         self.assertEqual(transaction.quantity, quantity)
@@ -1566,7 +1562,7 @@ class TestStockTransactionHistory(DomainTest):
         product = decrease_item.sellable.product
 
         self._check_stock(product)
-        decrease_item.decrease(self.branch)
+        decrease_item.decrease(self.current_branch)
         self._check_stock_history(
             product, -1, decrease_item,
             decrease_item.stock_decrease,
@@ -1581,7 +1577,7 @@ class TestStockTransactionHistory(DomainTest):
         product = sale_item.sellable.product
 
         self._check_stock(product)
-        sale_item.cancel(self.branch)
+        sale_item.cancel(self.current_branch)
         self._check_stock_history(
             product, 1, sale_item, sale_item.sale,
             StockTransactionHistory.TYPE_CANCELED_SALE,
@@ -1592,7 +1588,7 @@ class TestStockTransactionHistory(DomainTest):
         product = sale_item.sellable.product
 
         self._check_stock(product)
-        sale_item.sell(self.branch)
+        sale_item.sell(self.current_branch)
         self._check_stock_history(
             product, -1, sale_item, sale_item.sale,
             StockTransactionHistory.TYPE_SELL,
@@ -1608,7 +1604,7 @@ class TestStockTransactionHistory(DomainTest):
         product = returned_sale_item.sellable.product
 
         self._check_stock(product)
-        returned_sale_item.return_(self.branch)
+        returned_sale_item.return_(self.current_branch)
         self._check_stock_history(
             product, 1, returned_sale_item, returned_sale,
             StockTransactionHistory.TYPE_RETURNED_SALE,
@@ -1664,7 +1660,7 @@ class TestStockTransactionHistory(DomainTest):
         item = self.create_inventory_item()
         product = item.product
 
-        item.inventory.branch = self.branch
+        item.inventory.branch = self.current_branch
         item.actual_quantity = 10
         item.counted_quantity = 10
         item.recorded_quantity = 0
@@ -1698,7 +1694,7 @@ class TestStockTransactionHistory(DomainTest):
         production_item = self.create_production_item()
         production = production_item.order
         material = production.get_material_items().any()
-        production.branch = self.branch
+        production.branch = self.current_branch
 
         self._check_stock(production_item.product)
         self._check_stock(material.product)
@@ -1713,7 +1709,7 @@ class TestStockTransactionHistory(DomainTest):
         production_item = self.create_production_item()
         production = production_item.order
         material = production.get_material_items().any()
-        production.branch = self.branch
+        production.branch = self.current_branch
 
         production.status = ProductionOrder.ORDER_CLOSED
 
@@ -1753,7 +1749,7 @@ class TestStockTransactionHistory(DomainTest):
 
         self._check_stock(product)
 
-        transfer.source_branch = self.branch
+        transfer.source_branch = self.current_branch
         transfer.send()
 
         self._check_stock_history(
@@ -1769,7 +1765,7 @@ class TestStockTransactionHistory(DomainTest):
         self._check_stock(product)
 
         transfer_item.quantity = 2
-        transfer.destination_branch = self.branch
+        transfer.destination_branch = self.current_branch
 
         transfer.send()
         transfer.receive(self.create_employee())
@@ -1781,7 +1777,7 @@ class TestStockTransactionHistory(DomainTest):
 
     def test_consignment_returned(self):
         purchase_item = self.create_purchase_order_item()
-        purchase_item.order.branch = self.branch
+        purchase_item.order.branch = self.current_branch
         self._check_stock(purchase_item.sellable.product)
         purchase_item.return_consignment(1)
 

@@ -28,7 +28,6 @@ from decimal import Decimal
 import mock
 
 from stoqlib.exceptions import InvalidStatus, NeedReason
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderItem,
                                       WorkOrderPackage, WorkOrderPackageItem,
@@ -119,6 +118,7 @@ class TestWorkOrderPackage(DomainTest):
         workorder1 = self.create_workorder()
         workorder2 = self.create_workorder()
 
+        # FIXME: This get_current_branch will be removed
         with mock.patch('stoqlib.domain.workorder.get_current_branch') as gcb:
             gcb.return_value = self.create_branch()
             with self.assertRaisesRegex(
@@ -152,7 +152,7 @@ class TestWorkOrderPackage(DomainTest):
 
         package = self.create_workorder_package(
             source_branch=self.create_branch())
-        package.destination_branch = get_current_branch(self.store)
+        package.destination_branch = self.current_branch
         workorder1 = self.create_workorder(current_branch=package.source_branch)
         workorder2 = self.create_workorder(current_branch=package.source_branch)
 
@@ -162,6 +162,7 @@ class TestWorkOrderPackage(DomainTest):
             order.current_branch = None
         package.status = WorkOrderPackage.STATUS_SENT
 
+        # FIXME: This get_current_branch will be removed
         with mock.patch('stoqlib.domain.workorder.get_current_branch') as gcb:
             gcb.return_value = self.create_branch()
             with self.assertRaisesRegex(
@@ -539,6 +540,7 @@ class TestWorkOrder(DomainTest):
             with mock.patch.object(workorder, 'is_in_transport', new=lambda: True):
                 self.assertFalse(workorder.can_work())
             # Cannot work on other branch than the current one
+            # FIXME get_current_branch will be removed
             with mock.patch('stoqlib.domain.workorder.get_current_branch',
                             new=lambda store: self.create_branch()):
                 self.assertFalse(workorder.can_work())
@@ -591,6 +593,7 @@ class TestWorkOrder(DomainTest):
             workorder.current_branch = old_branch
 
             # Cannot close on other branch than the current one
+            # FIXME get_current_branch will be removed
             with mock.patch('stoqlib.domain.workorder.get_current_branch',
                             new=lambda store: self.create_branch()):
                 self.assertFalse(workorder.can_close())
@@ -723,7 +726,6 @@ class TestWorkOrder(DomainTest):
 
     @mock.patch('stoqlib.domain.workorder.localnow')
     def test_finish(self, localnow):
-        branch = get_current_branch(self.store)
         localnow.return_value = localdate(2012, 1, 1)
         workorder = self.create_workorder()
         workorder.approve()
@@ -736,8 +738,9 @@ class TestWorkOrder(DomainTest):
         self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_FINISHED)
         self.assertEqual(workorder.finish_date,
                          self.fake.datetime.datetime.now())
-        self.assertEqual(workorder.execution_branch, branch)
+        self.assertEqual(workorder.execution_branch, self.current_branch)
 
+        # FIXME get_current_branch will be removed
         path = 'stoqlib.database.runtime.get_current_branch'
         with mock.patch(path) as current_branch:
             new_branch = self.create_branch()
@@ -745,7 +748,7 @@ class TestWorkOrder(DomainTest):
             workorder.reopen(reason=u'reopen test')
             workorder.finish()
             # Checking that we are not overwriting the value
-            self.assertEqual(workorder.execution_branch, branch)
+            self.assertEqual(workorder.execution_branch, self.current_branch)
 
     @mock.patch('stoqlib.domain.workorder.localnow')
     def test_is_informed(self, localnow):

@@ -25,7 +25,6 @@
 
 import mock
 
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry, Invoice
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -119,7 +118,7 @@ class TestInvoice(DomainTest):
     def test_get_next_invoice_number(self):
         with mock.patch('stoqlib.lib.pluginmanager.PluginManager.is_active') as is_active:
             is_active.return_value = True
-            main_branch = get_current_branch(self.store)
+            main_branch = self.current_branch
             sale = self.create_sale(branch=main_branch)
             sale.invoice.series = 1
             sale.invoice.invoice_number = 1234
@@ -146,6 +145,7 @@ class TestInvoice(DomainTest):
             self.assertEqual(next_invoice_number, 1236)
 
             # Creating a new sale and new tranfer on a different branch
+            # FIXME: get_current_branch will be removed from fiscal
             with mock.patch('stoqlib.domain.fiscal.get_current_branch') as get_branch:
                 new_branch = self.create_branch()
                 get_branch.return_value = new_branch

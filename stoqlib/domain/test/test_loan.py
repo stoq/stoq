@@ -26,7 +26,6 @@ import decimal
 from kiwi.currency import currency
 
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.loan import Loan, LoanItem, _
 from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.domain.taxes import (ProductTaxTemplate, ProductIcmsTemplate,
@@ -284,10 +283,9 @@ class TestLoanItem(DomainTest):
     def test_sync_stock(self):
         loan = self.create_loan()
         product = self.create_product()
-        branch = get_current_branch(self.store)
-        storable = self.create_storable(product, branch, 4)
-        loan.branch = branch
-        initial = storable.get_balance_for_branch(branch)
+        storable = self.create_storable(product, self.current_branch, 4)
+        loan.branch = self.current_branch
+        initial = storable.get_balance_for_branch(self.current_branch)
         sellable = product.sellable
 
         # creates a loan with 4 items of the same product
@@ -299,7 +297,7 @@ class TestLoanItem(DomainTest):
         self.assertEqual(loan_item.sale_quantity, 0)
         # The quantity loaned items should be removed from stock
         self.assertEqual(
-            storable.get_balance_for_branch(branch),
+            storable.get_balance_for_branch(self.current_branch),
             initial - quantity)
 
         # Sell one of the loaned items and return one item (leaving 2 in the
@@ -312,7 +310,7 @@ class TestLoanItem(DomainTest):
         self.assertEqual(loan_item.sale_quantity, 1)
         # The return_quantity should be returned to the stock
         self.assertEqual(
-            storable.get_balance_for_branch(branch),
+            storable.get_balance_for_branch(self.current_branch),
             initial - quantity + loan_item.return_quantity)
 
         # Return the 2 remaining products in this loan.
@@ -323,7 +321,7 @@ class TestLoanItem(DomainTest):
         self.assertEqual(loan_item.sale_quantity, 1)
         # The return_quantity should be returned to the stock
         self.assertEqual(
-            storable.get_balance_for_branch(branch),
+            storable.get_balance_for_branch(self.current_branch),
             initial - quantity + loan_item.return_quantity)
 
     def test_sync_stock_with_storable(self):
@@ -357,9 +355,8 @@ class TestLoanItem(DomainTest):
     def test_remaining_quantity(self):
         loan = self.create_loan()
         product = self.create_product()
-        branch = get_current_branch(self.store)
-        self.create_storable(product, branch, 4)
-        loan.branch = branch
+        self.create_storable(product, self.current_branch, 4)
+        loan.branch = self.current_branch
 
         # creates a loan with 4 items of the same product
         loan_item = loan.add_sellable(product.sellable, quantity=4, price=10)

@@ -23,7 +23,6 @@
 
 __tests__ = 'stoqlib/domain/overrides.py'
 
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.overrides import ProductBranchOverride
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -38,8 +37,8 @@ class TestProductOverride(DomainTest):
         self.assertEqual(product.icms_template.cst, 3)
 
         # Now create an override
-        branch = get_current_branch(self.store)
-        override = ProductBranchOverride(store=self.store, product=product, branch=branch)
+        override = ProductBranchOverride(store=self.store, product=product,
+                                         branch=self.current_branch)
 
         # The override object does not define an icms template
         self.assertEqual(product.icms_template.cst, 3)
@@ -56,8 +55,8 @@ class TestProductOverride(DomainTest):
         self.assertEqual(product.ipi_template.cst, 3)
 
         # Now create an override
-        branch = get_current_branch(self.store)
-        override = ProductBranchOverride(store=self.store, product=product, branch=branch)
+        override = ProductBranchOverride(store=self.store, product=product,
+                                         branch=self.current_branch)
 
         # The override object does not define an ipi template
         self.assertEqual(product.ipi_template.cst, 3)
@@ -74,8 +73,8 @@ class TestProductOverride(DomainTest):
         self.assertEqual(product.pis_template.cst, 3)
 
         # Now create an override
-        branch = get_current_branch(self.store)
-        override = ProductBranchOverride(store=self.store, product=product, branch=branch)
+        override = ProductBranchOverride(store=self.store, product=product,
+                                         branch=self.current_branch)
 
         # The override object does not define an pis template
         self.assertEqual(product.pis_template.cst, 3)
@@ -92,8 +91,8 @@ class TestProductOverride(DomainTest):
         self.assertEqual(product.cofins_template.cst, 3)
 
         # Now create an override
-        branch = get_current_branch(self.store)
-        override = ProductBranchOverride(store=self.store, product=product, branch=branch)
+        override = ProductBranchOverride(store=self.store, product=product,
+                                         branch=self.current_branch)
 
         # The override object does not define an cofins template
         self.assertEqual(product.cofins_template.cst, 3)
