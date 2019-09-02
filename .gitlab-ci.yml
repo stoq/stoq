@@ -1,4 +1,4 @@
-image: cprov/stoq:stable
+image: cprov/stoq:candidate
 
 services:
     - postgres:9.5
@@ -23,19 +23,12 @@ stages:
 
 before_script:
   - python3 -V
-    # Some tests assume the timezone is America/Sao_Paulo. This can go away if we remove the old nfe
-    # plugin
+  # Some tests assume the timezone is America/Sao_Paulo. This can go away if we remove the old nfe plugin
   - ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
   - dpkg-reconfigure --frontend noninteractive tzdata
-  - apt-get --yes update
-    # Some dependencies for our tests
-  - apt-get --yes install xvfb libxml2-utils poppler-utils
-    # Remove this once the docker image has jwt installed
-  - apt-get --yes install python3-jwt python3-docutils
-  - virtualenv -p python3 --system-site-packages venv
-  - source venv/bin/activate
+  # Install testing requirements
+  - easy_install3 pip
   - pip3 install -Ur requirements-test.txt
-  - ln -s $PWD/venv/bin/pyflakes $PWD/venv/bin/pyflakes3
 
 test:
   stage: test
@@ -45,8 +38,10 @@ test:
 build_dist:
   stage: build
   script:
-    - python setup.py sdist
-    - python setup.py bdist_wheel
+    # Install bdist requirements with pip.
+    - easy_install3 pip
+    - pip3 install kiwi-gtk wheel
+    - python3 setup.py bdist_wheel
 
   artifacts:
     paths:
