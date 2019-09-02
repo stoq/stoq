@@ -139,3 +139,6 @@ class AccessToken(Domain):
 
     def revoke(self):
         self.revoked = True
+
+    def is_valid(self):
+        return self.status == AccessToken.STATUS_VALID

@@ -66,3 +66,17 @@ class TestToken(DomainTest):
         access_token.revoke()
 
         self.assertEqual(access_token.status, AccessToken.STATUS_REVOKED)
+
+    def test_is_valid(self):
+        access_token = self.create_access_token()
+        self.assertTrue(access_token.is_valid())
+
+        with mock.patch('stoqlib.domain.token.jwt.decode') as jwt_decode:
+            jwt_decode.side_effect = ExpiredSignatureError
+            self.assertFalse(access_token.is_valid())
+
+            jwt_decode.side_effect = DecodeError
+            self.assertFalse(access_token.is_valid())
+
+        access_token.revoke()
+        self.assertFalse(access_token.is_valid())
