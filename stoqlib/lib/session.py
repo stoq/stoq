@@ -226,10 +226,11 @@ class NssSession(object):
     def get(self, url, headers=None):
         return self.request('GET', url, headers=headers)
 
-    def post(self, url, data=None, headers=None):
-        return self.request('POST', url, data=data, headers=headers)
+    def post(self, url, data=None, headers=None, timeout=None):
+        return self.request('POST', url, data=data, headers=headers,
+                            timeout=timeout)
 
-    def request(self, method, url, data=None, headers=None):
+    def request(self, method, url, data=None, headers=None, timeout=None):
         parsed = urllib.parse.urlparse(url)
         port = parsed.port
         if not port:
@@ -238,7 +239,9 @@ class NssSession(object):
         key = (parsed.netloc, port)
         conn = self._conns.get(key, None)
         if conn is None:
-            conn = self._conns.setdefault(key, _NssHTTPConnection(parsed.netloc, port))
+            conn = self._conns.setdefault(key, _NssHTTPConnection(parsed.netloc,
+                                                                  port,
+                                                                  timeout=timeout))
             conn.connect()
 
         # FIXME: python-nss stores password_callback on a per-thread dict
