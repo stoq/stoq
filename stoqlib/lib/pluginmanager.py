@@ -210,11 +210,11 @@ class PluginManager(object):
 
         for path in paths:
             for filename in glob.iglob(os.path.join(path, '*', '*.plugin')):
-                self._register_plugin_description(filename)
+                self.register_plugin_description(filename)
             for filename in glob.iglob(os.path.join(path, '*.egg')):
-                self._register_plugin_description(filename, is_egg=True)
+                self.register_plugin_description(filename, is_egg=True)
 
-    def _register_plugin_description(self, filename, is_egg=False):
+    def register_plugin_description(self, filename, is_egg=False):
         desc = PluginDescription(filename, is_egg)
         self._plugin_descriptions[desc.name] = desc
 
