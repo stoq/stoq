@@ -29,6 +29,9 @@ before_script:
   # Install testing requirements
   - easy_install3 pip
   - pip3 install -Ur requirements-test.txt
+  # Install tools to create debian packages
+  - apt update
+  - apt --yes install build-essential devscripts debhelper python3-all
 
 test:
   stage: test
@@ -46,3 +49,15 @@ build_dist:
   artifacts:
     paths:
       - dist
+
+generate_deb:
+  stage: build
+  script:
+    - rm -rf dist
+    - make deb
+
+  artifacts:
+    paths:
+      - dist/*.deb
+  only:
+  - master
