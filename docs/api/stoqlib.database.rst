@@ -113,6 +113,14 @@ database Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`utils` Module
+-----------------------
+
+.. automodule:: stoqlib.database.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`viewable` Module
 ----------------------
 
