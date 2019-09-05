@@ -109,6 +109,7 @@ class SellableCheckTaxesEvent(Event):
     sellable.check_tax_validity does.
 
     :param sellable: the |sellable| that will be checked
+    :param branch: the |branch| that will be checked
     """
 
 #

@@ -773,7 +773,7 @@ class Sellable(Domain):
         :raises: :exc:`TaxError` if there are any issues with the sellable taxes.
         """
         icms_template = self.product and self.product.get_icms_template(branch)
-        SellableCheckTaxesEvent.emit(self)
+        SellableCheckTaxesEvent.emit(self, branch)
         if not icms_template:
             return
         elif not icms_template.p_cred_sn:
