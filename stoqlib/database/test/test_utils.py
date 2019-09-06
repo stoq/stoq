@@ -22,11 +22,11 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-__tests__ = 'stoqlib/database/properties.py'
+__tests__ = 'stoqlib/database/utils.py'
 
 from unittest import mock
 
-import psycopg2.errors
+import psycopg2
 
 from stoqlib.database.properties import BoolCol, IntCol
 from stoqlib.database.utils import (
@@ -45,7 +45,7 @@ class TestTable(Domain):
     power_level = IntCol()
 
 
-class TestColumns(DomainTest):
+class TestUtils(DomainTest):
 
     @classmethod
     def setUpClass(cls):
@@ -70,7 +70,7 @@ class TestColumns(DomainTest):
         self.assertEquals(len(rows), 0)
 
         for _ in range(10):
-            self.store.add(TestTable())
+            TestTable(self.store)
 
         rows = _select_rows_ids_in_batch(self.store, TestTable, 'is_high', limit=5)
         self.assertEquals(len(rows), 5)
@@ -80,7 +80,7 @@ class TestColumns(DomainTest):
 
     def test_update_rows_batch_one_run(self):
         for _ in range(10):
-            self.store.add(TestTable())
+            TestTable(self.store)
 
         _update_rows_batch(self.store, TestTable, 'power_level', default=9001, limit=10)
 
@@ -89,7 +89,7 @@ class TestColumns(DomainTest):
 
     def test_update_rows_batch_multiple_runs(self):
         for _ in range(10):
-            self.store.add(TestTable())
+            TestTable(self.store)
 
         _update_rows_batch(self.store, TestTable, 'power_level', default=9001, limit=3)
 
@@ -104,7 +104,7 @@ class TestColumns(DomainTest):
 
     def test_add_default_column_boolean(self):
         for _ in range(10):
-            self.store.add(TestTable())
+            TestTable(self.store)
 
         add_default_to_column(
             self.store,
@@ -116,17 +116,17 @@ class TestColumns(DomainTest):
         rs = self.store.find(TestTable, TestTable.is_high == 1)
         self.assertEquals(rs.count(), 10)
 
-        self.store.add(TestTable())
+        TestTable(self.store)
         rs = self.store.find(TestTable, TestTable.is_high == 1)
         self.assertEquals(rs.count(), 11)
 
         error_msg = '"is_high" violates not-null constraint'
-        with self.assertRaisesRegex(psycopg2.errors.NotNullViolation, error_msg):
+        with self.assertRaisesRegex(psycopg2.IntegrityError, error_msg):
             self.store.execute("INSERT INTO test_table(te_id, is_high) VALUES (69, NULL)")
 
     def test_add_default_column_integer(self):
         for _ in range(10):
-            self.store.add(TestTable())
+            TestTable(self.store)
 
         add_default_to_column(
             self.store,
@@ -138,10 +138,10 @@ class TestColumns(DomainTest):
         rs = self.store.find(TestTable, TestTable.power_level == 666)
         self.assertEquals(rs.count(), 10)
 
-        self.store.add(TestTable())
+        TestTable(self.store)
         rs = self.store.find(TestTable, TestTable.power_level == 666)
         self.assertEquals(rs.count(), 11)
 
         error_msg = '"power_level" violates not-null constraint'
-        with self.assertRaisesRegex(psycopg2.errors.NotNullViolation, error_msg):
+        with self.assertRaisesRegex(psycopg2.IntegrityError, error_msg):
             self.store.execute("INSERT INTO test_table(te_id, power_level) VALUES (69, NULL)")

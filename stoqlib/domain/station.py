@@ -64,7 +64,7 @@ class BranchStation(Domain):
     type = Reference(type_id, 'StationType.id')
 
     #: Identifies if the station supports Kitchen Production System
-    # has_kps_enabled = BoolCol()
+    has_kps_enabled = BoolCol()
 
     # Public
 

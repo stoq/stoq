@@ -493,7 +493,7 @@ class Sellable(Domain):
     images = ReferenceSet('id', 'Image.sellable_id')
 
     #: specifies whether the product requires kitchen production
-    # requires_kitchen_production = BoolCol(default=False)
+    requires_kitchen_production = BoolCol(default=False)
 
     def __init__(self, store=None,
                  category=None,

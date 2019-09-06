@@ -24,7 +24,7 @@
 
 from storm.references import Reference
 
-from stoqlib.database.properties import (DateTimeCol, EnumCol,
+from stoqlib.database.properties import (BoolCol, DateTimeCol, EnumCol,
                                          IdCol, PercentCol, QuantityCol,
                                          PriceCol, UnicodeCol)
 from stoqlib.domain.base import Domain
@@ -59,7 +59,7 @@ class SellableBranchOverride(Domain):
     sellable = Reference(sellable_id, 'Sellable.id')
 
     #: specifies whether the product requires kitchen production
-    # requires_kitchen_production = BoolCol()
+    requires_kitchen_production = BoolCol()
 
 
 class ProductBranchOverride(Domain):
