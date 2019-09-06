@@ -58,6 +58,9 @@ class SellableBranchOverride(Domain):
     sellable_id = IdCol()
     sellable = Reference(sellable_id, 'Sellable.id')
 
+    #: specifies whether the product requires kitchen production
+    # requires_kitchen_production = BoolCol()
+
 
 class ProductBranchOverride(Domain):
     __storm_table__ = 'product_branch_override'

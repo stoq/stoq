@@ -63,6 +63,9 @@ class BranchStation(Domain):
     #: The type of this station (like a self-checkout or regular point of sale)
     type = Reference(type_id, 'StationType.id')
 
+    #: Identifies if the station supports Kitchen Production System
+    # has_kps_enabled = BoolCol()
+
     # Public
 
     @classmethod
