@@ -60,4 +60,15 @@ generate_deb:
     paths:
       - dist/*.deb
   only:
-  - master
+    - master
+
+manual_generate_deb:
+  stage: build
+  script:
+    - rm -rf dist
+    - make deb
+
+  artifacts:
+    paths:
+      - dist/*.deb
+  when: manual
