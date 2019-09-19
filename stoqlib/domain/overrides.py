@@ -61,6 +61,10 @@ class SellableBranchOverride(Domain):
     #: specifies whether the product requires kitchen production
     requires_kitchen_production = BoolCol()
 
+    @classmethod
+    def find_by_sellable(cls, sellable, branch):
+        return sellable.store.find(cls, sellable=sellable, branch=branch).one()
+
 
 class ProductBranchOverride(Domain):
     __storm_table__ = 'product_branch_override'

@@ -1825,6 +1825,22 @@ class TestSale(DomainTest):
         item.price = (item.base_price - (item.base_price / 2))
         item.sale.get_available_discount_for_items(exclude_item=item2)
 
+    def test_get_kitchen_items(self):
+        item = self.create_sale_item()
+        item2 = self.create_sale_item(sale=item.sale)
+        item3 = self.create_sale_item(sale=item.sale)
+        item.sellable.requires_kitchen_production = True
+        item2.sellable.requires_kitchen_production = True
+        item3.sellable.requires_kitchen_production = False
+        self.assertEqual(item.sale.get_kitchen_items(), [item, item2])
+
+    def test_get_kitchen_items_without_kitchen_items(self):
+        item = self.create_sale_item()
+        item2 = self.create_sale_item(sale=item.sale)
+        item.sellable.requires_kitchen_production = False
+        item2.sellable.requires_kitchen_production = False
+        self.assertEqual(item.sale.get_kitchen_items(), [])
+
     def test_get_details_str(self):
         details = []
         item = self.create_sale_item()

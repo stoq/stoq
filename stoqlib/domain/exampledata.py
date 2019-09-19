@@ -128,6 +128,7 @@ class ExampleCreator(object):
             'InvoiceItemIpi': self.create_invoice_item_ipi,
             'SalesPerson': self.create_sales_person,
             'Sellable': self.create_sellable,
+            'SellableBranchOverride': self.create_sellable_branch_override,
             'SellableCategory': self.create_sellable_category,
             'SellableTaxConstant': self.create_sellable_tax_constant,
             'SellableUnit': self.create_sellable_unit,
@@ -421,6 +422,13 @@ class ExampleCreator(object):
         else:
             Service(sellable=sellable, store=self.store)
         return sellable
+
+    def create_sellable_branch_override(self, sellable=None, branch=None):
+        from stoqlib.domain.overrides import SellableBranchOverride
+        return SellableBranchOverride(
+            store=self.store,
+            sellable=sellable or self.create_sellable(),
+            branch=branch or self.create_branch())
 
     def create_sellable_unit(self, description=u'', allow_fraction=True):
         from stoqlib.domain.sellable import SellableUnit

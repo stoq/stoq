@@ -52,6 +52,7 @@ from stoqlib.domain.events import (CategoryCreateEvent, CategoryEditEvent,
                                    SellableCheckTaxesEvent)
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.image import Image
+from stoqlib.domain.overrides import SellableBranchOverride
 from stoqlib.exceptions import SellableError, TaxError
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.dateutils import localnow
@@ -748,6 +749,22 @@ class Sellable(Domain):
             info = self
 
         return Decimal(max(user_discount, info.max_discount))
+
+    def get_requires_kitchen_production(self, branch):
+        """Check if a sellable requires kitchen production
+
+        :param branch: branch for checking if there is a sellable_branch_override
+        :returns: Whether the sellable requires kitchen production for a given branch
+        """
+        # Check for overrides before checking the actual sellable
+        sellable_override = SellableBranchOverride.find_by_sellable(
+            sellable=self,
+            branch=branch
+        )
+
+        if sellable_override and sellable_override.requires_kitchen_production is not None:
+            return sellable_override.requires_kitchen_production
+        return self.requires_kitchen_production
 
     def check_code_exists(self, code):
         """Check if there is another sellable with the same code.

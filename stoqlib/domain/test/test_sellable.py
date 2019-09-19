@@ -215,6 +215,58 @@ class TestSellable(DomainTest):
         sellable.category = self._category
         self.assertEqual(sellable.get_category_description(), 'Hollywood')
 
+    def test_get_requires_kitchen_production_without_override(self):
+        sellable = self.create_sellable()
+        item = self.create_sale_item(sellable=sellable)
+
+        sellable.requires_kitchen_production = True
+        self.assertTrue(sellable.get_requires_kitchen_production(item.sale.branch))
+
+        sellable.requires_kitchen_production = False
+        self.assertFalse(sellable.get_requires_kitchen_production(item.sale.branch))
+
+    def test_get_requires_kitchen_production_override_none(self):
+        sellable = self.create_sellable()
+        item = self.create_sale_item(sellable=sellable)
+        sellable_branch_override = self.create_sellable_branch_override(
+            sellable=sellable,
+            branch=item.sale.branch)
+        sellable_branch_override.requires_kitchen_production = None
+
+        sellable.requires_kitchen_production = False
+        self.assertFalse(sellable.get_requires_kitchen_production(item.sale.branch))
+
+        sellable.requires_kitchen_production = True
+        self.assertTrue(sellable.get_requires_kitchen_production(item.sale.branch))
+
+    def test_get_requires_kitchen_production_override_false(self):
+        sellable = self.create_sellable()
+        item = self.create_sale_item(sellable=sellable)
+        sellable_branch_override = self.create_sellable_branch_override(
+            sellable=sellable,
+            branch=item.sale.branch)
+        sellable_branch_override.requires_kitchen_production = False
+
+        sellable.requires_kitchen_production = False
+        self.assertFalse(sellable.get_requires_kitchen_production(item.sale.branch))
+
+        sellable.requires_kitchen_production = True
+        self.assertFalse(sellable.get_requires_kitchen_production(item.sale.branch))
+
+    def test_get_requires_kitchen_production_override_true(self):
+        sellable = self.create_sellable()
+        item = self.create_sale_item(sellable=sellable)
+        sellable_branch_override = self.create_sellable_branch_override(
+            sellable=sellable,
+            branch=item.sale.branch)
+        sellable_branch_override.requires_kitchen_production = True
+
+        sellable.requires_kitchen_production = False
+        self.assertTrue(sellable.get_requires_kitchen_production(item.sale.branch))
+
+        sellable.requires_kitchen_production = True
+        self.assertTrue(sellable.get_requires_kitchen_production(item.sale.branch))
+
     def test_price_based_on_category_markup(self):
         # When the price isn't defined, but the category and the cost. In this
         # case the sellable must have the price calculated applying the category's

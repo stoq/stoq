@@ -1663,6 +1663,18 @@ class Sale(IdentifiableDomain):
 
         return available_discount - used_discount
 
+    def get_kitchen_items(self):
+        """Returns sale items that require kitchen production
+
+        This method checks firstly for the sellable_branch_override table,
+        and if the sellable is not found there, it moves to sellable. It
+        then returns a list of items whose sellable needs kitchen production.
+
+        :returns: list of sale items that need kitchen production
+        """
+        return [item for item in self.get_items()
+                if item.sellable.get_requires_kitchen_production(self.branch)]
+
     def get_details_str(self):
         """Returns the sale details
 
