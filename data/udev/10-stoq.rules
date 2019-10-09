@@ -62,8 +62,9 @@ SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyUSB[0-9]*", ATTRS{idVendor}=="067b"
 ATTRS{idVendor}=="1c8a", ATTRS{idProduct}=="3001", ENV{MTP_NO_PROBE}="1"
 ATTRS{idVendor}=="1c8a", ATTRS{idProduct}=="3001", ENV{ID_MM_DEVICE_IGNORE}="1"
 SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="1c8a", ATTRS{idProduct}=="3001", SYMLINK+="ttySwedaSI300"
-# SNBC 154f
+# SNBC BKC310
 ATTRS{idVendor}=="154f", ATTRS{idProduct}=="154f", SUBSYSTEM=="usb", MODE="0664", GROUP="dialout"
+ATTRS{idVendor}=="154f", ATTRS{idProduct}=="1300", SUBSYSTEM=="usb", MODE="0664", GROUP="dialout"
 
 #
 # Touch
