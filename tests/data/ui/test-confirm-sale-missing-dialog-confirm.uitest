@@ -55,6 +55,7 @@ model: SaleItem<3>
 
 model: Product<4>
   brand: ''
+  c_benef: None
   cest: None
   consignment: False
   depth: Decimal('0')

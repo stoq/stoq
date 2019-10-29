@@ -313,6 +313,9 @@ class Product(Domain):
     #: Brazil specific. NFE. Código Especificador da Substituição Tributária
     cest = UnicodeCol(default=None)
 
+    #: Brazil specific. NFE. Código Benefício Fiscal
+    c_benef = UnicodeCol(default=None)
+
     #: NFE: see ncm
     ex_tipi = UnicodeCol(default=None)
 
@@ -505,6 +508,16 @@ class Product(Domain):
         if override:
             return override.cofins_template or self._cofins_template
         return self._cofins_template
+
+    def get_c_benef(self, branch):
+        """Returns the cbnef that should be used for this product
+
+        :param branch: the branch that will be selling this product.
+        """
+        override = ProductBranchOverride.find_product(branch, self)
+        if override and override.c_benef:
+            return override.c_benef
+        return self.c_benef
 
     def set_cofins_template(self, value):
         """Sets the cofins template for this product"""

@@ -89,6 +89,9 @@ class ProductBranchOverride(Domain):
     product_id = IdCol()
     product = Reference(product_id, 'Product.id')
 
+    #: Brazil specific. NFE. Código Benefício Fiscal
+    c_benef = UnicodeCol(default=None)
+
     @classmethod
     def find_product(cls, branch: Branch, product):
         return product.store.find(cls, product=product, branch=branch).one()

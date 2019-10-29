@@ -54,6 +54,7 @@ model: ProductComponent<3>
 
 model: Product<4>
   brand: ''
+  c_benef: None
   cest: None
   consignment: False
   depth: Decimal('0')
@@ -77,6 +78,7 @@ model: Product<4>
 
 model: Product<5>
   brand: ''
+  c_benef: None
   cest: None
   consignment: False
   depth: Decimal('0')

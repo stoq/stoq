@@ -241,6 +241,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
 
 model: Product<1>
   brand: ''
+  c_benef: None
   cest: ''
   consignment: False
   depth: Decimal('0')

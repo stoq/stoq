@@ -100,3 +100,10 @@ class TestProductOverride(DomainTest):
         # Setting a template on the override should take effect
         override.cofins_template = self.create_product_cofins_template(cst=6)
         self.assertEqual(product.get_cofins_template(self.current_branch).cst, 6)
+
+    def test_c_benef(self):
+        product = self.create_product()
+        override = ProductBranchOverride(store=self.store, product=product,
+                                         branch=self.current_branch)
+        override.c_benef = 'RJ111111'
+        self.assertEqual(override.c_benef, 'RJ111111')
