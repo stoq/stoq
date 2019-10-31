@@ -25,7 +25,11 @@
 from decimal import Decimal
 
 from dateutil.relativedelta import relativedelta
+from psycopg2 import IntegrityError
+
+from stoqlib import api
 from stoqlib.domain.taxes import (ProductCofinsTemplate,
+                                  ProductIcmsTemplate,
                                   ProductIpiTemplate,
                                   ProductPisTemplate,
                                   ProductTaxTemplate,
@@ -102,6 +106,27 @@ class TestProductIcmsTemplate(DomainTest):
         expire_date = localnow() + relativedelta(days=-1)
         icms_template.p_cred_sn_valid_until = expire_date
         self.assertFalse(icms_template.is_p_cred_sn_valid())
+
+    def test_mot_des_icms_default(self):
+        icms_template = self.create_product_icms_template()
+
+        self.assertIsNone(icms_template.mot_des_icms)
+
+    def test_mot_des_icms_valid(self):
+        reasons = (ProductIcmsTemplate.REASON_LIVESTOCK, ProductIcmsTemplate.REASON_OTHERS,
+                   ProductIcmsTemplate.REASON_AGRICULTURAL_AGENCY)
+        for reason in reasons:
+            icms_template = self.create_product_icms_template(mot_des_icms=reason)
+
+            self.assertEqual(icms_template.mot_des_icms, reason)
+            self.store.flush()  # should not raise pscycopg2.IntegrityError
+
+    def test_mot_des_icms_invalid(self):
+        for mot in (1, 2, 4, 5, 6, 7, 8, 10, 11):
+            with api.new_store() as store:
+                self.create_product_icms_template(store=store, mot_des_icms=mot)
+                with self.assertRaisesRegex(IntegrityError, 'violates check constraint'):
+                    store.flush()
 
 
 class TestInvoiceItemIcms(DomainTest):
@@ -236,6 +261,10 @@ class TestInvoiceItemIcms(DomainTest):
         sale_item.sale.branch.crt = 0
         sale_item_icms.cst = 70
         sale_item_icms.update_values(sale_item)
+
+    def test_v_icms_deson_default(self):
+        sale_item_icms = self.create_invoice_item_icms()
+        self.assertIsNone(sale_item_icms.v_icms_deson)
 
 
 class TestProductIpiTemplate(DomainTest):

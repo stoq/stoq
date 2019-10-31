@@ -556,31 +556,34 @@ class ExampleCreator(object):
                         sellable=sellable,
                         parent_item=parent_item)
 
-    def create_product_tax_template(self, name=u'Tax template', tax_type=None):
+    def create_product_tax_template(self, name=u'Tax template', tax_type=None, store=None):
         from stoqlib.domain.taxes import ProductTaxTemplate
         if tax_type is None:
             tax_type = ProductTaxTemplate.TYPE_ICMS
-        return ProductTaxTemplate(store=self.store, name=name, tax_type=tax_type)
+        return ProductTaxTemplate(store=store or self.store, name=name, tax_type=tax_type)
 
     def create_product_icms_template(self, tax_template=None, crt=1, orig=0,
                                      code=0, mod_bc=0, p_icms=0, p_icms_st=0,
                                      p_mva_st=0, p_red_bc_st=0, p_cred_sn=None,
-                                     mod_bc_st=None, v_icms=None):
+                                     mod_bc_st=None, v_icms=None, mot_des_icms=None,
+                                     store=None):
         from stoqlib.domain.taxes import ProductIcmsTemplate
+        store = store or self.store
         if tax_template is None:
-            tax_template = self.create_product_tax_template()
+            tax_template = self.create_product_tax_template(store=store)
         # Simples nacional
         if crt in [1, 2]:
-            return ProductIcmsTemplate(store=self.store,
+            return ProductIcmsTemplate(store=store,
                                        product_tax_template=tax_template,
                                        orig=orig, csosn=code, mod_bc=mod_bc,
                                        p_icms=p_icms, p_icms_st=p_icms_st,
                                        p_mva_st=p_mva_st,
                                        p_red_bc_st=p_red_bc_st,
                                        mod_bc_st=mod_bc_st,
-                                       p_cred_sn=p_cred_sn)
+                                       p_cred_sn=p_cred_sn,
+                                       mot_des_icms=mot_des_icms)
         # Regime normal
-        return ProductIcmsTemplate(store=self.store,
+        return ProductIcmsTemplate(store=store,
                                    product_tax_template=tax_template,
                                    orig=orig,
                                    cst=code, mod_bc=mod_bc,
@@ -588,7 +591,8 @@ class ExampleCreator(object):
                                    p_icms_st=p_icms_st,
                                    p_mva_st=p_mva_st,
                                    p_red_bc_st=p_red_bc_st,
-                                   mod_bc_st=mod_bc_st)
+                                   mod_bc_st=mod_bc_st,
+                                   mot_des_icms=mot_des_icms)
 
     def create_product_ipi_template(self, tax_template=None, cl_enq=u'000',
                                     cnpj_prod=u'00.000.000/0001-00',

@@ -191,11 +191,18 @@ class BaseCOFINS(BaseTax):
 class ProductIcmsTemplate(BaseICMS):
     __storm_table__ = 'product_icms_template'
 
+    REASON_LIVESTOCK = 3
+    REASON_OTHERS = 9
+    REASON_AGRICULTURAL_AGENCY = 12
+
     product_tax_template_id = IdCol()
     product_tax_template = Reference(product_tax_template_id, 'ProductTaxTemplate.id')
 
     # Simples Nacional
     p_cred_sn_valid_until = DateTimeCol(default=None)
+
+    # Motivo de Desoneração do ICMS
+    mot_des_icms = IntCol(default=None)
 
     def is_p_cred_sn_valid(self):
         """Returns if p_cred_sn has expired."""
@@ -278,6 +285,7 @@ class ProductTaxTemplate(Domain):
 
 class InvoiceItemIcms(BaseICMS):
     __storm_table__ = 'invoice_item_icms'
+
     v_bc = PriceCol(default=None)
     v_icms = PriceCol(default=None)
 
@@ -297,6 +305,9 @@ class InvoiceItemIcms(BaseICMS):
 
     v_bc_st_ret = PriceCol(default=None)
     v_icms_st_ret = PriceCol(default=None)
+
+    # Valor da desoneração do ICMS
+    v_icms_deson = PriceCol(default=None)
 
     def _calc_cred_icms_sn(self, invoice_item):
         if self.p_cred_sn >= 0:
