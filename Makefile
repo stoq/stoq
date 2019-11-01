@@ -49,20 +49,23 @@ clean:
 check: clean check-source
 	@echo "Running $(TEST_MODULES) unittests"
 	@rm -f .noseids
-	@python3 runtests.py --failed $(TEST_MODULES)
+	@python3 runtests.py --exclude-dir=stoqlib/pytests --failed $(TEST_MODULES)
+	pytest -vvv stoqlib/pytests
 
 check-failed: clean
 	python3 runtests.py --failed $(TEST_MODULES)
 
 coverage: clean check-source-all
+	pytest -vvv stoqlib/pytests --cov=stoq/ --cov=stoqlib/ --cov-report=term-missing
 	python3 runtests.py \
 	    --with-xcoverage \
 	    --with-xunit \
 	    --cover-package=stoq,stoqlib,plugins \
 	    --cover-erase \
 	    --cover-inclusive \
+		--exclude-dir=stoqlib/pytests \
 	    $(TEST_MODULES) && \
-	coverage xml --omit "**/test/*.py" && \
+	coverage xml --omit "**/test/*.py, stoqlib/pytests/*.py" && \
 	utils/validatecoverage.py coverage.xml && \
 	git show|tools/diff-coverage coverage.xml
 

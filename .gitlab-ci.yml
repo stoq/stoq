@@ -23,6 +23,7 @@ stages:
 
 before_script:
   - python3 -V
+  - export LC_ALL=pt_BR.UTF-8
   # Some tests assume the timezone is America/Sao_Paulo. This can go away if we remove the old nfe plugin
   - ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
   - dpkg-reconfigure --frontend noninteractive tzdata
@@ -32,6 +33,7 @@ before_script:
   # Install tools to create debian packages
   - apt update
   - apt --yes install build-essential devscripts debhelper python3-all
+  - pip3 install -e . --no-deps
 
 test:
   stage: test

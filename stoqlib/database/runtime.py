@@ -640,6 +640,13 @@ class StoqlibStore(Store):
 
         return commit
 
+    def is_link_server(self):
+        """Checks if the station which we are running on is a POS (it could be a server)
+
+        :param store: a store
+        """
+        return self.table_exists('sync')
+
     #
     #  Private
     #

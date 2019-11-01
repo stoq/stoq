@@ -1,7 +1,11 @@
 mock
 nose
 nosexcover
+nose-exclude
 coverage
+pytest
+pytest-cov
+pytest-stoq
 # Overriding the python-pyflakes deb causes trouble, the entry point
 # script relies on a specific version of the module.
 #pyflakes
