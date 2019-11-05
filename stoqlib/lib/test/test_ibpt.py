@@ -50,7 +50,7 @@ class TestCalculateTaxForItem(DomainTest):
 
         msg = generate_ibpt_message(sale.services, include_services=True)
         expected_msg = ("Tributos aproximados: R$ 6.72 Federal e R$ 0.00 Estadual\n"
-                        "Fonte: IBPT/empresometro.com.br A5G7R1")
+                        "Fonte: IBPT/empresometro.com.br 0C3829")
         self.assertEqual(msg, expected_msg)
 
     def test_not_include_service(self):
@@ -111,7 +111,7 @@ class TestCalculateTaxForItem(DomainTest):
 
         msg = generate_ibpt_message(items)
         expected_msg = ("Tributos aproximados: R$ 4.20 Federal e R$ 18.00 Estadual\n"
-                        "Fonte: IBPT/empresometro.com.br A5G7R1")
+                        "Fonte: IBPT/empresometro.com.br 0C3829")
         self.assertEqual(msg, expected_msg)
 
     def test_calculate_item(self):

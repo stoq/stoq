@@ -218,7 +218,8 @@ class NFeGenerator(object):
 
         invoice = self._order.invoice
         if not invoice.invoice_number:
-            invoice.invoice_number = Invoice.get_next_invoice_number(self.store)
+            invoice.invoice_number = Invoice.get_next_invoice_number(self.store,
+                                                                     branch)
         nnf = invoice.invoice_number
         assert nnf
 
