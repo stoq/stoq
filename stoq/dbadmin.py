@@ -472,7 +472,7 @@ class StoqCommandHandler:
 
     def cmd_update_plugins(self, options):
         """Update plugins on Stoq"""
-        if options.channel and options.channel not in ['stable', 'beta', 'alpha']:
+        if options.channel and options.channel not in ['stable', 'beta', 'alpha', 'dev', 'desktop']:
             print('invalid channel')
             return
         self._read_config(options, register_station=False,
