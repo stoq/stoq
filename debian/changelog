@@ -1,3 +1,9 @@
+stoq (4.2) xenial; urgency=medium
+
+  * Release 4.2
+
+ -- Fabricio C Zuardi <fcz@laptop39>  Mon, 11 Nov 2019 08:29:37 -0300
+
 stoq (4.2~rc1) xenial; urgency=medium
 
   * Release 4.2~rc1
