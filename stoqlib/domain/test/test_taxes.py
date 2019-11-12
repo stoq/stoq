@@ -141,6 +141,26 @@ class TestInvoiceItemIcms(DomainTest):
 
         return sale_item
 
+    def test_calc_v_icms_deson(self):
+        sale_item_icms = self.create_invoice_item_icms()
+        sale_item_icms.p_icms = 50
+        sale_item_icms.v_bc = 2
+        sale_item = self._get_sale_item(sale_item_icms, 1, 10)
+
+        sale_item_icms._calc_v_icms_deson(sale_item)
+
+        self.assertEquals(sale_item_icms.v_icms_deson, Decimal('4.00'))
+
+    def test_calc_v_icms_deson_with_zero_value(self):
+        sale_item_icms = self.create_invoice_item_icms()
+        sale_item_icms.p_icms = 50
+        sale_item_icms.v_bc = 2
+        sale_item = self._get_sale_item(sale_item_icms, 1, 2)
+
+        sale_item_icms._calc_v_icms_deson(sale_item)
+
+        self.assertEquals(sale_item_icms.v_icms_deson, Decimal('0.01'))
+
     def testVCredIcmsSnCalc(self):
         """Test for v_cred_icms_sn calculation.
 
@@ -227,18 +247,21 @@ class TestInvoiceItemIcms(DomainTest):
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item.sale.branch.crt = 0
         sale_item_icms.cst = 20
+        sale_item_icms.p_icms = 10
         sale_item_icms.update_values(sale_item)
 
         sale_item_icms = self.create_invoice_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item.sale.branch.crt = 0
         sale_item_icms.cst = 30
+        sale_item_icms.p_icms = 10
         sale_item_icms.update_values(sale_item)
 
         sale_item_icms = self.create_invoice_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item.sale.branch.crt = 0
         sale_item_icms.cst = 40
+        sale_item_icms.p_icms = 10
         sale_item_icms.update_values(sale_item)
 
         sale_item_icms = self.create_invoice_item_icms()
@@ -260,6 +283,7 @@ class TestInvoiceItemIcms(DomainTest):
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item.sale.branch.crt = 0
         sale_item_icms.cst = 70
+        sale_item_icms.p_icms = 10
         sale_item_icms.update_values(sale_item)
 
     def test_v_icms_deson_default(self):

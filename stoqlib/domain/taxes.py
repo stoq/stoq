@@ -309,6 +309,15 @@ class InvoiceItemIcms(BaseICMS):
     # Valor da desoneração do ICMS
     v_icms_deson = PriceCol(default=None)
 
+    def _calc_v_icms_deson(self, invoice_item):
+        item_icms = invoice_item.get_total() * self.p_icms / 100
+        desonerated_value = self.v_bc * self.p_icms / 100
+        v_icms_deson = item_icms - desonerated_value
+
+        # This information cannot be zero, and it must exists in certain
+        # webservices
+        self.v_icms_deson = max(v_icms_deson, Decimal('0.01'))
+
     def _calc_cred_icms_sn(self, invoice_item):
         if self.p_cred_sn >= 0:
             self.v_cred_icms_sn = invoice_item.get_total() * self.p_cred_sn / 100
@@ -364,16 +373,19 @@ class InvoiceItemIcms(BaseICMS):
 
         elif self.cst == 20:
             self._calc_normal(invoice_item)
+            self._calc_v_icms_deson(invoice_item)
 
         elif self.cst == 30:
             self.v_icms = 0
             self.v_bc = 0
 
             self._calc_st(invoice_item)
+            self._calc_v_icms_deson(invoice_item)
 
         elif self.cst in (40, 41, 50):
             self.v_icms = 0
             self.v_bc = 0
+            self._calc_v_icms_deson(invoice_item)
 
         elif self.cst == 51:
             self._calc_normal(invoice_item)
@@ -388,6 +400,7 @@ class InvoiceItemIcms(BaseICMS):
         elif self.cst in (70, 90):
             self._calc_normal(invoice_item)
             self._calc_st(invoice_item)
+            self._calc_v_icms_deson(invoice_item)
 
     def _update_simples(self, invoice_item):
         if self.csosn in [300, 400, 500]:

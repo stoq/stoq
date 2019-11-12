@@ -164,7 +164,7 @@ class InvoiceItemMixin(object):
 class BaseICMSSlave(BaseTaxSlave):
     gladefile = 'TaxICMSSlave'
 
-    combo_widgets = ['cst', 'csosn', 'orig', 'mod_bc', 'mod_bc_st']
+    combo_widgets = ['cst', 'csosn', 'orig', 'mod_bc', 'mod_bc_st', 'mot_des_icms']
     percentage_widgets = ['p_icms', 'p_mva_st', 'p_red_bc_st', 'p_icms_st',
                           'p_red_bc', 'p_cred_sn', 'p_fcp', 'p_fcp_st']
     value_widgets = ['v_bc', 'v_icms', 'v_bc_st', 'v_icms_st',
@@ -184,7 +184,7 @@ class BaseICMSSlave(BaseTaxSlave):
                       'p_icms_st', 'p_fcp', 'p_fcp_st', 'v_fcp', 'v_fcp_st',
                       'v_bc_st', 'v_icms_st', 'bc_st_include_ipi',
                       'mod_bc', 'p_icms', 'v_bc', 'v_icms', 'p_red_bc',
-                      'bc_include_ipi', 'bc_st_include_ipi']
+                      'bc_include_ipi', 'bc_st_include_ipi', 'mot_des_icms']
 
     tooltips = {
         'p_icms': u'Aliquota do imposto',
@@ -263,6 +263,13 @@ class BaseICMSSlave(BaseTaxSlave):
             (u'4 - Margem Valor Agregado (%)', 4),
             (u'5 - Pauta (valor)', 5),
         ),
+        'mot_des_icms': (
+            (None, None),
+            ('3 - Uso na agropecuária', ProductIcmsTemplate.REASON_LIVESTOCK),
+            ('9 - Outros', ProductIcmsTemplate.REASON_OTHERS),
+            ('12 - Órgão de fomento de desenvolvimento agropecuário',
+             ProductIcmsTemplate.REASON_AGRICULTURAL_AGENCY)
+        )
     }
 
     MAP_VALID_WIDGETS = {
@@ -273,13 +280,13 @@ class BaseICMSSlave(BaseTaxSlave):
              'v_icms_st', 'bc_include_ipi', 'bc_st_include_ipi', 'p_fcp',
              'p_fcp_st', 'v_fcp', 'v_fcp_st'],
         20: ['orig', 'cst', 'mod_bc', 'p_icms', 'p_red_bc', 'v_bc',
-             'v_icms', 'bc_include_ipi', 'p_fcp', 'v_fcp'],
+             'v_icms', 'bc_include_ipi', 'p_fcp', 'v_fcp', 'mot_des_icms'],
         30: ['orig', 'cst', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
              'p_icms_st', 'v_bc_st', 'v_icms_st', 'bc_st_include_ipi',
-             'p_fcp_st', 'v_fcp_st'],
-        40: ['orig', 'cst'],
-        41: ['orig', 'cst'],  # Same tag
-        50: ['orig', 'cst'],
+             'p_fcp_st', 'v_fcp_st', 'mot_des_icms'],
+        40: ['orig', 'cst', 'mot_des_icms'],
+        41: ['orig', 'cst', 'mot_des_icms'],  # Same tag
+        50: ['orig', 'cst', 'mot_des_icms'],
         51: ['orig', 'cst', 'mod_bc', 'p_red_bc', 'p_icms', 'v_bc',
              'v_icms', 'bc_st_include_ipi', 'p_fcp', 'v_fcp'],
         60: ['orig', 'cst', 'v_bc_st', 'v_icms_st', 'v_fcp_st'],

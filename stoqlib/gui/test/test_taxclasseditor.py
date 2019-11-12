@@ -61,3 +61,23 @@ class TestProductTaxTemplateEditor(GUITest):
         slave.csosn.select_item_by_position(5)
         self.assertEquals(slave.p_cred_sn.read(), 0)
         self.assertEquals(slave.p_cred_sn_valid_until.read(), None)
+
+    def test_mot_des_icms_with_invalid_csts(self):
+        editor = ProductTaxTemplateEditor(self.store, None)
+        slave = editor.get_slave('tax_template_holder')
+
+        invalid_csts = [0, 10, 60]
+
+        for cst in invalid_csts:
+            slave.cst.update(cst)
+            self.assertFalse(slave.mot_des_icms.get_sensitive())
+
+    def test_mot_des_icms(self):
+        editor = ProductTaxTemplateEditor(self.store, None)
+        slave = editor.get_slave('tax_template_holder')
+
+        csts = [20, 30, 40, 41, 50, 70, 90]
+
+        for cst in csts:
+            slave.cst.update(cst)
+            self.assertTrue(slave.mot_des_icms.get_sensitive())

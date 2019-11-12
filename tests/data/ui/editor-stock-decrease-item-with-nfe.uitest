@@ -77,21 +77,27 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Stock decrease item"', 
                 item: '1 - Pauta (Valor)'
                 item: '2 - Preço tabelado máximo (valor)'
                 item: '3 - Valor da operação'
-              GtkLabel(p_icms_st_label): 'Alíquota ICMS ST:'
-              ProxySpinButton(p_icms_st): '0.00', insensitive
+              GtkLabel(mot_des_icms_label): 'Motivo Desoneração:'
+              ProxyComboBox(mot_des_icms): insensitive
+                item: None, selected
+                item: '3 - Uso na agropecuária'
+                item: '9 - Outros'
+                item: '12 - Órgão de fomento de desenvolvimento agropecuário'
               GtkLabel(p_icms_label): 'Alíquota ICMS:'
               ProxySpinButton(p_icms): '0.00', insensitive
-              GtkLabel(p_fcp_st_label): 'Alíquota FCP ST:'
-              ProxySpinButton(p_fcp_st): '0.00', insensitive
+              GtkLabel(p_icms_st_label): 'Alíquota ICMS ST:'
+              ProxySpinButton(p_icms_st): '0.00', insensitive
               GtkLabel(p_fcp_label): 'Alíquota FCP:'
               ProxySpinButton(p_fcp): '0.00', insensitive
-              GtkLabel(p_red_bc_st_label): '% Redução BC ICMS ST:'
-              ProxySpinButton(p_red_bc_st): '0.00', insensitive
+              GtkLabel(p_fcp_st_label): 'Alíquota FCP ST:'
+              ProxySpinButton(p_fcp_st): '0.00', insensitive
               GtkLabel(p_red_bc_label): '% Redução BC ICMS'
               ProxySpinButton(p_red_bc): '0.00', insensitive
+              GtkLabel(p_red_bc_st_label): '% Redução BC ICMS ST:'
+              ProxySpinButton(p_red_bc_st): '0.00', insensitive
+              ProxyCheckButton(bc_include_ipi): 'Incluir IPI na BC', active, insensitive
               GtkLabel(p_mva_st_label): '% MVA ICMS ST:'
               ProxySpinButton(p_mva_st): '0.00', insensitive
-              ProxyCheckButton(bc_include_ipi): 'Incluir IPI na BC', active, insensitive
               ProxyCheckButton(bc_st_include_ipi): 'Incluir IPI na BC ST', active, insensitive
               GtkLabel(v_bc_label): 'BC ICMS:'
               ProxyEntry(v_bc): '', ineditable, insensitive
