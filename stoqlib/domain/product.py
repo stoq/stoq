@@ -510,7 +510,7 @@ class Product(Domain):
             return override.cofins_template or self._cofins_template
         return self._cofins_template
 
-    def get_c_benef(self, branch):
+    def get_cbenef(self, branch):
         """Returns the cbnef that should be used for this product
 
         :param branch: the branch that will be selling this product.

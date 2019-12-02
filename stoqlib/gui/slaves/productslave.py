@@ -23,8 +23,9 @@
 ##
 """ Slaves for products """
 
-import collections
 from decimal import Decimal
+import collections
+import re
 
 from gi.repository import Gtk
 from kiwi.currency import currency
@@ -241,7 +242,8 @@ class ProductInformationSlave(BaseEditorSlave):
     model_type = Product
     proxy_widgets = ['location', 'part_number', 'manufacturer', 'width',
                      'height', 'depth', 'weight', 'ncm', 'ex_tipi', 'genero',
-                     'cest', 'product_model', 'brand', 'family', 'internal_use']
+                     'cest', 'product_model', 'brand', 'family', 'internal_use',
+                     'c_benef']
     storable_widgets = ['minimum_quantity', 'maximum_quantity']
 
     def __init__(self, store, model, db_form=None, visual_mode=False):
@@ -371,6 +373,10 @@ class ProductInformationSlave(BaseEditorSlave):
 
     def on_weight__validate(self, widget, value):
         return self._positive_validator(value)
+
+    def on_c_benef__validate(self, widget, value):
+        if not re.fullmatch('([aA-zZ]{2}[0-9]{6}|SEM CBENEF)?', value):
+            return ValidationError(_("This field must have 8 digits or 'SEM CBENEF'"))
 
     def on_ncm__validate(self, widget, value):
         if len(value) not in (0, 8):

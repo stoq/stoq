@@ -225,25 +225,25 @@ class TestProduct(DomainTest):
         product.c_benef = 'RJ111111'
         self.assertEqual(product.c_benef, 'RJ111111')
 
-    def test_get_c_benef_default(self):
+    def test_get_cbenef_default(self):
         product = self.create_product()
         product.c_benef = 'RJ111111'
-        self.assertEqual(product.get_c_benef(self.current_branch), product.c_benef)
+        self.assertEqual(product.get_cbenef(self.current_branch), product.c_benef)
 
-    def test_get_c_benef_override(self):
+    def test_get_cbenef_override(self):
         product = self.create_product()
         product.c_benef = None
         override = ProductBranchOverride(store=self.store, product=product,
                                          branch=self.current_branch, c_benef='RJ222222')
 
-        self.assertEqual(product.get_c_benef(self.current_branch), override.c_benef)
+        self.assertEqual(product.get_cbenef(self.current_branch), override.c_benef)
 
-    def test_get_c_benef_override_without_cbenef(self):
+    def test_get_cbenef_override_without_cbenef(self):
         product = self.create_product()
         product.c_benef = 'RJ111111'
         ProductBranchOverride(store=self.store, product=product,
                               branch=self.current_branch, c_benef=None)
-        self.assertEqual(product.get_c_benef(self.current_branch), product.c_benef)
+        self.assertEqual(product.get_cbenef(self.current_branch), product.c_benef)
 
     def test_update_package_cost(self):
         """This will test if the product component cost is updated when the

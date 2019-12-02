@@ -131,6 +131,8 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                         ProxyEntry(genero): ''
                         GtkLabel(ex_tipi_lbl1): 'CEST:'
                         ProxyEntry(cest): ''
+                        GtkLabel(c_benef_lbl): 'Código de beneficio fiscal'
+                        ProxyEntry(c_benef): ''
                     GtkLabel(label6): '<b>Mercosul Details</b>'
             GtkEventBox(): slave ImageGallerySlave is attached
               GtkAlignment(toplevel):
