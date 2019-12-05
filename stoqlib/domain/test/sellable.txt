@@ -4,6 +4,7 @@ Doctest for domain/sellable.txt
 
 Imports that will be used in this doctest:
 
+    >>> from stoqlib.api import api
     >>> from stoqlib.database.runtime import new_store
     >>> from stoqlib.domain.product import Product, Storable
     >>> from stoqlib.domain.sellable import Sellable
@@ -98,7 +99,7 @@ A newly created sellable is in the status available:
 
     >>> sellable.status == Sellable.STATUS_AVAILABLE
     True
-    >>> sellable.is_available()
+    >>> sellable.is_available(api.get_current_branch(store))
     True
 
 Accessors
@@ -127,7 +128,7 @@ This will return a list of available sellables:
 
 Closing the sellable, removes it from the list of available sellables:
 
-    >>> sellable.close()
+    >>> sellable.close(api.get_current_branch(store))
     >>> sellable in Sellable.get_available_sellables(store)
     False
 
@@ -135,7 +136,7 @@ Also, we can get a list of available sellable by a list of categories:
 
     >>> category = SellableCategory(description=u'Battery', store=store)
     >>> sellable.category = category
-    >>> sellable.set_available()
+    >>> sellable.set_available(api.get_current_branch(store))
     >>> query = Sellable.get_unblocked_by_categories_query(store, [category])
     >>> sellable in store.find(Sellable, query)
     True

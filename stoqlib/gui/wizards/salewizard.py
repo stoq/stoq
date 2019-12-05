@@ -954,7 +954,7 @@ class ConfirmSaleWizard(BaseWizard):
 
         for item in self.model.get_items():
             sellable = item.sellable
-            if not sellable.is_available():
+            if not sellable.is_available(self.model.branch):
                 self.close()
                 warning(_("%s is not available for sale. Try making it "
                           "available first or change it on sale and then try again.") % (

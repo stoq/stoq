@@ -451,7 +451,7 @@ class TestSellable(DomainTest):
             self.store.find(Sellable,
                             Sellable.get_available_sellables_query(self.store)))
 
-        sellable.close()
+        sellable.close(self.current_branch)
         self.assertNotIn(
             sellable,
             self.store.find(Sellable,
@@ -470,7 +470,7 @@ class TestSellable(DomainTest):
         sellable = self.create_sellable()
         with self.assertRaisesRegex(ValueError,
                                     'This sellable is already available'):
-                sellable.set_available()
+                sellable.set_available(self.current_branch)
 
     def test_get_unblocked_sellables(self):
         # Sellable and query without supplier
@@ -735,13 +735,13 @@ class TestSellable(DomainTest):
         # Here we close that sellable. It should now show on
         # ProductClosedStockViewand ProductFullWithClosedStock View,
         # but not on ProductFullStockView.
-        sellable.close()
+        sellable.close(branch)
         results_not_closed = self.store.find(ProductFullStockView)
         results_with_closed = self.store.find(ProductFullWithClosedStockView)
         results_only_closed = self.store.find(ProductClosedStockView)
 
         self.assertEqual(sellable.status, Sellable.STATUS_CLOSED)
-        self.assertTrue(sellable.is_closed())
+        self.assertTrue(sellable.is_closed(branch))
         self.assertEqual(len(list(results_not_closed)), count_not_closed)
         self.assertEqual(len(list(results_with_closed)), count_with_closed + 1)
         self.assertEqual(len(list(results_only_closed)), count_only_closed + 1)
@@ -754,7 +754,7 @@ class TestSellable(DomainTest):
 
         # When trying to close an already closed sellable, it should
         # raise a ValueError.
-        self.assertRaises(ValueError, sellable.close)
+        self.assertRaises(ValueError, sellable.close, branch)
 
     def test_can_close(self):
         sellable = self.create_sellable()

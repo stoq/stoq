@@ -93,6 +93,7 @@ from storm.expr import (And, Eq, LeftJoin, Alias, Sum, Coalesce, Select, Join,
                         Cast, Or, In)
 from zope.interface import implementer
 
+from stoqlib.api import api
 from stoqlib.database.expr import (Field, TransactionTimestamp,
                                    ArrayAgg, Contains, IsContainedBy,
                                    SplitPart)
@@ -612,7 +613,7 @@ class Product(Domain):
         """Closes the product's children
         """
         for child in self.children:
-            child.sellable.close()
+            child.sellable.close(api.get_current_branch(self.store))
 
     def get_manufacture_time(self, quantity, branch):
         """Returns the estimated time in days to manufacture a product

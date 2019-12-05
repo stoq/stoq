@@ -480,7 +480,7 @@ class TestProduct(DomainTest):
         for child in product.children:
             self.assertTrue(child.sellable.status == Sellable.STATUS_AVAILABLE)
 
-        product.sellable.close()
+        product.sellable.close(self.current_branch)
         # Now the product and it's children should be closed
         self.assertTrue(product.sellable.status == Sellable.STATUS_CLOSED)
         for child in product.children:

@@ -314,7 +314,6 @@
  "stoqlib/migration/domainv3.py": 40.24,
  "stoqlib/migration/domainv4.py": 43.75,
  "stoqlib/migration/parameter.py": 81.82,
- "stoqlib/pytests/test_runtime.py": 40.00,
  "stoqlib/net/calendarevents.py": 14.89,
  "stoqlib/net/server.py": 24.68,
  "stoqlib/net/socketutils.py": 42.31,

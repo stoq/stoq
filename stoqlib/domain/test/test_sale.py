@@ -2300,7 +2300,7 @@ class TestSaleItem(DomainTest):
         sale_item2.quantity_decreased = sale_item2.quantity
 
         # First test with is_available returning False
-        with mock.patch.object(Sellable, 'is_available', new=lambda s: False):
+        with mock.patch.object(Sellable, 'is_available', new=lambda *args, **kwargs: False):
             with self.assertRaisesRegex(
                     SellError,
                     "Product 666 is not available for sale. Try making it "
@@ -2331,7 +2331,7 @@ class TestSaleItem(DomainTest):
         sale_item.sellable.description = u'Service 666'
 
         # closed services should raise SellError here
-        sale_item.sellable.close()
+        sale_item.sellable.close(self.current_branch)
         with self.assertRaisesRegex(
                 SellError,
                 "Service 666 is not available for sale. Try making it "
@@ -2339,7 +2339,7 @@ class TestSaleItem(DomainTest):
             sale_item.sell(self.current_user)
 
         # Setting the status to available should make it possible to sell
-        sale_item.sellable.set_available()
+        sale_item.sellable.set_available(self.current_branch)
         sale_item.sell(self.current_user)
 
     def test_get_total(self):

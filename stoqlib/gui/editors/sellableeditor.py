@@ -259,7 +259,7 @@ class SellableEditor(BaseEditor):
             # to avoid having *lots* of buttons. If it's closed, provide a way
             # to reopen it, else, show a delete button if it can be removed
             # or a close button if it can be closed
-            if self._sellable.is_closed():
+            if self._sellable.is_closed(api.get_current_branch(self.store)):
                 self._add_reopen_button()
             elif self._sellable.can_remove():
                 self._add_delete_button()
@@ -510,7 +510,7 @@ class SellableEditor(BaseEditor):
                      parent_button_label, _("Don't close")):
             return
 
-        self._sellable.close()
+        self._sellable.close(api.get_current_branch(self.store))
         self.confirm()
 
     def _on_reopen_sellable_button__clicked(self, button,
@@ -522,7 +522,7 @@ class SellableEditor(BaseEditor):
                      parent_button_label, _("Keep closed")):
             return
 
-        self._sellable.set_available()
+        self._sellable.set_available(api.get_current_branch(self.store))
         self.confirm()
 
     def on_category_combo__content_changed(self, combo):

@@ -315,7 +315,7 @@ class SaleItem(Domain):
     #
 
     def sell(self, user: LoginUser):
-        if not self.sellable.is_available():
+        if not self.sellable.is_available(branch=self.sale.branch):
             raise SellError(_(u"%s is not available for sale. Try making it "
                               u"available first and then try again.") % (
                 self.sellable.get_description()))

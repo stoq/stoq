@@ -56,7 +56,6 @@ check-failed: clean
 	python3 runtests.py --failed $(TEST_MODULES)
 
 coverage: clean check-source-all
-	pytest -vvv stoqlib/pytests --cov=stoq/ --cov=stoqlib/ --cov-report=term-missing
 	python3 runtests.py \
 	    --with-xcoverage \
 	    --with-xunit \
@@ -65,7 +64,8 @@ coverage: clean check-source-all
 	    --cover-inclusive \
 		--exclude-dir=stoqlib/pytests \
 	    $(TEST_MODULES) && \
-	coverage xml --omit "**/test/*.py, stoqlib/pytests/*.py" && \
+	pytest -vvv stoqlib/pytests --cov=stoqlib/ --cov-append && \
+	coverage xml --omit "**/test/*.py,stoqlib/pytests/*" && \
 	utils/validatecoverage.py coverage.xml && \
 	git show|tools/diff-coverage coverage.xml
 
