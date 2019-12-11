@@ -775,15 +775,7 @@ class Sellable(Domain):
         :param branch: branch for checking if there is a sellable_branch_override
         :returns: Whether the sellable requires kitchen production for a given branch
         """
-        # Check for overrides before checking the actual sellable
-        sellable_override = SellableBranchOverride.find_by_sellable(
-            sellable=self,
-            branch=branch
-        )
-
-        if sellable_override and sellable_override.requires_kitchen_production is not None:
-            return sellable_override.requires_kitchen_production
-        return self.requires_kitchen_production
+        return self._get_from_override('requires_kitchen_production', branch)
 
     def check_code_exists(self, code):
         """Check if there is another sellable with the same code.
