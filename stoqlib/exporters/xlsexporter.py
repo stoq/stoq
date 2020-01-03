@@ -25,6 +25,7 @@
 
 import datetime
 import tempfile
+from decimal import Decimal
 
 from kiwi.currency import currency
 import xlwt
@@ -80,17 +81,23 @@ class XLSExporter(object):
             self._write_one(i, column, style=style)
         self._current_column += 1
 
+    def _convert_one(self, data):
+        if data is None:
+            return ''
+        if isinstance(data, datetime.date):
+            return data.strftime('%Y-%m-%d')
+        if isinstance(data, bytes):
+            return data.decode()
+        if isinstance(data, (Decimal, int)):
+            return str(data)
+
+        return data
+
     def _write_one(self, i, data, style=None):
         if style is None:
             style = self._column_styles[i]
 
-        if data is None:
-            data = ''
-        else:
-            if isinstance(data, datetime.date):
-                data = data.strftime('%Y-%m-%d')
-            elif isinstance(data, bytes):
-                data = data.decode()
+        data = self._convert_one(data)
 
         self._ws.write(self._current_column, i, data, style)
 
