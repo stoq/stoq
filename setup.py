@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
-##
-## Copyright (C) 2005-2011 Async Open Source
-##
-## This program is free software; you can redistribute it and/or
-## modify it under the terms of the GNU Lesser General Public License
-## as published by the Free Software Foundation; either version 2
-## of the License, or (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU Lesser General Public License for more details.
-##
-## You should have received a copy of the GNU Lesser General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., or visit: http://www.gnu.org/.
-##
-##
-## Author(s): Stoq Team <stoq-devel@async.com.br>
-##
+#
+# Copyright (C) 2005-2011 Async Open Source
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., or visit: http://www.gnu.org/.
+#
+#
+# Author(s): Stoq Team <stoq-devel@async.com.br>
+#
 
 #
 # Dependency checking
@@ -164,15 +164,15 @@ data_files += listplugins(PLUGINS, PLUGIN_EXTS)
 # dependencies bellow.
 install_requires = []
 with open('requirements.txt') as f:
-    for l in f.readlines():
-        l = l.strip()
-        if not l or l.startswith('#'):
+    for line in f.readlines():
+        line = line.strip()
+        if not line or line.startswith('#'):
             continue
-        if l.startswith('https://'):
+        if line.startswith('https://'):
             # requirements.txt file format is a bit different from setup install_requires argument
-            package = l.split('=')[-1]
-            l = '%s @ %s' % (package, l)
-        install_requires.append(l)
+            package = line.split('=')[-1]
+            line = '%s @ %s' % (package, line)
+        install_requires.append(line)
 
 
 setup(name='stoq',
@@ -190,4 +190,5 @@ setup(name='stoq',
       data_files=data_files,
       scripts=scripts,
       install_requires=install_requires,
+      setup_requires=['pycairo'],  # workaround to force pycairo installation before PyGObject
       zip_safe=building_egg)

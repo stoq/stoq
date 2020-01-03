@@ -32,8 +32,9 @@ before_script:
   - pip3 install -Ur requirements-test.txt
   # Install tools to create debian packages
   - apt update
-  - apt --yes install build-essential devscripts debhelper python3-all
+  - apt --yes install build-essential devscripts debhelper python3-all libcairo2-dev
   - pip3 install -e . --no-deps
+  - pip3 freeze
 
 test:
   stage: test
