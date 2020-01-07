@@ -26,6 +26,7 @@ __tests__ = 'plugins/optical/opticalwizard.py'
 
 import decimal
 import string
+import unittest
 
 import mock
 from gi.repository import Gtk
@@ -54,6 +55,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
                                  name=u'Category',
                                  color=u'#ff0000')
 
+    @unittest.skip('some UI tests are breaking randomly')
     @mock.patch('plugins.optical.opticalwizard.yesno')
     @mock.patch('stoqlib.gui.wizards.salequotewizard.run_dialog')
     def test_confirm(self, run_dialog, yesno):
@@ -265,6 +267,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         self.click(step.new_tab_button)
         self.assertEqual(step.work_orders_nb.get_n_pages(), 2)
 
+    @unittest.skip('some UI tests are breaking randomly')
     def test_item_step(self):
         client = self.create_client()
         medic = self.create_optical_medic()
@@ -306,6 +309,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         for radio in item_slave._radio_group.get_group():
             radio.toggled()
 
+    @unittest.skip('some UI tests are breaking randomly')
     def test_item_step_too_many(self):
         medic = self.create_optical_medic()
         client = self.create_client()
@@ -347,6 +351,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
                                       "Don't print")
         print_report.assert_called_once_with(OpticalWorkOrderReceiptReport, [workorder])
 
+    @unittest.skip('some UI tests are breaking randomly')
     @mock.patch('plugins.optical.opticalwizard.yesno')
     def test_auto_reserve(self, yesno):
         # Data setup
