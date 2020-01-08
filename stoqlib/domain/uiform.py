@@ -46,15 +46,6 @@ class UIField(Domain):
     visible = BoolCol()
     mandatory = BoolCol()
 
-    def update_field(self, mandatory=False, visible=False):
-        """This method changes some properties of the field
-
-        :param mandatory: A boolean indicating if the field is mandatory
-        :param visible: A boolean indicating if the field is visible
-        """
-        self.mandatory = mandatory
-        self.visible = visible
-
 
 class UIForm(Domain):
     """This describes a form which has a number of fields"""
