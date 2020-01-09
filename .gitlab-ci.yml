@@ -30,10 +30,11 @@ before_script:
   # Install testing requirements
   - easy_install3 pip
   - pip3 install -Ur requirements-test.txt
+  - pip3 install -U setuptools pip wheel
   # Install tools to create debian packages
   - apt update
-  - apt --yes install build-essential devscripts debhelper python3-all libcairo2-dev
-  - pip3 install -e . --no-deps
+  - apt --yes install build-essential devscripts debhelper python3-all libcairo2-dev libgirepository1.0-dev
+  - python3 setup.py develop
   - pip3 freeze
 
 test:
@@ -45,8 +46,7 @@ build_dist:
   stage: build
   script:
     # Install bdist requirements with pip.
-    - easy_install3 pip
-    - pip3 install kiwi-gtk wheel
+    - pip3 install -U kiwi-gtk wheel setuptools
     - python3 setup.py bdist_wheel
 
   artifacts:
