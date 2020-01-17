@@ -21,9 +21,9 @@ def test_xls_exporter_write_one():
 
 @pytest.mark.parametrize('data, expected_value', (
     (None, ''),
-    (69, '69'),
+    (69, 69),
     ('foo', 'foo'),
-    (Decimal('6.9'), '6.9'),
+    (Decimal('6.9'), Decimal('6.9')),
     (datetime.date(2020, 1, 7), '2020-01-07'),
     (b'foo', 'foo'),
 ))

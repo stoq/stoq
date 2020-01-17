@@ -25,7 +25,6 @@
 
 import datetime
 import tempfile
-from decimal import Decimal
 
 from kiwi.currency import currency
 import xlwt
@@ -88,8 +87,6 @@ class XLSExporter(object):
             return data.strftime('%Y-%m-%d')
         if isinstance(data, bytes):
             return data.decode()
-        if isinstance(data, (Decimal, int)):
-            return str(data)
 
         return data
 
