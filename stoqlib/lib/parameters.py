@@ -1068,6 +1068,14 @@ _details = [
         _(u'Beyond date, display exactly the hour and minute of the sale on the '
           u'receivable payments list.'),
         bool, initial=False),
+
+    ParameterDetails(
+        'REQUIRE_PRODUCT_BRANCH_OVERRIDE',
+        _('POS'),
+        _('Require override for products in mobile pos'),
+        _('When this is true, only products that have an override for the selected branch will be '
+          'available for sale in a given branch'),
+        bool, initial=False),
 ]
 
 
