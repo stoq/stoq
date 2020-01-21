@@ -34,7 +34,7 @@ from kiwi.enums import ListType
 from kiwi.ui.objectlist import Column, SummaryLabel
 from kiwi.ui.widgets.combo import ProxyComboBox
 from kiwi.utils import gsignal
-from storm.expr import Eq, And
+from storm.expr import Eq, And, Or
 
 from stoqlib.api import api
 from stoqlib.domain.person import Supplier
@@ -521,7 +521,8 @@ class ProductComponentSlave(BaseEditorSlave):
         if additional_query:
             # XXX For now, we are not allowing package_product to have another
             # package_product or batch_product as component
-            query = And(query, Eq(Storable.is_batch, False))
+            exclude_batch = Or(Eq(Storable.is_batch, False), Eq(Storable.is_batch, None))
+            query = And(query, exclude_batch)
         for product_view in self.store.find(ProductFullStockView, query).order_by(attr):
             if product_view.product is self._product:
                 continue
