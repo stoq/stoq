@@ -90,6 +90,10 @@ class Image(Domain):
     #: The |sellable| that this image belongs to
     sellable = Reference(sellable_id, 'Sellable.id')
 
+    category_id = IdCol(default=None)
+    #: The |category| that this image belongs to
+    category = Reference(category_id, 'SellableCategory.id')
+
     station_type_id = IdCol(default=None)
     #: The station type this image should be used instead of the main image.
     station_type = Reference(station_type_id, 'StationType.id')
