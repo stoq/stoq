@@ -419,6 +419,13 @@ _details = [
         int, initial=0, range=(0, 22)),
 
     ParameterDetails(
+        u'INCLUDE_CASH_FUND_ON_TILL_CLOSING',
+        _(u'Till'),
+        _(u'Include cash fund on till closing'),
+        _(u'Makes stoq expects to include the cash fund on till closing'),
+        bool, initial=False),
+
+    ParameterDetails(
         u'TILL_BLIND_CLOSING',
         _('Till'),
         _('Use blind closing for till'),
