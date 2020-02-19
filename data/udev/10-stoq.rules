@@ -1,11 +1,14 @@
 # Stoq device nodes
 # XXX: need to find out how to reload this file
 
-
 #
 # SAT
 #
 
+# Bematech SAT GO
+ATTRS{idVendor}=="0b1b", ATTRS{idProduct}=="0110", ENV{MTP_NO_PROBE}="1"
+ATTRS{idVendor}=="0b1b", ATTRS{idProduct}=="0110", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="0b1b", ATTRS{idProduct}=="0110", SYMLINK+="ttyBematechRB2000"
 # Bematech SAT RB2000
 ATTRS{idVendor}=="0b1b", ATTRS{idProduct}=="0109", ENV{MTP_NO_PROBE}="1"
 ATTRS{idVendor}=="0b1b", ATTRS{idProduct}=="0109", ENV{ID_MM_DEVICE_IGNORE}="1"
@@ -17,6 +20,8 @@ SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="0b1b"
 # Tanca, Elgin, Sweda all use internal USB adapters from vendor 0525
 ATTRS{idVendor}=="0525", ENV{MTP_NO_PROBE}="1"
 ATTRS{idVendor}=="0525", ENV{ID_MM_DEVICE_IGNORE}="1"
+# Elgin SMART SAT
+SUBSYSTEM=="usb", ATTRS{idVendor}=="2fe7", ATTRS{idProduct}=="0001", MODE="0664", GROUP="dialout"
 # Note: The Elgin Linker SAT auto-detects and does not require a symlink
 SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyACM[0-9]*", ATTRS{idVendor}=="0525", SYMLINK+="ttyTS0"
 # Sweda uses a USB-Ethernet adapter, which we provide a stable name for
