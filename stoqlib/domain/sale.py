@@ -44,7 +44,7 @@ from stoqlib.database.expr import (Concat, Date, Distinct, Field, NullIf,
                                    Round, TransactionTimestamp)
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                          PriceCol, QuantityCol, IdentifierCol,
-                                         IdCol, BoolCol, EnumCol)
+                                         IdCol, BoolCol, EnumCol, TimeCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.base import Domain, IdentifiableDomain
@@ -3014,3 +3014,29 @@ class SoldItemsBySalesperson(Viewable):
                  Sale.status != Sale.STATUS_CANCELLED)
     group_by = [id, branch_name, code, description, category, batch_number,
                 salesperson_name, brand]
+
+
+class Context(Domain):
+    __storm_table__ = 'context'
+
+    name = UnicodeCol(allow_none=False)
+
+    start_time = TimeCol()
+
+    end_time = TimeCol()
+
+    branch_id = IdCol(allow_none=False)
+
+    branch = Reference(branch_id, 'Branch.id')
+
+
+class SaleContext(Domain):
+    __storm_table__ = 'sale_context'
+
+    sale_id = IdCol(allow_none=False)
+
+    sale = Reference(sale_id, 'Sale.id')
+
+    context_id = IdCol(allow_none=False)
+
+    context = Reference(context_id, 'Context.id')

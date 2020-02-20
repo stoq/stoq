@@ -29,7 +29,7 @@ import json
 
 from kiwi.currency import currency
 
-from storm.properties import RawStr, Int, Bool, DateTime, Decimal, Unicode
+from storm.properties import RawStr, Int, Bool, DateTime, Decimal, Unicode, Time
 from storm.properties import SimpleProperty
 from storm.store import AutoReload
 from storm.variables import (DateVariable, DateTimeVariable,
@@ -235,3 +235,4 @@ DecimalCol = Decimal
 IdCol = UUIDCol
 IntCol = Int
 UnicodeCol = Unicode
+TimeCol = Time
