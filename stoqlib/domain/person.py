@@ -1711,6 +1711,10 @@ class Branch(Domain):
     #: the |certificate| this branch should use
     certificate = Reference(certificate_id, Certificate.id)
 
+    #: the default client category this branch should use
+    default_client_category_id = IdCol()
+    default_client_category = Reference(default_client_category_id, 'ClientCategory.id')
+
     #
     # IActive
     #

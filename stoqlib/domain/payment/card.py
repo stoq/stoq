@@ -40,7 +40,7 @@ from zope.interface import implementer
 from storm.expr import And, Delete, Or, Update
 from storm.references import Reference
 
-from stoqlib.database.properties import (PercentCol, PriceCol, DateTimeCol,
+from stoqlib.database.properties import (BoolCol, PercentCol, PriceCol, DateTimeCol,
                                          IntCol, UnicodeCol, IdCol, EnumCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
@@ -74,6 +74,12 @@ class CreditProvider(Domain):
 
     #: The date when we start working with this provider
     open_contract_date = DateTimeCol()
+
+    #: the order of what provider should be displayed
+    sort_order = IntCol(default=0)
+
+    #: if the card provider should be displayed
+    visible = BoolCol(default=True)
 
     #
     # IDescribable

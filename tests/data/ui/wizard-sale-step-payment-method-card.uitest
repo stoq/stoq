@@ -113,6 +113,7 @@ model: Sellable<5>
   on_sale_start_date: None
   price_last_updated: datetime.today()
   requires_kitchen_production: False
+  short_description: ''
   sort_order: 0
   status: 'available'
 

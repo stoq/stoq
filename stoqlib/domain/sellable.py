@@ -433,6 +433,9 @@ class Sellable(Domain):
     #: full description of sellable
     description = UnicodeCol(default=u'')
 
+    #: short description of sellable
+    short_description = UnicodeCol(default=u'')
+
     #: maximum discount allowed
     max_discount = PercentCol(default=0)
 
