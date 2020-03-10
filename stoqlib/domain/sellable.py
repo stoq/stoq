@@ -598,15 +598,7 @@ class Sellable(Domain):
 
     @property
     def price(self):
-        if self.is_on_sale():
-            return self.on_sale_price
-        else:
-            category = sysparam.get_object(self.store, 'DEFAULT_TABLE_PRICE')
-            if category:
-                info = self.get_category_price_info(category)
-                if info:
-                    return info.price
-            return self.base_price
+        return self.get_price()
 
     @price.setter
     def price(self, price):
@@ -622,6 +614,23 @@ class Sellable(Domain):
     #
     #  Accessors
     #
+
+    def _get_table_price(self, branch):
+        table_price = sysparam.get_object(self.store, 'DEFAULT_TABLE_PRICE')
+        if branch and branch.default_client_category:
+            table_price = branch.default_client_category
+        return table_price
+
+    def get_price(self, branch=None):
+        if self.is_on_sale():
+            return self.on_sale_price
+
+        category = self._get_table_price(branch)
+        if category:
+            info = self.get_category_price_info(category)
+            if info:
+                return info.price
+        return self.base_price
 
     def is_available(self, branch):
         """Whether the sellable is available and can be sold.

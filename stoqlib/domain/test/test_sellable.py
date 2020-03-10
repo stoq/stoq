@@ -866,6 +866,13 @@ class TestSellable(DomainTest):
             # sellable has a special price for that category
             self.assertEqual(sellable.price, 155)
 
+        # When a branch as another category price, that one should be used
+        category = self.create_client_category(u'Cat 2')
+        branch = self.create_branch()
+        branch.default_client_category = category
+        ClientCategoryPrice(sellable=sellable, category=category, price=200, store=self.store)
+        self.assertEqual(sellable.get_price(branch), 200)
+
     def test_remove_category_price(self):
         category_price = self.create_client_category_price()
 
