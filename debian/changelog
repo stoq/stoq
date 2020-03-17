@@ -1,3 +1,9 @@
+stoq (4.7~rc1) xenial; urgency=medium
+
+  * Release 4.7~rc1
+
+ -- Fabricio C Zuardi <fcz@laptop40.localdomain>  Tue, 17 Mar 2020 08:43:05 -0300
+
 stoq (4.6~rc1) xenial; urgency=medium
 
   * Release 4.6~rc1
