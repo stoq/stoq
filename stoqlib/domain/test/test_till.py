@@ -354,7 +354,7 @@ class TestTillSummary(DomainTest):
         TillEntry(description=u'test', value=payment.value, till=till, station=self.current_station,
                   branch=till.station.branch, payment=payment, store=self.store)
 
-        summary = till.get_day_summary()
+        summary = till.create_day_summary()
         self.assertEqual(len(summary), 1)
         self.assertEqual(summary[0].description, 'Money')
 
@@ -368,7 +368,7 @@ class TestTillSummary(DomainTest):
         TillEntry(description=u'test', value=payment.value, till=till, station=self.current_station,
                   branch=till.station.branch, payment=payment, store=self.store)
 
-        summary = till.get_day_summary()
+        summary = till.create_day_summary()
         self.assertEqual(len(summary), 2)  # There are two, since money is always there.
 
         card_summary = [i for i in summary if i.method.method_name == 'card'][0]

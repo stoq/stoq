@@ -28,8 +28,10 @@
 
 import collections
 import logging
+from typing import Dict, Optional, Tuple, List
 
 from kiwi.currency import currency
+from kiwi.decorators import deprecated
 from storm.expr import And, Eq, Join, LeftJoin, Or
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
@@ -365,18 +367,16 @@ class Till(IdentifiableDomain):
                            TillEntry.till_id == self.id))
         return currency(results.sum(TillEntry.value) or 0)
 
-    # FIXME: Rename to create_day_summary
-    def get_day_summary(self):
-        """Get the summary of this till for closing.
-
-        When using a blind closing process, this will create TillSummary entries that
-        will save the values all payment methods used.
+    def get_day_summary_data(self) -> Dict[Tuple[PaymentMethod,
+                                                 Optional['CreditProvider'],
+                                                 Optional[str]], currency]:
+        """Get the summary of this till.
         """
         money_method = PaymentMethod.get_by_name(self.store, u'money')
         day_history = {}
         # Keys are (method, provider, card_type), provider and card_type may be None if
         # payment was not with card
-        day_history[(money_method, None, None)] = 0
+        day_history[(money_method, None, None)] = currency(0)
 
         for entry in self.get_entries():
             provider = card_type = None
@@ -387,11 +387,23 @@ class Till(IdentifiableDomain):
                 card_type = payment.card_data.card_type
 
             key = (method, provider, card_type)
-            day_history.setdefault(key, 0)
+            day_history.setdefault(key, currency(0))
             day_history[key] += entry.value
 
+        return day_history
+
+    @deprecated(new='create_day_summary')
+    def get_day_summary(self):
+        return self.create_day_summary()  # pragma nocover
+
+    def create_day_summary(self) -> List['TillSummary']:
+        """Get the summary of this till for closing.
+
+        When using a blind closing process, this will create TillSummary entries that
+        will save the values all payment methods used.
+        """
         summary = []
-        for (method, provider, card_type), value in day_history.items():
+        for (method, provider, card_type), value in self.get_day_summary_data().items():
             summary.append(TillSummary(till=self, method=method, provider=provider,
                                        card_type=card_type, system_value=value))
         return summary

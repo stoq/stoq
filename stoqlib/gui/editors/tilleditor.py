@@ -234,7 +234,7 @@ class TillClosingEditor(BaseEditor):
             self.day_history_box.pack_start(summary_day_history, False, True, 0)
         else:
             self.totals_grid.hide()
-            self.day_history.add_list(self.till.get_day_summary())
+            self.day_history.add_list(self.till.create_day_summary())
 
     def _get_day_history(self):
         if not self.till:
