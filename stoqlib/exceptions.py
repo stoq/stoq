@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
-##
-## Copyright (C) 2005 Async Open Source
-##
-## This program is free software; you can redistribute it and/or
-## modify it under the terms of the GNU Lesser General Public License
-## as published by the Free Software Foundation; either version 2
-## of the License, or (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU Lesser General Public License for more details.
-##
-## You should have received a copy of the GNU Lesser General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., or visit: http://www.gnu.org/.
-##
-##
-## Author(s): Stoq Team <stoq-devel@async.com.br>
-##
+#
+# Copyright (C) 2005-2020 Async Open Source
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., or visit: http://www.gnu.org/.
+#
+#
+# Author(s): Stoq Team <stoq-devel@async.com.br>
+#
 """ Exception and warning definitions """
 
 
@@ -56,6 +56,7 @@ class DatabaseError(Exception):
     raise DatabaseError(msg)
     raise DatabaseError(short, msg)
     """
+
     def __init__(self, msg, long=None):
         if not long:
             short = 'Database Error'
@@ -147,3 +148,10 @@ class ReportError(Exception):
 
 class CertificateException(Exception):
     """A problem happened while configuring a digital certificate"""
+
+
+class ExternalOrderConfirmationError(Exception):
+    """A problem when confirming an external order"""
+
+    def __init__(self, reason):
+        self.reason = reason

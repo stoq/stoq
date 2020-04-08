@@ -60,7 +60,7 @@
  "stoqlib/database/testsuite.py": 70,
  "stoq/lib/dependencies.py": 60.08,
  "stoqlib/drivers/cheque.py": 38.46,
- "stoqlib/exceptions.py": 94.29,
+ "stoqlib/exceptions.py": 92.31,
  "stoqlib/exporters/xlsexporter.py": 93.57,
  "stoqlib/gui/actions/base.py": 90,
  "stoqlib/gui/actions/sale.py": 45,
