@@ -150,8 +150,8 @@ class CertificateException(Exception):
     """A problem happened while configuring a digital certificate"""
 
 
-class ExternalOrderConfirmationError(Exception):
-    """A problem when confirming an external order"""
+class ExternalOrderError(Exception):
+    """Any problem that might occur during an external order processing"""
 
     def __init__(self, reason):
         self.reason = reason
