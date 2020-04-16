@@ -228,6 +228,9 @@ class StoqConfig:
             return []
         return self._config.items(section)
 
+    def sections(self):
+        return self._config.sections()
+
 #
 # General routines
 #
