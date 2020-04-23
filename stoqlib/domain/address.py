@@ -99,23 +99,8 @@ class CityLocation(ORMObject):
     #
 
     @classmethod
-    def get_default(cls, store):
-        """Get the default city location according to the database parameters.
-        The is usually the same city as main branch.
-
-        :returns: the default city location
-        """
-        city = sysparam.get_string('CITY_SUGGESTED')
-        state = sysparam.get_string('STATE_SUGGESTED')
-        country = sysparam.get_string('COUNTRY_SUGGESTED')
-
-        return cls.get_or_create(store, city, state, country)
-
-    @classmethod
-    def get_or_create(cls, store, city, state, country):
-        """
-        Get or create a city location. City locations are created lazily,
-        so this is used when registering new addresses.
+    def get(cls, store, city, state, country):
+        """Get a city location.
 
         :param store: a store
         :param unicode city: a city
@@ -139,6 +124,36 @@ class CityLocation(ORMObject):
                     return l
             # Otherwise, return any object
             return location[0]
+        return None
+
+    @classmethod
+    def get_default(cls, store):
+        """Get the default city location according to the database parameters.
+        The is usually the same city as main branch.
+
+        :returns: the default city location
+        """
+        city = sysparam.get_string('CITY_SUGGESTED')
+        state = sysparam.get_string('STATE_SUGGESTED')
+        country = sysparam.get_string('COUNTRY_SUGGESTED')
+
+        return cls.get(store, city, state, country)
+
+    @classmethod
+    def get_or_create(cls, store, city, state, country):
+        """
+        Get or create a city location. City locations are created lazily,
+        so this is used when registering new addresses.
+
+        :param store: a store
+        :param unicode city: a city
+        :param unicode state: a state
+        :param unicode country: a country
+        :returns: the |citylocation| or ``None``
+        """
+        city_location = cls.get(store, city, state, country)
+        if city_location:
+            return city_location
 
         return cls(city=city,
                    state=state,
