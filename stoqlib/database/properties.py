@@ -196,6 +196,15 @@ class XmlCol(SimpleProperty):
     variable_class = XmlVariable
 
 
+class DecimalEncoder(json.JSONEncoder):
+
+    def default(self, obj):
+        if isinstance(obj, decimal.Decimal):
+            return str(obj)
+
+        return json.JSONEncoder.default(self, obj)
+
+
 class JsonVariable(EncodedValueVariable):
 
     def _loads(self, value):
@@ -209,7 +218,7 @@ class JsonVariable(EncodedValueVariable):
             return None
 
         if isinstance(value, dict):
-            return json.dumps(value)
+            return json.dumps(value, cls=DecimalEncoder)
 
         return value
 
@@ -236,13 +245,13 @@ class PointVariable(EncodedValueVariable):
     def _loads(self, value):
         if isinstance(value, str):
             value = value.strip('()')
-            return tuple(float(coord) for coord in value.split(','))
+            return tuple(decimal.Decimal(coord) for coord in value.split(','))
 
         return value
 
     def _dumps(self, value):
         if isinstance(value, tuple):
-            return str(value)
+            return '(%s)' % ', '.join(str(i) for i in value)
 
         return value
 
