@@ -222,6 +222,25 @@ def raw_document(document):
     return ''.join(c for c in document if c.isdigit())
 
 
+def format_cpf(document):
+    return '%s.%s.%s-%s' % (document[0:3], document[3:6], document[6:9],
+                            document[9:11])
+
+
+def format_cnpj(document):
+    return '%s.%s.%s/%s-%s' % (document[0:2], document[2:5], document[5:8],
+                               document[8:12], document[12:])
+
+
+def format_document(document):
+    if len(document) == 11:
+        return format_cpf(document)
+    elif len(document) == 14:
+        return format_cnpj(document)
+    else:
+        raise ValueError('Document format not valid')
+
+
 class TextTable(object):
     """Formats a textual table with columns
 
