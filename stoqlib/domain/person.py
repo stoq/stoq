@@ -400,6 +400,25 @@ class Person(Domain):
                   LeftJoin(Company, Person.id == Company.person_id)]
         return store.using(*tables).find(Person, query).one()
 
+    @classmethod
+    def get_or_create_by_document(cls, store, document, **kwargs):
+        """
+        If there is not a person with the document, create one and return it
+
+        :param store: a database store
+        :param document: a document can be a formatted cpf or cnpj
+        """
+        person = cls.get_by_document(store, document)
+        if person is not None:
+            return person
+
+        person = cls(store=store, **kwargs)
+        if len(raw_document(document)) == 11:
+            Individual(store=store, cpf=document, person=person)
+        elif len(raw_document(document)) == 14:
+            Company(store=store, cnpj=document, person=person)
+        return person
+
     #
     # Acessors
     #
