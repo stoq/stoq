@@ -234,6 +234,7 @@ model: Person<2>
 
 model: Address<3>
   complement: ''
+  coordinates: None
   district: 'district'
   is_main_address: True
   person_id: Person<2>

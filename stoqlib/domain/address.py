@@ -39,7 +39,7 @@ from zope.interface import implementer
 
 from stoqlib.database.expr import StoqNormalizeString
 from stoqlib.database.orm import ORMObject
-from stoqlib.database.properties import UnicodeCol, IntCol, BoolCol, IdCol
+from stoqlib.database.properties import UnicodeCol, IntCol, BoolCol, IdCol, PointCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.l10n.l10n import get_l10n_field
@@ -245,6 +245,9 @@ class Address(Domain):
 
     #: the |citylocation| this address is in
     city_location = Reference(city_location_id, 'CityLocation.id')
+
+    #: the coordinates (latitude, longitude) of this address
+    coordinates = PointCol()
 
     #
     # IDescribable
