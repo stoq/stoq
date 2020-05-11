@@ -1059,6 +1059,10 @@ class ExampleCreator(object):
                                    tax_value=18,
                                    store=self.store)
 
+    def create_station_type(self, name):
+        from stoqlib.domain.station import StationType
+        return StationType(name=name)
+
     def create_station(self, branch=None, name=None, is_active=False):
         if branch is None:
             branch = self.current_branch

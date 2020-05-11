@@ -139,3 +139,22 @@ class BranchStation(Domain):
         """Returns the branch name
         """
         return self.branch.get_description()
+
+    @property
+    def type_name(self):
+        """Returns station type name
+        """
+        if self.type:
+            return self.type.name
+
+    @property
+    def is_api(self):
+        """Returns if station's stoqserver is being used as an API
+        """
+        return self.type_name == 'api'
+
+    @property
+    def is_auto_service(self):
+        """Returns if station type is auto service
+        """
+        return self.type_name == 'auto'

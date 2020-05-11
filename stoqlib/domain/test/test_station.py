@@ -76,3 +76,29 @@ class TestBranchStation(DomainTest):
         branch.person.company.fancy_name = u'foo'
         station = self.create_station(branch=branch)
         self.assertEqual(station.get_branch_name(), u'foo')
+
+    def test_is_api(self):
+        station = self.create_station()
+        station_type_api = self.create_station_type('api')
+        station_type_auto = self.create_station_type('auto')
+
+        self.assertFalse(station.is_api)
+
+        station.type = station_type_api
+        self.assertTrue(station.is_api)
+
+        station.type = station_type_auto
+        self.assertFalse(station.is_api)
+
+    def test_is_auto_service(self):
+        station = self.create_station()
+        station_type_api = self.create_station_type('api')
+        station_type_auto = self.create_station_type('auto')
+
+        self.assertFalse(station.is_auto_service)
+
+        station.type = station_type_api
+        self.assertFalse(station.is_auto_service)
+
+        station.type = station_type_auto
+        self.assertTrue(station.is_auto_service)
