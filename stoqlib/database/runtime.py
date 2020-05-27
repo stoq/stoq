@@ -788,6 +788,8 @@ def set_current_branch_station(store, station_name, confirm=True):
     if station.branch:
         provide_utility(ICurrentBranch, station.branch, replace=True)
 
+    return station
+
 
 @public(since="1.5.0")
 def get_current_user(store):
