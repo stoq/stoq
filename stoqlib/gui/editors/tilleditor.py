@@ -92,6 +92,7 @@ class _TillClosingModel(object):
     def __init__(self, till, value):
         self.till = till
         self.value = value
+        self.observations = ''
 
     def get_opening_date(self):
         # self.till is None only in the special case that the user added the ECF
