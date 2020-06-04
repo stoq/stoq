@@ -168,6 +168,9 @@ class ReceivingOrderItem(Domain):
         a the receving order is confirmed.
         """
         store = self.store
+        if not self.sellable.product.manage_stock:
+            return
+
         if self.quantity > self.get_remaining_quantity():
             raise ValueError(
                 u"Quantity received (%d) is greater than "
