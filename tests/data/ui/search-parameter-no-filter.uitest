@@ -103,6 +103,7 @@ GtkBox(vbox1, orientation=vertical):
     row: 'Sales', 'Set authorization number mandatory', 'No'
     row: 'Smart lists', 'Load items intelligently from the database', 'Yes'
     row: 'Stock', 'Default C.F.O.P. for Stock Decreases', '5.949 Outra saída de mercadoria ou prestação de serviço não especificado'
+    row: 'Stock', 'Enable negative stock', 'No'
     row: 'Till', 'Till tolerance for closing', '0'
     row: 'Till', 'Include cash fund on till closing', 'No'
     row: 'Till', 'Use blind closing for till', 'No'

@@ -1405,7 +1405,8 @@ class Storable(Domain):
             raise ValueError(u"branch cannot be None")
 
         stock_item = self.get_stock_item(branch, batch)
-        if stock_item is None or quantity > stock_item.quantity:
+        if ((stock_item is None or quantity > stock_item.quantity)
+                and not sysparam.get_bool('ALLOW_NEGATIVE_STOCK')):
             raise StockError(
                 _('Quantity to decrease is greater than the available stock.'))
 

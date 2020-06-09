@@ -1083,6 +1083,13 @@ _details = [
         _('When this is true, only products that have an override for the selected branch will be '
           'available for sale in a given branch'),
         bool, initial=False),
+
+    ParameterDetails(
+        'ALLOW_NEGATIVE_STOCK',
+        _('Stock'),
+        _('Enable negative stock'),
+        _('When this is true, allow to decrease stock even if it becames negative.'),
+        bool, initial=False),
 ]
 
 
