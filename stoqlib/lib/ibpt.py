@@ -43,7 +43,7 @@ TaxInfo = namedtuple('TaxInfo', 'nacionalfederal, importadosfederal, estadual,'
                      'fonte, chave')
 
 
-def load_taxes_csv():
+def load_taxes_csv(state):
     """ Load the fields of IBPT table.
 
     - Fields:
@@ -62,33 +62,33 @@ def load_taxes_csv():
         - Fonte: Fonte
     """
 
-    # Avoid load taxes more than once.
-    if taxes_data:
+    if state in taxes_data:
         return
-
-    store = new_store()
-    branch = get_current_branch(store)
-    address = branch.person.get_main_address()
-    state = address.city_location.state
 
     filename = environ.get_resource_filename('stoq', 'csv', 'ibpt_tables',
                                              'TabelaIBPTax%s.csv' % state)
     csv_file = (csv.reader(open(filename, "r", encoding='latin1'), delimiter=';'))
 
+    state_taxes_data = {}
     for (ncm, ex, tipo, descricao, nacionalfederal, importadosfederal,
          estadual, municipal, vigenciainicio, vigenciafim, chave,
          versao, fonte) in csv_file:
         # Ignore service codes (NBS - Nomenclatura Brasileira de Serviços)
         if tipo == '1':
             continue
-        tax_dict = taxes_data.setdefault(ncm, {})
+        tax_dict = state_taxes_data.setdefault(ncm, {})
         tax_dict[ex] = TaxInfo(nacionalfederal, importadosfederal, estadual,
                                fonte, chave)
+    taxes_data[state] = state_taxes_data
 
 
-class IBPTGenerator(object):
-    def __init__(self, items, include_services=False):
-        load_taxes_csv()
+class IBPTGenerator:
+    def __init__(self, items, include_services=False, branch=None):
+        store = new_store()
+        branch = branch or get_current_branch(store)
+        address = branch.person.get_main_address()
+        self.state = address.city_location.state
+        load_taxes_csv(self.state)
         self.items = items
         self.include_services = include_services
 
@@ -114,7 +114,7 @@ class IBPTGenerator(object):
             code = '%04d' % int(service.service_list_item_code.replace('.', ''))
             ex_tipi = ''
 
-        options = taxes_data.get(code, {})
+        options = taxes_data[self.state].get(code, {})
         n_options = len(options)
         if n_options == 0:
             tax_values = TaxInfo('0', '0', '0', '', '0')
@@ -181,6 +181,6 @@ class IBPTGenerator(object):
                                 source=source, key=key)
 
 
-def generate_ibpt_message(items, include_services=False):
-    generator = IBPTGenerator(items, include_services)
+def generate_ibpt_message(items, include_services=False, branch=None):
+    generator = IBPTGenerator(items, include_services, branch)
     return generator.get_ibpt_message()
