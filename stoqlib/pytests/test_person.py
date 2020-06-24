@@ -1,6 +1,45 @@
 from stoqlib.domain.person import Company, Individual, Person
 
 
+def test_get_accountants_with_one_accountant(example_creator):
+    branch = example_creator.create_branch()
+    accountant_role = example_creator.create_employee_role('Contador')
+    accountant = example_creator.create_employee(role=accountant_role)
+    accountant.branch = branch
+
+    assert set(branch.get_accountants()) == {accountant}
+
+
+def test_get_accountants_with_two_accountants(example_creator):
+    branch = example_creator.create_branch()
+    accountant_role = example_creator.create_employee_role('Contador')
+
+    accountant1 = example_creator.create_employee(role=accountant_role)
+    accountant2 = example_creator.create_employee(role=accountant_role)
+
+    accountant1.branch = branch
+    accountant2.branch = branch
+
+    assert set(branch.get_accountants()) == {accountant1, accountant2}
+
+
+def test_get_accountants_without_accountant(example_creator):
+    branch = example_creator.create_branch()
+    employee = example_creator.create_employee()
+    employee.branch = branch
+
+    assert not branch.get_accountants()
+
+
+def test_get_accountants_without_branch_specified(example_creator):
+    branch = example_creator.create_branch()
+    accountant_role = example_creator.create_employee_role('Contador')
+    accountant = example_creator.create_employee(role=accountant_role)
+    accountant.branch = None
+
+    assert not branch.get_accountants()
+
+
 def test_get_or_create_by_document_with_existing_person(store, example_creator):
     person = example_creator.create_person()
     individual = example_creator.create_individual(person=person)

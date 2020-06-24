@@ -1763,6 +1763,13 @@ class Branch(Domain):
     # Public API
     #
 
+    def get_accountants(self):
+        tables = [Employee, Join(EmployeeRole, EmployeeRole.id == Employee.role_id)]
+        query = And(Employee.branch_id == self.id, EmployeeRole.name == 'Contador')
+
+        employees = list(self.store.using(*tables).find(Employee, query))
+        return employees
+
     def merge_with(self, other, copy_empty_values=True):
         # We cannot merge branches right now, since identifiers should be unique
         # by branch and changing identifiers would not be nice.
