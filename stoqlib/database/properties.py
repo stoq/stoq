@@ -29,7 +29,7 @@ import json
 
 from kiwi.currency import currency
 
-from storm.properties import RawStr, Int, Bool, DateTime, Decimal, Unicode, Time
+from storm.properties import Bool, DateTime, Decimal, Int, List, RawStr, Time, Unicode
 from storm.properties import SimpleProperty
 from storm.store import AutoReload
 from storm.variables import (DateVariable, DateTimeVariable,
@@ -258,6 +258,10 @@ class PointVariable(EncodedValueVariable):
 
 class PointCol(SimpleProperty):
     variable_class = PointVariable
+
+
+class ListCol(List):
+    pass
 
 
 # Columns, we're keeping the Col suffix to avoid clashes between
