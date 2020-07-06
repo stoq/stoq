@@ -1,29 +1,28 @@
 # -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
-##
-## Copyright (C) 2013 Async Open Source <http://www.async.com.br>
-## All rights reserved
-##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU Lesser General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-##
-## You should have received a copy of the GNU Lesser General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., or visit: http://www.gnu.org/.
-##
-## Author(s): Stoq Team <stoq-devel@async.com.br>
-##
+#
+# Copyright (C) 2013 Async Open Source <http://www.async.com.br>
+# All rights reserved
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., or visit: http://www.gnu.org/.
+#
+# Author(s): Stoq Team <stoq-devel@async.com.br>
+#
 """ This module test all class in stoq/domain/purchase.py """
 
-__tests__ = 'stoqlib/domain/purchase.py'
 
 from decimal import Decimal, InvalidOperation
 
@@ -39,7 +38,11 @@ from stoqlib.lib.dateutils import localnow, localdate
 from stoqlib.lib.formatters import format_quantity
 
 
+__tests__ = 'stoqlib/domain/purchase.py'
+
+
 class TestPurchaseItem(DomainTest):
+
     def test_constructor_without_sellable(self):
         order = self.create_purchase_order()
 
@@ -242,21 +245,22 @@ class TestPurchaseOrder(DomainTest):
         order = self.create_purchase_order()
         supplier = self.create_supplier()
         order.supplier = supplier
-        #We have an order and a supplier for it
+        # We have an order and a supplier for it
         item = self.create_purchase_order_item(order=order, cost=100)
-        #The order now has an item with cost 100
+        # The order now has an item with cost 100
         item.sellable.cost = 200
-        #The sellable cost is different from the item cost
+        # The sellable cost is different from the item cost
 
         product_supplier = self.create_product_supplier_info(supplier=supplier,
                                                              product=item.sellable.product)
+        product_supplier.branch = order.branch
         product_supplier.base_cost = 150
-        #The base cost for the product of this order's supplier
-        #is also different from the item cost
+        # The base cost for the product of this order's supplier
+        # is also different from the item cost
 
         order.update_products_cost()
-        #Now the sellable cost and the supplier's product cost
-        #should be qual to the order's item cost
+        # Now the sellable cost and the supplier's product cost
+        # should be qual to the order's item cost
 
         self.assertEqual(item.sellable.cost, 100)
         self.assertEqual(product_supplier.base_cost, 100)
@@ -595,6 +599,7 @@ class TestPurchaseOrder(DomainTest):
 
 
 class TestQuotation(DomainTest):
+
     def test_get_description(self):
         quotation = self.create_quotation()
         quotation.purchase.supplier.person.name = u'Test'
@@ -604,6 +609,7 @@ class TestQuotation(DomainTest):
 
 
 class TestQuoteGroup(DomainTest):
+
     def test_cancel(self):
         order = self.create_purchase_order()
         quote = QuoteGroup(store=self.store, branch=order.branch, station=order.station)
@@ -662,6 +668,7 @@ class TestQuoteGroup(DomainTest):
 
 
 class TestPurchaseOrderView(DomainTest):
+
     def test_post_search_callback(self):
         branch = self.create_branch(name=u'Test')
         order = self.create_purchase_order(branch=branch)

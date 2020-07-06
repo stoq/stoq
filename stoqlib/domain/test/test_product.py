@@ -153,11 +153,14 @@ class TestProduct(DomainTest):
 
     def test_get_product_supplier_info(self):
         supplier = self.create_supplier()
-        self.assertFalse(self.product.get_product_supplier_info(supplier))
+        branch = self.create_branch()
+        self.assertFalse(self.product.get_product_supplier_info(supplier,
+                                                                branch))
         product_supplier = ProductSupplierInfo(store=self.store,
                                                supplier=supplier,
-                                               product=self.product)
-        self.assertEqual(self.product.get_product_supplier_info(supplier),
+                                               product=self.product,
+                                               branch=branch)
+        self.assertEqual(self.product.get_product_supplier_info(supplier, branch),
                          product_supplier)
 
     def test_get_components(self):
