@@ -1,3 +1,9 @@
+stoq (5.1~rc1) xenial; urgency=medium
+
+  * Release 5.1~rc1
+
+ -- Vinícius M Camillo <vmcamillo@vmcamillo-HP-260-G1-DM>  Fri, 10 Jul 2020 17:36:04 -0300
+
 stoq (5.0~rc3) xenial; urgency=medium
 
   * Release 5.0~rc3
