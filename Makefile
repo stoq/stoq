@@ -67,7 +67,7 @@ coverage: clean check-source-all
 	pytest -vvv stoqlib/pytests --cov=stoqlib/ --cov-append && \
 	coverage xml --omit "**/test/*.py,stoqlib/pytests/*" && \
 	utils/validatecoverage.py coverage.xml && \
-	git show|tools/diff-coverage coverage.xml
+	git show|utils/diff-coverage coverage.xml
 
 jenkins: check-source-all
 	unset STOQLIB_TEST_QUICK && \
