@@ -17,6 +17,10 @@ variables:
   STOQLIB_TEST_DBNAME: "test"
   STOQLIB_TEST_USERNAME: "test"
   STOQLIB_TEST_PASSWORD: ""
+  # Setuptools 50 broke the tests. This is a quick workaround. See more at
+  # https://stackoverflow.com/questions/63663362/django-python3-on-install-i-get-parent-module-setuptools-not-loaded
+  SETUPTOOLS_USE_DISTUTILS: stdlib
+
 
 stages:
   - test
