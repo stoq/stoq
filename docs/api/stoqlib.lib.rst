@@ -73,6 +73,14 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`component` Module
+------------------------
+
+.. automodule:: stoqlib.lib.component
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`configparser` Module
 --------------------------
 
