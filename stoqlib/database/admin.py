@@ -33,9 +33,9 @@ import logging
 import os
 import tempfile
 
-from kiwi.component import provide_utility
+import pkg_resources
+
 from kiwi.currency import currency
-from kiwi.environ import environ
 
 from stoqdrivers.enum import TaxType, UnitType
 from stoqdrivers.constants import describe_constant
@@ -52,6 +52,7 @@ from stoqlib.domain.profile import ProfileSettings, UserProfile
 from stoqlib.domain.sellable import SellableTaxConstant, SellableUnit
 from stoqlib.exceptions import StoqlibError
 from stoqlib.importers.invoiceimporter import InvoiceImporter
+from stoqlib.lib.component import provide_utility
 from stoqlib.lib.message import error
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.template import render_template_string
@@ -141,7 +142,7 @@ def populate_initial_data(store):
         return
 
     log.info('Populating initial data')
-    initial_data = environ.get_resource_filename('stoq', 'sql', 'initial.sql')
+    initial_data = pkg_resources.resource_filename('stoq', 'sql/initial.sql')
     if db_settings.execute_sql(initial_data) != 0:
         error(u'Failed to populate initial data')
 
@@ -299,7 +300,7 @@ def _create_procedural_languages():
 def _get_latest_schema():
     schema_pattern = "schema-??.sql"
     schemas = []
-    resource = environ.get_resource_filename('stoq', 'sql')
+    resource = pkg_resources.resource_filename('stoq', 'sql')
     for filename in glob.glob(os.path.join(resource, schema_pattern)):
         schemas.append(filename)
     assert schemas
@@ -314,7 +315,7 @@ def create_database_functions():
     """
     # We cant remove the file, otherwise it will fail on windows.
     with tempfile.NamedTemporaryFile(prefix='stoqfunctions-', delete=False) as tmp_f:
-        functions = environ.get_resource_string('stoq', 'sql', 'functions.sql')
+        functions = pkg_resources.resource_string('stoq', 'sql/functions.sql')
         tmp_f.write(render_template_string(functions))
         tmp_f.flush()
         if db_settings.execute_sql(tmp_f.name) != 0:
@@ -364,7 +365,7 @@ def create_default_profile_settings():
 def _install_invoice_templates():
     log.info("Installing invoice templates")
     importer = InvoiceImporter()
-    importer.feed_file(environ.get_resource_filename('stoq', 'csv', 'invoices.csv'))
+    importer.feed_file(pkg_resources.resource_filename('stoq', 'csv/invoices.csv'))
     importer.process()
 
 

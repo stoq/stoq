@@ -26,7 +26,7 @@
 import decimal
 
 from gi.repository import Gtk, Pango
-from kiwi.python import strip_accents
+from stoqlib.lib.stringutils import strip_accents
 from kiwi.ui.objectlist import Column
 from zope.interface import providedBy
 

@@ -29,7 +29,7 @@ import mock
 from nose.exc import SkipTest
 from storm.expr import And, Eq, Ne
 
-from kiwi.component import provide_utility
+from stoqlib.lib.component import provide_utility
 from kiwi.currency import currency
 from stoqlib.api import api
 from stoqlib.database.interfaces import ICurrentUser

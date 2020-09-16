@@ -25,11 +25,11 @@
 
 import sys
 
-from kiwi.component import provide_utility
 from stoqlib.database.admin import get_admin_user
 from stoqlib.database.interfaces import ICurrentUser
 from stoqlib.database.runtime import get_default_store
 from stoqlib.importers.importer import get_by_type
+from stoqlib.lib.component import provide_utility
 from stoqlib.lib.configparser import StoqConfig
 
 from stoq.lib.options import get_option_parser

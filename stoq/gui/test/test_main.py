@@ -25,7 +25,7 @@
 import unittest
 
 import mock
-from kiwi.component import remove_utility, get_utility, provide_utility
+from stoqlib.lib.component import remove_utility, get_utility, provide_utility
 from kiwi.ui.widgets.label import ProxyLabel
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.settings import get_settings

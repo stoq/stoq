@@ -35,7 +35,7 @@ import sys
 import tempfile
 import traceback
 
-from kiwi.environ import environ
+import pkg_resources
 
 from stoqlib.database.runtime import get_default_store, new_store
 from stoqlib.database.settings import db_settings, check_extensions
@@ -187,16 +187,15 @@ class SchemaMigration(object):
 
     def _get_patches(self):
         patches = []
-        for filename in environ.get_resource_names(self.patch_resource_domain,
-                                                   self.patch_resource):
+        for filename in pkg_resources.resource_listdir(self.patch_resource_domain, self.patch_resource):
             for pattern in self.patch_patterns:
                 if not fnmatch.fnmatch(filename, pattern):
                     continue
                 if not self._patchname_is_valid(filename):
                     print("Invalid patch name: %s" % filename)
                     continue
-                filename = environ.get_resource_filename(
-                    self.patch_resource_domain, self.patch_resource, filename)
+                filename = pkg_resources.resource_filename(
+                    self.patch_resource_domain, '{}/{}'.format(self.patch_resource, filename))
                 patches.append(Patch(filename, self))
 
         return sorted(patches)

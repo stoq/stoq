@@ -24,7 +24,7 @@
 """ User profile editor implementation.  """
 
 from gi.repository import Gtk
-from kiwi.component import get_utility
+from stoqlib.lib.component import get_utility
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.checkbutton import ProxyCheckButton
 

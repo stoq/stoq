@@ -336,7 +336,7 @@ class Shell(object):
     def _idle_logout(self):
         # Before performing logout, verify that the currently opened window
         # is modal.
-        from kiwi.component import get_utility
+        from stoqlib.lib.component import get_utility
         from stoqlib.gui.base.dialogs import has_modal_window
         from stoqlib.lib.interfaces import ICookieFile
         # If not a modal window, logout.

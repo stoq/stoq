@@ -26,7 +26,7 @@
 
 # pylint: enable=E1101
 
-from kiwi.component import get_utility
+from stoqlib.lib.component import get_utility
 from storm.expr import And, Eq
 from storm.references import Reference, ReferenceSet
 

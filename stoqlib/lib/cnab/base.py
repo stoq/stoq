@@ -22,7 +22,7 @@
 
 from decimal import Decimal
 
-from kiwi.python import strip_accents
+from stoqlib.lib.stringutils import strip_accents
 
 from stoqlib.lib.dateutils import localnow
 

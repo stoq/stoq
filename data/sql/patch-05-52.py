@@ -1,6 +1,6 @@
 import csv
 
-from kiwi.environ import environ
+import pkg_resources
 
 from stoqlib.database.properties import UnicodeCol
 from stoqlib.migration.domainv4 import Domain
@@ -44,8 +44,7 @@ def get_ncm_cest_map():
     # This means the NCM is related to the CEST that is listed above it, so
     # we'll need to always know what was the last seen CEST
     _ncm_cest_map = {}
-    filename = environ.get_resource_filename('stoq', 'csv', 'cest',
-                                             'ncm_cest_map.csv')
+    filename = pkg_resources.resource_filename('stoq', 'csv/cest/ncm_cest_map.csv')
     with open(filename) as csvfile:
         last_filled_row = None
         for row in csv.reader(csvfile):

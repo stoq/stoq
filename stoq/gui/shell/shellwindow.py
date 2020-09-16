@@ -30,7 +30,7 @@ import os
 import operator
 
 from gi.repository import Gtk, GLib, Gdk, Gio
-from kiwi.component import get_utility
+from stoqlib.lib.component import get_utility
 from kiwi.environ import environ
 from kiwi.ui.delegates import Delegate
 from stoqlib.api import api

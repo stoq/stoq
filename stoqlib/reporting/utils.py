@@ -28,7 +28,7 @@ import base64
 import logging
 import platform
 
-from kiwi.environ import environ
+import pkg_resources
 
 from stoqlib.database.runtime import get_current_branch, get_default_store
 from stoqlib.exceptions import DatabaseInconsistency
@@ -47,7 +47,7 @@ def get_logo_data(store):
     if logo_domain and logo_domain.image:
         data = logo_domain.image
     else:
-        data = environ.get_resource_string('stoq', 'pixmaps', 'stoq_logo_bgwhite.png')
+        data = pkg_resources.resource_string('stoq', 'pixmaps/stoq_logo_bgwhite.png')
 
     return 'data:image/png;base64,' + base64.b64encode(data).decode()
 

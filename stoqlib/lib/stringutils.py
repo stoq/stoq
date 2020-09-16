@@ -24,6 +24,8 @@
 
 """Utilities for manipulating strings"""
 
+import unicodedata
+
 
 def _increment(value):
     # Make sure the new value is at least the same size the old one was.
@@ -36,15 +38,15 @@ def next_value_for(value):
 
     For instance 4 -> 5, 99 -> 100, A83 -> A84 etc::
 
-      >>> next_value_for(u'999')
+      >>> next_value_for('999')
       '1000'
-      >>> next_value_for(u'1')
+      >>> next_value_for('1')
       '2'
-      >>> next_value_for(u'abc')
+      >>> next_value_for('abc')
       'abd'
-      >>> next_value_for(u'XYZ')
+      >>> next_value_for('XYZ')
       'XZ0'
-      >>> next_value_for(u'AB00099')
+      >>> next_value_for('AB00099')
       'AB00100'
 
     :param unicode value:
@@ -52,13 +54,13 @@ def next_value_for(value):
     :rtype: unicode
     """
     if not value:
-        return u'1'
+        return '1'
     if value.isdigit():
         return _increment(value)
 
     last = value[-1]
     if last.isdigit():
-        l = u''
+        l = ''
         # Get the greatest part in the string's end that is a number.
         # For instance: 'ABC123' will get '123'
         for c in reversed(value):
@@ -78,9 +80,9 @@ def next_value_for(value):
             # 'AC' and thus the next value for the sequence is 'AC0'. It should
             # be fine for '99Z' because it would generate '100'
             if len(value) <= value_len:
-                value += u'0'
+                value += '0'
     else:
-        value += u'0'
+        value += '0'
 
     return value
 
@@ -95,11 +97,11 @@ def max_value_for(values):
     of the longest string on the sequence. Because of that, the return value
     will be in that format. For instance::
 
-        >>> max_value_for([u'1', u'2'])
+        >>> max_value_for(['1', '2'])
         '2'
-        >>> max_value_for([u'99', u'100'])
+        >>> max_value_for(['99', '100'])
         '100'
-        >>> max_value_for([u'99', u'0001'])
+        >>> max_value_for(['99', '0001'])
         '0099'
 
     :param values: a sequence of strings
@@ -107,3 +109,15 @@ def max_value_for(values):
     """
     max_length = max(len(v) for v in values)
     return max(v.zfill(max_length) for v in values)
+
+
+def strip_accents(string):
+    """Remove the accentuantion of a string
+    Taken from http://www.python.org.br/wiki/RemovedorDeAcentos
+
+    :param string: a string, either in str or unicode format
+    :returns: the string without accentuantion
+    """
+
+    string = unicodedata.normalize('NFKD', string)
+    return string.encode('ASCII', 'ignore').decode()

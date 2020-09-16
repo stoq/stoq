@@ -237,7 +237,7 @@ class StoqConfig:
 
 
 def register_config(config):
-    from kiwi.component import provide_utility
+    from stoqlib.lib.component import provide_utility
     global _config
     _config = config
 

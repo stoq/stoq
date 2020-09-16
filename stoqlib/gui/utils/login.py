@@ -26,7 +26,7 @@
 import logging
 
 from gi.repository import Gtk, Gdk
-from kiwi.component import get_utility, provide_utility
+from stoqlib.lib.component import get_utility, provide_utility
 from kiwi.ui.delegates import GladeDelegate
 
 from stoqlib.api import api

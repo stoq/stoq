@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from kiwi.component import get_utility, provide_utility
+from stoqlib.lib.component import get_utility, provide_utility
 from zope.interface import implementer
 
 from stoqlib.lib.decorators import public

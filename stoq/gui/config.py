@@ -49,7 +49,7 @@ import subprocess
 import sys
 
 from gi.repository import Gtk, GLib, Gdk
-from kiwi.component import provide_utility, get_utility
+from stoqlib.lib.component import provide_utility, get_utility
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.delegates import GladeSlaveDelegate

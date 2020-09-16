@@ -34,7 +34,7 @@ from decimal import Decimal
 from dateutil.relativedelta import relativedelta
 from gi.repository import Gtk
 from kiwi import ValueUnset
-from kiwi.component import get_utility
+from stoqlib.lib.component import get_utility
 from kiwi.currency import format_price, currency
 from kiwi.datatypes import ValidationError, converter
 from kiwi.python import Settable

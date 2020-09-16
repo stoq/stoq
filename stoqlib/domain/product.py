@@ -933,7 +933,7 @@ class Product(Domain):
 
         # Since other classes can propagate this event (like Sellable),
         # emit the event only once for each store.
-        if not store in emitted_store_list:
+        if store not in emitted_store_list:
             ProductEditEvent.emit(self)
             emitted_store_list.add(store)
 

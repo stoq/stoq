@@ -33,7 +33,7 @@ library  # pylint: disable=W0104
 import logging
 import os
 
-from kiwi.component import provide_utility, utilities
+from stoqlib.lib.component import provide_utility, utilities
 from storm.expr import And
 from storm.tracer import install_tracer, remove_tracer_type
 

@@ -23,7 +23,7 @@
 ##
 """ Templating """
 
-from kiwi.environ import environ
+import pkg_resources
 from mako.lookup import TemplateLookup
 from mako.template import Template
 
@@ -34,7 +34,7 @@ def render_template(filename, **ns):
     @kwargs: keyword arguments to send to the template
     @return: the rendered template
     """
-    directories = environ.get_resource_filename('stoq', 'template')
+    directories = pkg_resources.resource_filename('stoq', 'template')
     lookup = TemplateLookup(directories=directories,
                             output_encoding='utf8', input_encoding='utf8',
                             default_filters=['h'])

@@ -24,7 +24,7 @@
 
 import platform
 
-from kiwi.component import get_utility
+from stoqlib.lib.component import get_utility
 
 from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.translation import stoqlib_gettext

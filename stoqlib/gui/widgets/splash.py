@@ -28,7 +28,7 @@ import time
 
 from gi.repository import Gtk, Gdk, GLib, Pango, PangoCairo
 
-from kiwi.component import get_utility
+from stoqlib.lib.component import get_utility
 from kiwi.environ import environ
 from kiwi.ui.pixbufutils import pixbuf_from_string
 from stoqlib.lib.interfaces import IAppInfo

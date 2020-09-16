@@ -167,7 +167,7 @@ class ShellBootstrap(object):
                 module="^(stoq|kiwi)")
 
     def _set_app_info(self):
-        from kiwi.component import provide_utility
+        from stoqlib.lib.component import provide_utility
         from stoqlib.lib.appinfo import AppInfo
         from stoqlib.lib.kiwilibrary import library
         from stoqlib.lib.interfaces import IAppInfo
@@ -343,7 +343,7 @@ class ShellBootstrap(object):
         log.debug('providing graphical notification dialogs')
         from stoqlib.gui.base.dialogs import DialogSystemNotifier
         from stoqlib.lib.interfaces import ISystemNotifier
-        from kiwi.component import provide_utility
+        from stoqlib.lib.component import provide_utility
         provide_utility(ISystemNotifier, DialogSystemNotifier(), replace=True)
 
         from gi.repository import Gtk
@@ -363,7 +363,7 @@ class ShellBootstrap(object):
 
     def _setup_cookiefile(self):
         log.debug('setting up cookie file')
-        from kiwi.component import provide_utility
+        from stoqlib.lib.component import provide_utility
         from stoqlib.lib.cookie import Base64CookieFile
         from stoqlib.lib.interfaces import ICookieFile
         from stoqlib.lib.osutils import get_application_dir
@@ -378,7 +378,7 @@ class ShellBootstrap(object):
         register()
 
     def _setup_domain_slave_mapper(self):
-        from kiwi.component import provide_utility
+        from stoqlib.lib.component import provide_utility
         from stoqlib.gui.interfaces import IDomainSlaveMapper
         from stoqlib.gui.slaves.domainslavemapper import DefaultDomainSlaveMapper
         provide_utility(IDomainSlaveMapper, DefaultDomainSlaveMapper(),

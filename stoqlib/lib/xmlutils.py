@@ -35,7 +35,7 @@ from xml.sax.saxutils import escape
 from dateutil.tz import tzlocal
 from lxml import etree
 from OpenSSL import crypto
-from kiwi.python import strip_accents
+from stoqlib.lib.stringutils import strip_accents
 
 from stoqlib.domain.certificate import Certificate
 from stoqlib.lib.translation import stoqlib_gettext as _

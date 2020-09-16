@@ -313,7 +313,7 @@ class StoqCommandHandler:
         # version. We cannot do that workaround there because we don't want to
         # import stoq inside stoqlib. Either way, this code to download the
         # egg will move to the plugin dialog soon.
-        from kiwi.component import provide_utility
+        from stoqlib.lib.component import provide_utility
         from stoqlib.lib.appinfo import AppInfo
         from stoqlib.lib.interfaces import IAppInfo
         import stoq

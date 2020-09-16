@@ -28,7 +28,7 @@ import os
 import sys
 
 from zope.interface import implementer
-from kiwi.component import get_utility, provide_utility
+from stoqlib.lib.component import get_utility, provide_utility
 
 from stoqlib.lib.interfaces import ISystemNotifier
 from stoqlib.lib.uptime import get_uptime

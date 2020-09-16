@@ -33,7 +33,7 @@ Such as storing the kind of credit card or associate a check with a bank account
 
 import collections
 
-from kiwi.component import get_utility, provide_utility
+from stoqlib.lib.component import get_utility, provide_utility
 from stoqdrivers.enum import PaymentMethodType
 from zope.interface import implementer
 

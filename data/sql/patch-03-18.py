@@ -1,4 +1,4 @@
-from kiwi.python import strip_accents
+from stoqlib.lib.stringutils import strip_accents
 from stoqlib.migration.domainv1 import Domain
 from stoqlib.database.properties import UnicodeCol
 

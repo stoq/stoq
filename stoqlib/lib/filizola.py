@@ -24,7 +24,7 @@
 import platform
 import os
 
-from kiwi.python import strip_accents
+from stoqlib.lib.stringutils import strip_accents
 
 from stoqlib.domain.sellable import Sellable
 

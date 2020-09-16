@@ -27,7 +27,7 @@ import collections
 import datetime
 import logging
 
-from kiwi.environ import environ
+import pkg_resources
 from kiwi.currency import currency
 from kiwi.datatypes import converter
 
@@ -143,8 +143,8 @@ class BankInfo(object):
 
         self.logo_image_path = ""
         if self.logo:
-            self.logo_image_path = environ.get_resource_filename(
-                'stoq', 'pixmaps', self.logo)
+            self.logo_image_path = pkg_resources.resource_filename(
+                'stoq', '{}/{}'.format(pixmaps, self.logo))
 
     def get_properties(self, payment):
         """Get values necesary for bill emission.

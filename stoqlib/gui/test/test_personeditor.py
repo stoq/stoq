@@ -26,7 +26,7 @@ import decimal
 
 import mock
 
-from kiwi.component import provide_utility
+from stoqlib.lib.component import provide_utility
 
 from stoqlib.api import api
 from stoqlib.database.interfaces import ICurrentUser

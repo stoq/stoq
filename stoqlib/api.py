@@ -31,7 +31,7 @@ having to import their symbols.
 import operator
 import sys
 
-from kiwi.component import get_utility
+from stoqlib.lib.component import get_utility
 
 from stoqlib.database.runtime import (new_store,
                                       get_default_store)

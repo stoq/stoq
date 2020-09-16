@@ -27,7 +27,7 @@ import csv
 import os
 import tempfile
 
-from kiwi.python import strip_accents
+from stoqlib.lib.stringutils import strip_accents
 from kiwi.accessor import kgetattr
 
 from stoqlib.domain.sellable import Sellable

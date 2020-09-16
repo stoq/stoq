@@ -29,7 +29,7 @@ import logging
 import os
 import sys
 
-from kiwi.component import provide_utility
+from stoqlib.lib.component import provide_utility
 from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.debug import enable as enable_debugging
 from stoqlib.database.runtime import (get_default_store,

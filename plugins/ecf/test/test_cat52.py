@@ -24,7 +24,7 @@ import datetime
 from decimal import Decimal
 import os
 
-from kiwi.component import get_utility
+from stoqlib.lib.component import get_utility
 
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.test.domaintest import DomainTest

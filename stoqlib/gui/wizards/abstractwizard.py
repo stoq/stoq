@@ -33,7 +33,7 @@ import collections
 from decimal import Decimal
 
 from gi.repository import Gtk
-from kiwi.component import get_utility
+from stoqlib.lib.component import get_utility
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import SummaryLabel

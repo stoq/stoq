@@ -24,7 +24,7 @@
 """ Crash report dialog """
 
 from gi.repository import Gtk
-from kiwi.component import get_utility
+from stoqlib.lib.component import get_utility
 from kiwi.ui.dialogs import HIGAlertDialog
 
 from stoqlib.api import api

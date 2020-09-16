@@ -30,7 +30,7 @@ import warnings
 import weakref
 import os
 
-from kiwi.component import get_utility, provide_utility
+from stoqlib.lib.component import get_utility, provide_utility
 from storm import Undef
 from storm.expr import SQL, Avg
 from storm.info import get_obj_info

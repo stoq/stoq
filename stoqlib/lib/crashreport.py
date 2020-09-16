@@ -36,7 +36,7 @@ try:
     has_gi = True
 except ImportError:
     has_gi = False
-from kiwi.component import get_utility
+from stoqlib.lib.component import get_utility
 from kiwi.utils import gsignal
 
 try:

@@ -28,7 +28,7 @@ import logging
 import os
 import platform
 
-from kiwi.component import get_utility
+from stoqlib.lib.component import get_utility
 
 from stoqlib.database.runtime import get_default_store
 from stoqlib.lib import asyncrequests

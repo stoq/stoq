@@ -26,11 +26,11 @@ import http.server
 import os
 import urllib.parse
 
-from kiwi.environ import environ
+import pkg_resources
 
 from stoqlib.net.calendarevents import CalendarEvents
 
-_static = environ.get_resource_filename('stoq', 'html')
+_static = pkg_resources.resource_filename('stoq', 'html')
 resources = {
     '/calendar-events': CalendarEvents(),
 }

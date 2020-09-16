@@ -29,7 +29,7 @@ According to Law 12,741 of 12/08/2012 - Taxes in Coupon.
 """
 from collections import namedtuple
 
-from kiwi.environ import environ
+import pkg_resources
 
 import csv
 from decimal import Decimal
@@ -65,8 +65,7 @@ def load_taxes_csv(state):
     if state in taxes_data:
         return
 
-    filename = environ.get_resource_filename('stoq', 'csv', 'ibpt_tables',
-                                             'TabelaIBPTax%s.csv' % state)
+    filename = pkg_resources.resource_filename('stoq', 'csv/ibpt_tables/TabelaTBPTax%s.csv' % state)
     csv_file = (csv.reader(open(filename, "r", encoding='latin1'), delimiter=';'))
 
     state_taxes_data = {}

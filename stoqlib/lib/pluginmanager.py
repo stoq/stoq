@@ -34,7 +34,7 @@ import tempfile
 from zipfile import ZipFile, BadZipfile, is_zipfile
 
 from kiwi.desktopparser import DesktopParser
-from kiwi.component import get_utility, provide_utility
+from stoqlib.lib.component import get_utility, provide_utility
 from zope.interface import implementer
 
 from stoqlib.database.exceptions import SQLError
