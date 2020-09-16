@@ -26,7 +26,9 @@ import logging
 import sys
 import weakref
 
-from kiwi.python import ClassInittableObject, namedAny
+from kiwi.python import ClassInittableObject
+
+from stoqlib.lib.importutils import import_from_string
 
 log = logging.getLogger(__name__)
 # Returned when object is dead
@@ -191,6 +193,6 @@ class Event(ClassInittableObject):
     @classmethod
     def _resolve_lazy_callbacks(cls):
         for klass_string, func in cls._lazy_callbacks[:]:
-            klass = namedAny(klass_string)
+            klass = import_from_string(klass_string)
             cls._callbacks_list.append(lambda *a, **kw: func(klass, *a, **kw))
             cls._lazy_callbacks.remove((klass_string, func))

@@ -143,8 +143,8 @@ class BankInfo(object):
 
         self.logo_image_path = ""
         if self.logo:
-            self.logo_image_path = pkg_resources.resource_filename(
-                'stoq', '{}/{}'.format(pixmaps, self.logo))
+            self.logo_image_path = pkg_resources.resource_filename('stoq',
+                                                                   'pixmaps/{}'.format(self.logo))
 
     def get_properties(self, payment):
         """Get values necesary for bill emission.

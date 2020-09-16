@@ -27,7 +27,7 @@ import datetime
 import logging
 import time
 
-from kiwi.python import namedAny
+from stoqlib.lib.importutils import import_from_string
 
 from stoqlib.database.runtime import new_store
 
@@ -161,9 +161,9 @@ def get_by_type(importer_type):
     :type: :class:`Importer` subclass
     """
 
-    if not importer_type in _available_importers:
+    if importer_type not in _available_importers:
         raise ValueError(u"Invalid importer %s, must be one of %s" % (
             importer_type, u', '.join(sorted(_available_importers))))
     name = _available_importers[importer_type]
-    cls = namedAny('stoqlib.importers.%s' % (name, ))
+    cls = import_from_string('stoqlib.importers.%s' % (name, ))
     return cls()

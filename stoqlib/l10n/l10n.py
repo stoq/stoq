@@ -23,7 +23,7 @@
 ##
 ##
 
-from kiwi.python import namedAny
+from stoqlib.lib.importutils import import_from_string
 
 from stoqlib.l10n.generic import generic
 
@@ -49,7 +49,7 @@ def get_l10n_module(country=None):
 
     path = 'stoqlib.l10n.%s.%s' % (short, short)
     try:
-        module = namedAny(path)
+        module = import_from_string(path)
     except (ImportError, AttributeError):
         return generic
 

@@ -25,7 +25,7 @@
 
 import locale
 
-from kiwi.python import namedAny
+from stoqlib.lib.importutils import import_from_string
 
 from stoqlib.lib.cardinals import generic
 
@@ -39,13 +39,13 @@ def get_cardinal_module():
     # First try the full LANG, like 'pt_BR', 'en_US', etc
     path = 'stoqlib.lib.cardinals.%s' % (lang, )
     try:
-        return namedAny(path)
+        return import_from_string(path)
     except (ImportError, AttributeError):
         # Then base lang, 'pt', 'en', etc
         base_lang = lang[:2]
         path = 'stoqlib.lib.cardinals.%s' % (base_lang, )
         try:
-            return namedAny(path)
+            return import_from_string(path)
         except (ImportError, AttributeError):
             return generic
 

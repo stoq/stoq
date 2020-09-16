@@ -187,7 +187,8 @@ class SchemaMigration(object):
 
     def _get_patches(self):
         patches = []
-        for filename in pkg_resources.resource_listdir(self.patch_resource_domain, self.patch_resource):
+        for filename in pkg_resources.resource_listdir(self.patch_resource_domain,
+                                                       self.patch_resource):
             for pattern in self.patch_patterns:
                 if not fnmatch.fnmatch(filename, pattern):
                     continue

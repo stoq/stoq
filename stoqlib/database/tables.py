@@ -34,8 +34,7 @@ import collections
 import logging
 import os
 
-from kiwi.python import namedAny
-
+from stoqlib.lib.importutils import import_from_string
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -182,7 +181,7 @@ def _get_tables_cache():
 
     for path, table_names in _tables:
         for table_name in table_names:
-            klass = namedAny('stoqlib.domain.%s.%s' % (path, table_name))
+            klass = import_from_string('stoqlib.domain.%s.%s' % (path, table_name))
             _tables_cache[table_name] = klass
 
     p_manager = get_plugin_manager()
@@ -192,7 +191,7 @@ def _get_tables_cache():
             for table_name in table_names:
                 desc = p_manager.get_description_by_name(p_name)
                 basepath = os.path.basename(desc.dirname)
-                klass = namedAny('.'.join([basepath, path, table_name]))
+                klass = import_from_string('.'.join([basepath, path, table_name]))
                 _tables_cache[table_name] = klass
 
     return _tables_cache
