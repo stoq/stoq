@@ -217,6 +217,14 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`importutils` Module
+------------------------
+
+.. automodule:: stoqlib.lib.interfaces
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`interfaces` Module
 ------------------------
 

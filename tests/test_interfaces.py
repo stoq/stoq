@@ -37,5 +37,4 @@ class TestInterfaces(unittest.TestCase):
                 try:
                     verifyClass(iface, klass)
                 except Invalid as err:
-                    self.fail("%s(%s): %s" % (klass.__name__,
-                                              iface.__name__, err))
+                    self.fail("%s(%s): %s" % (klass.__name__, iface.__name__, err))

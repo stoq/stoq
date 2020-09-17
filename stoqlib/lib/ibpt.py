@@ -65,7 +65,7 @@ def load_taxes_csv(state):
     if state in taxes_data:
         return
 
-    filename = pkg_resources.resource_filename('stoq', 'csv/ibpt_tables/TabelaTBPTax%s.csv' % state)
+    filename = pkg_resources.resource_filename('stoq', 'csv/ibpt_tables/TabelaIBPTax%s.csv' % state)
     csv_file = (csv.reader(open(filename, "r", encoding='latin1'), delimiter=';'))
 
     state_taxes_data = {}
