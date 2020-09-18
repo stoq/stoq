@@ -26,7 +26,7 @@
 
 import os
 
-from kiwi.component import get_utility
+from stoqlib.lib.component import get_utility
 from storm.expr import And
 
 from stoqlib.database.expr import Date
