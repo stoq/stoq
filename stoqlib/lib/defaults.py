@@ -31,7 +31,7 @@ import re
 from decimal import Decimal
 
 from dateutil import relativedelta
-from kiwi.python import cmp
+from stoqlib.lib.objutils import cmp
 
 from stoqlib.lib.translation import stoqlib_gettext
 

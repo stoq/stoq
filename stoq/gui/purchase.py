@@ -28,7 +28,6 @@ from decimal import Decimal
 
 from gi.repository import Gtk, Pango
 from kiwi.currency import currency
-from kiwi.python import all
 
 from stoqlib.api import api
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView

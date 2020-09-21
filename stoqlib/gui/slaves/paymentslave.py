@@ -37,7 +37,7 @@ from kiwi import ValueUnset
 from stoqlib.lib.component import get_utility
 from kiwi.currency import format_price, currency
 from kiwi.datatypes import ValidationError, converter
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from kiwi.utils import gsignal
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.objectlist import Column

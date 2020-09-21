@@ -29,7 +29,7 @@ import collections
 from decimal import Decimal
 
 from kiwi.currency import currency
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from storm.expr import (Alias, And, Cast, Coalesce, Count, Eq, Join, LeftJoin,
                         Select, Sum, Min)
 from storm.info import ClassAlias

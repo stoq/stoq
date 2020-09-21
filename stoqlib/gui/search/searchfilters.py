@@ -29,7 +29,7 @@ from decimal import Decimal
 
 from gi.repository import Gtk, GObject
 from kiwi import ValueUnset
-from kiwi.python import enum
+from stoqlib.lib.objutils import enum
 from kiwi.ui.widgets.checkbutton import ProxyCheckButton
 from kiwi.ui.widgets.combo import ProxyComboBox
 from kiwi.ui.widgets.entry import ProxyDateEntry

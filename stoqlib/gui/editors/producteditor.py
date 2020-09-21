@@ -29,7 +29,7 @@ from decimal import Decimal
 from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from kiwi.ui.forms import MultiLineField, NumericField, PriceField, TextField
 
 from stoqdrivers.enum import TaxType

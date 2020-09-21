@@ -26,7 +26,7 @@ import logging
 import sys
 import weakref
 
-from kiwi.python import ClassInittableObject
+from stoqlib.lib.objutils import ClassInittableObject
 
 from stoqlib.lib.importutils import import_from_string
 

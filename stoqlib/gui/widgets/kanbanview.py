@@ -29,7 +29,7 @@
 import pickle
 
 from gi.repository import Gtk, Gdk, GObject
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from kiwi.utils import gsignal
 from kiwi.ui.objectlist import Column, ObjectList
 

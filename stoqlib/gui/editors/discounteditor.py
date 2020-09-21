@@ -27,7 +27,7 @@ import decimal
 
 from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from kiwi.ui.forms import TextField
 
 from stoqlib.api import api

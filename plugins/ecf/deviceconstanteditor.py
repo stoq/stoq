@@ -28,7 +28,7 @@ import re
 
 from gi.repository import Gtk
 from kiwi.decorators import signal_block
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from kiwi.ui.objectlist import Column, ObjectList
 
 from stoqdrivers.enum import TaxType

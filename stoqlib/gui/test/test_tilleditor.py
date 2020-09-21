@@ -25,7 +25,7 @@
 import mock
 
 from kiwi.currency import currency
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 
 from stoqlib.exceptions import TillError
 from stoqlib.domain.events import (TillOpenEvent, TillAddCashEvent,

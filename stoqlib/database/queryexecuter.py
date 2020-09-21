@@ -29,7 +29,7 @@ import threading
 import queue
 
 from gi.repository import GLib, GObject
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from kiwi.utils import gsignal
 from storm import Undef
 from storm.database import Connection, convert_param_marks

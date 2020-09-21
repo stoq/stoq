@@ -31,7 +31,7 @@ import os
 import zipfile
 
 import mock
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from zope.interface import implementer
 
 from stoqlib.database.runtime import new_store

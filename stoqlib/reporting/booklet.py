@@ -26,7 +26,7 @@
 import datetime
 import operator
 
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 
 from stoqlib.database.runtime import get_current_branch, get_default_store
 from stoqlib.lib.formatters import format_phone_number

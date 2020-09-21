@@ -27,7 +27,7 @@ from datetime import timedelta
 
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
 
 from stoqdrivers.exceptions import DriverError

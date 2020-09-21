@@ -281,6 +281,14 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`objutils` Module
+---------------------
+
+.. automodule:: stoqlib.lib.osutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`osutils` Module
 ---------------------
 

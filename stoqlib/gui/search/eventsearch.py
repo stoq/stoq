@@ -26,7 +26,7 @@
 
 import datetime
 from kiwi.ui.objectlist import Column
-from kiwi.python import cmp
+from stoqlib.lib.objutils import cmp
 from storm.expr import Desc
 
 from stoqlib.gui.search.searchdialog import SearchDialog

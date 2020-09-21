@@ -36,7 +36,7 @@ import collections
 from decimal import Decimal
 
 from kiwi.currency import currency
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
@@ -355,7 +355,7 @@ class Loan(IdentifiableDomain):
 
     @classmethod
     def get_status_name(cls, status):
-        if not status in cls.statuses:
+        if status not in cls.statuses:
             raise DatabaseInconsistency(_("Invalid status %d") % status)
         return cls.statuses[status]
 

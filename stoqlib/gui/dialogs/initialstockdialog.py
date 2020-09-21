@@ -29,7 +29,7 @@ from gi.repository import Gtk
 from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.enums import ListType
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
 

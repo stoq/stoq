@@ -22,7 +22,7 @@
 from gi.repository import Gtk
 
 from kiwi.currency import currency
-from kiwi.python import Settable, cmp
+from stoqlib.lib.objutils import Settable, cmp
 from kiwi.ui.objectlist import ColoredColumn, Column, ObjectTree
 
 from stoqlib.domain.views import Account, AccountView

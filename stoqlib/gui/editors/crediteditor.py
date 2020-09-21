@@ -28,7 +28,7 @@ import collections
 
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from kiwi.ui.forms import PriceField, TextField
 
 from stoqlib.api import api

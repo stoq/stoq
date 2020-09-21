@@ -25,7 +25,7 @@
 import contextlib
 
 from gi.repository import Gtk
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 import mock
 
 from stoq.gui.shell.statusbar import (StatusButton, StatusPopover, ResourceStatusBox)

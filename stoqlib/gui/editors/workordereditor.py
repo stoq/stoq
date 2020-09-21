@@ -29,7 +29,7 @@ import datetime
 from gi.repository import Gtk, GdkPixbuf
 
 from storm.expr import In
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.forms import ChoiceField, TextField
 from kiwi.ui.objectlist import Column

@@ -35,7 +35,7 @@ from kiwi.ui.objectlist import ObjectList, ObjectTree
 from kiwi.ui.views import SlaveView
 from kiwi.ui.widgets.combo import ProxyComboBox, ProxyComboEntry
 from kiwi.ui.widgets.entry import ProxyDateEntry
-from kiwi.python import cmp
+from stoqlib.lib.objutils import cmp
 from storm.info import get_cls_info
 
 from stoqlib.domain.test.domaintest import DomainTest

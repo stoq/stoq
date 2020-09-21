@@ -29,7 +29,7 @@ import threading
 
 import dateutil.parser
 from gi.repository import GObject, GLib
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from kiwi.utils import gsignal
 
 from stoqlib.api import api, safe_str

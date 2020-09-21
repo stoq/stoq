@@ -26,7 +26,7 @@
 
 import datetime
 
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 
 from stoqlib.api import api
 from stoqlib.lib.translation import stoqlib_gettext

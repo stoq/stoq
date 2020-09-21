@@ -121,7 +121,7 @@ Now we can create this viewable:
 
 import inspect
 
-from kiwi.python import ClassInittableObject
+from stoqlib.lib.objutils import ClassInittableObject
 from storm.expr import Expr, JoinExpr
 from storm.properties import PropertyColumn
 

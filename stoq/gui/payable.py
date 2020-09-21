@@ -31,7 +31,6 @@ import datetime
 
 from gi.repository import Pango, Gtk, GdkPixbuf
 from kiwi.currency import currency
-from kiwi.python import all
 from kiwi.ui.objectlist import Column
 from kiwi.ui.gadgets import render_pixbuf
 

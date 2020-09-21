@@ -23,7 +23,7 @@
 ##
 
 from gi.repository import Gtk
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 import mock
 
 from stoqlib.gui.editors.backupsettings import BackupSettingsEditor

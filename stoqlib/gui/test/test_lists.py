@@ -25,7 +25,7 @@
 """Tests for :mod:`stoqlib.gui.base.lists`"""
 
 from gi.repository import Gtk
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from kiwi.ui.objectlist import Column
 import mock
 from zope.interface import implementer

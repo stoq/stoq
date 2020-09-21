@@ -31,7 +31,7 @@ from gi.repository import Gdk, Gtk, Pango, GLib
 from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import converter, ValidationError
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from kiwi.ui.objectlist import Column
 from kiwi.ui.widgets.contextmenu import ContextMenu, ContextMenuItem
 from storm.expr import And, Lower

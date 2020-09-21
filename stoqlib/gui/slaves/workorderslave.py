@@ -32,7 +32,7 @@ from gi.repository import Gtk, Pango
 from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from kiwi.ui.forms import PriceField, NumericField
 from kiwi.ui.objectlist import Column
 from storm.expr import And, Eq, Or

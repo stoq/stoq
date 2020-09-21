@@ -27,7 +27,7 @@ import datetime
 
 from gi.repository import Gtk
 from kiwi.currency import currency
-from kiwi.python import enum
+from stoqlib.lib.objutils import enum
 
 from stoqlib.api import api
 from stoqlib.domain.fiscal import CfopData, IcmsIpiView, IssView

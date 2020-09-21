@@ -26,7 +26,7 @@
 
 from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 
 from stoqlib.domain.stockdecrease import StockDecreaseItem
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave

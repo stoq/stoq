@@ -35,7 +35,6 @@ import traceback
 
 from gi.repository import Gtk, GdkPixbuf, Pango
 from kiwi.currency import currency
-from kiwi.python import all
 from kiwi.ui.dialogs import save
 from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import Column

@@ -23,7 +23,7 @@
 ##
 
 import mock
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.gui.editors.deviceseditor import DeviceSettingsEditor

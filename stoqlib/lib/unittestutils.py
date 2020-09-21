@@ -24,7 +24,7 @@
 
 import os
 
-from kiwi.python import ClassInittableObject
+from stoqlib.lib.objutils import ClassInittableObject
 
 import stoqlib
 from stoqlib.lib.osutils import list_recursively

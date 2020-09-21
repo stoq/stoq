@@ -51,7 +51,7 @@ import sys
 from gi.repository import Gtk, GLib, Gdk
 from stoqlib.lib.component import provide_utility, get_utility
 from kiwi.datatypes import ValidationError
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from kiwi.ui.delegates import GladeSlaveDelegate
 
 from stoqlib.api import api

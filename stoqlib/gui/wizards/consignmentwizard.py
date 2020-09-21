@@ -27,7 +27,7 @@
 from decimal import Decimal
 
 from kiwi.currency import currency
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api

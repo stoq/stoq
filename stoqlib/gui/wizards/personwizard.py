@@ -24,7 +24,7 @@
 ##
 """ Person role wizards definition """
 
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api

@@ -25,7 +25,7 @@
 from decimal import Decimal
 import mock
 
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.domain.sale import Sale

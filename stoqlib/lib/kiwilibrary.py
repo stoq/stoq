@@ -24,9 +24,6 @@
 ##
 
 import os
-# FIXME: site cannot be imported in Windows since python3 migration
-# Do we still need it? We don't have an external directory anymore...
-#import site
 
 from kiwi.environ import Library
 
@@ -41,5 +38,4 @@ else:
     # We want $prefix/lib/stoqlib, eg ../../stoqlib
     externals = os.path.join(library.prefix, 'lib', 'stoqlib')
 
-#site.addsitedir(externals)
 library.enable_translation(domain="stoq", enable_global=True)

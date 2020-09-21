@@ -30,7 +30,7 @@ import time
 from gi.repository import Gtk
 from serial import SerialException
 
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from stoqdrivers.exceptions import CouponOpenError, DriverError
 
 from stoqlib.api import api

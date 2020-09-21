@@ -32,7 +32,7 @@ import collections
 from decimal import Decimal
 
 from kiwi.currency import currency
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from stoqdrivers.enum import TaxType
 from storm.expr import (And, Avg, Count, LeftJoin, Join, Max, In,
                         Or, Sum, Alias, Select, Cast, Eq, Coalesce, Ne)

@@ -24,7 +24,7 @@
 ##
 
 from kiwi.datatypes import ValidationError
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.message import info

@@ -28,7 +28,7 @@ import operator
 
 from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
-from kiwi.python import Settable
+from stoqlib.lib.objutils import Settable
 from kiwi.ui.objectlist import ObjectList, Column
 
 from stoqlib.database.runtime import get_current_station

@@ -29,7 +29,7 @@ import functools
 from decimal import Decimal
 import os
 
-from kiwi.python import cmp
+from stoqlib.lib.objutils import cmp
 import mock
 import unittest
 
