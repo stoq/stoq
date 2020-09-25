@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
-##
-## Copyright (C) 2010 Async Open Source <http://www.async.com.br>
-## All rights reserved
-##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU Lesser General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-##
-## You should have received a copy of the GNU Lesser General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., or visit: http://www.gnu.org/.
-##
-## Author(s): Stoq Team <stoq-devel@async.com.br>
-##
+#
+# Copyright (C) 2020 Async Open Source <http://www.async.com.br>
+# All rights reserved
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., or visit: http://www.gnu.org/.
+#
+# Author(s): Stoq Team <stoq-devel@async.com.br>
+#
 
 # pylint: enable=E1101
 
@@ -459,7 +459,7 @@ class InvoiceItemIpi(BaseIPI):
 
     def update_values(self, invoice_item):
         # IPI is only calculated if cst is one of the following
-        if not self.cst in [0, 49, 50, 99]:
+        if self.cst not in [0, 49, 50, 99]:
             return
 
         if self.calculo == self.CALC_ALIQUOTA:
@@ -517,7 +517,7 @@ class InvoiceItemPis(BasePIS):
         cost = self._get_item_cost(invoice_item)
         if self.p_pis == self.PIS_NAO_CUMULATIVO_PADRAO:
             # Regime de incidencia não cumulativa
-            self.v_bc = quantize(invoice_item.quantity * (invoice_item.price - cost))
+            self.v_bc = quantize(invoice_item.quantity * max(invoice_item.price - cost, 0))
         else:
             # Regime de incidencia cumulativa
             self.v_bc = quantize(invoice_item.quantity * invoice_item.price)
