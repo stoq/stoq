@@ -32,9 +32,9 @@ from stoqlib.lib.objutils import Settable
 from kiwi.ui.objectlist import Column, ObjectList
 
 from stoqdrivers.enum import TaxType
-from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
-from stoqlib.gui.base.lists import AdditionListSlave
-from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoq.lib.gui.base.dialogs import BasicDialog, run_dialog
+from stoq.lib.gui.base.lists import AdditionListSlave
+from stoq.lib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.defaults import UNKNOWN_CHARACTER
 from stoqlib.lib.translation import stoqlib_gettext
 

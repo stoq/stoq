@@ -42,21 +42,21 @@ from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryStat
 from stoqlib.domain.account import Account, AccountTransaction, AccountTransactionView
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.accounteditor import AccountEditor
-from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
-from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
-from stoqlib.gui.dialogs.importerdialog import ImporterDialog
-from stoqlib.gui.dialogs.financialreportdialog import FinancialReportDialog
-from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
-from stoqlib.gui.search.searchoptions import Any, DateSearchOption
-from stoqlib.gui.search.searchfilters import DateSearchFilter
-from stoqlib.gui.search.searchresultview import SearchResultListView
-from stoqlib.gui.search.searchslave import SearchSlave
-from stoqlib.gui.utils.keybindings import get_accels
-from stoqlib.gui.utils.printing import print_report
-from stoqlib.gui.widgets.accounttree import AccountTree
-from stoqlib.gui.widgets.notebookbutton import NotebookCloseButton
+from stoq.lib.gui.base.dialogs import run_dialog
+from stoq.lib.gui.editors.accounteditor import AccountEditor
+from stoq.lib.gui.editors.accounttransactioneditor import AccountTransactionEditor
+from stoq.lib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
+from stoq.lib.gui.dialogs.importerdialog import ImporterDialog
+from stoq.lib.gui.dialogs.financialreportdialog import FinancialReportDialog
+from stoq.lib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
+from stoq.lib.gui.search.searchoptions import Any, DateSearchOption
+from stoq.lib.gui.search.searchfilters import DateSearchFilter
+from stoq.lib.gui.search.searchresultview import SearchResultListView
+from stoq.lib.gui.search.searchslave import SearchSlave
+from stoq.lib.gui.utils.keybindings import get_accels
+from stoq.lib.gui.utils.printing import print_report
+from stoq.lib.gui.widgets.accounttree import AccountTree
+from stoq.lib.gui.widgets.notebookbutton import NotebookCloseButton
 from stoqlib.lib.dateutils import get_month_names
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -825,7 +825,7 @@ class FinancialApp(ShellApp):
 
     # Edit
     def on_ConfigurePaymentMethods__activate(self, action):
-        from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
+        from stoq.lib.gui.dialogs.paymentmethod import PaymentMethodsDialog
         store = api.new_store()
         model = self.run_dialog(PaymentMethodsDialog, store)
         store.confirm(model)

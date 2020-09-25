@@ -30,13 +30,13 @@ from stoqlib.domain.payment.method import CheckData, PaymentMethod
 from stoqlib.domain.payment.card import CreditCardData
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.lib.dateutils import datetime, localdatetime, localtoday
-from stoqlib.gui.dialogs.paymentchangedialog import PaymentDueDateChangeDialog
-from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
-from stoqlib.gui.editors.paymenteditor import InPaymentEditor
-from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
-from stoqlib.gui.search.paymentsearch import CardPaymentSearch
-from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
-from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
+from stoq.lib.gui.dialogs.paymentchangedialog import PaymentDueDateChangeDialog
+from stoq.lib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
+from stoq.lib.gui.editors.paymenteditor import InPaymentEditor
+from stoq.lib.gui.editors.paymentseditor import SalePaymentsEditor
+from stoq.lib.gui.search.paymentsearch import CardPaymentSearch
+from stoq.lib.gui.search.paymentsearch import InPaymentBillCheckSearch
+from stoq.lib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
 from stoqlib.reporting.boleto import BillReport
 from stoqlib.reporting.paymentsreceipt import InPaymentReceipt
 
@@ -85,7 +85,7 @@ class TestReceivable(BaseGUITest):
         app = self.create_app(ReceivableApp, u'receivable')
 
         # Note that set_message is always called twice (once from
-        # stoqlib.gui.search.search{editor,dialog,slave} and later by
+        # stoq.lib.gui.search.search{editor,dialog,slave} and later by
         # stoq.gui.application), so we cannot use assert_called_once_with
         set_message = mock.MagicMock()
         app.search.set_message = set_message

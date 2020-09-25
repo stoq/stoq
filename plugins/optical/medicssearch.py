@@ -32,12 +32,12 @@ from stoqlib.domain.sale import Sale
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.domain.sale import SaleView
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.search.personsearch import BasePersonSearch
-from stoqlib.gui.search.searchcolumns import SearchColumn, IdentifierColumn
-from stoqlib.gui.search.searchfilters import DateSearchFilter
-from stoqlib.gui.search.searchdialog import SearchDialog
+from stoq.lib.gui.base.dialogs import run_dialog
+from stoq.lib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoq.lib.gui.search.personsearch import BasePersonSearch
+from stoq.lib.gui.search.searchcolumns import SearchColumn, IdentifierColumn
+from stoq.lib.gui.search.searchfilters import DateSearchFilter
+from stoq.lib.gui.search.searchdialog import SearchDialog
 from stoqlib.lib.translation import stoqlib_gettext
 
 from optical.opticaldomain import OpticalMedicView, MedicSoldItemsView

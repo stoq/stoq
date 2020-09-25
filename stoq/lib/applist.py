@@ -75,7 +75,7 @@ def get_application_names():
 
 
 def get_application_icon(appname):
-    from stoqlib.gui.stockicons import (
+    from stoq.lib.gui.stockicons import (
         STOQ_ADMIN_APP, STOQ_CALC, STOQ_CALENDAR_APP,
         STOQ_INVENTORY_APP, STOQ_PAYABLE_APP, STOQ_POS_APP, STOQ_PRODUCTION_APP,
         STOQ_PURCHASE_APP, STOQ_RECEIVABLE_APP, STOQ_SALES_APP, STOQ_SERVICES,

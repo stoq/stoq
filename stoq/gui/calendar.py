@@ -38,12 +38,11 @@ from gi.repository import Gtk, GLib
 
 from stoqlib.api import api
 from stoqlib.domain.person import Client
-from stoqlib.gui.editors.callseditor import CallsEditor
-from stoqlib.gui.editors.paymenteditor import (InPaymentEditor,
-                                               OutPaymentEditor)
-from stoqlib.gui.editors.workordereditor import WorkOrderEditor
-from stoqlib.gui.utils.keybindings import get_accels
-from stoqlib.gui.widgets.webview import WebView
+from stoq.lib.gui.editors.callseditor import CallsEditor
+from stoq.lib.gui.editors.paymenteditor import InPaymentEditor, OutPaymentEditor
+from stoq.lib.gui.editors.workordereditor import WorkOrderEditor
+from stoq.lib.gui.utils.keybindings import get_accels
+from stoq.lib.gui.widgets.webview import WebView
 from stoqlib.lib import dateutils
 from stoqlib.lib.daemonutils import start_daemon
 from stoqlib.lib.defaults import get_weekday_start

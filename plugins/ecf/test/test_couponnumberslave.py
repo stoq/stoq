@@ -23,8 +23,8 @@
 ##
 
 from stoqlib.domain.sale import SaleView
-from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.test.uitestutils import GUITest
+from stoq.lib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoq.lib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate
 
 from ecf.couponnumberslave import CouponNumberSlave

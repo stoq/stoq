@@ -9,7 +9,7 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
               GtkViewport(viewport2):
                 GtkBox(box2, orientation=horizontal):
                   GtkBox(app_box, orientation=vertical, fill=True):
-                    stoqlib+gui+widgets+workorder+WorkOrderList():
+                    stoq+lib+gui+widgets+workorder+WorkOrderList():
                       Section():
                         GtkLabel(padding=6): 'My Work Orders'
                         GtkSeparator(expand=True, fill=True, padding=6):

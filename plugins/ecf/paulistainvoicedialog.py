@@ -26,7 +26,7 @@
 from kiwi.datatypes import ValidationError
 from stoqlib.lib.objutils import Settable
 
-from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoq.lib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import validate_cpf, validate_cnpj

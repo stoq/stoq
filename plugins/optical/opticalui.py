@@ -40,23 +40,22 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.workorder import WorkOrder
-from stoqlib.gui.actions.base import BaseActions, action
-from stoqlib.gui.actions.workorder import WorkOrderActions
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.personeditor import ClientEditor
-from stoqlib.gui.editors.producteditor import ProductEditor
-from stoqlib.gui.editors.workordereditor import WorkOrderEditor
-from stoqlib.gui.events import (StartApplicationEvent,
-                                EditorCreateEvent, RunDialogEvent,
-                                PrintReportEvent, SearchDialogSetupSearchEvent,
-                                ApplicationSetupSearchEvent)
-from stoqlib.gui.search.searchcolumns import SearchColumn
-from stoqlib.gui.search.searchextension import SearchExtension
-from stoqlib.gui.utils.keybindings import add_bindings, get_accels
-from stoqlib.gui.utils.printing import print_report
-from stoqlib.gui.widgets.workorder import WorkOrderRow
-from stoqlib.gui.wizards.personwizard import PersonRoleWizard
-from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
+from stoq.lib.gui.actions.base import BaseActions, action
+from stoq.lib.gui.actions.workorder import WorkOrderActions
+from stoq.lib.gui.base.dialogs import run_dialog
+from stoq.lib.gui.editors.personeditor import ClientEditor
+from stoq.lib.gui.editors.producteditor import ProductEditor
+from stoq.lib.gui.editors.workordereditor import WorkOrderEditor
+from stoq.lib.gui.events import (StartApplicationEvent, EditorCreateEvent, RunDialogEvent,
+                                 PrintReportEvent, SearchDialogSetupSearchEvent,
+                                 ApplicationSetupSearchEvent)
+from stoq.lib.gui.search.searchcolumns import SearchColumn
+from stoq.lib.gui.search.searchextension import SearchExtension
+from stoq.lib.gui.utils.keybindings import add_bindings, get_accels
+from stoq.lib.gui.utils.printing import print_report
+from stoq.lib.gui.widgets.workorder import WorkOrderRow
+from stoq.lib.gui.wizards.personwizard import PersonRoleWizard
+from stoq.lib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import ParameterDetails, sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -65,8 +64,7 @@ from stoqlib.reporting.sale import SaleOrderReport
 from stoq.gui.services import ServicesApp
 
 from .medicssearch import OpticalMedicSearch, MedicSalesSearch
-from .opticaleditor import (MedicEditor, OpticalWorkOrderEditor,
-                            OpticalSupplierEditor)
+from .opticaleditor import MedicEditor, OpticalWorkOrderEditor, OpticalSupplierEditor
 from .opticalhistory import OpticalPatientDetails
 from .opticalreport import OpticalWorkOrderReceiptReport
 from .opticalslave import ProductOpticSlave, WorkOrderOpticalSlave

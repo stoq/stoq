@@ -80,7 +80,7 @@ class ShellDatabaseConnection(object):
             self._config.load_default()
 
     def _maybe_run_first_time_wizard(self):
-        from stoqlib.gui.base.dialogs import run_dialog
+        from stoq.lib.gui.base.dialogs import run_dialog
         from stoq.gui.config import FirstTimeConfigWizard
 
         config_file = self._config.get_filename()
@@ -189,8 +189,8 @@ class ShellDatabaseConnection(object):
         compaines = default_store.find(Company)
         if (compaines.count() == 0 or
                 not sysparam.has_object('MAIN_COMPANY')):
-            from stoqlib.gui.base.dialogs import run_dialog
-            from stoqlib.gui.dialogs.branchdialog import BranchDialog
+            from stoq.lib.gui.base.dialogs import run_dialog
+            from stoq.lib.gui.dialogs.branchdialog import BranchDialog
             if self._ran_wizard:
                 info(_("You need to register a company before start using Stoq"))
             else:
@@ -211,7 +211,7 @@ class ShellDatabaseConnection(object):
         set_current_branch_station(default_store, station_name=None)
 
     def _run_update_wizard(self):
-        from stoqlib.gui.base.dialogs import run_dialog
+        from stoq.lib.gui.base.dialogs import run_dialog
         from stoq.gui.update import SchemaUpdateWizard
         retval = run_dialog(SchemaUpdateWizard, None)
         if not retval:
@@ -252,7 +252,7 @@ class Shell(object):
 
     def _do_login(self):
         from stoqlib.exceptions import LoginError
-        from stoqlib.gui.utils.login import LoginHelper
+        from stoq.lib.gui.utils.login import LoginHelper
         from stoqlib.lib.message import error
 
         self._login = LoginHelper(username=self._options.login_username)
@@ -301,7 +301,7 @@ class Shell(object):
         api.user_settings.set('show-welcome-dialog', False)
 
         from stoq.gui.welcomedialog import WelcomeDialog
-        from stoqlib.gui.base.dialogs import run_dialog
+        from stoq.lib.gui.base.dialogs import run_dialog
         run_dialog(WelcomeDialog)
 
     def _maybe_correct_demo_position(self, shell_window):
@@ -327,7 +327,7 @@ class Shell(object):
 
     def _verify_idle_logout(self, seconds):
         # This is called once every 10 seconds
-        from stoqlib.gui.utils.idle import get_idle_seconds
+        from stoq.lib.gui.utils.idle import get_idle_seconds
         if get_idle_seconds() > seconds:
             return self._idle_logout()
         # Call us again in 10 seconds
@@ -337,7 +337,7 @@ class Shell(object):
         # Before performing logout, verify that the currently opened window
         # is modal.
         from stoqlib.lib.component import get_utility
-        from stoqlib.gui.base.dialogs import has_modal_window
+        from stoq.lib.gui.base.dialogs import has_modal_window
         from stoqlib.lib.interfaces import ICookieFile
         # If not a modal window, logout.
         # Otherwise returns True to continue checking the automatic logout.
@@ -406,7 +406,7 @@ class Shell(object):
         if 'STOQ_DISABLE_CRASHREPORT' in os.environ:
             return
         from gi.repository import Gtk
-        from stoqlib.gui.dialogs.crashreportdialog import show_dialog
+        from stoq.lib.gui.dialogs.crashreportdialog import show_dialog
         show_dialog(Gtk.main_quit)
         Gtk.main()
 

@@ -38,17 +38,15 @@ from storm.expr import And, Lower
 
 from stoqdrivers.enum import UnitType
 from stoqlib.api import api
-from stoqlib.gui.base.dialogs import (get_current_toplevel, add_current_toplevel,
-                                      _pop_current_toplevel)
+from stoq.lib.gui.base.dialogs import (get_current_toplevel, add_current_toplevel,
+                                       _pop_current_toplevel)
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import Transporter, Client
 from stoqlib.domain.product import StorableBatch
 from stoqlib.domain.sale import Delivery, Sale, SaleToken
 from stoqlib.domain.sellable import Sellable
 from stoqlib.exceptions import StoqlibError, TaxError
-from stoqlib.gui.events import (POSConfirmSaleEvent,
-                                CloseLoanWizardFinishEvent,
-                                POSAddSellableEvent)
+from stoq.lib.gui.events import POSConfirmSaleEvent, CloseLoanWizardFinishEvent, POSAddSellableEvent
 from stoqlib.lib.barcode import parse_barcode, BarcodeInfo
 from stoqlib.lib.crashreport import collect_traceback
 from stoqlib.lib.decorators import cached_property, public
@@ -59,30 +57,28 @@ from stoqlib.lib.message import warning, info, yesno, marker
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext as _
-from stoqlib.gui.base.dialogs import push_fullscreen, pop_fullscreen
-from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
-from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
-from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
-from stoqlib.gui.editors.deliveryeditor import (CreateDeliveryEditor,
-                                                CreateDeliveryModel)
-from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
-from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
-from stoqlib.gui.search.deliverysearch import DeliverySearch
-from stoqlib.gui.search.personsearch import ClientSearch
-from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.salespersonsearch import SalesPersonSalesSearch
-from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
-                                           SaleTokenSearch,
-                                           SoldItemsByBranchSearch)
-from stoqlib.gui.search.sellablesearch import SaleSellableSearch
-from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.search.paymentreceivingsearch import PaymentReceivingSearch
-from stoqlib.gui.search.workordersearch import WorkOrderFinishedSearch
-from stoqlib.gui.utils.keybindings import get_accels
-from stoqlib.gui.utils.logo import render_logo_pixbuf
-from stoqlib.gui.utils.printing import print_report
-from stoqlib.gui.wizards.loanwizard import CloseLoanWizard
-from stoqlib.gui.wizards.salereturnwizard import SaleTradeWizard
+from stoq.lib.gui.base.dialogs import push_fullscreen, pop_fullscreen
+from stoq.lib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
+from stoq.lib.gui.dialogs.credentialsdialog import CredentialsDialog
+from stoq.lib.gui.dialogs.sellableimage import SellableImageViewer
+from stoq.lib.gui.editors.deliveryeditor import CreateDeliveryEditor, CreateDeliveryModel
+from stoq.lib.gui.editors.serviceeditor import ServiceItemEditor
+from stoq.lib.gui.fiscalprinter import FiscalPrinterHelper
+from stoq.lib.gui.search.deliverysearch import DeliverySearch
+from stoq.lib.gui.search.personsearch import ClientSearch
+from stoq.lib.gui.search.productsearch import ProductSearch
+from stoq.lib.gui.search.salespersonsearch import SalesPersonSalesSearch
+from stoq.lib.gui.search.salesearch import (SaleWithToolbarSearch, SaleTokenSearch,
+                                            SoldItemsByBranchSearch)
+from stoq.lib.gui.search.sellablesearch import SaleSellableSearch
+from stoq.lib.gui.search.servicesearch import ServiceSearch
+from stoq.lib.gui.search.paymentreceivingsearch import PaymentReceivingSearch
+from stoq.lib.gui.search.workordersearch import WorkOrderFinishedSearch
+from stoq.lib.gui.utils.keybindings import get_accels
+from stoq.lib.gui.utils.logo import render_logo_pixbuf
+from stoq.lib.gui.utils.printing import print_report
+from stoq.lib.gui.wizards.loanwizard import CloseLoanWizard
+from stoq.lib.gui.wizards.salereturnwizard import SaleTradeWizard
 from stoqlib.reporting.sale import SaleOrderReport
 
 from stoq.gui.shell.shellapp import ShellApp
@@ -1475,7 +1471,7 @@ class PosApp(ShellApp):
         Should return -1 if the coupon was not added, but will return None if
         CONFIRM_SALES_ON_TILL is true
 
-        See :class:`stoqlib.gui.fiscalprinter.FiscalCoupon` for more information
+        See :class:`stoq.lib.gui.fiscalprinter.FiscalCoupon` for more information
         """
         self._sale_started = True
         if self._confirm_sales_on_till:

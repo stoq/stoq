@@ -34,8 +34,8 @@ from gi.repository import Gtk
 from stoqlib.domain.sale import Sale, SaleComment
 from stoqlib.domain.workorder import WorkOrder, WorkOrderCategory, WorkOrderItem
 from stoqlib.enums import ChangeSalespersonPolicy
-from stoqlib.gui.editors.noteeditor import NoteEditor
-from stoqlib.gui.test.uitestutils import GUITest
+from stoq.lib.gui.editors.noteeditor import NoteEditor
+from stoq.lib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -57,7 +57,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
 
     @unittest.skip('some UI tests are breaking randomly')
     @mock.patch('plugins.optical.opticalwizard.yesno')
-    @mock.patch('stoqlib.gui.wizards.salequotewizard.run_dialog')
+    @mock.patch('stoq.lib.gui.wizards.salequotewizard.run_dialog')
     def test_confirm(self, run_dialog, yesno):
         self._create_work_order_category()
         client = self.create_client()
@@ -150,7 +150,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
                           [sale, client, sale.invoice] +
                           list(sale.get_items().order_by('te_id')))
 
-        module = 'stoqlib.gui.events.SaleQuoteWizardFinishEvent.emit'
+        module = 'stoq.lib.gui.events.SaleQuoteWizardFinishEvent.emit'
         with mock.patch(module) as emit:
             with mock.patch.object(self.store, 'commit'):
                 self.click(wizard.next_button)
@@ -200,7 +200,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
             self.assertTrue(step.salesperson.get_sensitive())
             self.assertIsNone(step.salesperson.read())
 
-    @mock.patch('stoqlib.gui.wizards.workorderquotewizard.warning')
+    @mock.patch('stoq.lib.gui.wizards.workorderquotewizard.warning')
     def test_remove_work_orders(self, warning):
         client = self.create_client()
 
@@ -291,7 +291,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
         sellable = self.create_sellable()
         item_slave = wizard.get_current_step()
 
-        m = 'stoqlib.gui.wizards.salequotewizard.SaleQuoteItemStep.get_remaining_quantity'
+        m = 'stoq.lib.gui.wizards.salequotewizard.SaleQuoteItemStep.get_remaining_quantity'
         with mock.patch(m) as get_remaining_quantity:
             get_remaining_quantity.return_value = decimal.Decimal("5")
             item_slave.get_order_item(sellable,
@@ -438,7 +438,7 @@ class TestSaleQuoteWizard(GUITest, OpticalDomainTest):
 
 
 class TestMedicRoleWizard(GUITest):
-    @mock.patch('stoqlib.gui.templates.persontemplate.run_dialog')
+    @mock.patch('stoq.lib.gui.templates.persontemplate.run_dialog')
     def test_medic_with_crm(self, run_dialog):
         individual = self.create_individual()
         person = individual.person
@@ -453,7 +453,7 @@ class TestMedicRoleWizard(GUITest):
         step.person_document.update('123')
         self.assertSensitive(wizard, ['next_button'])
 
-    @mock.patch('stoqlib.gui.templates.persontemplate.run_dialog')
+    @mock.patch('stoq.lib.gui.templates.persontemplate.run_dialog')
     def test_medic_without_crm(self, run_dialog):
         individual = self.create_individual()
         person = individual.person
@@ -482,7 +482,7 @@ class TestMedicRoleWizard(GUITest):
         self.check_wizard(wizard, 'wizard-medic-without-crm-role-finish',
                           [medic, medic.person] + list(medic.person.addresses))
 
-    @mock.patch('stoqlib.gui.templates.persontemplate.run_dialog')
+    @mock.patch('stoq.lib.gui.templates.persontemplate.run_dialog')
     def test_individual_medic(self, run_dialog):
         individual = self.create_individual()
         person = individual.person
@@ -511,7 +511,7 @@ class TestMedicRoleWizard(GUITest):
         self.check_wizard(wizard, 'wizard-individual-medic-role-finish',
                           [medic, medic.person] + list(medic.person.addresses))
 
-    @mock.patch('stoqlib.gui.templates.persontemplate.run_dialog')
+    @mock.patch('stoq.lib.gui.templates.persontemplate.run_dialog')
     def test_company_medic(self, run_dialog):
         company = self.create_company()
         person = company.person

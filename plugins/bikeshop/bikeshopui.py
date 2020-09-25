@@ -24,8 +24,8 @@
 import logging
 
 
-from stoqlib.gui.events import PrintReportEvent
-from stoqlib.gui.utils.printing import print_report
+from stoq.lib.gui.events import PrintReportEvent
+from stoq.lib.gui.utils.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.workorder import WorkOrderQuoteReport
 

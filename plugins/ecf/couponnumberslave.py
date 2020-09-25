@@ -12,7 +12,7 @@
 from kiwi.ui.forms import TextField
 
 from stoqlib.database.viewable import Viewable
-from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoq.lib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.translation import stoqlib_gettext
 

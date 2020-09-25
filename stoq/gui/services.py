@@ -41,20 +41,20 @@ from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderView)
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import InvalidStatus, NeedReason
-from stoqlib.gui.actions.workorder import WorkOrderActions
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.workordercategorydialog import WorkOrderCategoryDialog
-from stoqlib.gui.editors.noteeditor import NoteEditor, Note
-from stoqlib.gui.interfaces import ISearchResultView
-from stoqlib.gui.search.personsearch import ClientSearch
-from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
-from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
-from stoqlib.gui.search.searchresultview import SearchResultListView
-from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.utils.iconutils import get_workorder_state_icon, render_icon
-from stoqlib.gui.utils.keybindings import get_accels
-from stoqlib.gui.widgets.kanbanview import KanbanView, KanbanViewColumn
+from stoq.lib.gui.actions.workorder import WorkOrderActions
+from stoq.lib.gui.base.dialogs import run_dialog
+from stoq.lib.gui.dialogs.workordercategorydialog import WorkOrderCategoryDialog
+from stoq.lib.gui.editors.noteeditor import NoteEditor, Note
+from stoq.lib.gui.interfaces import ISearchResultView
+from stoq.lib.gui.search.personsearch import ClientSearch
+from stoq.lib.gui.search.productsearch import ProductSearch
+from stoq.lib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
+from stoq.lib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
+from stoq.lib.gui.search.searchresultview import SearchResultListView
+from stoq.lib.gui.search.servicesearch import ServiceSearch
+from stoq.lib.gui.utils.iconutils import get_workorder_state_icon, render_icon
+from stoq.lib.gui.utils.keybindings import get_accels
+from stoq.lib.gui.widgets.kanbanview import KanbanView, KanbanViewColumn
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.workorder import WorkOrdersReport

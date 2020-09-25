@@ -19,7 +19,7 @@ GtkDialog(toplevel): title='Search for Sales', hidden
                   ProxyComboBox(padding=6): hidden
                     item: 'Contains All Words', selected
                   GtkEntry(search_entry, padding=6): ''
-                stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
+                stoq+lib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
               ComboSearchFilter():
                 GtkLabel(): 'Show sales with status'
                 ProxyComboBox(padding=6):

@@ -15,7 +15,7 @@ GtkDialog(toplevel): title='Receive Purchase Order', hidden
                       ProxyComboBox(padding=6): hidden
                         item: 'Contains All Words', selected
                       GtkEntry(search_entry, padding=6): ''
-                    stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
+                    stoq+lib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
               SearchResultListView(results, expand=True, fill=True):
                 column: title='Purchase #'
                 column: title='Date Started'

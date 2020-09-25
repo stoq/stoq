@@ -28,10 +28,10 @@ from gi.repository import Gtk
 import mock
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.inventory import Inventory
-from stoqlib.gui.dialogs.inventorydetails import InventoryDetailsDialog
-from stoqlib.gui.editors.inventoryadjustmenteditor import InventoryAdjustmentEditor
-from stoqlib.gui.editors.inventoryeditor import InventoryOpenEditor
-from stoqlib.gui.wizards.inventorywizard import InventoryCountWizard
+from stoq.lib.gui.dialogs.inventorydetails import InventoryDetailsDialog
+from stoq.lib.gui.editors.inventoryadjustmenteditor import InventoryAdjustmentEditor
+from stoq.lib.gui.editors.inventoryeditor import InventoryOpenEditor
+from stoq.lib.gui.wizards.inventorywizard import InventoryCountWizard
 from stoqlib.reporting.product import ProductCountingReport
 
 from stoq.gui.inventory import InventoryApp

@@ -32,17 +32,17 @@ from kiwi.ui.objectlist import Column
 from stoqlib.api import api
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.enums import SearchFilterPosition
-from stoqlib.gui.dialogs.productiondetails import ProductionDetailsDialog
-from stoqlib.gui.dialogs.productionquotedialog import ProductionQuoteDialog
-from stoqlib.gui.dialogs.startproduction import StartProductionDialog
-from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
-                                                 ProductionItemsSearch,
-                                                 ProductionHistorySearch)
-from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
-from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.search.searchfilters import ComboSearchFilter
-from stoqlib.gui.utils.keybindings import get_accels
-from stoqlib.gui.wizards.productionwizard import ProductionWizard
+from stoq.lib.gui.dialogs.productiondetails import ProductionDetailsDialog
+from stoq.lib.gui.dialogs.productionquotedialog import ProductionQuoteDialog
+from stoq.lib.gui.dialogs.startproduction import StartProductionDialog
+from stoq.lib.gui.search.productionsearch import (ProductionProductSearch,
+                                                  ProductionItemsSearch,
+                                                  ProductionHistorySearch)
+from stoq.lib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
+from stoq.lib.gui.search.servicesearch import ServiceSearch
+from stoq.lib.gui.search.searchfilters import ComboSearchFilter
+from stoq.lib.gui.utils.keybindings import get_accels
+from stoq.lib.gui.wizards.productionwizard import ProductionWizard
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.production import ProductionReport
 from stoqlib.lib.message import yesno

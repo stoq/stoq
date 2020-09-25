@@ -25,11 +25,10 @@
 import logging
 
 from stoqlib.database.runtime import get_default_store
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.producteditor import ProductEditor
-from stoqlib.gui.events import (StartApplicationEvent,
-                                EditorSlaveCreateEvent)
-from stoqlib.gui.utils.keybindings import add_bindings, get_accels
+from stoq.lib.gui.base.dialogs import run_dialog
+from stoq.lib.gui.editors.producteditor import ProductEditor
+from stoq.lib.gui.events import StartApplicationEvent, EditorSlaveCreateEvent
+from stoq.lib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.lib.translation import stoqlib_gettext
 
 from books.bookssearch import ProductBookSearch

@@ -30,9 +30,9 @@ import sys
 from gi.repository import Gtk, GLib
 
 from stoqlib.api import api
-from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
-from stoqlib.gui.utils.logo import render_logo_pixbuf
-from stoqlib.gui.widgets.processview import ProcessView
+from stoq.lib.gui.base.wizards import BaseWizard, BaseWizardStep
+from stoq.lib.gui.utils.logo import render_logo_pixbuf
+from stoq.lib.gui.widgets.processview import ProcessView
 from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext as _

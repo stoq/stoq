@@ -37,13 +37,13 @@ from stoqlib.domain.product import ProductStockItem, Storable
 from stoqlib.domain.sellable import Sellable
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.gui.editors.inventoryadjustmenteditor import InventoryAdjustmentEditor
-from stoqlib.gui.editors.inventoryeditor import InventoryOpenEditor
-from stoqlib.gui.dialogs.inventorydetails import InventoryDetailsDialog
-from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
-from stoqlib.gui.search.searchfilters import ComboSearchFilter
-from stoqlib.gui.utils.keybindings import get_accels
-from stoqlib.gui.wizards.inventorywizard import InventoryCountWizard
+from stoq.lib.gui.editors.inventoryadjustmenteditor import InventoryAdjustmentEditor
+from stoq.lib.gui.editors.inventoryeditor import InventoryOpenEditor
+from stoq.lib.gui.dialogs.inventorydetails import InventoryDetailsDialog
+from stoq.lib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
+from stoq.lib.gui.search.searchfilters import ComboSearchFilter
+from stoq.lib.gui.utils.keybindings import get_accels
+from stoq.lib.gui.wizards.inventorywizard import InventoryCountWizard
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.product import ProductCountingReport

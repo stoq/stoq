@@ -1,7 +1,7 @@
 editor: SalePaymentConfirmSlave
 GtkDialog(main_dialog.toplevel): title='Confirm payment', hidden
   GtkBox(main_dialog._main_vbox, orientation=vertical):
-    stoqlib+gui+base+messagebar+MessageBar(main_dialog._message_bar):
+    stoq+lib+gui+base+messagebar+MessageBar(main_dialog._message_bar):
       GtkRevealer(fill=True):
         GtkBox(orientation=horizontal):
           GtkBox(orientation=horizontal, expand=True, fill=True):

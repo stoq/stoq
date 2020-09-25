@@ -1,0 +1,170 @@
+# -*- coding: utf-8 -*-
+# vi:si:et:sw=4:sts=4:ts=4
+
+##
+## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU Lesser General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., or visit: http://www.gnu.org/.
+##
+## Author(s): Stoq Team <stoq-devel@async.com.br>
+##
+##
+""" Classes for supplier details """
+
+import datetime
+
+from gi.repository import Gtk
+from kiwi.currency import currency
+from stoqlib.lib.objutils import Settable
+from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
+
+from stoqlib.api import api
+from stoqlib.domain.person import Supplier
+from stoq.lib.gui.editors.baseeditor import BaseEditor
+from stoq.lib.gui.editors.personeditor import SupplierEditor
+from stoq.lib.gui.search.searchcolumns import IdentifierColumn
+from stoq.lib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.defaults import payment_value_colorize
+
+
+_ = stoqlib_gettext
+
+
+class SupplierDetailsDialog(BaseEditor):
+    """This dialog shows some important details about suppliers like:
+        - history of purchases
+        - all products tied with purchases
+        - all payments already created
+    """
+    title = _(u"Supplier Details")
+    hide_footer = True
+    size = (780, 400)
+    model_type = Supplier
+    gladefile = "SupplierDetailsDialog"
+    proxy_widgets = ('supplier',
+                     'last_purchase_date',
+                     'status')
+
+    def __init__(self, store, model):
+        BaseEditor.__init__(self, store, model)
+        self._setup_widgets()
+
+    def _build_data(self, purchases):
+        self.payments = []
+        product_dict = {}
+        for purchase_view in purchases:
+            purchase = purchase_view.purchase
+            self.payments.extend(purchase.group.payments)
+            for purchase_item in purchase.get_items():
+                qty = purchase_item.quantity
+                cost = purchase_item.cost
+                total_value = cost * qty
+                unit = purchase_item.sellable.unit_description
+                qty_str = '%s %s' % (qty, unit)
+                product_codes = [item.code for item in product_dict.values()]
+                sellable = purchase_item.sellable
+                if not sellable.code in product_codes:
+                    desc = sellable.description
+                    obj = Settable(code=sellable.code, description=desc,
+                                   _total_qty=qty, total_value=total_value,
+                                   qty_str=qty_str, unit=unit, cost=cost)
+                    product_dict[sellable] = obj
+                else:
+                    product_dict[sellable]._total_qty += qty
+                    table = product_dict[sellable]
+                    table.qty_str = '%s %s' % (table._total_qty, table.unit)
+                    table.total_value = table._total_qty * table.cost
+        self.products = list(product_dict.values())
+
+    def _setup_widgets(self):
+        self.purchases_list.set_columns(self._get_purchase_columns())
+        self.product_list.set_columns(self._get_product_columns())
+        self.payments_list.set_columns(self._get_payments_columns())
+
+        purchases = self.model.get_supplier_purchases()
+        self.purchases_list.add_list(purchases)
+
+        self._build_data(purchases)
+        self.product_list.add_list(self.products)
+        self.payments_list.add_list(self.payments)
+
+        value_format = '<b>%s</b>'
+        total_label = "<b>%s</b>" % api.escape(_("Total:"))
+        purchases_summary_label = SummaryLabel(klist=self.purchases_list,
+                                               column='total',
+                                               label=total_label,
+                                               value_format=value_format)
+
+        purchases_summary_label.show()
+        self.purchases_vbox.pack_start(purchases_summary_label, False, True, 0)
+
+    def _get_purchase_columns(self):
+        return [IdentifierColumn("identifier", title=_('Purchase #'), sorted=True),
+                Column("open_date", title=_("Date"), data_type=datetime.date,
+                       justify=Gtk.Justification.RIGHT, width=80),
+                Column("status_str", title=_("Status"), width=80,
+                       data_type=str),
+                Column("total", title=_("Total"), justify=Gtk.Justification.RIGHT,
+                       data_type=currency, width=100)]
+
+    def _get_product_columns(self):
+        return [Column("code", title=_("Code"), data_type=str, width=130,
+                       sorted=True),
+                Column("description", title=_("Description"), data_type=str,
+                       expand=True, searchable=True),
+                Column("qty_str", title=_("Total quantity"),
+                       data_type=str, width=120, justify=Gtk.Justification.RIGHT),
+                Column("total_value", title=_("Total value"), width=80,
+                       data_type=currency, justify=Gtk.Justification.RIGHT, )]
+
+    def _get_payments_columns(self):
+        return [IdentifierColumn("identifier", title=_('Payment #')),
+                Column("method.description", title=_("Type"),
+                       data_type=str, width=90),
+                Column("description", title=_("Description"),
+                       data_type=str, searchable=True, width=190,
+                       expand=True),
+                Column("due_date", title=_("Due date"), width=110,
+                       data_type=datetime.date, sorted=True),
+                Column("status_str", title=_("Status"), width=80,
+                       data_type=str),
+                ColoredColumn("base_value", title=_("Value"),
+                              justify=Gtk.Justification.RIGHT, data_type=currency,
+                              color='red', width=100,
+                              data_func=payment_value_colorize),
+                Column("days_late", title=_("Days Late"), width=110,
+                       format_func=(lambda days_late: days_late and
+                                    str(days_late) or u""),
+                       justify=Gtk.Justification.RIGHT, data_type=str)]
+
+    #
+    # BaseEditor Hooks
+    #
+
+    def setup_proxies(self):
+        self.add_proxy(self.model, self.proxy_widgets)
+
+    #
+    # Callbacks
+    #
+
+    def on_further_details_button__clicked(self, *args):
+        store = api.new_store()
+        run_person_role_dialog(SupplierEditor, self, store,
+                               self.model, visual_mode=True)
+        store.confirm(False)
+        store.close()

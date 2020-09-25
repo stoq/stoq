@@ -30,13 +30,13 @@ from nose.exc import SkipTest
 
 from stoqlib.api import api
 from stoqlib.domain.workorder import WorkOrderItem, WorkOrder
-from stoqlib.gui.dialogs.workordercategorydialog import WorkOrderCategoryDialog
-from stoqlib.gui.editors.noteeditor import NoteEditor, Note
+from stoq.lib.gui.dialogs.workordercategorydialog import WorkOrderCategoryDialog
+from stoq.lib.gui.editors.noteeditor import NoteEditor, Note
 from stoqlib.reporting.workorder import (WorkOrderReceiptReport,
                                          WorkOrderQuoteReport)
-from stoqlib.gui.search.personsearch import ClientSearch
-from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.servicesearch import ServiceSearch
+from stoq.lib.gui.search.personsearch import ClientSearch
+from stoq.lib.gui.search.productsearch import ProductSearch
+from stoq.lib.gui.search.servicesearch import ServiceSearch
 
 from stoq.gui.services import ServicesApp
 from stoq.gui.test.baseguitest import BaseGUITest
@@ -56,8 +56,8 @@ class TestServices(BaseGUITest):
         self.check_app(app, u'services')
         app.deactivate()
 
-    @mock.patch('stoqlib.gui.actions.base.run_dialog')
-    @mock.patch('stoqlib.gui.actions.workorder.api.new_store')
+    @mock.patch('stoq.lib.gui.actions.base.run_dialog')
+    @mock.patch('stoq.lib.gui.actions.workorder.api.new_store')
     def test_cancel_workorder_dont_confirm(self, new_store, run_dialog):
         new_store.return_value = self.store
 
@@ -91,8 +91,8 @@ class TestServices(BaseGUITest):
                 self.assertEqual(workorder.status, WorkOrder.STATUS_OPENED)
         app.deactivate()
 
-    @mock.patch('stoqlib.gui.actions.base.run_dialog')
-    @mock.patch('stoqlib.gui.actions.workorder.api.new_store')
+    @mock.patch('stoq.lib.gui.actions.base.run_dialog')
+    @mock.patch('stoq.lib.gui.actions.workorder.api.new_store')
     def test_cancel_workorder_confirm(self, new_store, run_dialog):
         new_store.return_value = self.store
 
@@ -126,8 +126,8 @@ class TestServices(BaseGUITest):
                 self.assertEqual(workorder.status, WorkOrder.STATUS_CANCELLED)
         app.deactivate()
 
-    @mock.patch('stoqlib.gui.actions.workorder.yesno')
-    @mock.patch('stoqlib.gui.actions.workorder.api.new_store')
+    @mock.patch('stoq.lib.gui.actions.workorder.yesno')
+    @mock.patch('stoq.lib.gui.actions.workorder.api.new_store')
     def test_finish_workorder_dont_confirm(self, new_store, yesno):
         new_store.return_value = self.store
 
@@ -169,8 +169,8 @@ class TestServices(BaseGUITest):
         self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
         app.deactivate()
 
-    @mock.patch('stoqlib.gui.actions.workorder.yesno')
-    @mock.patch('stoqlib.gui.actions.workorder.api.new_store')
+    @mock.patch('stoq.lib.gui.actions.workorder.yesno')
+    @mock.patch('stoq.lib.gui.actions.workorder.api.new_store')
     def test_finish_workorder_confirm(self, new_store, yesno):
         new_store.return_value = self.store
 

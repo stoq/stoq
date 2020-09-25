@@ -27,8 +27,8 @@ from decimal import Decimal
 from gi.repository import Gdk
 import mock
 
-from stoqlib.gui.editors.noteeditor import NoteEditor
-from stoqlib.gui.test.uitestutils import GUITest
+from stoq.lib.gui.editors.noteeditor import NoteEditor
+from stoq.lib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate
 
 from ..opticaldomain import OpticalWorkOrder

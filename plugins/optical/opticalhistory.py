@@ -30,10 +30,10 @@ from kiwi.enums import ListType
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
-from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoq.lib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.person import Client
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.lists import ModelListSlave
+from stoq.lib.gui.base.lists import ModelListSlave
 
 from .opticaldomain import (OpticalPatientHistory,
                             OpticalPatientMeasures,
@@ -269,7 +269,7 @@ class OpticalPatientDetails(BaseEditor):
 
 # Run this with one of the editors defined above
 def test_editor(editor):  # pragma nocover
-    from stoqlib.gui.base.dialogs import run_dialog
+    from stoq.lib.gui.base.dialogs import run_dialog
     ec = api.prepare_test()
     model = ec.store.find(editor.model_type).any()
     if not model:
@@ -282,7 +282,7 @@ def test_editor(editor):  # pragma nocover
 
 
 def test_dialog():  # pragma nocover
-    from stoqlib.gui.base.dialogs import run_dialog
+    from stoq.lib.gui.base.dialogs import run_dialog
 
     ec = api.prepare_test()
     client = ec.store.find(Client).any()

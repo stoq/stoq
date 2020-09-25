@@ -38,34 +38,33 @@ from stoqlib.domain.events import SaleAvoidCancelEvent, StockOperationTryFiscalC
 from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.enums import SearchFilterPosition
-from stoqlib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
-from stoqlib.gui.editors.saleeditor import SaleClientEditor, SalesPersonEditor
-from stoqlib.gui.editors.noteeditor import NoteEditor
-from stoqlib.gui.search.callsearch import ClientCallsSearch
-from stoqlib.gui.search.commissionsearch import CommissionSearch
-from stoqlib.gui.search.deliverysearch import DeliverySearch
-from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
-from stoqlib.gui.search.returnedsalesearch import ReturnedSaleSearch
-from stoqlib.gui.search.personsearch import (ClientSearch,
-                                             ClientsWithSaleSearch,
-                                             ClientsWithCreditSearch)
-from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
-from stoqlib.gui.slaves.saleslave import SaleListToolbar
-from stoqlib.gui.search.salespersonsearch import SalesPersonSalesSearch
-from stoqlib.gui.search.salesearch import (SalesByPaymentMethodSearch,
-                                           SoldItemsByBranchSearch,
-                                           SoldItemsByClientSearch,
-                                           SoldItemsBySalespersonSearch,
-                                           UnconfirmedSaleItemsSearch)
-from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
-from stoqlib.gui.search.searchfilters import ComboSearchFilter
-from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.utils.keybindings import get_accels
-from stoqlib.gui.widgets.lazyobjectlist import LazySummaryLabel
-from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
-from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
-from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
+from stoq.lib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
+from stoq.lib.gui.editors.saleeditor import SaleClientEditor, SalesPersonEditor
+from stoq.lib.gui.editors.noteeditor import NoteEditor
+from stoq.lib.gui.search.callsearch import ClientCallsSearch
+from stoq.lib.gui.search.commissionsearch import CommissionSearch
+from stoq.lib.gui.search.deliverysearch import DeliverySearch
+from stoq.lib.gui.search.loansearch import LoanItemSearch, LoanSearch
+from stoq.lib.gui.search.returnedsalesearch import ReturnedSaleSearch
+from stoq.lib.gui.search.personsearch import (ClientSearch, ClientsWithSaleSearch,
+                                              ClientsWithCreditSearch)
+from stoq.lib.gui.search.productsearch import ProductSearch
+from stoq.lib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
+from stoq.lib.gui.slaves.saleslave import SaleListToolbar
+from stoq.lib.gui.search.salespersonsearch import SalesPersonSalesSearch
+from stoq.lib.gui.search.salesearch import (SalesByPaymentMethodSearch,
+                                            SoldItemsByBranchSearch,
+                                            SoldItemsByClientSearch,
+                                            SoldItemsBySalespersonSearch,
+                                            UnconfirmedSaleItemsSearch)
+from stoq.lib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
+from stoq.lib.gui.search.searchfilters import ComboSearchFilter
+from stoq.lib.gui.search.servicesearch import ServiceSearch
+from stoq.lib.gui.utils.keybindings import get_accels
+from stoq.lib.gui.widgets.lazyobjectlist import LazySummaryLabel
+from stoq.lib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
+from stoq.lib.gui.wizards.salequotewizard import SaleQuoteWizard
+from stoq.lib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.invoice import SaleInvoice, print_sale_invoice
 from stoqlib.lib.message import info, warning

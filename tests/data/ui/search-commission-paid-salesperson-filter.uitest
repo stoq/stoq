@@ -24,7 +24,7 @@ GtkDialog(toplevel): title='Search for Commissions', hidden
                   ProxyComboBox(padding=6): hidden
                     item: 'Contains All Words', selected
                   GtkEntry(search_entry, padding=6): ''
-                stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
+                stoq+lib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
               DateSearchFilter(_date_filter):
                 GtkLabel(): 'Date:'
                 ProxyComboBox(padding=6):

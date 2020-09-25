@@ -27,15 +27,15 @@ import collections
 from gi.repository import Gtk, GObject, GLib
 
 from stoqlib.api import api
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.feedbackdialog import FeedbackDialog
-from stoqlib.gui.dialogs.progressdialog import ProgressDialog
-from stoqlib.gui.stockicons import (STOQ_FEEDBACK,
-                                    STOQ_REFRESH,
-                                    STOQ_STATUS_NA,
-                                    STOQ_STATUS_OK,
-                                    STOQ_STATUS_WARNING,
-                                    STOQ_STATUS_ERROR)
+from stoq.lib.gui.base.dialogs import run_dialog
+from stoq.lib.gui.dialogs.feedbackdialog import FeedbackDialog
+from stoq.lib.gui.dialogs.progressdialog import ProgressDialog
+from stoq.lib.gui.stockicons import (STOQ_FEEDBACK,
+                                     STOQ_REFRESH,
+                                     STOQ_STATUS_NA,
+                                     STOQ_STATUS_OK,
+                                     STOQ_STATUS_WARNING,
+                                     STOQ_STATUS_ERROR)
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.threadutils import terminate_thread
 from stoqlib.lib.status import ResourceStatus, ResourceStatusManager

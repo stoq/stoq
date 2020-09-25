@@ -30,13 +30,12 @@ import mock
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
-from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
-from stoqlib.gui.editors.tilleditor import CashInEditor
-from stoqlib.gui.search.personsearch import ClientSearch
-from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
-                                           SoldItemsByBranchSearch)
-from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
+from stoq.lib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoq.lib.gui.editors.paymentseditor import SalePaymentsEditor
+from stoq.lib.gui.editors.tilleditor import CashInEditor
+from stoq.lib.gui.search.personsearch import ClientSearch
+from stoq.lib.gui.search.salesearch import SaleWithToolbarSearch, SoldItemsByBranchSearch
+from stoq.lib.gui.search.tillsearch import TillFiscalOperationsSearch
 from stoqlib.lib.dateutils import localtoday
 
 from stoq.gui.till import TillApp
@@ -76,9 +75,9 @@ class TestTill(BaseGUITest):
         app = self.create_app(TillApp, u'till')
         self.check_app(app, u'till-closed-till')
 
-    @mock.patch('stoqlib.gui.fiscalprinter.api.new_store')
-    @mock.patch('stoqlib.gui.fiscalprinter.yesno')
-    @mock.patch('stoqlib.gui.fiscalprinter.run_dialog')
+    @mock.patch('stoq.lib.gui.fiscalprinter.api.new_store')
+    @mock.patch('stoq.lib.gui.fiscalprinter.yesno')
+    @mock.patch('stoq.lib.gui.fiscalprinter.run_dialog')
     def test_initial_with_blocked_till(self, yesno, new_store, run_dialog):
         till = self.create_till()
         till.opening_date = datetime(2015, 1, 2)
@@ -102,7 +101,7 @@ class TestTill(BaseGUITest):
     @mock.patch('stoq.gui.till.run_dialog')
     def test_confirm_order(self, run_dialog):
         with contextlib.nested(
-                mock.patch('stoqlib.gui.fiscalprinter.FiscalCoupon.confirm'),
+                mock.patch('stoq.lib.gui.fiscalprinter.FiscalCoupon.confirm'),
                 mock.patch('stoq.gui.till.api.new_store'),
                 mock.patch.object(self.store, 'commit'),
                 mock.patch.object(self.store, 'close')) as ctx:

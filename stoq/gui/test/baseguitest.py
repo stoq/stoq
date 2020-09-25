@@ -27,8 +27,8 @@ from gi.repository import Gtk
 
 from stoqlib.api import api
 from stoqlib.domain.profile import ProfileSettings
-from stoqlib.gui.base.messagebar import MessageBar
-from stoqlib.gui.test.uitestutils import GUITest
+from stoq.lib.gui.base.messagebar import MessageBar
+from stoq.lib.gui.test.uitestutils import GUITest
 
 import stoq
 from stoq.gui.shell.shellapp import ShellApp

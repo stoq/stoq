@@ -26,7 +26,7 @@
 from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
 
-from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoq.lib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.defaults import MAX_INT
 from stoqlib.lib.countries import get_countries
 from stoqlib.lib.translation import stoqlib_gettext

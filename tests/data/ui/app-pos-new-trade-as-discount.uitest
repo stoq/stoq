@@ -74,7 +74,7 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
           GtkLabel(expand=True, fill=True): 'Test Statusbar test'
           GtkVSeparator():
           GtkButton(): 'Feedback'
-    stoqlib+gui+base+messagebar+MessageBar(_trade_infobar):
+    stoq+lib+gui+base+messagebar+MessageBar(_trade_infobar):
       GtkRevealer(fill=True):
         GtkBox(orientation=horizontal):
           GtkBox(orientation=horizontal, expand=True, fill=True):

@@ -28,8 +28,8 @@ from decimal import Decimal
 from kiwi.currency import currency
 
 from stoqlib.enums import SearchFilterPosition
-from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.searchcolumns import SearchColumn
+from stoq.lib.gui.search.productsearch import ProductSearch
+from stoq.lib.gui.search.searchcolumns import SearchColumn
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 

@@ -39,34 +39,31 @@ from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.imageutils import get_thumbnail
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_ngettext, stoqlib_gettext as _
-from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
-from stoqlib.gui.dialogs.labeldialog import PrintLabelEditor
-from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
-from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
-from stoqlib.gui.editors.producteditor import (ProductStockEditor,
-                                               ProductStockQuantityEditor)
-from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
-from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
-from stoqlib.gui.search.returnedsalesearch import (PendingReturnedSaleSearch,
-                                                   ReturnedItemSearch)
-from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
-                                              ProductStockSearch,
-                                              ProductBrandSearch,
-                                              ProductBrandByBranchSearch,
-                                              ProductBatchSearch,
-                                              ProductClosedStockSearch)
-from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
-from stoqlib.gui.search.transfersearch import (TransferOrderSearch,
-                                               TransferItemSearch)
-from stoqlib.gui.search.searchcolumns import SearchColumn, QuantityColumn
-from stoqlib.gui.search.searchfilters import ComboSearchFilter
-from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
-from stoqlib.gui.utils.keybindings import get_accels
-from stoqlib.gui.utils.printing import print_labels
-from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
-from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
-from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
-from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
+from stoq.lib.gui.dialogs.initialstockdialog import InitialStockDialog
+from stoq.lib.gui.dialogs.labeldialog import PrintLabelEditor
+from stoq.lib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
+from stoq.lib.gui.dialogs.sellableimage import SellableImageViewer
+from stoq.lib.gui.editors.producteditor import ProductStockEditor, ProductStockQuantityEditor
+from stoq.lib.gui.search.loansearch import LoanItemSearch, LoanSearch
+from stoq.lib.gui.search.receivingsearch import PurchaseReceivingSearch
+from stoq.lib.gui.search.returnedsalesearch import PendingReturnedSaleSearch, ReturnedItemSearch
+from stoq.lib.gui.search.productsearch import (ProductSearchQuantity,
+                                               ProductStockSearch,
+                                               ProductBrandSearch,
+                                               ProductBrandByBranchSearch,
+                                               ProductBatchSearch,
+                                               ProductClosedStockSearch)
+from stoq.lib.gui.search.purchasesearch import PurchasedItemsSearch
+from stoq.lib.gui.search.transfersearch import TransferOrderSearch, TransferItemSearch
+from stoq.lib.gui.search.searchcolumns import SearchColumn, QuantityColumn
+from stoq.lib.gui.search.searchfilters import ComboSearchFilter
+from stoq.lib.gui.search.stockdecreasesearch import StockDecreaseSearch
+from stoq.lib.gui.utils.keybindings import get_accels
+from stoq.lib.gui.utils.printing import print_labels
+from stoq.lib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
+from stoq.lib.gui.wizards.receivingwizard import ReceivingOrderWizard
+from stoq.lib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
+from stoq.lib.gui.wizards.stocktransferwizard import StockTransferWizard
 from stoqlib.reporting.product import SimpleProductReport
 
 from stoq.gui.shell.shellapp import ShellApp

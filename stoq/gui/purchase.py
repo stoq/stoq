@@ -32,31 +32,29 @@ from kiwi.currency import currency
 from stoqlib.api import api
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.enums import SearchFilterPosition
-from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
-from stoqlib.gui.dialogs.sellabledialog import SellableMassEditorDialog
-from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
-from stoqlib.gui.dialogs.manufacturerdialog import ProductManufacturerDialog
-from stoqlib.gui.search.categorysearch import SellableCategorySearch
-from stoqlib.gui.search.consignmentsearch import ConsignmentItemSearch
-from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
-from stoqlib.gui.search.productsearch import (ProductSearch,
-                                              ProductStockSearch,
-                                              ProductClosedStockSearch,
-                                              ProductsSoldSearch)
-from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
-from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
-from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
-from stoqlib.gui.search.sellableunitsearch import SellableUnitSearch
-from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.utils.keybindings import get_accels
-from stoqlib.gui.wizards.consignmentwizard import (ConsignmentWizard,
-                                                   CloseInConsignmentWizard)
-from stoqlib.gui.wizards.productwizard import ProductCreateWizard
-from stoqlib.gui.wizards.purchasefinishwizard import PurchaseFinishWizard
-from stoqlib.gui.wizards.purchasequotewizard import (QuotePurchaseWizard,
-                                                     ReceiveQuoteWizard)
-from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
-from stoqlib.gui.wizards.reconciliationwizard import PurchaseReconciliationWizard
+from stoq.lib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
+from stoq.lib.gui.dialogs.sellabledialog import SellableMassEditorDialog
+from stoq.lib.gui.dialogs.stockcostdialog import StockCostDialog
+from stoq.lib.gui.dialogs.manufacturerdialog import ProductManufacturerDialog
+from stoq.lib.gui.search.categorysearch import SellableCategorySearch
+from stoq.lib.gui.search.consignmentsearch import ConsignmentItemSearch
+from stoq.lib.gui.search.personsearch import SupplierSearch, TransporterSearch
+from stoq.lib.gui.search.productsearch import (ProductSearch,
+                                               ProductStockSearch,
+                                               ProductClosedStockSearch,
+                                               ProductsSoldSearch)
+from stoq.lib.gui.search.purchasesearch import PurchasedItemsSearch
+from stoq.lib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
+from stoq.lib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
+from stoq.lib.gui.search.sellableunitsearch import SellableUnitSearch
+from stoq.lib.gui.search.servicesearch import ServiceSearch
+from stoq.lib.gui.utils.keybindings import get_accels
+from stoq.lib.gui.wizards.consignmentwizard import ConsignmentWizard, CloseInConsignmentWizard
+from stoq.lib.gui.wizards.productwizard import ProductCreateWizard
+from stoq.lib.gui.wizards.purchasefinishwizard import PurchaseFinishWizard
+from stoq.lib.gui.wizards.purchasequotewizard import QuotePurchaseWizard, ReceiveQuoteWizard
+from stoq.lib.gui.wizards.purchasewizard import PurchaseWizard
+from stoq.lib.gui.wizards.reconciliationwizard import PurchaseReconciliationWizard
 from stoqlib.lib.filizola import generate_filizola_file
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import warning, yesno, info

@@ -1,5 +1,5 @@
 widget: CalculatorPopup
-stoqlib+gui+widgets+calculator+CalculatorPopup(): title=None, hidden
+stoq+lib+gui+widgets+calculator+CalculatorPopup(): title=None, hidden
   GtkFrame():
     GtkAlignment():
       GtkBox(main_box, orientation=vertical): hidden

@@ -24,7 +24,7 @@
 
 import mock
 
-from stoqlib.gui.events import PrintReportEvent
+from stoq.lib.gui.events import PrintReportEvent
 from stoqlib.reporting.workorder import WorkOrderQuoteReport
 from stoq.gui.test.baseguitest import BaseGUITest
 

@@ -47,7 +47,7 @@ from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.views import (ProductFullStockView, SoldItemsByBranchView,
                                   PendingReturnedSalesView)
 from stoqlib.domain.workorder import WorkOrderView
-from stoqlib.gui.dialogs.tilldailymovement import TillDailyMovementDialog
+from stoq.lib.gui.dialogs.tilldailymovement import TillDailyMovementDialog
 from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.paymentsreceipt import (InPaymentReceipt,
@@ -91,7 +91,7 @@ class TestReport(ReportTest):
         item2.adjust(self.current_user, 13)
         inventory.close()
 
-        from stoqlib.gui.dialogs.inventorydetails import InventoryDetailsDialog
+        from stoq.lib.gui.dialogs.inventorydetails import InventoryDetailsDialog
         dialog = InventoryDetailsDialog(self.store, model=inventory)
         items = list(InventoryItemsView.find_by_inventory(self.store, inventory))
         self._diff_expected(InventoryReport, 'inventory-report', dialog.items_list, items)
@@ -116,7 +116,7 @@ class TestReport(ReportTest):
         # self.checkPDF(ReceivablePaymentReport, in_payments, date=datetime.date(2007, 1, 1))
 
     def test_payable_bill_check_payment_report(self):
-        from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
+        from stoq.lib.gui.search.paymentsearch import OutPaymentBillCheckSearch
         search = OutPaymentBillCheckSearch(self.store)
 
         out_payments = list(self.store.find(OutCheckPaymentView))
@@ -129,7 +129,7 @@ class TestReport(ReportTest):
                             search.results, list(search.results))
 
     def test_receivable_bill_check_payment_report(self):
-        from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
+        from stoq.lib.gui.search.paymentsearch import InPaymentBillCheckSearch
         search = InPaymentBillCheckSearch(self.store)
 
         in_payments = list(self.store.find(InCheckPaymentView))
@@ -238,7 +238,7 @@ class TestReport(ReportTest):
                             payment, None, date)
 
     def test_payment_flow_history_report(self):
-        from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowDay
+        from stoq.lib.gui.dialogs.paymentflowhistorydialog import PaymentFlowDay
         # Pending payment
         payment1 = self.create_payment()
         payment1.identifier = 130
@@ -264,7 +264,7 @@ class TestReport(ReportTest):
                             payments)
 
     def test_product_report(self):
-        from stoqlib.gui.search.productsearch import ProductSearch
+        from stoq.lib.gui.search.productsearch import ProductSearch
         search = ProductSearch(self.store)
         search.width = 1000
         # the order_by clause is only needed by the test
@@ -275,7 +275,7 @@ class TestReport(ReportTest):
                             search.results, list(search.results))
 
     def test_till_history_report(self):
-        from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
+        from stoq.lib.gui.dialogs.tillhistory import TillHistoryDialog
         dialog = TillHistoryDialog(self.store)
 
         till = Till(station=self.current_station, branch=self.current_branch, store=self.store)
@@ -580,7 +580,7 @@ class TestReport(ReportTest):
         self._diff_expected(SaleOrderReport, 'sale-order-quote-report', sale)
 
     def test_sold_items_by_branch_report(self):
-        from stoqlib.gui.search.salesearch import SoldItemsByBranchSearch
+        from stoq.lib.gui.search.salesearch import SoldItemsByBranchSearch
         search = SoldItemsByBranchSearch(self.store)
         search.width = 1000
         sold_items = self.store.find(SoldItemsByBranchView).order_by(SoldItemsByBranchView.code)
@@ -620,7 +620,7 @@ class TestReport(ReportTest):
                             order)
 
     def test_calls_report(self):
-        from stoqlib.gui.search.callsearch import CallsSearch
+        from stoq.lib.gui.search.callsearch import CallsSearch
         person = self.create_person()
         self.create_call()
         search = CallsSearch(self.store, person)
@@ -640,7 +640,7 @@ class TestReport(ReportTest):
         self._diff_expected(ClientCreditReport, 'client-credit-report', client)
 
     def test_work_orders_report(self):
-        from stoqlib.gui.search.workordersearch import WorkOrderSearch
+        from stoq.lib.gui.search.workordersearch import WorkOrderSearch
         for i in range(5):
             wo = self.create_workorder(description=u'Work order %d' % i)
             sellable = self.create_sellable(description=u'Sellable %d' % i)

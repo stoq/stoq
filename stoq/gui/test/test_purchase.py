@@ -33,13 +33,13 @@ from stoq.gui.test.baseguitest import BaseGUITest
 from stoqlib.domain.purchase import PurchaseItem, PurchaseOrder, PurchaseOrderView
 from stoqlib.domain.receiving import (ReceivingOrderItem, ReceivingOrder,
                                       PurchaseReceivingMap)
-from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
-from stoqlib.gui.search.searchresultview import SearchResultListView
-from stoqlib.gui.wizards.consignmentwizard import ConsignmentWizard
-from stoqlib.gui.wizards.productwizard import ProductCreateWizard
-from stoqlib.gui.wizards.purchasefinishwizard import PurchaseFinishWizard
-from stoqlib.gui.wizards.purchasequotewizard import QuotePurchaseWizard
-from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
+from stoq.lib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
+from stoq.lib.gui.search.searchresultview import SearchResultListView
+from stoq.lib.gui.wizards.consignmentwizard import ConsignmentWizard
+from stoq.lib.gui.wizards.productwizard import ProductCreateWizard
+from stoq.lib.gui.wizards.purchasefinishwizard import PurchaseFinishWizard
+from stoq.lib.gui.wizards.purchasequotewizard import QuotePurchaseWizard
+from stoq.lib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.reporting.purchase import PurchaseReport
 
 
@@ -230,8 +230,8 @@ class TestPurchase(BaseGUITest):
                                               u"Cancel order", u"Don't cancel")
                 self.assertEqual(purchase.status, PurchaseOrder.ORDER_CANCELLED)
 
-    @mock.patch('stoqlib.gui.wizards.productwizard.run_dialog')
-    @mock.patch('stoqlib.gui.wizards.productwizard.api.new_store')
+    @mock.patch('stoq.lib.gui.wizards.productwizard.run_dialog')
+    @mock.patch('stoq.lib.gui.wizards.productwizard.api.new_store')
     def test_new_product(self, new_store, run_dialog):
         run_dialog.return_value = False
         new_store.return_value = self.store

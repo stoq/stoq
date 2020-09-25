@@ -50,10 +50,9 @@ from stoqlib.domain.person import Individual, Company
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.events import (StartApplicationEvent,
-                                CouponCreatedEvent, EditorCreateEvent)
-from stoqlib.gui.utils.keybindings import add_bindings, get_accels
+from stoq.lib.gui.base.dialogs import run_dialog
+from stoq.lib.gui.events import StartApplicationEvent, CouponCreatedEvent, EditorCreateEvent
+from stoq.lib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.lib.message import info, warning, yesno
 from stoqlib.lib.parameters import sysparam, ParameterDetails
 from stoqlib.lib.pluginmanager import get_plugin_manager
@@ -765,7 +764,7 @@ class ECFUI(object):
         self._check_ecf_state()
 
     def _on_EditorCreateEvent(self, editor, model, store, *args):
-        from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+        from stoq.lib.gui.dialogs.saledetails import SaleDetailsDialog
         manager = get_plugin_manager()
         nfe_active = any(manager.is_active(plugin) for plugin in ['nfe', 'nfce'])
         if not nfe_active and isinstance(editor, SaleDetailsDialog):

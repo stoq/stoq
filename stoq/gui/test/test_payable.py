@@ -29,12 +29,12 @@ from stoqlib.api import api
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.lib.dateutils import localdate
-from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
-from stoqlib.gui.dialogs.paymentchangedialog import PaymentDueDateChangeDialog
-from stoqlib.gui.editors.paymenteditor import OutPaymentEditor
-from stoqlib.gui.editors.paymentseditor import PurchasePaymentsEditor
-from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
-from stoqlib.gui.slaves.paymentconfirmslave import PurchasePaymentConfirmSlave
+from stoq.lib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
+from stoq.lib.gui.dialogs.paymentchangedialog import PaymentDueDateChangeDialog
+from stoq.lib.gui.editors.paymenteditor import OutPaymentEditor
+from stoq.lib.gui.editors.paymentseditor import PurchasePaymentsEditor
+from stoq.lib.gui.search.paymentsearch import OutPaymentBillCheckSearch
+from stoq.lib.gui.slaves.paymentconfirmslave import PurchasePaymentConfirmSlave
 from stoqlib.reporting.paymentsreceipt import OutPaymentReceipt
 
 from stoq.gui.payable import PayableApp

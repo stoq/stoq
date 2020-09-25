@@ -30,41 +30,39 @@ from gi.repository import Gtk, GLib
 
 from stoqlib.api import api
 from stoqlib.domain.invoice import InvoiceLayout
-from stoqlib.gui.dialogs.certificatedialog import CertificateListDialog
-from stoqlib.gui.dialogs.clientcategorydialog import ClientCategoryDialog
-from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
-from stoqlib.gui.editors.formfieldeditor import FormFieldEditor
-from stoqlib.gui.dialogs.invoicedialog import (InvoiceLayoutDialog,
-                                               InvoicePrinterDialog)
-from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
-from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
-from stoqlib.gui.dialogs.personmergedialog import PersonMergeDialog
-from stoqlib.gui.dialogs.pindialog import PinDialog
-from stoqlib.gui.dialogs.pluginsdialog import PluginManagerDialog
-from stoqlib.gui.dialogs.sellabledialog import SellableTaxConstantsDialog
-from stoqlib.gui.dialogs.sintegradialog import SintegraDialog
-from stoqlib.gui.editors.personeditor import UserEditor
-from stoqlib.gui.search.costcentersearch import CostCenterSearch
-from stoqlib.gui.search.eventsearch import EventSearch
-from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
-from stoqlib.gui.search.messagesearch import MessageSearch
-from stoqlib.gui.search.parametersearch import ParameterSearch
-from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.gridsearch import (GridGroupSearch,
-                                           GridAttributeSearch)
-from stoqlib.gui.search.personsearch import (ClientSearch,
-                                             EmployeeRoleSearch,
-                                             EmployeeSearch,
-                                             BranchSearch,
-                                             SupplierSearch,
-                                             TransporterSearch,
-                                             UserSearch)
-from stoqlib.gui.search.profilesearch import UserProfileSearch
-from stoqlib.gui.search.stationsearch import StationSearch
-from stoqlib.gui.search.salesearch import SaleTokenSearch
-from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
-from stoqlib.gui.stockicons import (
+from stoq.lib.gui.dialogs.certificatedialog import CertificateListDialog
+from stoq.lib.gui.dialogs.clientcategorydialog import ClientCategoryDialog
+from stoq.lib.gui.dialogs.devices import DeviceSettingsDialog
+from stoq.lib.gui.editors.formfieldeditor import FormFieldEditor
+from stoq.lib.gui.dialogs.invoicedialog import InvoiceLayoutDialog, InvoicePrinterDialog
+from stoq.lib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
+from stoq.lib.gui.dialogs.paymentmethod import PaymentMethodsDialog
+from stoq.lib.gui.dialogs.personmergedialog import PersonMergeDialog
+from stoq.lib.gui.dialogs.pindialog import PinDialog
+from stoq.lib.gui.dialogs.pluginsdialog import PluginManagerDialog
+from stoq.lib.gui.dialogs.sellabledialog import SellableTaxConstantsDialog
+from stoq.lib.gui.dialogs.sintegradialog import SintegraDialog
+from stoq.lib.gui.editors.personeditor import UserEditor
+from stoq.lib.gui.search.costcentersearch import CostCenterSearch
+from stoq.lib.gui.search.eventsearch import EventSearch
+from stoq.lib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
+from stoq.lib.gui.search.messagesearch import MessageSearch
+from stoq.lib.gui.search.parametersearch import ParameterSearch
+from stoq.lib.gui.search.productsearch import ProductSearch
+from stoq.lib.gui.search.gridsearch import GridGroupSearch, GridAttributeSearch
+from stoq.lib.gui.search.personsearch import (ClientSearch,
+                                              EmployeeRoleSearch,
+                                              EmployeeSearch,
+                                              BranchSearch,
+                                              SupplierSearch,
+                                              TransporterSearch,
+                                              UserSearch)
+from stoq.lib.gui.search.profilesearch import UserProfileSearch
+from stoq.lib.gui.search.stationsearch import StationSearch
+from stoq.lib.gui.search.salesearch import SaleTokenSearch
+from stoq.lib.gui.search.servicesearch import ServiceSearch
+from stoq.lib.gui.search.taxclasssearch import TaxTemplatesSearch
+from stoq.lib.gui.stockicons import (
     STOQ_BOOK, STOQ_BRANCHES, STOQ_CLIENTS,
     STOQ_CONNECT, STOQ_DEVICES, STOQ_TRANSPORTER,
     STOQ_DOCUMENTS, STOQ_EMPLOYEE,
@@ -75,8 +73,8 @@ from stoqlib.gui.stockicons import (
     STOQ_SERVICES, STOQ_STATUS_WARNING,
     STOQ_SUPPLIERS, STOQ_SYSTEM, STOQ_TAX_TYPE,
     STOQ_USER_PROFILES)
-from stoqlib.gui.utils.keybindings import get_accels
-from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoq.lib.gui.utils.keybindings import get_accels
+from stoq.lib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.decorators import public
 from stoqlib.lib.message import info
 from stoqlib.lib.permissions import PermissionManager

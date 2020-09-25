@@ -47,7 +47,7 @@ class TestMain(unittest.TestCase):
         self._mocks.append(mocked)
 
         # Do not show the splash screen during the tests
-        mocked = mock.patch('stoqlib.gui.widgets.splash.show_splash',
+        mocked = mock.patch('stoq.lib.gui.widgets.splash.show_splash',
                             new=lambda: None)
         self._mocks.append(mocked)
 

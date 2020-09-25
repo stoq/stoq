@@ -9,7 +9,7 @@ GtkDialog(toplevel): title='Stoq - Installation', hidden
           GtkAlignment(step.alignment1, fill=True):
             GtkProgressBar(step.progressbar):
           GtkExpander(step.expander, expand=True, fill=True):
-            stoqlib+gui+widgets+processview+ProcessView(step.process_view):
+            stoq+lib+gui+widgets+processview+ProcessView(step.process_view):
               GtkTextView():
             GtkLabel(step.label2): 'Show details...'
           GtkLabel(step.done_label, fill=True, pack-end): 'Please wait while the database is being created.'

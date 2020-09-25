@@ -29,27 +29,27 @@ import mock
 from stoqlib.api import api
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.invoice import InvoiceLayout, InvoiceField, InvoicePrinter
-from stoqlib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
-from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.editors.noteeditor import NoteEditor, Note
-from stoqlib.gui.editors.saleeditor import SalesPersonEditor
-from stoqlib.gui.search.callsearch import ClientCallsSearch
-from stoqlib.gui.search.commissionsearch import CommissionSearch
-from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
-from stoqlib.gui.search.deliverysearch import DeliverySearch
-from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
-from stoqlib.gui.search.personsearch import ClientSearch
-from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.returnedsalesearch import ReturnedSaleSearch
-from stoqlib.gui.search.salesearch import (SoldItemsByBranchSearch,
-                                           SalesByPaymentMethodSearch,
-                                           UnconfirmedSaleItemsSearch)
-from stoqlib.gui.search.salespersonsearch import SalesPersonSalesSearch
-from stoqlib.gui.search.searchresultview import SearchResultListView
-from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
-from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
-from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
+from stoq.lib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
+from stoq.lib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoq.lib.gui.editors.noteeditor import NoteEditor, Note
+from stoq.lib.gui.editors.saleeditor import SalesPersonEditor
+from stoq.lib.gui.search.callsearch import ClientCallsSearch
+from stoq.lib.gui.search.commissionsearch import CommissionSearch
+from stoq.lib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
+from stoq.lib.gui.search.deliverysearch import DeliverySearch
+from stoq.lib.gui.search.loansearch import LoanItemSearch, LoanSearch
+from stoq.lib.gui.search.personsearch import ClientSearch
+from stoq.lib.gui.search.productsearch import ProductSearch
+from stoq.lib.gui.search.returnedsalesearch import ReturnedSaleSearch
+from stoq.lib.gui.search.salesearch import (SoldItemsByBranchSearch,
+                                            SalesByPaymentMethodSearch,
+                                            UnconfirmedSaleItemsSearch)
+from stoq.lib.gui.search.salespersonsearch import SalesPersonSalesSearch
+from stoq.lib.gui.search.searchresultview import SearchResultListView
+from stoq.lib.gui.search.servicesearch import ServiceSearch
+from stoq.lib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
+from stoq.lib.gui.wizards.salequotewizard import SaleQuoteWizard
+from stoq.lib.gui.wizards.salereturnwizard import SaleReturnWizard
 from stoqlib.lib.invoice import SaleInvoice
 from stoqlib.reporting.sale import SalesReport
 
@@ -188,7 +188,7 @@ class TestSales(BaseGUITest):
         self._check_run_dialog(app.SearchSalesPersonSales,
                                SalesPersonSalesSearch, [], {})
 
-    @mock.patch('stoqlib.gui.slaves.saleslave.run_dialog')
+    @mock.patch('stoq.lib.gui.slaves.saleslave.run_dialog')
     @mock.patch('stoq.gui.sales.api.new_store')
     def test_details(self, new_store, run_dialog):
         new_store.return_value = self.store
@@ -211,8 +211,8 @@ class TestSales(BaseGUITest):
         export.assert_called_once_with(object_list=app.results, name='sales',
                                        filename_prefix='sales')
 
-    @mock.patch('stoqlib.gui.slaves.saleslave.api.new_store')
-    @mock.patch('stoqlib.gui.slaves.saleslave.run_dialog')
+    @mock.patch('stoq.lib.gui.slaves.saleslave.api.new_store')
+    @mock.patch('stoq.lib.gui.slaves.saleslave.run_dialog')
     def test_return(self, run_dialog, new_store):
         new_store.return_value = self.store
 
@@ -231,7 +231,7 @@ class TestSales(BaseGUITest):
                 self.assertEqual(store, self.store)
                 self.assertEqual(returned_sale.sale, results[0].sale)
 
-    @mock.patch('stoqlib.gui.slaves.saleslave.run_dialog')
+    @mock.patch('stoq.lib.gui.slaves.saleslave.run_dialog')
     @mock.patch('stoq.gui.sales.api.new_store')
     def test_edit(self, new_store, run_dialog):
         new_store.return_value = self.store

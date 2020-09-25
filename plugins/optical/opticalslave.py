@@ -30,11 +30,11 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
 from stoqlib.domain.workorder import WorkOrderView
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.gui.editors.noteeditor import NoteEditor
-from stoqlib.gui.utils.iconutils import render_icon
-from stoqlib.gui.widgets.queryentry import PersonEntryGadget
+from stoq.lib.gui.base.dialogs import run_dialog
+from stoq.lib.gui.editors.baseeditor import BaseEditorSlave
+from stoq.lib.gui.editors.noteeditor import NoteEditor
+from stoq.lib.gui.utils.iconutils import render_icon
+from stoq.lib.gui.widgets.queryentry import PersonEntryGadget
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext

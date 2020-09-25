@@ -28,13 +28,13 @@ from kiwi.utils import gsignal
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.personsearch import ClientSearch
-from stoqlib.gui.widgets.notification import NotificationCounter
-from stoqlib.gui.widgets.section import Section
-from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
-from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
+from stoq.lib.gui.base.dialogs import run_dialog
+from stoq.lib.gui.search.productsearch import ProductSearch
+from stoq.lib.gui.search.personsearch import ClientSearch
+from stoq.lib.gui.widgets.notification import NotificationCounter
+from stoq.lib.gui.widgets.section import Section
+from stoq.lib.gui.wizards.salequotewizard import SaleQuoteWizard
+from stoq.lib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 

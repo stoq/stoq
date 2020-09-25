@@ -28,7 +28,7 @@ from gi.repository import Gtk
 
 from stoqlib.api import api
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.widgets.workorder import WorkOrderList
+from stoq.lib.gui.widgets.workorder import WorkOrderList
 
 from stoq.gui.shell.shellapp import ShellApp
 from stoq.gui.widgets import Apps, ShortcutGrid, Section

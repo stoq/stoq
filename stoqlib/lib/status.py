@@ -33,8 +33,8 @@ from stoqlib.lib.objutils import Settable
 from kiwi.utils import gsignal
 
 from stoqlib.api import api, safe_str
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.backupsettings import BackupSettingsEditor
+from stoq.lib.gui.base.dialogs import run_dialog
+from stoq.lib.gui.editors.backupsettings import BackupSettingsEditor
 from stoqlib.lib.decorators import threaded
 from stoqlib.lib.threadutils import threadit, schedule_in_main_thread
 from stoqlib.lib.translation import stoqlib_gettext as _

@@ -28,24 +28,22 @@ import mock
 
 from stoqlib.database.runtime import StoqlibStore, get_current_branch
 from stoqlib.domain.transfer import TransferOrder
-from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
-from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
-from stoqlib.gui.editors.producteditor import ProductStockEditor
-from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
-from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
-from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
-                                              ProductStockSearch,
-                                              ProductClosedStockSearch)
-from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
-from stoqlib.gui.search.transfersearch import (TransferOrderSearch,
-                                               TransferItemSearch)
-from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
-from stoqlib.gui.search.returnedsalesearch import (PendingReturnedSaleSearch,
-                                                   ReturnedItemSearch)
-from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
-from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
-from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
-from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
+from stoq.lib.gui.dialogs.initialstockdialog import InitialStockDialog
+from stoq.lib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
+from stoq.lib.gui.editors.producteditor import ProductStockEditor
+from stoq.lib.gui.search.loansearch import LoanItemSearch, LoanSearch
+from stoq.lib.gui.search.receivingsearch import PurchaseReceivingSearch
+from stoq.lib.gui.search.productsearch import (ProductSearchQuantity,
+                                               ProductStockSearch,
+                                               ProductClosedStockSearch)
+from stoq.lib.gui.search.purchasesearch import PurchasedItemsSearch
+from stoq.lib.gui.search.transfersearch import TransferOrderSearch, TransferItemSearch
+from stoq.lib.gui.search.stockdecreasesearch import StockDecreaseSearch
+from stoq.lib.gui.search.returnedsalesearch import PendingReturnedSaleSearch, ReturnedItemSearch
+from stoq.lib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
+from stoq.lib.gui.wizards.receivingwizard import ReceivingOrderWizard
+from stoq.lib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
+from stoq.lib.gui.wizards.stocktransferwizard import StockTransferWizard
 
 from stoq.gui.stock import StockApp
 from stoq.gui.test.baseguitest import BaseGUITest

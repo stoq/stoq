@@ -5,7 +5,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True, padding=6): slave ProductEditor is attached
         GtkBox(toplevel, orientation=vertical):
-          stoqlib+gui+base+messagebar+MessageBar():
+          stoq+lib+gui+base+messagebar+MessageBar():
             GtkRevealer(fill=True):
               GtkBox(orientation=horizontal):
                 GtkBox(orientation=horizontal, expand=True, fill=True):

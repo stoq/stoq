@@ -286,7 +286,7 @@ class ShellBootstrap(object):
     def _show_splash(self):
         if not self._options.splashscreen:
             return
-        from stoqlib.gui.widgets.splash import show_splash
+        from stoq.lib.gui.widgets.splash import show_splash
         show_splash()
 
     def _setup_psycopg(self):
@@ -341,14 +341,14 @@ class ShellBootstrap(object):
         if 'STOQ_TEST_MODE' in os.environ:
             return
         log.debug('providing graphical notification dialogs')
-        from stoqlib.gui.base.dialogs import DialogSystemNotifier
+        from stoq.lib.gui.base.dialogs import DialogSystemNotifier
         from stoqlib.lib.interfaces import ISystemNotifier
         from stoqlib.lib.component import provide_utility
         provide_utility(ISystemNotifier, DialogSystemNotifier(), replace=True)
 
         from gi.repository import Gtk
         from kiwi.environ import environ
-        from stoqlib.gui.stockicons import STOQ_LAUNCHER
+        from stoq.lib.gui.stockicons import STOQ_LAUNCHER
         Gtk.Window.set_default_icon_name(STOQ_LAUNCHER)
 
         if platform.system() == 'Darwin':
@@ -372,20 +372,20 @@ class ShellBootstrap(object):
         provide_utility(ICookieFile, Base64CookieFile(cookiefile))
 
     def _register_stock_icons(self):
-        from stoqlib.gui.stockicons import register
+        from stoq.lib.gui.stockicons import register
 
         log.debug('register stock icons')
         register()
 
     def _setup_domain_slave_mapper(self):
         from stoqlib.lib.component import provide_utility
-        from stoqlib.gui.interfaces import IDomainSlaveMapper
-        from stoqlib.gui.slaves.domainslavemapper import DefaultDomainSlaveMapper
+        from stoq.lib.gui.interfaces import IDomainSlaveMapper
+        from stoq.lib.gui.slaves.domainslavemapper import DefaultDomainSlaveMapper
         provide_utility(IDomainSlaveMapper, DefaultDomainSlaveMapper(),
                         replace=True)
 
     def _load_key_bindings(self):
-        from stoqlib.gui.utils.keybindings import load_user_keybindings
+        from stoq.lib.gui.utils.keybindings import load_user_keybindings
         load_user_keybindings()
 
     def _check_locale(self):
@@ -399,8 +399,8 @@ class ShellBootstrap(object):
         if not self._options.debug:
             return
         from gi.repository import Gdk
-        from stoqlib.gui.utils.introspection import introspect_slaves
-        from stoqlib.gui.utils.keyboardhandler import install_global_keyhandler
+        from stoq.lib.gui.utils.introspection import introspect_slaves
+        from stoq.lib.gui.utils.keyboardhandler import install_global_keyhandler
         install_global_keyhandler(Gdk.KEY_F12, introspect_slaves)
 
     #
@@ -438,7 +438,7 @@ class ShellBootstrap(object):
 
         window_name = 'unknown'
         try:
-            from stoqlib.gui.base.dialogs import get_current_toplevel
+            from stoq.lib.gui.base.dialogs import get_current_toplevel
             window = get_current_toplevel()
             if window:
                 window_name = window.get_name()
@@ -459,7 +459,7 @@ class ShellBootstrap(object):
             return
 
         from gi.repository import Gtk
-        from stoqlib.gui.dialogs.crashreportdialog import show_dialog
+        from stoq.lib.gui.dialogs.crashreportdialog import show_dialog
         show_dialog(callback=Gtk.main_quit)
         Gtk.main()
         raise SystemExit

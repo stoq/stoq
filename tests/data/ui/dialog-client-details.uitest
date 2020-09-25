@@ -15,7 +15,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
             GtkBox(hbox1, orientation=horizontal):
               GtkButton(further_details_button, fill=True): 'Further Details'
           GtkNotebook(details_notebook, expand=True, fill=True):
-            stoqlib+gui+dialogs+clientdetails+SalesTab():
+            stoq+lib+gui+dialogs+clientdetails+SalesTab():
               ObjectTree(expand=True, fill=True):
                 column: title='Sale #'
                 column: title='Invoice #'
@@ -30,7 +30,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
               GtkButtonBox(orientation=horizontal, pack-end):
                 GtkButton(expand=True, fill=True): 'Sale details', insensitive
                 GtkButton(expand=True, fill=True): 'Return sale', insensitive
-            stoqlib+gui+dialogs+clientdetails+ReturnedSalesTab():
+            stoq+lib+gui+dialogs+clientdetails+ReturnedSalesTab():
               ObjectTree(expand=True, fill=True):
                 column: title='Returned #'
                 column: title='Invoice #'
@@ -42,7 +42,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 column: title='Price'
                 column: title='Qty'
                 column: title='Total'
-            stoqlib+gui+dialogs+clientdetails+ProductsTab():
+            stoq+lib+gui+dialogs+clientdetails+ProductsTab():
               ObjectTree(expand=True, fill=True):
                 column: title='Code'
                 column: title='Description', expand
@@ -51,13 +51,13 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 column: title='Value'
                 column: title='Total value'
                 row: '', 'Normal', Decimal('1.000'), datetime.today(), <currency $100>, Decimal('100.00')
-            stoqlib+gui+dialogs+clientdetails+ServicesTab():
+            stoq+lib+gui+dialogs+clientdetails+ServicesTab():
               ObjectTree(expand=True, fill=True):
                 column: title='Code'
                 column: title='Description', expand
                 column: title='Estimated fix date'
                 row: '', 'Service', datetime.today()
-            stoqlib+gui+dialogs+clientdetails+WorkOrdersTab():
+            stoq+lib+gui+dialogs+clientdetails+WorkOrdersTab():
               ObjectTree(expand=True, fill=True):
                 column: title='WO #'
                 column: title='Equipment', expand
@@ -67,7 +67,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 column: title='Approve date'
                 column: title='Finish date'
                 column: title='Total'
-            stoqlib+gui+dialogs+clientdetails+PaymentsTab():
+            stoq+lib+gui+dialogs+clientdetails+PaymentsTab():
               ObjectTree(expand=True, fill=True):
                 column: title='Payment #'
                 column: title='Type'
@@ -80,7 +80,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
                 row: 999, 'Money', '1/1 Money for sale 00123', datetime.today(), None, 'Preview', <currency $200>, 0
               GtkButtonBox(orientation=horizontal, pack-end):
                 GtkButton(expand=True, fill=True): 'Payment details', insensitive
-            stoqlib+gui+dialogs+clientdetails+CreditAccountsTab():
+            stoq+lib+gui+dialogs+clientdetails+CreditAccountsTab():
               ObjectTree(expand=True, fill=True):
                 column: title='Payment #'
                 column: title='Date'
@@ -89,7 +89,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
               SummaryLabel(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Balance:</b>'
                 GtkLabel(): '<b>$0.00</b>'
-            stoqlib+gui+dialogs+clientdetails+CallsTab():
+            stoq+lib+gui+dialogs+clientdetails+CallsTab():
               ObjectTree(expand=True, fill=True):
                 column: title='Date'
                 column: title='Description', expand

@@ -33,15 +33,13 @@ from kiwi.datatypes import ValidationError
 from stoqlib.api import api
 from stoqlib.domain.person import Person
 from stoqlib.domain.workorder import WorkOrder, WorkOrderItem
-from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
-from stoqlib.gui.utils.printing import print_report
-from stoqlib.gui.wizards.personwizard import (PersonRoleWizard,
-                                              PersonRoleTypeStep,
-                                              RoleEditorStep)
-from stoqlib.gui.wizards.workorderquotewizard import (WorkOrderQuoteWizard,
-                                                      WorkOrderQuoteStartStep,
-                                                      WorkOrderQuoteWorkOrderStep,
-                                                      WorkOrderQuoteItemStep)
+from stoq.lib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
+from stoq.lib.gui.utils.printing import print_report
+from stoq.lib.gui.wizards.personwizard import PersonRoleWizard, PersonRoleTypeStep, RoleEditorStep
+from stoq.lib.gui.wizards.workorderquotewizard import (WorkOrderQuoteWizard,
+                                                       WorkOrderQuoteStartStep,
+                                                       WorkOrderQuoteWorkOrderStep,
+                                                       WorkOrderQuoteItemStep)
 from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -102,7 +100,7 @@ class OpticalWorkOrderStep(WorkOrderQuoteWorkOrderStep):
 class OpticalItemStep(WorkOrderQuoteItemStep):
     """Third step of the optical pre-sale.
 
-    Besides using the <stoqlib.gui.wizards.abstractwizard.SellableItemSlave> to
+    Besides using the <stoq.lib.gui.wizards.abstractwizard.SellableItemSlave> to
     add items to the sale, this step has a widget on the top to let the user
     choose on what work order he is adding the items.
 

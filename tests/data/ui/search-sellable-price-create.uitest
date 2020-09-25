@@ -13,8 +13,8 @@ GtkDialog(toplevel): title='', hidden
                   ProxyComboBox(padding=6): hidden
                     item: 'Contains All Words', selected
                   GtkEntry(search_entry, padding=6): ''
-                stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
-          stoqlib+gui+dialogs+masseditordialog+MassEditorWidget(mass_editor):
+                stoq+lib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
+          stoq+lib+gui+dialogs+masseditordialog+MassEditorWidget(mass_editor):
             GtkLabel(): 'Update'
             ProxyComboBox():
               item: 'Category', selected
@@ -42,10 +42,10 @@ GtkDialog(toplevel): title='', hidden
               item: 'cat1 Price'
               item: 'cat2 Price'
             GtkEventBox():
-              stoqlib+gui+dialogs+masseditordialog+ObjectEditor():
+              stoq+lib+gui+dialogs+masseditordialog+ObjectEditor():
                 ProxyComboBox(expand=True, fill=True):
                   item: 'Set value to', selected
-                stoqlib+gui+dialogs+masseditordialog+SetObjectValueOperation(expand=True, fill=True):
+                stoq+lib+gui+dialogs+masseditordialog+SetObjectValueOperation(expand=True, fill=True):
                   ProxyComboBox():
                     item: 'Erase value', selected
                     item: 'Bermudas'

@@ -24,7 +24,7 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
                       ProxyComboBox(padding=6): hidden
                         item: 'Contains All Words', selected
                       GtkEntry(padding=6): ''
-                    stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(): 'Find'
+                    stoq+lib+gui+widgets+searchfilterbutton+SearchFilterButton(): 'Find'
               SearchResultListView(expand=True, fill=True):
                 column: title='Production #'
                 column: title='Status', hidden

@@ -36,13 +36,13 @@ from stoqlib.api import api
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
-from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
-                                                     PaymentStatusChangeDialog)
-from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
-from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
-from stoqlib.gui.search.searchfilters import ComboSearchFilter
+from stoq.lib.gui.base.dialogs import run_dialog
+from stoq.lib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
+from stoq.lib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
+                                                      PaymentStatusChangeDialog)
+from stoq.lib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
+from stoq.lib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
+from stoq.lib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext as _
 from storm.expr import And

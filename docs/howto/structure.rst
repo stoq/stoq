@@ -196,46 +196,46 @@ stoqlib/exporters
 
 Exporters spreadsheets.
 
-stoqlib/gui
+stoq/lib/gui
 -----------
 
 Graphical User Interface functions. This is all tied to the Gtk toolkit.
 
-stoqlib/gui/base
+stoq/lib/gui/base
 ----------------
 
-stoqlib/gui/dialogs
+stoq/lib/gui/dialogs
 -------------------
 
 Dialogs. A toplevel window that has a couple of buttons and can do any generic
 actions.
 
-stoqlib/gui/editors
+stoq/lib/gui/editors
 -------------------
 
 Editors. These can create or modify an existing domain class.
 
-stoqlib/gui/search
+stoq/lib/gui/search
 ------------------
 
 Searches for information, like a simple report.
 
-stoqlib/gui/slaves
+stoq/lib/gui/slaves
 ------------------
 
 Components of an interface that can be plugged into an editor or dialog.
 
-stoqlib/gui/test
+stoq/lib/gui/test
 ----------------
 
 Unittests for stoqlib gui.
 
-stoqlib/gui/widgets
+stoq/lib/gui/widgets
 -------------------
 
 Gtk extensions that does a minor UI task well.
 
-stoqlib/gui/wizards
+stoq/lib/gui/wizards
 -------------------
 
 Graphical wizards/assistants that are a step by step helper to do a more

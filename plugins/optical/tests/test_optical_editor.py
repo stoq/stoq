@@ -26,7 +26,7 @@ import decimal
 
 import mock
 from stoqlib.domain.person import Person
-from stoqlib.gui.test.uitestutils import GUITest
+from stoq.lib.gui.test.uitestutils import GUITest
 
 from ..opticaldomain import OpticalMedic, OpticalProduct
 from ..opticaleditor import (MedicEditor, OpticalWorkOrderEditor,

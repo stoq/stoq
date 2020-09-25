@@ -35,24 +35,21 @@ from kiwi.environ import environ
 from kiwi.ui.delegates import Delegate
 from stoqlib.api import api
 from stoqlib.domain.views import ClientWithSalesView
-from stoqlib.gui.base.dialogs import (add_current_toplevel,
-                                      get_current_toplevel,
-                                      run_dialog)
-from stoqlib.gui.base.messagebar import MessageBar
-from stoqlib.gui.editors.preferenceseditor import PreferencesEditor
-from stoqlib.gui.events import StartApplicationEvent, StopApplicationEvent
-from stoqlib.gui.stockicons import STOQ_LAUNCHER
-from stoqlib.gui.utils.help import show_contents, show_section
-from stoqlib.gui.utils.introspection import introspect_slaves
-from stoqlib.gui.utils.logo import render_logo_pixbuf
-from stoqlib.gui.utils.openbrowser import open_browser
-from stoqlib.gui.widgets.notification import NotificationCounter
+from stoq.lib.gui.base.dialogs import add_current_toplevel, get_current_toplevel, run_dialog
+from stoq.lib.gui.base.messagebar import MessageBar
+from stoq.lib.gui.editors.preferenceseditor import PreferencesEditor
+from stoq.lib.gui.events import StartApplicationEvent, StopApplicationEvent
+from stoq.lib.gui.stockicons import STOQ_LAUNCHER
+from stoq.lib.gui.utils.help import show_contents, show_section
+from stoq.lib.gui.utils.introspection import introspect_slaves
+from stoq.lib.gui.utils.logo import render_logo_pixbuf
+from stoq.lib.gui.utils.openbrowser import open_browser
+from stoq.lib.gui.widgets.notification import NotificationCounter
 from stoqlib.lib.interfaces import IAppInfo, IApplicationDescriptions
 from stoqlib.lib.message import error, yesno
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.pluginmanager import InstalledPlugin, get_plugin_manager
-from stoqlib.lib.translation import (stoqlib_gettext, stoqlib_ngettext,
-                                     locale_sorted)
+from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext, locale_sorted
 from stoqlib.lib.webservice import WebService
 from stoq.gui.shell.statusbar import ShellStatusbar
 from stoq.gui.widgets import PopoverMenu, ButtonGroup
@@ -1119,7 +1116,7 @@ class ShellWindow(Delegate):
         self.current_app.export_spreadsheet_activate()
 
     def on_change_password__activate(self, action, parameter):
-        from stoqlib.gui.slaves.userslave import PasswordEditor
+        from stoq.lib.gui.slaves.userslave import PasswordEditor
         store = api.new_store()
         user = api.get_current_user(store)
         retval = run_dialog(PasswordEditor, self, store, user)

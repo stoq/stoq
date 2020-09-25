@@ -21,7 +21,7 @@ GtkDialog(toplevel): title='Client Search', hidden
                   ProxyComboBox(padding=6): hidden
                     item: 'Contains All Words', selected
                   GtkEntry(search_entry, padding=6): ''
-                stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
+                stoq+lib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
               DateSearchFilter():
                 GtkLabel(): 'Birthday:'
                 ProxyComboBox(padding=6):
@@ -36,7 +36,7 @@ GtkDialog(toplevel): title='Client Search', hidden
                 ProxyDateEntry(padding=6): datetime.date(1987, 3, 4), invalid
                 GtkLabel(): 'To:', insensitive
                 ProxyDateEntry(padding=6): datetime.date(1987, 3, 4), insensitive
-                stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton():
+                stoq+lib+gui+widgets+searchfilterbutton+SearchFilterButton():
           SearchResultListView(results, expand=True, fill=True):
             column: title='Name', expand
             column: title='Category', hidden

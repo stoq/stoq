@@ -28,7 +28,7 @@ import tempfile
 from gi.repository import Gtk
 import mock
 from stoqlib.database.settings import DatabaseSettings
-from stoqlib.gui.test.uitestutils import GUITest
+from stoq.lib.gui.test.uitestutils import GUITest
 
 from stoq.gui.config import (DatabaseSettingsStep,
                              FirstTimeConfigWizard)

@@ -46,25 +46,23 @@ from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.missingitemsdialog import (MissingItemsDialog,
-                                                    get_missing_items)
-from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.dialogs.tilldailymovement import TillDailyMovementDialog
-from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
-from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
-from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
-from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
-from stoqlib.gui.search.paymentsearch import CardPaymentSearch
-from stoqlib.gui.search.paymentreceivingsearch import PaymentReceivingSearch
-from stoqlib.gui.search.personsearch import ClientSearch
-from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
-                                           SoldItemsByBranchSearch)
-from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
-from stoqlib.gui.search.searchfilters import ComboSearchFilter
-from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch, TillClosedSearch
-from stoqlib.gui.slaves.saleslave import return_sale
-from stoqlib.gui.utils.keybindings import get_accels
+from stoq.lib.gui.base.dialogs import run_dialog
+from stoq.lib.gui.dialogs.missingitemsdialog import MissingItemsDialog, get_missing_items
+from stoq.lib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoq.lib.gui.dialogs.tilldailymovement import TillDailyMovementDialog
+from stoq.lib.gui.dialogs.tillhistory import TillHistoryDialog
+from stoq.lib.gui.editors.paymentseditor import SalePaymentsEditor
+from stoq.lib.gui.editors.tilleditor import CashInEditor, CashOutEditor
+from stoq.lib.gui.fiscalprinter import FiscalPrinterHelper
+from stoq.lib.gui.search.paymentsearch import CardPaymentSearch
+from stoq.lib.gui.search.paymentreceivingsearch import PaymentReceivingSearch
+from stoq.lib.gui.search.personsearch import ClientSearch
+from stoq.lib.gui.search.salesearch import SaleWithToolbarSearch, SoldItemsByBranchSearch
+from stoq.lib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
+from stoq.lib.gui.search.searchfilters import ComboSearchFilter
+from stoq.lib.gui.search.tillsearch import TillFiscalOperationsSearch, TillClosedSearch
+from stoq.lib.gui.slaves.saleslave import return_sale
+from stoq.lib.gui.utils.keybindings import get_accels
 from stoqlib.reporting.sale import SalesReport
 
 from stoq.gui.shell.shellapp import ShellApp

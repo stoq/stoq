@@ -19,7 +19,7 @@ GtkDialog(toplevel): title='Search for Sales by Payment Method', hidden
                   ProxyComboBox(padding=6): hidden
                     item: 'Contains All Words', selected
                   GtkEntry(search_entry, padding=6): ''
-                stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
+                stoq+lib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
               ComboSearchFilter(payment_filter):
                 GtkLabel(): 'Payment Method:'
                 ProxyComboBox(padding=6):

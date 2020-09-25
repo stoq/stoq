@@ -47,17 +47,16 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import TillError
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.paymenteditor import InPaymentEditor
-from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
-from stoqlib.gui.search.paymentsearch import (CardPaymentSearch,
-                                              InPaymentBillCheckSearch)
-from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
-from stoqlib.gui.search.searchfilters import DateSearchFilter
-from stoqlib.gui.slaves.paymentconfirmslave import SalePaymentConfirmSlave
-from stoqlib.gui.utils.keybindings import get_accels
-from stoqlib.gui.utils.printing import print_report
-from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
+from stoq.lib.gui.base.dialogs import run_dialog
+from stoq.lib.gui.editors.paymenteditor import InPaymentEditor
+from stoq.lib.gui.editors.paymentseditor import SalePaymentsEditor
+from stoq.lib.gui.search.paymentsearch import CardPaymentSearch, InPaymentBillCheckSearch
+from stoq.lib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
+from stoq.lib.gui.search.searchfilters import DateSearchFilter
+from stoq.lib.gui.slaves.paymentconfirmslave import SalePaymentConfirmSlave
+from stoq.lib.gui.utils.keybindings import get_accels
+from stoq.lib.gui.utils.printing import print_report
+from stoq.lib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
 from stoqlib.lib.boleto import get_bank_info_by_number
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.message import warning

@@ -19,14 +19,14 @@ GtkDialog(toplevel): title='Product Search', hidden
                   ProxyComboBox(padding=6): hidden
                     item: 'Contains All Words', selected
                   GtkEntry(search_entry, padding=6): 'bot'
-                stoqlib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
+                stoq+lib+gui+widgets+searchfilterbutton+SearchFilterButton(search_button): 'Find'
               ComboSearchFilter(branch_filter):
                 GtkLabel(): 'In branch:'
                 ProxyComboBox(padding=6):
                   item: 'Any'
                   item: 'Moda Stoq', selected
                   item: 'Stoq Elite Fashion'
-          stoqlib+gui+search+productsearch+_ProductSearchResultTreeView(results, expand=True, fill=True):
+          stoq+lib+gui+search+productsearch+_ProductSearchResultTreeView(results, expand=True, fill=True):
             column: title='Code'
             column: title='Barcode'
             column: title='Category'

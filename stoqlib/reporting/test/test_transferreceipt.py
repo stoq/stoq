@@ -23,7 +23,7 @@
 ##
 
 from stoqlib.api import api
-from stoqlib.gui.search.transfersearch import TransferOrderSearch
+from stoq.lib.gui.search.transfersearch import TransferOrderSearch
 from stoqlib.lib.dateutils import localdatetime
 from stoqlib.reporting.test.reporttest import ReportTest
 from stoqlib.reporting.transfer import TransferOrderReceipt, TransferOrderReport

@@ -27,8 +27,8 @@ from kiwi.environ import environ
 from gi.repository import Gtk
 
 from stoqlib.api import api
-from stoqlib.gui.base.dialogs import BasicDialog
-from stoqlib.gui.utils.openbrowser import open_browser
+from stoq.lib.gui.base.dialogs import BasicDialog
+from stoq.lib.gui.utils.openbrowser import open_browser
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 

@@ -41,18 +41,16 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service
 from stoqlib.domain.till import Till
 from stoqlib.domain.views import SellableFullStockView
-from stoqlib.gui.editors.deliveryeditor import (CreateDeliveryModel,
-                                                CreateDeliveryEditor)
-from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
-from stoqlib.gui.editors.tilleditor import TillOpeningEditor
-from stoqlib.gui.search.deliverysearch import DeliverySearch
-from stoqlib.gui.search.personsearch import ClientSearch
-from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
-                                           SaleTokenSearch,
-                                           SoldItemsByBranchSearch)
-from stoqlib.gui.search.sellablesearch import SaleSellableSearch
-from stoqlib.gui.search.servicesearch import ServiceSearch
+from stoq.lib.gui.editors.deliveryeditor import CreateDeliveryModel, CreateDeliveryEditor
+from stoq.lib.gui.editors.serviceeditor import ServiceItemEditor
+from stoq.lib.gui.editors.tilleditor import TillOpeningEditor
+from stoq.lib.gui.search.deliverysearch import DeliverySearch
+from stoq.lib.gui.search.personsearch import ClientSearch
+from stoq.lib.gui.search.productsearch import ProductSearch
+from stoq.lib.gui.search.salesearch import (SaleWithToolbarSearch, SaleTokenSearch,
+                                            SoldItemsByBranchSearch)
+from stoq.lib.gui.search.sellablesearch import SaleSellableSearch
+from stoq.lib.gui.search.servicesearch import ServiceSearch
 from stoqlib.reporting.booklet import BookletReport
 
 from stoq.gui.pos import PosApp, TemporarySaleItem
@@ -77,7 +75,7 @@ class TestPos(BaseGUITest):
         return till
 
     def _pos_open_till(self, pos):
-        with mock.patch('stoqlib.gui.fiscalprinter.run_dialog') as run_dialog:
+        with mock.patch('stoq.lib.gui.fiscalprinter.run_dialog') as run_dialog:
             self.activate(pos.TillOpen)
             self._called_once_with_store(run_dialog, TillOpeningEditor, pos)
 
@@ -351,7 +349,7 @@ class TestPos(BaseGUITest):
 
         try:
             with mock.patch.object(StoqlibStore, 'close', new=close):
-                with mock.patch('stoqlib.gui.fiscalprinter.run_dialog',
+                with mock.patch('stoq.lib.gui.fiscalprinter.run_dialog',
                                 self._auto_confirm_sale_wizard):
                     self.activate(pos.ConfirmOrder)
                 models = self.collect_sale_models(self.sale)
@@ -379,7 +377,7 @@ class TestPos(BaseGUITest):
             with contextlib.nested(
                 mock.patch.object(StoqlibStore, 'confirm'),
                 mock.patch.object(StoqlibStore, 'close', new=close),
-                mock.patch('stoqlib.gui.fiscalprinter.run_dialog',
+                mock.patch('stoq.lib.gui.fiscalprinter.run_dialog',
                            self._auto_confirm_sale_wizard_with_bill)):
 
                 self.activate(pos.ConfirmOrder)
@@ -394,8 +392,8 @@ class TestPos(BaseGUITest):
             for store in close_calls:
                 store.close()
 
-    @mock.patch('stoqlib.gui.fiscalprinter.yesno')
-    @mock.patch('stoqlib.gui.fiscalprinter.print_report')
+    @mock.patch('stoq.lib.gui.fiscalprinter.yesno')
+    @mock.patch('stoq.lib.gui.fiscalprinter.print_report')
     def test_checkout_with_store_credit(self, print_report, yesno):
         app = self.create_app(PosApp, u'pos')
         pos = app
@@ -413,7 +411,7 @@ class TestPos(BaseGUITest):
             with contextlib.nested(
                 mock.patch.object(StoqlibStore, 'confirm'),
                 mock.patch.object(StoqlibStore, 'close', new=close),
-                mock.patch('stoqlib.gui.fiscalprinter.run_dialog',
+                mock.patch('stoq.lib.gui.fiscalprinter.run_dialog',
                            self._auto_confirm_sale_wizard_with_store_credit)):
                 self.activate(pos.ConfirmOrder)
 
@@ -446,7 +444,7 @@ class TestPos(BaseGUITest):
                 mock.patch.object(StoqlibStore, 'confirm'),
                 mock.patch.object(StoqlibStore, 'rollback'),
                 mock.patch.object(StoqlibStore, 'close'),
-                mock.patch('stoqlib.gui.fiscalprinter.run_dialog',
+                mock.patch('stoq.lib.gui.fiscalprinter.run_dialog',
                            self._auto_confirm_sale_wizard_with_trade)):
             self.activate(pos.ConfirmOrder)
             msg = ("Traded value is greater than the new sale's value. "
@@ -483,7 +481,7 @@ class TestPos(BaseGUITest):
                 mock.patch.object(StoqlibStore, 'confirm'),
                 mock.patch.object(StoqlibStore, 'rollback'),
                 mock.patch.object(StoqlibStore, 'close'),
-                mock.patch('stoqlib.gui.fiscalprinter.run_dialog',
+                mock.patch('stoq.lib.gui.fiscalprinter.run_dialog',
                            self._auto_confirm_sale_wizard_with_trade)):
             self.activate(pos.ConfirmOrder)
             info.assert_called_once_with(

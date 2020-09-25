@@ -38,10 +38,10 @@ from stoqdrivers.enum import PaymentMethodType, TaxType
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.till import Till
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
-from stoqlib.gui.dialogs.progressdialog import ProgressDialog
-from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoq.lib.gui.base.dialogs import run_dialog
+from stoq.lib.gui.base.lists import ModelListDialog, ModelListSlave
+from stoq.lib.gui.dialogs.progressdialog import ProgressDialog
+from stoq.lib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.devicemanager import DeviceManager
 from stoqlib.lib.message import info, yesno, warning

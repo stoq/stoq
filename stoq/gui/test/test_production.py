@@ -25,14 +25,14 @@
 import contextlib
 
 import mock
-from stoqlib.gui.dialogs.productiondetails import ProductionDetailsDialog
-from stoqlib.gui.dialogs.productionquotedialog import ProductionQuoteDialog
-from stoqlib.gui.dialogs.startproduction import StartProductionDialog
-from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
-                                                 ProductionItemsSearch,
-                                                 ProductionHistorySearch)
-from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.wizards.productionwizard import ProductionWizard
+from stoq.lib.gui.dialogs.productiondetails import ProductionDetailsDialog
+from stoq.lib.gui.dialogs.productionquotedialog import ProductionQuoteDialog
+from stoq.lib.gui.dialogs.startproduction import StartProductionDialog
+from stoq.lib.gui.search.productionsearch import (ProductionProductSearch,
+                                                  ProductionItemsSearch,
+                                                  ProductionHistorySearch)
+from stoq.lib.gui.search.servicesearch import ServiceSearch
+from stoq.lib.gui.wizards.productionwizard import ProductionWizard
 
 from stoq.gui.production import ProductionApp
 from stoq.gui.test.baseguitest import BaseGUITest

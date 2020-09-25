@@ -28,14 +28,11 @@ from gi.repository import Gtk
 from stoqlib.lib.objutils import Settable
 import mock
 
-from stoq.gui.shell.statusbar import (StatusButton, StatusPopover, ResourceStatusBox)
+from stoq.gui.shell.statusbar import StatusButton, StatusPopover, ResourceStatusBox
 from stoq.gui.test.baseguitest import BaseGUITest
-from stoqlib.lib.status import (ResourceStatus, ResourceStatusManager,
-                                ResourceStatusAction)
-from stoqlib.gui.stockicons import (STOQ_STATUS_NA,
-                                    STOQ_STATUS_OK,
-                                    STOQ_STATUS_WARNING,
-                                    STOQ_STATUS_ERROR)
+from stoqlib.lib.status import ResourceStatus, ResourceStatusManager, ResourceStatusAction
+from stoq.lib.gui.stockicons import (STOQ_STATUS_NA, STOQ_STATUS_OK,
+                                     STOQ_STATUS_WARNING, STOQ_STATUS_ERROR)
 
 
 class TestStatusPopover(BaseGUITest):

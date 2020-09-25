@@ -31,12 +31,12 @@ from kiwi.ui.delegates import GladeDelegate
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
 from stoqlib.enums import SearchFilterPosition
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
-from stoqlib.gui.events import ApplicationSetupSearchEvent
-from stoqlib.gui.search.searchslave import SearchSlave
-from stoqlib.gui.utils.printing import print_report
-from stoqlib.gui.widgets.lazyobjectlist import LazyObjectModel
+from stoq.lib.gui.base.dialogs import run_dialog
+from stoq.lib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
+from stoq.lib.gui.events import ApplicationSetupSearchEvent
+from stoq.lib.gui.search.searchslave import SearchSlave
+from stoq.lib.gui.utils.printing import print_report
+from stoq.lib.gui.widgets.lazyobjectlist import LazyObjectModel
 from stoqlib.lib.decorators import cached_function
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -275,7 +275,7 @@ class ShellApp(GladeDelegate):
 
         Note that this method must be called during the setup of this search,
         which right now is only possible for those who capture the
-        `<stoqlib.gui.events.ApplicationSetupSearchEvent>`
+        `<stoq.lib.gui.events.ApplicationSetupSearchEvent>`
         """
         self.columns.extend(columns)
 
@@ -391,7 +391,7 @@ class ShellApp(GladeDelegate):
 
     def refresh(self, rollback=True):
         """
-        See :class:`stoqlib.gui.search.searchslave.SearchSlave.refresh`
+        See :class:`stoq.lib.gui.search.searchslave.SearchSlave.refresh`
         """
         # Since the store here is actually a transaction and the items
         # on it can be changed from another station, do a rollback so
@@ -403,7 +403,7 @@ class ShellApp(GladeDelegate):
 
     def clear(self):
         """
-        See :class:`stoqlib.gui.search.searchslave.SearchSlave.clear`
+        See :class:`stoq.lib.gui.search.searchslave.SearchSlave.clear`
         """
         self.search.clear()
 

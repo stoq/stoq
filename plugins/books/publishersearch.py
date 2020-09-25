@@ -25,9 +25,9 @@
 """ Search dialog/Editor for publishers """
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.search.personsearch import BasePersonSearch
-from stoqlib.gui.search.searchcolumns import SearchColumn
-from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
+from stoq.lib.gui.search.personsearch import BasePersonSearch
+from stoq.lib.gui.search.searchcolumns import SearchColumn
+from stoq.lib.gui.templates.persontemplate import BasePersonRoleEditor
 
 from books.booksdomain import BookPublisher, PublisherView
 

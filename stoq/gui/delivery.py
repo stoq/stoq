@@ -34,13 +34,13 @@ from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.sale import Delivery
 from stoqlib.domain.views import DeliveryView
 from stoqlib.enums import SearchFilterPosition
-from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
-from stoqlib.gui.search.personsearch import ClientSearch, TransporterSearch
-from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
-from stoqlib.gui.search.searchfilters import ComboSearchFilter
-from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.utils.iconutils import get_delivery_state_icon, render_icon
+from stoq.lib.gui.editors.deliveryeditor import DeliveryEditor
+from stoq.lib.gui.search.personsearch import ClientSearch, TransporterSearch
+from stoq.lib.gui.search.productsearch import ProductSearch
+from stoq.lib.gui.search.searchcolumns import IdentifierColumn, SearchColumn
+from stoq.lib.gui.search.searchfilters import ComboSearchFilter
+from stoq.lib.gui.search.servicesearch import ServiceSearch
+from stoq.lib.gui.utils.iconutils import get_delivery_state_icon, render_icon
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 from stoq.gui.shell.shellapp import ShellApp

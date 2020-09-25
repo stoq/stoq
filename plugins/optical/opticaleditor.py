@@ -30,8 +30,8 @@ from stoqlib.lib.objutils import Settable
 from stoqlib.api import api
 from stoqlib.domain.person import Supplier
 from stoqlib.domain.workorder import WorkOrder, WorkOrderHistory
-from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
+from stoq.lib.gui.editors.baseeditor import BaseEditor
+from stoq.lib.gui.templates.persontemplate import BasePersonRoleEditor
 from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.translation import stoqlib_gettext
 

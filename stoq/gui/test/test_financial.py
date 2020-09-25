@@ -28,8 +28,8 @@ import mock
 from stoq.gui.financial import FinancialApp
 from stoq.gui.test.baseguitest import BaseGUITest
 from stoqlib.domain.account import AccountTransaction
-from stoqlib.gui.editors.accounteditor import AccountEditor
-from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
+from stoq.lib.gui.editors.accounteditor import AccountEditor
+from stoq.lib.gui.editors.accounttransactioneditor import AccountTransactionEditor
 from stoqlib.reporting.payment import AccountTransactionReport
 
 

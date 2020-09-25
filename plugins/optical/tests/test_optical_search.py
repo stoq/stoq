@@ -24,9 +24,9 @@
 
 import mock
 
-from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.search.searchoptions import Any
-from stoqlib.gui.test.uitestutils import GUITest
+from stoq.lib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoq.lib.gui.search.searchoptions import Any
+from stoq.lib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localtoday
 
 from ..medicssearch import OpticalMedicSearch, MedicSalesSearch
