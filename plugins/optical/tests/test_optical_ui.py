@@ -61,6 +61,10 @@ __tests__ = 'plugins.optical.opticalui.py'
 
 
 class TestOpticalUI(BaseGUITest, OpticalDomainTest):
+    def setUp(self):
+        super().setUp()
+        self.ui._setup_params()
+
     @classmethod
     def setUpClass(cls):
         cls.ui = OpticalUI.get_instance()
@@ -183,6 +187,7 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
             self.assertTrue(isinstance(args[0], MedicRoleWizard))
 
     def test_person_editor(self):
+        sysparam.__init__()
         client = self.create_client()
         editor = ClientEditor(self.store, client, role_type=Person.ROLE_INDIVIDUAL)
         self.check_editor(editor, 'editor-client-optical-plugin')

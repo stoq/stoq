@@ -523,7 +523,20 @@ stoq_dir = get_tests_datadir('ui')
 
 
 class GUITest(DomainTest):
+    @classmethod
+    def setUpClass(cls):
+        pass
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
     def setUp(self):
+        from stoqlib.database.runtime import new_store
+        self.store = new_store()
+        self.fake.set_store(self.store)
+        self.set_store(self.store)
+
         self._unhandled_exceptions = []
         self._old_hook = sys.excepthook
         sys.excepthook = self._except_hook
@@ -531,8 +544,11 @@ class GUITest(DomainTest):
         DomainTest.setUp(self)
 
     def tearDown(self):
+        self.store.close()
+        self.fake.set_store(None)
+        self.clear()
+
         sys.excepthook = self._old_hook
-        DomainTest.tearDown(self)
 
         messages = test_system_notifier.reset()
         if messages:

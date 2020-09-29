@@ -38,6 +38,9 @@ from stoqlib.lib.parameters import sysparam
 
 
 class TestAccount(DomainTest):
+    def setUp(self):
+        super().setUp()
+        sysparam.__init__()
 
     def test_account(self):
         account = self.create_account()

@@ -99,12 +99,14 @@ class TestBillReport(DomainTest):
         address = self.create_address()
         address.person = sale.client.person
         sale.confirm(self.current_user)
-        return sale
+        return sale, payments
 
     @mock.patch('stoqlib.lib.boleto.localtoday')
-    def _render_bill_to_html(self, sale, localtoday):
+    def _render_bill_to_html(self, sale, payments=None, localtoday=None):
         localtoday.return_value = datetime.date(2011, 5, 30)
-        report = BillReport(self._filename, list(sale.payments))
+        if not payments:
+            payments = list(sale.payments)
+        report = BillReport(self._filename, payments)
         report.add_payments()
         report.save()
         self._pdf_html = tempfile.mktemp(prefix="stoqlib-test-boleto-",
@@ -112,14 +114,14 @@ class TestBillReport(DomainTest):
         pdftohtml(self._filename, self._pdf_html)
         return self._pdf_html
 
-    def _diff(self, sale, name):
-        generated = self._render_bill_to_html(sale)
+    def _diff(self, sale, name, payments=None):
+        generated = self._render_bill_to_html(sale, payments)
         expected = self._get_expected(name, generated)
         diff = diff_pdf_htmls(expected, generated)
         self.assertFalse(diff, '%s\n%s' % ("Files differ, output:", diff))
 
     def test_banco_do_brasil(self):
-        sale = self._create_bill_sale()
+        sale = self._create_bill_sale()[0]
         self._configure_boleto(u"001",
                                convenio=u"12345678",
                                agency=u"1172",
@@ -128,7 +130,7 @@ class TestBillReport(DomainTest):
         self._diff(sale, 'boleto-001')
 
     def test_banco_do_brasil_com_d_v(self):
-        sale = self._create_bill_sale()
+        sale = self._create_bill_sale()[0]
         self._configure_boleto(u"001",
                                convenio=u"12345678",
                                agency=u"1172-X",
@@ -137,7 +139,7 @@ class TestBillReport(DomainTest):
         self._diff(sale, 'boleto-001')
 
     def test_nossa_caixa(self):
-        sale = self._create_bill_sale()
+        sale = self._create_bill_sale()[0]
         self._configure_boleto(u"104",
                                agency=u"1565",
                                account=u"414-3",
@@ -147,7 +149,7 @@ class TestBillReport(DomainTest):
         self._diff(sale, 'boleto-104')
 
     def test_itau(self):
-        sale = self._create_bill_sale()
+        sale = self._create_bill_sale()[0]
         self._configure_boleto(u"341",
                                account=u"13877",
                                agency=u"1565",
@@ -157,7 +159,7 @@ class TestBillReport(DomainTest):
         self._diff(sale, 'boleto-341')
 
     def test_bradesco(self):
-        sale = self._create_bill_sale()
+        sale = self._create_bill_sale()[0]
         self._configure_boleto(u"237",
                                account=u"029232-4",
                                agency=u"278-0",
@@ -167,7 +169,7 @@ class TestBillReport(DomainTest):
         self._diff(sale, 'boleto-237')
 
     def test_real(self):
-        sale = self._create_bill_sale()
+        sale = self._create_bill_sale()[0]
         self._configure_boleto(u"356",
                                account=u"5705853",
                                agency=u"0531",
@@ -177,14 +179,15 @@ class TestBillReport(DomainTest):
         self._diff(sale, 'boleto-356')
 
     def test_carne(self):
-        sale = self._create_bill_sale(installments=2)
+        sale, payments = self._create_bill_sale(installments=2)
         self._configure_boleto(u"001",
                                account=u"5705853",
                                agency=u"0531",
                                carteira=u'06',
                                especie_documento=u"DM")
 
-        self._diff(sale, 'boleto-001-carne')
+        payments = payments[::-1]
+        self._diff(sale, 'boleto-001-carne', payments=payments)
 
 
 class TestBank(BankInfo):
