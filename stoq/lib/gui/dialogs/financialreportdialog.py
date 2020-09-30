@@ -5,7 +5,7 @@ import tempfile
 
 from gi.repository import Gtk
 
-from stoqlib.database.queryexecuter import QueryExecuter
+from stoq.lib.queryexecuter import QueryExecuter
 from stoqlib.domain.account import AccountTransaction
 from stoq.lib.gui.base.dialogs import BasicDialog
 from stoq.lib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter

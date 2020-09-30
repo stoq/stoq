@@ -29,7 +29,7 @@ from gi.repository import Gtk
 from kiwi.ui.entry import ENTRY_MODE_DATA
 
 from stoqlib.api import api
-from stoqlib.database.queryexecuter import QueryExecuter
+from stoq.lib.queryexecuter import QueryExecuter
 from stoq.lib.gui.base.dialogs import run_dialog
 from stoq.lib.gui.search.searchfilters import StringSearchFilter
 from stoq.lib.gui.search.personsearch import BasePersonSearch, ClientSearch

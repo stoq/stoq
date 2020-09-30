@@ -385,22 +385,6 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`sintegragenerator` Module
--------------------------------
-
-.. automodule:: stoqlib.lib.sintegragenerator
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`status` Module
---------------------
-
-.. automodule:: stoqlib.lib.status
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`stringutils` Module
 -------------------------
 

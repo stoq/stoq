@@ -28,8 +28,6 @@ from stoqlib.database.migration import PluginSchemaMigration
 from stoqlib.lib.interfaces import IPlugin
 from stoqlib.lib.pluginmanager import register_plugin
 
-from .opticalui import OpticalUI
-
 
 @implementer(IPlugin)
 class OpticalPlugin(object):
@@ -57,6 +55,7 @@ class OpticalPlugin(object):
                                    'OpticalPatientVisualAcuity'])]
 
     def activate(self):
+        from .opticalui import OpticalUI
         self.ui = OpticalUI.get_instance()
 
     def get_server_tasks(self):

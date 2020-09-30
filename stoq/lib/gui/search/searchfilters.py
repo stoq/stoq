@@ -38,10 +38,10 @@ from kiwi.utils import gsignal
 from zope.interface import implementer
 
 from stoqlib.database.interfaces import ISearchFilter
-from stoqlib.database.queryexecuter import (NumberQueryState, StringQueryState,
-                                            DateQueryState, DateIntervalQueryState,
-                                            NumberIntervalQueryState,
-                                            BoolQueryState, MultiQueryState)
+from stoq.lib.queryexecuter import (NumberQueryState, StringQueryState,
+                                    DateQueryState, DateIntervalQueryState,
+                                    NumberIntervalQueryState,
+                                    BoolQueryState, MultiQueryState)
 from stoq.lib.gui.search.searchoptions import (Any,
                                                Between,
                                                IdenticalTo,

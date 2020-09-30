@@ -30,7 +30,7 @@ import mock
 
 from stoq.gui.shell.statusbar import StatusButton, StatusPopover, ResourceStatusBox
 from stoq.gui.test.baseguitest import BaseGUITest
-from stoqlib.lib.status import ResourceStatus, ResourceStatusManager, ResourceStatusAction
+from stoq.lib.status import ResourceStatus, ResourceStatusManager, ResourceStatusAction
 from stoq.lib.gui.stockicons import (STOQ_STATUS_NA, STOQ_STATUS_OK,
                                      STOQ_STATUS_WARNING, STOQ_STATUS_ERROR)
 

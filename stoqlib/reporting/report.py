@@ -24,7 +24,6 @@ import os
 import platform
 
 import pkg_resources
-from gi.repository import GdkPixbuf
 from kiwi.accessor import kgetattr
 
 from stoqlib.database.runtime import get_default_store
@@ -247,7 +246,7 @@ class ObjectListReport(TableReport):
         TableReport.__init__(self, filename, data, *args, **kwargs)
 
     def get_columns(self):
-        from gi.repository import Gtk
+        from gi.repository import GdkPixbuf, Gtk
         alignments = {
             Gtk.Justification.LEFT: 'left',
             Gtk.Justification.RIGHT: 'right',

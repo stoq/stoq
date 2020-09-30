@@ -30,7 +30,7 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
 from stoqlib.api import api
-from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
+from stoq.lib.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.person import Individual
 from stoqlib.enums import SearchFilterPosition
 from stoq.lib.gui.base.dialogs import BasicDialog

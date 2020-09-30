@@ -31,7 +31,7 @@ from kiwi.utils import gsignal
 
 from stoqlib.api import api
 from stoqlib.database.expr import Position, StoqNormalizeString
-from stoqlib.database.queryexecuter import QueryExecuter
+from stoq.lib.queryexecuter import QueryExecuter
 from stoqlib.domain.person import (Client, ClientView, Supplier, SupplierView,
                                    Person, PersonAddressView, Individual)
 from stoqlib.domain.sale import SaleToken, SaleTokenView

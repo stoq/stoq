@@ -25,10 +25,35 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`queryexecuter` Module
+---------------------------
+
+.. automodule:: stoq.lib.queryexecuter
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`sintegragenerator` Module
+-------------------------------
+
+.. automodule:: stoq.lib.sintegragenerator
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`startup` Module
 ---------------------
 
 .. automodule:: stoq.lib.startup
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+:mod:`status` Module
+--------------------
+
+.. automodule:: stoq.lib.status
     :members:
     :undoc-members:
     :show-inheritance:

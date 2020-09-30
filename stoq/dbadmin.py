@@ -509,7 +509,7 @@ class StoqCommandHandler:
                 break
             except ValueError:
                 pass
-        from stoqlib.lib.sintegragenerator import generate
+        from stoq.lib.sintegragenerator import generate
         generate(filename, start, end)
 
     def cmd_shell(self, options):

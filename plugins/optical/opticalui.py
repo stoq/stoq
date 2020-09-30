@@ -26,7 +26,6 @@ import collections
 import decimal
 import logging
 
-from gi.repository import Gtk
 from storm.expr import LeftJoin
 from storm.info import ClassAlias
 
@@ -293,6 +292,8 @@ class OpticalUI(object):
         services_app.create_popover(options)
 
     def _fix_work_order_editor(self, editor, model, store):
+        from gi.repository import Gtk
+
         slave = WorkOrderOpticalSlave(store, model, show_finish_date=False,
                                       visual_mode=editor.visual_mode, parent=editor)
         editor.add_extra_tab('Ótico', slave)

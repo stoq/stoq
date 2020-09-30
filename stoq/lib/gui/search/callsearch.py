@@ -27,7 +27,7 @@ import datetime
 from gi.repository import Gtk
 
 from stoqlib.api import api
-from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
+from stoq.lib.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.person import CallsView, Client, ClientCallsView
 from stoq.lib.gui.base.dialogs import run_dialog
 from stoq.lib.gui.editors.callseditor import CallsEditor

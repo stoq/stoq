@@ -9,7 +9,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.dateutils import localdate
-from stoqlib.lib.sintegragenerator import StoqlibSintegraGenerator
+from stoq.lib.sintegragenerator import StoqlibSintegraGenerator
 from stoqlib.lib.test.test_sintegra import compare_sintegra_file
 
 

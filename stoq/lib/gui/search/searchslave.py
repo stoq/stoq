@@ -35,10 +35,10 @@ from kiwi.utils import gsignal
 from zope.interface.verify import verifyClass
 
 from stoqlib.api import api
-from stoqlib.database.queryexecuter import (NumberQueryState, StringQueryState,
-                                            DateQueryState, DateIntervalQueryState,
-                                            NumberIntervalQueryState, BoolQueryState,
-                                            QueryExecuter, MultiQueryState)
+from stoq.lib.queryexecuter import (NumberQueryState, StringQueryState,
+                                    DateQueryState, DateIntervalQueryState,
+                                    NumberIntervalQueryState, BoolQueryState,
+                                    QueryExecuter, MultiQueryState)
 from stoqlib.enums import SearchFilterPosition
 from stoq.lib.gui.interfaces import ISearchResultView
 from stoq.lib.gui.search.searchcolumns import SearchColumn
@@ -67,7 +67,7 @@ class SearchSlave(SlaveDelegate):
     - search entry (w/ a label) (:class:`StringSearchFilter`)
     - search button
     - result view (:class:`SearchResultListView` or class:`SearchResultTreeView`)
-    - a query executer (:class:`stoqlib.database.queryexecuter.QueryExecuter`)
+    - a query executer (:class:`stoq.lib.queryexecuter.QueryExecuter`)
 
     Additionally you can add a number of search filters to the SearchContainer.
     You can chose if you want to add the filter in the top-left corner

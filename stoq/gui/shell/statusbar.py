@@ -38,7 +38,7 @@ from stoq.lib.gui.stockicons import (STOQ_FEEDBACK,
                                      STOQ_STATUS_ERROR)
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.threadutils import terminate_thread
-from stoqlib.lib.status import ResourceStatus, ResourceStatusManager
+from stoq.lib.status import ResourceStatus, ResourceStatusManager
 
 
 # FIXME: Improve those strings

@@ -27,14 +27,14 @@ from dateutil.relativedelta import relativedelta
 from gi.repository import Gtk
 from kiwi.ui.dialogs import save
 
-from stoqlib.database.queryexecuter import QueryExecuter
+from stoq.lib.queryexecuter import QueryExecuter
 from stoqlib.domain.system import SystemTable
 from stoq.lib.gui.base.dialogs import BasicDialog
 from stoq.lib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.lib.dateutils import get_month_names, localtoday
 from stoqlib.lib.message import warning
 from stoqlib.lib.sintegra import SintegraError
-from stoqlib.lib.sintegragenerator import StoqlibSintegraGenerator
+from stoq.lib.sintegragenerator import StoqlibSintegraGenerator
 from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 

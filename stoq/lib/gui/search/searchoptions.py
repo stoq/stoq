@@ -28,7 +28,7 @@ import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from stoqlib.database.queryexecuter import StringQueryState, NumberQueryState
+from stoq.lib.queryexecuter import StringQueryState, NumberQueryState
 from stoqlib.lib.defaults import get_weekday_start
 from stoqlib.lib.translation import stoqlib_gettext
 

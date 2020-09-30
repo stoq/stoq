@@ -26,9 +26,9 @@
 
 import operator
 
-from stoqlib.database.queryexecuter import DateIntervalQueryState
+from stoq.lib.queryexecuter import DateIntervalQueryState
 
-from stoqlib.database.queryexecuter import QueryExecuter
+from stoq.lib.queryexecuter import QueryExecuter
 from stoqlib.database.runtime import get_current_branch, get_default_store
 from stoqlib.domain.devices import FiscalDayHistory
 from stoqlib.domain.inventory import Inventory

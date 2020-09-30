@@ -27,8 +27,7 @@ import mock
 
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.person import ClientCategory
-from stoqlib.database.queryexecuter import (QueryExecuter,
-                                            StringQueryState)
+from stoq.lib.queryexecuter import QueryExecuter, StringQueryState
 
 
 class QueryExecuterTest(DomainTest):

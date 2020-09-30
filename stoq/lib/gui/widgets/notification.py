@@ -27,7 +27,7 @@ from gi.repository import Gtk
 
 from stoq.lib.gui.base.gtkadds import replace_widget
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.status import ResourceStatusManager
+from stoq.lib.status import ResourceStatusManager
 
 _ = stoqlib_gettext
 

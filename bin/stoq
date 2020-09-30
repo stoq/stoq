@@ -164,7 +164,7 @@ except Exception as e:
 # This should be changed when building stoq.exe
 trial = False
 if trial:
-    from stoqlib.gui.base import dialogs
+    from stoq.lib.gui.base import dialogs
 
     # Quick hack to disable shortcuts. Note that that the shortcut action is
     # still executed, but if that shortcuts runs a dialog (as most does), the
@@ -184,7 +184,7 @@ if trial:
     _check_demo_mode = ShellWindow._check_demo_mode
 
     def _link_clicked(button):
-        from stoqlib.gui.utils.openbrowser import open_browser
+        from stoq.lib.gui.utils.openbrowser import open_browser
         open_browser(button.get_uri())
         return True
 

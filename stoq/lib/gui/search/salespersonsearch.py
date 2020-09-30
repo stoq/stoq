@@ -27,7 +27,7 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 
-from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
+from stoq.lib.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.sale import SalesPersonSalesView, Sale
 from stoq.lib.gui.search.searchcolumns import SearchColumn, Column
 from stoq.lib.gui.search.searchdialog import SearchDialog

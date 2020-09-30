@@ -38,7 +38,7 @@ from kiwi.ui.dialogs import selectfile
 from kiwi.ui.objectlist import ColoredColumn, Column
 from stoqlib.api import api
 from stoqlib.database.expr import Date
-from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
+from stoq.lib.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.account import Account, AccountTransaction, AccountTransactionView
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView

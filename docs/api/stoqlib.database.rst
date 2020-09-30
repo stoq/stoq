@@ -73,14 +73,6 @@ database Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`queryexecuter` Module
----------------------------
-
-.. automodule:: stoqlib.database.queryexecuter
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`runtime` Module
 ---------------------
 

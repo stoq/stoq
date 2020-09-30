@@ -24,7 +24,7 @@
 
 import collections
 
-from stoqlib.database.queryexecuter import DateQueryState
+from stoq.lib.queryexecuter import DateQueryState
 from stoq.lib.gui.base.dialogs import BasicDialog
 from stoq.lib.gui.search.searchfilters import DateSearchFilter
 from stoq.lib.gui.search.searchoptions import Today, Yesterday, LastWeek, LastMonth

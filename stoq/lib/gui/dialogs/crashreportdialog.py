@@ -23,21 +23,73 @@
 ##
 """ Crash report dialog """
 
+import logging
+
 from gi.repository import Gtk
+from gi.repository import GObject
 from stoqlib.lib.component import get_utility
 from kiwi.ui.dialogs import HIGAlertDialog
+from kiwi.utils import gsignal
 
-from stoqlib.api import api
 from stoq.lib.gui.base.dialogs import get_current_toplevel
-from stoqlib.lib.crashreport import ReportSubmitter
+from stoqlib.api import api
+from stoqlib.lib.crashreport import collect_report
 from stoqlib.lib.interfaces import IAppInfo
+from stoqlib.lib.threadutils import schedule_in_main_thread
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.webservice import WebService
 
 _ = stoqlib_gettext
 
 _DEFAULT_COMMENT = _("Add a comment (comments are not publicly visible)")
 _DEFAULT_EMAIL = _("Enter your email address here")
 _N_TRIES = 3
+
+logger = logging.getLogger(__name__)
+
+
+class ReportSubmitter(GObject.GObject):
+    gsignal('failed', object)
+    gsignal('submitted', object)
+
+    def __init__(self):
+        GObject.GObject.__init__(self)
+
+        self._count = 0
+        self._api = WebService()
+        self.report = collect_report()
+
+    def _done(self, args):
+        self.emit('submitted', args)
+
+    def _error(self, args):
+        self.emit('failed', args)
+
+    def submit(self):
+        return self._api.bug_report(self.report,
+                                    callback=self._on_report__callback,
+                                    errback=self._on_report__errback)
+
+    def _on_report__callback(self, response):
+        if response.status_code == 200:
+            self._on_success(response.json())
+        else:
+            self._on_error()
+
+    def _on_report__errback(self, failure):
+        self._on_error(failure)
+
+    def _on_error(self, data=None):
+        logger.info('Failed to report bug: %r count=%d' % (data, self._count))
+        if self._count < _N_TRIES:
+            self.submit()
+        else:
+            schedule_in_main_thread(self.emit, 'failed', data)
+        self._count += 1
+
+    def _on_success(self, data):
+        logger.info('Finished sending bugreport: %r' % (data, ))
+        schedule_in_main_thread(self.emit, 'submitted', data)
 
 
 class CrashReportDialog(object):
