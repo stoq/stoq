@@ -590,7 +590,7 @@ class InvoiceItemCofins(BaseCOFINS):
         cost = self._get_item_cost(invoice_item)
         if self.p_cofins == self.COFINS_NAO_CUMULATIVO_PADRAO:
             # Regime de incidencia não cumulativa
-            self.v_bc = quantize(invoice_item.quantity * (invoice_item.price - cost))
+            self.v_bc = quantize(invoice_item.quantity * max(invoice_item.price - cost, 0))
         else:
             # Regime de incidencia cumulativa
             self.v_bc = quantize(invoice_item.quantity * invoice_item.price)
