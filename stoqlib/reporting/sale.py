@@ -220,6 +220,13 @@ class SalesPersonReport(TableReport):
 
 
 def test():  # pragma no cover
+    from nose.exc import SkipTest
+    try:
+        import gi
+        gi  # workaround pyflakes
+    except ImportError:
+        raise SkipTest("can't run test without pygobject installed")
+
     from kiwi.ui.objectlist import ObjectList
     from stoqlib.api import api
     from stoq.gui.sales import SalesApp
@@ -238,6 +245,7 @@ def test():  # pragma no cover
     r = SalesReport('teste.pdf', ol, list(data))
     r.save_html('teste.html')
     r.save()
+
 
 if __name__ == '__main__':  # pragma no cover
     test()

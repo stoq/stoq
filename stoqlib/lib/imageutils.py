@@ -30,7 +30,6 @@ https://github.com/nowsecure/datagrid-gtk3/blob/master/datagrid_gtk3/utils/image
 
 import io
 
-from gi.repository import GdkPixbuf
 from PIL import Image, ImageFilter
 
 _image_border_size = 6
@@ -49,6 +48,8 @@ def image2pixbuf(image):
     :returns: the newly created pixbuf
     :rtype: `GdkPixbuf.Pixbuf`
     """
+
+    from gi.repository import GdkPixbuf
     with io.BytesIO() as f:
         image.save(f, 'png')
         loader = GdkPixbuf.PixbufLoader.new_with_type('png')
@@ -170,6 +171,8 @@ def get_pixbuf(image_bytes, draw_border=True, fill_image=None):
     :returns: the resized pixbuf
     :rtype: :class:`GdkPixbuf.Pixbuf`
     """
+    from gi.repository import GdkPixbuf
+
     with io.BytesIO(image_bytes) as f:
         image = Image.open(f)
         w, h = image.size

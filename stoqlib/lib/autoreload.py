@@ -21,12 +21,9 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-
-from gi.repository import GLib
 import pyinotify
 
 from stoqlib.lib.distutils import get_all_source_files
-from stoq.gui.shell.shell import get_shell
 
 
 class EventHandler(pyinotify.ProcessEvent):
@@ -34,6 +31,8 @@ class EventHandler(pyinotify.ProcessEvent):
         self._reload_filename(event.pathname)
 
     def _reload_filename(self, filename):
+        from stoq.gui.shell.shell import get_shell
+
         shell = get_shell()
         app_name = shell.get_current_app_name()
         if app_name == "launcher":
@@ -50,6 +49,8 @@ def _autoreload_timeout(notifier):
 
 
 def install_autoreload():
+    from gi.repository import GLib
+
     wm = pyinotify.WatchManager()
     handler = EventHandler()
     notifier = pyinotify.Notifier(wm, handler, timeout=10)
