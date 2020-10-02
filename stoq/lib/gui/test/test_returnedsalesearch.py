@@ -23,7 +23,7 @@
 ##
 
 import contextlib
-import mock
+from unittest import mock
 
 from stoq.lib.gui.dialogs.returnedsaledialog import ReturnedSaleDialog
 from stoq.lib.gui.search.returnedsalesearch import (ReturnedSaleSearch,

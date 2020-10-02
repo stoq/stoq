@@ -25,7 +25,7 @@
 import base64
 from decimal import Decimal
 
-import mock
+from unittest import mock
 from storm.expr import Update
 
 from stoqlib.domain.commission import CommissionSource

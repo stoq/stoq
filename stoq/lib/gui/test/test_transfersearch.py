@@ -22,7 +22,7 @@
 ##
 
 import contextlib
-import mock
+from unittest import mock
 
 from stoqlib.api import api
 from stoqlib.domain.person import Branch

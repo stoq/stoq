@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 
 from stoq.lib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoq.lib.gui.editors.callseditor import CallsEditor

@@ -27,7 +27,7 @@ from decimal import Decimal
 
 from gi.repository import Gtk
 from stoqlib.lib.objutils import Settable
-import mock
+from unittest import mock
 
 from stoqlib.api import api
 from stoqlib.domain.purchase import PurchaseOrder

@@ -23,7 +23,7 @@
 ##
 
 from gi.repository import Gtk
-import mock
+from unittest import mock
 
 from stoq.gui.financial import FinancialApp
 from stoq.gui.test.baseguitest import BaseGUITest

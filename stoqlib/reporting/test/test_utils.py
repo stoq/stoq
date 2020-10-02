@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.formatters import format_phone_number

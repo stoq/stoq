@@ -30,7 +30,7 @@ import io
 import os
 import zipfile
 
-import mock
+from unittest import mock
 from stoqlib.lib.objutils import Settable
 from zope.interface import implementer
 

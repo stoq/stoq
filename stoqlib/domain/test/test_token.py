@@ -24,7 +24,7 @@
 """ This module test all classes in stoqlib/domain/token.py """
 
 from jwt.exceptions import DecodeError, ExpiredSignatureError
-import mock
+from unittest import mock
 
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.token import AccessToken

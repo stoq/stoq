@@ -23,7 +23,7 @@
 ##
 
 from decimal import Decimal
-import mock
+from unittest import mock
 
 from stoqlib.lib.objutils import Settable
 

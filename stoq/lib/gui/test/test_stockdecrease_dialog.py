@@ -21,7 +21,7 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-import mock
+from unittest import mock
 
 from kiwi.ui.forms import TextField
 

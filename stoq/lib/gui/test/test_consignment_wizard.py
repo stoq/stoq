@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.product import (ProductStockItem,

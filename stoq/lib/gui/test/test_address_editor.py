@@ -25,7 +25,7 @@
 import unittest
 
 from gi.repository import Gdk
-import mock
+from unittest import mock
 
 from stoqlib.domain.address import Address, CityLocation
 from stoq.lib.gui.editors.addresseditor import AddressEditor

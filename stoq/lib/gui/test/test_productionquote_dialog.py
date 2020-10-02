@@ -23,7 +23,7 @@
 ##
 
 import datetime
-import mock
+from unittest import mock
 
 from stoqlib.domain.production import ProductionMaterial, ProductionOrder
 from stoq.lib.gui.dialogs.productionquotedialog import ProductionQuoteDialog

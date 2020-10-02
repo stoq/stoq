@@ -23,7 +23,7 @@
 ##
 """ This module tests stoq/database/database.py """
 
-import mock
+from unittest import mock
 import unittest
 
 from stoqlib.database.migration import StoqlibSchemaMigration

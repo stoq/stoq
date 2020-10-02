@@ -26,7 +26,7 @@ import datetime
 from decimal import Decimal
 
 from kiwi.currency import currency
-import mock
+from unittest import mock
 from stoqdrivers.enum import TaxType
 
 from stoqlib.exceptions import SellableError, TaxError

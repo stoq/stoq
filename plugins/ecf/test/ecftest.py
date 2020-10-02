@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 from stoqdrivers.printers.virtual.Simple import Simple
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.test.domaintest import DomainTest

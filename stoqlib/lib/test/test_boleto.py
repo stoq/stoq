@@ -25,7 +25,7 @@
 import collections
 import datetime
 from decimal import Decimal
-import mock
+from unittest import mock
 import os
 import tempfile
 

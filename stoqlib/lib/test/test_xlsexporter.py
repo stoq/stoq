@@ -22,10 +22,16 @@
 
 import os
 
+from nose.exc import SkipTest
+
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.exporters.xlsexporter import XLSExporter
 
-from kiwi.ui.objectlist import ObjectList, Column
+try:
+    import gi
+    gi  # workaround pyflakes
+except ImportError:
+    raise SkipTest("can't run test without pygobject installed")
 
 
 class Fruit:
@@ -36,6 +42,8 @@ class Fruit:
 
 class XLSExporterTest(DomainTest):
     def test_export_from_object_list(self):
+        from kiwi.ui.objectlist import ObjectList, Column
+
         fruits = ObjectList([Column('name', data_type=str),
                              Column('price', data_type=int)])
 

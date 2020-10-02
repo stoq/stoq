@@ -25,7 +25,7 @@
 import contextlib
 
 from gi.repository import Gtk
-import mock
+from unittest import mock
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.inventory import Inventory
 from stoq.lib.gui.dialogs.inventorydetails import InventoryDetailsDialog

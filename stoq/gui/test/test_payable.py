@@ -24,7 +24,7 @@
 
 import contextlib
 
-import mock
+from unittest import mock
 from stoqlib.api import api
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder

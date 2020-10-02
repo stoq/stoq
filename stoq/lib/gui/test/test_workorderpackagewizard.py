@@ -24,7 +24,7 @@
 
 import datetime
 
-import mock
+from unittest import mock
 
 from stoq.lib.gui.test.uitestutils import GUITest
 from stoq.lib.gui.wizards.workorderpackagewizard import WorkOrderPackageReceiveWizard

@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 
 from stoqlib.domain.certificate import Certificate
 from stoq.lib.gui.editors.personeditor import UserEditor

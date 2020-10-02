@@ -27,7 +27,7 @@ __tests__ = 'stoqlib/domain/base.py'
 import json
 import re
 
-import mock
+from unittest import mock
 from storm.exceptions import NotOneError
 from storm.references import Reference
 

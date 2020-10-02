@@ -23,7 +23,7 @@
 ##
 
 from gi.repository import Gtk
-import mock
+from unittest import mock
 
 from stoqlib.api import api
 from stoqlib.domain.loan import Loan, LoanItem

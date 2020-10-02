@@ -26,7 +26,7 @@
 import datetime
 from decimal import Decimal
 
-import mock
+from unittest import mock
 from nose.exc import SkipTest
 
 from stoqlib.database.runtime import get_current_branch

@@ -25,7 +25,7 @@
 import contextlib
 from dateutil.relativedelta import relativedelta
 from kiwi.currency import currency
-import mock
+from unittest import mock
 
 from stoqlib.domain.costcenter import CostCenterEntry
 from stoqlib.domain.payment.method import PaymentMethod

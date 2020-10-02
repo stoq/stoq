@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 from stoqlib.lib.objutils import Settable
 
 from stoqlib.domain.devices import DeviceSettings

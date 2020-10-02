@@ -26,7 +26,7 @@ __tests__ = 'stoqlib/domain/payment/payment.py'
 
 import datetime
 from decimal import Decimal
-import mock
+from unittest import mock
 
 from kiwi.currency import currency
 from storm.expr import Or

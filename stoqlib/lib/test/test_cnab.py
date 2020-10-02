@@ -24,7 +24,7 @@
 
 import datetime
 from decimal import Decimal
-import mock
+from unittest import mock
 import os
 
 from stoqlib.lib.boleto import (BankInfo, custom_property, BILL_OPTION_CUSTOM,

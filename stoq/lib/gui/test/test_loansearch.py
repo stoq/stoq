@@ -23,7 +23,7 @@
 ##
 
 import contextlib
-import mock
+from unittest import mock
 
 from stoqlib.domain.loan import Loan
 from stoqlib.lib.dateutils import localdate, localdatetime

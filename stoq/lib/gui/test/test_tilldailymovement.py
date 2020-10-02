@@ -23,7 +23,7 @@
 ##
 
 import datetime
-import mock
+from unittest import mock
 
 from stoqlib.api import api
 from stoq.lib.gui.dialogs.tilldailymovement import TillDailyMovementDialog

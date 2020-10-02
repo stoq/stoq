@@ -24,7 +24,7 @@
 
 import contextlib
 from gi.repository import Gtk
-import mock
+from unittest import mock
 
 from stoqlib.domain.receiving import ReceivingInvoice
 from stoq.lib.gui.test.uitestutils import GUITest

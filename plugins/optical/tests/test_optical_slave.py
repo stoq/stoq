@@ -25,7 +25,7 @@
 from decimal import Decimal
 
 from gi.repository import Gdk
-import mock
+from unittest import mock
 
 from stoq.lib.gui.editors.noteeditor import NoteEditor
 from stoq.lib.gui.test.uitestutils import GUITest

@@ -26,7 +26,7 @@
 
 import os
 
-import mock
+from unittest import mock
 
 from stoqlib.database.settings import DatabaseSettings, get_database_version
 from stoqlib.domain.test.domaintest import DomainTest

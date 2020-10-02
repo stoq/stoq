@@ -25,7 +25,7 @@
 
 import datetime
 from decimal import Decimal
-import mock
+from unittest import mock
 
 from kiwi.currency import currency
 

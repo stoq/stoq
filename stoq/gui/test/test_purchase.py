@@ -23,7 +23,7 @@
 ##
 
 import datetime
-import mock
+from unittest import mock
 from gi.repository import Gtk
 
 from stoqlib.api import api

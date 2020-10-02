@@ -24,7 +24,7 @@
 
 import contextlib
 from gi.repository import Gtk
-import mock
+from unittest import mock
 
 from stoq.lib.gui.dialogs.personmergedialog import PersonMergeDialog
 from stoq.lib.gui.test.uitestutils import GUITest

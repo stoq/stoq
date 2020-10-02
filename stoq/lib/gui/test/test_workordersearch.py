@@ -23,7 +23,7 @@
 ##
 
 
-import mock
+from unittest import mock
 
 from stoqlib.domain.workorder import WorkOrder
 from stoq.lib.gui.editors.workordereditor import WorkOrderEditor

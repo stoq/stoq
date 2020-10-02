@@ -25,7 +25,7 @@
 import itertools
 import unittest
 
-import mock
+from unittest import mock
 
 from stoqlib.database.orm import ORMObject
 from stoqlib.database.tables import get_table_types, _tables_cache

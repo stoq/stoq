@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 
 from stoq.lib.gui.dialogs.contactsdialog import ContactInfoListDialog
 from stoq.lib.gui.editors.personeditor import (BranchEditor, ClientEditor,

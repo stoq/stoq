@@ -31,7 +31,7 @@ from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.widgets.spinbutton import ProxySpinButton
-import mock
+from unittest import mock
 
 from stoq.lib.gui.stockicons import STOQ_CALC
 from stoq.lib.gui.test.uitestutils import GUITest

@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 
 from stoq.lib.gui.editors.callseditor import CallsEditor
 from stoq.lib.gui.search.callsearch import CallsSearch

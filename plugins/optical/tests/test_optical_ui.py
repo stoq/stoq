@@ -24,7 +24,7 @@
 
 import contextlib
 from gi.repository import Gtk
-import mock
+from unittest import mock
 from stoqlib.lib.objutils import Settable
 
 from stoqlib.database.runtime import StoqlibStore

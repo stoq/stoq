@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 
 from stoqlib.database.runtime import new_store
 from stoqlib.domain.uiform import UIField, UIForm

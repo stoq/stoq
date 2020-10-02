@@ -25,7 +25,7 @@
 import datetime
 import os
 
-import mock
+from unittest import mock
 
 from stoq.lib.gui.dialogs.financialreportdialog import FinancialReportDialog
 from stoq.lib.gui.test.uitestutils import GUITest

@@ -24,7 +24,7 @@
 
 """Tests for module :class:`stoqlib.database.runtime`"""
 
-import mock
+from unittest import mock
 
 from stoqlib.database.exceptions import InterfaceError
 from stoqlib.database.properties import UnicodeCol

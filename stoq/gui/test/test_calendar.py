@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 
 from stoq.gui.calendar import CalendarApp
 from stoq.gui.test.baseguitest import BaseGUITest

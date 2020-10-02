@@ -27,7 +27,7 @@
 from gi.repository import Gtk
 from stoqlib.lib.objutils import Settable
 from kiwi.ui.objectlist import Column
-import mock
+from unittest import mock
 from zope.interface import implementer
 
 from stoqlib.database.properties import UnicodeCol

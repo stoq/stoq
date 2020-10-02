@@ -25,7 +25,7 @@
 import datetime
 import unittest
 
-import mock
+from unittest import mock
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.payment.payment import Payment
 from stoq.lib.gui.dialogs.supplierdetails import SupplierDetailsDialog

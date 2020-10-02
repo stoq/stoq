@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 
 from stoqlib.domain.person import Client
 from stoq.lib.gui.test.uitestutils import GUITest

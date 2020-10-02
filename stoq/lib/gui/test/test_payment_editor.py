@@ -25,7 +25,7 @@
 import unittest
 from decimal import Decimal
 
-import mock
+from unittest import mock
 
 from stoqlib.domain.account import Account
 from stoqlib.domain.payment.category import PaymentCategory

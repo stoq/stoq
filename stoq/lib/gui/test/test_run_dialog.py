@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 
 from stoq.lib.gui.base.dialogs import run_dialog, get_dialog
 from stoq.lib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog

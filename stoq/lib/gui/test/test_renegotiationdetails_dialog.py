@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 import datetime
 
 from stoq.lib.gui.dialogs.clientdetails import ClientDetailsDialog

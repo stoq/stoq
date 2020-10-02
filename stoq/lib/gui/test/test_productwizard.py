@@ -25,7 +25,7 @@
 __tests__ = 'stoq.lib.gui.wizards.productwizard'
 
 import contextlib
-import mock
+from unittest import mock
 
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.product import Product

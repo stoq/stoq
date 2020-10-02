@@ -25,7 +25,7 @@
 from decimal import Decimal
 import unittest
 
-import mock
+from unittest import mock
 from kiwi.ui.objectlist import ObjectTree
 
 from stoqlib.database.runtime import StoqlibStore, get_current_branch

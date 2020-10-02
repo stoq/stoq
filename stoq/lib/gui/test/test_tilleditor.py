@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 
 from kiwi.currency import currency
 from stoqlib.lib.objutils import Settable

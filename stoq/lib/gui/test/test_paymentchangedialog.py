@@ -23,7 +23,7 @@
 ##
 
 from dateutil.relativedelta import relativedelta
-import mock
+from unittest import mock
 
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale

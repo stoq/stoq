@@ -26,7 +26,7 @@ import contextlib
 import decimal
 from datetime import datetime
 
-import mock
+from unittest import mock
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till

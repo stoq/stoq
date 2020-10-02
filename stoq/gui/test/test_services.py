@@ -25,7 +25,7 @@
 import datetime
 
 from gi.repository import Gtk
-import mock
+from unittest import mock
 from nose.exc import SkipTest
 
 from stoqlib.api import api

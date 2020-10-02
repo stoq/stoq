@@ -26,7 +26,7 @@ import contextlib
 
 from gi.repository import Gtk
 from stoqlib.lib.objutils import Settable
-import mock
+from unittest import mock
 
 from stoq.gui.shell.statusbar import StatusButton, StatusPopover, ResourceStatusBox
 from stoq.gui.test.baseguitest import BaseGUITest

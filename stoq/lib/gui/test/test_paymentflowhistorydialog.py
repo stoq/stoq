@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 from stoq.lib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
 from stoq.lib.gui.test.uitestutils import GUITest
 

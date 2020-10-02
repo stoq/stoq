@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 from stoqdrivers.enum import PaymentMethodType
 
 from stoqlib.domain.account import Account

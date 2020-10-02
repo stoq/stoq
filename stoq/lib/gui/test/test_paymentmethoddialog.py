@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 
 from stoqlib.database.runtime import StoqlibStore
 from stoq.lib.gui.dialogs.paymentmethod import PaymentMethodsDialog

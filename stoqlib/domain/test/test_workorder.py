@@ -25,7 +25,7 @@
 
 import contextlib
 from decimal import Decimal
-import mock
+from unittest import mock
 
 from stoqlib.exceptions import InvalidStatus, NeedReason
 from stoqlib.domain.product import StockTransactionHistory

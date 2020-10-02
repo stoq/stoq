@@ -23,7 +23,7 @@
 ##
 """ Test case for stoqlib/domain/system.py module.  """
 
-import mock
+from unittest import mock
 
 from stoqlib.domain.system import SystemTable
 from stoqlib.domain.test.domaintest import DomainTest

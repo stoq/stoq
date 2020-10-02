@@ -24,7 +24,7 @@
 
 from gi.repository import Gtk
 from stoqlib.lib.objutils import Settable
-import mock
+from unittest import mock
 
 from stoq.lib.gui.editors.backupsettings import BackupSettingsEditor
 from stoq.lib.gui.test.uitestutils import GUITest

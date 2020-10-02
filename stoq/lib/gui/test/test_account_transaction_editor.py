@@ -23,7 +23,7 @@
 ##
 
 import datetime
-import mock
+from unittest import mock
 import unittest
 from stoq.lib.gui.editors.accounteditor import AccountEditor
 

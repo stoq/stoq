@@ -28,7 +28,7 @@ import re
 
 from dateutil.relativedelta import relativedelta
 from kiwi.currency import currency
-import mock
+from unittest import mock
 from storm.exceptions import NotOneError, IntegrityError
 from storm.expr import And
 from storm.store import AutoReload

@@ -23,7 +23,7 @@
 ##
 
 from gi.repository import Gtk
-import mock
+from unittest import mock
 
 from stoqlib.domain.product import GridOption
 from stoq.lib.gui.editors.grideditor import (GridGroupEditor,

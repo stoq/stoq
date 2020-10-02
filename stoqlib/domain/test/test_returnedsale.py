@@ -25,7 +25,7 @@
 from decimal import Decimal
 
 from kiwi.currency import currency
-import mock
+from unittest import mock
 
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import StockTransactionHistory

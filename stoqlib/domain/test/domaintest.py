@@ -30,7 +30,7 @@ from decimal import Decimal
 import os
 
 from stoqlib.lib.objutils import cmp
-import mock
+from unittest import mock
 import unittest
 
 from stoqlib.lib.kiwilibrary import library

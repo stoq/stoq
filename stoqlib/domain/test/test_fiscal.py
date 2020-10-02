@@ -23,7 +23,7 @@
 ##
 """ This module tests all fiscal data"""
 
-import mock
+from unittest import mock
 
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry, Invoice
 from stoqlib.domain.test.domaintest import DomainTest

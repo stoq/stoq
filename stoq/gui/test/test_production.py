@@ -24,7 +24,7 @@
 
 import contextlib
 
-import mock
+from unittest import mock
 from stoq.lib.gui.dialogs.productiondetails import ProductionDetailsDialog
 from stoq.lib.gui.dialogs.productionquotedialog import ProductionQuoteDialog
 from stoq.lib.gui.dialogs.startproduction import StartProductionDialog

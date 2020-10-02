@@ -25,7 +25,7 @@
 import contextlib
 import datetime
 
-import mock
+from unittest import mock
 from stoqlib.api import api
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.invoice import InvoiceLayout, InvoiceField, InvoicePrinter

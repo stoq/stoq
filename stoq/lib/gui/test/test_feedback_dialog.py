@@ -23,7 +23,7 @@
 ##
 ##
 
-import mock
+from unittest import mock
 
 from stoq.lib.gui.dialogs.feedbackdialog import FeedbackDialog
 from stoq.lib.gui.test.uitestutils import GUITest

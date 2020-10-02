@@ -24,7 +24,7 @@
 
 from gi.repository import Gtk
 
-import mock
+from unittest import mock
 
 from stoq.gui.pos import TemporarySaleItem
 

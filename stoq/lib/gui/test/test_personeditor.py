@@ -24,7 +24,7 @@
 
 import decimal
 
-import mock
+from unittest import mock
 
 from stoqlib.lib.component import provide_utility
 

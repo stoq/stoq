@@ -24,7 +24,7 @@
 
 import unittest
 
-import mock
+from unittest import mock
 from gi.repository import Gtk
 
 from stoqlib.domain.base import Domain

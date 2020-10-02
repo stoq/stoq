@@ -24,7 +24,7 @@
 
 import contextlib
 
-import mock
+from unittest import mock
 from stoqlib.domain.account import Account
 from stoqlib.domain.payment.method import CheckData, PaymentMethod
 from stoqlib.domain.payment.card import CreditCardData

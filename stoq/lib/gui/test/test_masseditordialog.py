@@ -24,7 +24,7 @@
 
 import datetime
 from decimal import Decimal
-import mock
+from unittest import mock
 from gi.repository import Gtk, Pango
 
 from stoqlib.domain.sellable import Sellable, SellableCategory, SellableUnit

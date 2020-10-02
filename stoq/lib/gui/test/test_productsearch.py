@@ -23,7 +23,7 @@
 ##
 
 import datetime
-import mock
+from unittest import mock
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_current_branch, get_current_user

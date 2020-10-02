@@ -23,7 +23,7 @@
 ##
 ##
 
-import mock
+from unittest import mock
 
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib import asyncrequests

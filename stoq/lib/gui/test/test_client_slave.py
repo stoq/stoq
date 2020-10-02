@@ -23,7 +23,7 @@
 ##
 
 from decimal import Decimal
-import mock
+from unittest import mock
 
 from stoq.lib.gui.dialogs.creditdialog import CreditInfoListDialog
 from stoq.lib.gui.search.clientsalaryhistorysearch import ClientSalaryHistorySearch

@@ -24,7 +24,7 @@
 
 import datetime
 import locale
-import mock
+from unittest import mock
 import os
 import unittest
 

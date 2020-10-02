@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 from gi.repository import Gtk
-import mock
+from unittest import mock
 
 from stoqlib.domain.invoice import InvoiceLayout
 from stoq.lib.gui.dialogs.invoicedialog import InvoiceLayoutDialog

@@ -26,7 +26,7 @@ import os
 import tempfile
 
 from gi.repository import Gtk
-import mock
+from unittest import mock
 from stoqlib.database.settings import DatabaseSettings
 from stoq.lib.gui.test.uitestutils import GUITest
 

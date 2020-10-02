@@ -26,7 +26,7 @@ __tests__ = 'stoq/lib/gui/dialogs/inventorydetails.py'
 
 import unittest
 
-import mock
+from unittest import mock
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.inventory import InventoryItemsView

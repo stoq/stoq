@@ -23,7 +23,7 @@
 ##
 
 from gi.repository import Gtk
-import mock
+from unittest import mock
 
 from decimal import Decimal
 

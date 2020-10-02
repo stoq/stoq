@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 
 from stoq.lib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoq.lib.gui.search.searchoptions import Any

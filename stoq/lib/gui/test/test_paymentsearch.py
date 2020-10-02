@@ -24,7 +24,7 @@
 
 import datetime
 
-import mock
+from unittest import mock
 
 from stoqlib.domain.payment.card import CreditProvider, CreditCardData
 from stoqlib.domain.sale import SaleView

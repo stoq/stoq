@@ -25,7 +25,7 @@
 
 from decimal import Decimal
 
-import mock
+from unittest import mock
 
 from stoqlib.domain.product import (ProductHistory, ProductQualityTest,
                                     StockTransactionHistory)

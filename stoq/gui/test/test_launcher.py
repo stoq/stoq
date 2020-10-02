@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
+from unittest import mock
 
 from stoq.gui.launcher import LauncherApp
 from stoq.gui.test.baseguitest import BaseGUITest

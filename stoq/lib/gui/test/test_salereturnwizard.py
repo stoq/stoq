@@ -23,7 +23,7 @@
 ##
 
 from gi.repository import Gtk
-import mock
+from unittest import mock
 
 from stoqlib.database.runtime import get_current_branch
 from stoq.lib.gui.test.uitestutils import GUITest

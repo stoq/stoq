@@ -24,7 +24,7 @@
 
 import contextlib
 import datetime
-import mock
+from unittest import mock
 
 from stoq.lib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog
 from stoq.lib.gui.search.stockdecreasesearch import StockDecreaseSearch

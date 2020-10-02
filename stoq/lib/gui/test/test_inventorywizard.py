@@ -24,7 +24,7 @@
 
 __tests__ = 'stoq.lib.gui.wizards.inventorywizard'
 
-import mock
+from unittest import mock
 from decimal import Decimal
 from gi.repository import Gtk
 

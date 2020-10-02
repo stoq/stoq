@@ -28,7 +28,7 @@ from decimal import Decimal
 from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import converter
-import mock
+from unittest import mock
 from gi.repository import Gdk, Gtk
 
 from stoqlib.api import api

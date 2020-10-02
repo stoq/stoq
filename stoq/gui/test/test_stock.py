@@ -24,7 +24,7 @@
 
 import contextlib
 
-import mock
+from unittest import mock
 
 from stoqlib.database.runtime import StoqlibStore, get_current_branch
 from stoqlib.domain.transfer import TransferOrder

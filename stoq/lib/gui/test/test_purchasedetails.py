@@ -24,7 +24,7 @@
 
 import unittest
 
-import mock
+from unittest import mock
 
 from stoqlib.domain.purchase import PurchaseOrder
 from stoq.lib.gui.dialogs.labeldialog import SkipLabelsEditor

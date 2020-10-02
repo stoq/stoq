@@ -24,7 +24,7 @@
 
 import contextlib
 
-import mock
+from unittest import mock
 from stoqlib.api import api
 from stoqlib.database.runtime import StoqlibStore
 from stoq.lib.gui.dialogs.clientcategorydialog import ClientCategoryDialog

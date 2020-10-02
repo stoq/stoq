@@ -23,7 +23,7 @@
 ##
 """ This module tests stoq/database/database.py """
 
-import mock
+from unittest import mock
 
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.person import ClientCategory

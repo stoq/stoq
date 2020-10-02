@@ -23,7 +23,7 @@
 ##
 
 from gi.repository import Gtk
-import mock
+from unittest import mock
 
 from stoqlib.domain.payment.category import PaymentCategory
 from stoq.lib.gui.editors.paymentcategoryeditor import PaymentCategoryEditor

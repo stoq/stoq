@@ -24,7 +24,7 @@
 
 import decimal
 
-import mock
+from unittest import mock
 from stoqlib.domain.person import Person
 from stoq.lib.gui.test.uitestutils import GUITest
 

@@ -23,7 +23,7 @@
 ##
 
 
-import mock
+from unittest import mock
 
 from stoqlib.domain.person import ClientCategory
 from stoqlib.domain.sellable import ClientCategoryPrice
