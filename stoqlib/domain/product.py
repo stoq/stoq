@@ -1412,17 +1412,21 @@ class Storable(Domain):
             raise StockError(
                 _('Quantity to decrease is greater than the available stock.'))
 
-        old_quantity = stock_item.quantity
+        old_quantity = stock_item.quantity if stock_item else 0
+        cost = stock_item.stock_cost if stock_item else 0
         stock_transaction = StockTransactionHistory(
             store=self.store,
             storable=self,
             branch=branch,
             batch=batch,
             quantity=-quantity,
-            unit_cost=stock_item.stock_cost,
+            unit_cost=cost,
             responsible=user,
             type=type,
             object_id=object_id)
+
+        if not stock_item:
+            stock_item = self.get_stock_item(branch, batch)
 
         if cost_center is not None:
             cost_center.add_stock_transaction(stock_transaction)

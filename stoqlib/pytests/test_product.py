@@ -54,3 +54,17 @@ def test_decrease_stock_with_allow_negative_param(example_creator, current_branc
                                  quantity=2,
                                  object_id=sale_item.id)
     assert item.quantity == -2
+
+
+def test_decrease_stock_without_product_stock_item(example_creator, current_branch):
+    api.sysparam.get_bool = mock.Mock(return_value=True)
+    user = example_creator.create_user()
+    storable = example_creator.create_storable()
+    sale_item = example_creator.create_sale_item()
+    item = storable.decrease_stock(
+        branch=current_branch,
+        user=user,
+        type=StockTransactionHistory.TYPE_SELL,
+        quantity=2,
+        object_id=sale_item.id)
+    assert item.quantity == -2
