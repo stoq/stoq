@@ -8,7 +8,6 @@ Pillow >= 3.1.0
 kiwi-gtk >= 3.0
 stoqdrivers >= 1.6
 psycopg2 >= 2.0.5
-pyinotify >= 0.9.2
 python-dateutil >= 1.4.1
 raven >= 5.1.1
 reportlab >= 2.4

@@ -40,10 +40,6 @@ def get_shell(args):
     parser = get_option_parser()
 
     group = optparse.OptionGroup(parser, 'Stoq')
-    group.add_option('-A', '--autoreload',
-                     action="store_true",
-                     dest="autoreload",
-                     help='Autoreload application when source is modified')
     group.add_option('', '--quiet',
                      action="store_true",
                      dest="quiet",

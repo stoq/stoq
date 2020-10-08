@@ -88,7 +88,6 @@ class ShellBootstrap(object):
         self._load_key_bindings()
         self._setup_debug_options()
         self._check_locale()
-        self._setup_autoreload()
 
     def _setup_gobject(self):
         if not self._initial:
@@ -125,13 +124,6 @@ class ShellBootstrap(object):
                     "the packages for this locale installed.") % lang[:-6]
             self._locale_error = (msg, err)
             log.warning(msg)
-
-    def _setup_autoreload(self):
-        if not self._options.autoreload:
-            return
-
-        from stoqlib.lib.autoreload import install_autoreload
-        install_autoreload()
 
     def _prepare_logfiles(self):
         from stoqlib.lib.osutils import get_application_dir
