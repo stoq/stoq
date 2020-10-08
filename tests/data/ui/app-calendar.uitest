@@ -14,7 +14,8 @@ GtkApplicationWindow(toplevel): title='Moda Stoq', hidden
             GtkToggleButton(week_button): 'Week'
             GtkToggleButton(day_button): 'Day'
         stoq+gui+calendar+CalendarView(_calendar, expand=True, fill=True):
-          WebKitWebView():
+          GtkViewport():
+            WebKitWebView():
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkBox(orientation=horizontal):

@@ -26,7 +26,7 @@ import logging
 import json
 import urllib.parse
 
-from gi.repository import Gtk, WebKit
+from gi.repository import Gtk, WebKit2
 
 from stoqlib.api import api
 from stoqlib.lib.dateutils import localdate
@@ -55,18 +55,15 @@ class WebView(Gtk.ScrolledWindow):
         Gtk.ScrolledWindow.__init__(self)
         self.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
 
-        self._view = WebKit.WebView()
-        settings = self._view.props.settings
-        settings.props.enable_developer_extras = True
-        settings.props.user_agent = USER_AGENT
-        settings.props.enable_default_context_menu = False
+        self._view = WebKit2.WebView()
+        settings = self._view.get_settings()
+        settings.set_enable_developer_extras(True)
+        settings.set_user_agent(USER_AGENT)
 
-        self._view.get_inspector().connect(
-            'inspect-web-view',
-            self._on_inspector__inspect_web_view)
-        self._view.connect(
-            'navigation-policy-decision-requested',
-            self._on_view__navigation_policy_decision_requested)
+        # Disable context menu (when user right-clicks)
+        self._view.connect('context-menu', lambda *args: True)
+
+        self._view.connect('decide-policy', self._on_view__decide_policy)
         self.add(self._view)
         self._view.show()
 
@@ -220,27 +217,13 @@ class WebView(Gtk.ScrolledWindow):
         else:
             open_browser(uri, self.get_screen())
 
-    def _create_view_for_inspector(self, introspector_view):
-        window = Gtk.Window()
-        window.set_size_request(800, 600)
-        sw = Gtk.ScrolledWindow()
-        window.add(sw)
-        view = WebKit.WebView()
-        sw.add(introspector_view)
-        window.show_all()
-        return view
-
     #
     # Callbacks
     #
 
-    def _on_inspector__inspect_web_view(self, inspector, view):
-        return self._create_view_for_inspector(view)
-
-    def _on_view__navigation_policy_decision_requested(self, view, frame,
-                                                       request, action,
-                                                       policy):
-        self._policy_decision(request.props.uri, policy)
+    def _on_view__decide_policy(self, view, decision, decision_type):
+        if decision_type == WebKit2.PolicyDecisionType.NAVIGATION_ACTION:
+            self._policy_decision(decision.get_request().get_uri(), decision)
 
     #
     # Public API
@@ -253,7 +236,7 @@ class WebView(Gtk.ScrolledWindow):
         return self._view
 
     def print_(self):
-        self._view.execute_script('window.print()')
+        self._view.run_javascript('window.print()')
 
     def load_uri(self, uri):
         log.info("Loading uri: %s" % (uri, ))
@@ -277,8 +260,7 @@ class WebView(Gtk.ScrolledWindow):
                 value = json.dumps(arg)
             js_values.append(value)
 
-        self._view.execute_script('%s(%s)' % (
-            function, ', '.join(js_values)))
+        self._view.run_javascript('%s(%s)' % (function, ', '.join(js_values)))
 
     def web_open_uri(self, kwargs):
         pass

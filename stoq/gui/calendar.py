@@ -1,26 +1,26 @@
 # -*- Mode: Python; coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
-##
-## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
-## All rights reserved
-##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., or visit: http://www.gnu.org/.
-##
-## Author(s): Stoq Team <stoq-devel@async.com.br>
-##
+#
+# Copyright (C) 2011 Async Open Source <http://www.async.com.br>
+# All rights reserved
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., or visit: http://www.gnu.org/.
+#
+# Author(s): Stoq Team <stoq-devel@async.com.br>
+#
 """
 stoq/gui/calendar.py:
 
@@ -34,7 +34,7 @@ import urllib.error
 from dateutil.parser import parse
 from dateutil.relativedelta import MO, relativedelta
 from dateutil.tz import tzlocal, tzutc
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, WebKit2
 
 from stoqlib.api import api
 from stoqlib.domain.person import Client
@@ -67,9 +67,7 @@ class CalendarView(WebView):
         self._loaded = False
         WebView.__init__(self)
         self.app = app
-        self.get_view().connect(
-            'load-finished',
-            self._on_view__document_load_finished)
+        self.get_view().connect('load-changed', self._on_view__document_load_changed)
 
         self._load_user_settings()
 
@@ -178,7 +176,7 @@ class CalendarView(WebView):
     def _update_title(self):
         # Workaround to get the current calendar date
         view = self.get_view()
-        view.execute_script("document.title = $('.fc-header-title').text()")
+        view.run_javascript("document.title = $('.fc-header-title').text()")
         title = view.get_property('title')
         self.app.date_label.set_markup(
             '<big><b>%s</b></big>' % api.escape(title))
@@ -187,8 +185,9 @@ class CalendarView(WebView):
     # Callbacks
     #
 
-    def _on_view__document_load_finished(self, view, frame):
-        self._load_finished()
+    def _on_view__document_load_changed(self, view, event):
+        if event == WebKit2.LoadEvent.FINISHED:
+            self._load_finished()
 
     def _on_view__size_allocate(self, widget, req):
         self._update_calendar_size(req.width, req.height)

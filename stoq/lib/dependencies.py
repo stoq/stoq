@@ -219,9 +219,9 @@ class DependencyChecker(object):
     def _check_pygtkwebkit(self, version):
         try:
             import gi
-            gi.require_version('WebKit', '3.0')
-            from gi.repository import WebKit
-            WebKit  # pylint: disable=W0104
+            gi.require_version('WebKit2', '4.0')
+            from gi.repository import WebKit2
+            WebKit2  # pylint: disable=W0104
         except (ValueError, ImportError):
             self._missing(project='pywebkitgtk',
                           url='http://code.google.com/p/pywebkitgtk/',
@@ -313,7 +313,12 @@ class DependencyChecker(object):
                           version=version)
             return
 
-        if list(map(int, PIL.PILLOW_VERSION.split('.'))) < list(version):
+        if hasattr(PIL, 'PILLOW_VERSION'):
+            pil_version = PIL.PILLOW_VERSION
+        else:
+            pil_version = PIL.__version__
+
+        if list(map(int, pil_version.split('.'))) < list(version):
             self._too_old(project='Pillow - The friendly PIL fork',
                           url='https://python-pillow.org/',
                           required=version,
