@@ -32,15 +32,13 @@ before_script:
   # Some tests assume the timezone is America/Sao_Paulo. This can go away if we remove the old nfe plugin
   - ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
   - dpkg-reconfigure --frontend noninteractive tzdata
-  # Install testing requirements
-  - easy_install3 pip
-  - pip3 install -Ur requirements-test.txt
-  - pip3 install -U setuptools pip wheel
-  # Install tools to create debian packages
+  # Install testing requirements + tools to create debian packages
   - apt update
-  - apt --yes install build-essential devscripts debhelper python3-all libcairo2-dev libgirepository1.0-dev gir1.2-webkit2-4.0
+  - apt --yes install python3-pip build-essential devscripts debhelper python3-all libcairo2-dev libgirepository1.0-dev gir1.2-webkit2-4.0
+  - python3 -m pip install -Ur requirements-test.txt
+  - python3 -m pip install -U setuptools pip wheel
   - python3 setup.py develop
-  - pip3 freeze
+  - python3 -m pip freeze
 
 test:
   stage: test

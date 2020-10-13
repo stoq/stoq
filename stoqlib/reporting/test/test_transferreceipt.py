@@ -22,11 +22,9 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.api import api
-from stoq.lib.gui.search.transfersearch import TransferOrderSearch
 from stoqlib.lib.dateutils import localdatetime
 from stoqlib.reporting.test.reporttest import ReportTest
-from stoqlib.reporting.transfer import TransferOrderReceipt, TransferOrderReport
+from stoqlib.reporting.transfer import TransferOrderReceipt
 
 
 class TestTransferReceipt(ReportTest):
@@ -58,24 +56,3 @@ class TestTransferReceipt(ReportTest):
         order.cancel_date = localdatetime(2012, 12, 12)
         self._diff_expected(TransferOrderReceipt,
                             'transfer-receipt-cancelled', order)
-
-
-class TestTransferReport(ReportTest):
-    """Transfer Report tests"""
-
-    def test_transfer_report(self):
-        source_branch = self.create_branch(name=u'Stoq Sapatos')
-        destination_branch = api.get_current_branch(self.store)
-        order = self.create_transfer_order(source_branch=source_branch,
-                                           dest_branch=destination_branch)
-
-        for i in range(5):
-            self.create_transfer_order_item(order)
-
-        order.send(self.current_user)
-        order.identifier = 1337
-        order.open_date = localdatetime(2012, 12, 12)
-        dialog = TransferOrderSearch(self.store)
-        dialog.search.refresh()
-        self._diff_expected(TransferOrderReport, 'transfer-report', dialog.results,
-                            list(dialog.results))

@@ -9,6 +9,14 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`decorators` Module
+------------------------
+
+.. automodule:: stoq.lib.decorators
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`dependencies` Module
 --------------------------
 

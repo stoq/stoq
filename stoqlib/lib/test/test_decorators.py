@@ -25,8 +25,7 @@
 import unittest
 import time
 
-from stoqlib.lib.decorators import (cached_property, cached_function, threaded,
-                                    timeout, TimeoutError)
+from stoqlib.lib.decorators import cached_property, cached_function, timeout, TimeoutError
 
 
 class TestDecorators(unittest.TestCase):
@@ -149,25 +148,6 @@ class TestDecorators(unittest.TestCase):
         time.sleep(1.1)
         self.assertEqual(func(1), 1)
         self.assertEqual(self.call_count, 2)
-
-    def test_threaded(self):
-        self.call_count = 0
-
-        @threaded
-        def task_with_retval():
-            self.call_count += 1
-            return self.call_count
-
-        value = task_with_retval()
-        self.assertEqual(value, 1)
-
-        @threaded
-        def task_that_raises():
-            self.call_count += 1
-            assert False
-
-        with self.assertRaises(AssertionError):
-            value = task_that_raises()
 
     def test_timeout(self):
         @timeout(0.3)

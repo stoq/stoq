@@ -32,14 +32,14 @@ from gi.repository import GObject, GLib
 from stoqlib.lib.objutils import Settable
 from kiwi.utils import gsignal
 
-from stoqlib.api import api, safe_str
+from stoq.lib.decorators import threaded
 from stoq.lib.gui.base.dialogs import run_dialog
 from stoq.lib.gui.editors.backupsettings import BackupSettingsEditor
-from stoqlib.lib.decorators import threaded
+from stoqlib.api import api, safe_str
+from stoqlib.lib.message import warning
 from stoqlib.lib.threadutils import threadit, schedule_in_main_thread
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.webservice import WebService
-from stoqlib.lib.message import warning
 from stoqlib.net.server import ServerProxy, ServerError
 
 import stoq
