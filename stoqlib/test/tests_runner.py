@@ -288,7 +288,7 @@ def main(args, extra_plugins=None):
         '--with-doctest',
         # Our doctests ends with .txt, eg sellable.txt
         '--doctest-extension=txt']:
-        if not extra_option in args:
+        if extra_option not in args:
             args.append(extra_option)
 
     plugins = [Stoq(), YANC()]

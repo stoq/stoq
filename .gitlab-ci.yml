@@ -1,4 +1,4 @@
-image: cprov/stoq:candidate
+image: lamenezes/stoqlib
 
 services:
     - postgres:9.5
@@ -17,10 +17,14 @@ variables:
   STOQLIB_TEST_DBNAME: "test"
   STOQLIB_TEST_USERNAME: "test"
   STOQLIB_TEST_PASSWORD: ""
-  # Setuptools 50 broke the tests. This is a quick workaround. See more at
-  # https://stackoverflow.com/questions/63663362/django-python3-on-install-i-get-parent-module-setuptools-not-loaded
-  SETUPTOOLS_USE_DISTUTILS: stdlib
 
+cache:
+    key:
+      files:
+        - poetry.lock
+    paths:
+      - $CI_PROJECT_DIR/.cache/pip
+      - $CI_PROJECT_DIR/.cache/poetry
 
 stages:
   - test
@@ -29,37 +33,49 @@ stages:
 before_script:
   - python3 -V
   - export LC_ALL=pt_BR.UTF-8
-  # Some tests assume the timezone is America/Sao_Paulo. This can go away if we remove the old nfe plugin
-  - ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
-  - dpkg-reconfigure --frontend noninteractive tzdata
-  # Install testing requirements + tools to create debian packages
-  - apt update
-  - apt --yes install python3-pip build-essential devscripts debhelper python3-all libcairo2-dev libgirepository1.0-dev gir1.2-webkit2-4.0
-  - python3 -m pip install -Ur requirements-test.txt
-  - python3 -m pip install -U setuptools pip wheel
-  - python3 setup.py develop
-  - python3 -m pip freeze
+  - python3 -m pip install poetry
+  - mkdir $CI_PROJECT_DIR/.cache/poetry/venv -p
+  - poetry config virtualenvs.create true
+  - poetry config virtualenvs.in-project false
+  - poetry config cache-dir $CI_PROJECT_DIR/.cache/poetry
+  - poetry config virtualenvs.path $CI_PROJECT_DIR/.cache/poetry/venv
+  - poetry install -vvv
+  - poetry show
 
 test:
   stage: test
   script:
-    - xvfb-run make coverage
+    - poetry run make coverage
 
 build_dist:
   stage: build
+  before_script:
+    - export LC_ALL=pt_BR.UTF-8
+    - apt update -yq
+    - apt --yes install libpq-dev build-essential devscripts debhelper libcairo2-dev pkg-config python3-pip
+    - python3 -m pip install -U wheel setuptools pip kiwi-gtk
   script:
-    # Install bdist requirements with pip.
-    - pip3 install -U kiwi-gtk wheel setuptools
-    - python3 setup.py bdist_wheel
+    - cp setup_old.py setup.py
+    - make dist
 
   artifacts:
     paths:
       - dist
 
 generate_deb:
+  image: cprov/stoq:candidate
   stage: build
+  before_script:
+    - python3 -V
+    - export LC_ALL=pt_BR.UTF-8
+    - apt update -yq
+    - apt --yes install python3-pip build-essential devscripts debhelper python3-all libcairo2-dev libgirepository1.0-dev gir1.2-webkit2-4.0 build-essential locales git postgresql-client ntp xvfb iso-codes libxss1 gir1.2-webkit-3.0 librsvg2-common poppler-utils libnss3-tools libnss3-dev libusb-1.0-0 libxml2-utils python3-dev python3-zope.interface python3-kiwi python3-psycopg2 python3-pil python3-reportlab python3-dateutil python3-mako python3-lxml python3-xlwt python3-nss python3-storm python3-weasyprint python3-requests python3-openssl python3-pyinotify python3-viivakoodi python3-pykcs11 python3-tz python3-raven python3-aptdaemon.gtk3widgets python3-nose python3-mock python3-pyflakes python3-gevent python3-psutil python3-flask python3-flask-restful python3-blinker python3-tzlocal python3-jwt python3-docutils python3-stoqdrivers libpq-dev
+    - dpkg-reconfigure --frontend noninteractive tzdata
+    - python3 -m pip install -U wheel setuptools pip kiwi-gtk
   script:
     - rm -rf dist
+    - cp setup_old.py setup.py
+    - python3 setup.py develop
     - make deb
 
   artifacts:
@@ -69,12 +85,43 @@ generate_deb:
     - master
 
 manual_generate_deb:
+  when: manual
+  image: cprov/stoq:candidate
   stage: build
+  before_script:
+    - python3 -V
+    - export LC_ALL=pt_BR.UTF-8
+    - apt update -yq
+    - apt --yes install python3-pip build-essential devscripts debhelper python3-all libcairo2-dev libgirepository1.0-dev gir1.2-webkit2-4.0 build-essential locales git postgresql-client ntp xvfb iso-codes libxss1 gir1.2-webkit-3.0 librsvg2-common poppler-utils libnss3-tools libnss3-dev libusb-1.0-0 libxml2-utils python3-dev python3-zope.interface python3-kiwi python3-psycopg2 python3-pil python3-reportlab python3-dateutil python3-mako python3-lxml python3-xlwt python3-nss python3-storm python3-weasyprint python3-requests python3-openssl python3-pyinotify python3-viivakoodi python3-pykcs11 python3-tz python3-raven python3-aptdaemon.gtk3widgets python3-nose python3-mock python3-pyflakes python3-gevent python3-psutil python3-flask python3-flask-restful python3-blinker python3-tzlocal python3-jwt python3-docutils python3-stoqdrivers libpq-dev
+    - dpkg-reconfigure --frontend noninteractive tzdata
+    - python3 -m pip install -U wheel setuptools pip kiwi-gtk
   script:
     - rm -rf dist
+    - cp setup_old.py setup.py
+    - python3 setup.py develop
     - make deb
 
   artifacts:
     paths:
       - dist/*.deb
+
+test_stoq_desktop:
+  image: cprov/stoq:candidate
+  stage: test
+  before_script:
+    - python3 -V
+    - export LC_ALL=pt_BR.UTF-8
+    - apt update -yq
+    - apt install -y software-properties-common
+    - dpkg-reconfigure --frontend noninteractive tzdata
+    - apt-add-repository -y ppa:stoq-dev/lancamentos
+    - apt update -yq
+    - apt --yes install python3-pip build-essential devscripts debhelper python3-all libcairo2-dev libgirepository1.0-dev gir1.2-webkit2-4.0 build-essential locales git postgresql-client ntp xvfb iso-codes libxss1 gir1.2-webkit-3.0 librsvg2-common poppler-utils libnss3-tools libnss3-dev libusb-1.0-0 libxml2-utils python3-dev python3-zope.interface python3-kiwi python3-psycopg2 python3-pil python3-reportlab python3-dateutil python3-mako python3-lxml python3-xlwt python3-nss python3-storm python3-weasyprint python3-requests python3-openssl python3-pyinotify python3-viivakoodi python3-pykcs11 python3-tz python3-raven python3-aptdaemon.gtk3widgets python3-nose python3-mock python3-pyflakes python3-gevent python3-psutil python3-flask python3-flask-restful python3-blinker python3-tzlocal python3-jwt python3-docutils python3-stoqdrivers libpq-dev
+    - python3 -m pip install -U setuptools pip wheel poetry
+    - poetry export -f requirements.txt -o requirements.txt --without-hashes --dev
+    - cat requirements.txt | grep "test\|nose\|zipp" | cut -d " " -f 1 | xargs python3 -m pip install
+    - python3 setup_old.py develop
+    - python3 -m pip freeze
+  script:
+    - xvfb-run make test TEST_MODULES="stoq plugins"
   when: manual

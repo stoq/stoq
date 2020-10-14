@@ -36,6 +36,7 @@ from storm.expr import And, Eq, Join, LeftJoin, Or
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 
+import stoqlib
 from stoqlib.database.expr import Date, TransactionTimestamp
 from stoqlib.database.properties import (PriceCol, DateTimeCol, UnicodeCol,
                                          IdentifierCol, IdCol, EnumCol)
@@ -368,7 +369,7 @@ class Till(IdentifiableDomain):
         return currency(results.sum(TillEntry.value) or 0)
 
     def get_day_summary_data(self) -> Dict[Tuple[PaymentMethod,
-                                                 Optional['CreditProvider'],
+                                                 Optional['stoqlib.domain.payment.card.CreditProvider'],
                                                  Optional[str]], currency]:
         """Get the summary of this till.
         """

@@ -111,7 +111,7 @@ data_files = [
     ('$datadir/html/images', listfiles('data', 'html', 'images', '*.png')),
     ('$datadir/html/js', listfiles('data', 'html', 'js', '*.js')),
     ('$datadir/docs', ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
-                       'COPYING.stoqlib', 'README', 'docs/copyright']),
+                       'COPYING.stoqlib', 'README.rst', 'docs/copyright']),
 ]
 
 if building_egg:
@@ -137,7 +137,7 @@ else:
         ('share/applications', ['stoq.desktop']),
         ('share/doc/stoq',
          ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
-          'COPYING.stoqlib', 'README', 'docs/copyright']),
+          'COPYING.stoqlib', 'README.rst', 'docs/copyright']),
         ('share/gnome/help/stoq/C',
          listfiles('docs/manual/pt_BR', '*.page')),
         ('share/gnome/help/stoq/C',
@@ -162,18 +162,31 @@ data_files += listplugins(PLUGINS, PLUGIN_EXTS)
 # https://pythonhosted.org/setuptools/setuptools.html#dependencies-that-aren-t-in-pypi
 # Try to make a way to integrate it with debian packaging, just like the
 # dependencies bellow.
-install_requires = []
-with open('requirements.txt') as f:
-    for line in f.readlines():
-        line = line.strip()
-        if not line or line.startswith('#'):
-            continue
-        if line.startswith('https://'):
-            # requirements.txt file format is a bit different from setup install_requires argument
-            package = line.split('=')[-1]
-            line = '%s @ %s' % (package, line)
-        install_requires.append(line)
-
+install_requires = [
+    'Mako >= 0.2.5',
+    'Pillow >= 3.1.0',
+    'kiwi-gtk >= 3.0',
+    'stoqdrivers >= 1.6',
+    'psycopg2 >= 2.0.5',
+    'python-dateutil >= 1.4.1',
+    'raven >= 5.1.1',
+    'reportlab >= 2.4',
+    'weasyprint >= 0.15',
+    'xlwt >= 0.7.2',
+    'zope.interface >= 3.0',
+    'pyopenssl >= 0.16.0',
+    'pykcs11 >= 1.3.2',
+    'lxml >= 3.3.3',
+    'cryptography >= 1.4',
+    'python-nss >= 0.12',
+    'viivakoodi >= 0.8.0',
+    'qrcode >= 4.0',
+    'blinker >= 1.3',
+    'requests >= 2.18.4',
+    'PyGObject >= 3.30.1',
+    'storm >= 0.22',
+    'pyjwt >= 1.3.0',
+]
 
 setup(name='stoq',
       version=version,

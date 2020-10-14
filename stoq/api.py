@@ -26,14 +26,10 @@ import operator
 import sys
 
 from stoq.lib.gui.events import CanSeeAllBranches
-from stoqlib.api import StoqAPI
+from stoqlib.api import StoqAPI, safe_str
 from stoqlib.domain.person import Branch
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext as _
-
-
-class safe_str(str):
-    pass
 
 
 class StoqGuiApi(StoqAPI):

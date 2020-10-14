@@ -611,6 +611,11 @@ def main(args):
 
     return handler.run_command(options, cmd, args)
 
+
+def run():
+    return main(sys.argv)
+
+
 if __name__ == '__main__':
     try:
         sys.exit(main(sys.argv))
