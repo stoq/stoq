@@ -85,10 +85,11 @@ def collect_report():
     # Python and System
     import platform
     report_['architecture'] = ' '.join(platform.architecture())
-    report_['distribution'] = ' '.join(platform.dist())
     report_['python_version'] = _fix_version(sys.version_info)
     report_['uname'] = ' '.join(platform.uname())
     report_['system'] = platform.system()
+    if hasattr(platform, 'dist'):
+        report_['distribution'] = ' '.join(platform.dist())
 
     # Stoq application
     info = get_utility(IAppInfo, None)

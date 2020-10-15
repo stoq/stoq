@@ -62,7 +62,7 @@ def get_main_cnpj(store):
 
 class WebService(object):
 
-    API_SERVER = os.environ.get('STOQ_API_HOST', 'http://api.stoq.com.br')
+    API_SERVER = os.environ.get('STOQ_API_HOST', 'https://api.stoq.com.br')
 
     #
     #   Private API
@@ -162,7 +162,6 @@ class WebService(object):
 
         params = {
             'demo': sysparam.get_bool('DEMO_MODE'),
-            'dist': ' '.join(platform.dist()),
             'cnpj': get_main_cnpj(store),
             'plugins': ' '.join(InstalledPlugin.get_plugin_names(store)),
             'product_key': get_product_key(),
@@ -170,6 +169,8 @@ class WebService(object):
             'version': app_version,
             'source': source,
         }
+        if hasattr(platform, 'dist'):
+            params['dist'] = platform.dist()
         params.update(self._get_company_details(store))
         params.update(self._get_usage_stats(store))
 
@@ -199,7 +200,6 @@ class WebService(object):
         params = {
             'cnpj': get_main_cnpj(default_store),
             'demo': sysparam.get_bool('DEMO_MODE'),
-            'dist': ' '.join(platform.dist()),
             'email': email,
             'feedback': feedback,
             'plugins': ', '.join(InstalledPlugin.get_plugin_names(default_store)),
@@ -209,6 +209,8 @@ class WebService(object):
             'uname': ' '.join(platform.uname()),
             'version': self._get_version(),
         }
+        if hasattr(platform, 'dist'):
+            params['dist'] = platform.dist()
 
         endpoint = 'api/stoq/v1/feedback/%s' % (sysparam.get_string('USER_HASH'), )
         return self._do_request('POST', endpoint, json=params, **kwargs)
