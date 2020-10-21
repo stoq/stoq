@@ -1,4 +1,4 @@
-from stoqlib.domain.person import Company, Individual, Person
+from stoqlib.domain.person import CallsView, Company, Individual, Person
 
 
 def test_get_accountants_with_one_accountant(example_creator):
@@ -54,8 +54,9 @@ def test_get_or_create_by_document_with_cpf(store):
     person = Person.get_or_create_by_document(store, '123.456.789-10')
 
     individual = store.find(Individual, cpf='123.456.789-10').one()
-    assert individual is not None
-    assert person is not None
+
+    assert individual.person == person
+    assert individual.cpf == '123.456.789-10'
 
 
 def test_get_or_create_by_document_with_cnpj(store):
@@ -64,5 +65,23 @@ def test_get_or_create_by_document_with_cnpj(store):
     person = Person.get_or_create_by_document(store, '71.255.183/0001-34')
 
     company = store.find(Company, cnpj='71.255.183/0001-34').one()
-    assert company is not None
-    assert person is not None
+
+    assert company.person == person
+    assert company.cnpj == '71.255.183/0001-34'
+
+
+def test_person_get_items(store, current_branch):
+    assert Person.get_items(store, Person.branch == current_branch)
+
+
+def test_client_get_client_products(example_creator):
+    client = example_creator.create_client()
+
+    products = client.get_client_products(with_children=False)
+    assert len(list(products)) == 0
+
+
+def test_calls_view_find_by_client_date(store):
+    calls = CallsView.find_by_client_date(store, None, None)
+
+    assert list(calls) == list(store.find(CallsView))

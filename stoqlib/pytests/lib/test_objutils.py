@@ -39,6 +39,8 @@ def test_enum_repeated_value():
 
 def test_settable():
     obj = Settable(foo=1, bar=2)
+    assert "foo=1" in repr(obj)
+    assert "bar=2" in repr(obj)
     assert obj.foo == 1
     assert obj.bar == 2
 

@@ -12,3 +12,7 @@ def test_sale_invoice_subtotal(sale):
 
 def test_sale_invoice_total(sale):
     assert sale.invoice_total == sale.get_total_sale_amount()
+
+
+def test_sale_get_returned_value(sale):
+    assert sale.get_returned_value() == 0
