@@ -30,7 +30,7 @@ from kiwi.ui.objectlist import Column
 from storm.expr import LeftJoin, Cast
 from stoqdrivers.enum import TaxType
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoqlib.database.viewable import Viewable
 from stoqlib.database.expr import Case
 from stoqlib.domain.sellable import (Sellable, ClientCategoryPrice,
@@ -231,7 +231,7 @@ class SellableMassEditorDialog(MassEditorSearch):
 
 if __name__ == '__main__':
     from stoq.lib.gui.base.dialogs import run_dialog
-    ec = api.prepare_test()
+    ec = stoq_api.prepare_test()
     retval = run_dialog(SellableMassEditorDialog, None, ec.store)
     if retval:
         ec.store.commit()

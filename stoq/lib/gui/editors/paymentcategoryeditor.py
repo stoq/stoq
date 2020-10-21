@@ -30,7 +30,7 @@ from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import ColorField, ChoiceField, TextField
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoqlib.domain.account import Account
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
@@ -129,7 +129,7 @@ class PaymentCategoryEditor(BaseEditor):
 
 
 def test():  # pragma nocover
-    creator = api.prepare_test()
+    creator = stoq_api.prepare_test()
     retval = run_dialog(PaymentCategoryEditor, None, creator.store, None)
     creator.store.confirm(retval)
 

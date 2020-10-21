@@ -30,7 +30,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.objectlist import Column
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.person import (Branch, WorkPermitData, EmployeeRole,
                                    EmployeeRoleHistory,
@@ -101,7 +101,7 @@ class EmployeeDetailsSlave(BaseEditorSlave):
 
     def _fill_branch_combo(self):
         branches = Branch.get_active_branches(self.store)
-        self.branch_combo.prefill(api.for_combo(branches))
+        self.branch_combo.prefill(stoq_api.for_combo(branches))
 
 
 class EmployeeStatusSlave(BaseEditorSlave):
@@ -145,7 +145,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
 
     def _setup_entry_completion(self):
         roles = self.store.find(EmployeeRole)
-        self.role.prefill(api.for_combo(roles))
+        self.role.prefill(stoq_api.for_combo(roles))
 
     def _setup_widgets(self):
         self._setup_entry_completion()

@@ -31,6 +31,7 @@ from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 from kiwi.ui.widgets.combo import ProxyComboBox
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.workorder import WorkOrder, WorkOrderCategory, WorkOrderItem
@@ -94,7 +95,7 @@ class WorkOrderQuoteStartStep(StartSaleQuoteStep):
         self.wo_categories.color_attribute = 'color'
 
         self.wo_categories.prefill(
-            api.for_combo(wo_categories, empty=_("No category")))
+            stoq_api.for_combo(wo_categories, empty=_("No category")))
         self.wo_categories.set_sensitive(len(wo_categories))
 
         # We can use any work order, since all workorders in the same sale are

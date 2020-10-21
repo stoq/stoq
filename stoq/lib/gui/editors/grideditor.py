@@ -29,7 +29,7 @@ from gi.repository import Gtk
 from kiwi.ui.objectlist import Column
 from kiwi.ui.forms import TextField, BoolField
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoq.lib.gui.base.lists import ModelListSlave
 from stoqlib.domain.product import GridGroup, GridAttribute, GridOption
 from stoq.lib.gui.editors.baseeditor import BaseEditor
@@ -111,7 +111,7 @@ class GridAttributeEditor(BaseEditor):
             groups.append(self.model.group)
 
         self.fields['group'].prefill(
-            api.for_combo(groups, attr='description'), self.model.group)
+            stoq_api.for_combo(groups, attr='description'), self.model.group)
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     def validate_confirm(self):
@@ -183,7 +183,7 @@ class _GridOptionsSlave(ModelListSlave):
 
 def test_grid_editor():  # pragma nocover
     from stoq.lib.gui.base.dialogs import run_dialog
-    ec = api.prepare_test()
+    ec = stoq_api.prepare_test()
     group = ec.store.find(GridGroup).any()
     attribute = ec.create_grid_attribute(attribute_group=group)
     attribute.group = None

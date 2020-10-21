@@ -64,8 +64,8 @@ class CostCenterSearch(SearchEditor):
 
 
 def test():  # pragma: no cover
-    from stoqlib.api import api
-    ec = api.prepare_test()
+    from stoq.api import api as stoq_api
+    ec = stoq_api.prepare_test()
     run_dialog(CostCenterSearch, None, ec.store)
 
 

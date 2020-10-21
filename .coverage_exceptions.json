@@ -48,7 +48,7 @@
  "stoq/gui/widgets.py": 67,
  "stoq/lib/startup.py": 52.63,
  "stoq/lib/status.py": 65,
- "stoqlib/api.py": 75.68,
+ "stoq/api.py": 28.4,
  "stoqlib/database/admin.py": 80.58,
  "stoqlib/database/debug.py": 17.14,
  "stoqlib/database/migration.py": 49.15,

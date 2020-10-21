@@ -228,10 +228,11 @@ def test():  # pragma no cover
         raise SkipTest("can't run test without pygobject installed")
 
     from kiwi.ui.objectlist import ObjectList
+    from stoq.api import api as stoq_api
     from stoqlib.api import api
     from stoq.gui.sales import SalesApp
     from stoqlib.domain.sale import SaleView
-    api.prepare_test()
+    stoq_api.prepare_test()
     store = api.new_store()
 
     class Foo(SalesApp):

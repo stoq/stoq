@@ -27,7 +27,7 @@ import collections
 from kiwi.ui.forms import BoolField, ChoiceField, TextField
 from stoqlib.lib.objutils import Settable
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoqlib.domain.person import Supplier
 from stoqlib.domain.workorder import WorkOrder, WorkOrderHistory
 from stoq.lib.gui.editors.baseeditor import BaseEditor
@@ -115,7 +115,7 @@ class OpticalSupplierEditor(BaseEditor):
 
     @cached_property()
     def fields(self):
-        suppliers = api.for_combo(self.store.find(Supplier), empty='')
+        suppliers = stoq_api.for_combo(self.store.find(Supplier), empty='')
 
         return collections.OrderedDict(
             item=ChoiceField(_('Item'), mandatory=True, use_entry=True, proxy=True,

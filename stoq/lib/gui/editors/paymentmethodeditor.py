@@ -55,7 +55,7 @@ from kiwi import ValueUnset
 from kiwi.ui.objectlist import Column
 from kiwi.ui.forms import ChoiceField, TextField
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoqlib.domain.account import Account
 from stoqlib.domain.payment.card import (CreditProvider,
                                          CreditCardData,
@@ -237,7 +237,7 @@ class CardOperationCostEditor(BaseEditor):
         # combo, the provider may not be set (bug in kiwi)
         providers = CreditProvider.get_card_providers(
             self.store).order_by(CreditProvider.short_name)
-        self.provider.prefill(api.for_combo(providers))
+        self.provider.prefill(stoq_api.for_combo(providers))
 
         types = [(value, key) for key, value in CreditCardData.types.items()]
         self.card_type.prefill(types)
@@ -343,8 +343,7 @@ class CreditProviderEditor(BaseEditor):
         self.provider_id.set_property('sensitive', not self.edit_mode)
         self.provider_id.set_property('editable', not self.edit_mode)
         devices = CardPaymentDevice.get_devices(self.store)
-        self.default_device.prefill(api.for_combo(devices,
-                                                  empty=_(u"No device")))
+        self.default_device.prefill(stoq_api.for_combo(devices, empty=_(u"No device")))
 
     def create_model(self, store):
         return CreditProvider(store=store)
@@ -361,9 +360,9 @@ class CardPaymentDetailsEditor(BaseEditor):
 
     @cached_property()
     def fields(self):
-        device_values = api.for_combo(
+        device_values = stoq_api.for_combo(
             CardPaymentDevice.get_devices(self.store))
-        provider_values = api.for_combo(
+        provider_values = stoq_api.for_combo(
             CreditProvider.get_card_providers(self.store))
 
         return collections.OrderedDict(
@@ -398,7 +397,7 @@ class PaymentMethodSlave(BaseEditorSlave):
 
     def _setup_widgets(self):
         accounts = self.store.find(Account)
-        self.account.prefill(api.for_combo(
+        self.account.prefill(stoq_api.for_combo(
             accounts, attr='long_description'))
         self.account.select(self.model.destination_account)
 
@@ -534,7 +533,7 @@ class CardOperationCostListSlave(ModelListSlave):
 
 
 def test():  # pragma nocover
-    creator = api.prepare_test()
+    creator = stoq_api.prepare_test()
     method = PaymentMethod.get_by_name(creator.store, u'card')
     retval = run_dialog(CardPaymentMethodEditor, None, creator.store, method)
     creator.store.confirm(retval)

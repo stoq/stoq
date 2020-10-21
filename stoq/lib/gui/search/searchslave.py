@@ -34,6 +34,7 @@ from kiwi.ui.delegates import SlaveDelegate
 from kiwi.utils import gsignal
 from zope.interface.verify import verifyClass
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoq.lib.queryexecuter import (NumberQueryState, StringQueryState,
                                     DateQueryState, DateIntervalQueryState,
@@ -709,7 +710,7 @@ class SearchSlave(SlaveDelegate):
         :param column: When provided, besides creating the filter, we will also
           add it to the interface, filtering by the informed column.
         """
-        items = api.get_branches_for_filter(self.store, use_id=True)
+        items = stoq_api.get_branches_for_filter(self.store, use_id=True)
         if not label:
             label = _('Branch:')
 

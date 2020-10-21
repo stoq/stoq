@@ -9,6 +9,14 @@ stoq Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`api` Module
+-----------------
+
+.. automodule:: stoq.api
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`dbadmin` Module
 ---------------------
 

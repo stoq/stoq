@@ -31,6 +31,7 @@ from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 from storm.expr import And, Eq
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.receiving import ReceivingInvoice
@@ -83,7 +84,7 @@ class ReceivingSelectionStep(BaseWizardStep):
         # Dont let the user receive purchases from other branches when working
         # in synchronized mode
         if (api.sysparam.get_bool('SYNCHRONIZED_MODE') and not
-                api.can_see_all_branches()):
+                stoq_api.can_see_all_branches()):
             branch = api.get_current_branch(self.store)
             query = And(query, PurchaseReceivingView.branch_id == branch.id)
         return query

@@ -25,6 +25,7 @@
 
 """Work order reports implementation"""
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.reporting.report import ObjectListReport, HTMLReport
 from stoqlib.lib.translation import stoqlib_gettext
@@ -67,7 +68,7 @@ class WorkOrderReceiptReport(_BaseWorkOrderReport):
 if __name__ == '__main__':  # pragma nocover
     from stoqlib.domain.workorder import WorkOrder
     import sys
-    creator = api.prepare_test()
+    creator = stoq_api.prepare_test()
     wo = creator.store.find(WorkOrder, identifier=int(sys.argv[-1])).one()
     r = WorkOrderQuoteReport('test.pdf', wo)
     r.save_html('test.html')

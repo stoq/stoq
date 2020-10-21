@@ -50,6 +50,7 @@ Room for improvement:
 from gi.repository import Gtk
 from kiwi.ui.objectlist import Column
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.person import PersonAddressView
 from stoq.lib.gui.base.dialogs import run_dialog
@@ -336,5 +337,5 @@ class PersonMergeDialog(BaseEditor):
 
 
 if __name__ == '__main__':  # pragma nocover
-    ec = api.prepare_test()
+    ec = stoq_api.prepare_test()
     run_dialog(PersonMergeDialog, None, ec.store)

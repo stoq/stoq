@@ -31,6 +31,7 @@ from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel, ObjectTree
 from kiwi.ui.gadgets import render_pixbuf
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import Client
@@ -143,7 +144,7 @@ class SalesTab(DetailsTab):
 
     def setup_widgets(self):
         value_format = '<b>%s</b>'
-        total_label = "<b>%s</b>" % api.escape(_("Total:"))
+        total_label = "<b>%s</b>" % stoq_api.escape(_("Total:"))
         sales_summary_label = SummaryLabel(klist=self.klist,
                                            column='total',
                                            label=total_label,
@@ -389,7 +390,7 @@ class CreditAccountsTab(DetailsTab):
 
     def setup_widgets(self):
         value_format = '<b>%s</b>'
-        balance_label = "<b>%s</b>" % api.escape(_("Balance:"))
+        balance_label = "<b>%s</b>" % stoq_api.escape(_("Balance:"))
 
         account_summary_label = SummaryLabel(klist=self.klist,
                                              column='paid_value',

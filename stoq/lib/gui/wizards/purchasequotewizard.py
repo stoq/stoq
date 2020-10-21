@@ -32,6 +32,7 @@ from kiwi.datatypes import ValidationError
 from stoqlib.lib.objutils import Settable
 from kiwi.ui.objectlist import Column
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import Branch
@@ -76,7 +77,7 @@ class StartQuoteStep(WizardEditorStep):
         self.quote_group.set_text(quote_group)
 
         branches = Branch.get_active_branches(self.store)
-        self.branch_combo.prefill(api.for_person_combo(branches))
+        self.branch_combo.prefill(stoq_api.for_person_combo(branches))
         sync_mode = api.sysparam.get_bool('SYNCHRONIZED_MODE')
         self.branch_combo.set_sensitive(not sync_mode)
 

@@ -34,6 +34,7 @@ from kiwi.ui.entry import ENTRY_MODE_DATA
 from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.widgets.spinbutton import ProxySpinButton
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.product import Storable, StorableBatch, StorableBatchView
 from stoq.lib.gui.editors.baseeditor import BaseEditor
@@ -531,7 +532,7 @@ class BatchDecreaseSelectionDialog(BatchSelectionDialog):
         completion.set_minimum_key_length = 1
         items = self.model.get_available_batches(
             api.get_current_branch(self.store))
-        entry.prefill(api.for_combo(items))
+        entry.prefill(stoq_api.for_combo(items))
 
     def validate_entry(self, entry):
         text = entry.get_text()

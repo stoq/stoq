@@ -31,6 +31,7 @@ from kiwi.currency import currency
 from stoqlib.lib.objutils import Settable
 from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.person import Supplier
 from stoq.lib.gui.editors.baseeditor import BaseEditor
@@ -103,7 +104,7 @@ class SupplierDetailsDialog(BaseEditor):
         self.payments_list.add_list(self.payments)
 
         value_format = '<b>%s</b>'
-        total_label = "<b>%s</b>" % api.escape(_("Total:"))
+        total_label = "<b>%s</b>" % stoq_api.escape(_("Total:"))
         purchases_summary_label = SummaryLabel(klist=self.purchases_list,
                                                column='total',
                                                label=total_label,

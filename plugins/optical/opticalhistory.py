@@ -29,6 +29,7 @@ import operator
 from kiwi.enums import ListType
 from kiwi.ui.objectlist import Column
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoq.lib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.person import Client
@@ -270,7 +271,7 @@ class OpticalPatientDetails(BaseEditor):
 # Run this with one of the editors defined above
 def test_editor(editor):  # pragma nocover
     from stoq.lib.gui.base.dialogs import run_dialog
-    ec = api.prepare_test()
+    ec = stoq_api.prepare_test()
     model = ec.store.find(editor.model_type).any()
     if not model:
         client = ec.store.find(Client).any()
@@ -284,7 +285,7 @@ def test_editor(editor):  # pragma nocover
 def test_dialog():  # pragma nocover
     from stoq.lib.gui.base.dialogs import run_dialog
 
-    ec = api.prepare_test()
+    ec = stoq_api.prepare_test()
     client = ec.store.find(Client).any()
     run_dialog(OpticalPatientDetails, None, ec.store, client)
     ec.store.commit()

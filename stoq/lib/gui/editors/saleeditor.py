@@ -31,6 +31,7 @@ from kiwi.datatypes import ValidationError
 from stoqlib.lib.objutils import Settable
 from kiwi.ui.forms import TextField
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.event import Event
 from stoqlib.domain.fiscal import CfopData
@@ -123,7 +124,7 @@ class SaleQuoteItemSlave(BaseEditorSlave):
         # We populate this even if it's hidden because we need a default value
         # selected to add to the sale item
         cfop_items = CfopData.get_for_sale(self.store)
-        self.cfop.prefill(api.for_combo(cfop_items))
+        self.cfop.prefill(stoq_api.for_combo(cfop_items))
 
         self._update_total()
         self.reserved.get_adjustment().set_upper(self.quantity_model.quantity)

@@ -32,6 +32,7 @@ from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 from storm.expr import And
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.database.expr import Date
 from stoqlib.domain.events import SaleAvoidCancelEvent, StockOperationTryFiscalCancelEvent
@@ -349,7 +350,7 @@ class SalesApp(ShellApp):
         parent = self.get_statusbar_message_area()
         self.search.set_summary_label(column='net_total',
                                       label=('<b>%s</b>' %
-                                             api.escape(_('Gross total:'))),
+                                             stoq_api.escape(_('Gross total:'))),
                                       format='<b>%s</b>',
                                       parent=parent)
         # Add an extra summary beyond the main one
@@ -361,7 +362,7 @@ class SalesApp(ShellApp):
         self._extra_summary = LazySummaryLabel(klist=self.search.result_view,
                                                column='net_total',
                                                label=('<b>%s</b>' %
-                                                      api.escape(_('Net total:'))),
+                                                      stoq_api.escape(_('Net total:'))),
                                                value_format='<b>%s</b>')
         parent.pack_start(self._extra_summary, False, False, 0)
         self._extra_summary.show()

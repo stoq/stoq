@@ -219,6 +219,6 @@ class TestSaleDetails(GUITest):
 
 
 if __name__ == '__main__':
-    from stoqlib.api import api
-    c = api.prepare_test()
+    from stoq.api import api as stoq_api
+    c = stoq_api.prepare_test()
     unittest.main()

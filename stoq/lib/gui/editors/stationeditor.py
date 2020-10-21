@@ -25,7 +25,7 @@
 
 from kiwi.datatypes import ValidationError
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.station import BranchStation
@@ -62,7 +62,7 @@ class StationEditor(BaseEditor):
 
     def setup_proxies(self):
         branches = self.store.find(Branch)
-        self.branch.prefill(api.for_person_combo(branches))
+        self.branch.prefill(stoq_api.for_person_combo(branches))
 
         self.add_proxy(self.model, StationEditor.proxy_widgets)
         if not self.edit_mode:

@@ -31,6 +31,7 @@ from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, ObjectList, SummaryLabel
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.inventory import InventoryItemsView
 from stoqlib.domain.person import Branch
@@ -139,7 +140,7 @@ class ProductStockHistoryDialog(BaseEditor):
         self.returned_list.add_list(items)
 
         value_format = '<b>%s</b>'
-        total_label = "<b>%s</b>" % api.escape(_("Total:"))
+        total_label = "<b>%s</b>" % stoq_api.escape(_("Total:"))
         receiving_summary_label = SummaryLabel(klist=self.receiving_list,
                                                column='quantity',
                                                label=total_label,

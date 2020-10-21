@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.person import Calls, LoginUser, Person
 from stoq.lib.gui.base.dialogs import run_dialog
@@ -81,11 +82,11 @@ class CallsEditor(BaseEditor):
             # Get only persons of person_type by joining with the table
             query = (self.person_type.person_id == Person.id)
             persons = self.store.find(Person, query)
-            self.person_combo.prefill(api.for_combo(persons, attr='name'))
+            self.person_combo.prefill(stoq_api.for_combo(persons, attr='name'))
 
     def _fill_attendant_combo(self):
         login_users = self.store.find(LoginUser)
-        self.attendant.prefill(api.for_person_combo(login_users))
+        self.attendant.prefill(stoq_api.for_person_combo(login_users))
 
     def on_details_button__clicked(self, button):
         from stoq.lib.gui.dialogs.clientdetails import ClientDetailsDialog

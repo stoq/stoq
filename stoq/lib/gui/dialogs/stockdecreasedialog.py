@@ -30,6 +30,7 @@ from gi.repository import Gtk, Pango
 from kiwi.ui.objectlist import Column, SummaryLabel
 from kiwi.currency import currency
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
 from stoq.lib.gui.editors.baseeditor import BaseEditor
@@ -78,7 +79,7 @@ class StockDecreaseDetailsDialog(BaseEditor):
         # if the parameter is on we have to build the summary
         if api.sysparam.get_bool("CREATE_PAYMENTS_ON_STOCK_DECREASE"):
             value_format = '<b>%s</b>'
-            total_cost_label = value_format % api.escape(_("Total cost:"))
+            total_cost_label = value_format % stoq_api.escape(_("Total cost:"))
             products_cost_summary_label = SummaryLabel(klist=self.product_list,
                                                        column='total_cost',
                                                        label=total_cost_label,

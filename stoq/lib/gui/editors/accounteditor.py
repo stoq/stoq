@@ -29,9 +29,8 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.combo import ProxyComboBox
 from kiwi.ui.widgets.entry import ProxyEntry
 
-from stoqlib.api import api
-from stoqlib.domain.account import (Account, BankAccount,
-                                    BillOption)
+from stoq.api import api as stoq_api
+from stoqlib.domain.account import Account, BankAccount, BillOption
 from stoq.lib.gui.base.dialogs import run_dialog
 from stoq.lib.gui.editors.baseeditor import BaseEditor
 from stoq.lib.gui.utils.printing import print_report
@@ -216,7 +215,7 @@ class AccountEditor(BaseEditor):
         self.bank_number = ProxyEntry()
         self.bank_number.props.data_type = int
         self.bank_number.set_sensitive(False)
-        bank_number_lbl = self._add_widget(api.escape(_("Number:")),
+        bank_number_lbl = self._add_widget(stoq_api.escape(_("Number:")),
                                            self.bank_number, options=True)
 
         self.bank_branch = ProxyEntry()
@@ -225,7 +224,7 @@ class AccountEditor(BaseEditor):
         self.bank_branch.props.data_type = 'str'
         self.bank_branch.props.mandatory = True
         self.bank_branch.model_attribute = "bank_branch"
-        bank_branch_lbl = self._add_widget(api.escape(_("Agency:")),
+        bank_branch_lbl = self._add_widget(stoq_api.escape(_("Agency:")),
                                            self.bank_branch, options=True)
         if bank_number is not None:
             bank_branch_lbl.show()
@@ -236,7 +235,7 @@ class AccountEditor(BaseEditor):
         self.bank_account = ProxyEntry()
         self.bank_account.connect('validate', self._on_bank_account__validate,
                                   bank_info)
-        self._add_widget(api.escape(_("Account:")),
+        self._add_widget(stoq_api.escape(_("Account:")),
                          self.bank_account, options=True)
         self.bank_account.model_attribute = "bank_account"
         self.bank_account.props.data_type = 'str'
@@ -263,7 +262,7 @@ class AccountEditor(BaseEditor):
                 entry.connect('validate', self._on_bank_option__validate,
                               bank_info, option)
                 name = option.replace('_', ' ').capitalize()
-                self._add_widget("<i>%s</i>:" % api.escape(name),
+                self._add_widget("<i>%s</i>:" % stoq_api.escape(name),
                                  entry, options=True)
                 entry.show()
                 self._option_fields[option] = entry
@@ -304,7 +303,7 @@ class AccountEditor(BaseEditor):
 
         self.code.set_sensitive(False)
         self.bank_type = ProxyComboBox()
-        self._add_widget(api.escape(_("Bank:")), self.bank_type)
+        self._add_widget(stoq_api.escape(_("Bank:")), self.bank_type)
         self.bank_type.connect('content-changed',
                                self._on_bank_type__content_changed)
         self.bank_type.show()
@@ -416,7 +415,7 @@ class AccountEditor(BaseEditor):
 
 
 def test():  # pragma nocover
-    creator = api.prepare_test()
+    creator = stoq_api.prepare_test()
     retval = run_dialog(AccountEditor, None, creator.store, None,
                         parent_account=None, visual_mode=True)
     creator.store.confirm(retval)

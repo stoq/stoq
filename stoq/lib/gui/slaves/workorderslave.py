@@ -37,6 +37,7 @@ from kiwi.ui.forms import PriceField, NumericField
 from kiwi.ui.objectlist import Column
 from storm.expr import And, Eq, Or
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.database.expr import Field
 from stoqlib.domain.person import Employee
@@ -217,7 +218,7 @@ class _WorkOrderItemEditor(BaseEditor):
 
 class _WorkOrderItemSlave(SellableItemSlave):
     model_type = WorkOrder
-    summary_label_text = '<b>%s</b>' % api.escape(_("Total:"))
+    summary_label_text = '<b>%s</b>' % stoq_api.escape(_("Total:"))
     sellable_view = SellableFullStockView
     item_editor = _WorkOrderItemEditor
     validate_stock = True
@@ -375,7 +376,7 @@ class WorkOrderQuoteSlave(BaseEditorSlave):
 
     def _fill_quote_responsible_combo(self):
         employees = Employee.get_active_employees(self.store)
-        self.quote_responsible.prefill(api.for_person_combo(employees))
+        self.quote_responsible.prefill(stoq_api.for_person_combo(employees))
 
     #
     #  Callbacks
@@ -430,7 +431,7 @@ class WorkOrderExecutionSlave(BaseEditorSlave):
 
     def _fill_execution_responsible_combo(self):
         employees = Employee.get_active_employees(self.store)
-        self.execution_responsible.prefill(api.for_person_combo(employees))
+        self.execution_responsible.prefill(stoq_api.for_person_combo(employees))
 
 
 class WorkOrderHistorySlave(BaseEditorSlave):

@@ -29,6 +29,7 @@ import datetime
 from gi.repository import Gtk, GdkPixbuf, Pango
 from kiwi.ui.objectlist import Column
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.fiscal import Invoice
 from stoqlib.domain.sale import Delivery
@@ -140,7 +141,7 @@ class DeliveryApp(ShellApp):
         self.search.set_summary_label(
             column='identifier',
             label=('<b>%s</b>' %
-                   api.escape(_('Number of deliveries:'))),
+                   stoq_api.escape(_('Number of deliveries:'))),
             format='<b>%s</b>',
             parent=self.get_statusbar_message_area())
 

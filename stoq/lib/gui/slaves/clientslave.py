@@ -25,6 +25,7 @@
 
 from kiwi.datatypes import ValidationError
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoq.lib.gui.base.dialogs import run_dialog
 from stoq.lib.gui.dialogs.creditdialog import CreditInfoListDialog
@@ -51,7 +52,7 @@ class ClientStatusSlave(BaseEditorSlave):
 
     def setup_proxies(self):
         categories = self.store.find(ClientCategory)
-        self.category_combo.prefill(api.for_combo(categories, empty=''))
+        self.category_combo.prefill(stoq_api.for_combo(categories, empty=''))
         table = self.model_type
         items = [(value, constant)
                  for constant, value in table.statuses.items()]

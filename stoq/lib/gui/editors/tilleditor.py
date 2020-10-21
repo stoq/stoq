@@ -32,6 +32,7 @@ from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
 
 from stoqdrivers.exceptions import DriverError
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.domain.account import AccountTransaction
@@ -230,7 +231,7 @@ class TillClosingEditor(BaseEditor):
             summary_day_history = SummaryLabel(
                 klist=self.day_history,
                 column='system_value',
-                label='<b>%s</b>' % api.escape(_(u'Total balance:')))
+                label='<b>%s</b>' % stoq_api.escape(_(u'Total balance:')))
             summary_day_history.show()
             self.day_history_box.pack_start(summary_day_history, False, True, 0)
         else:
@@ -402,7 +403,7 @@ class CashAdvanceEditor(BaseEditor):
 
     def _setup_widgets(self):
         employees = self.store.find(Employee)
-        self.employee_combo.prefill(api.for_person_combo(employees))
+        self.employee_combo.prefill(stoq_api.for_person_combo(employees))
         self.employee_combo.set_active(0)
 
     #

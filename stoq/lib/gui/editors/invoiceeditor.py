@@ -265,9 +265,9 @@ class InvoicePrinterEditor(BaseEditor):
 
 
 def test():  # pragma nocover
-    from stoqlib.api import api
+    from stoq.api import api as stoq_api
     from stoq.lib.gui.base.dialogs import run_dialog
-    creator = api.prepare_test()
+    creator = stoq_api.prepare_test()
     model = creator.store.find(InvoiceLayout, description=u'Untitled').any()
     retval = run_dialog(InvoiceLayoutEditor, None, creator.store, model)
     creator.store.confirm(retval)

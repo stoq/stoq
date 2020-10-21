@@ -36,6 +36,7 @@ from dateutil.relativedelta import MO, relativedelta
 from dateutil.tz import tzlocal, tzutc
 from gi.repository import Gtk, GLib, WebKit2
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.person import Client
 from stoq.lib.gui.editors.callseditor import CallsEditor
@@ -179,7 +180,7 @@ class CalendarView(WebView):
         view.run_javascript("document.title = $('.fc-header-title').text()")
         title = view.get_property('title')
         self.app.date_label.set_markup(
-            '<big><b>%s</b></big>' % api.escape(title))
+            '<big><b>%s</b></big>' % stoq_api.escape(title))
 
     #
     # Callbacks

@@ -26,6 +26,7 @@
 import collections
 from gi.repository import Gtk, GObject, GLib
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoq.lib.gui.base.dialogs import run_dialog
 from stoq.lib.gui.dialogs.feedbackdialog import FeedbackDialog
@@ -133,20 +134,20 @@ class ResourceStatusBox(Gtk.Box):
 
         tooltip = ''
         if self._compact and resource.reason:
-            text = api.escape(resource.reason)
+            text = stoq_api.escape(resource.reason)
             tooltip = "<b>%s</b>: %s\n<i>%s</i>" % (
-                api.escape(resource.label),
-                api.escape(resource.reason),
-                api.escape(resource.reason_long))
+                stoq_api.escape(resource.label),
+                stoq_api.escape(resource.reason),
+                stoq_api.escape(resource.reason_long))
         elif resource.reason and resource.reason_long:
             text = "<b>%s</b>: %s\n<i>%s</i>" % (
-                api.escape(resource.label),
-                api.escape(resource.reason),
-                api.escape(resource.reason_long))
+                stoq_api.escape(resource.label),
+                stoq_api.escape(resource.reason),
+                stoq_api.escape(resource.reason_long))
         elif resource.reason:
             text = "<b>%s</b>: %s" % (
-                api.escape(resource.label),
-                api.escape(resource.reason))
+                stoq_api.escape(resource.label),
+                stoq_api.escape(resource.reason))
         else:
             text = _("Status not available...")
 

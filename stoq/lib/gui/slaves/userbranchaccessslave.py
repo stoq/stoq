@@ -24,7 +24,7 @@
 
 from kiwi.ui.objectlist import Column
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoqlib.domain.person import (Branch, UserBranchAccess)
 from stoq.lib.gui.editors.baseeditor import BaseRelationshipEditorSlave
 from stoqlib.lib.message import info, warning
@@ -67,7 +67,7 @@ class UserBranchAccessSlave(BaseRelationshipEditorSlave):
 
     def get_targets(self):
         branches = Branch.get_active_branches(self._store)
-        return api.for_person_combo(branches)
+        return stoq_api.for_person_combo(branches)
 
     def get_relations(self):
         return self._user.get_associated_branches()

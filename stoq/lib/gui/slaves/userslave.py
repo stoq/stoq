@@ -31,6 +31,7 @@ import hashlib
 from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.person import (Employee, EmployeeRole,
                                    LoginUser, SalesPerson)
@@ -224,11 +225,11 @@ class UserDetailsSlave(BaseEditorSlave):
         if self.model.profile is None:
             self.model.profile = UserProfile.get_default(store=self.store)
         profiles = self.store.find(UserProfile).order_by(UserProfile.name)
-        self.profile.prefill(api.for_combo(profiles, attr="name"))
+        self.profile.prefill(stoq_api.for_combo(profiles, attr="name"))
 
     def _setup_role_entry_completition(self):
         roles = self.store.find(EmployeeRole)
-        self.role.prefill(api.for_combo(
+        self.role.prefill(stoq_api.for_combo(
             roles, attr="name", empty=_("No Role")))
 
     def _attach_slaves(self):

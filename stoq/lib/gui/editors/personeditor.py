@@ -28,6 +28,7 @@ import collections
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import TextField
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.person import (Client, Branch, Employee, EmployeeRole,
                                    Individual, LoginUser,
@@ -314,13 +315,13 @@ class BranchEditor(BasePersonRoleEditor):
 
 def test_client():  # pragma nocover
     from stoq.lib.gui.wizards.personwizard import run_person_role_dialog
-    creator = api.prepare_test()
+    creator = stoq_api.prepare_test()
     retval = run_person_role_dialog(ClientEditor, None, creator.store, None)
     creator.store.confirm(retval)
 
 
 def test_employee_role():  # pragma nocover
-    creator = api.prepare_test()
+    creator = stoq_api.prepare_test()
     role = creator.create_employee_role()
     run_dialog(EmployeeRoleEditor, parent=None, store=creator.store,
                model=role)

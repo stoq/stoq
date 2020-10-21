@@ -31,6 +31,7 @@ from kiwi.currency import currency, format_price
 from kiwi.ui.objectlist import Column
 from storm.expr import Ne
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.product import StorableBatch
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
@@ -174,7 +175,7 @@ class SaleReturnItemsStep(SellableItemStep):
     model_type = ReturnedSale
     item_table = ReturnedSaleItem
     cost_editable = False
-    summary_label_text = '<b>%s</b>' % api.escape(_("Total to return:"))
+    summary_label_text = '<b>%s</b>' % stoq_api.escape(_("Total to return:"))
     # This will only be used when wizard.unkown_sale is True
     batch_selection_dialog = BatchIncreaseSelectionDialog
     stock_labels_visible = False

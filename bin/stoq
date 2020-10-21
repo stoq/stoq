@@ -177,7 +177,7 @@ if trial:
 
     from gi.repository import Gtk
     from stoq.gui.shell.shellwindow import ShellWindow
-    from stoqlib.api import api
+    from stoq.api import api as stoq_api
     import stoq
     stoq.trial_mode = True
 
@@ -198,7 +198,7 @@ if trial:
         days = 60 - (localnow() - start).days
         title = _("You are using a trial version of Stoq")
         desc = (_("There are <b>%s days</b> remaining to try all Stoq features") % days)
-        msg = '<b>%s</b>\n%s' % (api.escape(title), desc)
+        msg = '<b>%s</b>\n%s' % (stoq_api.escape(title), desc)
 
         trial_button = Gtk.LinkButton('https://www.stoq.com.br/trial_windows', _("Activate"))
         trial_button.connect('activate-link', _link_clicked)

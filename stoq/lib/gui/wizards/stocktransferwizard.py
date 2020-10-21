@@ -30,6 +30,7 @@ from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 from storm.expr import And
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.person import Branch, Employee
 from stoqlib.domain.sellable import Sellable
@@ -81,11 +82,11 @@ class StockTransferInitialStep(WizardEditorStep):
 
     def _setup_widgets(self):
         branches = Branch.get_active_remote_branches(self.store, api.get_current_branch(self.store))
-        self.destination_branch.prefill(api.for_person_combo(branches))
+        self.destination_branch.prefill(stoq_api.for_person_combo(branches))
         self.source_branch.set_text(self.branch.get_description())
 
         employees = self.store.find(Employee)
-        self.source_responsible.prefill(api.for_person_combo(employees))
+        self.source_responsible.prefill(stoq_api.for_person_combo(employees))
 
     def _validate_destination_branch(self):
         if not self._nfe_is_active:

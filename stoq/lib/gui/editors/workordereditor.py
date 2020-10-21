@@ -34,6 +34,7 @@ from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.forms import ChoiceField, TextField
 from kiwi.ui.objectlist import Column
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import Branch, Employee
@@ -266,7 +267,7 @@ class WorkOrderEditor(BaseEditor):
             categories = self.store.find(WorkOrderCategory)
         self.category.color_attribute = 'color'
         self.category.prefill(
-            api.for_combo(categories, empty=_(u"No category")))
+            stoq_api.for_combo(categories, empty=_(u"No category")))
 
     def _run_category_editor(self, category=None):
         with api.new_store() as store:
@@ -449,7 +450,7 @@ class WorkOrderPackageSendEditor(BaseEditor):
         if not current_branch.can_execute_foreign_work_orders:
             branches = branches.find(can_execute_foreign_work_orders=True)
 
-        self.destination_branch.prefill(api.for_person_combo(branches))
+        self.destination_branch.prefill(stoq_api.for_person_combo(branches))
 
     def _edit_order(self, order_view):
         run_dialog(NoteEditor, self, self.store, model=order_view,
@@ -493,7 +494,7 @@ class WorkOrderCheckEditor(BaseEditor):
 
     @cached_property()
     def fields(self):
-        user = api.for_combo(self.store.find(Employee), empty='')
+        user = stoq_api.for_combo(self.store.find(Employee), empty='')
         return collections.OrderedDict(
             responsible=ChoiceField(_("Responsible"), mandatory=True,
                                     use_entry=True, proxy=True,

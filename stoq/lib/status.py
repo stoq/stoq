@@ -35,6 +35,7 @@ from kiwi.utils import gsignal
 from stoq.lib.decorators import threaded
 from stoq.lib.gui.base.dialogs import run_dialog
 from stoq.lib.gui.editors.backupsettings import BackupSettingsEditor
+from stoq.api import api as stoq_api
 from stoqlib.api import api, safe_str
 from stoqlib.lib.message import warning
 from stoqlib.lib.threadutils import threadit, schedule_in_main_thread
@@ -305,8 +306,8 @@ class _ServerStatus(ResourceStatus):
             self.reason = _("Online services data hub not found...")
             package = '<a href="apt://stoq-server">stoq-server</a>'
             self.reason_long = safe_str(
-                api.escape(_("Install and configure the %s package "
-                             "to solve this issue")) % (package, ))
+                stoq_api.escape(_("Install and configure the %s package "
+                                  "to solve this issue")) % (package, ))
 
 
 @register

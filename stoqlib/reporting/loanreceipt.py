@@ -28,6 +28,7 @@ import datetime
 
 from stoqlib.lib.objutils import Settable
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.report import HTMLReport
@@ -110,7 +111,7 @@ class LoanReceipt(HTMLReport):
 if __name__ == '__main__':  # pragma nocover
     from stoqlib.domain.loan import Loan
     import sys
-    creator = api.prepare_test()
+    creator = stoq_api.prepare_test()
     loan_ = creator.trans.find(Loan, id=int(sys.argv[-1])).one()
     r = LoanReceipt('test.pdf', loan_)
     r.save_html('test.html')

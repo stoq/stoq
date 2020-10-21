@@ -32,6 +32,7 @@ from kiwi.ui.dialogs import selectfile
 from kiwi.ui.entry import ENTRY_MODE_DATA
 from kiwi.ui.forms import TextField, ChoiceField, Field
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.attachment import Attachment
 from stoq.lib.gui.editors.baseeditor import BaseEditorSlave
@@ -181,7 +182,7 @@ class AddressField(DomainChoiceField):
         addresses = store.find(Address,
                                person=self.person).order_by(Address.street)
 
-        self.prefill(api.for_combo(addresses), address)
+        self.prefill(stoq_api.for_combo(addresses), address)
 
         self.add_button.set_tooltip_text(_("Add a new address"))
         self.edit_button.set_tooltip_text(_("Edit the selected address"))
@@ -227,7 +228,7 @@ class PaymentMethodField(ChoiceField):
         # Add the current value, just in case the payment method is not
         # currently creatable
         methods.add(value)
-        self.widget.prefill(api.for_combo(methods))
+        self.widget.prefill(stoq_api.for_combo(methods))
         if value is not None:
             self.widget.select(value)
 
@@ -244,7 +245,7 @@ class PaymentCategoryField(DomainChoiceField):
         from stoqlib.domain.payment.category import PaymentCategory
         store = get_store_for_field(self)
         categories = PaymentCategory.get_by_type(store, self.category_type)
-        values = api.for_combo(
+        values = stoq_api.for_combo(
             categories, empty=_('No category'), attr='name')
         self.prefill(values, value)
         # FIXME: Move to noun
@@ -408,7 +409,7 @@ class CfopField(DomainChoiceField):
         from stoqlib.domain.fiscal import CfopData
         store = get_store_for_field(self)
         cfops = store.find(CfopData)
-        self.prefill(api.for_combo(cfops), cfop)
+        self.prefill(stoq_api.for_combo(cfops), cfop)
 
         self.add_button.set_tooltip_text(_("Add a new C.F.O.P"))
         self.edit_button.set_tooltip_text(_("View C.F.O.P details"))
@@ -431,7 +432,7 @@ class GridGroupField(DomainChoiceField):
     def populate(self, gridgroup):
         from stoqlib.domain.product import GridGroup
         store = get_store_for_field(self)
-        self.prefill(api.for_combo(store.find(GridGroup)), gridgroup)
+        self.prefill(stoq_api.for_combo(store.find(GridGroup)), gridgroup)
 
         self.add_button.set_tooltip_text(_("Add a new grid group"))
         self.edit_button.set_tooltip_text(_("Edit the grid group"))
@@ -455,7 +456,7 @@ class UserProfileField(DomainChoiceField):
     def populate(self, profile):
         from stoqlib.domain.profile import UserProfile
         store = get_store_for_field(self)
-        self.prefill(api.for_combo(store.find(UserProfile)), profile)
+        self.prefill(stoq_api.for_combo(store.find(UserProfile)), profile)
 
 
 class AttachmentField(Field):

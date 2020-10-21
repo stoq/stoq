@@ -165,9 +165,9 @@ class BookletReport(HTMLReport):
 
 def test():  # pragma nocover
     from stoqlib.domain.sale import Sale
-    from stoqlib.api import api
+    from stoq.api import api as stoq_api
     import sys
-    creator = api.prepare_test()
+    creator = stoq_api.prepare_test()
     sale = creator.store.find(Sale, id=int(sys.argv[-1])).one()
     r = BookletReport('teste.pdf', sale.payments)
     r.save_html('teste.html')

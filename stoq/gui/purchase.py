@@ -29,6 +29,7 @@ from decimal import Decimal
 from gi.repository import Gtk, Pango
 from kiwi.currency import currency
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.enums import SearchFilterPosition
@@ -193,7 +194,7 @@ class PurchaseApp(ShellApp):
         ])
         self.search.set_summary_label(column='total',
                                       label=('<b>%s</b>' %
-                                             api.escape(_('Orders total:'))),
+                                             stoq_api.escape(_('Orders total:'))),
                                       format='<b>%s</b>',
                                       parent=self.get_statusbar_message_area())
         self.results.set_selection_mode(Gtk.SelectionMode.MULTIPLE)
@@ -235,7 +236,7 @@ class PurchaseApp(ShellApp):
                 _("No orders could be found."),
                 _("Would you like to %s ?") % (
                     '<a href="new_order">%s</a>' % (
-                        api.escape(_("create a new order"), )))
+                        stoq_api.escape(_("create a new order"), )))
             ))
 
         # FIXME: Push number of results to Statusbar

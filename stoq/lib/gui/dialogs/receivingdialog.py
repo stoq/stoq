@@ -29,6 +29,7 @@ from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, SummaryLabel
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.lib.translation import stoqlib_gettext
@@ -73,7 +74,7 @@ class ReceivingOrderDetailsDialog(BaseEditor):
                 self.product_list.append(product, child)
 
         value_format = '<b>%s</b>'
-        total_label = value_format % api.escape(_("Total:"))
+        total_label = value_format % stoq_api.escape(_("Total:"))
         products_summary_label = SummaryLabel(klist=self.product_list,
                                               column='total_with_ipi',
                                               label=total_label,
@@ -109,8 +110,8 @@ class ReceivingOrderDetailsDialog(BaseEditor):
         receiving_date = self.model.receival_date_str
         branch_name = self.model.branch_name
         text = _('Received in <b>%s</b> for branch <b>%s</b>')
-        header_text = text % (api.escape(receiving_date),
-                              api.escape(branch_name))
+        header_text = text % (stoq_api.escape(receiving_date),
+                              stoq_api.escape(branch_name))
         self.header_label.set_markup(header_text)
         self.add_proxy(self.model, ['notes'])
 

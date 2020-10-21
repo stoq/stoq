@@ -31,7 +31,7 @@ from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, SummaryLabel
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoqlib.lib.translation import stoqlib_gettext
 from stoq.lib.gui.editors.baseeditor import BaseEditor
 from stoq.lib.gui.search.searchcolumns import IdentifierColumn
@@ -115,7 +115,7 @@ class CostCenterDialog(BaseEditor):
 
     def _setup_summary_labels(self):
         value_format = "<b>%s</b>"
-        total_label = "<b>%s</b>" % api.escape(_("Total:"))
+        total_label = "<b>%s</b>" % stoq_api.escape(_("Total:"))
         total_summary_label = SummaryLabel(klist=self.payments_list,
                                            column='value',
                                            label=total_label,
@@ -123,7 +123,7 @@ class CostCenterDialog(BaseEditor):
         total_summary_label.show()
         self.payments_vbox.pack_start(total_summary_label, False, True, 0)
 
-        total_label = "<b>%s</b>" % api.escape(_("Total paid:"))
+        total_label = "<b>%s</b>" % stoq_api.escape(_("Total paid:"))
         total_paid_summary_label = SummaryLabel(klist=self.payments_list,
                                                 column='paid_value',
                                                 label=total_label,
@@ -131,7 +131,7 @@ class CostCenterDialog(BaseEditor):
         total_paid_summary_label.show()
         self.payments_vbox.pack_start(total_paid_summary_label, False, True, 0)
 
-        total_label = "<b>%s</b>" % api.escape(_("Total:"))
+        total_label = "<b>%s</b>" % stoq_api.escape(_("Total:"))
         transaction_summary_label = SummaryLabel(
             klist=self.stock_transactions_list,
             column='total',
@@ -140,7 +140,7 @@ class CostCenterDialog(BaseEditor):
         transaction_summary_label.show()
         self.stock_transactions_vbox.pack_start(transaction_summary_label, False, True, 0)
 
-        total_label = "<b>%s</b>" % api.escape(_("Total:"))
+        total_label = "<b>%s</b>" % stoq_api.escape(_("Total:"))
         sale_summary_label = SummaryLabel(klist=self.sales_list,
                                           column='total',
                                           label=total_label,
@@ -182,7 +182,7 @@ class CostCenterDialog(BaseEditor):
 def test():  # pragma: no cover
     from stoq.lib.gui.base.dialogs import run_dialog
 
-    ec = api.prepare_test()
+    ec = stoq_api.prepare_test()
     model = ec.store.find(CostCenter).any()
     run_dialog(CostCenterDialog, None, ec.store, model)
 

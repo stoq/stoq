@@ -28,7 +28,7 @@ from decimal import Decimal
 from gi.repository import Gtk, Gdk
 from kiwi.datatypes import ValidationError
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoqlib.domain.workorder import WorkOrderView
 from stoq.lib.gui.base.dialogs import run_dialog
 from stoq.lib.gui.editors.baseeditor import BaseEditorSlave
@@ -549,13 +549,13 @@ class OpticalMedicEntryGadget(PersonEntryGadget):
         for label, value in [(_("Name"), view.name), (_("CRM"), view.crm_number)]:
             if not value:
                 continue
-            details.append('%s: %s' % (label, api.escape(value)))
-        name = "<big>%s</big>" % (api.escape(view.name), )
+            details.append('%s: %s' % (label, stoq_api.escape(value)))
+        name = "<big>%s</big>" % (stoq_api.escape(view.name), )
         if details:
             short = name + '\n<span size="small">%s</span>' % (
-                api.escape(', '.join(details[:1])))
+                stoq_api.escape(', '.join(details[:1])))
             complete = name + '\n<span size="small">%s</span>' % (
-                api.escape('\n'.join(details)))
+                stoq_api.escape('\n'.join(details)))
         else:
             short = name
             complete = name

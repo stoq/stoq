@@ -26,6 +26,7 @@
 
 from kiwi.datatypes import ValidationError
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.person import Branch, Employee
 from stoq.lib.gui.editors.baseeditor import BaseEditorSlave
@@ -51,7 +52,7 @@ class BranchDetailsSlave(BaseEditorSlave):
 
     def _setup_manager_entry(self):
         employees = Employee.get_active_employees(self.store)
-        self.manager.prefill(api.for_person_combo(employees))
+        self.manager.prefill(stoq_api.for_person_combo(employees))
 
     def _setup_crt_combo(self):
         self.crt.prefill(self.crt_options)

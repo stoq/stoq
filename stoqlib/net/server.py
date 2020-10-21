@@ -27,6 +27,7 @@
 import socket
 import xmlrpc.client
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.database.settings import db_settings
 from stoqlib.lib.configparser import get_config
@@ -150,7 +151,7 @@ class ServerProxy(object):
 
 
 if __name__ == '__main__':
-    api.prepare_test()
+    stoq_api.prepare_test()
     proxy = ServerProxy()
 
     try:

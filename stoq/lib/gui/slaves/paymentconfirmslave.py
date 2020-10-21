@@ -35,7 +35,7 @@ from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoqlib.domain.account import Account
 from stoqlib.domain.attachment import Attachment
 from stoqlib.domain.costcenter import CostCenter
@@ -358,7 +358,7 @@ class _PaymentConfirmSlave(BaseEditor):
 
         destination_combo = self.get_account_destination_combo()
         for combo in [self.destination_account, self.source_account]:
-            combo.prefill(api.for_combo(
+            combo.prefill(stoq_api.for_combo(
                 self.store.find(Account),
                 attr='long_description'))
 
@@ -597,7 +597,7 @@ class PurchasePaymentConfirmSlave(_PaymentConfirmSlave):
 
         if (cost_centers_exists and isinstance(self.model,
                                                _LonelyConfirmationModel)):
-            self.cost_center.prefill(api.for_combo(cost_centers, attr='name',
-                                                   empty=_('No cost center.')))
+            self.cost_center.prefill(stoq_api.for_combo(cost_centers, attr='name',
+                                                        empty=_('No cost center.')))
             self.cost_center.set_visible(cost_centers_exists)
             self.cost_center_lbl.set_visible(cost_centers_exists)

@@ -27,7 +27,7 @@
 from gi.repository import Gtk
 from kiwi.ui.objectlist import ObjectList, Column
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoqlib.database.runtime import get_default_store, new_store
 from stoq.lib.gui.base.dialogs import BasicDialog, run_dialog
 from stoq.lib.gui.stockicons import STOQ_PLUGIN
@@ -57,7 +57,7 @@ class _PluginModel(object):
 
     @property
     def description(self):
-        return '<b>%s</b>\n%s' % (api.escape(self.desc.long_name),
+        return '<b>%s</b>\n%s' % (stoq_api.escape(self.desc.long_name),
                                   self.desc.description)
 
 
@@ -145,5 +145,5 @@ class PluginManagerDialog(BasicDialog):
 
 
 if __name__ == '__main__':  # pragma nocover
-    ec = api.prepare_test()
+    ec = stoq_api.prepare_test()
     run_dialog(PluginManagerDialog, None, ec.store)

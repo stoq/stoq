@@ -31,6 +31,7 @@ from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 from storm.expr import And, Eq
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.costcenter import CostCenter
 from stoqlib.domain.fiscal import CfopData
@@ -85,17 +86,17 @@ class StartStockDecreaseStep(WizardEditorStep):
 
     def _fill_employee_combo(self):
         employess = self.store.find(Employee)
-        self.removed_by.prefill(api.for_person_combo(employess))
+        self.removed_by.prefill(stoq_api.for_person_combo(employess))
 
     def _fill_branch_combo(self):
         branches = Branch.get_active_branches(self.store)
-        self.branch.prefill(api.for_person_combo(branches))
+        self.branch.prefill(stoq_api.for_person_combo(branches))
         sync_mode = api.sysparam.get_bool('SYNCHRONIZED_MODE')
         self.branch.set_sensitive(not sync_mode)
 
     def _fill_cfop_combo(self):
         cfops = CfopData.get_for_sale(self.store)
-        self.cfop.prefill(api.for_combo(cfops))
+        self.cfop.prefill(stoq_api.for_combo(cfops))
 
     def _fill_cost_center_combo(self):
         cost_centers = CostCenter.get_active(self.store)
@@ -105,8 +106,8 @@ class StartStockDecreaseStep(WizardEditorStep):
         cost_centers_exists = not cost_centers.is_empty()
 
         if cost_centers_exists:
-            self.cost_center.prefill(api.for_combo(cost_centers, attr='name',
-                                                   empty=_('No cost center.')))
+            self.cost_center.prefill(stoq_api.for_combo(cost_centers, attr='name',
+                                                        empty=_('No cost center.')))
         self.cost_center.set_visible(cost_centers_exists)
         self.cost_center_lbl.set_visible(cost_centers_exists)
 
@@ -186,7 +187,7 @@ class DecreaseItemStep(SellableItemStep):
     model_type = StockDecrease
     item_table = StockDecreaseItem
     sellable_view = ProductWithStockBranchView
-    summary_label_text = "<b>%s</b>" % api.escape(_('Total quantity:'))
+    summary_label_text = "<b>%s</b>" % stoq_api.escape(_('Total quantity:'))
     summary_label_column = 'quantity'
     sellable_editable = False
     validate_stock = True

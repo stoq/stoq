@@ -75,11 +75,10 @@ class OpticalWorkOrderReceiptReport(HTMLReport):
 
 def test():  # pragma nocover
     from stoqlib.domain.workorder import WorkOrder
-    from stoqlib.api import api
-    creator = api.prepare_test()
+    from stoq.api import api as stoq_api
+    creator = stoq_api.prepare_test()
     orders = creator.store.find(WorkOrder)
     r = OpticalWorkOrderReceiptReport('teste.pdf', orders)
-    #r.save_html('teste.html')
     r.save()
 
 if __name__ == '__main__':  # pragma nocover

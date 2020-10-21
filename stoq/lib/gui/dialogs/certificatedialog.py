@@ -26,7 +26,7 @@ from kiwi.enums import ListType
 from stoqlib.lib.objutils import Settable
 from kiwi.ui.objectlist import Column
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoqlib.domain.certificate import PasswordObfuscator, Certificate
 from stoq.lib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoq.lib.gui.editors.baseeditor import BaseEditor
@@ -44,10 +44,10 @@ class CertificatePasswordDialog(BaseEditor):
     def __init__(self, cert_name, retry=False):
         super(CertificatePasswordDialog, self).__init__(None)
 
-        text = _("Enter the password for <b>%s</b>:") % (api.escape(cert_name), )
+        text = _("Enter the password for <b>%s</b>:") % (stoq_api.escape(cert_name), )
         if retry:
             error_text = '<b><span color="red">%s</span></b>' % (
-                api.escape(_("Wrong password provided...")), )
+                stoq_api.escape(_("Wrong password provided...")), )
             text = "%s\n%s" % (error_text, text)
         self.info_lbl.set_markup(text)
 

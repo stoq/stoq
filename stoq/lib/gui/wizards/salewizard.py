@@ -32,6 +32,7 @@ from kiwi.currency import currency, format_price
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.costcenter import CostCenter
 from stoqlib.domain.events import CreatePaymentEvent
@@ -581,7 +582,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     def _fill_transporter_combo(self):
         marker('Filling transporters')
         transporters = Transporter.get_active_transporters(self.store)
-        items = api.for_person_combo(transporters)
+        items = stoq_api.for_person_combo(transporters)
         self.transporter.prefill(items)
         self.transporter.set_sensitive(len(items))
         marker('Filled transporters')
@@ -595,8 +596,8 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         cost_centers_exists = not cost_centers.is_empty()
 
         if cost_centers_exists:
-            self.cost_center.prefill(api.for_combo(cost_centers, attr='name',
-                                                   empty=_('No cost center.')))
+            self.cost_center.prefill(stoq_api.for_combo(cost_centers, attr='name',
+                                                        empty=_('No cost center.')))
         self.cost_center.set_visible(cost_centers_exists)
         self.cost_center_lbl.set_visible(cost_centers_exists)
         marker('Filled cost centers')
@@ -604,7 +605,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     def _fill_cfop_combo(self):
         marker('Filling CFOPs')
         cfops = CfopData.get_for_sale(self.store)
-        self.cfop.prefill(api.for_combo(cfops))
+        self.cfop.prefill(stoq_api.for_combo(cfops))
         marker('Filled CFOPs')
 
     #
@@ -986,7 +987,7 @@ class ConfirmSaleWizard(BaseWizard):
 
 
 def test():  # pragma nocover
-    creator = api.prepare_test()
+    creator = stoq_api.prepare_test()
     sale_item = creator.create_sale_item()
     retval = run_dialog(ConfirmSaleWizard, None, creator.store,
                         sale_item.sale)

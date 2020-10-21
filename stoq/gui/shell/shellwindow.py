@@ -33,6 +33,7 @@ from gi.repository import Gtk, GLib, Gdk, Gio
 from stoqlib.lib.component import get_utility
 from kiwi.environ import environ
 from kiwi.ui.delegates import Delegate
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.views import ClientWithSalesView
 from stoq.lib.gui.base.dialogs import add_current_toplevel, get_current_toplevel, run_dialog
@@ -362,7 +363,7 @@ class ShellWindow(Delegate):
         desc = (_("Some features are limited due to fiscal reasons. "
                   "Click on '%s' to remove the limitations.")
                 % button_label)
-        msg = '<b>%s</b>\n%s' % (api.escape(title), api.escape(desc))
+        msg = '<b>%s</b>\n%s' % (stoq_api.escape(title), stoq_api.escape(desc))
 
         button = Gtk.Button(button_label)
         button.connect('clicked', self._on_enable_production__clicked)
@@ -636,7 +637,7 @@ class ShellWindow(Delegate):
     def _create_headerbar(self):
         # User/help menu
         user = api.get_current_user(self.store)
-        xml = MENU_XML.format(username=api.escape(user.get_description()),
+        xml = MENU_XML.format(username=stoq_api.escape(user.get_description()),
                               preferences=_('Preferences...'), password=_('Change password...'),
                               signout=_('Sign out...'), help=_('Help'),
                               contents=_('Contents'), translate=_('Translate Stoq...'),

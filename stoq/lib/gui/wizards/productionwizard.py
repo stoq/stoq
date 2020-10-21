@@ -30,6 +30,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 from storm.expr import And
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.person import Branch, Employee
 from stoqlib.domain.production import (ProductionOrder, ProductionItem,
@@ -69,13 +70,13 @@ class OpenProductionOrderStep(WizardEditorStep):
 
     def _fill_branch_combo(self):
         branches = Branch.get_active_branches(self.store)
-        self.branch.prefill(api.for_person_combo(branches))
+        self.branch.prefill(stoq_api.for_person_combo(branches))
         sync_mode = api.sysparam.get_bool('SYNCHRONIZED_MODE')
         self.branch.set_sensitive(not sync_mode)
 
     def _fill_responsible_combo(self):
         employees = self.store.find(Employee, status=Employee.STATUS_NORMAL)
-        self.responsible.prefill(api.for_person_combo(employees))
+        self.responsible.prefill(stoq_api.for_person_combo(employees))
 
     def _setup_widgets(self):
         self._fill_branch_combo()
@@ -122,7 +123,7 @@ class OpenProductionOrderStep(WizardEditorStep):
 class ProductionServiceStep(SellableItemStep):
     model_type = ProductionOrder
     item_table = ProductionService
-    summary_label_text = "<b>%s</b>" % api.escape(_('Total:'))
+    summary_label_text = "<b>%s</b>" % stoq_api.escape(_('Total:'))
     summary_label_column = 'quantity'
     sellable_view = ServiceView
     item_editor = ProductionServiceEditor
@@ -204,7 +205,7 @@ class ProductionItemStep(SellableItemStep):
     """ Wizard step for production items selection """
     model_type = ProductionOrder
     item_table = ProductionItem
-    summary_label_text = "<b>%s</b>" % (api.escape(_('Total:')),)
+    summary_label_text = "<b>%s</b>" % (stoq_api.escape(_('Total:')),)
     summary_label_column = 'quantity'
     sellable_view = ProductComponentView
     item_editor = ProductionItemEditor

@@ -36,6 +36,7 @@ from kiwi.ui.objectlist import Column
 from storm.expr import And, Or, Eq
 from zope.interface import implementer
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderView)
@@ -202,7 +203,7 @@ class WorkOrderResultKanbanView(KanbanView):
             # FIXME: Figure out a better way of rendering
             work_order_view.markup = '<b>%s</b>\n%s\n%s' % (
                 description,
-                str(api.escape(work_order_view.client_name)),
+                str(stoq_api.escape(work_order_view.client_name)),
                 work_order_view.open_date.strftime('%x'))
 
             column.append_item(work_order_view)
@@ -350,7 +351,7 @@ class ServicesApp(ShellApp):
         self.search.set_summary_label(
             column='total',
             label=('<b>%s</b>' %
-                   api.escape(_('Total:'))),
+                   stoq_api.escape(_('Total:'))),
             format='<b>%s</b>',
             parent=self.get_statusbar_message_area())
 
@@ -384,7 +385,7 @@ class ServicesApp(ShellApp):
             # Base search with no filters
             base_msg = _(u"No work orders could be found.")
             url = u"<a href='new_order'>%s</a>" % (
-                api.escape(_(u"create a new work order")), )
+                stoq_api.escape(_(u"create a new work order")), )
             url_msg = _(u"Would you like to %s ?") % (url, )
         else:
             kind, value = state.value.value.split(':')
@@ -406,7 +407,7 @@ class ServicesApp(ShellApp):
                     '<b>%s</b>' % (value, ), )
                 url = u"<a href='new_order?%s'>%s</a>" % (
                     urllib.parse.quote(value),
-                    api.escape(_(u"create a new work order")), )
+                    stoq_api.escape(_(u"create a new work order")), )
                 url_msg = _(u"Would you like to %s ?") % (url, )
 
         if not base_msg:

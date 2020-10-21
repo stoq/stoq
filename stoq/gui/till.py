@@ -32,6 +32,7 @@ from kiwi.currency import currency
 from kiwi.datatypes import converter
 from kiwi.ui.objectlist import Column
 from storm.expr import And, Or
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import (StoqlibError, TillError, SellError,
@@ -486,7 +487,7 @@ class TillApp(ShellApp):
 
         def large(s):
             return '<span weight="bold" size="xx-large">%s</span>' % (
-                api.escape(s), )
+                stoq_api.escape(s), )
 
         if closed:
             text = large(_(u"Till closed"))
@@ -500,7 +501,7 @@ class TillApp(ShellApp):
 
             if not blocked:
                 text += '\n\n<span size="large"><a href="open-till">%s</a></span>' % (
-                    api.escape(_('Open till')))
+                    stoq_api.escape(_('Open till')))
             self.status_link.set_markup(text)
         elif blocked:
             self.search_holder.hide()

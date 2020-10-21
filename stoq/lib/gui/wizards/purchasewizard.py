@@ -31,6 +31,7 @@ from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.payment.group import PaymentGroup
@@ -88,12 +89,12 @@ class StartPurchaseStep(WizardEditorStep):
     def _fill_supplier_combo(self):
         suppliers = Supplier.get_active_suppliers(self.store)
         self.edit_supplier.set_sensitive(any(suppliers))
-        self.supplier.prefill(api.for_person_combo(suppliers))
+        self.supplier.prefill(stoq_api.for_person_combo(suppliers))
 
     def _fill_branch_combo(self):
         branches = Branch.get_active_branches(self.store)
-        self.branch.prefill(api.for_person_combo(branches))
-        self.branch.set_sensitive(api.can_see_all_branches())
+        self.branch.prefill(stoq_api.for_person_combo(branches))
+        self.branch.set_sensitive(stoq_api.can_see_all_branches())
 
     def _setup_widgets(self):
         allow_outdated = sysparam.get_bool('ALLOW_OUTDATED_OPERATIONS')
@@ -197,7 +198,7 @@ class PurchaseItemStep(SellableItemStep):
     """ Wizard step for purchase order's items selection """
     model_type = PurchaseOrder
     item_table = PurchaseItem
-    summary_label_text = "<b>%s</b>" % api.escape(_('Total Ordered:'))
+    summary_label_text = "<b>%s</b>" % stoq_api.escape(_('Total Ordered:'))
     sellable_editable = True
     item_editor = PurchaseItemEditor
     sellable_search = PurchaseSellableSearch
@@ -368,7 +369,7 @@ class FinishPurchaseStep(WizardEditorStep):
         self.edit_transporter.set_tooltip_text(_("Edit the selected transporter"))
 
         items = Transporter.get_active_transporters(self.store)
-        self.transporter.prefill(api.for_person_combo(items))
+        self.transporter.prefill(stoq_api.for_person_combo(items))
         self.transporter.set_sensitive(not items.is_empty())
         self.edit_transporter.set_sensitive(not items.is_empty())
 
@@ -582,7 +583,7 @@ class PurchaseWizard(BaseWizard):
 
 
 def test():  # pragma nocover
-    creator = api.prepare_test()
+    creator = stoq_api.prepare_test()
     retval = run_dialog(PurchaseWizard, None, creator.store)
     creator.store.confirm(retval)
 

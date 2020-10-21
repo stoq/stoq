@@ -29,7 +29,7 @@ import collections
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import TextField
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import validate_cfop
@@ -100,6 +100,6 @@ class FiscalBookEntryEditor(BaseEditor):
                        FiscalBookEntryEditor.proxy_widgets)
 
 if __name__ == '__main__':  # pragma nocover
-    ec = api.prepare_test()
+    ec = stoq_api.prepare_test()
     cfop = ec.create_cfop_data()
     run_dialog(CfopEditor, parent=None, store=ec.trans, model=cfop)

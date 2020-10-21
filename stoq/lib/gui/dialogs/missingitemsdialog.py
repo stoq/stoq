@@ -27,6 +27,7 @@ from gi.repository import Gtk
 from stoqlib.lib.objutils import Settable
 from kiwi.ui.objectlist import Column
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.production import ProductionMaterial, ProductionOrder
@@ -55,8 +56,8 @@ class MissingItemsDialog(SimpleListDialog):
                                order.status == Sale.STATUS_QUOTE)
         self.missing = missing
         msg = '<b>%s</b>' % (
-            api.escape(_("The following items don't have enough stock to "
-                         "confirm.")))
+            stoq_api.escape(_("The following items don't have enough stock to "
+                              "confirm.")))
         SimpleListDialog.__init__(self, self._get_columns(), missing,
                                   hide_cancel_btn=not self._is_sale_quote,
                                   title=_('Missing items'),
@@ -168,7 +169,7 @@ def get_missing_items(order, store):
 
 
 if __name__ == '__main__':  # pragma nocover
-    ec = api.prepare_test()
+    ec = stoq_api.prepare_test()
     sale_ = ec.create_sale()
     sale_.status = Sale.STATUS_QUOTE
     missingitems = [Settable(description='foo',

@@ -29,6 +29,7 @@ from kiwi.enums import ListType
 from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.views import ProductWithStockView
 from stoq.lib.gui.editors.baseeditor import BaseEditor
@@ -65,7 +66,7 @@ class StockCostDialog(BaseEditor):
     def _setup_widgets(self):
         self.branch_label.set_markup(
             _(u"Fixing stock cost for products in <b>%s</b>") %
-            api.escape(self._branch.get_description()))
+            stoq_api.escape(self._branch.get_description()))
 
         items = ProductWithStockView.find_by_branch(self.store, self._branch)
         self._storables = [_TemporaryItem(s) for s in items]

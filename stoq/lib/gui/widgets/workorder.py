@@ -25,6 +25,7 @@ from gi.repository import Gtk, Gdk, Gio
 
 from storm.expr import Eq
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.workorder import WorkOrderView, WorkOrder
 from stoq.lib.gui.actions.workorder import WorkOrderActions
@@ -70,26 +71,26 @@ class WorkOrderRow(Gtk.ListBoxRow):
         self.show_all()
 
     def _create_ui(self, model):
-        client = '<b>%s</b>: %s' % (_('Client'), api.escape(model.client_name))
+        client = '<b>%s</b>: %s' % (_('Client'), stoq_api.escape(model.client_name))
         due_date = ''
         if model.estimated_finish:
             due_date = '%s: %s' % (_('Due date'),
-                                   api.escape(model.estimated_finish.strftime('%x')))
+                                   stoq_api.escape(model.estimated_finish.strftime('%x')))
 
-        identifier = '<b>%s</b>' % api.escape(str(model.identifier))
+        identifier = '<b>%s</b>' % stoq_api.escape(str(model.identifier))
         salesperson = '<b>%s</b>:' % _('Salesperson')
         if model.sale:
-            salesperson += ' %s' % api.escape(model.sale.get_salesperson_name())
+            salesperson += ' %s' % stoq_api.escape(model.sale.get_salesperson_name())
         else:
             employee = model.work_order.quote_responsible
             if employee:
-                salesperson += ' %s' % api.escape(employee.person.name)
+                salesperson += ' %s' % stoq_api.escape(employee.person.name)
 
         self.due_date = self._new_label(due_date, xalign=1)
         self.client = self._new_label(client, expand=True)
         self.identifier = self._new_label(identifier, expand=True, halign=Gtk.Align.START)
         self.salesperson = self._new_label(salesperson, expand=False, halign=Gtk.Align.START)
-        self.status = self._new_label('%s' % api.escape(model.status_str),
+        self.status = self._new_label('%s' % stoq_api.escape(model.status_str),
                                       xalign=1, halign=Gtk.Align.END)
         self.status.get_style_context().add_class('tag')
         hbox = Gtk.HBox(spacing=6)
@@ -98,7 +99,7 @@ class WorkOrderRow(Gtk.ListBoxRow):
             self.status.get_style_context().add_class('client-informed')
             informed_image = Gtk.Image.new_from_icon_name('call-start-symbolic',
                                                           Gtk.IconSize.BUTTON)
-            formatted_date = api.escape(informed_date.strftime('%x'))
+            formatted_date = stoq_api.escape(informed_date.strftime('%x'))
             informed_image.set_tooltip_text(_('Client informed %s') % formatted_date)
             hbox.pack_start(informed_image, True, True, 0)
             hbox.set_halign(Gtk.Align.END)

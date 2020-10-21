@@ -29,6 +29,7 @@ from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.utils import gsignal
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.account import Account, AccountTransaction
 from stoq.lib.gui.base.dialogs import run_dialog
@@ -86,7 +87,7 @@ class AccountTransactionEditor(BaseEditor):
 
     def _populate_accounts(self):
         accounts = self.store.find(Account)
-        self.account.prefill(api.for_combo(
+        self.account.prefill(stoq_api.for_combo(
             accounts,
             attr='long_description'))
 
@@ -159,7 +160,7 @@ class AccountTransactionEditor(BaseEditor):
 
 
 def test():  # pragma nocover
-    creator = api.prepare_test()
+    creator = stoq_api.prepare_test()
     account = creator.create_account()
     retval = run_dialog(AccountTransactionEditor, None, creator.trans,
                         None, account)

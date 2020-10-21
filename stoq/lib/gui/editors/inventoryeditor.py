@@ -26,6 +26,7 @@
 from kiwi.ui.objectlist import Column
 from storm.expr import And
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.product import Product, ProductManufacturer
@@ -89,7 +90,7 @@ class InventoryOpenEditor(BaseEditor):
 
     def _setup_widgets(self):
         self.product_manufacturer.prefill(
-            api.for_combo(self.store.find(ProductManufacturer)))
+            stoq_api.for_combo(self.store.find(ProductManufacturer)))
 
         self.product_brand.prefill(
             [(m, m) for m in

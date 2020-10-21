@@ -29,6 +29,7 @@ from kiwi.datatypes import ValidationError, ValueUnset
 from kiwi.utils import gsignal
 from storm.exceptions import NotOneError
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.receiving import ReceivingInvoice
@@ -90,7 +91,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
 
     def _setup_transporter_entry(self):
         transporters = Transporter.get_active_transporters(self.store)
-        self.transporter.prefill(api.for_combo(transporters))
+        self.transporter.prefill(stoq_api.for_combo(transporters))
 
     def _setup_freight_combo(self):
         freight_items = [(value, key) for (key, value) in
@@ -132,7 +133,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         self._setup_freight_combo()
 
         cfops = CfopData.get_for_receival(self.store)
-        self.cfop.prefill(api.for_combo(cfops))
+        self.cfop.prefill(stoq_api.for_combo(cfops))
         self.table.set_focus_chain([self.invoice_hbox,
                                     self.invoice_key,
                                     self.cfop,

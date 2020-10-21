@@ -33,7 +33,7 @@ from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 from storm.expr import Count, And
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.domain.sale import (Sale,
                                  SaleView,
@@ -186,7 +186,7 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
 
     def get_columns(self):
         columns = SaleWithToolbarSearch.get_columns(self)
-        branches = api.get_branches_for_filter(self.store, use_id=True)
+        branches = stoq_api.get_branches_for_filter(self.store, use_id=True)
         branch_column = SearchColumn('branch_name', title=_('Branch'), width=110,
                                      data_type=str, search_attribute='branch_id',
                                      valid_values=branches)

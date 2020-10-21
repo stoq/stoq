@@ -41,6 +41,7 @@ from kiwi.utils import gsignal
 from stoqlib.lib.objutils import Settable
 from storm.expr import And, Lower
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.payment.payment import Payment
@@ -421,7 +422,7 @@ class SellableItemSlave(BaseEditorSlave):
 
         children = {}
         if sellable:
-            description = "<b>%s</b>" % api.escape(sellable.get_description())
+            description = "<b>%s</b>" % stoq_api.escape(sellable.get_description())
             cost = getattr(sellable, self.value_column)
             quantity = Decimal(1)
             storable = sellable.product_storable

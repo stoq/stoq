@@ -29,6 +29,7 @@ from kiwi.ui.entry import ENTRY_MODE_DATA
 from kiwi.ui.popup import PopupWindow
 from kiwi.utils import gsignal
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.database.expr import Position, StoqNormalizeString
 from stoq.lib.queryexecuter import QueryExecuter
@@ -630,14 +631,14 @@ class PersonEntryGadget(QueryEntryGadget):
                 (_("Address"), format_address(person_view))]:
             if not value:
                 continue
-            details.append('%s: %s' % (label, api.escape(value)))
+            details.append('%s: %s' % (label, stoq_api.escape(value)))
 
-        name = "<big>%s</big>" % (api.escape(person_view.get_description()), )
+        name = "<big>%s</big>" % (stoq_api.escape(person_view.get_description()), )
         if details:
             short = name + '\n<span size="small">%s</span>' % (
-                api.escape(', '.join(details[:1])))
+                stoq_api.escape(', '.join(details[:1])))
             complete = name + '\n<span size="small">%s</span>' % (
-                api.escape('\n'.join(details)))
+                stoq_api.escape('\n'.join(details)))
         else:
             short = name
             complete = name
@@ -719,14 +720,14 @@ class IndividualEntryGadget(QueryEntryGadget):
                 (self._person_l10n.label, person_view.cpf)]:
             if not value:
                 continue
-            details.append('%s: %s' % (label, api.escape(value)))
+            details.append('%s: %s' % (label, stoq_api.escape(value)))
 
-        name = "<big>%s</big>" % (api.escape(person_view.get_description()), )
+        name = "<big>%s</big>" % (stoq_api.escape(person_view.get_description()), )
         if details:
             short = name + '\n<span size="small">%s</span>' % (
-                api.escape(', '.join(details[:1])))
+                stoq_api.escape(', '.join(details[:1])))
             complete = name + '\n<span size="small">%s</span>' % (
-                api.escape('\n'.join(details)))
+                stoq_api.escape('\n'.join(details)))
         else:
             short = name
             complete = name
@@ -760,16 +761,16 @@ class SaleTokenEntryGadget(QueryEntryGadget):
                 (_("Client"), sale_token_view.client_name)]:
             if not value:
                 continue
-            details.append('{}: {}'.format(label, api.escape(value)))
+            details.append('{}: {}'.format(label, stoq_api.escape(value)))
 
         name = "<big>{}</big>".format(
-            api.escape(sale_token_view.sale_token.description))
+            stoq_api.escape(sale_token_view.sale_token.description))
 
         if details:
             short = name + '\n<span size="small">{}</span>'.format(
-                api.escape(', '.join(details[:1])))
+                stoq_api.escape(', '.join(details[:1])))
             complete = name + '\n<span size="small">{}</span>'.format(
-                api.escape('\n'.join(details)))
+                stoq_api.escape('\n'.join(details)))
         else:
             short = name
             complete = name

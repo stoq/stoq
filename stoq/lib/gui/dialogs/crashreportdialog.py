@@ -32,7 +32,7 @@ from kiwi.ui.dialogs import HIGAlertDialog
 from kiwi.utils import gsignal
 
 from stoq.lib.gui.base.dialogs import get_current_toplevel
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoqlib.lib.crashreport import collect_report
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.threadutils import schedule_in_main_thread
@@ -290,6 +290,6 @@ def show_dialog(callback=None):
 
 
 if __name__ == '__main__':   # pragma: no cover
-    ec = api.prepare_test()
+    ec = stoq_api.prepare_test()
     show_dialog(callback=Gtk.main_quit)
     Gtk.main()

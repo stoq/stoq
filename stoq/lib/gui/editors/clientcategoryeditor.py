@@ -30,7 +30,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import PercentageField
 from kiwi.ui.forms import TextField
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoqlib.domain.person import ClientCategory
 from stoq.lib.gui.base.dialogs import run_dialog
 from stoq.lib.gui.editors.baseeditor import BaseEditor
@@ -74,7 +74,7 @@ class ClientCategoryEditor(BaseEditor):
 
 
 if __name__ == '__main__':  # pragma nocover
-    ec = api.prepare_test()
+    ec = stoq_api.prepare_test()
     model = ec.create_client_category()
     run_dialog(ClientCategoryEditor,
                parent=None, store=ec.store, model=model)

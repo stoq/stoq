@@ -65,8 +65,8 @@ class DeviceSettingsDialog(ModelListDialog):
 
 if __name__ == '__main__':  # pragma: nocover
     from stoq.lib.gui.base.dialogs import run_dialog
-    from stoqlib.api import api
-    ec = api.prepare_test()
+    from stoq.api import api as stoq_api
+    ec = stoq_api.prepare_test()
     retval = run_dialog(DeviceSettingsDialog, None, ec.store)
     if retval:
         ec.store.commit()

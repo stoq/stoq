@@ -31,6 +31,7 @@ from stoqlib.lib.objutils import Settable
 from kiwi.ui.objectlist import Column, SummaryLabel
 from storm.expr import And, Eq
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.database.expr import Date
 from stoqlib.domain.payment.card import CreditCardData
@@ -75,7 +76,7 @@ class TillDailyMovementDialog(BaseEditor):
 
     def _setup_widgets(self):
         # Branches combo
-        items = api.get_branches_for_filter(self.store)
+        items = stoq_api.get_branches_for_filter(self.store)
         self.branch.prefill(items)
 
         # Daterange filter
@@ -164,7 +165,7 @@ class TillDailyMovementDialog(BaseEditor):
         box = getattr(self, report + '_vbox')
         if label is None:
             label = _('Total:')
-        label = '<b>%s</b>' % api.escape(label)
+        label = '<b>%s</b>' % stoq_api.escape(label)
         value_format = '<b>%s</b>'
 
         # Creating the label

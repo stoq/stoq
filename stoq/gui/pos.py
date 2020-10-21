@@ -37,6 +37,7 @@ from kiwi.ui.widgets.contextmenu import ContextMenu, ContextMenuItem
 from storm.expr import And, Lower
 
 from stoqdrivers.enum import UnitType
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoq.lib.gui.base.dialogs import (get_current_toplevel, add_current_toplevel,
                                        _pop_current_toplevel)
@@ -686,13 +687,13 @@ class PosApp(ShellApp):
     def _till_status_changed(self, closed, blocked):
         def large(s):
             return '<span weight="bold" size="xx-large">%s</span>' % (
-                api.escape(s), )
+                stoq_api.escape(s), )
 
         if closed:
             text = large(_("Till closed"))
             if not blocked:
                 text += '\n\n<span size="large"><a href="open-till">%s</a></span>' % (
-                    api.escape(_('Open till')))
+                    stoq_api.escape(_('Open till')))
             self._till_open = False
         elif blocked:
             text = large(_("Till blocked"))
@@ -784,9 +785,9 @@ class PosApp(ShellApp):
 
         if sale_item:
             markup = '<b>%s</b>\n%s x %s' % (
-                api.escape(sale_item.description),
-                api.escape(format_quantity(sale_item.quantity)),
-                api.escape(get_formatted_price(sale_item.price)))
+                stoq_api.escape(sale_item.description),
+                stoq_api.escape(format_quantity(sale_item.quantity)),
+                stoq_api.escape(get_formatted_price(sale_item.price)))
 
             if sellable.service:
                 fix_date = (sale_item.estimated_fix_date.strftime('%x')
@@ -809,7 +810,7 @@ class PosApp(ShellApp):
                     (_("Weight"), product.weight or '')]
 
             extra_markup = '\n'.join(
-                '<b>%s</b>: %s' % (api.escape(label), api.escape(str(text)))
+                '<b>%s</b>: %s' % (stoq_api.escape(label), stoq_api.escape(str(text)))
                 for label, text in extra_markup_parts if text)
         else:
             markup = ''

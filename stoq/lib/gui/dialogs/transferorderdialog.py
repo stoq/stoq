@@ -28,6 +28,7 @@ from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, SummaryLabel
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.events import StockOperationTryFiscalCancelEvent
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
@@ -110,7 +111,7 @@ class TransferOrderDetailsDialog(BaseEditor):
         self.product_list.add_list(list(products))
 
         value_format = '<b>%s</b>'
-        total_label = value_format % api.escape(_("Total:"))
+        total_label = value_format % stoq_api.escape(_("Total:"))
         products_summary_label = SummaryLabel(klist=self.product_list,
                                               column='total',
                                               label=total_label,

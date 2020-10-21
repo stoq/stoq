@@ -36,6 +36,7 @@ from kiwi.ui.widgets.combo import ProxyComboBox
 from kiwi.utils import gsignal
 from storm.expr import Eq, And, Or
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.person import Supplier
 from stoqlib.domain.product import (ProductSupplierInfo, ProductComponent,
@@ -83,7 +84,7 @@ class ProductAttributeSlave(BaseEditorSlave):
     def _setup_widgets(self):
         group = GridGroup.get_active_groups(self.store)
         self.attribute_group.prefill(
-            api.for_combo(group, attr='description', empty=_("Select a group")))
+            stoq_api.for_combo(group, attr='description', empty=_("Select a group")))
 
     def _add_attribute(self, attr):
         if not attr.is_active:
@@ -190,7 +191,7 @@ class ProductGridSlave(BaseEditorSlave):
 
     def _fill_options(self, widget, attr):
         options = attr.options.find(is_active=True)
-        widget.prefill(api.for_combo(options, empty=_("Select an option"),
+        widget.prefill(stoq_api.for_combo(options, empty=_("Select an option"),
                        sorted=False))
 
     def _get_columns(self):
@@ -261,7 +262,7 @@ class ProductInformationSlave(BaseEditorSlave):
 
     def _fill_manufacturers(self):
         options = self.store.find(ProductManufacturer)
-        self.manufacturer.prefill(api.for_combo(options, empty=''))
+        self.manufacturer.prefill(stoq_api.for_combo(options, empty=''))
 
     def _setup_widgets(self):
         self._setup_unit_labels()
@@ -495,7 +496,7 @@ class ProductComponentSlave(BaseEditorSlave):
         self.component_label = SummaryLabel(
             klist=self.component_tree,
             column='total_production_cost',
-            label='<b>%s</b>' % api.escape(_(u'Total:')),
+            label='<b>%s</b>' % stoq_api.escape(_(u'Total:')),
             value_format='<b>%s</b>')
         self.component_label.show()
         self.component_tree_vbox.pack_start(self.component_label, False, True, 0)
@@ -836,7 +837,7 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
 
     def get_targets(self):
         suppliers = Supplier.get_active_suppliers(self.store)
-        return api.for_person_combo(suppliers)
+        return stoq_api.for_person_combo(suppliers)
 
     def get_relations(self):
         return self._product.get_suppliers_info()

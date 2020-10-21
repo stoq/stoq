@@ -35,6 +35,7 @@ from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.objectlist import Column
 from storm.expr import And, Or, Eq
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.person import LoginUser, ClientCategory
 from stoqlib.domain.loan import Loan, LoanItem
@@ -94,7 +95,7 @@ class StartNewLoanStep(WizardEditorStep):
         self.salesperson_lbl.set_text(_(u'Responsible:'))
         self.salesperson.model_attribute = 'responsible'
         users = self.store.find(LoginUser, is_active=True)
-        self.salesperson.prefill(api.for_person_combo(users))
+        self.salesperson.prefill(stoq_api.for_person_combo(users))
         self.salesperson.set_sensitive(False)
 
         self._setup_clients_widget()
@@ -129,7 +130,7 @@ class StartNewLoanStep(WizardEditorStep):
 
     def _fill_clients_category_combo(self):
         categories = self.store.find(ClientCategory)
-        self.client_category.prefill(api.for_combo(categories, empty=''))
+        self.client_category.prefill(stoq_api.for_combo(categories, empty=''))
 
     def _replace_widget(self, old_widget, new_widget):
         # retrieve the position, since we will replace two widgets later.
@@ -576,7 +577,7 @@ class CloseLoanWizard(BaseWizard):
 
 
 def test():  # pragma nocover
-    creator = api.prepare_test()
+    creator = stoq_api.prepare_test()
     run_dialog(CloseLoanWizard, None, creator.store, create_sale=True)
     creator.store.rollback()
     #creator.store.confirm(retval)

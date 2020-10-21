@@ -31,7 +31,7 @@ from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, ColoredColumn, COL_MODEL
 from storm.expr import Eq
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import (Product, ProductHistory,
                                     ProductStockItem)
@@ -454,8 +454,8 @@ class ProductStockSearch(ProductSearch):
         difference_label = Gtk.Label()
         difference_label.set_markup(
             "<small><b>%s</b></small>"
-            % api.escape(_(u"The DIFFERENCE column is equal to "
-                           "IN STOCK minus MINIMUM columns")))
+            % stoq_api.escape(_("The DIFFERENCE column is equal to "
+                                "IN STOCK minus MINIMUM columns")))
         difference_label.show()
         self.search.vbox.pack_end(difference_label, False, False, 6)
 
@@ -582,7 +582,7 @@ class ProductBrandSearch(SearchEditor):
     def create_filters(self):
         # Category
         categories = self.store.find(SellableCategory)
-        items = api.for_combo(categories, attr='full_description')
+        items = stoq_api.for_combo(categories, attr='full_description')
         items.insert(0, (_('Any'), None))
         category_filter = ComboSearchFilter(_('Category'), items)
         self.add_filter(category_filter, columns=[Sellable.category])
@@ -623,7 +623,7 @@ class ProductBrandByBranchSearch(SearchDialog):
 
         # Category
         categories = self.store.find(SellableCategory)
-        items = api.for_combo(categories, attr='full_description')
+        items = stoq_api.for_combo(categories, attr='full_description')
         items.insert(0, (_('Any'), None))
         category_filter = ComboSearchFilter(_('Category'), items)
         self.add_filter(category_filter, position=SearchFilterPosition.TOP)
@@ -693,7 +693,7 @@ class ProductBranchSearch(SearchDialog):
 
 def test():  # pragma: no cover
     from stoq.lib.gui.base.dialogs import run_dialog
-    ec = api.prepare_test()
+    ec = stoq_api.prepare_test()
     run_dialog(ProductSearch, None, ec.store)
 
 

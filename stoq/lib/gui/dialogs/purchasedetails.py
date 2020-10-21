@@ -31,7 +31,7 @@ from gi.repository import Gtk, Gdk, Pango
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, SummaryLabel, ColoredColumn
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
@@ -143,7 +143,7 @@ class PurchaseDetailsDialog(BaseEditor):
         order_summary_label = SummaryLabel(
             klist=self.ordered_items,
             column='total',
-            label='<b>%s</b>' % api.escape(_(u"Total")),
+            label='<b>%s</b>' % stoq_api.escape(_(u"Total")),
             value_format='<b>%s</b>')
         order_summary_label.show()
         self.ordered_vbox.pack_start(order_summary_label, False, True, 0)

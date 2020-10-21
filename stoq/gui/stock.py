@@ -28,6 +28,7 @@ import logging
 from gi.repository import Gtk, GdkPixbuf, Pango, GLib
 from kiwi.datatypes import converter
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.domain.image import Image
@@ -242,7 +243,7 @@ class StockApp(ShellApp):
                                      'category_description', 'manufacturer'])
         branches = Branch.get_active_branches(self.store)
         self.branch_filter = ComboSearchFilter(
-            _('Show by:'), api.for_combo(branches, empty=_("All branches")))
+            _('Show by:'), stoq_api.for_combo(branches, empty=_("All branches")))
         self.branch_filter.select(api.get_current_branch(self.store))
         self.add_filter(self.branch_filter, position=SearchFilterPosition.TOP)
 

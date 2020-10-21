@@ -26,7 +26,7 @@
 from gi.repository import Gtk
 from kiwi.datatypes import ValidationError
 
-from stoqlib.api import api
+from stoq.api import api as stoq_api
 from stoqlib.domain.sellable import SellableCategory, SellableTaxConstant
 from stoq.lib.gui.editors.baseeditor import BaseEditor
 from stoq.lib.gui.slaves.commissionslave import CategoryCommissionSlave
@@ -108,7 +108,7 @@ class SellableCategoryEditor(BaseEditor):
 
     def _setup_widgets(self):
         self.tax_constant.prefill(
-            api.for_combo(self.store.find(SellableTaxConstant)))
+            stoq_api.for_combo(self.store.find(SellableTaxConstant)))
 
         categories = set(self.store.find(SellableCategory,
                                          SellableCategory.id != self.model.id))
@@ -117,7 +117,7 @@ class SellableCategoryEditor(BaseEditor):
         categories -= self.model.get_children_recursively()
 
         self.category.prefill(
-            api.for_combo(categories, attr='full_description'))
+            stoq_api.for_combo(categories, attr='full_description'))
         self.suggested_markup.set_adjustment(
             Gtk.Adjustment(lower=0, upper=MAX_INT, step_increment=1))
 

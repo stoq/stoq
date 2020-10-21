@@ -34,6 +34,7 @@ from stoqlib.lib.objutils import Settable
 from kiwi.ui.objectlist import Column
 from storm.expr import And, Eq, Or
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.database.expr import Field
 from stoqlib.domain.event import Event
@@ -106,7 +107,7 @@ class StartSaleQuoteStep(WizardEditorStep):
         # CFOP combo
         if sysparam.get_bool('ASK_SALES_CFOP'):
             cfops = CfopData.get_for_sale(self.store)
-            self.cfop.prefill(api.for_combo(cfops))
+            self.cfop.prefill(stoq_api.for_combo(cfops))
         else:
             self.cfop_lbl.hide()
             self.cfop.hide()
@@ -134,7 +135,7 @@ class StartSaleQuoteStep(WizardEditorStep):
 
     def _fill_clients_category_combo(self):
         categories = self.store.find(ClientCategory).order_by(ClientCategory.name)
-        self.client_category.prefill(api.for_combo(categories, empty=''))
+        self.client_category.prefill(stoq_api.for_combo(categories, empty=''))
 
         if categories.is_empty():
             self.client_category.hide()
@@ -228,7 +229,7 @@ class SaleQuoteItemStep(SellableItemStep):
     change_remove_btn_sensitive = True
     model_type = Sale
     item_table = SaleItem
-    summary_label_text = "<b>%s</b>" % api.escape(_('Total Ordered:'))
+    summary_label_text = "<b>%s</b>" % stoq_api.escape(_('Total Ordered:'))
     sellable = None
     sellable_view = SellableFullStockView
     item_editor = SaleQuoteItemEditor
@@ -307,7 +308,7 @@ class SaleQuoteItemStep(SellableItemStep):
             msg = _('Not enough stock. '
                     'Estimated time to obtain missing items: %d days.') % max_lead_time
             self.slave.set_message(
-                '<b>%s</b>' % (api.escape(msg)), self._show_missing_details)
+                '<b>%s</b>' % (stoq_api.escape(msg)), self._show_missing_details)
         else:
             self.slave.clear_message()
 

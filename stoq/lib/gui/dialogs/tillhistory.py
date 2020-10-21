@@ -30,6 +30,7 @@ from gi.repository import Gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, ColoredColumn
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.till import TillEntry
 from stoq.lib.gui.search.searchdialog import SearchDialog
@@ -75,7 +76,7 @@ class TillHistoryDialog(SearchDialog):
         self.add_filter(self.date_filter, columns=['date'])
         # add summary label
         value_format = '<b>%s</b>'
-        total_label = '<b>%s</b>' % api.escape(_(u'Total:'))
+        total_label = '<b>%s</b>' % stoq_api.escape(_(u'Total:'))
         self.search.set_summary_label('value', total_label, value_format)
 
     def setup_widgets(self):

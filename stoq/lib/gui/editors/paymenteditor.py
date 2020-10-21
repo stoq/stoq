@@ -31,6 +31,7 @@ from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import BoolField, ChoiceField, DateField, PriceField, TextField
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.account import Account
@@ -139,7 +140,7 @@ class _PaymentEditor(BaseEditor):
         # Show account information only after the payment is paid
         if is_paid:
             accounts = Account.get_accounts(self.store)
-            self.account.prefill(api.for_combo(accounts, attr='long_description'))
+            self.account.prefill(stoq_api.for_combo(accounts, attr='long_description'))
             if self.payment_type == Payment.TYPE_OUT:
                 account = self.model.transaction.source_account
             else:
@@ -381,7 +382,7 @@ def get_dialog_for_payment(payment):
 
 
 def test():  # pragma nocover
-    creator = api.prepare_test()
+    creator = stoq_api.prepare_test()
     retval = run_dialog(InPaymentEditor, None, creator.store, None)
     creator.store.confirm(retval)
 

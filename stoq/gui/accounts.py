@@ -32,6 +32,7 @@ from dateutil.relativedelta import relativedelta
 
 from gi.repository import Gtk, Pango
 from stoqlib.enums import SearchFilterPosition
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
@@ -85,7 +86,7 @@ class BaseAccountWindow(ShellApp):
         if state and state.value is None:
             not_found = _("No payments found.")
             payment_url = '<a href="new_payment">%s</a>?' % (
-                api.escape(_("create a new payment")))
+                stoq_api.escape(_("create a new payment")))
             new_payment = _("Would you like to %s") % (payment_url, )
             msg = "%s\n\n%s" % (not_found, new_payment)
         else:
@@ -103,7 +104,7 @@ class BaseAccountWindow(ShellApp):
                 category = v.split(':')[1]
 
                 not_found = _("No payments in the <b>%s</b> category were found.") % (
-                    api.escape(category), )
+                    stoq_api.escape(category), )
                 payment_url = '<a href="new_payment?%s">%s</a>?' % (
                     urllib.parse.quote(category),
                     _("create a new payment"))

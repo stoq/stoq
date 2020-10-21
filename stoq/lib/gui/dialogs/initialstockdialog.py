@@ -33,6 +33,7 @@ from stoqlib.lib.objutils import Settable
 from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import Storable
@@ -158,7 +159,7 @@ class InitialStockDialog(BaseEditor):
             current = api.get_current_branch(self.store)
             branches = [(current.get_description(), current)]
         else:
-            branches = api.for_combo(Branch.get_active_branches(self.store))
+            branches = stoq_api.for_combo(Branch.get_active_branches(self.store))
 
         self.branch.prefill(branches)
         self.add_proxy(self.model, self.proxy_widgets)

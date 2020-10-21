@@ -25,6 +25,7 @@
 
 from kiwi.datatypes import ValidationError
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.database.admin import create_main_branch
 from stoqlib.domain.person import Person
@@ -116,7 +117,7 @@ class BranchDialog(BaseEditor):
 
 
 def test():  # pragma: no cover
-    ec = api.prepare_test()
+    ec = stoq_api.prepare_test()
     person = run_dialog(BranchDialog, None, ec.store)
     print('RETVAL', person)
 

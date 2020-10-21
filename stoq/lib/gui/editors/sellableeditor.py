@@ -30,6 +30,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import PercentageField, TextField
 from stoqdrivers.enum import TaxType, UnitType
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.database.exceptions import IntegrityError
 from stoqlib.domain.fiscal import CfopData
@@ -215,7 +216,7 @@ class SellableEditor(BaseEditor):
         self._sellable = None
         self._demo_mode = sysparam.get_bool('DEMO_MODE')
         self._requires_weighing_text = (
-            "<b>%s</b>" % api.escape(_("This unit type requires weighing")))
+            "<b>%s</b>" % stoq_api.escape(_("This unit type requires weighing")))
 
         if self.ui_form_name:
             self.db_form = DatabaseForm(self.ui_form_name)
@@ -408,8 +409,7 @@ class SellableEditor(BaseEditor):
     def _fill_categories(self):
         categories = self.store.find(SellableCategory)
         self.category_combo.set_sensitive(any(categories) and not self.visual_mode)
-        self.category_combo.prefill(api.for_combo(categories,
-                                                  attr='full_description'))
+        self.category_combo.prefill(stoq_api.for_combo(categories, attr='full_description'))
 
     #
     # BaseEditor hooks
@@ -424,13 +424,13 @@ class SellableEditor(BaseEditor):
         self.edit_category.set_sensitive(False)
 
         cfops = CfopData.get_for_sale(self.store)
-        self.default_sale_cfop.prefill(api.for_combo(cfops, empty=''))
+        self.default_sale_cfop.prefill(stoq_api.for_combo(cfops, empty=''))
 
         self.setup_unit_combo()
 
     def setup_unit_combo(self):
         units = self.store.find(SellableUnit)
-        self.unit_combo.prefill(api.for_combo(units, empty=_('No units')))
+        self.unit_combo.prefill(stoq_api.for_combo(units, empty=_('No units')))
 
     def setup_tax_constants(self):
         taxes = self.get_taxes()
@@ -604,7 +604,7 @@ class SellableEditor(BaseEditor):
 
 
 def test_sellable_tax_constant():  # pragma nocover
-    ec = api.prepare_test()
+    ec = stoq_api.prepare_test()
     tax_constant = api.sysparam.get_object(ec.store, 'DEFAULT_PRODUCT_TAX_CONSTANT')
     run_dialog(SellableTaxConstantEditor,
                parent=None, store=ec.store, model=tax_constant)
@@ -613,7 +613,7 @@ def test_sellable_tax_constant():  # pragma nocover
 
 def test_price_editor():  # pragma nocover
     from decimal import Decimal
-    ec = api.prepare_test()
+    ec = stoq_api.prepare_test()
     sellable = ec.create_sellable()
     sellable.cost = Decimal('15.55')
     sellable.price = Decimal('21.50')

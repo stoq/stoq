@@ -42,6 +42,7 @@ from kiwi.utils import gsignal
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.objectlist import Column
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.domain.payment.card import CreditProvider, CreditCardData
@@ -854,11 +855,11 @@ class CardMethodSlave(BaseEditorSlave):
 
     def _setup_widgets(self):
         devices = CardPaymentDevice.get_devices(self.method.store)
-        self.card_device.prefill(api.for_combo(devices))
+        self.card_device.prefill(stoq_api.for_combo(devices))
 
         providers = CreditProvider.get_card_providers(
             self.method.store)
-        self.credit_provider.prefill(api.for_combo(providers))
+        self.credit_provider.prefill(stoq_api.for_combo(providers))
 
         self._radio_group = None
 

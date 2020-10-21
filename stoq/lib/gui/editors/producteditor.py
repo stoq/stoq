@@ -34,6 +34,7 @@ from kiwi.ui.forms import MultiLineField, NumericField, PriceField, TextField
 
 from stoqdrivers.enum import TaxType
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import Branch
@@ -796,7 +797,7 @@ class ProductManufacturerEditor(BaseEditor):
 
 
 def test_product():  # pragma nocover
-    ec = api.prepare_test()
+    ec = stoq_api.prepare_test()
     product = ec.create_product()
     run_dialog(ProductEditor,
                parent=None, store=ec.store, model=product)

@@ -24,6 +24,7 @@
 import xlwt
 import xlwt.Utils
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.account import Account
 from stoqlib.lib.dateutils import (get_month_intervals_for_year,
@@ -247,7 +248,7 @@ class XLSFinancialExporter(object):
 if __name__ == '__main__':
     import os
     import tempfile
-    ec = api.prepare_test()
+    ec = stoq_api.prepare_test()
     store_ = api.get_default_store()
     fir = FinancialIntervalReport(store_, year=2012)
     with tempfile.NamedTemporaryFile(suffix='.xls', delete=False) as temporary_:

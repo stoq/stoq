@@ -29,6 +29,7 @@ from gi.repository import Gtk, Gdk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 
+from stoq.api import api as stoq_api
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.product import StorableBatch
@@ -202,7 +203,7 @@ class InventoryCountItemStep(SellableItemStep):
 
     model_type = Inventory
     item_table = _TemporaryInventoryItem
-    summary_label_text = "<b>%s</b>" % api.escape(_('Total quantity:'))
+    summary_label_text = "<b>%s</b>" % stoq_api.escape(_('Total quantity:'))
     summary_label_column = 'quantity'
     sellable_editable = False
     stock_labels_visible = False
