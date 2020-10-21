@@ -251,9 +251,9 @@ class Payment(IdentifiableDomain):
     def __init__(self, store, branch, **kw):
         from stoqlib.domain.person import Branch
         assert isinstance(branch, Branch)
-        if not 'value' in kw:
+        if 'value' not in kw:
             raise TypeError('You must provide a value argument')
-        if not 'base_value' in kw or not kw['base_value']:
+        if 'base_value' not in kw or not kw['base_value']:
             kw['base_value'] = kw['value']
         super(Payment, self).__init__(store=store, branch=branch, **kw)
 
@@ -358,7 +358,7 @@ class Payment(IdentifiableDomain):
     @property
     def status_str(self):
         """The :obj:`Payment.status` as a translated string"""
-        if not self.status in self.statuses:
+        if self.status not in self.statuses:
             raise DatabaseInconsistency('Invalid status for Payment '
                                         'instance, got %d' % self.status)
         return self.statuses[self.status]

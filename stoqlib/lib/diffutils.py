@@ -66,7 +66,7 @@ def diff_strings(orig, new, short='<input>', verbose=False):
     """Diff two strings.
 
     @return: True i the files differ otherwise False
-    :rtype: bool
+    :rtype: str
     """
     def _tolines(s):
         return [s + '\n' for line in s.split('\n')]

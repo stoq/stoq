@@ -26,8 +26,6 @@ from zope.interface import implementer
 from stoqlib.lib.interfaces import IPlugin
 from stoqlib.lib.pluginmanager import register_plugin
 
-from .bikeshopui import BikeShopUI
-
 
 @implementer(IPlugin)
 class BikeShopPlugin(object):
@@ -48,6 +46,7 @@ class BikeShopPlugin(object):
         return []
 
     def activate(self):
+        from .bikeshopui import BikeShopUI
         self.ui = BikeShopUI()
 
     def get_server_tasks(self):

@@ -27,7 +27,6 @@ import logging
 import os
 import time
 
-from gi.repository import Gtk
 from serial import SerialException
 
 from stoqlib.lib.objutils import Settable
@@ -50,7 +49,10 @@ from stoqlib.domain.person import Individual, Company
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError
-from stoq.lib.gui.base.dialogs import run_dialog
+try:
+    from stoq.lib.gui.base.dialogs import run_dialog
+except ImportError:
+    run_dialog = None
 from stoq.lib.gui.events import StartApplicationEvent, CouponCreatedEvent, EditorCreateEvent
 from stoq.lib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.lib.message import info, warning, yesno
@@ -58,14 +60,10 @@ from stoqlib.lib.parameters import sysparam, ParameterDetails
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 
-from ecf.cat52 import MODEL_CODES
-from ecf.catgenerator import StoqlibCATGenerator
-from ecf.couponnumberslave import CouponNumberSlave
-from ecf.couponprinter import CouponPrinter
-from ecf.ecfdomain import ECFPrinter, FiscalSaleHistory
-from ecf.ecfprinterdialog import ECFListDialog
-from ecf.ecfmemorydialog import FiscalMemoryDialog
-from ecf.paulistainvoicedialog import PaulistaInvoiceDialog
+from .cat52 import MODEL_CODES
+from .catgenerator import StoqlibCATGenerator
+from .couponprinter import CouponPrinter
+from .ecfdomain import ECFPrinter, FiscalSaleHistory
 
 _ = stoqlib_gettext
 log = logging.getLogger(__name__)
@@ -259,6 +257,8 @@ class ECFUI(object):
             self._printer.cancel()
 
     def _open_till(self, till):
+        from gi.repository import Gtk
+
         log.info('ECFCouponPrinter.open_till(%r)' % (till, ))
 
         # Callsite catches DeviceError
@@ -293,6 +293,8 @@ class ECFUI(object):
         return self._printer.has_pending_reduce()
 
     def _close_till(self, till, previous_day):
+        from gi.repository import Gtk
+
         log.info('ECFCouponPrinter.close_till(%r, %r)' % (till, previous_day))
 
         # XXX: this is so ugly, but the printer stops responding
@@ -456,6 +458,7 @@ class ECFUI(object):
         return is_last_sale
 
     def _confirm_last_document_cancel(self, last_doc):
+        from gi.repository import Gtk
         if last_doc.last_sale is None and last_doc.last_till_entry is None:
             info(_("There is no sale nor till entry to cancel"))
             return
@@ -553,6 +556,8 @@ class ECFUI(object):
         self._reset_last_doc()
 
     def _fiscal_memory_dialog(self):
+        from .ecfmemorydialog import FiscalMemoryDialog
+
         try:
             self._validate_printer()
         except DeviceError as e:
@@ -582,6 +587,8 @@ class ECFUI(object):
                             document=document)
 
     def _identify_customer(self, coupon, sale=None):
+        from .paulistainvoicedialog import PaulistaInvoiceDialog
+
         if not sysparam.get_bool('ENABLE_DOCUMENT_ON_INVOICE'):
             return
 
@@ -740,6 +747,8 @@ class ECFUI(object):
         self._cancel_last_document()
 
     def _on_ConfigurePrinter__activate(self, *args):
+        from .ecfprinterdialog import ECFListDialog
+
         run_dialog(ECFListDialog, None)
 
     def _on_GerencialReportCancelEvent(self):
@@ -765,6 +774,8 @@ class ECFUI(object):
 
     def _on_EditorCreateEvent(self, editor, model, store, *args):
         from stoq.lib.gui.dialogs.saledetails import SaleDetailsDialog
+        from .couponnumberslave import CouponNumberSlave
+
         manager = get_plugin_manager()
         nfe_active = any(manager.is_active(plugin) for plugin in ['nfe', 'nfce'])
         if not nfe_active and isinstance(editor, SaleDetailsDialog):

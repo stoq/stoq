@@ -60,7 +60,7 @@ class SintegraFile(object):
                 raise SintegraError("%s can only be added once" % (register.sintegra_number, ))
         if register.sintegra_requires:
             for number in register.sintegra_requires:
-                if not number in numbers:
+                if number not in numbers:
                     raise SintegraError("%s must be added at this point" % (number, ))
 
         self._registers.append(register)
@@ -244,7 +244,7 @@ class SintegraFile(object):
         sums = {}
         for register in self._registers[2:]:
             number = register.sintegra_number
-            if not number in sums:
+            if number not in sums:
                 sums[number] = 1
             else:
                 sums[number] += 1
@@ -276,8 +276,7 @@ class SintegraFile(object):
 
     def get_registers(self):
         last_register = self._registers[-1]
-        if (last_register.sintegra_number != 90 or
-            last_register.type != 99):
+        if last_register.sintegra_number != 90 or last_register.type != 99:
             raise TypeError("You need to close the document before calling write()")
         return self._registers
 
@@ -321,8 +320,7 @@ class SintegraRegister(object):
                 pass
             elif not isinstance(arg, argtype):
                 fmt = "argument %s should be of type %s but got %s"
-                raise TypeError(fmt % (name, argtype_name(argtype),
-                                       type(arg).__name__))
+                raise TypeError(fmt % (name, argtype_name(argtype), type(arg).__name__))
             self._values[name] = self._arg_to_string(arg, length, argtype)
             setattr(self, name, arg)
             total += length

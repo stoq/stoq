@@ -241,7 +241,7 @@ def format_document(document):
         raise ValueError('Document format not valid')
 
 
-class TextTable(object):
+class TextTable:
     """Formats a textual table with columns
 
     Sample usage:

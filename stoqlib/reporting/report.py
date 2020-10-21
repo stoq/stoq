@@ -227,6 +227,7 @@ class TableReport(HTMLReport):
         raise NotImplementedError
 
 
+# TODO: move the classes below to stoq
 class ObjectListReport(TableReport):
     """Creates an pdf report from an objectlist and its current state
 

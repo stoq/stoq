@@ -122,7 +122,7 @@ class Commission(Domain):
     #
 
     def __init__(self, store=None, **kwargs):
-        need_calculate_value = not 'value' in kwargs
+        need_calculate_value = 'value' not in kwargs
         super(Commission, self).__init__(store=store, **kwargs)
         if need_calculate_value:
             self._calculate_value()

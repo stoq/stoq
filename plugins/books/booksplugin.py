@@ -28,8 +28,6 @@ from stoqlib.database.migration import PluginSchemaMigration
 from stoqlib.lib.interfaces import IPlugin
 from stoqlib.lib.pluginmanager import register_plugin
 
-from books.booksui import BooksUI
-
 
 @implementer(IPlugin)
 class BooksPlugin(object):
@@ -50,6 +48,7 @@ class BooksPlugin(object):
         return [('booksdomain', ['BookPublisher', 'Book'])]
 
     def activate(self):
+        from books.booksui import BooksUI
         self.ui = BooksUI()
 
     def get_server_tasks(self):

@@ -231,7 +231,7 @@ def provide_utilities(station_name, branch_name=None):
 
 def _enable_plugins(extra_plugins=None):
     manager = get_plugin_manager()
-    default_plugins = [u'ecf', u'nfe', u'optical']
+    default_plugins = ['ecf', 'nfe', 'optical']
     extra_plugins = extra_plugins or []
     for plugin in set(default_plugins + extra_plugins):
         if not manager.is_installed(plugin):
@@ -260,11 +260,6 @@ def bootstrap_suite(address=None, dbname=None, port=5432, username=None,
     :param quick:
     """
     os.environ['STOQ_TESTSUIT_RUNNING'] = '1'
-
-    # This will only be required when we use uuid.UUID instances
-    # for UUIDCol
-    #import psycopg2.extras
-    #psycopg2.extras.register_uuid()
 
     empty = provide_database_settings(dbname, address, port, username, password,
                                       createdb=not quick)

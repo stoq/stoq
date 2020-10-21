@@ -37,7 +37,7 @@ import stoqlib
 from stoqlib.lib.importutils import import_from_string
 
 
-def get_all_classes(root, basedir=None):
+def get_all_classes(root, basedir=None, match=None):
     """
     Gets a generator with classes.
     :param basedir: The directory from where the packages are being imported.
@@ -58,7 +58,11 @@ def get_all_classes(root, basedir=None):
         # List all python files in stoqlib/domain
         for filename in glob.glob(os.path.join(package, '*.py')):
             # Avoid tests.
-            if 'pytests/' in filename or 'test/' in filename:
+            if ('pytests/' in filename or 'test/' in filename
+                    or 'tests/' in filename or 'gui/' in filename):
+                continue
+
+            if match and match not in filename:
                 continue
 
             # stoqlib/domain/base.py -> stoqlib.domain.base

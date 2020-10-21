@@ -34,7 +34,7 @@ from ..bikeshopui import BikeShopUI
 
 class TestBikeShopUi(BaseGUITest):
 
-    @mock.patch('plugins.bikeshop.bikeshopui.print_report')
+    @mock.patch('stoq.lib.gui.utils.printing.print_report')
     def test_print_report_event(self, print_report):
         # We need the UI for the events setup
         ui = BikeShopUI()

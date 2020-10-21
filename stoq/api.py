@@ -51,7 +51,7 @@ class StoqGuiApi(StoqAPI):
         Example::
 
           categories = self.store.find(SellableCategory)
-          self.category_combo.prefill(stoq_api.for_combo(categories,
+          self.category_combo.prefill(api.for_combo(categories,
                                       attr='full_description'))
         """
         if attr is not None:

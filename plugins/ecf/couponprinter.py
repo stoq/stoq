@@ -43,7 +43,7 @@ from stoqlib.lib.ibpt import generate_ibpt_message
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
-from ecf.ecfdomain import FiscalSaleHistory, ECFDocumentHistory
+from .ecfdomain import FiscalSaleHistory, ECFDocumentHistory
 
 _ = stoqlib_gettext
 

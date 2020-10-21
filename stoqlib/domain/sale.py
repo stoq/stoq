@@ -1051,7 +1051,7 @@ class Sale(IdentifiableDomain):
         # Branch needs to be set before cfop, which triggers an
         # implicit flush.
         self.branch = branch
-        if not 'cfop' in kw:
+        if 'cfop' not in kw:
             self.cfop = sysparam.get_object(store, 'DEFAULT_SALES_CFOP')
 
     #
@@ -1061,7 +1061,7 @@ class Sale(IdentifiableDomain):
     @classmethod
     def get_status_name(cls, status):
         """The :obj:`Sale.status` as a translated string"""
-        if not status in cls.statuses:
+        if status not in cls.statuses:
             raise DatabaseInconsistency(_(u"Invalid status %d") % status)
         return cls.statuses[status]
 

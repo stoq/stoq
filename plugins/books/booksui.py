@@ -25,15 +25,13 @@
 import logging
 
 from stoqlib.database.runtime import get_default_store
-from stoq.lib.gui.base.dialogs import run_dialog
-from stoq.lib.gui.editors.producteditor import ProductEditor
+try:
+    from stoq.lib.gui.base.dialogs import run_dialog
+except ImportError:
+    run_dialog = None
 from stoq.lib.gui.events import StartApplicationEvent, EditorSlaveCreateEvent
 from stoq.lib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.lib.translation import stoqlib_gettext
-
-from books.bookssearch import ProductBookSearch
-from books.booksslave import ProductBookSlave
-from books.publishersearch import PublisherSearch
 
 _ = stoqlib_gettext
 log = logging.getLogger(__name__)
@@ -88,6 +86,8 @@ class BooksUI(object):
         app.window.add_search_items([app.BookSearch], _('Books'))
 
     def _add_product_slave(self, editor, model, store):
+        from .booksslave import ProductBookSlave
+
         editor.add_extra_tab(ProductBookSlave.title,
                              ProductBookSlave(store, model))
 
@@ -104,6 +104,8 @@ class BooksUI(object):
             self._add_pos_menus(app)
 
     def _on_EditorSlaveCreateEvent(self, editor, model, store, *args):
+        from stoq.lib.gui.editors.producteditor import ProductEditor
+
         # Use type() instead of isinstance so tab does
         # not appear on production product editor
         if not type(editor) is ProductEditor:
@@ -116,11 +118,15 @@ class BooksUI(object):
     #
 
     def _on_BookSearch__activate(self, action, parameter):
+        from .bookssearch import ProductBookSearch
         run_dialog(ProductBookSearch, None, self.default_store, hide_price_column=True)
 
     def _on_BookSearchView__activate(self, action, parameter):
+        from .bookssearch import ProductBookSearch
         run_dialog(ProductBookSearch, None, self.default_store, hide_cost_column=True,
                    hide_toolbar=True)
 
     def _on_Publishers__activate(self, action, parameter):
+        from .publishersearch import PublisherSearch
+
         run_dialog(PublisherSearch, None, self.default_store, hide_footer=True)

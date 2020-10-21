@@ -974,7 +974,7 @@ class MultiSearchFilter(SearchFilter):
         return None
 
     def get_description(self):
-        return '%s: [%s]' % (', '.join(self._combo.get_selection_label()), )
+        return '%s' % (', '.join(self._combo.get_selection_label()), )
 
     #
     #  Callbacks

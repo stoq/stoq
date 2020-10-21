@@ -98,8 +98,12 @@ def collect_report():
         report_['app_version'] = _fix_version(info.get('ver'))
 
     # External dependencies
-    import gi
-    report_['gtk_version'] = _fix_version(gi.version_info)
+    try:
+        import gi
+    except ImportError:
+        pass
+    else:
+        report_['gtk_version'] = _fix_version(gi.version_info)
 
     import kiwi
     report_['kiwi_version'] = _fix_version(

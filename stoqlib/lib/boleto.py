@@ -211,9 +211,6 @@ class BankInfo(object):
             line = line.replace('$INVOICE_NUMBER', str(self.numero_documento))
             instructions.append(line)
 
-        # FIXME: Only add this if not a stoq.link subscriber
-        #instructions.append('')
-        #instructions.append('\n' + _('Stoq Retail Management') + ' - www.stoq.com.br')
         return instructions
 
     @property
@@ -432,7 +429,7 @@ _banks = []
 def register_bank(bank_class):
     if not issubclass(bank_class, BankInfo):  # pragma no cover
         raise TypeError
-    assert not bank_class in _banks
+    assert bank_class not in _banks
     _banks.append(bank_class)
     return bank_class
 
@@ -537,7 +534,7 @@ class BankBB(BankInfo):
     def get_properties(self, payment):
         props = super(BankBB, self).get_properties(payment)
 
-        if not 'carteira' in props:
+        if 'carteira' not in props:
             props['carteira'] = '18'
 
         convenio = props.pop('convenio', None)

@@ -42,22 +42,24 @@ currency_names = ("dollar", "dollars",
 common_street_prefixes = []
 
 
-class CompanyDocument(object):
+class CompanyDocument:
     label = _('Document')
     entry_mask = None
 
     def validate(self, value):
         return True
+
 
 company_document = CompanyDocument()
 
 
-class PersonDocument(object):
+class PersonDocument:
     label = _('Document')
     entry_mask = None
 
     def validate(self, value):
         return True
+
 
 person_document = PersonDocument()
 
@@ -69,7 +71,7 @@ person_document = PersonDocument()
 # pylint: disable=W0621
 
 
-class State(object):
+class State:
     label = _('State')
 
     state_list = []
@@ -77,14 +79,16 @@ class State(object):
     def validate(self, value):
         return True
 
+
 state = State()
 
 
-class City(object):
+class City:
     label = _('City')
 
     def validate(self, city, state=None, country=None):
         return True
+
 
 city = City()
 

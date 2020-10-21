@@ -50,12 +50,13 @@ common_street_prefixes = ['r. ', 'r ', 'av ', 'av. ', 'rua ', 'avenida ']
 #
 
 
-class CNPJ(object):
+class CNPJ:
     label = 'CNPJ'
     entry_mask = '00.000.000/0000-00'
 
     def validate(self, value):
         return validate_cnpj(value)
+
 
 company_document = CNPJ()
 
@@ -66,12 +67,13 @@ company_document = CNPJ()
 # http://en.wikipedia.org/wiki/Cadastro_de_Pessoas_F%C3%ADsicas
 #
 
-class CPF(object):
+class CPF:
     label = 'CPF'
     entry_mask = '000.000.000-00'
 
     def validate(self, value):
         return validate_cpf(value)
+
 
 person_document = CPF()
 
@@ -81,7 +83,7 @@ person_document = CPF()
 # http://en.wikipedia.org/wiki/States_of_Brazil
 #
 
-class State(object):
+class State:
     label = _('State')
 
     state_list = ["AC",
@@ -121,6 +123,7 @@ class State(object):
 #        the api to fix it.
 # pylint: disable=W0621
 
+
 state = State()
 
 
@@ -129,12 +132,13 @@ state = State()
 #
 
 
-class City(object):
+class City:
     label = _('City')
 
     def validate(self, city, state=None, country=None):
         return CityLocation.exists(get_default_store(), city=city,
                                    state=state, country=country)
+
 
 city = City()
 

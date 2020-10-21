@@ -56,7 +56,7 @@ create_log = logging.getLogger('stoqlib.database.create')
 
 
 @functools.total_ordering
-class Patch(object):
+class Patch:
     """A Database Patch
 
     :attribute filename: patch filename

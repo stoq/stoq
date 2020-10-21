@@ -24,8 +24,6 @@
 import xlwt
 import xlwt.Utils
 
-from stoq.api import api as stoq_api
-from stoqlib.api import api
 from stoqlib.domain.account import Account
 from stoqlib.lib.dateutils import (get_month_intervals_for_year,
                                    get_month_names)
@@ -243,15 +241,3 @@ class XLSFinancialExporter(object):
 
     def write(self, temporary):
         self._wb.save(temporary.name)
-
-
-if __name__ == '__main__':
-    import os
-    import tempfile
-    ec = stoq_api.prepare_test()
-    store_ = api.get_default_store()
-    fir = FinancialIntervalReport(store_, year=2012)
-    with tempfile.NamedTemporaryFile(suffix='.xls', delete=False) as temporary_:
-        if fir.run():
-            fir.write(temporary_)
-        os.system("soffice %s" % (temporary_.name, ))

@@ -25,7 +25,6 @@ import logging
 
 
 from stoq.lib.gui.events import PrintReportEvent
-from stoq.lib.gui.utils.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.workorder import WorkOrderQuoteReport
 
@@ -46,6 +45,8 @@ class BikeShopUI(object):
     #
 
     def _on_PrintReportEvent(self, report_class, *args, **kwargs):
+        from stoq.lib.gui.utils.printing import print_report
+
         if report_class is WorkOrderQuoteReport:
             print_report(BikeShopWorkOrderQuoteReport, *args)
             return True

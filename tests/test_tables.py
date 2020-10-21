@@ -36,7 +36,7 @@ from stoqlib.lib.introspection import get_all_classes
 
 def _introspect_tables():
     for klass in itertools.chain(get_all_classes('stoqlib/domain'),
-                                 get_all_classes('plugins')):
+                                 get_all_classes('plugins', match='domain')):
         try:
             if not issubclass(klass, ORMObject):
                 continue

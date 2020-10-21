@@ -971,7 +971,7 @@ class Client(Domain):
     #
 
     def get_status_string(self):
-        if not self.status in self.statuses:
+        if self.status not in self.statuses:
             raise DatabaseInconsistency('Invalid status for client, '
                                         'got %d' % self.status)
         return self.statuses[self.status]

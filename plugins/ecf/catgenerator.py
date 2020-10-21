@@ -38,8 +38,8 @@ from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
-from ecf.cat52 import CATFile, CATError, BRAND_CODES, MODEL_CODES
-from ecf.ecfdomain import FiscalSaleHistory, ECFDocumentHistory
+from .cat52 import CATFile, CATError, BRAND_CODES, MODEL_CODES
+from .ecfdomain import FiscalSaleHistory, ECFDocumentHistory
 
 _ = stoqlib_gettext
 
