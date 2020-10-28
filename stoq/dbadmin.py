@@ -446,6 +446,21 @@ class StoqCommandHandler:
                          help="dump format see man pg_dump for more information",
                          dest='format')
 
+    def cmd_reset_sale_taxes(self, options, sale_id):
+        """Reset taxes of sale items from given sale"""
+        from stoqlib.database.runtime import new_store
+        from stoqlib.domain.sale import SaleItem
+
+        self._read_config(options, register_station=False, load_plugins=False)
+        with new_store() as store:
+            sale_items = store.find(SaleItem, sale_id=sale_id)
+            for sale_item in sale_items:
+                sale_item.cofins_info.set_item_tax(sale_item)
+                sale_item.icms_info.set_item_tax(sale_item)
+                sale_item.ipi_info.set_item_tax(sale_item)
+                sale_item.pis_info.set_item_tax(sale_item)
+        print("Taxes reset for sale items from sale '%s'" % sale_id)
+
     def cmd_restore(self, options, schema):
         """Restore a database dump"""
         self._read_config(options, register_station=False,
