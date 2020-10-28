@@ -525,39 +525,6 @@ class TestProduct(DomainTest):
         resultset = self.store.find(Product, parent=product)
         self.assertTrue(resultset.is_empty())
 
-    def test_increase_decrease_stock(self):
-        branch = self.current_branch
-        product = self.create_product()
-        storable = Storable(product=product, store=self.store)
-        stock_item = storable.get_stock_item(branch, None)
-        self.assertFalse(stock_item is not None)
-
-        storable.increase_stock(1, branch,
-                                StockTransactionHistory.TYPE_INITIAL, None, self.current_user)
-        stock_item = storable.get_stock_item(branch, None)
-        self.assertEqual(stock_item.stock_cost, 0)
-
-        storable.increase_stock(1, branch,
-                                StockTransactionHistory.TYPE_INITIAL,
-                                None, self.current_user, unit_cost=10)
-        stock_item = storable.get_stock_item(branch, None)
-        self.assertEqual(stock_item.stock_cost, 5)
-
-        stock_item = storable.decrease_stock(1, branch,
-                                             StockTransactionHistory.TYPE_INITIAL,
-                                             None, self.current_user)
-        self.assertEqual(stock_item.stock_cost, 5)
-
-        storable.increase_stock(1, branch,
-                                StockTransactionHistory.TYPE_INITIAL, None, self.current_user)
-        stock_item = storable.get_stock_item(branch, None)
-        self.assertEqual(stock_item.stock_cost, 5)
-
-        storable.increase_stock(2, branch, StockTransactionHistory.TYPE_INITIAL,
-                                None, self.current_user, unit_cost=15)
-        stock_item = storable.get_stock_item(branch, None)
-        self.assertEqual(stock_item.stock_cost, 10)
-
     def test_lead_time(self):
         product = self.create_product()
         Storable(product=product, store=self.store)
