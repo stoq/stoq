@@ -28,23 +28,26 @@ stoqdbadmin = 'stoq.dbadmin:run'
 [tool.poetry.dependencies]
 python = "^3.5"
 kiwi-gtk = "^3.0.4"
-lxml = "^4.5.2"
-mako = "^1.1.3"
-pillow = "^7.2.0"
-psycopg2 = "^2.6.1"
-pyJWT = "^1.7.1"
-pyinotify = "^0.9.6"
-pyopenssl = "^19.1.0"
-python-dateutil = "^2.8.1"
-python-nss = "^1.0.1"
-raven = "^6.10.0"
-reportlab = "3.5.51"
-requests = "^2.24.0"
-stoqdrivers = "^2.0.0"
+lxml = ">=3.5.0"
+mako = "1.0.3"
+pillow = "3.1.2"
+psycopg2 = { version = "2.6.1", python = "3.5" }
+# workaround to be able to install older psycopg2 version (incompatible with new environments)
+# alognside the production version
+psycopg2-binary = { version = "^2.7.4", python = "^3.5" }
+pyJWT = "1.3.0"
+pyopenssl = "17.0.0"
+# pin cryptography to match xenial python-openssl
+python-dateutil = "2.4.2"
+python-nss = "1.0.0"
+raven = "6.1.0"
+reportlab = "3.3.0"
+requests = "2.9.1"
+stoqdrivers = "2.0.0"
 storm = "^0.24"
-weasyprint = "^51"
-xlwt = "^1.3.0"
-"zope.interface" = "^5.1.0"
+weasyprint = "0.34"
+xlwt = "1.2.0"
+"zope.interface" = "4.1.3"
 
 [tool.poetry.dev-dependencies]
 coverage = "^5.3"

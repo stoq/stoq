@@ -306,11 +306,11 @@ class PluginManager(object):
         :param plugin_name: the plugin's name
         :returns: the :class:`IPlugin` implementation of the plugin
         """
-        if not plugin_name in self._plugin_descriptions:
+        if plugin_name not in self._plugin_descriptions:
             raise PluginError("Plugin %s not found. Available ones are: %s" % (
                 plugin_name, ', '.join(self.available_plugins_names)))
 
-        if not plugin_name in self._plugins:
+        if plugin_name not in self._plugins:
             self._import_plugin(self._plugin_descriptions[plugin_name])
 
         return self._plugins[plugin_name]
