@@ -450,6 +450,7 @@ class StoqCommandHandler:
         """Reset taxes of sale items from given sale"""
         from stoqlib.database.runtime import new_store
         from stoqlib.domain.sale import SaleItem
+        from stoqlib.domain.overrides import SellableBranchOverride
 
         self._read_config(options, register_station=False, load_plugins=False)
         with new_store() as store:
@@ -459,6 +460,12 @@ class StoqCommandHandler:
                 sale_item.icms_info.set_item_tax(sale_item)
                 sale_item.ipi_info.set_item_tax(sale_item)
                 sale_item.pis_info.set_item_tax(sale_item)
+                sbo = store.find(SellableBranchOverride,
+                                 branch_id=sale_item.sale.branch.id,
+                                 sellable_id=sale_item.sellable_id).one()
+                if sbo and sbo.default_sale_cfop_id:
+                    sale_item.cfop_id = sbo.default_sale_cfop_id
+
         print("Taxes reset for sale items from sale '%s'" % sale_id)
 
     def cmd_restore(self, options, schema):

@@ -203,6 +203,7 @@ class SaleItem(Domain):
                 kw['cfop'] = sysparam.get_object(store, 'DEFAULT_SALES_CFOP')
 
             store = kw.get('store', store)
+            # self.icms_info is an InvoiceItemIcms object and is created by the function below
             check_tax_info_presence(kw, store)
         Domain.__init__(self, store=store, sale=sale, sellable=sellable, **kw)
 
