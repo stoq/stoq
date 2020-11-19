@@ -58,7 +58,7 @@ def test_xls_exporter_write_one(xls_exporter):
 
     xls_exporter._write_one(i, 'foo', style)
 
-    xls_exporter._ws.write.assert_called_once_with(1, i, 'foo', style)
+    xls_exporter._ws.write.assert_called_once_with(0, i, 'foo', style)
 
 
 @pytest.mark.parametrize('data, expected_value', (

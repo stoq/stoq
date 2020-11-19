@@ -31,9 +31,7 @@ import xlwt
 
 from stoqlib.exporters.xlsutils import (get_date_format,
                                         get_number_format,
-                                        write_app_description,
-                                        write_app_hyperlink,
-                                        write_app_logo)
+                                        write_app_description)
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -41,7 +39,7 @@ _ = stoqlib_gettext
 
 class XLSExporter(object):
     def __init__(self, name=None):
-        self._current_column = 1
+        self._current_column = 0
         self._n_columns = -1
         self._column_styles = None
         self._headers = None
@@ -121,9 +119,9 @@ class XLSExporter(object):
 
     def add_cells(self, cells, filter_description=None):
         if filter_description:
-            write_app_description(self._ws, 0, filter_description=filter_description)
-        write_app_logo(self._ws)
-        write_app_hyperlink(self._ws, 0)
+            write_app_description(
+                self._ws, self._current_column, filter_description=filter_description)
+            self._current_column += 1
 
         if self._headers:
             self._add_row(self._headers, style=self._header_style)
