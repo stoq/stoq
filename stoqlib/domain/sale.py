@@ -61,6 +61,7 @@ from stoqlib.domain.events import (SaleStatusChangedEvent,
                                    ECFGetPrinterUserNumberEvent)
 from stoqlib.domain.fiscal import FiscalBookEntry, Invoice
 from stoqlib.domain.interfaces import IContainer, IInvoice, IInvoiceItem
+from stoqlib.domain.overrides import SellableBranchOverride
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.person import (Person, Client, Branch, LoginUser,
@@ -1905,6 +1906,16 @@ class Sale(IdentifiableDomain):
             commission.value = -commission.value
 
         return commission
+
+    def reset_taxes(self):
+        for sale_item in self.get_items():
+            sale_item.cofins_info.set_item_tax(sale_item)
+            sale_item.icms_info.set_item_tax(sale_item)
+            sale_item.ipi_info.set_item_tax(sale_item)
+            sale_item.pis_info.set_item_tax(sale_item)
+            sbo = SellableBranchOverride.find_by_sellable(sale_item.sellable, self.branch)
+            if sbo and sbo.default_sale_cfop_id:
+                sale_item.cfop_id = sbo.default_sale_cfop_id
 
     def get_first_sale_comment(self):
         first_comment = self.comments.first()
