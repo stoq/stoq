@@ -719,8 +719,11 @@ def new_store():
 # User methods
 #
 def _register_branch_station(caller_store, station_name, confirm=True):
-    from gi.repository import Gtk
     from stoqlib.lib.parameters import sysparam
+    try:
+        from gi.repository import Gtk
+    except ImportError:
+        error("Branch station not registered. Do it manually by running stoqdbadmin register")
 
     if not sysparam.get_bool('DEMO_MODE'):
         fmt = _(u"The computer '%s' is not registered to the Stoq "
