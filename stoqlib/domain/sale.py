@@ -1984,6 +1984,16 @@ class Sale(IdentifiableDomain):
         return self.group.get_valid_payments().order_by(Payment.open_date)
 
     @property
+    def has_pre_created_sellables(self):
+        """Return if |sale| has any pre-created |sellable|
+
+        These sellables were pre-created at the moment of the sale and
+        therefore have not had their tax information fulfilled yet."""
+        tables = [SaleItem, Join(Sellable, SaleItem.sellable_id == Sellable.id)]
+        query = And(SaleItem.sale == self, Sellable.notes.like(Sellable.NOTES_CREATED_VIA_SALE))
+        return bool(self.store.using(*tables).find(SaleItem, query))
+
+    @property
     def discount_percentage(self):
         """Sets a discount by percentage.
 

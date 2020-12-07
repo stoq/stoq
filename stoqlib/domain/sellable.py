@@ -404,6 +404,10 @@ class Sellable(Domain):
         (STATUS_CLOSED, _(u'Closed')),
     ])
 
+    #: temporary hack to indicate that the sellable was pre-created via sale and
+    #: has not had its taxes information fulfilled yet
+    NOTES_CREATED_VIA_SALE = 'Created via sale'
+
     #: a code used internally by the shop to reference this sellable.
     #: It is usually not printed and displayed to |clients|, barcode is for that.
     #: It may be used as an shorter alternative to the barcode.

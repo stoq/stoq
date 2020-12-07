@@ -11,6 +11,11 @@ def sale_item(example_creator):
     return example_creator.create_sale_item()
 
 
+@pytest.fixture
+def sellable(example_creator):
+    return example_creator.create_sellable()
+
+
 def test_sale_invoice_subtotal(sale):
     assert sale.invoice_subtotal == sale.get_sale_subtotal()
 
@@ -21,6 +26,19 @@ def test_sale_invoice_total(sale):
 
 def test_sale_get_returned_value(sale):
     assert sale.get_returned_value() == 0
+
+
+def test_sale_has_pre_created_sellables(example_creator, sale, sellable):
+    sellable.notes = sellable.NOTES_CREATED_VIA_SALE
+    example_creator.create_sale_item(sale=sale, sellable=sellable)
+
+    assert sale.has_pre_created_sellables
+
+
+def test_sale_does_not_have_pre_created_sellables(example_creator, sale):
+    example_creator.create_sale_item(sale=sale)
+
+    assert not sale.has_pre_created_sellables
 
 
 def test_reset_taxes(example_creator, sale_item):
