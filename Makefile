@@ -49,7 +49,7 @@ coverage: clean lint
 	pytest --cov=stoqlib/ --cov-append
 	coverage xml --omit "**/test/*.py,stoqlib/pytests/*"
 	utils/validatecoverage.py coverage.xml
-	git show | python3 utils/diff-coverage coverage.xml
+	PYTHONIOENCODING=utf8 git show | python3 utils/diff-coverage coverage.xml
 
 test:
 	python3 runtests.py $(TEST_MODULES) \
