@@ -63,6 +63,7 @@ pytest = "<6"
 zipp = "<2"
 pytest-cov = "^2.10.1"
 pytest-stoq = "^0.7.0"
+bump2version = "^1.0.1"
 
 [tool.isort]
 known_local_folder = ["stoq", "stoqlib"]

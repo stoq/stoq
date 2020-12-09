@@ -9,6 +9,7 @@ variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   # Fetch utils/ submodule
   GIT_SUBMODULE_STRATEGY: recursive
+  GIT_DEPTH: 1
   POSTGRES_DB: test
   POSTGRES_USER: test
   POSTGRES_PASSWORD: ""
@@ -45,6 +46,7 @@ before_script:
 test:
   stage: test
   script:
+    - 'git diff ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME} stoqlib/__init__.py || echo "You have to bump the version of this project by running, for example: bumpversion minor"'
     - poetry run make coverage
 
 build_dist:
@@ -131,7 +133,6 @@ gitlab_pypi_upload:
   stage: build
   only:
     - master
-  when: manual
   script:
     - rm -rf dist/*
     - poetry build

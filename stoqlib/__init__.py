@@ -22,3 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 ##
+
+
+version = "7.0.0"
+version_info = tuple(version.split('.'))
