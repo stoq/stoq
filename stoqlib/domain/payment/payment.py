@@ -348,6 +348,11 @@ class Payment(IdentifiableDomain):
                 return bank_account.bank_number
 
     @property
+    def change(self):
+        change = max(self.base_value - self.value, 0)
+        return change
+
+    @property
     def installment_number(self):
         payments = self.group.get_valid_payments().order_by(
             Payment.identifier)
