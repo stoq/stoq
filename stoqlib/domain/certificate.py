@@ -26,7 +26,7 @@ import collections
 
 from storm.expr import And, Eq
 
-from stoqlib.database.properties import EnumCol, BLOBCol, UnicodeCol, BoolCol
+from stoqlib.database.properties import EnumCol, BLOBCol, DateTimeCol, UnicodeCol, BoolCol
 from stoqlib.domain.base import Domain
 from stoqlib.lib.algorithms import PasswordObfuscator
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -59,6 +59,9 @@ class Certificate(Domain):
     #: The certificate password. If it is ``None`` it means that the user
     #: should be asked each time it is going to be used (for PKCS11 only)
     _password = BLOBCol(name='password', allow_none=True, default=None)
+
+    #: The certificate expiration date.
+    expiration_date = DateTimeCol(default=None)
 
     @property
     def password(self):
