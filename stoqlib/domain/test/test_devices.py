@@ -73,6 +73,20 @@ class TestDeviceSettings(DomainTest):
         self.assertEqual(str(error.exception), expected)
 
     @mock.patch('stoqlib.domain.devices.NonFiscalPrinter')
+    def test_get_interface_ethernet(self, NonFiscalPrinter):
+        device = DeviceSettings(store=self.store,
+                                device_name=u'ethernet:127.0.0.1:9100',
+                                type=DeviceSettings.NON_FISCAL_PRINTER_DEVICE)
+
+        obj = object()
+        NonFiscalPrinter.return_value = obj
+        self.assertIs(device.get_interface(), obj)
+        NonFiscalPrinter.assert_called_with(brand=None, model=None, port=None,
+                                            product_id=None, vendor_id=None,
+                                            interface='ethernet',
+                                            device_name='ethernet:127.0.0.1:9100')
+
+    @mock.patch('stoqlib.domain.devices.NonFiscalPrinter')
     def test_get_interface_usb(self, NonFiscalPrinter):
         device = DeviceSettings(store=self.store,
                                 device_name=u'usb:0xa:0x1',
@@ -83,7 +97,7 @@ class TestDeviceSettings(DomainTest):
         self.assertIs(device.get_interface(), obj)
         NonFiscalPrinter.assert_called_with(brand=None, model=None, port=None,
                                             product_id=1, vendor_id=10,
-                                            interface='usb')
+                                            interface='usb', device_name='usb:0xa:0x1')
 
     @mock.patch('stoqlib.domain.devices.NonFiscalPrinter')
     @mock.patch('stoqlib.domain.devices.SerialPort')
@@ -100,7 +114,7 @@ class TestDeviceSettings(DomainTest):
         SerialPort.assert_called_with(baudrate=9600, device=device.device_name)
         NonFiscalPrinter.assert_called_with(brand=None, model=None, port=port0,
                                             product_id=None, vendor_id=None,
-                                            interface='serial')
+                                            interface='serial', device_name='/dev/ttyUSB0')
         with mock.patch('os.path.exists') as mock_os:
             # Raising the SerialException because the device port has changed names.
             mock_os.side_effect = [False, True]
@@ -109,7 +123,7 @@ class TestDeviceSettings(DomainTest):
             self.assertIs(device.get_interface(), obj)
             NonFiscalPrinter.assert_called_with(brand=None, model=None, port=port1,
                                                 product_id=None, vendor_id=None,
-                                                interface='serial')
+                                                interface='serial', device_name='/dev/ttyUSB1')
 
         with mock.patch('os.path.exists') as mock_os:
             with self.assertRaises(SerialException):

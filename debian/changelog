@@ -1,3 +1,9 @@
+stoq (7.4.0) xenial; urgency=medium
+
+  * Release 7.4.0
+
+ -- stoq <stoq@dancorde-note>  Thu, 14 Jan 2021 16:03:37 -0300
+
 stoq (6.1~rc1) xenial; urgency=medium
 
   * Release 6.1~rc1

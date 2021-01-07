@@ -146,6 +146,11 @@ class DeviceSettings(Domain):
             vendor_id = int(vendor_id, 16)
             product_id = int(product_id, 16)
             port = None
+        elif self.device_name.startswith('ethernet:'):
+            port = None
+            interface = 'ethernet'
+            product_id = None
+            vendor_id = None
         else:
             # Serial device
             interface = 'serial'
@@ -157,7 +162,8 @@ class DeviceSettings(Domain):
         elif self.type == DeviceSettings.NON_FISCAL_PRINTER_DEVICE:
             return NonFiscalPrinter(brand=self.brand, model=self.model,
                                     port=port, interface=interface,
-                                    product_id=product_id, vendor_id=vendor_id)
+                                    product_id=product_id, vendor_id=vendor_id,
+                                    device_name=self.device_name)
         elif self.type == DeviceSettings.SCALE_DEVICE:
             return Scale(brand=self.brand, model=self.model,
                          device=self.device_name, port=port)
