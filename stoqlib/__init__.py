@@ -24,5 +24,5 @@
 ##
 
 
-version = "7.4.1"
+version = "7.4.2"
 version_info = tuple(version.split('.'))
