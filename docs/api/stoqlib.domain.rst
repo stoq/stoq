@@ -380,6 +380,13 @@ domain Package
     :members:
     :show-inheritance:
 
+:mod:`nfe`
+----------
+
+.. automodule:: stoqlib.domain.nfe
+    :members:
+    :show-inheritance:
+
 Subpackages
 -----------
 

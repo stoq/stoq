@@ -169,6 +169,10 @@ _tables = [
     ('event', ['Event']),
     ('certificate', ['Certificate']),
     ('message', ['Message']),
+    ('nfe', ['NFePurchase',
+             'NFeSupplier',
+             'NFeItem',
+             'NFePayment']),
 ]
 
 # table name (e.g. "Person") -> class
