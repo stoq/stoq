@@ -1519,6 +1519,7 @@ class TestPersonMerging(DomainTest):
         expected_updates = [
             # Supplier
             'UPDATE card_payment_device SET supplier_id=%s WHERE card_payment_device.supplier_id = %s',  # nopep8
+            'UPDATE nfe_supplier SET supplier_id=%s WHERE nfe_supplier.supplier_id = %s',
             'UPDATE purchase_order SET supplier_id=%s WHERE purchase_order.supplier_id = %s',
             'UPDATE receiving_invoice SET supplier_id=%s WHERE receiving_invoice.supplier_id = %s',
         ]
@@ -1584,6 +1585,7 @@ class TestPersonMerging(DomainTest):
             'UPDATE work_order_history SET user_id=%s WHERE work_order_history.user_id = %s',  # nopep8
             'UPDATE work_order_package SET receive_responsible_id=%s WHERE work_order_package.receive_responsible_id = %s',  # nopep8
             'UPDATE work_order_package SET send_responsible_id=%s WHERE work_order_package.send_responsible_id = %s',  # nopep8
+            'UPDATE nfe_purchase SET user_id=%s WHERE nfe_purchase.user_id = %s',
 
             # optical plugin
             'UPDATE optical_patient_history SET responsible_id=%s WHERE optical_patient_history.responsible_id = %s',  # nopep8
