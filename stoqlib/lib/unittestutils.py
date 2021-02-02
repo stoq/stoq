@@ -37,6 +37,13 @@ def get_tests_datadir(*subdirs):
     return data_dir
 
 
+def get_pytests_dir(*subdirs):
+    data_dir = os.path.join(
+        os.path.dirname(os.path.dirname(stoqlib.__file__)),
+        'stoqlib', 'pytests', *subdirs)
+    return data_dir
+
+
 def get_stoq_sources(root):
     for dirpath in ['bin', 'data', 'plugins', 'stoq', 'stoqlib']:
         path = os.path.join(root, dirpath)

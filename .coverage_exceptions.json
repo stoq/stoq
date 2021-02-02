@@ -51,6 +51,7 @@
  "stoqlib/l10n/l10n.py": 82.61,
  "stoqlib/l10n/sv/sv.py": 62.07,
  "stoqlib/lib/algorithms.py": 68.54,
+ "stoqlib/lib/api/nfe.py": 80.33,
  "stoqlib/lib/barcode.py": 86.21,
  "stoqlib/lib/boleto.py": 93.93,
  "stoqlib/lib/cardinals/cardinals.py": 56.00,

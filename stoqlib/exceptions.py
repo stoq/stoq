@@ -155,3 +155,13 @@ class ExternalOrderError(Exception):
 
     def __init__(self, reason):
         self.reason = reason
+
+
+class NFeImportedError(Exception):
+    """Already imported exception"""
+    pass
+
+
+class NFeDifferentCNPJ(Exception):
+    """Selected branch CNPJ different from NFe"""
+    pass

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+   <NFe>
+      <infNFe versao="4.00" Id="NFe53210239681615000166650010000004761226641111">
+         <ide>
+            <cUF>53</cUF>
+            <cNF>22664842</cNF>
+            <natOp>Outro</natOp>
+            <mod>65</mod>
+            <serie>1</serie>
+            <nNF>476</nNF>
+            <dhEmi>2021-02-01T10:58:54-03:00</dhEmi>
+            <tpNF>1</tpNF>
+            <idDest>1</idDest>
+            <cMunFG>5300108</cMunFG>
+            <tpImp>4</tpImp>
+            <tpEmis>1</tpEmis>
+            <cDV>2</cDV>
+            <tpAmb>1</tpAmb>
+            <finNFe>1</finNFe>
+            <indFinal>1</indFinal>
+            <indPres>1</indPres>
+            <procEmi>0</procEmi>
+            <verProc>Stoq 6.1.0rc1</verProc>
+         </ide>
+         <emit>
+            <CNPJ>24258088000104</CNPJ>
+            <xNome>Stoq Tecnologia</xNome>
+            <enderEmit>
+               <xLgr>Rua Aquidaban</xLgr>
+               <nro>1</nro>
+               <xBairro>Centro</xBairro>
+               <cMun>3548906</cMun>
+               <xMun>São Carlos</xMun>
+               <UF>SP</UF>
+               <CEP>13560120</CEP>
+               <cPais>1058</cPais>
+               <xPais>BRASIL</xPais>
+            </enderEmit>
+            <IE>2316868700189</IE>
+            <CRT>1</CRT>
+         </emit>
+         <dest>
+            <CNPJ>95941054000168</CNPJ>
+            <xNome>Stoq Tecnologia</xNome>
+            <indIEDest>9</indIEDest>
+         </dest>
+         <det nItem="1">
+            <prod>
+               <cProd>7894904238620</cProd>
+               <cEAN>7894904238620</cEAN>
+               <xProd>Hamburguer Seara Gourmet Picanha - Seara</xProd>
+               <NCM>19059090</NCM>
+               <CEST>1706201</CEST>
+               <CFOP>5405</CFOP>
+               <uCom>un</uCom>
+               <qCom>1.0000</qCom>
+               <vUnCom>18.1900</vUnCom>
+               <vProd>18.19</vProd>
+               <cEANTrib>7894904238620</cEANTrib>
+               <uTrib>un</uTrib>
+               <qTrib>1.0000</qTrib>
+               <vUnTrib>18.1900</vUnTrib>
+               <indTot>1</indTot>
+            </prod>
+            <imposto>
+               <ICMS>
+                  <ICMSSN500>
+                     <orig>0</orig>
+                     <CSOSN>500</CSOSN>
+                     <vBCSTRet>0.00</vBCSTRet>
+                     <pST>0.00</pST>
+                     <vICMSSTRet>0.00</vICMSSTRet>
+                  </ICMSSN500>
+               </ICMS>
+               <PIS>
+                  <PISOutr>
+                     <CST>50</CST>
+                     <vBC>18.19</vBC>
+                     <pPIS>1.65</pPIS>
+                     <vPIS>0.30</vPIS>
+                  </PISOutr>
+               </PIS>
+               <COFINS>
+                  <COFINSOutr>
+                     <CST>50</CST>
+                     <vBC>18.19</vBC>
+                     <pCOFINS>7.60</pCOFINS>
+                     <vCOFINS>1.38</vCOFINS>
+                  </COFINSOutr>
+               </COFINS>
+            </imposto>
+         </det>
+         <det nItem="2">
+            <prod>
+               <cProd>076840722754</cProd>
+               <cEAN>076840722754</cEAN>
+               <xProd>BEM JERRYS NEW YORK</xProd>
+               <NCM>21050010</NCM>
+               <CEST>2300100</CEST>
+               <CFOP>5405</CFOP>
+               <uCom>un</uCom>
+               <qCom>1.0000</qCom>
+               <vUnCom>12.9900</vUnCom>
+               <vProd>12.99</vProd>
+               <cEANTrib>076840722754</cEANTrib>
+               <uTrib>un</uTrib>
+               <qTrib>1.0000</qTrib>
+               <vUnTrib>12.9900</vUnTrib>
+               <indTot>1</indTot>
+            </prod>
+            <imposto>
+               <ICMS>
+                  <ICMSSN500>
+                     <orig>0</orig>
+                     <CSOSN>500</CSOSN>
+                     <vBCSTRet>0.00</vBCSTRet>
+                     <pST>0.00</pST>
+                     <vICMSSTRet>0.00</vICMSSTRet>
+                  </ICMSSN500>
+               </ICMS>
+               <PIS>
+                  <PISOutr>
+                     <CST>50</CST>
+                     <vBC>12.99</vBC>
+                     <pPIS>1.65</pPIS>
+                     <vPIS>0.21</vPIS>
+                  </PISOutr>
+               </PIS>
+               <COFINS>
+                  <COFINSOutr>
+                     <CST>50</CST>
+                     <vBC>12.99</vBC>
+                     <pCOFINS>7.60</pCOFINS>
+                     <vCOFINS>0.99</vCOFINS>
+                  </COFINSOutr>
+               </COFINS>
+            </imposto>
+         </det>
+         <total>
+            <ICMSTot>
+               <vBC>0.00</vBC>
+               <vICMS>0.00</vICMS>
+               <vICMSDeson>0.00</vICMSDeson>
+               <vFCPUFDest>0.00</vFCPUFDest>
+               <vICMSUFDest>0.00</vICMSUFDest>
+               <vICMSUFRemet>0.00</vICMSUFRemet>
+               <vFCP>0.00</vFCP>
+               <vBCST>0.00</vBCST>
+               <vST>0.00</vST>
+               <vFCPST>0.00</vFCPST>
+               <vFCPSTRet>0.00</vFCPSTRet>
+               <vProd>31.18</vProd>
+               <vFrete>0.00</vFrete>
+               <vSeg>0.00</vSeg>
+               <vDesc>0.00</vDesc>
+               <vII>0.00</vII>
+               <vIPI>0.00</vIPI>
+               <vIPIDevol>0.00</vIPIDevol>
+               <vPIS>0.51</vPIS>
+               <vCOFINS>2.37</vCOFINS>
+               <vOutro>0.00</vOutro>
+               <vNF>31.18</vNF>
+            </ICMSTot>
+         </total>
+         <transp>
+            <modFrete>9</modFrete>
+         </transp>
+         <pag>
+            <detPag>
+               <tPag>03</tPag>
+               <vPag>31.18</vPag>
+               <card>
+                  <tpIntegra>2</tpIntegra>
+                  <CNPJ>35494713000133</CNPJ>
+                  <tBand>99</tBand>
+                  <cAut>0</cAut>
+               </card>
+            </detPag>
+            <vTroco>0.00</vTroco>
+         </pag>
+         <infAdic>
+            <infAdFisco>Tributos aproximados: R$ 1.50 Federal e R$ 5.61 Estadual Fonte: IBPT/empresometro.com.br 0C3829</infAdFisco>
+            <infCpl>Venda 0072 -1-87938.</infCpl>
+         </infAdic>
+      </infNFe>
+      <infNFeSupl>
+         <qrCode><![CDATA[http://www.fazenda.df.gov.br/nfce/qrcode?p=53210239681615000166650010000004761226641111%7C2%7C1%7C3%7C1C7A6014F6A74E30FBC72137C9F95719AF4A3965]]></qrCode>
+         <urlChave>http://www.fazenda.df.gov.br/nfce/qrcode?</urlChave>
+      </infNFeSupl>
+      <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+         <SignedInfo>
+            <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+            <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+            <Reference URI="#NFe53210239681615000166650010000004761226641111">
+               <Transforms>
+                  <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+                  <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+               </Transforms>
+               <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+               <DigestValue>K3EGoPuMIGX2MER6ewVjyCiz+dw=</DigestValue>
+            </Reference>
+         </SignedInfo>
+         <SignatureValue>dAk2hutNRwsD83a6SNKmCw3/Fwh8rw3KN759KbN5BbqVAnv6i9xBCMxr2xNHkrBn\nbeMJUzAIj7S/CevtSs4aqDl+Y0P6qSeIMhuQQ1UXK935JXE56BxDCHyeGRhBRFeO\nhoHb0MCNaHxjQJYVtNUpIuWBpYYaWYlIrffPRLpi8F6giZYPoGyY9ncaF/jMMlKJ\nP2vUGa6QNJ2muAa2WJ2RpZvOj1Uq9lSyogw0nbmq+6Mc2AhL9F4SN/em5fmSjarZ\nyrLQukGkTWlqKFPJfJvUR74enbEI4ivwSw52UPio9HSjRpky+fVE+dWV71ver9Vl\nrVj8+nWkd30tgTyqV4jRsw==</SignatureValue>
+         <KeyInfo>
+            <X509Data>
+               <X509Certificate>MIIHvzCCBaegAwIBAgIIWi175qoMzzcwDQYJKoZIhvcNAQELBQAwdjELMAkGA1UE\nBhMCQlIxEzARBgNVBAoTCklDUC1CcmFzaWwxNjA0BgNVBAsTLVNlY3JldGFyaWEg\nZGEgUmVjZWl0YSBGZWRlcmFsIGRvIEJyYXNpbCAtIFJGQjEaMBgGA1UEAxMRQUMg\nU0FGRVdFQiBSRkIgdjUwHhcNMjAxMTEwMTIzNjMxWhcNMjExMTEwMTIzNjMxWjCC\nAQExCzAJBgNVBAYTAkJSMRMwEQYDVQQKEwpJQ1AtQnJhc2lsMQswCQYDVQQIEwJE\nRjERMA8GA1UEBxMIQlJBUz9MSUExNjA0BgNVBAsTLVNlY3JldGFyaWEgZGEgUmVj\nZWl0YSBGZWRlcmFsIGRvIEJyYXNpbCAtIFJGQjEWMBQGA1UECxMNUkZCIGUtQ05Q\nSiBBMTEXMBUGA1UECxMOMjM2MTE5MDcwMDAxOTIxEzARBgNVBAsTCnByZXNlbmNp\nYWwxPzA9BgNVBAMTNlRJRU5EQSBMVVogQ09NRVJDSU8gRSBDT05WRU5JRU5DSUEg\nTFREQTozOTY4MTYxNTAwMDE2NjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC\nggEBAJKYKWCGcR5LbI58OybnbYv6STfyO+4rhO9I0IuxmPL0dV8ZnU43vxdpu3qG\nIgtRVblYS3GORvNWoa2kymlmSsUfqZy/nrM1F+1l2p3PkujiwX14gBQqpmTJ4wX9\nU4Bua2u0lvorDomMlbK/4KfOT5ahO24/QctI2EXH+YGOz3tSicquBypm5Qzg/Uuj\nVIb/IVni8E8g16T9VLix/iYKB+3MxYll3Je1BQDNZ4Pgm9wvIbBSnYhJl0HD9ZfI\n4HKwkRbZs9Vvu2RmUKp9pntO7YKF5DLtWOwNahhl3V48vO5lv6NjXCMbqlo+ePc7\n9GghC1Nvc6QdSK9JTf+jjs0ag4UCAwEAAaOCAsIwggK+MB8GA1UdIwQYMBaAFCle\nS9VGTLv+FqdjwR3EJvLd2PMFMA4GA1UdDwEB/wQEAwIF4DBtBgNVHSAEZjBkMGIG\nBmBMAQIBMzBYMFYGCCsGAQUFBwIBFkpodHRwOi8vcmVwb3NpdG9yaW8uYWNzYWZl\nd2ViLmNvbS5ici9hYy1zYWZld2VicmZiL2FjLXNhZmV3ZWItcmZiLXBjLWExLnBk\nZjCBrgYDVR0fBIGmMIGjME+gTaBLhklodHRwOi8vcmVwb3NpdG9yaW8uYWNzYWZl\nd2ViLmNvbS5ici9hYy1zYWZld2VicmZiL2xjci1hYy1zYWZld2VicmZidjUuY3Js\nMFCgTqBMhkpodHRwOi8vcmVwb3NpdG9yaW8yLmFjc2FmZXdlYi5jb20uYnIvYWMt\nc2FmZXdlYnJmYi9sY3ItYWMtc2FmZXdlYnJmYnY1LmNybDCBiwYIKwYBBQUHAQEE\nfzB9MFEGCCsGAQUFBzAChkVodHRwOi8vcmVwb3NpdG9yaW8uYWNzYWZld2ViLmNv\nbS5ici9hYy1zYWZld2VicmZiL2FjLXNhZmV3ZWJyZmJ2NS5wN2IwKAYIKwYBBQUH\nMAGGHGh0dHA6Ly9vY3NwLmFjc2FmZXdlYi5jb20uYnIwgbIGA1UdEQSBqjCBp4EO\nUk1QQFZNQS5DT00uQlKgJwYFYEwBAwKgHhMcUkFGQUVMIE1PUkFFUyBQRVJFSVJB\nIERBIExVWqAZBgVgTAEDA6AQEw4zOTY4MTYxNTAwMDE2NqA4BgVgTAEDBKAvEy0w\nNDA2MTk4NTAwNTEzNDU1MTA4MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDCgFwYF\nYEwBAwegDhMMMDAwMDAwMDAwMDAwMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF\nBQcDBDAJBgNVHRMEAjAAMA0GCSqGSIb3DQEBCwUAA4ICAQAeR2ZE7XgXRTu9Ss71\nTjjEp+iEoJ+vNYfb7f1mrwsuyraualpKCh2iJVS3cVEbe7aBtDfeELI8woydCdf1\nPzvjJ/oye7gtiN++YMsmakT3zPuSoGx5551piRulWrWD80OI4JybUSAUcPYfkk1N\nRmKW1sgFzj5Pj2f3Wsk/gYmVcVrnn1v0IHOJMyA71nQeUNbwB7v4153PNUEe/Y3x\n2C1i/cj8HNuwFgtv8cBecIZoO8k1H4gmt4tMTK617FuQE2sgKTciDcZBtymb7zPz\nmQQsrfWu5Usfh3IyJhD8uC8tCIptd5CBjINsGE6ZFdK3uq6HYYSWcpzAfaAb3/th\nUKE4phvY3SZv2osY+ZgG2+4x8sVCknm98vKPNHTfU66N9m8UXaR2RJZmmXuMZm24\nAg/yt3TxKeA0APl6HjAQkcoW2P61WhGwbRiAvmKwQAx9vmyr6dpvd2XvBMq+kLbn\n3k/rBo4XVHpBR7Z2iJbwOL7eMckMAMA9q1DL/f0TkPQdiTT62RkGCVykJSHk+Ec9\nw3zEmI8t/wgLy+VoB9bJ4DWVZWVthM/RqOB418VrmXH3++RIGsR8QDv8nU5Rpjlm\nU9lnw1qC9gOHPZv+qVf42COPevc3qXPqnFa9U0GnibZYzUWnMvlPCa5Pckh2DkNU\n6BWMA2NlnjBcyD5STbhzAxWeug==</X509Certificate>
+            </X509Data>
+         </KeyInfo>
+      </Signature>
+   </NFe>
+   <protNFe xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" versao="4.00">
+      <infProt>
+         <tpAmb>1</tpAmb>
+         <verAplic>SVRSnfce201908091113</verAplic>
+         <chNFe>53210239681615000166650010000004761226641111</chNFe>
+         <dhRecbto>2021-02-01T10:59:10-03:00</dhRecbto>
+         <nProt>353210046176999</nProt>
+         <digVal>K3EGoPuMIGX2MER6ewVjyCiz+dw=</digVal>
+         <cStat>100</cStat>
+         <xMotivo>Autorizado o uso da NF-e</xMotivo>
+      </infProt>
+   </protNFe>
+</nfeProc>
