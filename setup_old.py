@@ -150,7 +150,7 @@ else:
         ('share/polkit-1/actions', ['data/br.com.stoq.createdatabase.policy']),
     ])
 
-PLUGINS = ['ecf', 'nfe', 'books', 'optical']
+PLUGINS = ['ecf', 'books', 'optical']
 PLUGIN_EXTS = [('csv', '*csv'),
                ('glade', '*.ui'),
                ('sql', '*.sql'),

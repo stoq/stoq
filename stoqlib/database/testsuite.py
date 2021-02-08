@@ -231,7 +231,7 @@ def provide_utilities(station_name, branch_name=None):
 
 def _enable_plugins(extra_plugins=None):
     manager = get_plugin_manager()
-    default_plugins = ['ecf', 'nfe', 'optical']
+    default_plugins = ['ecf', 'optical']
     extra_plugins = extra_plugins or []
     for plugin in set(default_plugins + extra_plugins):
         if not manager.is_installed(plugin):

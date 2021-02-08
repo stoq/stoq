@@ -117,7 +117,7 @@ class TestPluginManager(DomainTest):
         # it first, or we will have problems if STOQLIB_TEST_QUICK is set.
         store = new_store()
         plugins = set(InstalledPlugin.get_plugin_names(store=self.store))
-        expected = set([u'ecf', u'nfe', u'optical'])
+        expected = set([u'ecf', u'optical'])
         self.assertTrue(expected.issubset(plugins))
 
         ind_name = self._independent_plugin.name

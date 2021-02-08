@@ -1,3 +1,0 @@
--- This used to create a NFeDomain to store brazilian city data.
--- There's no need anymore to create this, as the next patch will drop it.
--- Just keeping this as a marker to allow migration do the right thing.
