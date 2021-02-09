@@ -1968,6 +1968,16 @@ class TestSale(DomainTest):
             delivery_item = sale.add_sellable(delivery_service.sellable)
             self.assertEqual(sale.get_delivery_item(), delivery_item)
 
+    def test_add_sellable_with_cfop_from_sbo(self):
+        branch = self.create_branch()
+        sale = self.create_sale(branch=branch)
+        sellable = self.create_sellable()
+        sellable.default_sale_cfop = self.create_cfop_data(code='123')
+        sbo = self.create_sellable_branch_override(sellable, branch)
+        sbo.default_sale_cfop = self.create_cfop_data(code='456')
+        sale.add_sellable(sellable)
+        self.assertEqual(sale.get_items()[0].cfop.code, '456')
+
 
 class TestSaleToken(DomainTest):
 

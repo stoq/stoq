@@ -198,10 +198,9 @@ class SaleItem(Domain):
         if not 'kw' in kw:
             base_price = sellable.price
             kw['base_price'] = base_price
-            if not kw.get('cfop'):
-                kw['cfop'] = sellable.default_sale_cfop
-            if not kw.get('cfop'):
-                kw['cfop'] = sysparam.get_object(store, 'DEFAULT_SALES_CFOP')
+            if not kw.get('cfop') and not kw.get('cfop_id'):
+                kw['cfop'] = (sellable.default_sale_cfop or
+                              sysparam.get_object(store, 'DEFAULT_SALES_CFOP'))
 
             store = kw.get('store', store)
             # self.icms_info is an InvoiceItemIcms object and is created by the function below
@@ -1842,6 +1841,7 @@ class Sale(IdentifiableDomain):
             self.validate_batch(batch, sellable=sellable)
         if price is None:
             price = sellable.price
+        sbo = SellableBranchOverride.find_by_sellable(sellable, self.branch)
         return SaleItem(store=self.store,
                         quantity=quantity,
                         quantity_decreased=quantity_decreased,
@@ -1849,7 +1849,8 @@ class Sale(IdentifiableDomain):
                         sellable=sellable,
                         batch=batch,
                         price=price,
-                        parent_item=parent)
+                        parent_item=parent,
+                        cfop=sbo.default_sale_cfop if sbo else None)
 
     def create_sale_return_adapter(self, branch: Branch, user: LoginUser, station: BranchStation):
         store = self.store
