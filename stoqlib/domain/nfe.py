@@ -190,6 +190,19 @@ class NFePurchase(Domain):
 
         return payments
 
+    #
+    # Public
+    #
+
+    def get_key(self):
+        if self.xml is None:
+            return
+
+        inf_nfe = self.xml.find('.//{*}infNFe')
+        # Removing prefix NFe from the actual Id
+        key = inf_nfe.get('Id')[3:]
+        return key
+
     def find_or_create_supplier(self, nfe_supplier):
         # FIXME: Need to do the same thing to Individual suppliers
         person = Person.get_or_create_by_document(self.store, nfe_supplier.cnpj,

@@ -262,6 +262,18 @@ def test_nfe_purchase_test_create_payments_without_payments(
     assert payment.station is current_station
 
 
+def test_nfe_purchase_get_key(nfe_purchase, nfe):
+    nfe_purchase.xml = nfe.root
+
+    assert nfe_purchase.get_key() == '53210239681615000166650010000004761226641111'
+
+
+def test_nfe_purchase_get_key_without_xml(nfe_purchase):
+    nfe_purchase.xml = None
+
+    assert nfe_purchase.get_key() is None
+
+
 def test_nfe_purchase_find_or_create_supplier(nfe_purchase, nfe_supplier):
     nfe_supplier.cnpj = '00.000.000/0000-00'
     supplier = nfe_purchase.find_or_create_supplier(nfe_supplier)
