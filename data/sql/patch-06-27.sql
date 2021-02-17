@@ -39,6 +39,15 @@ CREATE TABLE IF NOT EXISTS nfe_purchase (
     UNIQUE (invoice_number, invoice_series, nfe_supplier_id)
 );
 CREATE OR REPLACE RULE update_te AS ON UPDATE TO nfe_purchase DO ALSO SELECT update_te(old.te_id);
+DO $$
+    BEGIN
+        BEGIN
+            ALTER TABLE nfe_purchase ADD COLUMN invoice_series INTEGER;
+        EXCEPTION
+            WHEN duplicate_column THEN RAISE NOTICE 'column invoice_series already exists in nfe_purchase. skipping...';
+        END;
+    END;
+$$;
 
 
 CREATE TABLE IF NOT EXISTS nfe_item (
