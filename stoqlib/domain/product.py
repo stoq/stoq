@@ -744,7 +744,7 @@ class Product(Domain):
                 child_sellable.cost = parent_sellable.cost / component.quantity
             except (NotOneError, AssertionError):
                 return
-        if sysparam.get_bool('UPDATE_PRODUCT_COST_ON_COMPONENT_UPDATE'):
+        elif sysparam.get_bool('UPDATE_PRODUCT_COST_ON_COMPONENT_UPDATE'):
             self.update_production_cost(cost)
 
     def update_production_cost(self, cost=None):
