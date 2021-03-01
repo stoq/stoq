@@ -112,6 +112,30 @@ class TestTill(DomainTest):
         with self.assertRaises(ValueError):
             till.close_till(self.current_user)
 
+    def test_till_close_final_cash_amount(self):
+        station = self.create_station()
+        till = Till(store=self.store, branch=self.current_branch, station=station)
+        till.open_till(self.current_user)
+
+        # There is no cash amount yet
+        self.assertEqual(till.get_cash_amount(), 0)
+
+        # Add a card payment. Cash amount is still at zero
+        payment = self.create_card_payment(provider_id='VISA')
+        TillEntry(description=u'test', value=payment.value, till=till, station=station,
+                  branch=till.station.branch, payment=payment, store=self.store)
+        self.assertEqual(till.get_cash_amount(), 0)
+
+        # Add a cash payment. cash amount increases
+        payment = self.create_payment()
+        TillEntry(description=u'test', value=payment.value, till=till, station=self.current_station,
+                  branch=till.station.branch, payment=payment, store=self.store)
+        self.assertEqual(till.get_cash_amount(), 10)
+
+        # Final cash amount should consider only CASH payments
+        till.close_till(self.current_user)
+        self.assertEqual(till.final_cash_amount, 10)
+
     def test_get_balance(self):
         till = Till(store=self.store,
                     branch=self.current_branch,

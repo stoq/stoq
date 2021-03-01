@@ -244,12 +244,12 @@ class Till(IdentifiableDomain):
         if self.status == Till.STATUS_CLOSED:
             raise TillError(_("Till is already closed"))
 
-        if self.get_balance() < 0:
+        if self.get_cash_amount() < 0:
             raise ValueError(_("Till balance is negative, but this should not "
                                "happen. Contact Stoq Team if you need "
                                "assistance"))
 
-        self.final_cash_amount = self.get_balance()
+        self.final_cash_amount = self.get_cash_amount()
         self.closing_date = TransactionTimestamp()
         self.status = Till.STATUS_CLOSED
         self.observations = observations
