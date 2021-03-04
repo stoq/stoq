@@ -795,6 +795,9 @@ class Company(Domain):
     #: fiscal documents
     parent = Reference(parent_id, 'Company.id')
 
+    #: main  CNAE (Classificação Nacional de Atividades Econômicas) of the company
+    cnae = UnicodeCol()
+
     #
     # IActive
     #
