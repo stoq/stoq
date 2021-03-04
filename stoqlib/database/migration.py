@@ -431,7 +431,7 @@ class StoqlibSchemaMigration(SchemaMigration):
 
         return [i for (i,) in store.execute(tables_query).get_all()]
 
-    def update(self, plugins=True, backup=True, check_database=True):
+    def update(self, plugins=False, backup=True, check_database=True):
         log.info("Upgrading database (plugins=%r, backup=%r)" % (
             plugins, backup))
 
