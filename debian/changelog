@@ -1,3 +1,9 @@
+stoq (7.9.4) xenial; urgency=medium
+
+  * Release 7.9.4
+
+ -- Ronaldo Maia <romaia@async.com.br>  Thu, 04 Mar 2021 09:37:49 -0300
+
 stoq (7.9.3) xenial; urgency=medium
 
   * Release 7.9.3

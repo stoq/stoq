@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "stoqlib"
-version = "7.9.3"
+version = "7.9.4"
 description = ""
 authors = ["Stoq Team <dev@stoq.com.br>"]
 license = "LGPL-2.0"
