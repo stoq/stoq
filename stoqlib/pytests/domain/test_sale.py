@@ -16,6 +16,10 @@ def sellable(example_creator):
     return example_creator.create_sellable()
 
 
+def test_sale_with_operation_nature(sale):
+    assert sale.invoice.operation_nature == 'Sale of merchandises'
+
+
 def test_sale_invoice_subtotal(sale):
     assert sale.invoice_subtotal == sale.get_sale_subtotal()
 

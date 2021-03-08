@@ -195,7 +195,7 @@ class SaleItem(Domain):
     children_items = ReferenceSet('id', 'SaleItem.parent_item_id')
 
     def __init__(self, store, sale: 'Sale', sellable: 'sellable', **kw):
-        if not 'kw' in kw:
+        if 'kw' not in kw:
             base_price = sellable.price
             kw['base_price'] = base_price
             if not kw.get('cfop') and not kw.get('cfop_id'):
@@ -1047,7 +1047,11 @@ class Sale(IdentifiableDomain):
     cancel_responsible = Reference(cancel_responsible_id, 'LoginUser.id')
 
     def __init__(self, store, branch: Branch, **kw):
-        kw['invoice'] = Invoice(store=store, invoice_type=Invoice.TYPE_OUT, branch=branch)
+        kw['invoice'] = Invoice(
+            store=store,
+            invoice_type=Invoice.TYPE_OUT,
+            branch=branch,
+            operation_nature=sysparam.get_string('DEFAULT_OPERATION_NATURE'))
         super(Sale, self).__init__(store=store, branch=branch, **kw)
         # Branch needs to be set before cfop, which triggers an
         # implicit flush.

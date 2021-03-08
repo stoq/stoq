@@ -564,7 +564,7 @@ _details = [
         _('Default operation nature'),
         _('When adding a new sale quote, we will always suggest '
           'this operation nature'),
-        str, initial=_('Sale')),
+        str, initial=_('Sale of merchandises')),
 
     ParameterDetails(
         'ASK_SALES_CFOP',
