@@ -1,3 +1,9 @@
+stoq (7.11.1) xenial; urgency=medium
+
+  * Release 7.11.1
+
+ -- Vinícius M Camillo <vmcamillo@stoqws-09>  Mon, 08 Mar 2021 17:54:11 -0300
+
 stoq (7.9.4) xenial; urgency=medium
 
   * Release 7.9.4
