@@ -443,7 +443,7 @@ class StoqlibSchemaMigration(SchemaMigration):
 
         # Don't try to update the plugins if the database doesn't
         # have the plugin_egg table, which was included in patch-05-15
-        if self.get_current_version() >= (5, 15):
+        if plugins and self.get_current_version() >= (5, 15):
             manager = get_plugin_manager()
             for egg_plugin in manager.egg_plugins_names:
                 try:
