@@ -431,9 +431,8 @@ class StoqlibSchemaMigration(SchemaMigration):
 
         return [i for (i,) in store.execute(tables_query).get_all()]
 
-    def update(self, plugins=False, backup=True, check_database=True):
-        log.info("Upgrading database (plugins=%r, backup=%r)" % (
-            plugins, backup))
+    def update(self, backup=True, check_database=True):
+        log.info("Upgrading database (backup=%s)", backup)
 
         if check_database and not self._check_database():
             return False
@@ -441,23 +440,12 @@ class StoqlibSchemaMigration(SchemaMigration):
         if backup:
             self._backup_database()
 
-        # Don't try to update the plugins if the database doesn't
-        # have the plugin_egg table, which was included in patch-05-15
-        if plugins and self.get_current_version() >= (5, 15):
-            manager = get_plugin_manager()
-            for egg_plugin in manager.egg_plugins_names:
-                try:
-                    manager.download_plugin(egg_plugin)
-                except Exception:
-                    pass
-
         # We have to wrap a try/except statement inside a try/finally to
         # support python previous to 2.5 version.
         try:
             try:
                 super(StoqlibSchemaMigration, self).update()
-                if plugins:
-                    self.update_plugins()
+                self.update_plugins()
             except Exception:
                 exc = sys.exc_info()
                 tb_str = ''.join(traceback.format_exception(*exc))
