@@ -333,12 +333,12 @@ class InvoiceItemIcms(BaseICMS):
         if self.p_mva_st is not None:
             self.v_bc_st += self.v_bc_st * self.p_mva_st / 100
 
-        if self.v_bc_st is not None and self.p_icms_st is not None:
+        if self.p_icms_st is not None:
             self.v_icms_st = self.v_bc_st * self.p_icms_st / 100
-        if self.v_icms is not None and self.v_icms_st is not None:
+        if self.v_icms is not None and self.v_icms_st:
             self.v_icms_st -= self.v_icms
 
-        if self.v_bc_st is not None and self.p_fcp_st is not None:
+        if self.p_fcp_st is not None:
             self.v_fcp_st = self.v_bc_st * self.p_fcp_st / 100
         if self.v_fcp is not None and self.v_fcp_st is not None:
             self.v_fcp_st -= self.v_fcp
@@ -352,10 +352,10 @@ class InvoiceItemIcms(BaseICMS):
         if self.p_red_bc is not None:
             self.v_bc -= self.v_bc * self.p_red_bc / 100
 
-        if self.p_icms is not None and self.v_bc is not None:
+        if self.p_icms is not None:
             self.v_icms = self.v_bc * self.p_icms / 100
 
-        if self.p_fcp is not None and self.v_bc is not None:
+        if self.p_fcp is not None:
             self.v_fcp = self.v_bc * self.p_fcp / 100
 
     def _update_normal(self, invoice_item):
