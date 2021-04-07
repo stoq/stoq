@@ -183,7 +183,7 @@ install_requires = [
     'qrcode >= 4.0',
     'blinker >= 1.3',
     'requests >= 2.18.4',
-    'PyGObject <= 3.40.0',
+    'PyGObject == 3.30.1',
     'storm >= 0.22',
     'pyjwt >= 1.3.0',
 ]
