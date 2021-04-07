@@ -66,7 +66,7 @@ from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implementer
 
-from stoqlib.database.expr import (Age, Case, Concat, Date, DateTrunc, Interval,
+from stoqlib.database.expr import (Age, Case, Concat, Date, DateTrunc, Interval, Distinct,
                                    Field, NotIn, StoqNormalizeString)
 from stoqlib.database.properties import (BoolCol, DateTimeCol,
                                          IntCol, PercentCol,
@@ -87,7 +87,7 @@ from stoqlib.enums import LatePaymentPolicy, RelativeLocation
 from stoqlib.exceptions import (DatabaseInconsistency, LoginError, SellError,
                                 ModelDataError)
 from stoqlib.lib.dateutils import localnow, localtoday
-from stoqlib.lib.formatters import (raw_phone_number, format_phone_number,
+from stoqlib.lib.formatters import (raw_phone_number, format_phone_number, format_cnpj,
                                     raw_document)
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
@@ -821,6 +821,15 @@ class Company(Domain):
 
     def get_description(self):
         return self.person.name
+
+    #
+    # Class methods
+    #
+
+    @classmethod
+    def get_distinct_cnpj_from_branch(cls, store):
+        tables = [Company, Join(Branch, Company.person_id == Branch.person_id)]
+        return store.using(*tables).find(Distinct(Company.cnpj)).group_by(Company.cnpj)
 
     #
     # Properties
@@ -1859,6 +1868,15 @@ class Branch(Domain):
             cls.id),
             Eq(cls.is_active, True))
         return locale_sorted(items, key=operator.itemgetter(0))
+
+    @classmethod
+    def find_by_cnpj(cls, store, cnpj, extra_query=None):
+        query = Company.cnpj == format_cnpj(raw_document(cnpj))
+        if extra_query:
+            query = And(query, extra_query)
+
+        tables = [Branch, Join(Company, Company.person_id == Branch.person_id)]
+        return store.using(*tables).find(Branch, query).order_by(Company.cnpj)
 
 
 @implementer(IActive)
