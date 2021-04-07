@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
-##
-## Copyright (C) 2013 Async Open Source <http://www.async.com.br>
-## All rights reserved
-##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., or visit: http://www.gnu.org/.
-##
-## Author(s): Stoq Team <stoq-devel@async.com.br>
-##
+#
+# Copyright (C) 2013 - 2021 Stoq Tecnologi LTDA <http://www.stoq.com.br>
+# All rights reserved
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., or visit: http://www.gnu.org/.
+#
+# Author(s): Stoq Team <dev@stoq.com.br>
+#
 
 """Database expressions.
 
@@ -82,6 +82,32 @@ class Position(NamedFunc):
 def compile_position(compile, expr, state):
     return "%s(%s in %s)" % (expr.name, expr_compile(expr.substring, state),
                              expr_compile(expr.string, state))
+
+
+class RegexpReplace(NamedFunc):
+    __slots__ = ()
+    name = "regexp_replace"
+
+
+class Min(NamedFunc):
+    __slots__ = ()
+    name = "min"
+
+
+class Filter(ComparableExpr):
+    __slots__ = ("expr", "clause")
+    oper = ' filter '
+
+    def __init__(self, expr, clause):
+        self.clause = clause
+        self.expr = expr
+
+
+@expr_compile.when(Filter)
+def compile_filter(compile, expr, state):
+    stmt = "%s FILTER (WHERE %s )" % (expr_compile(expr.expr, state),
+                                      expr_compile(expr.clause, state))
+    return stmt
 
 
 class Date(NamedFunc):
@@ -168,6 +194,11 @@ class ArrayToString(NamedFunc):
 class RowNumber(NamedFunc):
     __slots__ = ()
     name = "ROW_NUMBER"
+
+
+class XPath(NamedFunc):
+    __slots__ = ()
+    name = 'xpath'
 
 
 class JsonField(BinaryOper):
@@ -288,6 +319,17 @@ class Concat(Expr):
 @expr_compile.when(Concat)
 def compile_concat(compile, expr, state):
     return " || ".join(expr_compile(input_, state) for input_ in expr.inputs)
+
+
+class Array(Expr):
+
+    def __init__(self, array):
+        self.array = array
+
+
+@expr_compile.when(Array)
+def compile_array(expr_compile, expr, state):
+    return "ARRAY[%s]" % ",".join(expr_compile(i, state) for i in expr.array)
 
 
 class Between(Expr):

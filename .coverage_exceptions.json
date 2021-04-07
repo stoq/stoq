@@ -2,7 +2,7 @@
  "stoqlib/domain/views.py": 99.86,
  "stoqlib/database/admin.py": 80.58,
  "stoqlib/database/debug.py": 17.14,
- "stoqlib/database/expr.py": 98.19,
+ "stoqlib/database/expr.py": 95,
  "stoqlib/database/migration.py": 49.15,
  "stoqlib/database/orm.py": 77.27,
  "stoqlib/database/properties.py": 95.08,
