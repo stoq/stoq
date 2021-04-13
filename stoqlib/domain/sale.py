@@ -1118,6 +1118,17 @@ class Sale(IdentifiableDomain):
         return self.get_total_sale_amount()
 
     @property
+    def emission_date(self):
+        try:
+            from stoqnfe.domain.nfe import NfeData
+        except ImportError:
+            NfeData = None
+
+        if NfeData:
+            nfe_data = NfeData.get_by_invoice_id(self.store, self.invoice_id)
+            return nfe_data and nfe_data.receival_date
+
+    @property
     def nfe_coupon_info(self):
         """Returns
         """
