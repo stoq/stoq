@@ -950,6 +950,7 @@ Brazil	15	PA	1504455	Medicilândia
 Brazil	15	PA	1504505	Melgaço
 Brazil	15	PA	1504604	Mocajuba
 Brazil	15	PA	1504703	Moju
+Brazil	15	PA	1504752	Mojuí dos Campos
 Brazil	15	PA	1504802	Monte Alegre
 Brazil	15	PA	1504901	Muaná
 Brazil	15	PA	1504950	Nova Esperança do Piriá
@@ -5569,4 +5570,8 @@ Brazil	31	MG	3171907	Virgolândia
 Brazil	31	MG	3172004	Visconde do Rio Branco
 Brazil	31	MG	3172103	Volta Grande
 Brazil	31	MG	3172202	Wenceslau Braz
+Brazil	50	MS	5006275	Paraíso das Águas
+Brazil	43	RS	4314548	Pinto Bandeira
+Brazil	42	SC	4220000	Balneário Rincão
+Brazil	42	SC	4212650	Pescaria Brava
 \.
