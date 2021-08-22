@@ -49,8 +49,18 @@
           esteja utilizando o
           <link href="http://www.ubuntu.com">Ubuntu</link>, você pode
           simplesmente clicar aqui:
-          <link href="apt:postgresql">instalar o postgresql</link>.
+          <link href="apt:postgresql">instalar o postgresql</link> e <link href="apt:postgresql-contrib"> as extensões</link>.
         </p>
+        <p>
+          Se prefirar usar a linha de comando:
+        </p>
+        <list>
+          <item>
+            <p>
+              <cmd>sudo apt-get install postgresql postgresql-contrib</cmd>
+            </p>
+          </item>
+        </list>
         <note style="important">
           <p>
             Neste computador que está servindo como servidor, a menos que ele
