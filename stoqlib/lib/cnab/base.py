@@ -129,7 +129,7 @@ class Record(object):
 
     def __init__(self, **kwargs):
         # Build a new private fields list based on fields and replace fields to
-        # avoid the class fields definition being overwriten by the replace
+        # avoid the class fields definition being overwritten by the replace
         # fields bellow
         self._fields = []
         field_map = {}
